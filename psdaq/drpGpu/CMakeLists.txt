@@ -121,6 +121,23 @@ if(CMAKE_CUDA_COMPILER)
     set_target_properties(NoOpReducer PROPERTIES CUDA_ARCHITECTURES "86")
     #target_compile_options(NoOpReducer PUBLIC -O3)
 
+    add_library(MatMulReducer SHARED
+        MatMulReducer.cu
+    )
+    target_include_directories(MatMulReducer PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include>
+        ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
+    )
+    target_link_libraries(MatMulReducer
+        xtcdata::xtc
+        nlohmann_json::nlohmann_json
+        CUDA::cudart
+        CUDA::cuda_driver
+    )
+    set_target_properties(MatMulReducer PROPERTIES CUDA_ARCHITECTURES "86")
+    #target_compile_options(MatMulReducer PUBLIC -O3)
+
 #--- Tools
 
     add_executable(pgpread_gpu
@@ -144,6 +161,7 @@ if(CMAKE_CUDA_COMPILER)
         AreaDetector_gpu
         EpixUHRemu_gpu
         NoOpReducer
+        MatMulReducer
         pgpread_gpu
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
