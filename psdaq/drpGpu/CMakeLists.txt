@@ -5,6 +5,19 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 if(CMAKE_CUDA_COMPILER)
+    message(STATUS "=== GPU DRP BUILD ENABLED ===")
+    message(STATUS "CUDA Compiler: ${CMAKE_CUDA_COMPILER}")
+    message(STATUS "CUDA Version: ${CMAKE_CUDA_COMPILER_VERSION}")
+    message(STATUS "GPU Architectures: 86, 90 (A100/H100 compatible)")
+    message(STATUS "Building GPU components:")
+    message(STATUS "  - drpbase_gpu library")
+    message(STATUS "  - drp_gpu executable") 
+    message(STATUS "  - AreaDetector_gpu library")
+    message(STATUS "  - EpixUHRemu_gpu library")
+    message(STATUS "  - NoOpReducer library")
+    message(STATUS "  - MatMulReducer library (ML algorithms)")
+    message(STATUS "  - pgpread_gpu executable")
+    
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
     set(CMAKE_CUDA_ARCHITECTURES 86 90)
@@ -51,6 +64,9 @@ if(CMAKE_CUDA_COMPILER)
         drpbase_gpu
         trigger
         mmhw
+        collection              # Provides CollectionApp functionality
+        service                 # Provides additional service functions
+        epicstools              # Provides EPICS functionality  
         xtcdata::xtc
         nlohmann_json::nlohmann_json
         CUDA::cudart
@@ -167,4 +183,14 @@ if(CMAKE_CUDA_COMPILER)
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin
     )
+else()
+    message(STATUS "=== GPU DRP BUILD DISABLED ===")
+    message(STATUS "CUDA Compiler: NOT FOUND")
+    message(STATUS "Reason: nvcc not available in PATH or CUDA toolkit not installed")
+    message(STATUS "Impact: All GPU components will be skipped during build")
+    message(STATUS "To enable GPU support:")
+    message(STATUS "  1. Install CUDA toolkit (nvcc compiler)")
+    message(STATUS "  2. Ensure nvcc is in PATH")
+    message(STATUS "  3. Clean build directory and re-configure")
+    message(STATUS "========================================")
 endif()

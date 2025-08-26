@@ -30,10 +30,10 @@ public:
 
   MatMulReducerDef(int N)
   {
-    NameVec.push_back({"matrixA", Name::FLOAT, 2, {N, N}});
-    NameVec.push_back({"matrixB", Name::FLOAT, 2, {N, N}});
-    NameVec.push_back({"matrixC", Name::FLOAT, 2, {N, N}});
-    NameVec.push_back({"metadata", Name::UINT32, 1, {4}});  // [N, timing, kernel_type, status]
+    NameVec.push_back({"matrixA", Name::FLOAT, 2});
+    NameVec.push_back({"matrixB", Name::FLOAT, 2});
+    NameVec.push_back({"matrixC", Name::FLOAT, 2});
+    NameVec.push_back({"metadata", Name::UINT32, 1});  // [N, timing, kernel_type, status]
   }
 };
 
@@ -178,9 +178,8 @@ MatMulReducer::MatMulReducer(const Parameters& para, const MemPoolGpu& pool, Det
   
   _resultSize = 3 * _matrixSize * _matrixSize * sizeof(float) + metadataFloats * sizeof(uint32_t);
   
-  // Check environment variable for kernel selection
-  const char* useNaive = getenv("MATMUL_USE_NAIVE");
-  _useOptimized = !(useNaive && strcmp(useNaive, "1") == 0);
+  // Use optimized kernel by default
+  _useOptimized = true;
   
   logging::info("MatMulReducer: Matrix size %zux%zu, optimized=%s, buffer=%zu bytes", 
                 _matrixSize, _matrixSize, _useOptimized ? "true" : "false", _resultSize);
@@ -204,12 +203,8 @@ void MatMulReducer::recordGraph(cudaStream_t& stream,
   float* C = dataBuffer + 2 * _matrixSize * _matrixSize;
   uint32_t* metadata = (uint32_t*)(dataBuffer + 3 * _matrixSize * _matrixSize);
   
-  // Initialize matrices with test data
-  int testType = 0;  // Use identity * sequential test
-  const char* testTypeEnv = getenv("MATMUL_TEST_TYPE");
-  if (testTypeEnv) {
-    testType = atoi(testTypeEnv);
-  }
+  // Initialize matrices with identity * sequential test (most predictable)
+  int testType = 0;
   
   int totalElements = _matrixSize * _matrixSize;
   dim3 initBlock(256);
