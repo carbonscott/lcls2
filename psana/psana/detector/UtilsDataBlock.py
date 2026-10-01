@@ -62,12 +62,18 @@ class DataBlock():
         return self.is_full()
 
     def is_full(self):
+        """Return True when all `nrecs` records have been filled (`irec` >= `nrecs` - 1)."""
         return not self.not_full()
 
     def not_full(self):
+        """Return True while fewer than `nrecs` records have been filled (`irec` < `nrecs` - 1)."""
         return self.irec < self.nrecs-1
 
     def max_min(self):
+        """Return `(max, min)` of the block over the record axis (axis 0).
+
+        Records not filled yet (zeros) are included.
+        """
         return np.max(self.block, axis=0),\
                np.min(self.block, axis=0)
 
@@ -92,6 +98,7 @@ class DataBlock():
         self.nrecs, self.irec = tuple(data['intpars'])
 
     def info_data_block(self, cmt=''):
+        """Return `cmt` followed by summaries of the block and event-number arrays and the values of `nrecs` and `irec`."""
         return cmt\
              + info_ndarr(self.block, '  data block')\
              + info_ndarr(self.evnums, '\n  evnums')\

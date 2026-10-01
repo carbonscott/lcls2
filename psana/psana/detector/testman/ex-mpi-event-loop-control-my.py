@@ -17,19 +17,26 @@ cpu_num = psutil.Process().cpu_num()
 s_rsc = 'rank:%03d/%03d-cpu:%03d' % (rank, size, cpu_num)
 
 class SingletPars:
+    """Hold keyword arguments as a parameter dict; `get` returns one parameter with a default."""
     def __init__(self, **kwargs):
         self.kwargs = kwargs
         #print('%s SingletPars: %s' % (s_rsc, self.info_pars()))
 
     def get(self, pname, vdef):
+        """Return parameter `pname`, or `vdef` if it was not given."""
         return self.kwargs.get(pname, vdef)
 
     def info_pars(self):
+        """Return the parameter dict as a string."""
         return str(self.kwargs)
 
 cbpars = SingletPars(**{'stepnum':2, 'stepevts':3})
 
 def filter_callback(run):
+    """Smalldata callback used by this script: yield the first 600 events of each step of `run`.
+
+    Prints a line every 100 events and the elapsed time at the end of each step and of the run.
+    """
     t0_sec_run = time()
     for nstep, step in enumerate(run.steps()):
         t0_sec_step = time()

@@ -72,6 +72,7 @@ class RepoManager(object):
 
 
     def makedir_repo(self):
+        """Create the repository directory `dirrepo` if needed (with the object's mode, umask and group) and return its path."""
         return self.makedir(self.dirrepo)
 
 
@@ -87,6 +88,7 @@ class RepoManager(object):
 
 
     def set_dettype(self, dettype):
+        """Set `self.dettype` to `dettype` unless `dettype` is None."""
         if dettype is not None:
             self.dettype = dettype
 
@@ -110,19 +112,23 @@ class RepoManager(object):
 
 
     def dir_merge(self, dname='merge_tmp'):
+        """Return the path `<dir_dettype>/<dname>`; nothing is created."""
         return os.path.join(self.dir_dettype(), dname)
 
 
     def makedir_merge(self, dname='merge_tmp'):
+        """Create `<dir_dettype>/<dname>` (and the directories above it) if needed and return its path."""
         assert os.path.exists(self.makedir_dettype())
         return self.makedir(self.dir_merge(dname))
 
 
     def dir_block_results(self, dname='block_results'):
+        """Return the path `<dir_dettype>/<dname>`; nothing is created."""
         return os.path.join(self.dir_dettype(), dname)
 
 
     def makedir_block_results(self, dname='block_results'):
+        """Create `<dir_dettype>/<dname>` (and the directories above it) if needed and return its path."""
         assert os.path.exists(self.makedir_dettype())
         return self.makedir(self.dir_block_results(dname))
 
@@ -169,10 +175,18 @@ class RepoManager(object):
 
 
     # ALIASES for backward compatability
-    def dir_type (self, panelid, ctype): return self.dir_ctype(panelid, ctype)
-    def makedir_type (self, panelid, ctype): return self.makedir_ctype(panelid, ctype)
-    def dir_types(self, panelid, subdirs): return self.dir_ctypes(panelid, ctypes=subdirs)
-    def makedir_types(self, panelid, subdirs): return self.makedir_ctypes(panelid, ctypes=subdirs)
+    def dir_type (self, panelid, ctype):
+        """Alias of `dir_ctype(panelid, ctype)`."""
+        return self.dir_ctype(panelid, ctype)
+    def makedir_type (self, panelid, ctype):
+        """Alias of `makedir_ctype(panelid, ctype)`."""
+        return self.makedir_ctype(panelid, ctype)
+    def dir_types(self, panelid, subdirs):
+        """Alias of `dir_ctypes(panelid, ctypes=subdirs)`."""
+        return self.dir_ctypes(panelid, ctypes=subdirs)
+    def makedir_types(self, panelid, subdirs):
+        """Alias of `makedir_ctypes(panelid, ctypes=subdirs)`."""
+        return self.makedir_ctypes(panelid, ctypes=subdirs)
 
 
 #    def dir_constants(self, dname='constants'):
@@ -219,6 +233,7 @@ class RepoManager(object):
 
 
     def makedir_logname(self, suffix):
+        """Create the yearly log directory if needed and return `logname(suffix)`, which also stores `suffix` as the log suffix."""
         self.makedir_logs_year()
         return self.logname(suffix)
 
@@ -243,6 +258,7 @@ class RepoManager(object):
 
 
     def save_record_at_start(self, procname, tsfmt='%Y-%m-%dT%H:%M:%S%z', adddict={}):
+        """Append a start record for `procname` to the log-at-start file by calling the module function `save_record_at_start(self, ...)`."""
         repoman = self
         save_record_at_start(repoman, procname, tsfmt=tsfmt, adddict=adddict)
 
@@ -267,6 +283,13 @@ class RepoManager(object):
 
 
 def save_record_at_start(repoman, procname, tsfmt='%Y-%m-%dT%H:%M:%S%z', adddict={}):
+    """Append a one-line start record to the log-at-start file `repoman.logname_at_start(procname)`.
+
+    The record holds the timestamp (format `tsfmt`), user@host, cwd, `dirrepo`, the log file name
+    (`repoman.logname()`, which creates the log directories), the `adddict` items and the command
+    line. The process umask is set to `repoman.umask`; a newly created file gets `repoman.filemode`
+    and group `repoman.group`.
+    """
     os.umask(repoman.umask)
     logatstart = repoman.logname_at_start(procname)
     fexists = os.path.exists(logatstart)
@@ -288,6 +311,15 @@ def log_rec_at_start(tsfmt='%Y-%m-%dT%H:%M:%S%z', **kwa):
 
 
 def init_repoman_and_logger(**kwa):
+    """Create a `RepoManager` from `kwa`, set up root logging, and return the manager.
+
+    Adds a stdout handler at level `logmode` (default INFO) and, unless `savelogfile` is False, a file
+    handler on `<logs dir>/<year>/<tstamp>_log_<logsuffix>.txt` (the log directory is created in
+    either case); the default suffix is `<script>_<login>` plus `_stepNN`, `_segNN` or `_segiNN` when
+    `stepnum`, `idx` or `segind` are given. Unless `dirrepo` is 'work1' or './work1', a start record
+    is appended to the log-at-start file, and the parser arguments are logged when `parser` is given
+    and `info_parser` is true.
+    """
     from psana.detector.UtilsLogging import init_logger, init_stream_handler, init_file_handler
 
     #print('XXX kwa:\n', ut.info_dict(kwa))
@@ -327,6 +359,11 @@ def init_repoman_and_logger(**kwa):
 
 
 def set_repoman_and_logger(kwa):
+    """Return `kwa['repoman']`, creating it first if needed.
+
+    If `kwa` has no 'repoman' (or it is None), one is made with
+    `init_repoman_and_logger(parser=None, **kwa)` and stored in `kwa['repoman']`.
+    """
     repoman = kwa.get('repoman', None)
     if repoman is None:
        #from psana.detector.RepoManager import init_repoman_and_logger
@@ -341,14 +378,20 @@ def fname_prefix(shortname, ind, tstamp, exp, runnum, dirname=None):
 
 
 def calib_file_name(fprefix, ctype, gainmode, fmt='%s-%s-%s.data'):
+    """Return `<fprefix>-<ctype>.data` when `gainmode` is None, otherwise `fmt % (fprefix, ctype, gainmode)`.
+
+    With the default `fmt` that is `<fprefix>-<ctype>-<gainmode>.data`.
+    """
     return '%s-%s.data' % (fprefix, ctype) if gainmode is None else\
            fmt % (fprefix, ctype, gainmode)
 
 
 def fname_prefix_merge(dmerge, shortname, tstamp, exp, irun):
+    """Return `<dmerge>/<shortname>-<tstamp>-<exp>-r<irun>`, with `irun` zero-padded to 4 digits."""
     return '%s/%s-%s-%s-r%04d' % (dmerge, shortname, tstamp, exp, irun)
 
 def fname_prefix_block_results(dblkres, shortname, exp, irun, gainmode):
+    """Return `<dblkres>/<shortname>-<exp>-r<irun>-<gainmode>`, with `irun` zero-padded to 4 digits."""
     return '%s/%s-%s-r%04d-%s' % (dblkres, shortname, exp, irun, gainmode)
 
 

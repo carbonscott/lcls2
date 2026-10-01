@@ -1,3 +1,4 @@
+"""Detector interfaces for the epixuhr3x2 detector type: empty config interfaces and `epixuhr3x2_raw_0_1_0`."""
 import logging
 
 import numpy as np
@@ -12,14 +13,29 @@ import psana.detector.UtilsEpixUHR as ueu
 logger: logging.Logger = logging.getLogger(__name__)
 
 class epixuhr3x2hw_config_0_1_0(DetectorImpl):
+    """Detector interface for detector type `epixuhr3x2hw`, software `config`, version 0.1.0.
+
+    Adds nothing to `DetectorImpl`.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 class epixuhr3x2_config_0_1_0(DetectorImpl):
+    """Detector interface for detector type `epixuhr3x2`, software `config`, version 0.1.0.
+
+    Adds nothing to `DetectorImpl`.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 class epixuhr3x2_raw_0_1_0(eb.epix_base):
+    """Area-detector interface for detector type `epixuhr3x2`, software `raw`, version 0.1.0.
+
+    `epix_base` subclass. The constructor sets the gain modes and states from `UtilsEpixUHR`, the
+    segment geometry "EPIXUHR3X2:V1", the default geometry file
+    `pscalib/geometry/data/geometry-def-epixuhr3x2-02.data`, gain bit 0 and data mask 0x0FFE;
+    `raw` and `calib` use `UtilsEpixUHR.raw_v01` and `UtilsEpixUHR.calib_v02`.
+    """
     def __init__(self, *args, **kwargs):
         eb.epix_base.__init__(self, *args, **kwargs)
         self._gain_modes = ueu.GAIN_MODES # ('FHG', 'FMG', 'FLG1', 'FLG2', 'AHLG1', 'AHLG2', 'AMLG1', 'AMLG2')
@@ -39,6 +55,11 @@ class epixuhr3x2_raw_0_1_0(eb.epix_base):
         return ueu.cbits_config_segment_3x2(cob)
 
     def raw(self, evt, sh_seg=(336,576)) -> Array3d:
+        """Return the raw data of all segments as one uint16 array built by `UtilsEpixUHR.raw_v01`.
+
+        The shape is (largest segment number + 1,) + `sh_seg`; each segment's six ASIC arrays are
+        rearranged into one `sh_seg` panel. Returns None if `evt` is None or the segments are missing.
+        """
         return ueu.raw_v01(self, evt, sh_seg=sh_seg)
 
     def calib(self, evt, **kwa) -> Array3d:

@@ -33,6 +33,12 @@ CTYPES_DARK = ('pedestals', 'pixel_rms', 'pixel_max', 'pixel_min', 'pixel_status
 CTYPES_DEPL = CTYPES_DARK + ('pixel_gain', 'pixel_offset', 'status_extra')
 
 def dic_ctype_fmt(**kwargs):
+    """Return a dict that maps each constant type to its text output format.
+
+    Defaults: '%.3f' for pedestals, pixel_rms, pixel_gain and pixel_offset; '%d' for pixel_max,
+    pixel_min, pixel_status and status_extra; '%2d' for pixel_mask. Each can be overridden with the
+    matching `fmt_*` keyword (status_extra uses `fmt_status`).
+    """
     return {'pedestals'   : kwargs.get('fmt_peds',   '%.3f'),
             'pixel_rms'   : kwargs.get('fmt_rms',    '%.3f'),
             'pixel_max'   : kwargs.get('fmt_max',    '%d'),
@@ -45,6 +51,11 @@ def dic_ctype_fmt(**kwargs):
 
 
 def info_pixel_status(status, bits=(1<<64)-1):
+    """Return a one-line summary of the pixel status array `status`.
+
+    Gives the number of pixels with any of `bits` set, the number with nonzero status, and the total
+    number of pixels.
+    """
     arr1 = np.ones_like(status, dtype=np.int32)
     statist_bits = np.select((status & bits,), (arr1,), 0)
     statist_tot = np.select((status>0,), (arr1,), 0)
@@ -255,6 +266,7 @@ class MergerDarkArrays():
         self.lst_min = []
 
     def add_arrs_for_gain_range(self, dpo):
+        """Append the average, RMS, status, max and min arrays of the `DarkProc` object `dpo` to the per-type lists."""
         self.lst_av1.append(dpo.arr_av1)
         self.lst_rms.append(dpo.arr_rms)
         self.lst_sta.append(dpo.arr_sta)
@@ -262,12 +274,15 @@ class MergerDarkArrays():
         self.lst_min.append(dpo.arr_min)
 
     def merge_list(self, lstnda):
+        """Return the arrays in `lstnda` stacked along a new first axis (`np.stack`)."""
         return np.stack(tuple(lstnda))
 
     def info_merged_nda(self, lstnda, cmt='merged pedestals'):
+        """Return an `info_ndarr` summary of `merge_list(lstnda)` with comment `cmt`."""
         return info_ndarr(self.merge_list(lstnda), cmt)
 
     def dict_ctype_constants(self):
+        """Return a dict that maps 'pedestals', 'pixel_rms', 'pixel_status', 'pixel_max' and 'pixel_min' to the stacked arrays of each list."""
         return {'pedestals':    self.merge_list(self.lst_av1),\
                 'pixel_rms':    self.merge_list(self.lst_rms),\
                 'pixel_status': self.merge_list(self.lst_sta),\
@@ -307,10 +322,16 @@ class DarkProc():
 
 
     def accumulate_block(self, raw):
+        """Store `raw` in row `irec` of the data block."""
         self.block[self.irec,:] = raw
 
 
     def proc_block(self):
+        """Run the module function `proc_block` on the accumulated records and store its results.
+
+        Uses the whole block once more than `nrecs1` records were taken, otherwise the first `irec` + 1
+        records; stores `gate_lo`, `gate_hi`, `arr_med` and `abs_dev` and logs timing and summaries.
+        """
         logger.info('stage 1 - DATA BLOCK of %d events ACCUMULATION TIME %.3f sec' % (self.irec+1, time()-self.t0_sec_init))
         t0_sec = time()
         block = self.block if self.irec > self.nrecs1-1 else self.block[:self.irec+1,:]
@@ -323,6 +344,11 @@ class DarkProc():
 
 
     def proc_block_short(self):
+        """Run the module function `proc_block_short` on the accumulated records and store `gate_lo` and `gate_hi`.
+
+        Uses the whole block once more than `nrecs1` records were taken, otherwise the first `irec` + 1
+        records; logs timing and summaries.
+        """
         logger.info('stage 1 - DATA BLOCK SHORT of %d events ACCUMULATION TIME %.3f sec' % (self.irec+1, time()-self.t0_sec_init))
         t0_sec = time()
         block = self.block if self.irec > self.nrecs1-1 else self.block[:self.irec+1,:]
@@ -333,6 +359,12 @@ class DarkProc():
 
 
     def init_proc(self):
+        """Prepare the stage-2 accumulators for the shape and dtype of `gate_lo`.
+
+        Creates zeroed count, sum and sum-of-squares arrays, low/high intensity counters, a zero max
+        array and a min array filled with `datbits`, plus constant 0/1 arrays, and clips the gates to
+        [`int_lo`, `int_hi`].
+        """
         shape_raw = self.gate_lo.shape
         dtype_raw = self.gate_lo.dtype
 
@@ -364,6 +396,11 @@ class DarkProc():
 
 
     def arrs_ave_rms(self):
+        """Return `(average, rms)` per pixel from the gated sums.
+
+        average = sum1 / sum0 and rms = sqrt(sum2 / sum0 - average**2), using `divide_protected` for
+        pixels with a zero count.
+        """
         arr_av1 = divide_protected(self.arr_sum1, self.arr_sum0)
         arr_av2 = divide_protected(self.arr_sum2, self.arr_sum0)
         arr_rms = np.sqrt(arr_av2 - np.square(arr_av1))
@@ -429,6 +466,13 @@ class DarkProc():
 
 
     def summary(self):
+        """Finish dark processing and compute the constants.
+
+        Returns early (with a log message) if `irec` <= 1. If fewer than `nrecs1` records were taken, the
+        block is first processed with `proc_block_short` and added to the statistics. Then sets
+        `arr_av1`, `arr_rms`, `arr_sta` (from `arr_status`) and the mask `arr_msk` (1 where the status is
+        0), plots images if `plotim` is set, and clears the block and the record counter.
+        """
         logger.info('stage 2 - DATA ACCUMULATION for %d events time %.3f sec' % (self.irec+1, time()-self.t0_sec_init_proc))
         t0_sec = time()
 
@@ -461,10 +505,17 @@ class DarkProc():
 
     def show_plot_results(self):
         #logger.debug(self.info_results())
+        """Call `plot_images(titpref='')`."""
         self.plot_images(titpref='')
 
 
     def add_event(self, raw, irec):
+        """Add one event's data to the stage-2 statistics.
+
+        The data are masked with `datbits`. Pixels inside [`gate_lo`, `gate_hi`] add to the count, sum
+        and sum of squares; pixels below `int_lo` or above `int_hi` increment the low/high counters; the
+        per-pixel max and min are updated. `irec` is only used in the debug message.
+        """
         logger.debug(info_ndarr(raw, 'add_event irec: %3d raw' % irec))
         _raw = raw & self.datbits # use data bits only 16-bit default (should be 14 for jungfrau and epix10ka)
         _raw_f64 = _raw.astype(np.float64)
@@ -485,6 +536,7 @@ class DarkProc():
 
 
     def add_block(self):
+        """Add every record of the data block to the statistics with `add_event`."""
         logger.info(info_ndarr(self.block, 'stage 2 - add to gated average statistics the block of initial data'))
         t0_sec = time()
         for i,raw in enumerate(self.block): self.add_event(raw,i)
@@ -539,6 +591,7 @@ class DarkProc():
 
 
     def info_results(self, cmt='DarkProc results'):
+        """Return `cmt` followed by summaries of arr_med, arr_av1, abs_dev, arr_rms, arr_sta, arr_msk, arr_max, arr_min, gate_lo and gate_hi."""
         return cmt\
          +info_ndarr(self.arr_med, '\n  arr_med')\
          +info_ndarr(self.arr_av1, '\n  arr_av1')\
@@ -553,6 +606,12 @@ class DarkProc():
 
 
     def plot_images(self, titpref=''):
+        """Plot the result arrays selected by the bits of `plotim` with `plot_image`.
+
+        Bits: 1 average, 2 RMS, 4 status, 8 mask, 16 maximum, 32 minimum, 64 and 128 the counters below
+        and above the intensity thresholds, 256 median, 512 abs_dev, 1024 average minus median. Titles
+        are prefixed with `titpref`.
+        """
         plotim = self.plotim
         if plotim &   1: plot_image(self.arr_av1,    tit=titpref + 'average')
         if plotim &   2: plot_image(self.arr_rms,    tit=titpref + 'RMS')
@@ -567,15 +626,19 @@ class DarkProc():
         if plotim &1024: plot_image(self.arr_av1 - self.arr_med, tit=titpref + 'ave - dev')
 
     def getattr_by_name(self, aname='gate_lo', default=None):
+        """Return attribute `aname` of this object, or `default` if it does not exist."""
         return getattr(self, aname, default)
 
     def results_block(self):
+        """Return `(gate_lo, gate_hi, arr_med, abs_dev)`."""
         return self.gate_lo, self.gate_hi, self.arr_med, self.abs_dev
 
     def constants_av1_rms_sta(self):
+        """Return `(arr_av1, arr_rms, arr_sta)`."""
         return self.arr_av1, self.arr_rms, self.arr_sta
 
     def constants_max_min(self):
+        """Return `(arr_max, arr_min)`."""
         return self.arr_max, self.arr_min
 
 
@@ -599,6 +662,14 @@ def plot_image(nda, tit=''):
 
 def add_metadata_kwargs(obrun, obdet, **kwa):
 
+    """Add run and detector metadata to `kwa` and return it.
+
+    Sets the experiment, short and long detector names, detector name and type, the validity time
+    (from the `tstamp` option if given, otherwise the run time) in seconds and as strings, the
+    original run time and run number, the run range (`run_beg` or the run number, to `run_end`,
+    default 'end'), version, comment, segment ids, indexes and numbers, the segment geometry shape and
+    the detector's `_dark_factor`.
+    """
     trun_sec = up.seconds(obrun.timestamp) # 1607569818.532117 sec
 
     # check opt "-t" if constants need to be deployed with diffiernt time stamp
@@ -641,6 +712,13 @@ def add_metadata_kwargs(obrun, obdet, **kwa):
 
 def deploy_constants(dic_consts, **kwa):
 
+    """Save each array of `dic_consts` as a text file in the calibration repository and optionally add it to the DB.
+
+    Files are written under the repository's `<panelid>/<ctype>` directory as
+    `<prefix>-<ctype>.data` with per-type formats, then read back with `data_from_file`. With
+    `deploy` true each array is added with `add_data_and_two_docs`, and `exit()` is called if that
+    returns nothing; otherwise a warning is logged. The 'exp' and 'det' keys are removed from `kwa`.
+    """
     from psana.pscalib.calib.MDBUtils import data_from_file
     from psana.pscalib.calib.MDBWebUtils import add_data_and_two_docs
 
@@ -723,6 +801,12 @@ def deploy_constants(dic_consts, **kwa):
 
 
 def prefix_block_results(dpo, obrun, obdet, **kwa):
+    """Return the file-name prefix for saved block results.
+
+    The prefix is `<block_results dir>/<shortname>-<exp>-r<run>-<gainmode>`; the repository manager
+    `kwa['repoman']` gets the detector type and the block_results directory is created. `dpo` is not
+    used.
+    """
     repoman = kwa.get('repoman', None) # set_repoman_and_logger(kwa)
     dettype = obdet.raw._dettype
     repoman.set_dettype(obdet.raw._dettype)
@@ -736,6 +820,7 @@ def prefix_block_results(dpo, obrun, obdet, **kwa):
 
 
 def fnames_block_results(prefix, sufs=('gate_lo', 'gate_hi'), fmt='%s-%s.npy'):
+    """Return `[fmt % (prefix, s) for s in sufs]`; by default `<prefix>-gate_lo.npy` and `<prefix>-gate_hi.npy`."""
     return [fmt % (prefix, s) for s in sufs]
 
 
@@ -776,6 +861,12 @@ def load_block_results(dpo, obrun, obdet, anames=('gate_lo', 'gate_hi'), **kwa):
 
 def save_results_in_db(dpo, obrun, obdet, **kwa):
     #    dpo.summary() moved to the main code
+    """Pass the dark constants of `dpo` to `deploy_constants`.
+
+    The average, RMS, status, max and min arrays get run and detector metadata from
+    `add_metadata_kwargs`; `deploy_constants` saves files and adds them to the DB only when `deploy`
+    is set.
+    """
     ctypes = ('pedestals', 'pixel_rms', 'pixel_status', 'pixel_max', 'pixel_min') # 'status_extra'
     arr_av1, arr_rms, arr_sta = dpo.constants_av1_rms_sta()
     arr_max, arr_min = dpo.constants_max_min()
@@ -795,6 +886,11 @@ def save_results_in_db(dpo, obrun, obdet, **kwa):
 
 
 def save_results_in_repository(dpo, obrun, obdet, **kwa):
+    """Show the result plots of `dpo` and save its constants with `UtilsCalibRepo.save_constants_in_repository`.
+
+    Saves pedestals, RMS, max, min and status arrays after adding metadata with
+    `add_metadata_kwargs`. Does nothing if `dpo` is None.
+    """
     from psana.detector.UtilsCalibRepo import save_constants_in_repository
     logger.info('begin save_results_in_repository')
     t0_sec = time()
@@ -822,6 +918,14 @@ def save_results_in_repository(dpo, obrun, obdet, **kwa):
 
 def pedestals_calibration(parser):
 
+  """Run dark processing over a dataset and save the results.
+
+  Parses `parser`, sets up the repository manager and logging, and loops over runs, steps
+  (`stepmax` default 1, `stepnum`) and events (`evskip`, `events`), feeding the raw data of
+  `det` to a `DarkProc`. After each step the results are saved as block results (when
+  `nrecs == nrecs1` and only stage 1 ran) or summarized and passed to `save_results_in_db`. Exits
+  if the DataSource cannot be created; the log file is saved at the end.
+  """
   from psana import DataSource
 
   args = parser.parse_args()

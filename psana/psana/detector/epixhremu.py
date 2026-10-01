@@ -13,6 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class epixhremu_raw_0_0_1(eb.epix_base):
+    """Area-detector interface for detector type `epixhremu`, software `raw`, version 0.0.1.
+
+    `epix_base` subclass. The constructor sets the segment geometry "EPIXHR1X4:V1", data mask M14,
+    gain bit B15, gain bit shift 10, default gains (41.0, 13.7, 0.512) and the default geometry file
+    `pscalib/geometry/data/geometry-def-epixhr1x4-20.data`. Its private `_config_object` returns a
+    fake configuration (zero pixel config, trbit 0) for every segment index.
+    """
     def __init__(self, *args, **kwargs):
         logger.debug('epixhremu_raw_0_0_1.__init__')
         eb.epix_base.__init__(self, *args, **kwargs)
@@ -85,6 +92,13 @@ import json
 
 #class epixhremu_fex_0_0_1(DetectorImpl):
 class epixhremu_fex_0_0_1(ad.AreaDetector):
+    """Area-detector interface for detector type `epixhremu`, software `fex`, version 0.0.1, with compressed data.
+
+    The constructor builds a libpressio compressor from the JSON `compressor_json` of the first
+    segment config; `calib` decodes each segment's `fex` data with it into a (144, 768) float32
+    buffer and stacks the segments in sorted order. Keyword arguments given to the constructor are
+    not passed on.
+    """
     def __init__(self, *args, **kwargs):
         super(epixhremu_fex_0_0_1, self).__init__(*args)
         self._seg_geo = ad.sgs.Create(segname='EPIXHR1X4:V1')
@@ -120,6 +134,7 @@ class epixhremu_fex_0_0_1(ad.AreaDetector):
 
     def image(self, evt, **kwargs) -> Array2d: # value_for_missing_segments=1
         #ad.AreaDetector.image(evt, nda=self.calib(evt), **kwargs)
+        """Return `AreaDetector.image(self, evt, **kwargs)`."""
         return ad.AreaDetector.image(self, evt, **kwargs)
 
         #cc = self._calibconst # defined in DetectorImpl

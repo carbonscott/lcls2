@@ -26,6 +26,11 @@ from psana.detector.NDArrUtils import reshape_to_2d, divide_protected, info_ndar
 
 class opal_base(AreaDetector):
 
+    """Base area-detector interface for opal data (`AreaDetector` subclass).
+
+    No segment geometry is set (`_seg_geo` is None) and the default geometry file is
+    `pscalib/geometry/data/geometry-def-TBD.data`.
+    """
     def __init__(self, *args, **kwa):
         logger.debug('opal_base.__init__')
         AreaDetector.__init__(self, *args, **kwa)
@@ -34,6 +39,11 @@ class opal_base(AreaDetector):
 
 
     def raw(self,evt) -> Array3d:
+        """Return the `image` of the detector's single segment, or the images of several segments combined into a 3-D array.
+
+        Several segments are combined with `UtilsAreaDetector.arr3d_from_dict`. Returns None if the
+        segments are missing.
+        """
         logger.debug('opal_base.raw')
         segs = self._segments(evt)
         if segs is None: return None
@@ -68,6 +78,11 @@ class opal_base(AreaDetector):
 
 
     def image(self, evt, nda=None, **kwa) -> Array2d:
+        """Return a 2-D image of `nda`, or of `calib(evt, **kwa)` when `nda` is None.
+
+        An array that is not already 2-D is reshaped with `reshape_to_2d`; returns None if there is no
+        data.
+        """
         logger.debug('opal_base.image')
         arr = self.calib(evt, **kwa) if nda is None else nda
         if arr is None: return None

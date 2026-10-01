@@ -34,6 +34,12 @@ DTYPE_MASK, DTYPE_STATUS = um.DTYPE_MASK, um.DTYPE_STATUS
 
 
 class Mask:
+    """Public wrappers around the private mask methods of an area detector's `raw` interface.
+
+    The constructor stores `det` and `det.raw` and calls `set_mask(**kwa)`, which rebuilds the mask
+    cached by `det.raw._mask` (with `force_update=True`). The other methods forward to the matching
+    `det.raw._mask_*` method and return its result.
+    """
     def __init__(self, det, **kwa):
         """sets det._mask_, see parameters description in areadetector.py AreaDetector.mask_comb"""
         self.det = det
@@ -58,28 +64,42 @@ class Mask:
 
 
     def mask_default(self, dtype=DTYPE_MASK):
+        """Return `det.raw._mask_default(dtype)`.
+
+        For `AreaDetector`, that method passes DTYPE_MASK on to the mask algorithms in place of the
+        given `dtype`.
+        """
         return self.det_raw._mask_default(dtype)
 
 
     def mask_calib_or_default(self, dtype=DTYPE_MASK):
+        """Return `det.raw._mask_calib_or_default(dtype)`.
+
+        For `AreaDetector`, that method passes DTYPE_MASK on to the mask algorithms in place of the
+        given `dtype`.
+        """
         return self.det_raw._mask_calib_or_default(dtype)
 
 
     def mask_from_status(self, status_bits=0xffff, dtype=DTYPE_MASK, **kwa):
+        """Return `det.raw._mask_from_status(status_bits=status_bits, dtype=dtype, **kwa)`."""
         kwa['status_bits'] = status_bits
         kwa['dtype'] = dtype
         return self.det_raw._mask_from_status(**kwa)
 
 
     def mask_edges(self, width=0, edge_rows=1, edge_cols=1, dtype=DTYPE_MASK, **kwa):
+        """Return `det.raw._mask_edges(width, edge_rows, edge_cols, dtype, **kwa)`."""
         return self.det_raw._mask_edges(width, edge_rows, edge_cols, dtype, **kwa)
 
 
     def mask_center(self, wcenter=0, center_rows=1, center_cols=1, dtype=DTYPE_MASK, **kwa):
+        """Return `det.raw._mask_center(wcenter, center_rows, center_cols, dtype, **kwa)`."""
         return self.det_raw._mask_center(wcenter, center_rows, center_cols, dtype, **kwa)
 
 
     def mask_neighbors(self, mask, rad=9, ptrn='r'):
+        """Return `det.raw._mask_neighbors(mask, rad, ptrn)`."""
         return self.det_raw._mask_neighbors(mask, rad, ptrn)
 
 # EOF

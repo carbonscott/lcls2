@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
+"""Manual test of `psana.detector.mask_algos.MaskAlgos` with the epix10ka_000002 constants of uedcom103 run 7.
+
+Run as `python test_mask_algos.py <test-name> [-L level] [-D]`; the selected mask is shown as an
+image. The code runs at import time (no main guard).
+"""
 from psana.detector.UtilsLogging import sys, logging, DICT_NAME_TO_LEVEL, STR_LEVEL_NAMES
 from psana.detector.NDArrUtils import info_ndarr, save_ndarray_in_textfile
 from psana.detector.mask_algos import MaskAlgos, DTYPE_MASK, DTYPE_STATUS
 
 
 def test_umask(mo):
+    """Return a user mask shaped like `mo.mask_default()`.
+
+    All ones except zeros in [1, 100:200, 200:300] and [2, 50:150, 200:300].
+    """
     import numpy as np
     m = mo.mask_default() # (4, 352, 384)
     mask = np.ones_like(m, dtype=DTYPE_MASK)
@@ -46,6 +55,12 @@ def deploy_status_extra(mo, fname = 'epix10ka-status_extra-test.data',\
 
 
 def test_mask_select(tname, mo):
+    """Return the mask for test `tname` computed with the `MaskAlgos` object `mo`, and log it.
+
+    "1" status, "2" status plus neighbors, "3" edges, "4" center rows and columns, "5" calib or
+    default, "6" user mask, "7" combined, "8" a test status_extra array (`deploy_status_extra`),
+    "9" random values shaped like the status mask. Other names call `sys.exit`.
+    """
     mask = None
     if tname == '9':
         import psana.pyalgos.generic.NDArrGenerators as ag
@@ -102,16 +117,22 @@ def dict_calib_constants(exp='uedcom103', detname='epix10ka_000002', runnum=7):
 
 
 def calib_constants(dcc, detname):
+    """Return `CalibConstants(dcc, detname)`."""
     from psana.detector.calibconstants import CalibConstants
     return CalibConstants(dcc, detname)
 
 
 def mask_algos(dcc, detname):
+    """Return `MaskAlgos(dcc, detname)`."""
     return MaskAlgos(dcc, detname)
 
 
 def test_mask_algos(tname):
-    """
+    """Compute and display the mask for test `tname` for epix10ka_000002 (uedcom103, run 7).
+
+    Fetches the constants from the calibration DB, computes the mask with `test_mask_select` and shows
+    `mask + 1` as an image built from the pixel coordinate indexes with `fleximagespec`. Returns None
+    early if the mask is None.
     """
     dcc = dict_calib_constants(exp='uedcom103', detname='epix10ka_000002', runnum=7)
     mo = mask_algos(dcc, 'epix10ka_000002')
@@ -165,6 +186,11 @@ USAGE = '  python %s <test-name> <loglevel e.g. DEBUG or INFO>' % SCRNAME\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this test.
+
+    Positional `tname`, -L/--logmode (default INFO) and -D/--deploy (deploy the test status_extra
+    constants to the DB).
+    """
     import argparse
     d_logmode = 'INFO'
     d_tname = '0'

@@ -1,3 +1,9 @@
+"""Script that averages `det.raw.image` over the events of each step of a run and publishes the averages with psmon.
+
+Options --expt, --detname, --nevents (parsed but not used) and --run; the data are read from
+/cds/data/psdm/<first 3 letters of expt>/<expt>/xtc. Each step's average image is saved as
+`avgimg_r<run>_<step>.txt`. The code runs at import time.
+"""
 from psana import DataSource
 #from cfg_utils import *
 import numpy as np
@@ -37,6 +43,10 @@ det = myrun.Detector(args.detname)
 #dethw = myrun.Detector(args.detname+'hw')
 
 def dump1(arr,title,nx,start):
+    """Print `title [nx]` and the `nx` values of `arr` starting at index `start` as 4-digit hex numbers.
+
+    A line break follows every index i with i % 16 == 15. Returns `start + nx`.
+    """
     print(f'{title} [{nx}]')
     s = ''
     for i in range(start,start+nx):
@@ -47,6 +57,7 @@ def dump1(arr,title,nx,start):
     return start+nx
 
 def dump2(arr):
+    """Print each row of the 2-D array `arr` as 4-digit hex numbers, with a line break after every 16 values."""
     for i in range(arr.shape[0]):
         s = ''
         for j in range(arr.shape[1]):

@@ -1,3 +1,4 @@
+"""Define `jungfrauemu_raw_0_1_0`, the area-detector interface for the jungfrauemu detector type."""
 from amitypes import Array3d
 
 import logging
@@ -8,6 +9,13 @@ import psana.detector.areadetector as ad
 #import psana.detector.UtilsMask as um #import merge_status
 
 class jungfrauemu_raw_0_1_0(ad.AreaDetectorRaw):
+    """Area-detector interface for detector type `jungfrauemu`, software `raw`, version 0.1.0.
+
+    Uses the default geometry file `pscalib/geometry/data/geometry-def-jungfrau4M.data`, segment
+    geometry "JUNGFRAU:V2", data bit mask 0x3fff and gain modes ('g0', 'g1', 'g2'). Its `raw`
+    adds Gaussian random values (mean `mu`, sigma `sigma`) to the data and is marked as for
+    debugging only.
+    """
     def __init__(self, *args, **kwa):
         logger.debug('jungfrauemu_raw_0_1_0.__init__')
         ad.AreaDetectorRaw.__init__(self, *args, **kwa)

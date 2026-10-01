@@ -39,6 +39,16 @@ def tmp_filename(fname=None, suffix='_EventLoopStatus.npy'):
 
 
 def find_outliers(arr, title='', vmin=None, vmax=None, fmt='%.3f'):
+    """Flag elements of `arr` at or below `vmin` and at or above `vmax`.
+
+    Returns
+    -------
+    tuple
+        (bad_lo, bad_hi, arr1_lo, arr1_hi, s_lo, s_hi): boolean masks of low and high outliers (all
+        False when the limit is None), the same masks as uint64 0/1 arrays, and summary strings
+        with the count, total and percentage of each kind (limit formatted with `fmt`, or
+        "unlimited" for None).
+    """
     assert isinstance(arr, np.ndarray)
     size = arr.size
     arr0 = np.zeros_like(arr, dtype=bool)
@@ -90,6 +100,13 @@ def evaluate_pixel_status(arr, title='', vmin=None, vmax=None, snrmax=8):
 
 def feature_01(block, databits=0x3FFF, snrmax=8):
 
+    """Flag the good frames of `block` from their median intensity.
+
+    The data are masked with `databits`; the frame shape is printed and per-frame statistics are
+    logged, and the per-frame medians are passed to `evaluate_pixel_status` with limits 0 and
+    `databits`. Returns a uint64 array with 1 for frames inside the range evaluated there and 0 for
+    the others.
+    """
     logger.info("""Feature 1: mean intensity of frames in good range""")
     _block = block & databits
     #block = np.bitwise_and(block, databits)
@@ -110,12 +127,21 @@ def feature_01(block, databits=0x3FFF, snrmax=8):
 
 
 class EventLoopStatus(EventLoop):
+    """`EventLoop` subclass used by `det_pixel_status`: collects raw frames of one detector into a `DataBlock`.
+
+    The block is cached in a temporary .npz file per run, detector, segment, step and record count,
+    and is reloaded from that file when it exists unless `--reset` is given.
+    """
     msgels='EventLoopStatus'
 
     def __init__(self, parser):
         EventLoop.__init__(self, parser)
 
     def init_event_loop(self):
+        """Log the start and reset the loop state.
+
+        Sets `dbl`, `status` and `flimg` to None and `dic_consts_tot` and `kwa_depl` to empty dicts.
+        """
         message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         logger.info('init_event_loop - dskwargs: %s detname: %s' % (str(self.dskwargs), self.detname))
         #parser = self.parser
@@ -132,13 +158,20 @@ class EventLoopStatus(EventLoop):
 
     def begin_run(self):
         #message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
+        """Log the experiment name and run number."""
         logger.info('=== begin_run expname: %s runnum: %s' % (self.expname, str(self.runnum)))
 
     def end_run(self):
         #message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
+        """Log the experiment name and run number."""
         logger.info('=== end_run expname: %s runnum: %s' % (self.expname, str(self.runnum)))
 
     def fname_data_block(self, ext='.npz'):
+        """Return the temporary file name for the data block of the current run, detector, segment, step and record count.
+
+        The name is `EventLoopStatus-data_block-<exp>-r<run>-<detname>-seg<ALL|NNN>-step<NN>-nrecs<NNNN><ext>`
+        in the directory that `tempfile.NamedTemporaryFile` uses (see `tmp_filename`).
+        """
         fname = '%s-data_block-%s-r%04d-%s' % (self.msgels, self.expname, self.runnum, self.detname)
         fname += '-seg%s' % ('ALL' if self.segind is None else ('%03d' % self.segind))
         fname += '-step%02d' % self.istep
@@ -147,6 +180,13 @@ class EventLoopStatus(EventLoop):
 
     def begin_step(self):
         #message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
+        """Create the `DataBlock` on the first step, loading cached data if available.
+
+        On the first call it sets `rms_hi` and `int_hi` in the parameters to the detector's data bit mask
+        minus 10, defaults `nrecs` to 10 and `datbits` to 0xffff, creates the `DataBlock` with run
+        info, and loads it from `fname_data_block()` if that file exists and `--reset` was not given.
+        Later steps keep the existing block.
+        """
         logger.info('begin_step istep/nevtot: %d/%s' % (self.istep, str(self.metadic)))
 
         dbl = self.dbl
@@ -171,6 +211,10 @@ class EventLoopStatus(EventLoop):
 
     def end_step(self):
         #message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
+        """Log the data block, show plots when `plotim` is set, and save the block to its temporary file.
+
+        The block is saved only when `--reset` was given or the file did not exist at `begin_step`.
+        """
         logger.info(self.dbl.info_data_block(cmt='berofe saving data_block'))
         dbl = self.dbl
 
@@ -185,6 +229,12 @@ class EventLoopStatus(EventLoop):
 
     def proc_event(self, msgmaxnum=5):
         #print('proc_event ievt/nevtot: %d/%d' % (self.ievt, self.nevtot))
+        """Add the current event's raw data to the data block.
+
+        The raw array is reduced to segment `segind` and slice `aslice` when they are set. `status`
+        becomes 2 when `DataBlock.event` reports the block full (which ends the event loop) and 1
+        otherwise; `plot_event` is called when `plotim` is set. `msgmaxnum` is not used.
+        """
         raw = self.odet.raw.raw(self.evt)
         if self.segind is not None: raw = raw[self.segind,:]
         if self.aslice is not None: raw = raw[self.aslice]
@@ -193,6 +243,11 @@ class EventLoopStatus(EventLoop):
         if self.args.plotim: self.plot_event()
 
     def plot_event(self):
+        """Show the current event's raw data as a 2-D image with `fleximage`.
+
+        The figure is created on first use (importing `UtilsGraphics`) and updated afterwards; the
+        display does not block.
+        """
         raw = self.odet.raw.raw(self.evt)
         logger.info(info_ndarr(raw, 'ievt:%04d raw:' % self.ievt, last=5))
         img = np.array(raw)
@@ -213,6 +268,11 @@ class EventLoopStatus(EventLoop):
 
 
     def summary(self):
+        """Log the gain modes with constants and the detector's gain modes, and fill `kwa_depl` with metadata.
+
+        `kwa_depl` gets the DAQ shape, experiment, detector and run. The call that would deploy constants
+        is commented out, so nothing is saved.
+        """
         message(msg=self.msgels, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         gainmodes = [k for k in self.dic_consts_tot.keys()]
         gmodes = getattr(self.odet.raw, '_gain_modes', None)
@@ -229,27 +289,40 @@ class EventLoopStatus(EventLoop):
         #deploy_constants(ctypes, gmodes, **kwa_depl)
 
     def feature_02(self):
+        """Return the per-pixel mean over the good records of `self.block` masked with `self.databits`.
+
+        Uses `self.block`, `self.bool_good_frames` and `self.databits`, which nothing in this class
+        sets, and dtype `np.float`, which NumPy 1.24 and later no longer provide.
+        """
         logger.info("""Feature 2: dark mean in good range""")
         block_good = self.block[self.bool_good_frames,:] & self.databits
         logger.info(info_ndarr(block_good, 'block of good records:', last=5))
         return np.mean(block_good, axis=0, dtype=np.float)
 
     def feature_03(self):
+        """Return the per-pixel standard deviation over the good records of `self.block` masked with `self.databits`.
+
+        Uses `self.block`, `self.bool_good_frames` and `self.databits`, which nothing in this class
+        sets, and dtype `np.float`, which NumPy 1.24 and later no longer provide.
+        """
         logger.info("""Feature 3: dark RMS in good range""")
         block_good = self.block[self.bool_good_frames,:] & self.databits
         logger.info(info_ndarr(block_good, 'block of good records:', last=5))
         return np.std(block_good, axis=0, dtype=np.float)
 
     def feature_04(self):
+        """Placeholder: log "Feature 4: TBD" and return None."""
         logger.info("""Feature 4: TBD""")
         return None
 
     def feature_05(self):
+        """Placeholder: log "Feature 5: TBD" and return None."""
         logger.info("""Feature 5: TBD""")
         return None
 
 
 def test_features(fname='fname.npz'):
+    """Load a `DataBlock` from `fname`, log its info, and log the good-frame flags from `feature_01` (databits 0x3FFF, snrmax 8)."""
     dbl = DataBlock()
     dbl.load(fname=fname)
     logger.info(dbl.info_data_block(cmt=''))
@@ -258,6 +331,11 @@ def test_features(fname='fname.npz'):
 
 
 def det_pixel_status(parser):
+    """Entry point of the det_pixel_status command: run an `EventLoopStatus` event loop, then exit.
+
+    Parses the arguments of `parser` (KeyError if `loglevel` is not a logging level name), runs
+    `EventLoopStatus(parser).event_loop()` and calls `sys.exit`.
+    """
     args = parser.parse_args() # NameSpace
     kwargs = vars(args)        # dict
     STRLOGLEV = args.loglevel

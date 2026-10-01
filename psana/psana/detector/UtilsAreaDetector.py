@@ -42,6 +42,11 @@ from psana.detector.NDArrUtils import info_ndarr
 from time import time
 
 def arr_rot_n90(arr, rot_ang_n90=0):
+    """Return `arr` rotated by `rot_ang_n90` degrees.
+
+    90 gives `np.flipud(arr.T)`, 180 `np.flipud(np.fliplr(arr))`, 270 `np.fliplr(arr.T)`; 0 or any
+    other value returns `arr` unchanged.
+    """
     if   rot_ang_n90==  0: return arr
     elif rot_ang_n90== 90: return np.flipud(arr.T)
     elif rot_ang_n90==180: return np.flipud(np.fliplr(arr))
@@ -49,6 +54,7 @@ def arr_rot_n90(arr, rot_ang_n90=0):
     else                 : return arr
 
 def sec_nsec_from_tstamp(ts):
+   """Split timestamp `ts` into `(sec, nsec)`: its upper and lower 32 bits."""
    nsec = ts & 0xffffffff
    sec = (ts >> 32) & 0xffffffff
    return sec, nsec
@@ -62,6 +68,7 @@ def dict_from_arr3d(a):
     return {k:a[k,:,:] for k in range(a.shape[0])}
 
 def arr3d_from_list(lst):
+    """Return `np.stack(lst)`; asserts that `lst` is a list."""
     assert isinstance(lst, list)
     return np.stack(lst)
 
@@ -153,6 +160,12 @@ def img_from_pixel_arrays(rows, cols, weight=None, dtype=np.float32, vbase=0, rc
     return img
 
 def img_multipixel_max(img, weight, dict_pix_to_img_idx):
+    """Set image pixels hit by several data pixels to the maximum of those values; returns None.
+
+    For each (data index, image index) pair in `dict_pix_to_img_idx` (raveled indexes), the image
+    value becomes the maximum of its current value and the data value. `img` is changed in place
+    through `img.ravel()` (a view for contiguous arrays); at debug level a cross-check is logged.
+    """
     imgrav = img.ravel() # ravel() does not copy like ravel()
     for ia,i in dict_pix_to_img_idx.items(): imgrav[i] = max(imgrav[i], weight.ravel()[ia])
 
@@ -167,6 +180,12 @@ def img_multipixel_max(img, weight, dict_pix_to_img_idx):
     #return img
 
 def img_multipixel_mean(img, weight, dict_pix_to_img_idx, dict_imgidx_numentries):
+    """Set image pixels hit by several data pixels to the mean of those values; returns None.
+
+    Each image index in `dict_imgidx_numentries` is zeroed, the values of all data pixels mapped to
+    it in `dict_pix_to_img_idx` are added, and the sum is divided by its entry count. `img` is
+    changed in place through `img.ravel()`.
+    """
     imgrav = img.ravel()
     imgidx = list(dict_imgidx_numentries.keys())
     imgrav[imgidx] = 0                                               # initialization
@@ -183,7 +202,9 @@ def img_multipixel_mean(img, weight, dict_pix_to_img_idx, dict_imgidx_numentries
         logger.debug(s)
     #return img
 
-def size_for_shape(shape): return np.empty(shape).size
+def size_for_shape(shape):
+    """Return the number of elements of an array of shape `shape` (computed by allocating `np.empty(shape)`)."""
+    return np.empty(shape).size
 
 def ascending_index_array_for_shape(shape, dtype=np.int32):
     """returns ascending index [0,size-1] array of given shape"""
@@ -229,6 +250,7 @@ def image_of_holes(busy_img_bins):
     return empty
 
 def hole_inds_ravel(img_holes):
+    """Return the raveled indexes of the True elements of `img_holes`."""
     return np.where(img_holes.ravel())[0] # [0] because np.where returns tuple for all axes
 
 def hole_rows_cols(img_holes):
@@ -236,6 +258,10 @@ def hole_rows_cols(img_holes):
     return np.where(img_holes)
 
 def fill_holes(img, hrows, hcols):
+    """Set each hole pixel (`hrows`, `hcols`) of `img` in place to the minimum of its four direct neighbors; returns None.
+
+    The neighbors are taken at rows `hrows` +/- 1 and columns `hcols` +/- 1 without bounds checks.
+    """
     img[hrows, hcols] = np.minimum(\
              np.minimum(img[hrows-1, hcols], img[hrows+1, hcols]),
              np.minimum(img[hrows, hcols-1], img[hrows, hcols+1]))
@@ -281,6 +307,11 @@ def statistics_of_holes(rows, cols, **kwa):
     return img_pix_ascend_ind, img_holes, hole_rows, hole_cols, hole_inds1d
 
 def img_default(arr):
+    """Return a 3x4 float32 placeholder image.
+
+    It holds 12 evenly spaced values from median - spread to median + 3*spread of `arr`, where
+    spread is the median absolute deviation; the range is widened to 1 if it is zero.
+    """
     med = np.median(arr)
     spr = np.median(np.abs(arr-med))
     amin, amax = med-1*spr, med+3*spr

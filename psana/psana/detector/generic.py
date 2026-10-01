@@ -1,3 +1,4 @@
+"""Define `generic_container_xtc1dump_0_1_0`, the detector interface for data dumped from XTC1 into XTC2."""
 from psana.detector.detector_impl import DetectorImpl
 
 class generic_container_xtc1dump_0_1_0(DetectorImpl):

@@ -26,17 +26,24 @@ cpu_num = psutil.Process().cpu_num()
 s_rsc = 'rank:%03d/%03d cpu:%03d' % (rank, size, cpu_num)
 
 def selected(n):
+    """Return True for n < 5, multiples of 10 below 50, and multiples of 100 (the events whose raw data this script prints)."""
     return n<5\
         or n<50 and n%10 == 0\
         or n%100 == 0
 
 class Stats:
+    """Running per-pixel statistics of detector arrays.
+
+    Holds float64 `sum`, `sumsq` and `maximum` arrays and the event count `nevent`, initialized from
+    the first array `detarr`.
+    """
     def __init__(self,detarr):
         self.sum=detarr.astype(np.float64)
         self.sumsq=detarr.astype(np.float64)*detarr.astype(np.float64)
         self.maximum=detarr.astype(np.float64)
         self.nevent=1
     def update(self,detarr):
+        """Add `detarr` to `sum` and its square to `sumsq`, update the element-wise `maximum`, and increment `nevent`."""
         self.sum+=detarr
         self.sumsq+=detarr.astype(np.float64)*detarr.astype(np.float64)
         self.maximum=np.maximum(self.maximum,detarr)

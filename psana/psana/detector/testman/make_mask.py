@@ -1,4 +1,9 @@
 
+"""Example script: make a 1024x1024 uint8 mask of ones with the block [100:200, 200:300] set to 0.
+
+Saves it as mymask.npy and mymask.txt in the current directory and exits. The code runs at import
+time (no main guard).
+"""
 from psana.detector.NDArrUtils import info_ndarr, save_ndarray_in_textfile
 import numpy as np
 

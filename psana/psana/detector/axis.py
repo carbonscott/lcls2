@@ -1,3 +1,4 @@
+"""Define `axis_raw_1_0_0`, the area-detector interface for the `axis` detector type."""
 import numpy as np
 import logging
 logger = logging.getLogger(__name__)
@@ -8,6 +9,11 @@ AreaDetectorRaw, sgs, sys, is_none, is_true = ad.AreaDetectorRaw, ad.sgs, ad.sys
 
 
 class axis_raw_1_0_0(AreaDetectorRaw):
+    """Area-detector interface for detector type `axis`, software `raw`, version 1.0.0.
+
+    `AreaDetectorRaw` subclass. No geometry is set at construction; `image` creates a matrix
+    geometry ("MTRXANY:V1") of the raw shape only when asked for a geometry-based image.
+    """
     def __init__(self, *args, **kwargs): # **kwargs intercepted by AreaDetectorRaw
         super().__init__(*args, **kwargs)
         self._seg_geo =  None
@@ -22,11 +28,18 @@ class axis_raw_1_0_0(AreaDetectorRaw):
         self._path_geo_default = 'pscalib/geometry/data/geometry-def-axis.data' # None
 
     def raw(self, evt) -> Array2d:
+        """Return the `value` field of segment 0 of this detector in `evt`, or None if its segments are missing."""
         segs = self._segments(evt)
         if segs is None: return None
         return segs[0].value
 
     def calib(self, evt, nda=None, **kwa) -> Array2d:
+        """Return the raw data minus pedestals, multiplied by the mask when one is available.
+
+        Uses `nda` instead of `raw(evt)` when given. Returns None if there is no raw data, and the raw
+        data unchanged (with a warning) if pedestals are missing or their shape differs from the data;
+        `kwa` is not used.
+        """
         raw = self.raw(evt) if nda is None else nda
         if is_none(raw, 'raw is None', logger.debug):
             return None

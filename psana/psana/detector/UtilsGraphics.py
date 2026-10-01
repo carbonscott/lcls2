@@ -50,6 +50,11 @@ def arr_median_limits(arr, amin=None, amax=None, nneg=None, npos=None, fraclo=0.
 
 
 def gr_figure(**kwa):
+    """Create and return a matplotlib figure with `plt.figure`.
+
+    Recognized keys: num, figsize (default (w_in, h_in) = (9, 8)), dpi (80), facecolor and
+    edgecolor ('w'), frameon (True) and clear (False); other keys are ignored.
+    """
     kwfig = {}
     w_in = kwa.get('w_in', 9)
     h_in = kwa.get('h_in', 8)
@@ -100,6 +105,12 @@ def gr_hist(axhi, arr, **kwa):
 
 
 class flexbase:
+    """Base class of the flexible image and histogram displays.
+
+    Stores the intensity-limit settings `amin`, `amax`, `nneg`, `npos`, `fraclo` (default 0.001)
+    and `frachi` (default 0.999) from the keyword arguments. Subclasses create `fig` and the axes
+    used by `move`, `save` and `axtitle`.
+    """
     def __init__(self, **kwa):
         self.amin   = kwa.get('amin', None)
         self.amax   = kwa.get('amax', None)
@@ -124,19 +135,28 @@ class flexbase:
 
 
     def move(self, x0=100, y0=10):
+        """Move the figure window to (`x0`, `y0`) with `Graphics.move_fig`."""
         gr.move_fig(self.fig, x0, y0)
 
 
     def save(self, fname='fig.png'):
+        """Save the figure to `fname` with `Graphics.save_fig` (verbose)."""
         gr.save_fig(self.fig, fname=fname, verb=True)
 
 
     def axtitle(self, title=''):
+        """Put `title` (font size 10) on the image axes `axim`."""
         gr.add_title_labels_to_axes(self.axim, title=title, fstit=10)
          #, xlabel=None, ylabel=None, fslab=14, fstit=20, color='k')
 
 
 class fleximage(flexbase):
+    """Image display with a color bar.
+
+    The constructor creates a figure (default 9 x 8 inches) with image and color-bar axes and shows
+    `img`, with intensity limits from `arr_median_limits` applied to `arr` (default `img`) and the
+    limit settings; `update` replaces the image and limits.
+    """
     def __init__(self, img, **kwa):
         flexbase.__init__(self, **kwa)
         arr = kwa.get('arr', img)
@@ -175,6 +195,11 @@ class fleximage(flexbase):
 
 
 class flexhist(flexbase):
+    """Histogram display.
+
+    The constructor creates a figure (default 6 x 5 inches) and draws a histogram of `arr` over the
+    intensity limits; `update` clears and redraws it.
+    """
     def __init__(self, arr, **kwa):
         flexbase.__init__(self, **kwa)
 
@@ -206,11 +231,18 @@ class flexhist(flexbase):
 
 
     def axtitle(self, title=''):
+        """Put `title` (font size 10) on the histogram axes `axhi`."""
         gr.add_title_labels_to_axes(self.axhi, title=title, fstit=10)
          #, xlabel=None, ylabel=None, fslab=14, fstit=20, color='k')
 
 
 class fleximagespec(flexbase):
+    """Image display with a color bar and an intensity histogram beside the image.
+
+    The constructor creates a figure (default 14 x 8 inches), shows `img` with intensity limits from
+    `arr` (default `img`), and draws the histogram (default 100 bins, color 'lightgreen') with
+    statistics text; `update` replaces both.
+    """
     def __init__(self, img, **kwa):
         """
         """
@@ -272,7 +304,11 @@ class fleximagespec(flexbase):
 
 
     def update(self, img, **kwa):
-        """
+        """Show the new image `img` and redraw the histogram.
+
+        The color limits come from `kwa['arr']` if given, otherwise from `img`, and the limit settings;
+        they are applied to the image and color bar. The histogram is drawn for `kwa['arr']` if given,
+        otherwise for `img`.
         """
         amin, amax = self._intensity_limits(img, **kwa)
         self.imsh.set_data(img)

@@ -1,3 +1,4 @@
+"""Detector interfaces for epics and PV information tables, PVs, encoders and a test float detector."""
 import sys
 from psana.detector.detector_impl import DetectorImpl
 from amitypes import Array2d
@@ -15,6 +16,13 @@ import numpy as np
 # real epics name from the "nice" user-defined detname.
 
 class epicsinfo_epicsinfo_1_0_0(DetectorImpl):
+    """Table of information about epics variables, built from the `epicsinfo` entries of the configs.
+
+    Calling the object (no arguments) returns the table. For each attribute n of an epicsinfo object
+    (except `keys` and names starting with "_"), `table[n]` maps the comma-separated names in `keys`
+    to the newline-separated parts of attribute n. The code comment says n is the detname of an
+    epics variable, so the table can, for example, give the real epics name of a user-defined name.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._infodict={}
@@ -32,6 +40,12 @@ class epicsinfo_epicsinfo_1_0_0(DetectorImpl):
         return self._infodict
 
 class pvdetinfo_pvdetinfo_1_0_0(DetectorImpl):
+    """Table of information built from the `pvdetinfo` entries of the configs.
+
+    Calling the object (no arguments) returns the table. For each attribute n of a pvdetinfo object
+    (except `keys` and names starting with "_"), `table[n]` maps the comma-separated names in `keys`
+    to the comma-separated parts of attribute n.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._infodict={}
@@ -50,11 +64,21 @@ class pvdetinfo_pvdetinfo_1_0_0(DetectorImpl):
         return self._infodict
 
 class pv_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `pv`, software `raw`, version 1.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._add_fields()
 
 class encoder_raw_0_0_1(DetectorImpl):
+    """Detector interface for detector type `encoder`, software `raw`, version 0.0.1.
+
+    `value` returns `encoderValue[0] * 1e-6 * scale[0]` of segment 0 (channel 0 only).
+    """
     def __init__(self, *args):
         super().__init__(*args)
     def value(self,evt) -> float:
@@ -94,6 +118,11 @@ class encoder_raw_0_0_1(DetectorImpl):
         return (segments[0].encoderValue[0]*1e-6)*segments[0].scale[0]
 
 class encoder_raw_2_0_0(encoder_raw_0_0_1):
+    """Detector interface for detector type `encoder`, software `raw`, version 2.0.0.
+
+    `value` returns `encoderValue[0] * scale[0] / scaleDenom[0]` when `scaleDenom[0]` > 0, and the
+    version 0.0.1 result otherwise.
+    """
     def __init__(self, *args):
         super().__init__(*args)
     def value(self,evt) -> float:
@@ -111,6 +140,10 @@ class encoder_raw_2_0_0(encoder_raw_0_0_1):
             return super().value(evt)
 
 class encoder_raw_2_1_0(encoder_raw_2_0_0):
+    """Detector interface for detector type `encoder`, software `raw`, version 2.1.0.
+
+    `value` returns the same as in version 2.0.0.
+    """
     def __init__(self, *args):
         super().__init__(*args)
     def value(self,evt) -> float:
@@ -120,6 +153,11 @@ class encoder_raw_2_1_0(encoder_raw_2_0_0):
         return super().value(evt)
 
 class encoder_raw_3_0_0(DetectorImpl):
+   """Detector interface for detector type `encoder`, software `raw`, version 3.0.0.
+
+   The fields are read as scalars: `value` returns `encoderValue * scale / scaleDenom` when
+   `scaleDenom` > 0, otherwise `encoderValue * 1.0`.
+   """
    def __init__(self, *args):
        super().__init__(*args)
    def value(self,evt) -> float:
@@ -148,6 +186,7 @@ class hrencoder_raw_0_1_0(DetectorImpl):
         super().__init__(*args)
 
     def value(self, evt) -> float:
+        """Return the `position` field of segment 0 of this detector in `evt`, or None if its segments are missing."""
         segments = self._segments(evt)
 
         if segments is None:
@@ -156,6 +195,10 @@ class hrencoder_raw_0_1_0(DetectorImpl):
         return segments[0].position
 
 class encoder_interpolated_3_0_0(encoder_raw_3_0_0):
+    """Detector interface for detector type `encoder`, software `interpolated`, version 3.0.0.
+
+    `value` returns the same as `encoder_raw_3_0_0.value`.
+    """
     def __init__(self, *args):
         super().__init__(*args)
     def value(self,evt) -> float:
@@ -167,9 +210,17 @@ class encoder_interpolated_3_0_0(encoder_raw_3_0_0):
 
 # Test
 class justafloat_simplefloat32_1_2_4(DetectorImpl):
+    """Detector interface for detector type `justafloat`, software `simplefloat32`, version 1.2.4.
+
+    Marked as a test class by the code comment.
+    """
     def __init__(self, *args):
         super().__init__(*args)
     def value(self,evt) -> float:
+        """Return the `valfloat32` field of segment 0 of this detector in `evt`.
+
+        No missing-data check: raises TypeError if the event does not have all of this detector's segments.
+        """
         return self._segments(evt)[0].valfloat32
 
 # EOF

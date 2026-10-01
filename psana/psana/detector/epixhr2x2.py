@@ -15,10 +15,22 @@ logger = logging.getLogger(__name__)
 # make an empty detector interface for Matt's hardware
 # configuration object so that config_dump works - cpo
 class epixhr2x2hw_config_2_0_0(DetectorImpl):
+    """Empty interface for detector type `epixhr2x2hw`, software `config`, version 2.0.0.
+
+    The code comment says it exists so that config_dump works for this hardware configuration
+    object. Keyword arguments given to the constructor are not passed on.
+    """
     def __init__(self, *args, **kwargs):
         super(epixhr2x2hw_config_2_0_0, self).__init__(*args)
 
 class epixhr2x2_raw_2_0_1(eb.epix_base):
+    """Area-detector interface for detector type `epixhr2x2`, software `raw`, version 2.0.1.
+
+    `epix_base` subclass. The constructor sets the segment geometry "EPIXHR2X2:V1", data mask M14
+    (0x3fff), gain bit B15 (0o100000), gain bit shift 10, default gains (41.0, 13.7, 0.512) and the
+    default geometry file `pscalib/geometry/data/geometry-def-epixhr2x2.data`; configuration bits
+    come from `epix_base.cbits_config_epixhr2x2` with shape (288, 384).
+    """
     def __init__(self, *args, **kwargs):
         logger.debug('epixhr2x2_raw_2_0_1.__init__')
         eb.epix_base.__init__(self, *args, **kwargs)

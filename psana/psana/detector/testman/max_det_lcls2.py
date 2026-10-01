@@ -1,3 +1,10 @@
+"""Example MPI script: per-pixel sum, sum of squares and maximum of a detector's raw data, reduced with smalldata.
+
+Options -e experiment, -r run, -d detector, -n number of events. It sets PS_SRV_NODES=1, loops
+over the run's events, reduces the statistics over ranks with `smd.sum` / `smd.max`, and prints
+the totals on the rank that holds them. The code runs at import time; example command:
+`mpirun -n 5 python lcls2/psana/psana/detector/testman/max_det_lcls2.py -e mfx100848724 -r 49 -d jungfrau -n 100`.
+"""
 from psana import DataSource
 import numpy as np
 import os
@@ -7,12 +14,18 @@ CMD = """mpirun -n 5 python lcls2/psana/psana/detector/testman/max_det_lcls2.py 
 os.environ['PS_SRV_NODES']='1'
 
 class Stats:
+    """Running per-pixel statistics of detector arrays.
+
+    Holds float64 `sum`, `sumsq` and `maximum` arrays and the event count `nevent`, initialized from
+    the first array `detarr`.
+    """
     def __init__(self,detarr):
         self.sum=detarr.astype(np.float64)
         self.sumsq=detarr.astype(np.float64)*detarr.astype(np.float64)
         self.maximum=detarr.astype(np.float64)
         self.nevent=1
     def update(self,detarr):
+        """Add `detarr` to `sum` and its square to `sumsq`, update the element-wise `maximum`, and increment `nevent`."""
         self.sum+=detarr
         self.sumsq+=detarr.astype(np.float64)*detarr.astype(np.float64)
         self.maximum=np.maximum(self.maximum,detarr)

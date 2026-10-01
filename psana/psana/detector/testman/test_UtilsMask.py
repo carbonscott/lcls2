@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual test of the `UtilsMask` shape masks: `python test_UtilsMask.py <test-name> <loglevel>`.
+
+Tests 1 to 9 show a random image, circle, ring, rectangle, polygon, three half-planes and an arc.
+The code runs at import time and ends with `sys.exit`.
+"""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 STRLOGLEV = sys.argv[2] if len(sys.argv)>2 else 'INFO'
@@ -16,6 +21,11 @@ import psana.detector.UtilsGraphics as ug
 import psana.detector.UtilsMask as um
 
 def test_mask_select(tname):
+    """Return the test mask for `tname`, or None for unknown names, and log it.
+
+    '1' random values, '2' circle, '3' ring, '4' rectangle, '5' polygon, '6' to '8' half-planes
+    bounded by a tilted, horizontal and vertical line (100x120 image), '9' arc on a 1024x1024 image.
+    """
     mask = None
     shape = (100, 120)
     dtype=um.np.uint8
@@ -70,7 +80,9 @@ def test_mask_select(tname):
 
 
 def test_UtilsMask(tname):
-    """
+    """Show the mask from `test_mask_select(tname)` with `fleximagespec` (limits 0 to 2) and return True.
+
+    Returns False if there is no mask for `tname`.
     """
 
     img = test_mask_select(tname)

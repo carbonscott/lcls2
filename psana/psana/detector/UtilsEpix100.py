@@ -30,6 +30,13 @@ GAIN_DEFAULT = 1./GAIN_FACTOR_DEFAULT # ADU/keV
 
 def calib_epix100(det_raw, evt, cmpars=None, **kwa): #cmpars=(0,7,100,10)):
 
+    """Return calibrated epix100 data: raw minus pedestals, common-mode corrected, times gain factors and mask.
+
+    Uses `kwa['nda_raw']` instead of `det_raw.raw(evt)` when given. The common-mode correction
+    (`UtilsCommonMode.common_mode_apply`) runs only when `cmpars` is not None, and the mask is applied
+    only if `det_raw._mask()` is not None. Returns None without raw data and the raw data unchanged
+    when pedestals are missing.
+    """
     t0_sec = time()
 
     nda_raw = kwa.get('nda_raw', None)
@@ -60,6 +67,12 @@ def calib_epix100(det_raw, evt, cmpars=None, **kwa): #cmpars=(0,7,100,10)):
 
 
 def common_mode_increment(det_raw, evt, cmpars=None, **kwa):
+    """Return the change that common-mode correction makes to raw minus pedestals.
+
+    The value is (corrected - uncorrected) using `UtilsCommonMode.common_mode_apply` with `cmpars`.
+    Returns None if `cmpars` is None, there is no raw data, or pedestals are missing;
+    `kwa['nda_raw']` replaces `det_raw.raw(evt)` when given.
+    """
     logger.debug('In common_mode_increment')
     if cmpars is None: return None
 

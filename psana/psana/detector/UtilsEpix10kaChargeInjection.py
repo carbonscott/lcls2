@@ -22,20 +22,24 @@ np, ue, find_gain_mode, GAIN_MODES, GAIN_MODES_IN, selected_record =\
 
 
 def get_panel_id(panel_ids, idx=0):
+    """Return `panel_ids[idx]`; raises AssertionError if `panel_ids` or `idx` is None or the entry is None."""
     panel_id = panel_ids[idx] if panel_ids is not None and idx is not None else None
     assert panel_id is not None, 'get_panel_id: panel_id is None for idx=%s' % str(idx)
     return panel_id
 
 
 def file_name_npz(dir_work, fname_prefix, nspace):
+    """Return `<dir_work>/<fname_prefix>_sp<nspace>_df.npz`, with `nspace` zero-padded to 2 digits."""
     return '%s/%s_sp%02d_df.npz' % (dir_work, fname_prefix, nspace)
 
 
 def print_statistics(nevt, nrec):
+    """Log at debug level the event count `nevt`, the record count `nrec` and their difference (lost frames)."""
     logger.debug('statistics nevt:%d nrec:%d lost frames:%d' % (nevt, nrec, nevt-nrec))
 
 
 class Storage:
+    """Empty attribute holder; the module-level instance `STORE` caches figures and the list of collected steps."""
     def __init__(self):
         pass
 
@@ -43,6 +47,7 @@ STORE = Storage() # singleton
 
 
 def list_of_cc_collected():
+  """Return the list `STORE.cc_collected` of collected step numbers, creating it empty on the first call."""
   if not hasattr(STORE, 'cc_collected'):
     STORE.cc_collected = []
   return STORE.cc_collected
@@ -86,6 +91,11 @@ def selected_pixel(pixrc, jr, jc, nr, nc, nspace):
 
 
 def plot_array(arr, title='', vmin=None, vmax=None, prefix='', filemode=0o664):
+    """Show `arr` with `UtilsGraphics.fleximagespec` (limits `vmin`, `vmax`) and save it as `<prefix>_plot_<title>.png`.
+
+    A newly created file gets mode `filemode`. Uses the module-global name `ug`, which is only set
+    inside `charge_injection` when `display` is on.
+    """
     flimg = ug.fleximagespec(arr, arr=None, amin=vmin, amax=vmax)
     flimg.fig.canvas.manager.set_window_title(title)
     ug.gr.show(mode='DO NOT HOLD')
@@ -98,6 +108,12 @@ def plot_array(arr, title='', vmin=None, vmax=None, prefix='', filemode=0o664):
 
 
 def plot_fit_results(ifig, fitres, fnameout, filemode, gm, titles, rcslices):
+    """Plot four maps of the fit results in a 2x2 figure titled `gm` and save it to `fnameout`.
+
+    Map i (0 to 3) is `fitres[rows, cols, i // 2, i % 2]` for the region `rcslices`, with color
+    limits median +/- 3 standard deviations and title `gm: titles[i]`. A new file gets mode
+    `filemode`.
+    """
     fig = gr.plt.figure(ifig, facecolor='w', figsize=(11,8.5), dpi=72.27); gr.plt.clf()
     gr.plt.suptitle(gm)
     for i in range(4):
@@ -148,6 +164,7 @@ def saw_edges(trace, evnums, gainbitw, gap=10, do_debug=True):
 
 
 def plot_fit_figaxis():
+    """Return the cached (figure, main axes, residual axes) used by `plot_fit`, creating figure 100 on the first call."""
     if not hasattr(STORE, 'plot_fit_figax'):
         fig = gr.plt.figure(100,facecolor='w')
         ax  = fig.add_subplot(3, 1, (2, 3))
@@ -157,6 +174,10 @@ def plot_fit_figaxis():
 
 
 def plot_fit(x, y, pf0, pf1, fname, databitw):
+    """Plot `y` against `x` with the two linear fits `pf0` and `pf1` and their residuals.
+
+    Shows the figure for 3 seconds, saves it to `fname` and calls `plt.show()`.
+    """
     print('plot_fit %s' % fname)
     fig, ax, axr = plot_fit_figaxis()
 
@@ -197,6 +218,7 @@ def plot_fit(x, y, pf0, pf1, fname, databitw):
 
 
 def plot_avsi_figaxis():
+    """Return the cached (figure, axes) used by `plot_avsi`, creating figure 101 on the first call."""
     if not hasattr(STORE, 'plot_avsi_figax'):
         fig = gr.plt.figure(101, facecolor='w')
         fig.clf()
@@ -207,6 +229,10 @@ def plot_avsi_figaxis():
 
 def plot_avsi(x, y, fname, gainbitw, databitw, tsec_show=10):
 
+    """Plot the data bits (`y & databitw`) and the gain bit (`(y & gainbitw) / 8`) of trace `y` against `x`.
+
+    Pauses `tsec_show` seconds, saves the figure to `fname` and calls `plt.show()`.
+    """
     fig, ax = plot_avsi_figaxis()
     gbit = np.bitwise_and(y, gainbitw) /8
     _y = y & databitw
@@ -242,6 +268,11 @@ def selected_to_show(ir, ic, selpix=None, irb_def=2, icb_def=21):
 
 
 def plot_data_block(block, evnums, prefix, gainbitw, databitw, selpix=None, tsec_show=10):
+    """Log the saw-tooth edges and plot the trace of the selected pixel of `block`.
+
+    The pixel is chosen by `selected_to_show` (block indexes (2, 21) unless `selpix` is given); its
+    trace is plotted against `evnums` with `plot_avsi` and saved as `<prefix>-dat-...png`.
+    """
     ts = str_tstamp(fmt='%Y%m%dT%H%M%S', time_sec=time())
     mf, mr, mc=block.shape
     print('block shape:', mf, mr, mc)
@@ -264,6 +295,20 @@ def plot_data_block(block, evnums, prefix, gainbitw, databitw, selpix=None, tsec
 def fit(block, evnum, gainbitw, databitw, display=True, prefix='fig-fit', npoff=10,\
         nperiods=False, savechi2=False, selpix=None, npmin=5, tsec_show=5):
 
+    """Fit straight lines to each pixel's charge-injection trace before and after the gain switch.
+
+    For each pixel of `block` (records x rows x cols) the first pulser period found by `saw_edges`
+    gives two ranges, start to switch - `npoff` (saturated values dropped) and switch + `npoff` to
+    end, extended over all periods if `nperiods`; each range with at least `npmin` points is fitted
+    with `np.polyfit(..., 1)`. Pixels without edges or with too few points keep zeros.
+
+    Returns
+    -------
+    tuple
+        (fits, neg, msg, chi2): fits[r, c, k] = (slope, intercept) for k = 0 before and 1 after the
+        switch, neg the number of periods found, a progress string, and chi2/ndof per range when
+        `savechi2` (zeros otherwise).
+    """
     mf, mr, mc = block.shape
     fits = np.zeros((mr, mc, 2, 2))
     chi2 = np.zeros((mr, mc, 2))
@@ -376,6 +421,7 @@ def fit(block, evnum, gainbitw, databitw, display=True, prefix='fig-fit', npoff=
 
 
 def wait_and_exit(tsec=5):
+    """Sleep `tsec` seconds, then call `sys.exit` with a timeout message."""
     sleep(tsec)
     sys.exit('EXIT after %d sec timout' % tsec)
 
@@ -385,6 +431,18 @@ def event_loop_and_fit(det, timing, orun, step, istep, nstep,\
                        figprefix, gainbitw, databitw, display, npoff, nperiods, savechi2,\
                        npmin, tsec_show):
 
+    """Read one charge-injection step for panel `idx` into a data block and fit the injected pixels.
+
+    The injected pixel grid of step `istep` starts at `injection_row_col(istep, nspace)` with spacing
+    `nspace`; if `pixrc` is given and that pixel is not on the grid, returns None. Up to `nbs` frames
+    are collected with a pulse-id spacing check against `dfid_med` (a failure restarts the block in
+    its first half and stops the loop otherwise), and the grid pixels are passed to `fit`.
+
+    Returns
+    -------
+    tuple or None
+        (fits, neg, msg, chi2) from `fit` plus the grid start indexes (jr, jc).
+    """
     nbs_half = int(nbs/2)
     dfid_spr = int(dfid_med/10)
 
@@ -482,6 +540,15 @@ def event_loop_and_fit(det, timing, orun, step, istep, nstep,\
 
 def charge_injection(parser):
 
+    """Charge-injection calibration of one epix10ka-type panel, driven by the options of `parser`.
+
+    Loads earlier fit results from the work .npz file if it exists, otherwise loops over the
+    charge-injection steps (AML then AHL, `nspace`**2 steps each), fits gains and offsets with
+    `event_loop_and_fit` and saves them to that file. Then writes gain, offset, derived AHL-L/AML-L
+    pedestal and pixel-status text files to the repository, shows plots when `display` is set, and
+    saves the log file. The per-gain chi2 arrays passed to `ci_pixel_status` are defined only when
+    `savechi2` is set, so otherwise the status step raises NameError.
+    """
     args = parser.parse_args()
     kwa = vars(args)
     repoman = init_repoman_and_logger(parser=parser, **kwa)
@@ -946,6 +1013,13 @@ def ci_pixel_status(
           **kwargs
         ):
 
+    """Return a uint64 pixel-status array (cut to `myslice`) from the charge-injection fit results.
+
+    Bit 16: AML pulser periods < `neg_min`; bit 17: AHL periods < `neg_min`; bits 18 and 19 are both
+    set from AML periods > `neg_max` (the AHL count above `neg_max` is logged but sets no bit). Bits
+    20 to 35 and 38 to 45 mark low/high outliers of the four offsets, four gains and four chi2
+    arrays found by `set_status_bits`; a summary is logged.
+    """
     prefix     = kwargs.get('prefix', '')
     myslice    = kwargs.get('myslice', np.s_[0:, 0:])
     databitw   = kwargs.get('databitw', (1<<16)-1)
@@ -1022,6 +1096,15 @@ def ci_pixel_status(
 
 
 def find_outliers(arr, title='', vmin=None, vmax=None):
+    """Flag elements of `arr` at or below `vmin` and at or above `vmax`.
+
+    Returns
+    -------
+    tuple
+        (bad_lo, bad_hi, arr1_lo, arr1_hi, s_lo, s_hi): boolean masks (all False for a None limit),
+        the same masks as uint64 0/1 arrays, and summary strings with count, total and percentage
+        (limit as '%.3f', or "unlimited").
+    """
     size = arr.size
     arr0 = np.zeros_like(arr, dtype=bool)
     arr1 = np.ones_like(arr, dtype=np.uint64)
@@ -1067,6 +1150,12 @@ def evaluate_pixel_status(arr, title='', vmin=None, vmax=None, nsigm=8, prefix='
 
 
 def set_status_bits(status, arr, title='', vmin=None, vmax=None, nsigm=8, bit_lo=1<<0, bit_hi=1<<1, prefix=''):
+    """Add `bit_lo` to `status` for low outliers and `bit_hi` for high outliers of `arr`.
+
+    Outliers come from `evaluate_pixel_status` (range median +/- `nsigm` * median absolute deviation,
+    clipped to `vmin`/`vmax`). `status` is changed in place; returns the two summary strings prefixed
+    with the bit values in octal.
+    """
     arr1_lo, arr1_hi, s_lo, s_hi = evaluate_pixel_status(arr, title=title, vmin=vmin, vmax=vmax, nsigm=nsigm, prefix=prefix)
     status += arr1_lo * bit_lo
     status += arr1_hi * bit_hi

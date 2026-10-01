@@ -120,15 +120,25 @@ ue.gain_maps_epix10ka_any_alg, ue.event_constants_for_gmaps, ue.cbits_config_epi
 
 
 def event_constants_for_gmaps(gmaps, cons, default=0):
+    """Return per-pixel constants chosen by gain range, via `UtilsEpix10ka.event_constants_for_gmaps`.
+
+    For each pixel the entry of `cons` (gain range first, 7 ranges) whose map in `gmaps` is True is
+    used, or `default` where none is; None if `gmaps` or `cons` is None.
+    """
     return ue.event_constants_for_gmaps(gmaps, cons, default)
 
 def map_gain_range_index_for_gmaps(gmaps, default=10):
+    """Return the per-pixel gain range index (0 to 6) from the 7 boolean maps `gmaps`, via `UtilsEpix10ka`.
+
+    Pixels where no map is True get `default`; returns None if `gmaps` is None.
+    """
     return ue.map_gain_range_index_for_gmaps(gmaps, default)
 
 #import psana.detector.Utils as ut
 #is_none = ut.is_none
 
 def is_none(par, msg, logger_method=logger.debug):
+    """Return True if `par` is None, calling `logger_method(msg)` in that case; otherwise return False."""
     resp = par is None
     if resp: logger_method(msg)
     return resp
@@ -169,10 +179,12 @@ class calib_components_epix():
             return None
 
     def calib_constants(self, ctype='pedestals'):
+        """Return the data part of the calibration tuple for `ctype`, or None if that entry is missing or not a tuple."""
         tcc = self._calibconst_tuple_for_ctype(ctype)
         return tcc[0] if tcc is not None else None
 
     def calib_metadata(self, ctype='pedestals'):
+        """Return the metadata part of the calibration tuple for `ctype`, or None if that entry is missing or not a tuple."""
         tcc = self._calibconst_tuple_for_ctype(ctype)
         return tcc[1] if tcc is not None else None
 
@@ -204,6 +216,7 @@ class calib_components_epix():
         return self._gfactor
 
     def number_of_panels(self):
+        """Return `len(self.config)`, the number of segment configs."""
         return len(self.config)
 
     def trbit_for_panel(self, i):
@@ -215,10 +228,23 @@ class calib_components_epix():
         return self.config[i].config.asicPixelConfig
 
     def mask_from_status(self, status_bits=0xffff, gain_range_inds=None, dtype=DTYPE_MASK, **kwa):
+        """Return a mask made from the status constants by `MaskAlgos.mask_from_status`.
+
+        On first use `MaskAlgos(self.calibconst, **kwa)` is created; `MaskAlgos` also needs `detname`,
+        so it must be in `kwa`, otherwise TypeError. The call passes `status_bits`, `gain_range_inds` and
+        `dtype` by position, but `MaskAlgos.mask_from_status` takes `stextra_bits` second and
+        `gain_range_inds` third, so the last two land in different parameters.
+        """
         if self.omask is None: self.omask = MaskAlgos(self.calibconst, **kwa)
         return self.omask.mask_from_status(status_bits, gain_range_inds, dtype, **kwa)
 
     def mask(self, status=True, neighbors=False, edges=False, center=False, calib=False, umask=None, force_update=False, dtype=DTYPE_MASK, **kwa):
+        """Return the mask from `MaskAlgos.mask`, creating `MaskAlgos(self.calibconst, **kwa)` on first use.
+
+        `MaskAlgos` also needs `detname` in `kwa`. `MaskAlgos.mask` ignores the named arguments passed
+        here: it returns `mask_comb` computed once with the keyword arguments given when the `MaskAlgos`
+        object was created, and `force_update` from this call is not passed on.
+        """
         if self.omask is None: self.omask = MaskAlgos(self.calibconst, **kwa)
         return self.omask.mask(status=status, neighbors=neighbors, edges=edges, center=center, calib=calib, umask=umask, dtype=dtype, **kwa)
 
@@ -254,6 +280,10 @@ class calib_components_epix():
         return np.stack(tuple(lst_cbits))
 
     def cbits_config_detector(self):
+        """Return the configuration bits of all segments stacked into one array.
+
+        Computed by `cbits_config_detector_alg` and cached in `cbits_cfg` (recomputed while it is None).
+        """
         if self.cbits_cfg is None:
            self.cbits_cfg = self.cbits_config_detector_alg()
         return self.cbits_cfg
@@ -346,6 +376,13 @@ class calib_components_epix():
 
 
 class Storage:
+    """Cached parameters for epix multi-gain calibration and common-mode correction, used by `calib_components_epix`.
+
+    The constructor registers itself as `calibcomps._store_` and stores the event counter, gains,
+    pedestals, DAQ shape, gain factors, a ones array, the mask and the common-mode parameters
+    (`cmpars`, or the 'common_mode' constants when None). If `calibcomps.mask(**kwa)` returns None it
+    calls `calibcomps._mask_from_status`, which `calib_components_epix` does not define.
+    """
     def __init__(self, calibcomps, cmpars=None, **kwa):
         """analogy of UtilsEpix10ka.py class Storage
         Holds cached parameters for common mode correction of the epix multi-gain getectors.

@@ -1,4 +1,5 @@
 
+"""Area-detector interfaces for the epix100 detector type (`epix100hw_raw_2_0_1`, `epix100_raw_2_0_1`)."""
 import numpy as np
 import psana.detector.areadetector as ad
 
@@ -14,6 +15,12 @@ is_none, is_true = ad.is_none, ad.is_true
 
 class epix100hw_raw_2_0_1(ad.AreaDetectorRaw):
 
+    """Area-detector interface for detector type `epix100hw`, software `raw`, version 2.0.1.
+
+    Sets the segment geometry "EPIX100:V1" and the default geometry file
+    `pscalib/geometry/data/geometry-def-epix100a.data`. Its `image` returns segment 0's `raw` array
+    instead of a geometry-based image.
+    """
     def __init__(self, *args, **kwa):
         ad.AreaDetectorRaw.__init__(self, *args, **kwa)
         self._seg_geo = ad.sgs.Create(segname='EPIX100:V1')
@@ -27,6 +34,12 @@ class epix100hw_raw_2_0_1(ad.AreaDetectorRaw):
 
 class epix100_raw_2_0_1(ad.AreaDetectorRaw):
 
+    """Area-detector interface for detector type `epix100`, software `raw`, version 2.0.1.
+
+    Sets the same geometry as `epix100hw_raw_2_0_1` and the data bit mask 0xffff. Gains come from
+    the `pixel_gain` constants, or default to `UtilsEpix100.GAIN_DEFAULT` (gain factor 0.06) shaped
+    like the pedestals when those constants are missing.
+    """
     def __init__(self, *args, **kwa):
         ad.AreaDetectorRaw.__init__(self, *args, **kwa)
         self._seg_geo = ad.sgs.Create(segname='EPIX100:V1')
@@ -69,6 +82,12 @@ class epix100_raw_2_0_1(ad.AreaDetectorRaw):
         return ue100.common_mode_increment(self, evt, cmpars=cmpars, **kwa)
 
     def calib(self, evt, cmpars=None, **kwa): #cmpars=(0,7,100,10)):
+        """Return calibrated data from `UtilsEpix100.calib_epix100(self, evt, cmpars=cmpars, **kwa)`.
+
+        That is raw data (or `kwa['nda_raw']`) minus pedestals, common-mode corrected when `cmpars` is
+        given, times the gain factors and times the mask if there is one. Returns None if there is no
+        raw data and the raw data unchanged if pedestals are missing.
+        """
         return ue100.calib_epix100(self, evt, cmpars=cmpars, **kwa)
 
 # EOF

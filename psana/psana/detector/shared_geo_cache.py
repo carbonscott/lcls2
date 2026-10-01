@@ -39,6 +39,7 @@ class SharedGeoCache:
 
     @property
     def enabled(self) -> bool:
+        """True if a shared-memory object was given (`shared_mem` is not None)."""
         return self.shared_mem is not None
 
     @staticmethod
@@ -67,6 +68,10 @@ class SharedGeoCache:
 
     @classmethod
     def make_key(cls, det_name: str, drp_class: str, geom_id: str) -> SharedGeoKey:
+        """Return a `SharedGeoKey` built from `det_name`, `drp_class` and `geom_id`.
+
+        In each name, every run of characters other than letters, digits and "_" is replaced by "_".
+        """
         return SharedGeoKey(
             det_name=cls._safe_name(det_name),
             drp_class=cls._safe_name(drp_class),
@@ -82,6 +87,7 @@ class SharedGeoCache:
         self._local_meta[self._prefix(key)] = meta
 
     def get_meta(self, key: SharedGeoKey) -> Optional[Dict[str, Any]]:
+        """Return the metadata recorded locally for `key` with `record_meta`, or None."""
         return self._local_meta.get(self._prefix(key))
 
     def get_or_allocate(
@@ -133,5 +139,6 @@ class SharedGeoCache:
         return self.shared_mem.get_array(full_name)
 
     def barrier(self) -> None:
+        """Call `shared_mem.barrier()` if the cache is enabled and the shared-memory object has a `barrier` method; otherwise do nothing."""
         if self.enabled and hasattr(self.shared_mem, "barrier"):
             self.shared_mem.barrier()

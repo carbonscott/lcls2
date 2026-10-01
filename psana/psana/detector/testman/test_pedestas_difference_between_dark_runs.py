@@ -1,10 +1,20 @@
 
 
+"""Script that compares the epix10ka_000001 pedestals of two ueddaq02 runs.
+
+At import it runs `test_pedestas_difference_between_dark_runs(106, 108)`.
+"""
 import psana.pyalgos.generic.Graphics as gr
 
 from psana.detector.UtilsGraphics import arr_median_limits#(arr, nneg=1, npos=3)
 
 def test_pedestas_difference_between_dark_runs(run1, run2):
+    """Compare the epix10ka_000001 pedestals of ueddaq02 runs `run1` and `run2`.
+
+    Fetches both sets from the calibration DB, prints their metadata and summaries, and for each of
+    the first five gain ranges shows a histogram of the difference (run2 - run1) and saves it as
+    `peds-diff-runs-<run2>-<run1>-igain-<i>.png`.
+    """
     from psana.pyalgos.generic.NDArrUtils import info_ndarr
     from psana.pscalib.calib.MDBWebUtils import calib_constants_all_types
     #d = calib_constants_all_types("epixquad", exp="ueddaq02", run=108)

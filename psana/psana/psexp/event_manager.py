@@ -1,3 +1,6 @@
+"""Define `EventManager`, which turns a smalldata chunk into per-event dgram lists (reading the
+matching bigdata from the xtc2 files when needed), and the `ExitId` codes.
+"""
 import os
 import time
 
@@ -13,6 +16,11 @@ if mode == "mpi":
 
 
 class ExitId:
+    """Codes stored in `EventManager.exit_id`.
+
+    NoError = 0; BdReadFail = 1, set when a bigdata read returns fewer bytes than requested after
+    all retries.
+    """
     NoError = 0
     BdReadFail = 1
 
@@ -300,6 +308,11 @@ class EventManager(object):
         return chunk
 
     def get_bd_read_stats(self):
+        """Return `(bytes, seconds)`: total bigdata bytes read and time spent reading by this manager.
+
+        Only reads that returned data and took a positive time are counted. The values are an int and a
+        float.
+        """
         return int(self._bd_read_bytes), float(self._bd_read_time)
 
     def _init_bd_chunks(self):

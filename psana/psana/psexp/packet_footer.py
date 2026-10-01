@@ -1,3 +1,4 @@
+"""Define `PacketFooter`, which reads and writes the size footer at the end of a buffer of concatenated packets."""
 import struct
 
 import numpy as np
@@ -5,6 +6,13 @@ import numpy as np
 
 class PacketFooter(object):
 
+    """Footer of packet sizes stored at the end of a buffer.
+
+    The footer holds one 4-byte unsigned int (struct format "I", native byte order) per packet with
+    that packet's size, followed by the number of packets. Pass `n_packets` to create an empty
+    footer for that many packets, `view` to read the footer at the end of an existing buffer, or
+    neither for an empty footer with no packets.
+    """
     n_bytes = 4
 
     def __init__(self, n_packets=0, view=None):

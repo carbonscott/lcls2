@@ -16,12 +16,20 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 
 class EventLoopTest(EventLoop):
+    """`EventLoop` subclass that tests the event loop with dark processing (`UtilsCalib.DarkProc`).
+
+    Each step's constants are saved to the calibration repository in `end_step`.
+    """
     msgelt='ELT:'
 
     def __init__(self, parser):
         EventLoop.__init__(self, parser)
 
     def init_event_loop(self):
+        """Log and print the start and reset the loop state.
+
+        Sets `dpo` and `status` to None and `dic_consts_tot` and `kwa_depl` to empty dicts.
+        """
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         print('init_event_loop - dskwargs: %s detname: %s' % (str(self.dskwargs), self.detname))
         #kwa['init_event_loop'] = 'OK'
@@ -31,13 +39,20 @@ class EventLoopTest(EventLoop):
         self.kwa_depl = {}
 
     def begin_run(self):
+        """Log the method name and print the experiment name and run number."""
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         print('begin_run expname: %s runnum: %s' % (self.expname, str(self.runnum)))
 
     def end_run(self):
+        """Log the method name; does nothing else."""
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
 
     def begin_step(self):
+        """Print the step number and metadata and create the `DarkProc` if it does not exist yet.
+
+        The `DarkProc` gets the parameters with `rms_hi` and `int_hi` set to the detector's data bit mask
+        minus 10, plus the run number, experiment and timestamps.
+        """
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         print('begin_step istep/nevtot: %d/%s' % (self.istep, str(self.metadic)))
 
@@ -54,6 +69,13 @@ class EventLoopTest(EventLoop):
             dpo.ts_run, dpo.ts_now = self.ts_run, self.ts_now #uc.tstamps_run_and_now(env, fmt=uc.TSTAMP_FOR
 
     def end_step(self):
+        """Finish dark processing for the step and save the constants to the repository.
+
+        Gets the pedestals, RMS, status, max and min arrays from the `DarkProc`, works out the gain mode
+        from the step metadata, builds the deployment metadata with `UtilsCalib.add_metadata_kwargs`,
+        calls `save_constants_in_repository` and stores the constants in `dic_consts_tot`. Only a local
+        name is deleted, so `self.dpo` is kept and reused by later steps.
+        """
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         if True:
                 odet = self.odet
@@ -97,6 +119,12 @@ class EventLoopTest(EventLoop):
                 logger.info('==== End of step %1d ====' % self.istep)
 
     def proc_event(self, msgmaxnum=5):
+        """Pass the current event's raw data to `DarkProc.event` and store its return value in `status`.
+
+        Returns at once for events with index above `msgmaxnum`, so only events 0 to `msgmaxnum` reach
+        `DarkProc.event`; those log a warning ("STOP WARNINGS" at `msgmaxnum`). The event loop stops
+        when `status` is 2.
+        """
         if   self.ievt  > msgmaxnum: return
         elif self.ievt == msgmaxnum:
             message(msg='STOP WARNINGS', metname='', logmethod=logger.warning)
@@ -107,6 +135,10 @@ class EventLoopTest(EventLoop):
         self.status = self.dpo.event(self.odet.raw.raw(self.evt), self.ievt)
 
     def summary(self):
+        """Log the gain modes with constants and the detector's gain modes, and fill `kwa_depl` with metadata.
+
+        The call that would deploy constants is commented out, so nothing is saved.
+        """
         message(msg=self.msgelt, metname=sys._getframe().f_code.co_name, logmethod=logger.info)
         gainmodes = [k for k in self.dic_consts_tot.keys()]
         logger.info('constants'\
@@ -127,12 +159,18 @@ class EventLoopTest(EventLoop):
 if __name__ == "__main__":
 
   def USAGE():
+    """Return the usage text of this test, including an example test dataset."""
     import inspect
     return '\n  %s <TNAME>\n' % sys.argv[0].split('/')[-1]\
           +'\n  test dataset: datinfo -k exp=mfxdaq23,run=7,dir=/sdf/data/lcls/drpsrcf/ffb/MFX/mfxdaq23/xtc -d jungfrau'
     #+ '\n'.join([s for s in inspect.getsource(selector).split('\n') if "TNAME in" in s])
 
   def argument_parser():
+    """Return the `ArgumentParser` of this test.
+
+    Options: -o/--dirrepo (default ./work1), -k/--dskwargs (default exp=mfxdaq23,run=7),
+    -d/--detname (default jungfrau), -L/--loglevel (default INFO), -s/--subtest, -I/--segind.
+    """
     from argparse import ArgumentParser
     d_tname    = '0'
     d_dirrepo  = './work1' # DIR_REPO_JUNGFRAU

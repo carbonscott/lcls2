@@ -38,6 +38,11 @@ time, str_tstamp, get_login, get_hostname, get_cwd, save_textfile, load_textfile
 #log_rec_at_start = gu.log_rec_on_start
 
 def selected_record(i, events=1000000):
+    """Return True for record numbers worth reporting.
+
+    These are i < 5, multiples of 10 below 50, multiples of 20 below 200, all multiples of 100, and
+    i > `events` - 5.
+    """
     return i<5\
        or (i<50 and not i%10)\
        or (i<200 and not i%20)\
@@ -46,21 +51,29 @@ def selected_record(i, events=1000000):
 
 
 def inverse_dict(d):
+    """Return a dict that maps each value of `d` to its key (asserts that `d` is a dict; for repeated values the last key wins)."""
     assert type(d) == dict
     return {v:k for k,v in d.items()}
 
 
 def info_dict(d, fmt='  %12s: %s', sep='\n', sepnext=13*' '):
+    """Return a string with one `fmt % (key, value)` entry per item of `d`, joined by `sep`.
+
+    Nested dicts are formatted recursively with separator `sep + sepnext`. The result starts with
+    `sep` unless `sep` begins with ",".
+    """
     return (sep if sep[0]!=',' else '')\
          + sep.join([fmt % (k, info_dict(v, fmt=fmt, sep=sep+sepnext)\
                if isinstance(v,dict) else str(v)) for k,v in d.items()])
 
 
 def info_namespace(o, fmt='  %12s: %s', sep='\n'):
+    """Return `fmt % (name, str(value))` for every attribute name of `o` not starting with "_", joined by `sep`."""
     return sep.join([fmt %(n,str(getattr(o,n,None))) for n in dir(o) if n[0]!='_'])
 
 
 def info_command_line(sep=' '):
+    """Return `sys.argv` joined by `sep`."""
     return sep.join(sys.argv)
 
 
@@ -151,12 +164,14 @@ def save_record_at_start(repoman, procname, tsfmt='%Y-%m-%dT%H:%M:%S%z', adddict
 
 
 def is_none(par, msg, logger_method=logger.debug):
+    """Return True if `par` is None, calling `logger_method(msg)` in that case; otherwise return False."""
     resp = par is None
     if resp: logger_method(msg)
     return resp
 
 
 def is_true(cond, msg, logger_method=logger.debug):
+    """Return `cond` unchanged, calling `logger_method(msg)` first if it is truthy."""
     if cond: logger_method(msg)
     return cond
 

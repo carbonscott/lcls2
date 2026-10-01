@@ -1,5 +1,12 @@
+"""Notes of interactive psana commands kept inside a function; nothing runs at import."""
 def test_ipython():
 
+    """Run a series of interactive-session examples; there are no assertions.
+
+    Opens several DataSources (a UED file that, as printed, is only available on drp-ued-cmp001,
+    tmoc00118 run 123 and ascdaq18 run 24), gets detectors and step values, and prints the detector
+    class table, file lists and run, step and event information.
+    """
     print('DATA FILE IS AVAILABLE ON drp-ued-cmp001 ONLY')
 
     #from psana.pyalgos.generic.NDArrUtils import info_ndarr

@@ -9,6 +9,7 @@ import numpy as np
 import os
 
 def filter_callback(run):
+    """Smalldata callback used by this script: yield the first 3 events of each step of `run`, printing the step and event numbers of each one."""
     for i_step, step in enumerate(run.steps()):
         for i_evt, evt in enumerate(step.events()):
             if i_evt<3:

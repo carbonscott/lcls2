@@ -1,3 +1,7 @@
+"""Detector interfaces for hpsex, hpscp, ebeam, ebeamh, gasdet, bmmon, pcav, pcavh, gmd, xgmd,
+feespec, usdusb and scbld data; most generate their accessors from the configuration with
+`DetectorImpl._add_fields`.
+"""
 import numpy as np
 import numpy.typing as npt
 from psana.detector.detector_impl import DetectorImpl
@@ -6,6 +10,12 @@ import typing
 import inspect
 
 class hpsex_hpsex_0_0_1(DetectorImpl):
+    """Detector interface for detector type `hpsex`, software `hpsex`, version 0.0.1.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(hpsex_hpsex_0_0_1, self).__init__(*args)
 
@@ -19,6 +29,12 @@ class hpsex_hpsex_0_0_1(DetectorImpl):
         return segments[0]
 
 class hpscp_hpscp_0_0_1(DetectorImpl):
+    """Detector interface for detector type `hpscp`, software `hpscp`, version 0.0.1.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(hpscp_hpscp_0_0_1, self).__init__(*args)
 
@@ -31,107 +47,231 @@ class hpscp_hpscp_0_0_1(DetectorImpl):
         return segments[0]
 
 class ebeam_ebeamAlg_0_7_1(DetectorImpl):
+    """Detector interface for detector type `ebeam`, software `ebeamAlg`, version 0.7.1.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(ebeam_ebeamAlg_0_7_1, self).__init__(*args)
         self._add_fields()
 
 class ebeam_raw_2_0_0(ebeam_ebeamAlg_0_7_1):
+    """Detector interface for detector type `ebeam`, software `raw`, version 2.0.0.
+
+    Same as `ebeam_ebeamAlg_0_7_1` (fields generated from the configuration); adds nothing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
 
 class ebeam_cube_2_0_0(ebeam_ebeamAlg_0_7_1):
+    """Detector interface for detector type `ebeam`, software `cube`, version 2.0.0.
+
+    Same as `ebeam_ebeamAlg_0_7_1` (fields generated from the configuration); adds nothing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
 
 class ebeamh_raw_2_0_0(ebeam_ebeamAlg_0_7_1):
+    """Detector interface for detector type `ebeamh`, software `raw`, version 2.0.0.
+
+    Same as `ebeam_ebeamAlg_0_7_1` (fields generated from the configuration); adds nothing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
 
 class ebeamh_cube_2_0_0(ebeam_ebeamAlg_0_7_1):
+    """Detector interface for detector type `ebeamh`, software `cube`, version 2.0.0.
+
+    Same as `ebeam_ebeamAlg_0_7_1` (fields generated from the configuration); adds nothing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
 
 class gasdet_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `gasdet`, software `raw`, version 1.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(gasdet_raw_1_0_0, self).__init__(*args)
         self._add_fields()
 
 class gasdet_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `gasdet`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(gasdet_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class bmmon_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `bmmon`, software `raw`, version 1.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(bmmon_raw_1_0_0, self).__init__(*args)
         self._add_fields()
 
 class bmmon_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `bmmon`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(bmmon_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class pcav_raw_2_0_0(DetectorImpl):
+    """Detector interface for detector type `pcav`, software `raw`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(pcav_raw_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class pcav_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `pcav`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(pcav_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class pcavh_raw_2_0_0(DetectorImpl):
+    """Detector interface for detector type `pcavh`, software `raw`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(pcavh_raw_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class pcavh_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `pcavh`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(pcavh_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class gmd_raw_2_0_0(DetectorImpl):
+    """Detector interface for detector type `gmd`, software `raw`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(gmd_raw_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class gmd_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `gmd`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(gmd_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class gmd_raw_2_1_0(DetectorImpl):
+    """Detector interface for detector type `gmd`, software `raw`, version 2.1.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(gmd_raw_2_1_0, self).__init__(*args)
         self._add_fields()
 
 class xgmd_raw_2_0_0(DetectorImpl):
+    """Detector interface for detector type `xgmd`, software `raw`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(xgmd_raw_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class xgmd_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `xgmd`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(xgmd_cube_2_0_0, self).__init__(*args)
         self._add_fields()
 
 class xgmd_raw_2_1_0(DetectorImpl):
+    """Detector interface for detector type `xgmd`, software `raw`, version 2.1.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(xgmd_raw_2_1_0, self).__init__(*args)
         self._add_fields()
 
 class feespec_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `feespec`, software `raw`, version 1.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._add_fields()
 
 class feespec_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `feespec`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._add_fields()
 
 class usdusb_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `usdusb`, software `raw`, version 1.0.0.
+
+    Fields are generated from the configuration with `_add_fields()`, and `descriptions` decodes the
+    per-channel names. The constructor's docstring lists the fields and calls the device a fast USB
+    encoder with 4 channels.
+    """
     def __init__(self, *args):
         """Fast USB encoder.
 
@@ -172,6 +312,13 @@ class usdusb_raw_1_0_0(DetectorImpl):
         return ch_descs
 
 class scbld_raw_1_0_0(DetectorImpl):
+    """Detector interface for detector type `scbld`, software `raw`, version 1.0.0.
+
+    On construction one accessor is added per data field of segment key 0 in the config (except
+    `software`, `version` and `severity`), returning that field of segment 0 or None if the segments
+    are missing. For the i-th such field a `<field>_sevr(evt)` accessor is also added, returning
+    `(severity >> (2*i)) & 3` from segment 0, or None if the segments are missing.
+    """
     def __init__(self, *args):
         super(scbld_raw_1_0_0, self).__init__(*args)
         self._add_fields_and_severity()
@@ -203,6 +350,12 @@ class scbld_raw_1_0_0(DetectorImpl):
                 setattr(self, f'{field}_sevr', func)
 
 class scbld_cube_2_0_0(DetectorImpl):
+    """Detector interface for detector type `scbld`, software `cube`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super(scbld_cube_2_0_0, self).__init__(*args)
         self._add_fields()

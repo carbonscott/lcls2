@@ -1,4 +1,5 @@
 
+"""Debug copy of the detnames tool with extra prints; sets root logging to DEBUG and runs `detnames()` at import time."""
 import logging
 logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d %(filename)s: %(message)s', level=logging.DEBUG)
 
@@ -16,6 +17,13 @@ def detnames():
   # that and then parsing it appropriately feels challenging.  So only
   # support single runs, shmem, and filenames using standard sys.argv.
 
+  """Print a table of the detectors in the first run of the data source given on the command line.
+
+  The argument is an exp=...,run=... string, a shmem=... string or an xtc2 file name. Options -r
+  (name, detector type, data type, version), -e (epics info), -s (scan info) and -i (data types,
+  segment ids and unique ids); by default it lists detector names and data types. Extra "XXX"
+  debug lines are printed, and a ":" in the argument makes it exit with status -1.
+  """
   parser = argparse.ArgumentParser()
   parser.add_argument("dsname", help="psana datasource experiment/run (e.g. exp=xppd7114,run=43) or xtc2 filename or shmem='my_shmem_identifier'")
   parser.add_argument('-r','--raw', dest='raw', action='store_true')

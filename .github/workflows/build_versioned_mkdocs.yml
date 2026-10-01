@@ -1,0 +1,72 @@
+# Build the documentation site (MkDocs + Material + mkdocstrings + Doxygen)
+# and publish it to the gh-pages branch with mike (one folder per version).
+# Modeled on slac-lcls/lute's .github/workflows/build_versioned_mkdocs.yml.
+#
+#   push to better-docs -> version "dev" (also set as the default version)
+#   push of a tag       -> version "<tag>", with the alias "latest"
+#
+# GitHub Pages must be set to serve from the gh-pages branch (repository
+# Settings -> Pages). mike adds a .nojekyll file to gh-pages on every deploy.
+name: Docs - build versioned MkDocs site
+
+on:
+  push:
+    branches:
+      - better-docs
+    tags:
+      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Never run two deploys at the same time; both would push to gh-pages.
+concurrency:
+  group: docs-gh-pages
+  cancel-in-progress: false
+
+jobs:
+  mkdocs_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # mike needs the gh-pages branch history.
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Install Doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends doxygen
+          doxygen --version
+
+      # Writes docs/api/cpp/, which mkdocs copies into the site.
+      # Must run before mike: the "C++ API" nav entry links to docs/api/cpp/index.html.
+      - name: Generate C++ API pages (Doxygen)
+        run: doxygen Doxyfile
+
+      - name: Git config
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy dev version
+        if: github.ref == 'refs/heads/better-docs'
+        run: |
+          mike deploy --push dev
+          mike set-default --push dev
+
+      - name: Deploy release version
+        if: github.ref_type == 'tag'
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: mike deploy --push --update-aliases "$TAG_NAME" latest

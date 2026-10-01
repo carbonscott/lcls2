@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual test of the mask methods on a dataset's detector: `python test_mask.py <test-name> [-k dskwargs] [-d detname] [-L level]`.
+
+Covers `Mask(det, **options).mask()`, the `Mask(det).mask_*` methods and the `det.raw._mask_*`
+methods; the selected mask plus 1 is shown as a detector image. The code runs at import time.
+"""
 from psana.detector.UtilsLogging import sys, logging, DICT_NAME_TO_LEVEL, STR_LEVEL_NAMES
 
 from psana.detector.NDArrUtils import info_ndarr, reshape_to_3d, shape_nda_as_3d
@@ -8,6 +13,10 @@ import psana.detector.UtilsGraphics as ug
 
 
 def test_umask(det):
+    """Return a user mask shaped like the detector's DAQ data.
+
+    int8 ones with [0, 100:200, 200:300] and [1, 50:150, 200:300] (in the 3-D view) set to 0.
+    """
     import numpy as np
     shape_raw = det.raw._shape_as_daq()
     mask = np.ones(shape_raw, dtype=np.int8)
@@ -20,6 +29,13 @@ def test_umask(det):
 
 
 def test_mask_select(tname, det):
+    """Return the mask for test `tname` and log it.
+
+    Tests 1 to 7 use `Mask(det, **options).mask()` (status, status plus neighbors, edges, center,
+    calib, user mask, combined), 9 a random normal array of the DAQ shape, 11 to 17 the
+    `Mask(det).mask_*` methods and 21 to 27 the `det.raw._mask_*` methods. Other names, including
+    '0', call `sys.exit`.
+    """
     mask = None
     if   tname ==  '0': # print this list of tests
         pass
@@ -158,7 +174,11 @@ def test_mask_select(tname, det):
 
 
 def test_mask(**kwargs):
-    """
+    """Compute the mask for `tname` on a dataset's detector and show it as an image.
+
+    Opens the dataset given by `dskwargs` (default exp=ued101066,run=181 in public01) and detector
+    `detname` (default epixquad), logs the pedestals, and shows `mask + 1` as `det.raw.image` of the
+    first event with `fleximagespec`.
     """
     from psana import DataSource
     import psana.detector.utils_psana as up
@@ -226,6 +246,7 @@ USAGE = '  python %s <test-name> <loglevel e.g. DEBUG or INFO>' % SCRNAME\
       + '\n   27 - mask combined'\
 
 def USAGE():
+    """Return the usage text: the source lines of `test_mask_select` that contain "tname ==", plus help hints."""
     import inspect
     return '\n  %s <TNAME>\n' % sys.argv[0].split('/')[-1]\
          + '\n'.join([s for s in inspect.getsource(test_mask_select).split('\n') if "tname ==" in s])\
@@ -247,6 +268,11 @@ TNAME = sys.argv[1] if len(sys.argv)>1 else '0'
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this test.
+
+    Positional `tname`, -k/--dskwargs (default exp=xpp101570426,run=26), -d/--detname (default
+    jungfrau1M), -L/--loglevel (default INFO) and -s/--subtest.
+    """
     from argparse import ArgumentParser
     d_tname = '0'
     #d_dskwargs = 'exp=ued101066,run=181,dir=/sdf/data/lcls/ds/prj/public01/xtc'  # None

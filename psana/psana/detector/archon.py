@@ -1,5 +1,6 @@
 
 #import sys
+"""Area-detector interfaces for the archon detector type: `archon_raw_1_0_0` (also bound to the name `archon_raw_1_0_1`) and `archon_raw_1_0_X`."""
 import numpy as np
 from time import time
 import logging
@@ -11,6 +12,13 @@ from psana.detector.areadetector import AreaDetectorRaw, sgs
 
 
 class archon_raw_1_0_0(AreaDetectorRaw):
+    """Area-detector interface for detector type `archon`, software `raw`, version 1.0.0.
+
+    Each row holds 16 banks of 300 columns: 264 real pixels followed by 36 fake pixels (constructor
+    docstring and column slicing). The constructor reads `gainfact` (default 3.65) and `cmpars`
+    (default (1, 0, 0)) from the keyword arguments and sets up the "ARCHON:V1" segment geometry
+    and the default geometry file `pscalib/geometry/data/geometry-def-archon.data`.
+    """
     def __init__(self, *args, **kwargs): # **kwargs intercepted by AreaDetectorRaw
         """1_0_0: daq raw array consists of 16 banks, bank has variable number off rows.
            bank has 264 columns of real, and 36 columns af fake pixels, described by ARCHON:V1 geometry
@@ -70,6 +78,7 @@ class archon_raw_1_0_0(AreaDetectorRaw):
         logger.debug('_common_mode time: %.3f sec st_of_med.shape: %s' % (time()-t0_sec, str(st_of_med.shape)))
 
     def raw(self, evt) -> Array2d:
+        """Return the `value` field of segment 0 (remembering its shape on the first call), or None if the segments are missing."""
         segs = self._segments(evt)
         if segs is None: return None
         r = segs[0].value
@@ -77,6 +86,13 @@ class archon_raw_1_0_0(AreaDetectorRaw):
         return r
 
     def calib(self, evt) -> Array2d:
+        """Return the raw data minus pedestals, common-mode corrected and multiplied by `gainfact`.
+
+        When `cmpars` is not None, the median of the 36 fake pixels at the end of each bank is
+        subtracted, row by row, from all 300 columns of that bank. Returns None without raw data and the
+        raw data unchanged (with a warning) if the pedestals are None or differ in shape; a missing
+        'pedestals' entry raises KeyError.
+        """
         raw = self.raw(evt)
         if raw is None: return None
         peds = self._calibconst['pedestals'][0]
@@ -99,6 +115,11 @@ class archon_raw_1_0_0(AreaDetectorRaw):
         # mpi4py's efficient Reduce/Gather methods don't work
         # with non-contiguous arrays.  but mpi4py does give an error
         # when this happens so could change this. - cpo
+        """Return the calibrated data (or `nda`) without the fake-pixel columns.
+
+        The first 264 columns of each of the 16 banks are joined side by side. Returns None if there is
+        no data; `kwa` is not used.
+        """
         c = self.calib(evt) if nda is None else nda
         if c is None:
             return None
@@ -156,6 +177,12 @@ archon_raw_1_0_1 = archon_raw_1_0_0 # alias
 
 
 class archon_raw_1_0_X(AreaDetectorRaw):
+    """Area-detector interface for archon raw data whose banks have the 36 fake-pixel columns before the 264 real ones.
+
+    The bank layout follows the constructor docstring and the column slicing. `gainfact` (default
+    3.65) and `cmpars` (default (1, 0, 0)) come from the keyword arguments; the "ARCHON:V2"
+    geometry is created from the data shape on the first `raw` call.
+    """
     def __init__(self, *args, **kwargs): # **kwargs intercepted by AreaDetectorRaw
         """In 1_0_X bank fake pixel columns ahead of real:
            daq raw array consists of 16 banks, bank has variable number off rows.
@@ -207,6 +234,10 @@ class archon_raw_1_0_X(AreaDetectorRaw):
         logger.debug('_common_mode time: %.3f sec st_of_med.shape: %s' % (time()-t0_sec, str(st_of_med.shape)))
 
     def raw(self, evt) -> Array2d:
+        """Return the `value` field of segment 0, or None if the segments are missing.
+
+        The first non-None data initialize the "ARCHON:V2" geometry for their shape.
+        """
         segs = self._segments(evt)
         if segs is None: return None
         r = segs[0].value
@@ -215,6 +246,13 @@ class archon_raw_1_0_X(AreaDetectorRaw):
         return r
 
     def calib(self, evt) -> Array2d:
+        """Return the raw data minus pedestals, common-mode corrected and multiplied by `gainfact`.
+
+        When `cmpars` is not None, the median of the first 36 columns (fake pixels) of each bank is
+        subtracted, row by row, from all 300 columns of that bank. Returns None without raw data and the
+        raw data unchanged (with a warning) if the pedestals are None or differ in shape; a missing
+        'pedestals' entry raises KeyError.
+        """
         raw = self.raw(evt)
         if raw is None: return None
         peds = self._calibconst['pedestals'][0]
@@ -238,6 +276,11 @@ class archon_raw_1_0_X(AreaDetectorRaw):
         # mpi4py's efficient Reduce/Gather methods don't work
         # with non-contiguous arrays.  but mpi4py does give an error
         # when this happens so could change this. - cpo
+        """Return the calibrated data (or `nda`) without the fake-pixel columns.
+
+        Columns 36 to 299 of each of the 16 banks are joined side by side. Returns None if there is no
+        data; `kwa` is not used.
+        """
         c = self.calib(evt) if nda is None else nda
         if c is None:
             return None

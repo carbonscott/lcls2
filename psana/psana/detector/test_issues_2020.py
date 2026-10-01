@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""Manual checks for psana detector issues from 2020: `python test_issues_2020.py <test-number>` (1 to 6).
+
+The selected check runs at import time and the script then exits; several checks need data that
+is only available on specific hosts or directories.
+"""
 import logging
 #logger = logging.getLogger(__name__)
 logging.basicConfig(format='[%(levelname).1s]: %(message)s', level=logging.INFO)
@@ -7,6 +12,7 @@ import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 def issue_2020_11_09():
+    """Open a tstx00417 test file and, for every event, print the type of `det.raw.raw(evt)` for detector epix10k2M and the shape of each panel."""
     from psana import DataSource
     ds = DataSource(files='/sdf/group/lcls/ds/ana/detector/data2_test/xtc/data-tstx00417-r0014-epix10kaquad-e000005.xtc2')
 
@@ -24,6 +30,7 @@ def issue_2020_11_09():
 
 
 def issue_2020_11_24():
+    """Print `det.calibconst` for detector tmoopal in experiment tmolw0618, run 52."""
     from psana import DataSource
     import numpy as np
     ds = DataSource(exp='tmolw0618',run=52)
@@ -33,6 +40,11 @@ def issue_2020_11_24():
 
 
 def issue_2020_12_02():
+    """Open a tstx00117 run-147 file and print data-source and run attributes, then call `exit`.
+
+    Prints `ds.runnum` and `ds.exp`, then the run number, detector names, experiment and id of each
+    run. The printed note says the file is only available on daq-det-drp01.
+    """
     from psana import DataSource
     print('DATA FILE IS AVAILABLE ON daq-det-drp01 ONLY')
 

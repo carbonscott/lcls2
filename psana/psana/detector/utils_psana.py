@@ -51,6 +51,11 @@ def timestamp_run(run, fmt='%Y-%m-%dT%H:%M:%S'):
 
 def dict_filter(d, list_keys=('exp', 'run', 'files', 'dir', 'max_events', 'shmem', 'smalldata_kwargs', 'drp', 'batch_size',
                               'PS_SMD_N_EVENTS', 'PS_EB_NODES'), ordered=True):
+    """Return the entries of `d` for the keys in `list_keys`.
+
+    With `ordered` True: an OrderedDict in `list_keys` order containing every key (None for keys not
+    in `d`). Otherwise: a dict of only those keys of `d` that are in `list_keys`.
+    """
     if ordered:
         from collections import OrderedDict
         return OrderedDict([(k, d.get(k, None)) for k in list_keys])
@@ -177,10 +182,12 @@ def info_datasource(ds):
 
 
 def info_run_dsparms_det_classes_v1(run, cmt='run.dsparms.det_classes:', sep='\n '):
+    """Return `cmt` followed by one `key : value` line per entry of `run.dsparms.det_classes`, joined by `sep`."""
     return cmt + sep.join(['%8s : %s' % (str(k),str(v)) for k,v in run.dsparms.det_classes.items()])
 
 
 def info_run_dsparms_det_classes(run, cmt='run.dsparms.det_classes:\n ', sep='\n '):
+    """Return `cmt` followed by `run.dsparms.det_classes` formatted with `Utils.info_dict` (format '%10s : %s', separator `sep`)."""
     return cmt + info_dict(run.dsparms.det_classes, fmt='%10s : %s', sep=sep)
 
 
@@ -193,6 +200,11 @@ def tstamps_run_and_now(trun_sec): # unix epoch time, e.g. 1607569818.532117 sec
     return ts_run, ts_now
 
 def dict_run(orun):
+    """Return a dict of run information for `orun`.
+
+    Keys: `expt`, `runnum`, `runid` (`orun.id`), `detnames`, `trun_sec` (run time in unix seconds),
+    and `tstamp_run` / `tstamp_now` (run and current time as 'YYYYmmddHHMMSS' strings).
+    """
     runtstamp = orun.timestamp    # 4193682596073796843 (int) code of sec and mks relative to 1990-01-01
     trun_sec = seconds(runtstamp) # 1607569818.532117 sec Epoch time
     tstamp_run, tstamp_now = tstamps_run_and_now(int(trun_sec)) # (str) 20201209191018, 20201217140026
@@ -208,6 +220,12 @@ def dict_run(orun):
 
 
 def info_run(run, cmt='run info:', sep='\n    ', verb=0o377):
+    """Return a text summary of `run`.
+
+    `cmt` is followed by the run number, experiment, detector names and timestamp (raw and as
+    '%Y-%m-%dT%H:%M:%S'), plus `run.id` if bit 0 of `verb` is set and the detector class table if
+    bit 1 is set, separated by `sep`.
+    """
     seconds(run.timestamp)
     ts_run = timestamp_run(run, fmt='%Y-%m-%dT%H:%M:%S')
     #ts_run = str_tstamp(fmt='%Y-%m-%dT%H:%M:%S', time_sec=t_sec)
@@ -226,18 +244,24 @@ def info_detnames(run, cmt='command: '):
     #p = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #out = str(p.stdout.read())
     #return fmt%(cmt, cmd, out)
+    """Run the shell command `detnames exp=<expt>,run=<runnum> -r -s` and return `cmt`, the command and its output."""
     from subprocess import getoutput
     cmd = 'detnames exp=%s,run=%d -r -s' % (run.expt, run.runnum)
     return cmt + cmd + '\n' + getoutput(cmd)
 
 
 def info_detnames_for_dskwargs(str_kwa, cmt='command: '):
+    """Run the shell command `detnames <str_kwa> -r -s` and return `cmt`, the command and its output."""
     from subprocess import getoutput
     cmd = 'detnames %s -r -s' % (str_kwa)
     return cmt + cmd + '\n' + getoutput(cmd)
 
 
 def print_detnames(run, cmt='command: '):
+    """Print `cmt` and the command `detnames exp=<expt>,run=<runnum> -r -s`, then run it with `os.system`.
+
+    The command output goes to stdout; returns None.
+    """
     import os
     cmd = 'detnames exp=%s,run=%d -r -s' % (run.expt, run.runnum)
     print(cmt + cmd)
@@ -245,6 +269,11 @@ def print_detnames(run, cmt='command: '):
 
 
 def dict_detector(odet):
+    """Return a dict of properties of `odet.raw`.
+
+    Keys: det_name, dettype, longname (`_fullname()`), uniqueid, shape (DAQ shape), shape_seg,
+    segment_ids, segment_indices, sorted_segment_inds, segment_numbers and gains_def.
+    """
     det_raw = odet.raw
     return {\
       'det_name'    : det_raw._det_name,\
@@ -264,6 +293,12 @@ def dict_detector(odet):
 
 def info_detector(det, cmt='detector info:', sep='\n    '):
 
+    """Return a text summary of detector `det`.
+
+    Includes the detector name and type, segment numbers, public attribute names of `det` and
+    `det.raw`, the parts of `det.raw._uniqueid`, the calibration constant types and the short
+    detector name from `UtilsCalib.detector_name_short`.
+    """
     calibconst = det.raw._calibconst
     longname = det.raw._uniqueid
     shortname = uc.detector_name_short(longname)
@@ -284,6 +319,7 @@ def info_detector(det, cmt='detector info:', sep='\n    '):
 
 
 def info_uniqueid(det, cmt='det.raw._uniqueid.split("_"):', sep='\n '):
+    """Return `cmt` followed by the '_'-separated parts of `det.raw._uniqueid` joined by `sep`."""
     return cmt + sep.join(det.raw._uniqueid.split('_'))
 
 
@@ -320,6 +356,13 @@ def tstamps_run_and_now(trun_sec): # unix epoch time, e.g. 1607569818.532117 sec
 
 
 def get_config_info_for_dataset_detname(**kwargs):
+    """Return a dict of run and detector information for the first run of the dataset given in `kwargs`.
+
+    The DataSource comes from `data_source_kwargs(**kwargs)` and the detector from `detname` (or
+    `detector`). The dict holds the segment shape, panel ids, long and short names, detector name and
+    type when the detector exists, and always the experiment, run timestamps and run number. Returns
+    {} if the DataSource cannot be created (the error is printed).
+    """
     import logging
     logger = logging.getLogger(__name__)
     from psana import DataSource

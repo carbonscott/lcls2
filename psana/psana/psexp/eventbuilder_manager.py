@@ -1,3 +1,4 @@
+"""Define `EventBuilderManager`, which yields event and step batches built from one smalldata packet."""
 from psana.eventbuilder import EventBuilder
 from psana.psexp.packet_footer import PacketFooter
 
@@ -6,6 +7,14 @@ from .run import RunSmallData
 
 
 class EventBuilderManager(object):
+    """Build batches of events and steps from one packet of per-file smalldata views.
+
+    The constructor splits `view` into per-file views with `PacketFooter`, creates an
+    `EventBuilder` (C extension `psana.eventbuilder`) with the filter timestamps,
+    integrating-detector stream id and batch size from `dsparms`, and wraps it in a `RunSmallData`
+    and a `CallbackBatchBuilder`, which are used when `dsparms.smd_callback` is set. Proxy events
+    are enabled in the builder when a smalldata callback or `dsparms.intg_det` is set.
+    """
     def __init__(self, view, configs, dsparms, callback_run_state=None):
         self.configs = configs
         self.dsparms = dsparms
@@ -35,6 +44,13 @@ class EventBuilderManager(object):
         )
 
     def batches(self):
+        """Yield `(batch_dict, step_dict)` tuples until the event builder is exhausted.
+
+        Without a smalldata callback (`dsparms.smd_callback == 0`) each tuple comes from
+        `EventBuilder.build()`, and the loop ends when a build gives no events and no steps; otherwise
+        the tuples come from `CallbackBatchBuilder.next_batch()` until it returns None. The batch
+        contents are produced by the event builder extension; not visible here.
+        """
         while True:
             # This eiter calls user-defined smalldata callback, which loops
             # over smd events or skips (faster). To enable detector inteface

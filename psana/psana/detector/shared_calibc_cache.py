@@ -53,6 +53,7 @@ class SharedCalibcCache:
 
     @property
     def enabled(self) -> bool:
+        """True if a shared-memory object was given (`shared_mem` is not None)."""
         return self.shared_mem is not None
 
     @staticmethod
@@ -71,6 +72,10 @@ class SharedCalibcCache:
 
     @classmethod
     def make_key(cls, det_name: str, drp_class: str, cache_id: str) -> SharedCalibcKey:
+        """Return a `SharedCalibcKey` built from `det_name`, `drp_class` and `cache_id`.
+
+        In each name, every run of characters other than letters, digits and "_" is replaced by "_".
+        """
         return SharedCalibcKey(
             det_name=cls._safe_name(det_name),
             drp_class=cls._safe_name(drp_class),
@@ -86,6 +91,7 @@ class SharedCalibcCache:
         self._local_meta[self._prefix(key)] = meta
 
     def get_meta(self, key: SharedCalibcKey) -> Optional[Dict[str, Any]]:
+        """Return the metadata recorded locally for `key` with `record_meta`, or None."""
         return self._local_meta.get(self._prefix(key))
 
     def get_or_allocate(
@@ -137,5 +143,6 @@ class SharedCalibcCache:
         return self.shared_mem.get_array(full_name)
 
     def barrier(self) -> None:
+        """Call `shared_mem.barrier()` if the cache is enabled and the shared-memory object has a `barrier` method; otherwise do nothing."""
         if self.enabled and hasattr(self.shared_mem, "barrier"):
             self.shared_mem.barrier()

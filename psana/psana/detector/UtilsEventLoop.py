@@ -44,6 +44,14 @@ def message(msg='MUST BE REIMPLEMENTED, IF NEEDED', metname='', logmethod=logger
 
 class EventLoop:
 
+    """Base class for scripted run/step/event loops over one detector.
+
+    The constructor parses `parser`, keeps the result as `args` and as the dict `kwa`, logs the
+    parameters, and creates a `RepoManager` with logging (`RepoManager.init_repoman_and_logger`).
+    `event_loop` runs the loop and calls the hooks `init_event_loop`, `begin_run`, `begin_step`,
+    `proc_event`, `end_step`, `end_run` and `summary`, which subclasses override; the base hooks
+    only log.
+    """
     def __init__(self, parser):
         self.parser = parser
         self.args = parser.parse_args()
@@ -52,6 +60,11 @@ class EventLoop:
         self.repoman = rm.init_repoman_and_logger(parser=self.parser, **self.kwa)
 
     def open_data_sourse(self, logmeth=logger.debug):
+        """Create the DataSource from `data_source_kwargs(**self.kwa)` and store it as `self.ds`.
+
+        The keyword arguments are stored as `self.dskwargs` and the data source info is logged with
+        `logmeth`. If creating the DataSource raises, an error is logged and `sys.exit` is called.
+        """
         self.dskwargs = dskwargs = data_source_kwargs(**self.kwa)
         try: ds = psana.DataSource(**dskwargs)
         except Exception as err:
@@ -61,6 +74,11 @@ class EventLoop:
         self.ds = ds
 
     def detector(self, orun, logmeth=logger.debug):
+        """Create `orun.Detector(self.args.detname, **self.kwa)` and store it as `self.det`.
+
+        The detector info is logged with `logmeth`. If creating the detector raises, an error is logged
+        and `sys.exit('EXIT')` is called.
+        """
         detname, kwa = self.args.detname, self.kwa
         try: det = orun.Detector(detname, **kwa)
         except Exception as err:
@@ -70,26 +88,40 @@ class EventLoop:
         self.det = det
 
     def init_event_loop(self):
+        """Hook called once before the run loop.
+
+        The base version logs a warning that it should be reimplemented, then the DataSource keyword
+        arguments and the detector name.
+        """
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
         logger.info('init_event_loop - dskwargs: %s detname: %s' % (str(self.dskwargs), self.detname))
 
     def begin_run(self):
+        """Hook called at the start of each run; the base version logs the reimplement warning and the experiment name and run number."""
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
         logger.info('begin_run expname: %s runnum: %s' % (self.expname, str(self.runnum)))
 
     def end_run(self):
+        """Hook called at the end of each run; the base version logs the reimplement warning and the experiment name and run number."""
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
         logger.info('end_run expname: %s runnum: %s' % (self.expname, str(self.runnum)))
 
     def begin_step(self):
+        """Hook called at the start of each step; the base version logs the reimplement warning, the step number and the step metadata."""
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
         logger.info('begin_step istep:%d metadic: %s' % (self.istep, str(self.metadic)))
 
     def end_step(self):
+        """Hook called at the end of each step; the base version logs the reimplement warning, the step number and the total event count."""
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
         logger.info('end_step istep/nevtot: %d/%d' % (self.istep, self.nevtot))
 
     def proc_event(self, msgmaxnum=5):
+        """Hook called for each selected event with raw data.
+
+        The base version logs the reimplement warning for events below index `msgmaxnum`, logs
+        "STOP WARNINGS" at index `msgmaxnum`, and does nothing afterwards.
+        """
         if   self.ievt  > msgmaxnum: return
         elif self.ievt == msgmaxnum:
             message(msg='STOP WARNINGS', metname='', logmethod=logger.warning)
@@ -98,12 +130,21 @@ class EventLoop:
         #logger.info('proc_event ievt/nevtot: %d/%d' % (self.ievt, self.nevtot))
 
     def summary(self):
+        """Hook called after the run loop; the base version only logs the reimplement warning."""
         message(metname=sys._getframe().f_code.co_name, logmethod=logger.warning)
 
     def event_loop(self):
 
         #args = self.parser.parse_args()
         #defs = self.parser.parse_args([])
+        """Run the run/step/event loop configured by the parsed options and call the hook methods.
+
+        Opens the DataSource with `open_data_sourse`, then for each run creates the detector `detname`
+        and the `step_docstring` detector (None if unavailable) and loops over steps (selected by
+        `steps`, `stepnum`, `stepmax`) and events (`evskip`, `events` default 20), skipping events whose
+        raw data is None. The loops stop early when a hook sets `status` to 2; afterwards `summary()` is
+        called and the log file is saved with `repoman.logfile_save()`.
+        """
         kwa = self.kwa
 
         s_dskwargs = kwa.get('dskwargs', None)

@@ -1,8 +1,17 @@
+"""Detector interfaces for timetool data (`tt_raw_2_0_0`, `ttdet_ttalg_0_0_1`) and parsers for the
+frame format read by `ttdet_ttalg_0_0_1`.
+"""
 import numpy as np
 from psana.detector.detector_impl import DetectorImpl
 from amitypes import Array1d
 
 class tt_raw_2_0_0(DetectorImpl):
+    """Detector interface for detector type `tt`, software `raw`, version 2.0.0.
+
+    On construction `_add_fields()` adds one method per data field declared in the config (except
+    `software` and `version`); each returns that field of segment 0 for an event, or None if the
+    detector's segments are missing.
+    """
     def __init__(self, *args):
         super().__init__(*args)
         self._add_fields()
@@ -16,6 +25,11 @@ class tt_raw_2_0_0(DetectorImpl):
 # leftover from when we wrote out the EventBatcher format.
 # still used at the moment in the self-tests
 class ttdet_ttalg_0_0_1(DetectorImpl):
+    """Detector interface for detector type `ttdet`, software `ttalg`, version 0.0.1.
+
+    The code comment calls it a leftover from the EventBatcher format that the self-tests still use;
+    `parsed_frame` parses segment 0's `data` with `timeToolParser`.
+    """
     def __init__(self, *args):
         super(ttdet_ttalg_0_0_1, self).__init__(*args)
 
@@ -34,6 +48,11 @@ class ttdet_ttalg_0_0_1(DetectorImpl):
         return segments[0].data[:16]
     
     def parsed_frame(self,evt):
+        """Parse the bytes of segment 0's `data` with a new `timeToolParser` and return the parser.
+
+        No missing-data check: raises TypeError if the event does not have all of this detector's
+        segments.
+        """
         pFrame = timeToolParser()
         p = self._segments(evt)[0].data.tobytes()
         pFrame._parseData(p)
@@ -41,6 +60,7 @@ class ttdet_ttalg_0_0_1(DetectorImpl):
         return pFrame
 
     def image(self, evt) -> Array1d:
+        """Return the `prescaled_frame` of `parsed_frame(evt)`: the tdest-2 frame as an int8 numpy array, or None if there is none."""
         parsed_frame_object = self.parsed_frame(evt)
         return parsed_frame_object.prescaled_frame
 
@@ -49,6 +69,12 @@ class ttdet_ttalg_0_0_1(DetectorImpl):
     #
 
 class eventBuilderParser():
+    """Parser for a frame made of a header and sub-frames, each sub-frame followed by a 16-byte trailer.
+
+    The private `_parseArray` walks the sub-frames from the end of the buffer, reading each size from
+    the first two bytes (little-endian) and the tdest from byte 4 of the trailer after it; sub-frames
+    whose first two bytes match the main header are parsed recursively as nested frames.
+    """
     def __init__(self):        
         return
 
@@ -77,6 +103,7 @@ class eventBuilderParser():
         return
     
     def print_info(self):
+        """Print every attribute except `_frame_list` and bytearray values, then the info of each nested sub-frame parser."""
         for i in self.__dict__:
             if i != "_frame_list" and type(self.__dict__[i]) is not bytearray:
                 print(i," = ",self.__dict__[i])
@@ -126,6 +153,12 @@ class eventBuilderParser():
         return
     
 class timeToolParser(eventBuilderParser):
+    """`eventBuilderParser` whose `_parseData` also extracts the timetool items from the parsed frame.
+
+    It sets the timing bus (frame with tdest 0, or None), `edge_position` (16-bit value from the
+    tdest-0 entry of the tdest-1 frame; IndexError if absent), `background_frame` (tdest-1 entry of
+    that frame, or None) and `prescaled_frame` (tdest-2 frame as int8 array, or None).
+    """
     def _parseData(self,frame_bytearray:bytearray):
         self._parseArray(frame_bytearray)
         

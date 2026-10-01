@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual test of the `UtilsGraphics` display classes: `python test_UtilsGraphics.py <test-name> <loglevel>`.
+
+Test 1 uses `fleximage`, 2 `fleximagespec` and 3 `flexhist`; any other name prints the usage and
+exits. The test runs at import time.
+"""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 STRLOGLEV = sys.argv[2] if len(sys.argv)>2 else 'INFO'
@@ -14,7 +19,10 @@ import psana.pyalgos.generic.NDArrGenerators as ag
 
 
 def test_01(func):
-   """
+   """Show 10 random 256x256 images (mean 200, sigma 25) with the display class `func`.
+
+   The display is created with `func(img, nneg=3, npos=3)` for the first image and updated for the
+   others; the final `show()` blocks.
    """
    flimg = None
    for i in range(10):

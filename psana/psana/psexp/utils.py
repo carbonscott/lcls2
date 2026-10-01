@@ -1,3 +1,6 @@
+"""Helpers that turn a command-line data source string (for example "exp=rixx43518,run=341" or a file
+name) into DataSource keyword arguments or a DataSource.
+"""
 import sys
 
 from psana import DataSource
@@ -81,6 +84,11 @@ def datasource_kwargs_to_string(**kwargs):
 
 
 def DataSourceFromString(dsstring):
+    """Return `DataSource(**datasource_kwargs_from_string(dsstring))`.
+
+    `dsstring` is an xtc2 file name, comma-separated key=value pairs, or a Python dict literal (which
+    `datasource_kwargs_from_string` evaluates with `eval`).
+    """
     return DataSource(**datasource_kwargs_from_string(dsstring))
 
 

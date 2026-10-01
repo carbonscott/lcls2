@@ -1,3 +1,6 @@
+"""Logging helpers for psana, and functions that read the timestamp, service code or `env()` from
+the first valid dgram in a list.
+"""
 import inspect
 import logging
 import os
@@ -86,6 +89,10 @@ def _attach_handlers(py_logger, formatter, logfile, rank):
         py_logger.addHandler(fh)
 
 def get_class_name(obj):
+    """Return the class name of `obj`.
+
+    Returns `obj.__class__.__name__`, or `str(type(obj))` if accessing that raises AttributeError.
+    """
     try:
         return obj.__class__.__name__
     except AttributeError:
@@ -103,6 +110,30 @@ def get_logger(level=None, logfile=None, name=None, timestamp=False):
     return Logger(name=name, level=lvl, myrank=_get_rank(), logfile=logf, timestamp=ts)
 
 class Logger:
+    """Wrapper around a `logging.Logger` that uses the psana message format.
+
+    The constructor gets the logger called `name` (the calling module's name if `name` is None),
+    sets its level, turns off propagation to the root logger, and adds a console handler and, when
+    `logfile` is given, a `RotatingFileHandler`, each only if the logger does not already have a
+    handler of that type. Messages look like
+    `[PSANA-<LEVEL> RANK:<myrank> <epoch sec.nsec>] <name> <message>`, with the time prepended
+    when `timestamp` is True.
+
+    Parameters
+    ----------
+    name : str, optional
+        Logger name.
+    level : int or str
+        Logging level set on the logger.
+    myrank : int, optional
+        Rank shown in the message prefix and appended to the log file name as `.rank<myrank>`.
+    timestamp : bool
+        If True, prefix each message with the date and time.
+    logfile : str, optional
+        Path of a rotating log file; its directory is created if needed.
+    max_bytes, backup_count : int
+        Size limit and number of backups for the rotating file handler.
+    """
     def __init__(self, name=None, level=logging.INFO, myrank=None, timestamp=False,
                  logfile=None, max_bytes=10*1024*1024, backup_count=3):
 
@@ -154,13 +185,26 @@ class Logger:
             self.logger.addHandler(file_handler)
 
     def debug(self, msg, *args, **kwargs):
+        """Log `msg` at DEBUG level.
+
+        Messages whose text contains "TIMELINE" are dropped unless the environment variable
+        PS_TIMELINE is set to a nonzero integer. Other arguments are passed to `logging.Logger.debug`.
+        """
         if "TIMELINE" in msg and not int(os.environ.get("PS_TIMELINE", "0")):
             return
         self.logger.debug(msg, *args, **kwargs)
-    def info(self, msg, *args, **kwargs): self.logger.info(msg, *args, **kwargs)
-    def warning(self, msg, *args, **kwargs): self.logger.warning(msg, *args, **kwargs)
-    def error(self, msg, *args, **kwargs): self.logger.error(msg, *args, **kwargs)
-    def critical(self, msg, *args, **kwargs): self.logger.critical(msg, *args, **kwargs)
+    def info(self, msg, *args, **kwargs):
+        """Log `msg` at INFO level on the wrapped logger."""
+        self.logger.info(msg, *args, **kwargs)
+    def warning(self, msg, *args, **kwargs):
+        """Log `msg` at WARNING level on the wrapped logger."""
+        self.logger.warning(msg, *args, **kwargs)
+    def error(self, msg, *args, **kwargs):
+        """Log `msg` at ERROR level on the wrapped logger."""
+        self.logger.error(msg, *args, **kwargs)
+    def critical(self, msg, *args, **kwargs):
+        """Log `msg` at CRITICAL level on the wrapped logger."""
+        self.logger.critical(msg, *args, **kwargs)
 
 
 def first_timestamp(dgrams):

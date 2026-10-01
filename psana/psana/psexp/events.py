@@ -1,3 +1,4 @@
+"""Define `Events`, the iterator that yields the dgram lists of a run's events."""
 import time
 
 from .event_manager import EventManager

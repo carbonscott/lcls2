@@ -1,3 +1,4 @@
+"""Define `EnvStoreManager`, which keeps the epics and scan `EnvStore` objects up to date from transitions."""
 from psana.dgram import Dgram
 
 from . import TransitionId
@@ -36,6 +37,14 @@ class EnvStoreManager(object):
                 setattr(objori, key, getattr(objupd, key))
 
     def update_by_event(self, evt):
+        """Update the env stores and stored configs from the transition dgrams in `evt`.
+
+        Each non-None dgram is re-created with `Dgram(view=d, config=..., offset=0)` using its stream's
+        config; SlowUpdate dgrams are added to the "epics" store and BeginStep or BeginRun dgrams to
+        the "scan" store. For BeginStep and BeginRun, the `config` fields of the detector segments in
+        the dgram are also copied into the stored configs, for detector names that do not start with
+        "_" and already exist in the stored config. Does nothing if `evt` is falsy (for example None).
+        """
         if not evt:
             return
         for i, d in enumerate(evt._dgrams):
@@ -70,6 +79,11 @@ class EnvStoreManager(object):
                             )
 
     def env_from_variable(self, variable_name):
+        """Return `(env_name, alg)` for the env variable `variable_name`, or None if no store has it.
+
+        The stores are searched in insertion order (the constructor creates "epics" then "scan") with
+        `EnvStore.locate_variable`; `alg` is the algorithm name under which the variable was found.
+        """
         for env_name, store in self.stores.items():
             found = store.locate_variable(variable_name)
             if found is not None:

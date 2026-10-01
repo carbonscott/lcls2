@@ -1,3 +1,4 @@
+"""Define `CallbackBatchBuilder`, which runs the user's smalldata callback and turns the events it selects into event-builder batches."""
 from psana.psexp import TransitionId
 
 
@@ -73,6 +74,15 @@ class CallbackBatchBuilder:
         return proxy_events
 
     def next_batch(self, run_serial=False):
+        """Run the smalldata callback to collect proxy events and return them as one batch, or None.
+
+        With `respect_batch_size` the events are collected until `batch_size` L1Accepts have been
+        gathered (the callback iterator is kept between calls); otherwise whole callback runs are
+        collected until at least one proxy event exists or the event builder has no more data. The
+        batch is `eb.gen_bytearray_batch(proxy_events, run_serial=run_serial)`, made by the
+        `psana.eventbuilder` extension (not visible here); None is returned if no proxy events were
+        collected.
+        """
         if self.respect_batch_size:
             proxy_events = self._collect_proxy_events_bounded()
         else:

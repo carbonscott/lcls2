@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual test script for `psana.detector.Utils`: test 1 or 2 calls `save_log_record_at_start`.
+
+Other names print the usage and exit; the code runs at import time. `save_log_record_at_start`
+has no `scrname` parameter, so as written tests 1 and 2 raise TypeError.
+"""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 STRLOGLEV = sys.argv[2] if len(sys.argv)>2 else 'INFO'

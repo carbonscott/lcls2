@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual test of `CalibConstants` with constants fetched from the calibration DB.
+
+Run as `python test_calibconstants.py <test-name> <loglevel>`: test 1 runs
+`test_calib_constants`, 0 prints the usage. The code runs at import time.
+"""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 STRLOGLEV = sys.argv[2] if len(sys.argv)>2 else 'INFO'
@@ -23,6 +28,11 @@ def dict_calib_constants(exp="ueddaq02", detname="epixquad", runnum=0):
 
 
 def test_calib_constants(exp="ueddaq02", detname="epixquad"):
+    """Fetch the constants of `detname` for `exp`, run 0, and print what `CalibConstants` gives.
+
+    Prints the pedestals, rms, status, mask, common mode, gain, gain factor, geometry text, pixel
+    coordinate indexes and coordinates, DAQ shape and total number of segments.
+    """
     d = dict_calib_constants(exp=exp, detname=detname)
     cc = CalibConstants(d, detname)
     print(info_ndarr(cc.pedestals(), 'pedestals'))

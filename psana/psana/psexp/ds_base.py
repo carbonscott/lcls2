@@ -1,3 +1,6 @@
+"""Base class and shared parameters of the psana data sources: `DataSourceBase`, `DsParms` and
+`InvalidDataSourceArgument`.
+"""
 import abc
 import glob
 import json
@@ -25,6 +28,7 @@ if mode == "mpi":
     pass
 
 class InvalidDataSourceArgument(Exception):
+    """Exception raised by `DataSourceBase._setup_runnum_list` when `exp` is missing or `run` is neither an int nor a list."""
     pass
 
 
@@ -40,6 +44,14 @@ def _log_file_list(logger, title, files):
 
 @dataclass
 class DsParms:
+    """Data source parameters shared with runs, readers and event builders.
+
+    The dataclass fields hold the batch size, maximum number of events, read retries, live flag,
+    filter timestamps, integrating detector settings, calibration cache settings, database suffix,
+    smalldata callback, and the smd file list with its per-file flags. Other code adds attributes:
+    for example `DgramManager.set_configs` sets `det_classes`, `configinfo_dict` and other detector
+    tables on it, and runs set `calibconst`.
+    """
     batch_size: int
     max_events: int
     max_retries: int
@@ -59,12 +71,18 @@ class DsParms:
     def set_det_class_table(
         self, det_classes, xtc_info, det_info_table, det_stream_id_table
     ):
+        """Store `det_classes`, `xtc_info`, `det_info_table` and `det_stream_id_table` as attributes of the same names."""
         self.det_classes = det_classes
         self.xtc_info = xtc_info
         self.det_info_table = det_info_table
         self.det_stream_id_table = det_stream_id_table
 
     def update_smd_state(self, smd_files, use_smds):
+        """Set `smd_files` and the per-file flags `use_smds`.
+
+        `DataSourceBase._apply_detector_selection` sets a flag to True where a bigdata file is used in
+        place of the smalldata file.
+        """
         self.smd_files = smd_files
         self.use_smds = use_smds
 
@@ -72,6 +90,11 @@ class DsParms:
     def intg_stream_id(self):
         # We only set detector related fields later (setup run files) so there
         # is a chance that the stream id table is not created yet.
+        """Stream index of the integrating detector `intg_det`, or -1.
+
+        Looked up in `det_stream_id_table`; -1 if that table is not set yet or does not contain
+        `intg_det`.
+        """
         stream_id = -1
         if hasattr(self, "det_stream_id_table"):
             if self.intg_det in self.det_stream_id_table:
@@ -235,6 +258,11 @@ class DataSourceBase(abc.ABC):
         # Input: timestamps
         #   str         : load the input file (e.g. .npy) and return sorted array with uint64 dtype
         #   np.ndarray  : return sorted array with np.uint64 dtype
+        """Return the filter timestamps as a sorted numpy uint64 array.
+
+        A str is the path of a .npy file to load; a numpy array is used as given; any other type logs a
+        message at info level and gives an empty array.
+        """
         formatted_timestamps = np.empty(0, dtype=np.uint64)
         if isinstance(timestamps, str):
             with open(timestamps, "rb") as ts_npy_f:
@@ -252,6 +280,14 @@ class DataSourceBase(abc.ABC):
         # Send run info to psplotdb server using kafka (default).
         # Note that you can use zmq instead by specifying zmq server
         # in the env var. below.
+        """Publish this job's run info for psplot_live when `psmon_publish` is set.
+
+        Calls `psmon_publish.init()` and sends a dict with the fully qualified host name, `exp`,
+        `runnum`, the publish port and SLURM_JOB_ID (or the process id): to the Kafka topic KAFKA_TOPIC
+        (default "psplot_live") at KAFKA_BOOTSTRAP_SERVER (default 172.24.5.240:9094), or, when
+        PSPLOT_LIVE_ZMQ_SERVER is set, through a zmq REQ socket to that address with `msgtype` set to
+        `MonitorMsgType.PSPLOT`. Does nothing if `psmon_publish` is None.
+        """
         PSPLOT_LIVE_ZMQ_SERVER = os.environ.get("PSPLOT_LIVE_ZMQ_SERVER", "")
         if getattr(self, "psmon_publish", None) is not None:
             publish = self.psmon_publish
@@ -285,10 +321,12 @@ class DataSourceBase(abc.ABC):
 
     @abc.abstractmethod
     def runs(self):
+        """Abstract method: subclasses yield their run objects. The base body returns None."""
         return
 
     @abc.abstractmethod
     def is_mpi(self):
+        """Abstract method: subclasses return whether they use MPI parallel mode. The base body returns None."""
         return
 
     def unique_user_rank(self):
@@ -619,6 +657,17 @@ class DataSourceBase(abc.ABC):
             )
 
     def smalldata(self, **kwargs):
+        """Set up and return this data source's `SmallData` object.
+
+        Calls `self.smalldata_obj.setup_parms(**kwargs)` (filename, batch_size, cache_size, callbacks,
+        swmr_mode); on smalldata server ranks that call runs the server receive loop until all clients
+        are done. The `smalldata_obj` attribute must have been created by the subclass.
+
+        Raises
+        ------
+        Exception
+            In parallel mode (`psana.psexp.tools.MODE` "PARALLEL") if PS_SRV_NODES is unset or 0.
+        """
         if MODE == "PARALLEL":
             PS_SRV_NODES = int(os.environ.get("PS_SRV_NODES", 0))
             if not PS_SRV_NODES:

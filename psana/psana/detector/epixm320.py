@@ -1,3 +1,4 @@
+"""Detector interfaces for the epixm320 detector type: empty config interfaces and the raw-data interfaces."""
 import os
 import sys
 #from time import time
@@ -16,26 +17,54 @@ B16 = 0o100000 # the 16-th bit (counting from 1)
 # make an empty detector interface for Matt's hardware
 # configuration object so that config_dump works - cpo
 class epixm320hw_config_0_0_0(DetectorImpl):
+    """Detector interface for detector type `epixm320hw`, software `config`, version 0.0.0.
+
+    Empty interface; the code comment says it exists so that config_dump works for this hardware
+    configuration object. Keyword arguments given to the constructor are not passed on.
+    """
     def __init__(self, *args, **kwargs):
         super(epixm320hw_config_0_0_0, self).__init__(*args)
 
 class epixm320hw_config_0_1_0(epixm320hw_config_0_0_0):
+    """Detector interface for detector type `epixm320hw`, software `config`, version 0.1.0.
+
+    Same as `epixm320hw_config_0_0_0`; adds nothing.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
 class epixm320hw_config_1_0_0(epixm320hw_config_0_1_0):
+    """Detector interface for detector type `epixm320hw`, software `config`, version 1.0.0.
+
+    Same as `epixm320hw_config_0_0_0`; adds nothing.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
 class epixm320_config_0_0_0(DetectorImpl):
+    """Detector interface for detector type `epixm320`, software `config`, version 0.0.0.
+
+    Empty interface. Keyword arguments given to the constructor are not passed on.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
 class epixm320_config_1_0_0(epixm320_config_0_0_0):
+    """Detector interface for detector type `epixm320`, software `config`, version 1.0.0.
+
+    Same as `epixm320_config_0_0_0`; adds nothing.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
 class epixm320_raw_0_0_0(eb.epix_base):
+    """Area-detector interface for detector type `epixm320`, software `raw`, version 0.0.0.
+
+    `epix_base` subclass. The constructor sets the segment geometry "EPIXMASIC:V1", a 15-bit data
+    mask (0o77777), gain bit 0o100000, gain modes ('AHL', 'SH', 'SL'), default gains
+    (-100.7, -21.3, -100.7), segment numbers [0, 1, 2, 3] and the default geometry file
+    `pscalib/geometry/data/geometry-def-epixm320.data`.
+    """
     def __init__(self, *args, **kwargs):
         logger.debug('epixm320_raw_0_0_0.__init__')
         eb.epix_base.__init__(self, *args, **kwargs)
@@ -87,7 +116,12 @@ class epixm320_raw_0_0_0(eb.epix_base):
 
 
     def calib(self, evt) -> Array3d: # already defined in epix_base and AreaDetectorRaw
-        """  """
+        """Return pedestal-subtracted float32 data, multiplied by the mask when one is available.
+
+        Pixels whose gain bit (0o100000) is set use pedestal plane 1 and the others plane 0, and the
+        data are reduced to 15 bits before the subtraction. Returns None if `evt` or the raw data is
+        None, and the raw data unchanged if there are no pedestals.
+        """
         #logger.debug('%s.%s' % (self.__class__.__name__, sys._getframe().f_code.co_name))
         #print('TBD: %s.%s' % (self.__class__.__name__, sys._getframe().f_code.co_name))
         if is_none(evt, 'evt is None - return None', logger.debug): return None
@@ -127,6 +161,11 @@ def _to_u32(data):
 
 
 class epixm320_raw_0_1_0(epixm320_raw_0_0_0):
+    """Area-detector interface for detector type `epixm320`, software `raw`, version 0.1.0.
+
+    Same as `epixm320_raw_0_0_0` plus accessors that decode values from the first four header and
+    trailer entries of segment 0 (the byte layout is given in code comments).
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -147,11 +186,19 @@ class epixm320_raw_0_1_0(epixm320_raw_0_0_0):
     #   ADD_FIELD(rsvd_40, UINT32, 1);
     #   ADD_FIELD(rsvd_44, UINT32, 1);
     def frameNo(self, evt) -> Array1d:
+        """Return a list of 4 ints: bytes 4-7 of each of the first four `header` entries of segment 0 as little-endian uint32.
+
+        Returns None if the detector's segments are missing.
+        """
         segments = self._segments(evt)
         if segments is None: return None
         return [ _to_u32(segments[0].header[i][4:8]) for i in range(4) ]
 
     def asicNo(self, evt) -> Array1d:
+        """Return a list of 4 values: byte 8 of each of the first four `header` entries of segment 0.
+
+        Returns None if the detector's segments are missing.
+        """
         segments = self._segments(evt)
         if segments is None: return None
         return [segments[0].header[i][8] for i in range(4) ]
@@ -171,11 +218,19 @@ class epixm320_raw_0_1_0(epixm320_raw_0_0_0):
     #   ADD_FIELD(rsvd_44,      UINT32, 1);
 
     def autoFillMask(self, evt) -> Array1d:
+        """Return a list of 4 ints: bytes 0-3 of each of the first four `trailer` entries of segment 0 as little-endian uint32.
+
+        Returns None if the detector's segments are missing.
+        """
         segments = self._segments(evt)
         if segments is None: return None
         return [ _to_u32(segments[0].trailer[i][0:4]) for i in range(4) ]
 
     def fixedMask(self, evt) -> Array1d:
+        """Return a list of 4 ints: bytes 4-7 of each of the first four `trailer` entries of segment 0 as little-endian uint32.
+
+        Returns None if the detector's segments are missing.
+        """
         segments = self._segments(evt)
         if segments is None: return None
         return [ _to_u32(segments[0].trailer[i][4:8]) for i in range(4) ]

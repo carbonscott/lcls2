@@ -16,6 +16,7 @@ cpu_num = psutil.Process().cpu_num()
 s_rsc = 'rank:%03d/%03d-cpu:%03d' % (rank, size, cpu_num)
 
 def filter_callback(run):
+    """Smalldata callback used by this script: yield every event of every step of `run`, printing the time taken per step and for the whole run."""
     t0_sec_run = time()
     for i_step, step in enumerate(run.steps()):
         print('%s i_step %d' % (s_rsc, i_step))

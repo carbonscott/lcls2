@@ -1,6 +1,15 @@
+"""Define `SmdEvents`, an iterator over the dgram lists of smalldata events."""
 from .event_manager import EventManager
 
 class SmdEvents:
+    """Iterator that yields the dgram lists of smalldata events, built with `EventManager(..., smd=True)`.
+
+    With `smdr_man` (used by RunSerial, per the code comment) batches are taken from `smdr_man`
+    and iteration stops when it is exhausted or `shared_state.terminate_flag.value` is set; with
+    `get_smd` (RunParallel) each new batch comes from `get_smd()` and iteration stops when it
+    returns an empty bytearray. Entries in which every dgram is falsy are skipped, and
+    RuntimeError is raised on iteration if neither `smdr_man` nor `get_smd` was given.
+    """
     def __init__(self, configs, dm, max_retries, use_smds, shared_state, get_smd=None, smdr_man=None):
         self.configs = configs
         self.dm = dm

@@ -17,6 +17,11 @@ DAMAGE_VALUEBITMASK = 0x0FFF
 
 
 class DamageBitmask(Enum):
+    """Damage types as an Enum: Truncated=1, OutOfOrder=2, OutOfSynch=3, Corrupted=4,
+    DroppedContribution=5, MissingData=6, TimedOut=7, UserDefined=8.
+
+    `Damage` uses `1 << MissingData.value` as the damage value for missing segments.
+    """
     Truncated = 1  # bitmask 0
     OutOfOrder = 2
     OutOfSynch = 3
@@ -27,21 +32,39 @@ class DamageBitmask(Enum):
     UserDefined = 8  # bitmask 12
 
     def size(self):
+        """Return `len(self.__dict__["_member_names_"])`.
+
+        Called on a member this raises KeyError, because `_member_names_` is in the class `__dict__`,
+        not in a member's; `DamageBitmask.size(DamageBitmask)` returns the number of members (8).
+        """
         return len(self.__dict__["_member_names_"])
 
 
 @dataclass
 class DamageInfo:
+    """Damage information of one event.
+
+    `counts` maps a damage value to a per-segment list of 0/1 flags, `userbits` is a per-segment
+    list, `evt` is the event it was computed for, and `sum_recorded` tells whether it was added to
+    the running sum.
+    """
     counts: dict = None
     userbits: list = None
     evt: object = None
     sum_recorded: bool = False
 
     def loaded(self, evt):
+        """Return True if this info was computed for the same event object `evt` (identity check)."""
         return self.evt is evt
 
 
 class Damage:
+    """Per-event damage summary of one detector data type (`det_alg`, for example `det.raw`).
+
+    Damage is read from the `_xtc.damage` field of the detector's segments. Calling the object is the
+    same as `count(evt)`; results are cached for the last event, and `count` adds each new event to
+    a running per-segment sum returned by `sum()`.
+    """
     def __init__(self, det_alg):
         self.det_alg = det_alg
         self.segments = det_alg._segments
@@ -137,12 +160,24 @@ class Damage:
             self._add_to_sum()
 
     def count(self, evt, flag_sum=True):
+        """Return the damage counts of `evt` as {damage value: list of 0/1 flags indexed by segment id}.
+
+        The damage value is a segment's `_xtc.damage` masked to its low 12 bits. Expected segments that
+        are missing get the OR of the event dgrams' damage, or MissingData (1 << 6) if that is 0 and
+        some segments are present. With `flag_sum` True the counts are added to the running sum once per
+        event.
+        """
         self._load_damage_info(evt, flag_sum=flag_sum)
         return self._damage_info.counts
 
     def userbits(self, evt):
+        """Return a list, indexed by segment id, of each damaged segment's `_xtc.damage >> 12`.
+
+        Undamaged and missing segments give 0. Does not add the event to the running sum.
+        """
         self._load_damage_info(evt)
         return self._damage_info.userbits
 
     def sum(self):
+        """Return the running sum {damage value: per-segment counts} built by `count` calls with `flag_sum=True`."""
         return self._sum_damage_counts
