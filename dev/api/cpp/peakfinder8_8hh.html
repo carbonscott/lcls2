@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('peakfinder8_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">peakfinder8.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares the peakfinder8 peak finder (from OM/Cheetah), its <a class="el" href="structtPeakList.html">tPeakList</a> result structure and the allocate/free helpers.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -105,13 +108,18 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4ac6cafd09a6f155ecd829680abf1543" id="r_a4ac6cafd09a6f155ecd829680abf1543"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="peakfinder8_8hh.html#a4ac6cafd09a6f155ecd829680abf1543">allocatePeakList</a> (<a class="el" href="structtPeakList.html">tPeakList</a> *peak, long NpeaksMax)</td></tr>
+<tr class="memdesc:a4ac6cafd09a6f155ecd829680abf1543"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the counters and summary fields of *peak, set nPeaks_max to NpeaksMax, calloc the 13 per-peak arrays with NpeaksMax elements each, and set memoryAllocated to 1.  <br /></td></tr>
 <tr class="separator:a4ac6cafd09a6f155ecd829680abf1543"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a379a4ac989b5e7e049727b6c72960862" id="r_a379a4ac989b5e7e049727b6c72960862"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="peakfinder8_8hh.html#a379a4ac989b5e7e049727b6c72960862">freePeakList</a> (<a class="el" href="structtPeakList.html">tPeakList</a> peak)</td></tr>
+<tr class="memdesc:a379a4ac989b5e7e049727b6c72960862"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the 13 per-peak arrays of peak.  <br /></td></tr>
 <tr class="separator:a379a4ac989b5e7e049727b6c72960862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada1838cbc28ec7c514472c1ea022780b" id="r_ada1838cbc28ec7c514472c1ea022780b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="peakfinder8_8hh.html#ada1838cbc28ec7c514472c1ea022780b">peakfinder8</a> (<a class="el" href="structtPeakList.html">tPeakList</a> *peaklist, float *data, char *mask, float *pix_r, long asic_nx, long asic_ny, long nasics_x, long nasics_y, float ADCthresh, float hitfinderMinSNR, long hitfinderMinPixCount, long hitfinderMaxPixCount, long hitfinderLocalBGRadius, char *outliersMask)</td></tr>
+<tr class="memdesc:ada1838cbc28ec7c514472c1ea022780b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find peaks in data (nasics_y x nasics_x ASICs of asic_ny x asic_nx pixels) using mask, the per-pixel radius pix_r and the thresholds and limits passed in; the work is done by static helpers in peakfinder8.cc (radial statistics over 5 iterations, then a search per ASIC).  <br /></td></tr>
 <tr class="separator:ada1838cbc28ec7c514472c1ea022780b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares the peakfinder8 peak finder (from OM/Cheetah), its <a class="el" href="structtPeakList.html">tPeakList</a> result structure and the allocate/free helpers. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a4ac6cafd09a6f155ecd829680abf1543" name="a4ac6cafd09a6f155ecd829680abf1543"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ac6cafd09a6f155ecd829680abf1543">&#9670;&#160;</a></span>allocatePeakList()</h2>
 
@@ -138,6 +146,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Zero the counters and summary fields of *peak, set nPeaks_max to NpeaksMax, calloc the 13 per-peak arrays with NpeaksMax elements each, and set memoryAllocated to 1. </p>
+<p>Allocation failures are not checked. </p>
+
 </div>
 </div>
 <a id="a379a4ac989b5e7e049727b6c72960862" name="a379a4ac989b5e7e049727b6c72960862"></a>
@@ -155,6 +166,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the 13 per-peak arrays of peak. </p>
+<p>peak is passed by value, so setting memoryAllocated to 0 does not change the caller's struct. </p>
 
 </div>
 </div>
@@ -255,6 +269,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Find peaks in data (nasics_y x nasics_x ASICs of asic_ny x asic_nx pixels) using mask, the per-pixel radius pix_r and the thresholds and limits passed in; the work is done by static helpers in peakfinder8.cc (radial statistics over 5 iterations, then a search per ASIC). </p>
+<p>Copies at most peaklist-&gt;nPeaks_max peaks into peaklist and sets nPeaks; if outliersMask is not null, the internal map of pixels in peaks is copied into it. </p><dl class="section return"><dt>Returns</dt><dd>0 on success, 1 if an internal allocation fails. </dd></dl>
 
 </div>
 </div>

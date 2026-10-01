@@ -109,6 +109,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a681e70cbce5baaf0fc7fccf57297f300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class constructor is used for initialization of all paramaters.  <br /></td></tr>
 <tr class="separator:a681e70cbce5baaf0fc7fccf57297f300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab88eb135fb5e44eb8561c790c3c2e671" id="r_ab88eb135fb5e44eb8561c790c3c2e671"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">virtual</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#ab88eb135fb5e44eb8561c790c3c2e671">~PeakFinderAlgos</a> ()</td></tr>
+<tr class="memdesc:ab88eb135fb5e44eb8561c790c3c2e671"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the local-maxima, local-minima and connected-pixel maps.  <br /></td></tr>
 <tr class="separator:ab88eb135fb5e44eb8561c790c3c2e671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8ed78685159564ef3649cadc6dc9b88" id="r_ae8ed78685159564ef3649cadc6dc9b88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#ae8ed78685159564ef3649cadc6dc9b88">printParameters</a> ()</td></tr>
 <tr class="memdesc:ae8ed78685159564ef3649cadc6dc9b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints memeber data.  <br /></td></tr>
@@ -123,6 +124,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a24ce8fcaf6eb10a0cefe88546deec920"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints indexes for S/N algorithm.  <br /></td></tr>
 <tr class="separator:a24ce8fcaf6eb10a0cefe88546deec920"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a695cb1403e3fd9a32395a085255cd498" id="r_a695cb1403e3fd9a32395a085255cd498"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a695cb1403e3fd9a32395a085255cd498">printVectorOfRingIndexes_drp</a> ()</td></tr>
+<tr class="memdesc:a695cb1403e3fd9a32395a085255cd498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the (row, col) offsets used for the background ring to stdout, ten per line, computing them first with <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#ac234b7b235860fde8f624e5e2a32e51e" title="Evaluate ring indexes for S/N algorithm.">_evaluateRingIndexes_drp()</a> if the list is empty.  <br /></td></tr>
 <tr class="separator:a695cb1403e3fd9a32395a085255cd498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a842e742c806f4ec80436963fc98c44cf" id="r_a842e742c806f4ec80436963fc98c44cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a842e742c806f4ec80436963fc98c44cf">setPeakSelectionPars</a> (<a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">float</a> &amp;<a class="el" href="classXtcData_1_1Array.html">npix_min</a>=0, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">float</a> &amp;<a class="el" href="classXtcData_1_1Array.html">npix_max</a>=1<a class="el" href="classXtcData_1_1Array.html">e6</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">float</a> &amp;<a class="el" href="classXtcData_1_1Array.html">amax_thr</a>=0, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">float</a> &amp;<a class="el" href="classXtcData_1_1Array.html">atot_thr</a>=0, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">float</a> &amp;<a class="el" href="classXtcData_1_1Array.html">son_min</a>=0)</td></tr>
 <tr class="memdesc:a842e742c806f4ec80436963fc98c44cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set peak selection parameters.  <br /></td></tr>
@@ -161,6 +163,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a6fe47dfb318077a9a460d585fa75efe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fills-out (returns) array of m_conmap.  <br /></td></tr>
 <tr class="separator:a6fe47dfb318077a9a460d585fa75efe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba05e824a9e4e6f65169b760d09bdd18" id="r_aba05e824a9e4e6f65169b760d09bdd18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#aba05e824a9e4e6f65169b760d09bdd18">setAllocator</a> (<a class="el" href="classAllocator.html">Allocator</a> *<a class="el" href="classXtcData_1_1Array.html">allocator</a>)</td></tr>
+<tr class="memdesc:aba05e824a9e4e6f65169b760d09bdd18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the stored <a class="el" href="classAllocator.html" title="Abstract allocator interface with malloc() and free().">Allocator</a> pointer (the trailing comment says it is changed for each event).  <br /></td></tr>
 <tr class="separator:aba05e824a9e4e6f65169b760d09bdd18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b0a94b114842d76633663cc0b9a2118" id="r_a3b0a94b114842d76633663cc0b9a2118"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a class="el" href="classXtcData_1_1Array.html">T</a> &gt; </td></tr>
 <tr class="memitem:a3b0a94b114842d76633663cc0b9a2118"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a3b0a94b114842d76633663cc0b9a2118">peakFinderV3r3</a> (<a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">T</a> *data, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">mask_t</a> *mask, <a class="el" href="classXtcData_1_1Array.html">const</a> size_t &amp;<a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">rows</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> size_t &amp;<a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">cols</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> size_t &amp;rank, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">double</a> &amp;<a class="el" href="classXtcData_1_1Array.html">r0</a>=7.0, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">double</a> &amp;<a class="el" href="classXtcData_1_1Array.html">dr</a>=2.0, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">double</a> &amp;<a class="el" href="classXtcData_1_1Array.html">nsigm</a>=0)</td></tr>
@@ -180,6 +183,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8746632ad9bf50e6d8f997147fe1791b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af289e454c99d8cb0f48ddba219bb38f7" id="r_af289e454c99d8cb0f48ddba219bb38f7"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a class="el" href="classXtcData_1_1Array.html">T</a> &gt; </td></tr>
 <tr class="memitem:af289e454c99d8cb0f48ddba219bb38f7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#af289e454c99d8cb0f48ddba219bb38f7">_findConnectedPixelsInRegionV3_drp</a> (<a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">T</a> *data, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">int</a> &amp;<a class="el" href="classXtcData_1_1Array.html">r</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">int</a> &amp;<a class="el" href="classXtcData_1_1Array.html">c</a>)</td></tr>
+<tr class="memdesc:af289e454c99d8cb0f48ddba219bb38f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively add pixel (r, c) and its 4-connected neighbours to the current pixel group: a pixel is taken if it is unmasked, not yet in the connected-pixel map and not below the region threshold, and it is marked there with the current region number.  <br /></td></tr>
 <tr class="separator:af289e454c99d8cb0f48ddba219bb38f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3335d1625fdb95c829a1a8595baf8aaf" id="r_a3335d1625fdb95c829a1a8595baf8aaf"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a class="el" href="classXtcData_1_1Array.html">T</a> &gt; </td></tr>
 <tr class="memitem:a3335d1625fdb95c829a1a8595baf8aaf"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">void</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a3335d1625fdb95c829a1a8595baf8aaf">_procPixGroupV1_drp</a> (<a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="classXtcData_1_1Array.html">T</a> *data, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="structpsalgos_1_1RingAvgRms.html">RingAvgRms</a> &amp;bkgd, <a class="el" href="classpsalg_1_1AllocArray1D.html">AllocArray1D</a>&lt; <a class="el" href="namespacepsalgos.html#a883268789a434978be9c7cb9bb23fd58">TwoIndexes</a> &gt; &amp;<a class="el" href="classXtcData_1_1Array.html">vinds</a>)</td></tr>
@@ -189,12 +193,16 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a34829aa1097c3cb920a5bfcb62262966" id="r_a34829aa1097c3cb920a5bfcb62262966"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpsalg_1_1AllocArray1D.html">AllocArray1D</a>&lt; <a class="el" href="classXtcData_1_1Array.html">float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">rows</a></td></tr>
+<tr class="memdesc:a34829aa1097c3cb920a5bfcb62262966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Row centers of gravity of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>.  <br /></td></tr>
 <tr class="separator:a34829aa1097c3cb920a5bfcb62262966"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8330c17347879a190acb6dd1533142c" id="r_af8330c17347879a190acb6dd1533142c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpsalg_1_1AllocArray1D.html">AllocArray1D</a>&lt; <a class="el" href="classXtcData_1_1Array.html">float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">cols</a></td></tr>
+<tr class="memdesc:af8330c17347879a190acb6dd1533142c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Column centers of gravity of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>.  <br /></td></tr>
 <tr class="separator:af8330c17347879a190acb6dd1533142c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c6a72d70420126dcc6e6bd5d0679303" id="r_a0c6a72d70420126dcc6e6bd5d0679303"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpsalg_1_1AllocArray1D.html">AllocArray1D</a>&lt; <a class="el" href="classXtcData_1_1Array.html">float</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0c6a72d70420126dcc6e6bd5d0679303">intens</a></td></tr>
+<tr class="memdesc:a0c6a72d70420126dcc6e6bd5d0679303"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total intensities (amp_tot) of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>.  <br /></td></tr>
 <tr class="separator:a0c6a72d70420126dcc6e6bd5d0679303"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a129c06b0a6e7c8284eb5b4a84b5bf2f9" id="r_a129c06b0a6e7c8284eb5b4a84b5bf2f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">unsigned</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a129c06b0a6e7c8284eb5b4a84b5bf2f9">numPeaksSelected</a> = 0</td></tr>
+<tr class="memdesc:a129c06b0a6e7c8284eb5b4a84b5bf2f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of selected peaks, set by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a> (0 initially).  <br /></td></tr>
 <tr class="separator:a129c06b0a6e7c8284eb5b4a84b5bf2f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -212,8 +220,8 @@ Public Attributes</h2></td></tr>
 <div class="line"><span class="keyword">typedef</span> <a class="code hl_class" href="classXtcData_1_1Array.html">types::mask_t</a>     <a class="code hl_typedef" href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">mask_t</a>;</div>
 <div class="line"><span class="keyword">typedef</span> <a class="code hl_class" href="classXtcData_1_1Array.html">types::extrim_t</a>   <a class="code hl_typedef" href="namespacepsalgos.html#aff1684da3a77b6e4ed5303af7e10519e">extrim_t</a>;</div>
 <div class="ttc" id="aclassXtcData_1_1Array_html"><div class="ttname"><a href="classXtcData_1_1Array.html">XtcData::Array</a></div><div class="ttdoc">Non-owning view of an array of T: a data pointer, a pointer to a shape array and a rank.</div><div class="ttdef"><b>Definition</b> Array.hh:27</div></div>
-<div class="ttc" id="anamespacepsalgos_html_a5092e4c49407f201023e17d0a3c3beb6"><div class="ttname"><a href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">psalgos::mask_t</a></div><div class="ttdeci">types::mask_t mask_t</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:34</div></div>
-<div class="ttc" id="anamespacepsalgos_html_aff1684da3a77b6e4ed5303af7e10519e"><div class="ttname"><a href="namespacepsalgos.html#aff1684da3a77b6e4ed5303af7e10519e">psalgos::extrim_t</a></div><div class="ttdeci">types::extrim_t extrim_t</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:35</div></div>
+<div class="ttc" id="anamespacepsalgos_html_a5092e4c49407f201023e17d0a3c3beb6"><div class="ttname"><a href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">psalgos::mask_t</a></div><div class="ttdeci">types::mask_t mask_t</div><div class="ttdoc">Alias for types::mask_t (uint16_t).</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:40</div></div>
+<div class="ttc" id="anamespacepsalgos_html_aff1684da3a77b6e4ed5303af7e10519e"><div class="ttname"><a href="namespacepsalgos.html#aff1684da3a77b6e4ed5303af7e10519e">psalgos::extrim_t</a></div><div class="ttdeci">types::extrim_t extrim_t</div><div class="ttdoc">Alias for types::extrim_t (uint16_t).</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:42</div></div>
 </div><!-- fragment --></li>
 </ul>
 <ul>
@@ -236,9 +244,9 @@ Public Attributes</h2></td></tr>
 <div class="line"><span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; <a class="code hl_class" href="classXtcData_1_1Array.html">pbits</a>=0 # <a class="code hl_class" href="classXtcData_1_1Array.html">Types</a>.h:  NONE=0, DEBUG=1, INFO=2, WARNING=4, <a class="code hl_define" href="PgpCardMod_8h.html#a8fe83ac76edc595f6b98cd4a4127aed5">ERROR</a>=8, CRITICAL=16</div>
 <div class="line"><a class="code hl_class" href="classpsalgos_1_1PeakFinderAlgos.html">PeakFinderAlgos</a>* alg = <span class="keyword">new</span> <a class="code hl_class" href="classpsalgos_1_1PeakFinderAlgos.html">PeakFinderAlgos</a>(<a class="code hl_class" href="classXtcData_1_1Array.html">cseg</a>, <a class="code hl_class" href="classXtcData_1_1Array.html">pbits</a>);</div>
 <div class="ttc" id="aPgpCardMod_8h_html_a8fe83ac76edc595f6b98cd4a4127aed5"><div class="ttname"><a href="PgpCardMod_8h.html#a8fe83ac76edc595f6b98cd4a4127aed5">ERROR</a></div><div class="ttdeci">#define ERROR</div><div class="ttdef"><b>Definition</b> PgpCardMod.h:23</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html">psalgos::PeakFinderAlgos</a></div><div class="ttdoc">PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:228</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a34829aa1097c3cb920a5bfcb62262966"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">psalgos::PeakFinderAlgos::rows</a></div><div class="ttdeci">AllocArray1D&lt; float &gt; rows</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:351</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_af8330c17347879a190acb6dd1533142c"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">psalgos::PeakFinderAlgos::cols</a></div><div class="ttdeci">AllocArray1D&lt; float &gt; cols</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:352</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html">psalgos::PeakFinderAlgos</a></div><div class="ttdoc">PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:253</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a34829aa1097c3cb920a5bfcb62262966"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">psalgos::PeakFinderAlgos::rows</a></div><div class="ttdeci">AllocArray1D&lt; float &gt; rows</div><div class="ttdoc">Row centers of gravity of the selected peaks, filled by _convPeaksSelected().</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:379</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_af8330c17347879a190acb6dd1533142c"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">psalgos::PeakFinderAlgos::cols</a></div><div class="ttdeci">AllocArray1D&lt; float &gt; cols</div><div class="ttdoc">Column centers of gravity of the selected peaks, filled by _convPeaksSelected().</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:380</div></div>
 </div><!-- fragment --></li>
 </ul>
 <ul>
@@ -259,17 +267,17 @@ Public Attributes</h2></td></tr>
 <div class="line">alg.<a class="code hl_function" href="classpsalgos_1_1PeakFinderAlgos.html#a027b219275aa95722288da9ebe51c8cc">localMaxima</a>(<a class="code hl_class" href="classXtcData_1_1Array.html">arr2d</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">rows</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">cols</a>);</div>
 <div class="line">alg.<a class="code hl_function" href="classpsalgos_1_1PeakFinderAlgos.html#ab91360c03cd3db0e92f6c3671810b397">localMinima</a>(<a class="code hl_class" href="classXtcData_1_1Array.html">arr2d</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">rows</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">cols</a>);</div>
 <div class="line">alg.<a class="code hl_function" href="classpsalgos_1_1PeakFinderAlgos.html#a6fe47dfb318077a9a460d585fa75efe3">connectedPixels</a>(<a class="code hl_class" href="classXtcData_1_1Array.html">arr2d</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#a34829aa1097c3cb920a5bfcb62262966">rows</a>, <a class="code hl_variable" href="classpsalgos_1_1PeakFinderAlgos.html#af8330c17347879a190acb6dd1533142c">cols</a>);</div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a027b219275aa95722288da9ebe51c8cc"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a027b219275aa95722288da9ebe51c8cc">psalgos::PeakFinderAlgos::localMaxima</a></div><div class="ttdeci">void localMaxima(extrim_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of local maxima.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:289</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a027b219275aa95722288da9ebe51c8cc"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a027b219275aa95722288da9ebe51c8cc">psalgos::PeakFinderAlgos::localMaxima</a></div><div class="ttdeci">void localMaxima(extrim_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of local maxima.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:316</div></div>
 <div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a12a9db84edb777f386a6f2e4d02358d6"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a12a9db84edb777f386a6f2e4d02358d6">psalgos::PeakFinderAlgos::printSelectionPars</a></div><div class="ttdeci">void printSelectionPars()</div><div class="ttdoc">Prints peak selection parameters.</div></div>
 <div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a24ce8fcaf6eb10a0cefe88546deec920"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a24ce8fcaf6eb10a0cefe88546deec920">psalgos::PeakFinderAlgos::printMatrixOfRingIndexes</a></div><div class="ttdeci">void printMatrixOfRingIndexes()</div><div class="ttdoc">Prints indexes for S/N algorithm.</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a3b0a94b114842d76633663cc0b9a2118"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a3b0a94b114842d76633663cc0b9a2118">psalgos::PeakFinderAlgos::peakFinderV3r3</a></div><div class="ttdeci">void peakFinderV3r3(const T *data, const mask_t *mask, const size_t &amp;rows, const size_t &amp;cols, const size_t &amp;rank, const double &amp;r0=7.0, const double &amp;dr=2.0, const double &amp;nsigm=0)</div><div class="ttdoc">peakFinderV3r3 - &quot;Ranker&quot; - further development of ImgAlgos.peakFinderV3r2.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:370</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a457e8af76ab5038d053650cfd0b523e6"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a457e8af76ab5038d053650cfd0b523e6">psalgos::PeakFinderAlgos::peakSelected</a></div><div class="ttdeci">const Peak &amp; peakSelected(const int &amp;i=0)</div><div class="ttdoc">Returns peak from v_peaks_sel by specified index.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:277</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a6fe47dfb318077a9a460d585fa75efe3"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a6fe47dfb318077a9a460d585fa75efe3">psalgos::PeakFinderAlgos::connectedPixels</a></div><div class="ttdeci">void connectedPixels(conmap_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of m_conmap.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:299</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a3b0a94b114842d76633663cc0b9a2118"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a3b0a94b114842d76633663cc0b9a2118">psalgos::PeakFinderAlgos::peakFinderV3r3</a></div><div class="ttdeci">void peakFinderV3r3(const T *data, const mask_t *mask, const size_t &amp;rows, const size_t &amp;cols, const size_t &amp;rank, const double &amp;r0=7.0, const double &amp;dr=2.0, const double &amp;nsigm=0)</div><div class="ttdoc">peakFinderV3r3 - &quot;Ranker&quot; - further development of ImgAlgos.peakFinderV3r2.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:398</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a457e8af76ab5038d053650cfd0b523e6"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a457e8af76ab5038d053650cfd0b523e6">psalgos::PeakFinderAlgos::peakSelected</a></div><div class="ttdeci">const Peak &amp; peakSelected(const int &amp;i=0)</div><div class="ttdoc">Returns peak from v_peaks_sel by specified index.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:304</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a6fe47dfb318077a9a460d585fa75efe3"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a6fe47dfb318077a9a460d585fa75efe3">psalgos::PeakFinderAlgos::connectedPixels</a></div><div class="ttdeci">void connectedPixels(conmap_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of m_conmap.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:326</div></div>
 <div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a842e742c806f4ec80436963fc98c44cf"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a842e742c806f4ec80436963fc98c44cf">psalgos::PeakFinderAlgos::setPeakSelectionPars</a></div><div class="ttdeci">void setPeakSelectionPars(const float &amp;npix_min=0, const float &amp;npix_max=1e6, const float &amp;amax_thr=0, const float &amp;atot_thr=0, const float &amp;son_min=0)</div><div class="ttdoc">Set peak selection parameters.</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a87fc7b8a6aafbb6c5b9faf8a6368d921"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a87fc7b8a6aafbb6c5b9faf8a6368d921">psalgos::PeakFinderAlgos::vectorOfPeaks</a></div><div class="ttdeci">const AllocArray1D&lt; Peak &gt; &amp; vectorOfPeaks()</div><div class="ttdoc">Returns vector of peaks v_peaks.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:280</div></div>
-<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_ab91360c03cd3db0e92f6c3671810b397"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#ab91360c03cd3db0e92f6c3671810b397">psalgos::PeakFinderAlgos::localMinima</a></div><div class="ttdeci">void localMinima(extrim_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of local minima.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:294</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_a87fc7b8a6aafbb6c5b9faf8a6368d921"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#a87fc7b8a6aafbb6c5b9faf8a6368d921">psalgos::PeakFinderAlgos::vectorOfPeaks</a></div><div class="ttdeci">const AllocArray1D&lt; Peak &gt; &amp; vectorOfPeaks()</div><div class="ttdoc">Returns vector of peaks v_peaks.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:307</div></div>
+<div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_ab91360c03cd3db0e92f6c3671810b397"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#ab91360c03cd3db0e92f6c3671810b397">psalgos::PeakFinderAlgos::localMinima</a></div><div class="ttdeci">void localMinima(extrim_t *map, const size_t &amp;rows, const size_t &amp;cols)</div><div class="ttdoc">Fills-out (returns) array of local minima.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:321</div></div>
 <div class="ttc" id="aclasspsalgos_1_1PeakFinderAlgos_html_ae8ed78685159564ef3649cadc6dc9b88"><div class="ttname"><a href="classpsalgos_1_1PeakFinderAlgos.html#ae8ed78685159564ef3649cadc6dc9b88">psalgos::PeakFinderAlgos::printParameters</a></div><div class="ttdeci">void printParameters()</div><div class="ttdoc">Prints memeber data.</div></div>
-<div class="ttc" id="astructpsalgos_1_1Peak_html"><div class="ttname"><a href="structpsalgos_1_1Peak.html">psalgos::Peak</a></div><div class="ttdoc">Peak parameters.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:46</div></div>
+<div class="ttc" id="astructpsalgos_1_1Peak_html"><div class="ttname"><a href="structpsalgos_1_1Peak.html">psalgos::Peak</a></div><div class="ttdoc">Peak parameters.</div><div class="ttdef"><b>Definition</b> PeakFinderAlgos.hh:55</div></div>
 </div><!-- fragment --> </li>
 </ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -350,6 +358,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Delete the local-maxima, local-minima and connected-pixel maps. </p>
 
 </div>
 </div>
@@ -549,6 +559,9 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Recursively add pixel (r, c) and its 4-connected neighbours to the current pixel group: a pixel is taken if it is unmasked, not yet in the connected-pixel map and not below the region threshold, and it is marked there with the current region number. </p>
+<p>The search stays inside the current region limits. </p>
 
 </div>
 </div>
@@ -1038,6 +1051,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
       </table>
 </div><div class="memdoc">
 
+<p>Print the (row, col) offsets used for the background ring to stdout, ten per line, computing them first with <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#ac234b7b235860fde8f624e5e2a32e51e" title="Evaluate ring indexes for S/N algorithm.">_evaluateRingIndexes_drp()</a> if the list is empty. </p>
+
 </div>
 </div>
 <a id="aba05e824a9e4e6f65169b760d09bdd18" name="aba05e824a9e4e6f65169b760d09bdd18"></a>
@@ -1055,6 +1070,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the stored <a class="el" href="classAllocator.html" title="Abstract allocator interface with malloc() and free().">Allocator</a> pointer (the trailing comment says it is changed for each event). </p>
 
 </div>
 </div>
@@ -1173,6 +1190,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
       </table>
 </div><div class="memdoc">
 
+<p>Column centers of gravity of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>. </p>
+
 </div>
 </div>
 <a id="a0c6a72d70420126dcc6e6bd5d0679303" name="a0c6a72d70420126dcc6e6bd5d0679303"></a>
@@ -1186,6 +1205,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Total intensities (amp_tot) of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>. </p>
 
 </div>
 </div>
@@ -1201,6 +1222,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
       </table>
 </div><div class="memdoc">
 
+<p>Number of selected peaks, set by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a> (0 initially). </p>
+
 </div>
 </div>
 <a id="a34829aa1097c3cb920a5bfcb62262966" name="a34829aa1097c3cb920a5bfcb62262966"></a>
@@ -1214,6 +1237,8 @@ template&lt;<a class="el" href="classXtcData_1_1Array.html">typename</a> <a clas
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Row centers of gravity of the selected peaks, filled by <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html#a0600adbaa72e219c390e94b13398c4f7" title="Converts selected peaks to arrays of fundamental types, rows, cols, intens.">_convPeaksSelected()</a>. </p>
 
 </div>
 </div>

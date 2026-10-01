@@ -119,6 +119,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unpacks one <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> channel: the raw stream (stream id 0) is copied into waveform, and the fex stream (stream id 1) is parsed into peak start positions (sPos), widths (len) and data pointers (fexPtr).  <a href="classPds_1_1HSD_1_1Channel.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html">ChannelPython</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">View of one <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> channel: the constructor finds the raw (stream id 0) and fex (stream id 1) stream headers, <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#a7460add85ccffc67bac45bd47371d291" title="Return a pointer to the raw stream&#39;s samples in the input buffer and set numsamples,...">waveform()</a> returns the raw samples in place, and <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#af21d9bef739dcad4d4186a6abba95da6" title="Return the length of the next fex peak and set startPos (skipped samples plus the widths of earlier p...">next_peak()</a> iterates over the fex peaks.  <a href="classPds_1_1HSD_1_1ChannelPython.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChipAdcCore.html">ChipAdcCore</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -277,6 +278,7 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer classes: stream and event header views and stream validators. </p>
+<p><a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer classes; here <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html" title="View of one HSD channel: the constructor finds the raw (stream id 0) and fex (stream id 1) stream hea...">ChannelPython</a>, used by the Python wrapper. </p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a43a2c37c65852d0d9480a0c9c982ad5b" name="a43a2c37c65852d0d9480a0c9c982ad5b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a43a2c37c65852d0d9480a0c9c982ad5b">&#9670;&#160;</a></span>Action</h2>

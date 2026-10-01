@@ -97,57 +97,82 @@ $(document).ready(function(){initNavTree('namespaceutilsdetector.html',''); init
   <div class="headertitle"><div class="title">utilsdetector Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Pixel calibration helpers (pedestal subtraction and gain) for raw detector data, and a test singleton class.  
+<a href="namespaceutilsdetector.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classutilsdetector_1_1CalibConsSingleton.html">CalibConsSingleton</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test singleton: <a class="el" href="classutilsdetector_1_1CalibConsSingleton.html#af27eee705a96a9f1295ce6d4f40bc00e" title="Return the single instance, creating it on the first call; creation prints a message to stdout.">instance()</a> creates the single object (the private constructor prints a message) and <a class="el" href="classutilsdetector_1_1CalibConsSingleton.html#a96b3b6401fdfebfd7ddcc97cc5e7d565" title="Print &quot;CalibConsSingleton::print()&quot; to stdout.">print()</a> prints the class name.  <a href="classutilsdetector_1_1CalibConsSingleton.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilsdetector_1_1ccstruct.html">ccstruct</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pedestal and gain of one pixel for one gain-bit combination, as stored in the static table of <a class="el" href="namespaceutilsdetector.html#a7bc3d6a44c0fb3e622b399a433f96813" title="On the first call only, copy cc, laid out as [NGRINDS][NPIXELS][2] (pedestal, gain),...">fill_CCSV3()</a>.  <a href="structutilsdetector_1_1ccstruct.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a9c022e705aeb8bc50990441cdb462b41" id="r_a9c022e705aeb8bc50990441cdb462b41"><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a></td></tr>
+<tr class="memdesc:a9c022e705aeb8bc50990441cdb462b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">double; type of the execution times in microseconds returned by the calib_* functions.  <br /></td></tr>
 <tr class="separator:a9c022e705aeb8bc50990441cdb462b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80129598e7a658559bb55638d02d851b" id="r_a80129598e7a658559bb55638d02d851b"><td class="memItemLeft" align="right" valign="top">typedef uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a></td></tr>
+<tr class="memdesc:a80129598e7a658559bb55638d02d851b"><td class="mdescLeft">&#160;</td><td class="mdescRight">uint16_t; raw data element type.  <br /></td></tr>
 <tr class="separator:a80129598e7a658559bb55638d02d851b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a048b646d3cb5bf6c58831dc6266e9f9f" id="r_a048b646d3cb5bf6c58831dc6266e9f9f"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a048b646d3cb5bf6c58831dc6266e9f9f">peds_t</a></td></tr>
+<tr class="memdesc:a048b646d3cb5bf6c58831dc6266e9f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">float; pedestal element type.  <br /></td></tr>
 <tr class="separator:a048b646d3cb5bf6c58831dc6266e9f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00357341636c55f28ea4cdc40ded0850" id="r_a00357341636c55f28ea4cdc40ded0850"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a00357341636c55f28ea4cdc40ded0850">gain_t</a></td></tr>
+<tr class="memdesc:a00357341636c55f28ea4cdc40ded0850"><td class="mdescLeft">&#160;</td><td class="mdescRight">float; gain element type.  <br /></td></tr>
 <tr class="separator:a00357341636c55f28ea4cdc40ded0850"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36f40b655a68fae0a6af6e8b897af5f0" id="r_a36f40b655a68fae0a6af6e8b897af5f0"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a></td></tr>
+<tr class="memdesc:a36f40b655a68fae0a6af6e8b897af5f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">float; output element type.  <br /></td></tr>
 <tr class="separator:a36f40b655a68fae0a6af6e8b897af5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdbabdf8905b36fb9e6ace6f09d76c55" id="r_abdbabdf8905b36fb9e6ace6f09d76c55"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a></td></tr>
+<tr class="memdesc:abdbabdf8905b36fb9e6ace6f09d76c55"><td class="mdescLeft">&#160;</td><td class="mdescRight">float; element type of the combined calibration-constant arrays (pedestals and gains).  <br /></td></tr>
 <tr class="separator:abdbabdf8905b36fb9e6ace6f09d76c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8fbf656afcb16b70403a15c08724500" id="r_ae8fbf656afcb16b70403a15c08724500"><td class="memItemLeft" align="right" valign="top">typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#ae8fbf656afcb16b70403a15c08724500">mask_t</a></td></tr>
+<tr class="memdesc:ae8fbf656afcb16b70403a15c08724500"><td class="mdescLeft">&#160;</td><td class="mdescRight">uint8_t; mask element type (multiplied into the result by <a class="el" href="namespaceutilsdetector.html#a623eb99aa1d28a04e15665aea76c547f" title="Compute out[i] = ((raw[i] &amp; databits) - peds[i]) * gain[i] * mask[i] for size elements.">calib_std()</a> and <a class="el" href="namespaceutilsdetector.html#a336a758dc360070264a897715ed2dcfe" title="For each pixel take g = raw[i] &gt;&gt; 14 (values above 1 become 2) and compute out[i] = ((raw[i] &amp; 0x3fff...">calib_jungfrau_v0()</a>).  <br /></td></tr>
 <tr class="separator:ae8fbf656afcb16b70403a15c08724500"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c33027dc1c257a57724bf87c19c3933" id="r_a4c33027dc1c257a57724bf87c19c3933"><td class="memItemLeft" align="right" valign="top">typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a></td></tr>
+<tr class="memdesc:a4c33027dc1c257a57724bf87c19c3933"><td class="mdescLeft">&#160;</td><td class="mdescRight">uint32_t; size and index type.  <br /></td></tr>
 <tr class="separator:a4c33027dc1c257a57724bf87c19c3933"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7bc3d6a44c0fb3e622b399a433f96813" id="r_a7bc3d6a44c0fb3e622b399a433f96813"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a7bc3d6a44c0fb3e622b399a433f96813">fill_CCSV3</a> (const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc)</td></tr>
+<tr class="memdesc:a7bc3d6a44c0fb3e622b399a433f96813"><td class="mdescLeft">&#160;</td><td class="mdescRight">On the first call only, copy cc, laid out as [NGRINDS][NPIXELS][2] (pedestal, gain), into the static table used by <a class="el" href="namespaceutilsdetector.html#a7344322c9ff40b50a64ace37f2125b82" title="Fill the static table from cc on the first call (fill_CCSV3(), which always reads NPIXELS pixels per ...">calib_jungfrau_v3_struct()</a>, printing progress and the first five pixels of each combination to stdout.  <br /></td></tr>
 <tr class="separator:a7bc3d6a44c0fb3e622b399a433f96813"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4976f0e23b7aaa617f6921404941d5ff" id="r_a4976f0e23b7aaa617f6921404941d5ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a4976f0e23b7aaa617f6921404941d5ff">calib_jungrfau_blk_v1</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a4976f0e23b7aaa617f6921404941d5ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each of size_blk pixels compute out[i] = ((raw[i] &amp; 0x3fff) - cc[8*i+g]) * cc[8*i+g+4], where g = raw[i] &gt;&gt; 14; cc holds 4 pedestals then 4 gains per pixel.  <br /></td></tr>
 <tr class="separator:a4976f0e23b7aaa617f6921404941d5ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a623eb99aa1d28a04e15665aea76c547f" id="r_a623eb99aa1d28a04e15665aea76c547f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a623eb99aa1d28a04e15665aea76c547f">calib_std</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#a048b646d3cb5bf6c58831dc6266e9f9f">peds_t</a> *peds, const <a class="el" href="namespaceutilsdetector.html#a00357341636c55f28ea4cdc40ded0850">gain_t</a> *gain, const <a class="el" href="namespaceutilsdetector.html#ae8fbf656afcb16b70403a15c08724500">mask_t</a> *mask, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size, const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> databits, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a623eb99aa1d28a04e15665aea76c547f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute out[i] = ((raw[i] &amp; databits) - peds[i]) * gain[i] * mask[i] for size elements.  <br /></td></tr>
 <tr class="separator:a623eb99aa1d28a04e15665aea76c547f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a336a758dc360070264a897715ed2dcfe" id="r_a336a758dc360070264a897715ed2dcfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a336a758dc360070264a897715ed2dcfe">calib_jungfrau_v0</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#a048b646d3cb5bf6c58831dc6266e9f9f">peds_t</a> *peds, const <a class="el" href="namespaceutilsdetector.html#a00357341636c55f28ea4cdc40ded0850">gain_t</a> *gain, const <a class="el" href="namespaceutilsdetector.html#ae8fbf656afcb16b70403a15c08724500">mask_t</a> *mask, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a336a758dc360070264a897715ed2dcfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each pixel take g = raw[i] &gt;&gt; 14 (values above 1 become 2) and compute out[i] = ((raw[i] &amp; 0x3fff) - peds[g*size+i]) * gain[g*size+i] * mask[i].  <br /></td></tr>
 <tr class="separator:a336a758dc360070264a897715ed2dcfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adace2a047d8694b75a390efb427e2caf" id="r_adace2a047d8694b75a390efb427e2caf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#adace2a047d8694b75a390efb427e2caf">calib_jungfrau_v1</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:adace2a047d8694b75a390efb427e2caf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply <a class="el" href="namespaceutilsdetector.html#a4976f0e23b7aaa617f6921404941d5ff" title="For each of size_blk pixels compute out[i] = ((raw[i] &amp; 0x3fff) - cc[8*i+g]) * cc[8*i+g+4],...">calib_jungrfau_blk_v1()</a> to consecutive blocks of size_blk pixels, with cc holding 8 values per pixel; the last size % size_blk pixels are not processed.  <br /></td></tr>
 <tr class="separator:adace2a047d8694b75a390efb427e2caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e8d1d1003c892532f7a5a284bc34247" id="r_a1e8d1d1003c892532f7a5a284bc34247"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a1e8d1d1003c892532f7a5a284bc34247">calib_jungfrau_v2</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a1e8d1d1003c892532f7a5a284bc34247"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute out[i] = ((raw[i] &amp; 0x3fff) - cc[i+size*g]) * cc[i+size*g+4*size] with g = raw[i] &gt;&gt; 14, i.e.  <br /></td></tr>
 <tr class="separator:a1e8d1d1003c892532f7a5a284bc34247"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a504b41057684c72b7ec23c91fb03db5b" id="r_a504b41057684c72b7ec23c91fb03db5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a504b41057684c72b7ec23c91fb03db5b">calib_jungfrau_v3</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;npix, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a504b41057684c72b7ec23c91fb03db5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute out[i] = ((raw[i] &amp; 0x3fff) - cc[2*(i+npix*g)]) * cc[2*(i+npix*g)+1] with g = raw[i] &gt;&gt; 14, i.e.  <br /></td></tr>
 <tr class="separator:a504b41057684c72b7ec23c91fb03db5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7344322c9ff40b50a64ace37f2125b82" id="r_a7344322c9ff40b50a64ace37f2125b82"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a7344322c9ff40b50a64ace37f2125b82">calib_jungfrau_v3_struct</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a7344322c9ff40b50a64ace37f2125b82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the static table from cc on the first call (<a class="el" href="namespaceutilsdetector.html#a7bc3d6a44c0fb3e622b399a433f96813" title="On the first call only, copy cc, laid out as [NGRINDS][NPIXELS][2] (pedestal, gain),...">fill_CCSV3()</a>, which always reads NPIXELS pixels per combination), then compute out[i] = ((raw[i] &amp; 0x3fff) - pedestal) * gain from table entry [raw[i] &gt;&gt; 14][i].  <br /></td></tr>
 <tr class="separator:a7344322c9ff40b50a64ace37f2125b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a402b4a5815657e17cb31a7c890b33785" id="r_a402b4a5815657e17cb31a7c890b33785"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a402b4a5815657e17cb31a7c890b33785">calib_jungfrau_v4_empty</a> ()</td></tr>
+<tr class="memdesc:a402b4a5815657e17cb31a7c890b33785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do nothing and return the time between two steady_clock reads, in microseconds.  <br /></td></tr>
 <tr class="separator:a402b4a5815657e17cb31a7c890b33785"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91aef9ce479a82d86a5552679417932e" id="r_a91aef9ce479a82d86a5552679417932e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceutilsdetector.html#a9c022e705aeb8bc50990441cdb462b41">time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilsdetector.html#a91aef9ce479a82d86a5552679417932e">calib_jungfrau_v5_empty</a> (const <a class="el" href="namespaceutilsdetector.html#a80129598e7a658559bb55638d02d851b">rawd_t</a> *raw, const <a class="el" href="namespaceutilsdetector.html#abdbabdf8905b36fb9e6ace6f09d76c55">cc_t</a> *cc, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;npix, const <a class="el" href="namespaceutilsdetector.html#a4c33027dc1c257a57724bf87c19c3933">sizeb_t</a> &amp;size_blk, <a class="el" href="namespaceutilsdetector.html#a36f40b655a68fae0a6af6e8b897af5f0">out_t</a> *out)</td></tr>
+<tr class="memdesc:a91aef9ce479a82d86a5552679417932e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ignore all arguments and return <a class="el" href="namespaceutilsdetector.html#a402b4a5815657e17cb31a7c890b33785" title="Do nothing and return the time between two steady_clock reads, in microseconds.">calib_jungfrau_v4_empty()</a>.  <br /></td></tr>
 <tr class="separator:a91aef9ce479a82d86a5552679417932e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Pixel calibration helpers (pedestal subtraction and gain) for raw detector data, and a test singleton class. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="abdbabdf8905b36fb9e6ace6f09d76c55" name="abdbabdf8905b36fb9e6ace6f09d76c55"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abdbabdf8905b36fb9e6ace6f09d76c55">&#9670;&#160;</a></span>cc_t</h2>
 
@@ -159,6 +184,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>float; element type of the combined calibration-constant arrays (pedestals and gains). </p>
 
 </div>
 </div>
@@ -174,6 +201,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>float; gain element type. </p>
+
 </div>
 </div>
 <a id="ae8fbf656afcb16b70403a15c08724500" name="ae8fbf656afcb16b70403a15c08724500"></a>
@@ -187,6 +216,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>uint8_t; mask element type (multiplied into the result by <a class="el" href="namespaceutilsdetector.html#a623eb99aa1d28a04e15665aea76c547f" title="Compute out[i] = ((raw[i] &amp; databits) - peds[i]) * gain[i] * mask[i] for size elements.">calib_std()</a> and <a class="el" href="namespaceutilsdetector.html#a336a758dc360070264a897715ed2dcfe" title="For each pixel take g = raw[i] &gt;&gt; 14 (values above 1 become 2) and compute out[i] = ((raw[i] &amp; 0x3fff...">calib_jungfrau_v0()</a>). </p>
 
 </div>
 </div>
@@ -202,6 +233,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>float; output element type. </p>
+
 </div>
 </div>
 <a id="a048b646d3cb5bf6c58831dc6266e9f9f" name="a048b646d3cb5bf6c58831dc6266e9f9f"></a>
@@ -215,6 +248,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>float; pedestal element type. </p>
 
 </div>
 </div>
@@ -230,6 +265,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>uint16_t; raw data element type. </p>
+
 </div>
 </div>
 <a id="a4c33027dc1c257a57724bf87c19c3933" name="a4c33027dc1c257a57724bf87c19c3933"></a>
@@ -244,6 +281,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>uint32_t; size and index type. </p>
+
 </div>
 </div>
 <a id="a9c022e705aeb8bc50990441cdb462b41" name="a9c022e705aeb8bc50990441cdb462b41"></a>
@@ -257,6 +296,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>double; type of the execution times in microseconds returned by the calib_* functions. </p>
+<p>Inside utilsdetector it hides the standard time_t. </p>
 
 </div>
 </div>
@@ -311,6 +353,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>For each pixel take g = raw[i] &gt;&gt; 14 (values above 1 become 2) and compute out[i] = ((raw[i] &amp; 0x3fff) - peds[g*size+i]) * gain[g*size+i] * mask[i]. </p>
+<dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds. </dd></dl>
+
 </div>
 </div>
 <a id="adace2a047d8694b75a390efb427e2caf" name="adace2a047d8694b75a390efb427e2caf"></a>
@@ -356,6 +401,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Apply <a class="el" href="namespaceutilsdetector.html#a4976f0e23b7aaa617f6921404941d5ff" title="For each of size_blk pixels compute out[i] = ((raw[i] &amp; 0x3fff) - cc[8*i+g]) * cc[8*i+g+4],...">calib_jungrfau_blk_v1()</a> to consecutive blocks of size_blk pixels, with cc holding 8 values per pixel; the last size % size_blk pixels are not processed. </p>
+<dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds. </dd></dl>
 
 </div>
 </div>
@@ -403,6 +451,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Compute out[i] = ((raw[i] &amp; 0x3fff) - cc[i+size*g]) * cc[i+size*g+4*size] with g = raw[i] &gt;&gt; 14, i.e. </p>
+<p>cc laid out as [2][4][size] (pedestals, then gains). size_blk is not used. </p><dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds. </dd></dl>
+
 </div>
 </div>
 <a id="a504b41057684c72b7ec23c91fb03db5b" name="a504b41057684c72b7ec23c91fb03db5b"></a>
@@ -448,6 +499,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Compute out[i] = ((raw[i] &amp; 0x3fff) - cc[2*(i+npix*g)]) * cc[2*(i+npix*g)+1] with g = raw[i] &gt;&gt; 14, i.e. </p>
+<p>cc laid out as [4][npix][2]. size_blk is not used. </p><dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds. </dd></dl>
 
 </div>
 </div>
@@ -495,6 +549,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Fill the static table from cc on the first call (<a class="el" href="namespaceutilsdetector.html#a7bc3d6a44c0fb3e622b399a433f96813" title="On the first call only, copy cc, laid out as [NGRINDS][NPIXELS][2] (pedestal, gain),...">fill_CCSV3()</a>, which always reads NPIXELS pixels per combination), then compute out[i] = ((raw[i] &amp; 0x3fff) - pedestal) * gain from table entry [raw[i] &gt;&gt; 14][i]. </p>
+<p>size_blk is not used. </p><dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds, including the table fill. </dd></dl>
+
 </div>
 </div>
 <a id="a402b4a5815657e17cb31a7c890b33785" name="a402b4a5815657e17cb31a7c890b33785"></a>
@@ -511,6 +568,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Do nothing and return the time between two steady_clock reads, in microseconds. </p>
 
 </div>
 </div>
@@ -558,6 +617,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Ignore all arguments and return <a class="el" href="namespaceutilsdetector.html#a402b4a5815657e17cb31a7c890b33785" title="Do nothing and return the time between two steady_clock reads, in microseconds.">calib_jungfrau_v4_empty()</a>. </p>
+
 </div>
 </div>
 <a id="a4976f0e23b7aaa617f6921404941d5ff" name="a4976f0e23b7aaa617f6921404941d5ff"></a>
@@ -597,6 +658,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>For each of size_blk pixels compute out[i] = ((raw[i] &amp; 0x3fff) - cc[8*i+g]) * cc[8*i+g+4], where g = raw[i] &gt;&gt; 14; cc holds 4 pedestals then 4 gains per pixel. </p>
 
 </div>
 </div>
@@ -656,6 +719,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Compute out[i] = ((raw[i] &amp; databits) - peds[i]) * gain[i] * mask[i] for size elements. </p>
+<dl class="section return"><dt>Returns</dt><dd>Execution time in microseconds (steady_clock). </dd></dl>
+
 </div>
 </div>
 <a id="a7bc3d6a44c0fb3e622b399a433f96813" name="a7bc3d6a44c0fb3e622b399a433f96813"></a>
@@ -673,6 +739,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>On the first call only, copy cc, laid out as [NGRINDS][NPIXELS][2] (pedestal, gain), into the static table used by <a class="el" href="namespaceutilsdetector.html#a7344322c9ff40b50a64ace37f2125b82" title="Fill the static table from cc on the first call (fill_CCSV3(), which always reads NPIXELS pixels per ...">calib_jungfrau_v3_struct()</a>, printing progress and the first five pixels of each combination to stdout. </p>
+<p>Later calls return at once. </p>
 
 </div>
 </div>

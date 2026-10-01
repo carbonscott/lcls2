@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('ConstFracDiscrim_8hh.html',''); initRe
   <div class="headertitle"><div class="title">ConstFracDiscrim.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares psalgos constant-fraction discrimination functions: getcfd() and its polynomial helpers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -104,25 +107,33 @@ $(document).ready(function(){initNavTree('ConstFracDiscrim_8hh.html',''); initRe
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacepsalgos" id="r_namespacepsalgos"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html">psalgos</a></td></tr>
+<tr class="memdesc:namespacepsalgos"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waveform and peak-finding algorithms of psana (constant-fraction discrimination, <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">PeakFinderAlgos</a>, ...). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ad7c2a62d82d3dcc8a3ba387c566d17fd" id="r_ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#ad7c2a62d82d3dcc8a3ba387c566d17fd">psalgos::Waveform</a></td></tr>
+<tr class="memdesc:ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector&lt;double&gt; of waveform samples, the input of <a class="el" href="namespacepsalgos.html#a20b0c82043875622713b812ed94f1a17" title="Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-...">getcfd()</a>.  <br /></td></tr>
 <tr class="separator:ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a797c3d5cc3476ac22faddc1c8c252147" id="r_a797c3d5cc3476ac22faddc1c8c252147"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a797c3d5cc3476ac22faddc1c8c252147">psalgos::diff_table</a> (int deg, const std::vector&lt; double &gt; &amp;x, const std::vector&lt; double &gt; &amp;y)</td></tr>
+<tr class="memdesc:a797c3d5cc3476ac22faddc1c8c252147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return y[0] followed by difference quotients taken column by column, each computed as (next - current) / (x[row] - x[row+1]) with adjacent x spacing at every order; the first entry of each column is appended.  <br /></td></tr>
 <tr class="separator:a797c3d5cc3476ac22faddc1c8c252147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7727f88749188e5341c1be1f53128316" id="r_a7727f88749188e5341c1be1f53128316"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a7727f88749188e5341c1be1f53128316">psalgos::eval_poly</a> (double x, const std::vector&lt; double &gt; &amp;coeffs)</td></tr>
+<tr class="memdesc:a7727f88749188e5341c1be1f53128316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate the polynomial with coefficients coeffs, highest power first, at x.  <br /></td></tr>
 <tr class="separator:a7727f88749188e5341c1be1f53128316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abed4e792c1e190affce638dd275cd9eb" id="r_abed4e792c1e190affce638dd275cd9eb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#abed4e792c1e190affce638dd275cd9eb">psalgos::find_root</a> (const std::vector&lt; double &gt; &amp;f, const std::vector&lt; double &gt; &amp;df, double error, double x0, int max_its=1000)</td></tr>
+<tr class="memdesc:abed4e792c1e190affce638dd275cd9eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Newton iteration from x0 on the polynomial f with derivative polynomial df (both evaluated with <a class="el" href="namespacepsalgos.html#a7727f88749188e5341c1be1f53128316" title="Evaluate the polynomial with coefficients coeffs, highest power first, at x.">eval_poly()</a>).  <br /></td></tr>
 <tr class="separator:abed4e792c1e190affce638dd275cd9eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20b0c82043875622713b812ed94f1a17" id="r_a20b0c82043875622713b812ed94f1a17"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a20b0c82043875622713b812ed94f1a17">psalgos::getcfd</a> (const double sampleInterval, const double horpos, const double gain, const double offset, const <a class="el" href="namespacepsalgos.html#ad7c2a62d82d3dcc8a3ba387c566d17fd">Waveform</a> &amp;waveform, const int32_t delay, const double walk, const double threshold, const double fraction)</td></tr>
+<tr class="memdesc:a20b0c82043875622713b812ed94f1a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-off)*fraction + (w[k-delay]-off) crosses walk/gain between i and i+1, |w[i]-off| &gt; threshold/gain and the polarity matches, with off = (int)(offset/gain).  <br /></td></tr>
 <tr class="separator:a20b0c82043875622713b812ed94f1a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares psalgos constant-fraction discrimination functions: getcfd() and its polynomial helpers. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -108,7 +108,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aa247e433b2daa56afd3fbc01c1d98f54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with no paths, no server and no open file.  <br /></td></tr>
 <tr class="separator:aa247e433b2daa56afd3fbc01c1d98f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cf7eb75fbf250ece60c978a7fb2f0e7" id="r_a7cf7eb75fbf250ece60c978a7fb2f0e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXtcRunSet.html#a7cf7eb75fbf250ece60c978a7fb2f0e7">~XtcRunSet</a> ()</td></tr>
-<tr class="memdesc:a7cf7eb75fbf250ece60c978a7fb2f0e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If <a class="el" href="classXtcRunSet.html#ab06671a80a06e98b82749b0d1226740f" title="On the first call only: store the flags, set the period to 1e9/rate ns (0, unthrottled,...">connect()</a> created a server, unlink its shared memory (XtcMonitorServer::unlink()); the server object is not deleted.  <br /></td></tr>
+<tr class="memdesc:a7cf7eb75fbf250ece60c978a7fb2f0e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If <a class="el" href="classXtcRunSet.html#ab06671a80a06e98b82749b0d1226740f" title="On the first call only: store the flags, set the period to 1e9/rate ns (0, unthrottled,...">connect()</a> created a server, call its XtcMonitorServer::unlink(), which sets its terminate flag and closes and unlinks its message queues (the shared memory is not unlinked); the server object is not deleted.  <br /></td></tr>
 <tr class="separator:a7cf7eb75fbf250ece60c978a7fb2f0e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a421512574171356b0fcd8771e7117e91" id="r_a421512574171356b0fcd8771e7117e91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXtcRunSet.html#a421512574171356b0fcd8771e7117e91">addSinglePath</a> (std::string path)</td></tr>
 <tr class="memdesc:a421512574171356b0fcd8771e7117e91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append path to the file list (not sorted).  <br /></td></tr>
@@ -132,7 +132,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:adfec3072462ff8d3374a95b9c404d439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classXtcRunSet.html#adfec3072462ff8d3374a95b9c404d439" title="Call wait() on the server created by connect().">wait()</a> on the server created by <a class="el" href="classXtcRunSet.html#ab06671a80a06e98b82749b0d1226740f" title="On the first call only: store the flags, set the period to 1e9/rate ns (0, unthrottled,...">connect()</a>.  <br /></td></tr>
 <tr class="separator:adfec3072462ff8d3374a95b9c404d439"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7203bba30fe872bcf458bbf27f9e5723" id="r_a7203bba30fe872bcf458bbf27f9e5723"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXtcRunSet.html#a7203bba30fe872bcf458bbf27f9e5723">exit</a> ()</td></tr>
-<tr class="memdesc:a7203bba30fe872bcf458bbf27f9e5723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlink the server's shared memory (XtcMonitorServer::unlink()) and print "Unlinked/exited server".  <br /></td></tr>
+<tr class="memdesc:a7203bba30fe872bcf458bbf27f9e5723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the server's XtcMonitorServer::unlink() (sets its terminate flag and closes and unlinks its message queues; the shared memory is not unlinked) and print "Unlinked/exited server".  <br /></td></tr>
 <tr class="separator:a7203bba30fe872bcf458bbf27f9e5723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -172,7 +172,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>If <a class="el" href="classXtcRunSet.html#ab06671a80a06e98b82749b0d1226740f" title="On the first call only: store the flags, set the period to 1e9/rate ns (0, unthrottled,...">connect()</a> created a server, unlink its shared memory (XtcMonitorServer::unlink()); the server object is not deleted. </p>
+<p>If <a class="el" href="classXtcRunSet.html#ab06671a80a06e98b82749b0d1226740f" title="On the first call only: store the flags, set the period to 1e9/rate ns (0, unthrottled,...">connect()</a> created a server, call its XtcMonitorServer::unlink(), which sets its terminate flag and closes and unlinks its message queues (the shared memory is not unlinked); the server object is not deleted. </p>
 
 </div>
 </div>
@@ -351,7 +351,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Unlink the server's shared memory (XtcMonitorServer::unlink()) and print "Unlinked/exited server". </p>
+<p>Call the server's XtcMonitorServer::unlink() (sets its terminate flag and closes and unlinks its message queues; the shared memory is not unlinked) and print "Unlinked/exited server". </p>
 
 </div>
 </div>

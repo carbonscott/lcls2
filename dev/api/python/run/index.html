@@ -3133,11 +3133,13 @@ can be edited, and saved to <code>dm.shm_res_mv</code> when the caller resumes t
     <div class="doc doc-contents ">
 
         <p>Yield a <code>Step</code> for each BeginStep transition of the DRP run, saving transitions to the DRP result shared memory.</p>
-<p>Primes the run on first use as <code>events()</code> does. L1Accepts seen here are skipped; every other
-transition updates the env store and gets a new <code>DgramEdit</code>, a BeginStep is saved after the
-caller resumes the iteration, other transitions are saved at once, and iteration stops at
-EndRun. Each Step is created with <code>run=self</code>, so its events are saved too.</p>
+<p>Primes the run on first use as <code>events()</code> does. L1Accepts seen here are skipped; every other transition updates the env store and gets a new <code>DgramEdit</code>, a BeginStep is saved after the caller resumes the iteration, other transitions are saved at once, and iteration stops at EndRun.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Each Step is created with <code>run=self</code>, so its events are saved too.</p>
+</details>
 
     </div>
 

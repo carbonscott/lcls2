@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('psana_2psana_2hexanode_2ctest__utils_8
   <div class="headertitle"><div class="title">ctest_utils.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares small test helpers (in namespace psalg) that print and modify arrays and vectors.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -110,6 +113,7 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a11f9f56e60443fdde70d9a0fba572754" id="r_a11f9f56e60443fdde70d9a0fba572754"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a11f9f56e60443fdde70d9a0fba572754"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#a11f9f56e60443fdde70d9a0fba572754">psalg::ctest_nda_v2</a> (T *arr, uint32_t *sh, int &amp;ndim)</td></tr>
+<tr class="memdesc:a11f9f56e60443fdde70d9a0fba572754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test helper: print ndim and the first ndim entries of sh, then print the first 5 elements of arr and add each element's index to it (always 5 elements).  <br /></td></tr>
 <tr class="separator:a11f9f56e60443fdde70d9a0fba572754"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cadc2e242ebc84480694697e87fb089" id="r_a0cadc2e242ebc84480694697e87fb089"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a0cadc2e242ebc84480694697e87fb089"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#a0cadc2e242ebc84480694697e87fb089">psalg::ctest_nda</a> (T *arr, int r, int c)</td></tr>
@@ -129,7 +133,9 @@ Functions</h2></td></tr>
 <tr class="memdesc:a15fa8dfce6825e52336f0ffacd04027e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test helper: print the size of v, set v[2] to 222 (not range-checked), then print all elements of v to stdout.  <br /></td></tr>
 <tr class="separator:a15fa8dfce6825e52336f0ffacd04027e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares small test helpers (in namespace psalg) that print and modify arrays and vectors. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

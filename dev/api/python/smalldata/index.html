@@ -2260,11 +2260,13 @@ the server's memory.</p>
     <div class="doc doc-contents ">
 
         <p>Add one event's <code>data</code> to the cache.</p>
-<p>For a fixed-shape cache, <code>data</code> is written into the next row of the preallocated array and
-<code>size</code> grows by 1. For a variable-length cache, the entries of <code>data</code> are appended along axis 0
-and <code>size</code> grows by <code>len(data)</code>; None or empty <code>data</code> adds nothing. <code>n_events</code> is incremented
-in every case.</p>
+<p>For a fixed-shape cache, <code>data</code> is written into the next row of the preallocated array and <code>size</code> grows by 1. For a variable-length cache, the entries of <code>data</code> are appended along axis 0 and <code>size</code> grows by <code>len(data)</code>; None or empty <code>data</code> adds nothing.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p><code>n_events</code> is incremented in every case.</p>
+</details>
 
     </div>
 
@@ -2453,11 +2455,13 @@ every batch.</p>
     <div class="doc doc-contents ">
 
         <p>Receive batches from clients on <code>smdcomm</code> until every client has sent "done".</p>
-<p>The number of clients is <code>smdcomm.Get_size() - 1</code>. A received list is passed to <code>handle</code>; the
-string "done" counts one finished client. The receive wait time and
-<code>number of events / processing seconds * 1e-3</code> are set on the "psana_srv_wait" and
-"psana_srv_rate" Prometheus gauges.</p>
+<p>The number of clients is <code>smdcomm.Get_size() - 1</code>. A received list is passed to <code>handle</code>; the string "done" counts one finished client.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The receive wait time and <code>number of events / processing seconds * 1e-3</code> are set on the "psana_srv_wait" and "psana_srv_rate" Prometheus gauges.</p>
+</details>
 
     </div>
 
@@ -3209,11 +3213,13 @@ own <code>value</code> if <code>inplace</code>), and non-client ranks get None.<
     <div class="doc doc-contents ">
 
         <p>Multiply <code>value</code> element-wise across client ranks (MPI.PROD) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data, so every client rank must
-pass an array or number.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data, so every client rank must pass an array or number.</p>
+</details>
 
     </div>
 
@@ -3233,10 +3239,13 @@ pass an array or number.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with logical AND (MPI.LAND) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3256,10 +3265,13 @@ get None. No stand-in array is made for a client rank without data.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with bitwise AND (MPI.BAND) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3279,10 +3291,13 @@ get None. No stand-in array is made for a client rank without data.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with logical OR (MPI.LOR) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3302,10 +3317,13 @@ get None. No stand-in array is made for a client rank without data.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with bitwise OR (MPI.BOR) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3325,10 +3343,13 @@ get None. No stand-in array is made for a client rank without data.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with logical XOR (MPI.LXOR) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3348,10 +3369,13 @@ get None. No stand-in array is made for a client rank without data.</p>
     <div class="doc doc-contents ">
 
         <p>Combine <code>value</code> across client ranks with bitwise XOR (MPI.BXOR) onto client rank 0.</p>
-<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
-rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
-get None. No stand-in array is made for a client rank without data.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>No stand-in array is made for a client rank without data.</p>
+</details>
 
     </div>
 
@@ -3415,12 +3439,13 @@ slower, e.g. at the end of the job).</p>
     <div class="doc doc-contents ">
 
         <p>Join the per-server part files into the main HDF5 file with virtual datasets.</p>
-<p>Looks for <code>&lt;basename&gt;_part&lt;i&gt;.h5</code> for every server rank i, printing a warning for each one
-that is missing. For every dataset found in any part file, it creates a virtual dataset whose
-rows are the part files' rows in server order; a part file without that dataset leaves a gap as
-long as its "/timestamp" dataset, filled with -99999 (integers) or NaN (floats). The main file
-is opened with <code>_get_full_file_handle</code> and closed at the end.</p>
+<p>Looks for <code>&lt;basename&gt;_part&lt;i&gt;.h5</code> for every server rank i, printing a warning for each one that is missing. For every dataset found in any part file, it creates a virtual dataset whose rows are the part files' rows in server order; a part file without that dataset leaves a gap as long as its "/timestamp" dataset, filled with -99999 (integers) or NaN (floats).</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The main file is opened with <code>_get_full_file_handle</code> and closed at the end.</p>
+</details>
 
     </div>
 
@@ -3449,12 +3474,13 @@ is opened with <code>_get_full_file_handle</code> and closed at the end.</p>
     <div class="doc doc-contents ">
 
         <p>Classify dataset key <code>k</code> and record the result in the module dicts.</p>
-<p>A key is variable-length (<code>var_dict[k] = True</code>) if any "/"-separated part starts with "var_".
-If that part is the last one and ends with "<em>len", the key is itself a length key; otherwise
-the name of its length key (the path up to and including that part, plus "_len") is stored in
-<code>len_map[k]</code>, marked as a length key in <code>len_dict</code> and given an empty entry in <code>len_evt</code>. Keys
-with no "var</em>" part are marked as neither variable nor length keys.</p>
+<p>A key is variable-length (<code>var_dict[k] = True</code>) if any "/"-separated part starts with "var_". If that part is the last one and ends with "_len", the key is itself a length key; otherwise the name of its length key (the path up to and including that part, plus "_len") is stored in <code>len_map[k]</code>, marked as a length key in <code>len_dict</code> and given an empty entry in <code>len_evt</code>.</p>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Keys with no "var_" part are marked as neither variable nor length keys.</p>
+</details>
 
     </div>
 

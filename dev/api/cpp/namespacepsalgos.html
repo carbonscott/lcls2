@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('namespacepsalgos.html',''); initResiza
   <div class="headertitle"><div class="title">psalgos Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Waveform and peak-finding algorithms of psana (constant-fraction discrimination, <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">PeakFinderAlgos</a>, ...).  
+<a href="namespacepsalgos.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -113,33 +116,45 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ad7c2a62d82d3dcc8a3ba387c566d17fd" id="r_ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#ad7c2a62d82d3dcc8a3ba387c566d17fd">Waveform</a></td></tr>
+<tr class="memdesc:ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector&lt;double&gt; of waveform samples, the input of <a class="el" href="namespacepsalgos.html#a20b0c82043875622713b812ed94f1a17" title="Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-...">getcfd()</a>.  <br /></td></tr>
 <tr class="separator:ad7c2a62d82d3dcc8a3ba387c566d17fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5092e4c49407f201023e17d0a3c3beb6" id="r_a5092e4c49407f201023e17d0a3c3beb6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">typedef</a> <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b">types::mask_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">mask_t</a></td></tr>
+<tr class="memdesc:a5092e4c49407f201023e17d0a3c3beb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b" title="uint16_t; mask element type.">types::mask_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:a5092e4c49407f201023e17d0a3c3beb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1684da3a77b6e4ed5303af7e10519e" id="r_aff1684da3a77b6e4ed5303af7e10519e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">typedef</a> <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd">types::extrim_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#aff1684da3a77b6e4ed5303af7e10519e">extrim_t</a></td></tr>
+<tr class="memdesc:aff1684da3a77b6e4ed5303af7e10519e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd" title="uint16_t; element type of the local-extrema maps (e.g.">types::extrim_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:aff1684da3a77b6e4ed5303af7e10519e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3fa9808e01785a011df9e7422fa9567" id="r_ac3fa9808e01785a011df9e7422fa9567"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">typedef</a> <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff">types::conmap_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#ac3fa9808e01785a011df9e7422fa9567">conmap_t</a></td></tr>
+<tr class="memdesc:ac3fa9808e01785a011df9e7422fa9567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff" title="uint32_t; element type of the connected-pixel map (e.g.">types::conmap_t</a> (uint32_t).  <br /></td></tr>
 <tr class="separator:ac3fa9808e01785a011df9e7422fa9567"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a883268789a434978be9c7cb9bb23fd58" id="r_a883268789a434978be9c7cb9bb23fd58"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Array.html">typedef</a> <a class="el" href="structtypes_1_1TwoIndexes.html">types::TwoIndexes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a883268789a434978be9c7cb9bb23fd58">TwoIndexes</a></td></tr>
+<tr class="memdesc:a883268789a434978be9c7cb9bb23fd58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="structtypes_1_1TwoIndexes.html" title="Pair of int indexes i and j.">types::TwoIndexes</a>.  <br /></td></tr>
 <tr class="separator:a883268789a434978be9c7cb9bb23fd58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a797c3d5cc3476ac22faddc1c8c252147" id="r_a797c3d5cc3476ac22faddc1c8c252147"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a797c3d5cc3476ac22faddc1c8c252147">diff_table</a> (int deg, const std::vector&lt; double &gt; &amp;x, const std::vector&lt; double &gt; &amp;y)</td></tr>
+<tr class="memdesc:a797c3d5cc3476ac22faddc1c8c252147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return y[0] followed by difference quotients taken column by column, each computed as (next - current) / (x[row] - x[row+1]) with adjacent x spacing at every order; the first entry of each column is appended.  <br /></td></tr>
 <tr class="separator:a797c3d5cc3476ac22faddc1c8c252147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7727f88749188e5341c1be1f53128316" id="r_a7727f88749188e5341c1be1f53128316"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a7727f88749188e5341c1be1f53128316">eval_poly</a> (double x, const std::vector&lt; double &gt; &amp;coeffs)</td></tr>
+<tr class="memdesc:a7727f88749188e5341c1be1f53128316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate the polynomial with coefficients coeffs, highest power first, at x.  <br /></td></tr>
 <tr class="separator:a7727f88749188e5341c1be1f53128316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abed4e792c1e190affce638dd275cd9eb" id="r_abed4e792c1e190affce638dd275cd9eb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#abed4e792c1e190affce638dd275cd9eb">find_root</a> (const std::vector&lt; double &gt; &amp;f, const std::vector&lt; double &gt; &amp;df, double error, double x0, int max_its=1000)</td></tr>
+<tr class="memdesc:abed4e792c1e190affce638dd275cd9eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Newton iteration from x0 on the polynomial f with derivative polynomial df (both evaluated with <a class="el" href="namespacepsalgos.html#a7727f88749188e5341c1be1f53128316" title="Evaluate the polynomial with coefficients coeffs, highest power first, at x.">eval_poly()</a>).  <br /></td></tr>
 <tr class="separator:abed4e792c1e190affce638dd275cd9eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20b0c82043875622713b812ed94f1a17" id="r_a20b0c82043875622713b812ed94f1a17"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a20b0c82043875622713b812ed94f1a17">getcfd</a> (const double sampleInterval, const double horpos, const double gain, const double offset, const <a class="el" href="namespacepsalgos.html#ad7c2a62d82d3dcc8a3ba387c566d17fd">Waveform</a> &amp;waveform, const int32_t delay, const double walk, const double threshold, const double fraction)</td></tr>
+<tr class="memdesc:a20b0c82043875622713b812ed94f1a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-off)*fraction + (w[k-delay]-off) crosses walk/gain between i and i+1, |w[i]-off| &gt; threshold/gain and the polarity matches, with off = (int)(offset/gain).  <br /></td></tr>
 <tr class="separator:a20b0c82043875622713b812ed94f1a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a633c9a7fefe848133b6e9486cf1501a6" id="r_a633c9a7fefe848133b6e9486cf1501a6"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a633c9a7fefe848133b6e9486cf1501a6">operator&lt;&lt;</a> (std::ostream &amp;<a class="el" href="classXtcData_1_1Array.html">os</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="structpsalgos_1_1Peak.html">Peak</a> &amp;p)</td></tr>
 <tr class="memdesc:a633c9a7fefe848133b6e9486cf1501a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream insertion operator,.  <br /></td></tr>
 <tr class="separator:a633c9a7fefe848133b6e9486cf1501a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41265b44a0c4fbad1bb8e2a6834e89f1" id="r_a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a41265b44a0c4fbad1bb8e2a6834e89f1">operator&lt;&lt;</a> (std::ostream &amp;<a class="el" href="classXtcData_1_1Array.html">os</a>, <a class="el" href="classXtcData_1_1Array.html">const</a> <a class="el" href="structpsalgos_1_1RingAvgRms.html">RingAvgRms</a> &amp;<a class="el" href="classXtcData_1_1Array.html">b</a>)</td></tr>
+<tr class="memdesc:a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write " Bkgd avg:", " RMS:" and " Npix:" with the values of b to os, and return os.  <br /></td></tr>
 <tr class="separator:a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Waveform and peak-finding algorithms of psana (constant-fraction discrimination, <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">PeakFinderAlgos</a>, ...). </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="ac3fa9808e01785a011df9e7422fa9567" name="ac3fa9808e01785a011df9e7422fa9567"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac3fa9808e01785a011df9e7422fa9567">&#9670;&#160;</a></span>conmap_t</h2>
 
@@ -151,6 +166,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Alias for <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff" title="uint32_t; element type of the connected-pixel map (e.g.">types::conmap_t</a> (uint32_t). </p>
 
 </div>
 </div>
@@ -166,6 +183,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Alias for <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd" title="uint16_t; element type of the local-extrema maps (e.g.">types::extrim_t</a> (uint16_t). </p>
+
 </div>
 </div>
 <a id="a5092e4c49407f201023e17d0a3c3beb6" name="a5092e4c49407f201023e17d0a3c3beb6"></a>
@@ -179,6 +198,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Alias for <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b" title="uint16_t; mask element type.">types::mask_t</a> (uint16_t). </p>
 
 </div>
 </div>
@@ -194,6 +215,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Alias for <a class="el" href="structtypes_1_1TwoIndexes.html" title="Pair of int indexes i and j.">types::TwoIndexes</a>. </p>
+
 </div>
 </div>
 <a id="ad7c2a62d82d3dcc8a3ba387c566d17fd" name="ad7c2a62d82d3dcc8a3ba387c566d17fd"></a>
@@ -207,6 +230,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>std::vector&lt;double&gt; of waveform samples, the input of <a class="el" href="namespacepsalgos.html#a20b0c82043875622713b812ed94f1a17" title="Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-...">getcfd()</a>. </p>
 
 </div>
 </div>
@@ -243,6 +268,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return y[0] followed by difference quotients taken column by column, each computed as (next - current) / (x[row] - x[row+1]) with adjacent x spacing at every order; the first entry of each column is appended. </p>
+<p>At most deg+1 values are appended (fewer if x has too few points). </p>
+
 </div>
 </div>
 <a id="a7727f88749188e5341c1be1f53128316" name="a7727f88749188e5341c1be1f53128316"></a>
@@ -270,6 +298,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Evaluate the polynomial with coefficients coeffs, highest power first, at x. </p>
 
 </div>
 </div>
@@ -316,6 +346,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Newton iteration from x0 on the polynomial f with derivative polynomial df (both evaluated with <a class="el" href="namespacepsalgos.html#a7727f88749188e5341c1be1f53128316" title="Evaluate the polynomial with coefficients coeffs, highest power first, at x.">eval_poly()</a>). </p>
+<p>Returns the first iterate that moves by less than error, or NaN after max_its + 2 steps without that. </p>
 
 </div>
 </div>
@@ -387,6 +420,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Scan waveform for the first sample i (from delay+1) where the constant-fraction signal s(k) = -(w[k]-off)*fraction + (w[k-delay]-off) crosses walk/gain between i and i+1, |w[i]-off| &gt; threshold/gain and the polarity matches, with off = (int)(offset/gain). </p>
+<p>Then take the four points i-1 .. i+2 through <a class="el" href="namespacepsalgos.html#a797c3d5cc3476ac22faddc1c8c252147" title="Return y[0] followed by difference quotients taken column by column, each computed as (next - current...">diff_table()</a> and <a class="el" href="namespacepsalgos.html#abed4e792c1e190affce638dd275cd9eb" title="Newton iteration from x0 on the polynomial f with derivative polynomial df (both evaluated with eval_...">find_root()</a> and return that root (in sample-index units), or 0.0 if no sample qualifies. sampleInterval and horpos are not used. </p>
+
 </div>
 </div>
 <a id="a633c9a7fefe848133b6e9486cf1501a6" name="a633c9a7fefe848133b6e9486cf1501a6"></a>
@@ -444,6 +480,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write " Bkgd avg:", " RMS:" and " Npix:" with the values of b to os, and return os. </p>
 
 </div>
 </div>

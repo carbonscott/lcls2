@@ -97,24 +97,36 @@ $(document).ready(function(){initNavTree('classPds_1_1HSD_1_1ChannelPython.html'
 </div><!--header-->
 <div class="contents">
 
+<p>View of one <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> channel: the constructor finds the raw (stream id 0) and fex (stream id 1) stream headers, <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#a7460add85ccffc67bac45bd47371d291" title="Return a pointer to the raw stream&#39;s samples in the input buffer and set numsamples,...">waveform()</a> returns the raw samples in place, and <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#af21d9bef739dcad4d4186a6abba95da6" title="Return the length of the next fex peak and set startPos (skipped samples plus the widths of earlier p...">next_peak()</a> iterates over the fex peaks.  
+ <a href="classPds_1_1HSD_1_1ChannelPython.html#details">More...</a></p>
+
 <p><code>#include &lt;HsdPython.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aba912edb50ee90d86a9a318541326048" id="r_aba912edb50ee90d86a9a318541326048"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#aba912edb50ee90d86a9a318541326048">ChannelPython</a> ()</td></tr>
+<tr class="memdesc:aba912edb50ee90d86a9a318541326048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor; all members are left uninitialized.  <br /></td></tr>
 <tr class="separator:aba912edb50ee90d86a9a318541326048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03f475b82c92b2556dac089ddeeebbf3" id="r_a03f475b82c92b2556dac089ddeeebbf3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#a03f475b82c92b2556dac089ddeeebbf3">ChannelPython</a> (uint32_t *evtheader, uint8_t *data)</td></tr>
+<tr class="memdesc:a03f475b82c92b2556dac089ddeeebbf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the peak iterator and record the stream headers found at data for the streams flagged in bits 21:20 of evtheader[0]; each stream header is followed by num_samples() 16-bit words.  <br /></td></tr>
 <tr class="separator:a03f475b82c92b2556dac089ddeeebbf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb9f6700e7b3380d1974d3b5fb142a88" id="r_acb9f6700e7b3380d1974d3b5fb142a88"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#acb9f6700e7b3380d1974d3b5fb142a88">~ChannelPython</a> ()</td></tr>
+<tr class="memdesc:acb9f6700e7b3380d1974d3b5fb142a88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor; does nothing.  <br /></td></tr>
 <tr class="separator:acb9f6700e7b3380d1974d3b5fb142a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7460add85ccffc67bac45bd47371d291" id="r_a7460add85ccffc67bac45bd47371d291"><td class="memItemLeft" align="right" valign="top">uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#a7460add85ccffc67bac45bd47371d291">waveform</a> (unsigned &amp;numsamples)</td></tr>
+<tr class="memdesc:a7460add85ccffc67bac45bd47371d291"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the raw stream's samples in the input buffer and set numsamples, or return 0 (numsamples unchanged) if there is no raw stream.  <br /></td></tr>
 <tr class="separator:a7460add85ccffc67bac45bd47371d291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af21d9bef739dcad4d4186a6abba95da6" id="r_af21d9bef739dcad4d4186a6abba95da6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#af21d9bef739dcad4d4186a6abba95da6">next_peak</a> (unsigned &amp;startPos, uint16_t **peakPtr)</td></tr>
+<tr class="memdesc:af21d9bef739dcad4d4186a6abba95da6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the length of the next fex peak and set startPos (skipped samples plus the widths of earlier peaks) and *peakPtr (its first sample in the input buffer); returns 0 when no peak is left or there is no fex stream.  <br /></td></tr>
 <tr class="separator:af21d9bef739dcad4d4186a6abba95da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe799817094545d2f829107c29897a73" id="r_afe799817094545d2f829107c29897a73"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#afe799817094545d2f829107c29897a73">fex_out_of_range</a> ()</td></tr>
+<tr class="memdesc:afe799817094545d2f829107c29897a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the out_of_range() bit of the fex stream header, or 0 if there is no fex stream.  <br /></td></tr>
 <tr class="separator:afe799817094545d2f829107c29897a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>View of one <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> channel: the constructor finds the raw (stream id 0) and fex (stream id 1) stream headers, <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#a7460add85ccffc67bac45bd47371d291" title="Return a pointer to the raw stream&#39;s samples in the input buffer and set numsamples,...">waveform()</a> returns the raw samples in place, and <a class="el" href="classPds_1_1HSD_1_1ChannelPython.html#af21d9bef739dcad4d4186a6abba95da6" title="Return the length of the next fex peak and set startPos (skipped samples plus the widths of earlier p...">next_peak()</a> iterates over the fex peaks. </p>
+<p>Nothing is copied. The header comment refers to <a class="el" href="Hsd_8hh.html" title="Declares Pds::HSD::Channel, which unpacks the raw and fex streams of one HSD channel into arrays.">Hsd.hh</a> for the data layout. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aba912edb50ee90d86a9a318541326048" name="aba912edb50ee90d86a9a318541326048"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba912edb50ee90d86a9a318541326048">&#9670;&#160;</a></span>ChannelPython() <span class="overload">[1/2]</span></h2>
 
@@ -137,6 +149,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Default constructor; all members are left uninitialized. </p>
 
 </div>
 </div>
@@ -174,6 +188,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Reset the peak iterator and record the stream headers found at data for the streams flagged in bits 21:20 of evtheader[0]; each stream header is followed by num_samples() 16-bit words. </p>
+
 </div>
 </div>
 <a id="acb9f6700e7b3380d1974d3b5fb142a88" name="acb9f6700e7b3380d1974d3b5fb142a88"></a>
@@ -198,6 +214,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Destructor; does nothing. </p>
 
 </div>
 </div>
@@ -224,6 +242,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the out_of_range() bit of the fex stream header, or 0 if there is no fex stream. </p>
 
 </div>
 </div>
@@ -261,6 +281,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the length of the next fex peak and set startPos (skipped samples plus the widths of earlier peaks) and *peakPtr (its first sample in the input buffer); returns 0 when no peak is left or there is no fex stream. </p>
+<p>Groups of four words whose first word has bit 15 set are skips that add their low 15 bits to the position. </p>
+
 </div>
 </div>
 <a id="a7460add85ccffc67bac45bd47371d291" name="a7460add85ccffc67bac45bd47371d291"></a>
@@ -286,6 +309,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return a pointer to the raw stream's samples in the input buffer and set numsamples, or return 0 (numsamples unchanged) if there is no raw stream. </p>
 
 </div>
 </div>

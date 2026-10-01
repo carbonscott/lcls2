@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('LocalExtrema_8hh.html',''); initResiza
   <div class="headertitle"><div class="title">LocalExtrema.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares localextrema functions that build maps and lists of local minima/maxima in 1-d and 2-d arrays, and the diagonal-offset helpers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -110,6 +113,7 @@ $(document).ready(function(){initNavTree('LocalExtrema_8hh.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacelocalextrema" id="r_namespacelocalextrema"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html">localextrema</a></td></tr>
+<tr class="memdesc:namespacelocalextrema"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local-extremum search functions for 1-d and 2-d arrays (maps of local minima and maxima, lists of extremum indexes) used by the peak finders. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -118,23 +122,31 @@ Typedefs</h2></td></tr>
 <tr class="memdesc:afcfe8cb096f5b898751f7280f63fa881"><td class="mdescLeft">&#160;</td><td class="mdescRight">LocalExtrema - methods for 2-d image processing algorithms.  <br /></td></tr>
 <tr class="separator:afcfe8cb096f5b898751f7280f63fa881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2584331bbc8cf74ba4cddacb78938812" id="r_a2584331bbc8cf74ba4cddacb78938812"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd">types::extrim_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">localextrema::extrim_t</a></td></tr>
+<tr class="memdesc:a2584331bbc8cf74ba4cddacb78938812"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd" title="uint16_t; element type of the local-extrema maps (e.g.">types::extrim_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:a2584331bbc8cf74ba4cddacb78938812"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa00355fe0339a9b0ccdb5458964f1e0f" id="r_aa00355fe0339a9b0ccdb5458964f1e0f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structtypes_1_1TwoIndexes.html">types::TwoIndexes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#aa00355fe0339a9b0ccdb5458964f1e0f">localextrema::TwoIndexes</a></td></tr>
+<tr class="memdesc:aa00355fe0339a9b0ccdb5458964f1e0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="structtypes_1_1TwoIndexes.html" title="Pair of int indexes i and j.">types::TwoIndexes</a>.  <br /></td></tr>
 <tr class="separator:aa00355fe0339a9b0ccdb5458964f1e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ab1976e480737e364adcaa359d9120089" id="r_ab1976e480737e364adcaa359d9120089"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classpsalg_1_1AllocArray1D.html">AllocArray1D</a>&lt; <a class="el" href="namespacelocalextrema.html#aa00355fe0339a9b0ccdb5458964f1e0f">TwoIndexes</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#ab1976e480737e364adcaa359d9120089">localextrema::evaluateDiagIndexes_drp</a> (const size_t &amp;rank, <a class="el" href="classAllocator.html">Allocator</a> *allocator)</td></tr>
+<tr class="memdesc:ab1976e480737e364adcaa359d9120089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the (i, j) offsets with -rank &lt;= i, j &lt;= rank and both nonzero (the square around a pixel without its central row and column), in an AllocArray1D allocated from allocator.  <br /></td></tr>
 <tr class="separator:ab1976e480737e364adcaa359d9120089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4379e66d74313daecde407518613e730" id="r_a4379e66d74313daecde407518613e730"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a4379e66d74313daecde407518613e730">localextrema::printMatrixOfDiagIndexes</a> (const size_t &amp;rank)</td></tr>
+<tr class="memdesc:a4379e66d74313daecde407518613e730"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print to stdout a (2*rank+1) x (2*rank+1) matrix of the offsets used by <a class="el" href="namespacelocalextrema.html#a4c0e0a46f742e3128c7546d83634f385" title="Return the (i, j) offsets with -rank &lt;= i, j &lt;= rank and both nonzero, as a std::vector.">evaluateDiagIndexes()</a>: 1 for used, 0 for the central row and column, and + at the center.  <br /></td></tr>
 <tr class="separator:a4379e66d74313daecde407518613e730"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30cc49d31f19b1a7acd29aac4647a7d4" id="r_a30cc49d31f19b1a7acd29aac4647a7d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a30cc49d31f19b1a7acd29aac4647a7d4">localextrema::printVectorOfDiagIndexes</a> (const size_t &amp;rank)</td></tr>
+<tr class="memdesc:a30cc49d31f19b1a7acd29aac4647a7d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the size and the (i, j) pairs of evaluateDiagIndexes(rank) to stdout, ten pairs per line.  <br /></td></tr>
 <tr class="separator:a30cc49d31f19b1a7acd29aac4647a7d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09d848e96478700958d9536a384daca8" id="r_a09d848e96478700958d9536a384daca8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a09d848e96478700958d9536a384daca8">localextrema::numberOfExtrema</a> (const <a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">extrim_t</a> *map, const size_t &amp;rows, const size_t &amp;cols, const <a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">extrim_t</a> &amp;vsel=7)</td></tr>
+<tr class="memdesc:a09d848e96478700958d9536a384daca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return how many of the rows*cols entries of map equal vsel.  <br /></td></tr>
 <tr class="separator:a09d848e96478700958d9536a384daca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c0e0a46f742e3128c7546d83634f385" id="r_a4c0e0a46f742e3128c7546d83634f385"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacelocalextrema.html#aa00355fe0339a9b0ccdb5458964f1e0f">TwoIndexes</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a4c0e0a46f742e3128c7546d83634f385">localextrema::evaluateDiagIndexes</a> (const size_t &amp;rank)</td></tr>
+<tr class="memdesc:a4c0e0a46f742e3128c7546d83634f385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the (i, j) offsets with -rank &lt;= i, j &lt;= rank and both nonzero, as a std::vector.  <br /></td></tr>
 <tr class="separator:a4c0e0a46f742e3128c7546d83634f385"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6fc1139107dec574e3a29e4d380dd55" id="r_ae6fc1139107dec574e3a29e4d380dd55"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacelocalextrema.html#aa00355fe0339a9b0ccdb5458964f1e0f">TwoIndexes</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#ae6fc1139107dec574e3a29e4d380dd55">localextrema::vectorOfExtremeIndexes</a> (const <a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">extrim_t</a> *map, const size_t &amp;rows, const size_t &amp;cols, const <a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">extrim_t</a> &amp;vsel=7, const size_t &amp;maxlen=0)</td></tr>
+<tr class="memdesc:ae6fc1139107dec574e3a29e4d380dd55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the (row, col) indexes of all entries of map equal to vsel, in row-major order.  <br /></td></tr>
 <tr class="separator:ae6fc1139107dec574e3a29e4d380dd55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8458d37eaee50179d6efd74ef24f8b20" id="r_a8458d37eaee50179d6efd74ef24f8b20"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a8458d37eaee50179d6efd74ef24f8b20"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacelocalextrema.html#a8458d37eaee50179d6efd74ef24f8b20">localextrema::localMinima1d</a> (const T *data, const <a class="el" href="namespacelocalextrema.html#afcfe8cb096f5b898751f7280f63fa881">mask_t</a> *mask, const size_t &amp;cols, const size_t &amp;stride=1, const size_t &amp;rank=5, <a class="el" href="namespacelocalextrema.html#a2584331bbc8cf74ba4cddacb78938812">extrim_t</a> *local_minima=0)</td></tr>
@@ -169,7 +181,9 @@ Functions</h2></td></tr>
 <tr class="memdesc:a6f9f23d18b22eeffbfd89dfb5bbb8d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns map of local maximums of requested rank, where rank defins a square region around central pixel [rowc-rank, rowc+rank], [colc-rank, colc+rank].  <br /></td></tr>
 <tr class="separator:a6f9f23d18b22eeffbfd89dfb5bbb8d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares localextrema functions that build maps and lists of local minima/maxima in 1-d and 2-d arrays, and the diagonal-offset helpers. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

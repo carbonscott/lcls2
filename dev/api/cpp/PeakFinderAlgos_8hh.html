@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('PeakFinderAlgos_8hh.html',''); initRes
   <div class="headertitle"><div class="title">PeakFinderAlgos.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">psalgos::PeakFinderAlgos</a> (droplet-style peak finding in 2-d images with allocator-backed arrays) and its Peak and RingAvgRms result structures.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -127,19 +130,25 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacepsalgos" id="r_namespacepsalgos"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html">psalgos</a></td></tr>
+<tr class="memdesc:namespacepsalgos"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waveform and peak-finding algorithms of psana (constant-fraction discrimination, <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">PeakFinderAlgos</a>, ...). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80" id="r_a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80"><td class="memItemLeft" align="right" valign="top">typedef std::chrono::high_resolution_clock&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PeakFinderAlgos_8hh.html#a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80">Clock</a></td></tr>
+<tr class="memdesc:a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global alias for std::chrono::high_resolution_clock.  <br /></td></tr>
 <tr class="separator:a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5092e4c49407f201023e17d0a3c3beb6" id="r_a5092e4c49407f201023e17d0a3c3beb6"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b">types::mask_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a5092e4c49407f201023e17d0a3c3beb6">psalgos::mask_t</a></td></tr>
+<tr class="memdesc:a5092e4c49407f201023e17d0a3c3beb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b" title="uint16_t; mask element type.">types::mask_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:a5092e4c49407f201023e17d0a3c3beb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1684da3a77b6e4ed5303af7e10519e" id="r_aff1684da3a77b6e4ed5303af7e10519e"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd">types::extrim_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#aff1684da3a77b6e4ed5303af7e10519e">psalgos::extrim_t</a></td></tr>
+<tr class="memdesc:aff1684da3a77b6e4ed5303af7e10519e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd" title="uint16_t; element type of the local-extrema maps (e.g.">types::extrim_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:aff1684da3a77b6e4ed5303af7e10519e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3fa9808e01785a011df9e7422fa9567" id="r_ac3fa9808e01785a011df9e7422fa9567"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff">types::conmap_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#ac3fa9808e01785a011df9e7422fa9567">psalgos::conmap_t</a></td></tr>
+<tr class="memdesc:ac3fa9808e01785a011df9e7422fa9567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff" title="uint32_t; element type of the connected-pixel map (e.g.">types::conmap_t</a> (uint32_t).  <br /></td></tr>
 <tr class="separator:ac3fa9808e01785a011df9e7422fa9567"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a883268789a434978be9c7cb9bb23fd58" id="r_a883268789a434978be9c7cb9bb23fd58"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structtypes_1_1TwoIndexes.html">types::TwoIndexes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a883268789a434978be9c7cb9bb23fd58">psalgos::TwoIndexes</a></td></tr>
+<tr class="memdesc:a883268789a434978be9c7cb9bb23fd58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="structtypes_1_1TwoIndexes.html" title="Pair of int indexes i and j.">types::TwoIndexes</a>.  <br /></td></tr>
 <tr class="separator:a883268789a434978be9c7cb9bb23fd58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -148,9 +157,12 @@ Functions</h2></td></tr>
 <tr class="memdesc:a633c9a7fefe848133b6e9486cf1501a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream insertion operator,.  <br /></td></tr>
 <tr class="separator:a633c9a7fefe848133b6e9486cf1501a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41265b44a0c4fbad1bb8e2a6834e89f1" id="r_a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalgos.html#a41265b44a0c4fbad1bb8e2a6834e89f1">psalgos::operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="structpsalgos_1_1RingAvgRms.html">RingAvgRms</a> &amp;b)</td></tr>
+<tr class="memdesc:a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write " Bkgd avg:", " RMS:" and " Npix:" with the values of b to os, and return os.  <br /></td></tr>
 <tr class="separator:a41265b44a0c4fbad1bb8e2a6834e89f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares <a class="el" href="classpsalgos_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">psalgos::PeakFinderAlgos</a> (droplet-style peak finding in 2-d images with allocator-backed arrays) and its Peak and RingAvgRms result structures. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80" name="a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ef8d951d1ca5ab3cfaf7ab4c7a6fd80">&#9670;&#160;</a></span>Clock</h2>
 
@@ -162,6 +174,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Global alias for std::chrono::high_resolution_clock. </p>
 
 </div>
 </div>

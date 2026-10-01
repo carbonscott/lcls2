@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('LMF__IO_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">LMF_IO.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares the RoentDek LMF (list-mode file) reader/writer <a class="el" href="classLMF__IO.html">LMF_IO</a>, its <a class="el" href="classMyFILE.html" title="Small binary file wrapper around a C FILE: open() for reading or writing (chosen at construction),...">MyFILE</a> binary-file helper, hardware header structures, and DAQ-id and data-format constants.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;fstream&quot;</code><br />
 <code>#include &quot;time.h&quot;</code><br />
 <code>#include &quot;string.h&quot;</code><br />
@@ -104,8 +107,10 @@ $(document).ready(function(){initNavTree('LMF__IO_8hh.html',''); initResizable()
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMyFILE.html">MyFILE</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Small binary file wrapper around a C FILE: <a class="el" href="classMyFILE.html#aff1276e15c1a67feab8e90239443c496" title="Open name with fopen(): &quot;rb&quot; in read mode, recording the file size by seeking to the end and back,...">open()</a> for reading or writing (chosen at construction), raw <a class="el" href="classMyFILE.html#a8a665b3d77f4487566494c2eace2279f" title="Read length_bytes bytes into string with fread().">read()</a>/write(), and &gt;&gt; / &lt;&lt; operators that read or write the bytes of basic types.  <a href="classMyFILE.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="union__myLARGE__INTEGER.html">_myLARGE_INTEGER</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replacement for the Windows LARGE_INTEGER union, defined when <em>WINNT</em> is not defined: a 64-bit QuadPart sharing storage with a LowPart/HighPart pair of 32-bit fields, available directly and as member u.  <a href="union__myLARGE__INTEGER.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTDC8PCI2__struct.html">TDC8PCI2_struct</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,78 +126,113 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a157a956e14c5c44b3f73ef23a4776f64" id="r_a157a956e14c5c44b3f73ef23a4776f64"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a157a956e14c5c44b3f73ef23a4776f64">LINUX</a></td></tr>
+<tr class="memdesc:a157a956e14c5c44b3f73ef23a4776f64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined unconditionally, so the LINUX branch below is always used (string.h, fseeko/ftello and the __intN macros).  <br /></td></tr>
 <tr class="separator:a157a956e14c5c44b3f73ef23a4776f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a917ddfb9b85733a79d2ee13ec81f3cac" id="r_a917ddfb9b85733a79d2ee13ec81f3cac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a917ddfb9b85733a79d2ee13ec81f3cac">_fseeki64</a>&#160;&#160;&#160;fseeko</td></tr>
+<tr class="memdesc:a917ddfb9b85733a79d2ee13ec81f3cac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mapped to fseeko in the LINUX branch; used by <a class="el" href="classMyFILE.html#aff1276e15c1a67feab8e90239443c496" title="Open name with fopen(): &quot;rb&quot; in read mode, recording the file size by seeking to the end and back,...">MyFILE::open()</a> and <a class="el" href="classMyFILE.html#a00bdbdaf7b6ec453878c51be136bebaa" title="fseeko() to pos from the start of the file; on success set the position to pos, otherwise set error t...">MyFILE::seek()</a>.  <br /></td></tr>
 <tr class="separator:a917ddfb9b85733a79d2ee13ec81f3cac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2af5ba9a562559ce3fe1ed8363dcb06" id="r_ac2af5ba9a562559ce3fe1ed8363dcb06"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#ac2af5ba9a562559ce3fe1ed8363dcb06">_ftelli64</a>&#160;&#160;&#160;ftello</td></tr>
+<tr class="memdesc:ac2af5ba9a562559ce3fe1ed8363dcb06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mapped to ftello in the LINUX branch; used by <a class="el" href="classMyFILE.html#aff1276e15c1a67feab8e90239443c496" title="Open name with fopen(): &quot;rb&quot; in read mode, recording the file size by seeking to the end and back,...">MyFILE::open()</a> to get the file size.  <br /></td></tr>
 <tr class="separator:ac2af5ba9a562559ce3fe1ed8363dcb06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00cab31dd837c6b2bad58c0069ecca01" id="r_a00cab31dd837c6b2bad58c0069ecca01"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a00cab31dd837c6b2bad58c0069ecca01">__int32_IS_DEFINED</a></td></tr>
+<tr class="memdesc:a00cab31dd837c6b2bad58c0069ecca01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Guard so the __intN macros below are defined only once.  <br /></td></tr>
 <tr class="separator:a00cab31dd837c6b2bad58c0069ecca01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad026b329cbb0aca618160c242b39b2ce" id="r_ad026b329cbb0aca618160c242b39b2ce"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#ad026b329cbb0aca618160c242b39b2ce">__int32</a>&#160;&#160;&#160;int</td></tr>
+<tr class="memdesc:ad026b329cbb0aca618160c242b39b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined as int.  <br /></td></tr>
 <tr class="separator:ad026b329cbb0aca618160c242b39b2ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d658629cbd06fe6109fcf9d0729cc78" id="r_a6d658629cbd06fe6109fcf9d0729cc78"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a6d658629cbd06fe6109fcf9d0729cc78">__int16</a>&#160;&#160;&#160;short</td></tr>
+<tr class="memdesc:a6d658629cbd06fe6109fcf9d0729cc78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined as short.  <br /></td></tr>
 <tr class="separator:a6d658629cbd06fe6109fcf9d0729cc78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa254d9bac3ece6a9d99def539e8a80eb" id="r_aa254d9bac3ece6a9d99def539e8a80eb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#aa254d9bac3ece6a9d99def539e8a80eb">__int64</a>&#160;&#160;&#160;long long</td></tr>
+<tr class="memdesc:aa254d9bac3ece6a9d99def539e8a80eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined as long long.  <br /></td></tr>
 <tr class="separator:aa254d9bac3ece6a9d99def539e8a80eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a040b30765a23a94d40af4f00f956c3a5" id="r_a040b30765a23a94d40af4f00f956c3a5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a040b30765a23a94d40af4f00f956c3a5">__int8</a>&#160;&#160;&#160;char</td></tr>
+<tr class="memdesc:a040b30765a23a94d40af4f00f956c3a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined as char.  <br /></td></tr>
 <tr class="separator:a040b30765a23a94d40af4f00f956c3a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cb1b868371e07cebaa931ca2ca49897" id="r_a2cb1b868371e07cebaa931ca2ca49897"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a2cb1b868371e07cebaa931ca2ca49897">DAQ_ID_HM1</a>&#160;&#160;&#160;0x000001</td></tr>
+<tr class="memdesc:a2cb1b868371e07cebaa931ca2ca49897"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 1.  <br /></td></tr>
 <tr class="separator:a2cb1b868371e07cebaa931ca2ca49897"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9763043737b20f4db3fc992179a0d4" id="r_adf9763043737b20f4db3fc992179a0d4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#adf9763043737b20f4db3fc992179a0d4">DAQ_ID_TDC8</a>&#160;&#160;&#160;0x000002</td></tr>
+<tr class="memdesc:adf9763043737b20f4db3fc992179a0d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 2.  <br /></td></tr>
 <tr class="separator:adf9763043737b20f4db3fc992179a0d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdc90d2c50be37ff60b6894bc3197c5f" id="r_abdc90d2c50be37ff60b6894bc3197c5f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#abdc90d2c50be37ff60b6894bc3197c5f">DAQ_ID_CAMAC</a>&#160;&#160;&#160;0x000003</td></tr>
+<tr class="memdesc:abdc90d2c50be37ff60b6894bc3197c5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 3.  <br /></td></tr>
 <tr class="separator:abdc90d2c50be37ff60b6894bc3197c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeab167d74432aaf720861af32f081582" id="r_aeab167d74432aaf720861af32f081582"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#aeab167d74432aaf720861af32f081582">DAQ_ID_2HM1</a>&#160;&#160;&#160;0x000004</td></tr>
+<tr class="memdesc:aeab167d74432aaf720861af32f081582"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 4.  <br /></td></tr>
 <tr class="separator:aeab167d74432aaf720861af32f081582"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a900865ef77a2b2207f991c913c9a4129" id="r_a900865ef77a2b2207f991c913c9a4129"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a900865ef77a2b2207f991c913c9a4129">DAQ_ID_2TDC8</a>&#160;&#160;&#160;0x000005</td></tr>
+<tr class="memdesc:a900865ef77a2b2207f991c913c9a4129"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 5.  <br /></td></tr>
 <tr class="separator:a900865ef77a2b2207f991c913c9a4129"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac98fa86d1fa2b3bb10969e07130fd155" id="r_ac98fa86d1fa2b3bb10969e07130fd155"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#ac98fa86d1fa2b3bb10969e07130fd155">DAQ_ID_HM1_ABM</a>&#160;&#160;&#160;0x000006</td></tr>
+<tr class="memdesc:ac98fa86d1fa2b3bb10969e07130fd155"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 6.  <br /></td></tr>
 <tr class="separator:ac98fa86d1fa2b3bb10969e07130fd155"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d77666d85d4328959ad289a225c8400" id="r_a6d77666d85d4328959ad289a225c8400"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a6d77666d85d4328959ad289a225c8400">DAQ_ID_TDC8HP</a>&#160;&#160;&#160;0x000008</td></tr>
+<tr class="memdesc:a6d77666d85d4328959ad289a225c8400"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 8.  <br /></td></tr>
 <tr class="separator:a6d77666d85d4328959ad289a225c8400"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7102167d4c200a883b15dbbb0057f1e" id="r_af7102167d4c200a883b15dbbb0057f1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#af7102167d4c200a883b15dbbb0057f1e">DAQ_ID_TCPIP</a>&#160;&#160;&#160;0x000009</td></tr>
+<tr class="memdesc:af7102167d4c200a883b15dbbb0057f1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 9.  <br /></td></tr>
 <tr class="separator:af7102167d4c200a883b15dbbb0057f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b9dbaa69d4d70cb5aff41e41a133ec" id="r_af9b9dbaa69d4d70cb5aff41e41a133ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#af9b9dbaa69d4d70cb5aff41e41a133ec">DAQ_ID_TDC8HPRAW</a>&#160;&#160;&#160;0x000010</td></tr>
+<tr class="memdesc:af9b9dbaa69d4d70cb5aff41e41a133ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 0x10.  <br /></td></tr>
 <tr class="separator:af9b9dbaa69d4d70cb5aff41e41a133ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af87d79ac8bd0ffb4097c4c45c1966872" id="r_af87d79ac8bd0ffb4097c4c45c1966872"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#af87d79ac8bd0ffb4097c4c45c1966872">DAQ_ID_RAW32BIT</a>&#160;&#160;&#160;100</td></tr>
+<tr class="memdesc:af87d79ac8bd0ffb4097c4c45c1966872"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 100.  <br /></td></tr>
 <tr class="separator:af87d79ac8bd0ffb4097c4c45c1966872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a3178469f778b2ad32000fa7b4072b8" id="r_a4a3178469f778b2ad32000fa7b4072b8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a4a3178469f778b2ad32000fa7b4072b8">DAQ_ID_SIMPLE</a>&#160;&#160;&#160;101</td></tr>
+<tr class="memdesc:a4a3178469f778b2ad32000fa7b4072b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value 101.  <br /></td></tr>
 <tr class="separator:a4a3178469f778b2ad32000fa7b4072b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a424f8a31ff3d210c6016ac35be85a077" id="r_a424f8a31ff3d210c6016ac35be85a077"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a424f8a31ff3d210c6016ac35be85a077">LM_BYTE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:a424f8a31ff3d210c6016ac35be85a077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 1 (trailing comment: 8-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a424f8a31ff3d210c6016ac35be85a077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a546ad9f7d145f5ae7bdc3d8217babfa2" id="r_a546ad9f7d145f5ae7bdc3d8217babfa2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a546ad9f7d145f5ae7bdc3d8217babfa2">LM_SHORT</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:a546ad9f7d145f5ae7bdc3d8217babfa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 2 (trailing comment: 16-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format.  <br /></td></tr>
 <tr class="separator:a546ad9f7d145f5ae7bdc3d8217babfa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c24853601d1178790910466a8707b00" id="r_a4c24853601d1178790910466a8707b00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a4c24853601d1178790910466a8707b00">LM_LONG</a>&#160;&#160;&#160;3</td></tr>
+<tr class="memdesc:a4c24853601d1178790910466a8707b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 3 (trailing comment: 32-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a4c24853601d1178790910466a8707b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cd2ddba5b79bf1215e0d91d381a36de" id="r_a1cd2ddba5b79bf1215e0d91d381a36de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a1cd2ddba5b79bf1215e0d91d381a36de">LM_FLOAT</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:a1cd2ddba5b79bf1215e0d91d381a36de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 4 (trailing comment: 32-bit IEEE float); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a1cd2ddba5b79bf1215e0d91d381a36de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a890aca6a26ec640ae4e052876c249048" id="r_a890aca6a26ec640ae4e052876c249048"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a890aca6a26ec640ae4e052876c249048">LM_DOUBLE</a>&#160;&#160;&#160;5</td></tr>
+<tr class="memdesc:a890aca6a26ec640ae4e052876c249048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 5 (trailing comment: 64-bit IEEE float); for a Cobold LMF file OpenInputLMF() accepts it as the header data format.  <br /></td></tr>
 <tr class="separator:a890aca6a26ec640ae4e052876c249048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a971bab4c5d9624aa5e0a0b525fc813f4" id="r_a971bab4c5d9624aa5e0a0b525fc813f4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a971bab4c5d9624aa5e0a0b525fc813f4">LM_CAMAC</a>&#160;&#160;&#160;6</td></tr>
+<tr class="memdesc:a971bab4c5d9624aa5e0a0b525fc813f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 6 (trailing comment: 24-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format.  <br /></td></tr>
 <tr class="separator:a971bab4c5d9624aa5e0a0b525fc813f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d443597bf13449d9149e78656258b3f" id="r_a1d443597bf13449d9149e78656258b3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a1d443597bf13449d9149e78656258b3f">LM_DOUBLELONG</a>&#160;&#160;&#160;7</td></tr>
+<tr class="memdesc:a1d443597bf13449d9149e78656258b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 7 (trailing comment: 64-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a1d443597bf13449d9149e78656258b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02a96f2367cf718bd9fd82d24bf4e95c" id="r_a02a96f2367cf718bd9fd82d24bf4e95c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a02a96f2367cf718bd9fd82d24bf4e95c">LM_SBYTE</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a02a96f2367cf718bd9fd82d24bf4e95c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 8 (trailing comment: signed 8-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a02a96f2367cf718bd9fd82d24bf4e95c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84de1a664106cbd3d1c97cd78d6d4e91" id="r_a84de1a664106cbd3d1c97cd78d6d4e91"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a84de1a664106cbd3d1c97cd78d6d4e91">LM_SSHORT</a>&#160;&#160;&#160;9</td></tr>
+<tr class="memdesc:a84de1a664106cbd3d1c97cd78d6d4e91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 9 (trailing comment: signed 16-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a84de1a664106cbd3d1c97cd78d6d4e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac24ba9f91f6bd6ca75aa1c629d613a0b" id="r_ac24ba9f91f6bd6ca75aa1c629d613a0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#ac24ba9f91f6bd6ca75aa1c629d613a0b">LM_SLONG</a>&#160;&#160;&#160;10</td></tr>
+<tr class="memdesc:ac24ba9f91f6bd6ca75aa1c629d613a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 10 (trailing comment: signed 32-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format.  <br /></td></tr>
 <tr class="separator:ac24ba9f91f6bd6ca75aa1c629d613a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f0f9bbd9622d562de4eb0e64732d6a6" id="r_a9f0f9bbd9622d562de4eb0e64732d6a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a9f0f9bbd9622d562de4eb0e64732d6a6">LM_SDOUBLELONG</a>&#160;&#160;&#160;11</td></tr>
+<tr class="memdesc:a9f0f9bbd9622d562de4eb0e64732d6a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code 11 (trailing comment: signed 64-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8).  <br /></td></tr>
 <tr class="separator:a9f0f9bbd9622d562de4eb0e64732d6a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fcfdd9751e9e1dde9d53c29084783c3" id="r_a7fcfdd9751e9e1dde9d53c29084783c3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a7fcfdd9751e9e1dde9d53c29084783c3">LM_LASTKNOWNDATAFORMAT</a>&#160;&#160;&#160;<a class="el" href="LMF__IO_8hh.html#a9f0f9bbd9622d562de4eb0e64732d6a6">LM_SDOUBLELONG</a></td></tr>
+<tr class="memdesc:a7fcfdd9751e9e1dde9d53c29084783c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equal to LM_SDOUBLELONG (11); not used in LMF_IO.cc.  <br /></td></tr>
 <tr class="separator:a7fcfdd9751e9e1dde9d53c29084783c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a8a5e63380438e0f9c74e6d7d10c5b6" id="r_a1a8a5e63380438e0f9c74e6d7d10c5b6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a1a8a5e63380438e0f9c74e6d7d10c5b6">LM_USERDEF</a>&#160;&#160;&#160;-1</td></tr>
+<tr class="memdesc:a1a8a5e63380438e0f9c74e6d7d10c5b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data format code -1 (trailing comment: the user handles the reading); for a Cobold LMF file OpenInputLMF() accepts it as the header data format.  <br /></td></tr>
 <tr class="separator:a1a8a5e63380438e0f9c74e6d7d10c5b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a1e6fc0b13c6ff4c7cd9b36f6f8cd15ec" id="r_a1e6fc0b13c6ff4c7cd9b36f6f8cd15ec"><td class="memItemLeft" align="right" valign="top">typedef union <a class="el" href="union__myLARGE__INTEGER.html">_myLARGE_INTEGER</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a1e6fc0b13c6ff4c7cd9b36f6f8cd15ec">myLARGE_INTEGER</a></td></tr>
+<tr class="memdesc:a1e6fc0b13c6ff4c7cd9b36f6f8cd15ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replacement for the Windows LARGE_INTEGER union, defined when <em>WINNT</em> is not defined: a 64-bit QuadPart sharing storage with a LowPart/HighPart pair of 32-bit fields, available directly and as member u.  <br /></td></tr>
 <tr class="separator:a1e6fc0b13c6ff4c7cd9b36f6f8cd15ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25f1f019d10e8c98cbb8290dfcb1f0aa" id="r_a25f1f019d10e8c98cbb8290dfcb1f0aa"><td class="memItemLeft" align="right" valign="top">typedef union <a class="el" href="union__myLARGE__INTEGER.html">_myLARGE_INTEGER</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LMF__IO_8hh.html#a25f1f019d10e8c98cbb8290dfcb1f0aa">PmyLARGE_INTEGER</a></td></tr>
 <tr class="separator:a25f1f019d10e8c98cbb8290dfcb1f0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares the RoentDek LMF (list-mode file) reader/writer <a class="el" href="classLMF__IO.html">LMF_IO</a>, its <a class="el" href="classMyFILE.html" title="Small binary file wrapper around a C FILE: open() for reading or writing (chosen at construction),...">MyFILE</a> binary-file helper, hardware header structures, and DAQ-id and data-format constants. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a6d658629cbd06fe6109fcf9d0729cc78" name="a6d658629cbd06fe6109fcf9d0729cc78"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6d658629cbd06fe6109fcf9d0729cc78">&#9670;&#160;</a></span>__int16</h2>
 
@@ -204,6 +244,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Defined as short. </p>
 
 </div>
 </div>
@@ -219,6 +261,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Defined as int. </p>
+
 </div>
 </div>
 <a id="a00cab31dd837c6b2bad58c0069ecca01" name="a00cab31dd837c6b2bad58c0069ecca01"></a>
@@ -232,6 +276,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Guard so the __intN macros below are defined only once. </p>
 
 </div>
 </div>
@@ -247,6 +293,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Defined as long long. </p>
+
 </div>
 </div>
 <a id="a040b30765a23a94d40af4f00f956c3a5" name="a040b30765a23a94d40af4f00f956c3a5"></a>
@@ -260,6 +308,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Defined as char. </p>
 
 </div>
 </div>
@@ -275,6 +325,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Mapped to fseeko in the LINUX branch; used by <a class="el" href="classMyFILE.html#aff1276e15c1a67feab8e90239443c496" title="Open name with fopen(): &quot;rb&quot; in read mode, recording the file size by seeking to the end and back,...">MyFILE::open()</a> and <a class="el" href="classMyFILE.html#a00bdbdaf7b6ec453878c51be136bebaa" title="fseeko() to pos from the start of the file; on success set the position to pos, otherwise set error t...">MyFILE::seek()</a>. </p>
+
 </div>
 </div>
 <a id="ac2af5ba9a562559ce3fe1ed8363dcb06" name="ac2af5ba9a562559ce3fe1ed8363dcb06"></a>
@@ -288,6 +340,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Mapped to ftello in the LINUX branch; used by <a class="el" href="classMyFILE.html#aff1276e15c1a67feab8e90239443c496" title="Open name with fopen(): &quot;rb&quot; in read mode, recording the file size by seeking to the end and back,...">MyFILE::open()</a> to get the file size. </p>
 
 </div>
 </div>
@@ -303,6 +357,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 4. </p>
+<p>Not in the list that OpenInputLMF() accepts; other code in LMF_IO.cc checks for it. </p>
+
 </div>
 </div>
 <a id="a900865ef77a2b2207f991c913c9a4129" name="a900865ef77a2b2207f991c913c9a4129"></a>
@@ -316,6 +373,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value 5. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with Read2TDC8PCI2Header(). </p>
 
 </div>
 </div>
@@ -331,6 +391,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 3. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadCAMACHeader(). </p>
+
 </div>
 </div>
 <a id="a2cb1b868371e07cebaa931ca2ca49897" name="a2cb1b868371e07cebaa931ca2ca49897"></a>
@@ -344,6 +407,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value 1. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadHM1Header(). </p>
 
 </div>
 </div>
@@ -359,6 +425,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 6. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadHM1Header(). </p>
+
 </div>
 </div>
 <a id="af87d79ac8bd0ffb4097c4c45c1966872" name="af87d79ac8bd0ffb4097c4c45c1966872"></a>
@@ -372,6 +441,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value 100. </p>
+<p>OpenNonCoboldFile() sets it when skip_header is set. </p>
 
 </div>
 </div>
@@ -387,6 +459,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 101. </p>
+<p>OpenNonCoboldFile() sets it when skip_header is not set and the id is not already DAQ_ID_RAW32BIT. </p>
+
 </div>
 </div>
 <a id="af7102167d4c200a883b15dbbb0057f1e" name="af7102167d4c200a883b15dbbb0057f1e"></a>
@@ -400,6 +475,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value 9. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadTCPIPHeader(). </p>
 
 </div>
 </div>
@@ -415,6 +493,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 2. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadTDC8PCI2Header(). </p>
+
 </div>
 </div>
 <a id="a6d77666d85d4328959ad289a225c8400" name="a6d77666d85d4328959ad289a225c8400"></a>
@@ -428,6 +509,9 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value 8. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadTDC8HPHeader_LMFV_1_to_7(). </p>
 
 </div>
 </div>
@@ -443,6 +527,9 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value 0x10. </p>
+<p>For a Cobold LMF file, OpenInputLMF() accepts it and reads the rest of the header with ReadTDC8HPHeader_LMFV_1_to_7(). </p>
+
 </div>
 </div>
 <a id="a157a956e14c5c44b3f73ef23a4776f64" name="a157a956e14c5c44b3f73ef23a4776f64"></a>
@@ -456,6 +543,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Defined unconditionally, so the LINUX branch below is always used (string.h, fseeko/ftello and the __intN macros). </p>
 
 </div>
 </div>
@@ -471,6 +560,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 1 (trailing comment: 8-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
+
 </div>
 </div>
 <a id="a971bab4c5d9624aa5e0a0b525fc813f4" name="a971bab4c5d9624aa5e0a0b525fc813f4"></a>
@@ -484,6 +575,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Data format code 6 (trailing comment: 24-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format. </p>
 
 </div>
 </div>
@@ -499,6 +592,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 5 (trailing comment: 64-bit IEEE float); for a Cobold LMF file OpenInputLMF() accepts it as the header data format. </p>
+
 </div>
 </div>
 <a id="a1d443597bf13449d9149e78656258b3f" name="a1d443597bf13449d9149e78656258b3f"></a>
@@ -512,6 +607,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Data format code 7 (trailing comment: 64-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
 
 </div>
 </div>
@@ -527,6 +624,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 4 (trailing comment: 32-bit IEEE float); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
+
 </div>
 </div>
 <a id="a7fcfdd9751e9e1dde9d53c29084783c3" name="a7fcfdd9751e9e1dde9d53c29084783c3"></a>
@@ -540,6 +639,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Equal to LM_SDOUBLELONG (11); not used in LMF_IO.cc. </p>
 
 </div>
 </div>
@@ -555,6 +656,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 3 (trailing comment: 32-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
+
 </div>
 </div>
 <a id="a02a96f2367cf718bd9fd82d24bf4e95c" name="a02a96f2367cf718bd9fd82d24bf4e95c"></a>
@@ -568,6 +671,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Data format code 8 (trailing comment: signed 8-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
 
 </div>
 </div>
@@ -583,6 +688,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 11 (trailing comment: signed 64-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
+
 </div>
 </div>
 <a id="a546ad9f7d145f5ae7bdc3d8217babfa2" name="a546ad9f7d145f5ae7bdc3d8217babfa2"></a>
@@ -596,6 +703,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Data format code 2 (trailing comment: 16-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format. </p>
 
 </div>
 </div>
@@ -611,6 +720,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code 10 (trailing comment: signed 32-bit integer); for a Cobold LMF file OpenInputLMF() accepts it as the header data format. </p>
+
 </div>
 </div>
 <a id="a84de1a664106cbd3d1c97cd78d6d4e91" name="a84de1a664106cbd3d1c97cd78d6d4e91"></a>
@@ -624,6 +735,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Data format code 9 (trailing comment: signed 16-bit integer); for a Cobold LMF file OpenInputLMF() rejects it as the header data format (error 8). </p>
 
 </div>
 </div>
@@ -639,6 +752,8 @@ Typedefs</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Data format code -1 (trailing comment: the user handles the reading); for a Cobold LMF file OpenInputLMF() accepts it as the header data format. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -653,6 +768,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Replacement for the Windows LARGE_INTEGER union, defined when <em>WINNT</em> is not defined: a 64-bit QuadPart sharing storage with a LowPart/HighPart pair of 32-bit fields, available directly and as member u. </p>
 
 </div>
 </div>

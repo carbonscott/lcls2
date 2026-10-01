@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('PeakFinderAlgosLCLS1_8hh.html',''); in
   <div class="headertitle"><div class="title">PeakFinderAlgosLCLS1.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares <a class="el" href="classpsalg1_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">psalg1::PeakFinderAlgos</a>, the std::vector-based (LCLS1-style) peak finder for 2-d images, with its Peak and RingAvgRms structures.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -124,17 +127,22 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacepsalg1" id="r_namespacepsalg1"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html">psalg1</a></td></tr>
+<tr class="memdesc:namespacepsalg1"><td class="mdescLeft">&#160;</td><td class="mdescRight">LCLS1-style (std::vector based) version of the <a class="el" href="classpsalg1_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">PeakFinderAlgos</a> peak finder. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a4c872012a687018840e4dab63174facc" id="r_a4c872012a687018840e4dab63174facc"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b">types::mask_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html#a4c872012a687018840e4dab63174facc">psalg1::mask_t</a></td></tr>
+<tr class="memdesc:a4c872012a687018840e4dab63174facc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ac2b6a75bedc6e2ffce6573c9aab7114b" title="uint16_t; mask element type.">types::mask_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:a4c872012a687018840e4dab63174facc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f7f918f4eefd4a3b72e1461675cbc2f" id="r_a9f7f918f4eefd4a3b72e1461675cbc2f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd">types::extrim_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html#a9f7f918f4eefd4a3b72e1461675cbc2f">psalg1::extrim_t</a></td></tr>
+<tr class="memdesc:a9f7f918f4eefd4a3b72e1461675cbc2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#ad8abe5232284c764d4742103590db9fd" title="uint16_t; element type of the local-extrema maps (e.g.">types::extrim_t</a> (uint16_t).  <br /></td></tr>
 <tr class="separator:a9f7f918f4eefd4a3b72e1461675cbc2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e8abb77dfff54de3924c700e9c1e97a" id="r_a4e8abb77dfff54de3924c700e9c1e97a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff">types::conmap_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html#a4e8abb77dfff54de3924c700e9c1e97a">psalg1::conmap_t</a></td></tr>
+<tr class="memdesc:a4e8abb77dfff54de3924c700e9c1e97a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="namespacetypes.html#a8759fdd69c8a7176fd73c8a728b326ff" title="uint32_t; element type of the connected-pixel map (e.g.">types::conmap_t</a> (uint32_t).  <br /></td></tr>
 <tr class="separator:a4e8abb77dfff54de3924c700e9c1e97a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98a2a4cbeee6ef9af09fcf80a3247319" id="r_a98a2a4cbeee6ef9af09fcf80a3247319"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structtypes_1_1TwoIndexes.html">types::TwoIndexes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html#a98a2a4cbeee6ef9af09fcf80a3247319">psalg1::TwoIndexes</a></td></tr>
+<tr class="memdesc:a98a2a4cbeee6ef9af09fcf80a3247319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for <a class="el" href="structtypes_1_1TwoIndexes.html" title="Pair of int indexes i and j.">types::TwoIndexes</a>.  <br /></td></tr>
 <tr class="separator:a98a2a4cbeee6ef9af09fcf80a3247319"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -143,9 +151,12 @@ Functions</h2></td></tr>
 <tr class="memdesc:abd5d0fa70b5093f1f3469bded5e399b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream insertion operator,.  <br /></td></tr>
 <tr class="separator:abd5d0fa70b5093f1f3469bded5e399b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3122c3c174b69b071383908f0094d10f" id="r_a3122c3c174b69b071383908f0094d10f"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg1.html#a3122c3c174b69b071383908f0094d10f">psalg1::operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="structpsalg1_1_1RingAvgRms.html">RingAvgRms</a> &amp;b)</td></tr>
+<tr class="memdesc:a3122c3c174b69b071383908f0094d10f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the background average, rms and pixel count of b to os and return os (defined in PeakFinderAlgosLCLS1.cc).  <br /></td></tr>
 <tr class="separator:a3122c3c174b69b071383908f0094d10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares <a class="el" href="classpsalg1_1_1PeakFinderAlgos.html" title="PeakFinderAlgos - class contains collection of methods for peak finding algorithms of 2-d image.">psalg1::PeakFinderAlgos</a>, the std::vector-based (LCLS1-style) peak finder for 2-d images, with its Peak and RingAvgRms structures. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

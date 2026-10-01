@@ -95,29 +95,42 @@ $(document).ready(function(){initNavTree('SortUtils_8hh.html',''); initResizable
   <div class="headertitle"><div class="title">SortUtils.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares helpers for the RoentDek sort_class: reading sorter config and calibration tables, writing calibration tables, and keyboard polling.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &quot;roentdek/resort64c.h&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a3eb8f0e1cb509ea22d48c0f8bdbf8f90" id="r_a3eb8f0e1cb509ea22d48c0f8bdbf8f90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="LMF__IO_8hh.html#ad026b329cbb0aca618160c242b39b2ce">__int32</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#a3eb8f0e1cb509ea22d48c0f8bdbf8f90">my_kbhit</a> (void)</td></tr>
+<tr class="memdesc:a3eb8f0e1cb509ea22d48c0f8bdbf8f90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one character from stdin with a 0.1 s timeout and return it, or 0 if none was read.  <br /></td></tr>
 <tr class="separator:a3eb8f0e1cb509ea22d48c0f8bdbf8f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac8d71dd8a788a631c946b966440089e" id="r_aac8d71dd8a788a631c946b966440089e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#aac8d71dd8a788a631c946b966440089e">readline_from_config_file</a> (FILE *ffile, char *text, <a class="el" href="LMF__IO_8hh.html#ad026b329cbb0aca618160c242b39b2ce">__int32</a> max_len)</td></tr>
+<tr class="memdesc:aac8d71dd8a788a631c946b966440089e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces, tabs, newlines and CR characters, skip comments that start with '/' and run to the end of the line, and stop at a space, tab, newline or comma.  <br /></td></tr>
 <tr class="separator:aac8d71dd8a788a631c946b966440089e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3592af0f8d9b1295dda2aff6ce434764" id="r_a3592af0f8d9b1295dda2aff6ce434764"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#a3592af0f8d9b1295dda2aff6ce434764">read_int</a> (FILE *ffile)</td></tr>
+<tr class="memdesc:a3592af0f8d9b1295dda2aff6ce434764"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the next token with <a class="el" href="SortUtils_8hh.html#aac8d71dd8a788a631c946b966440089e" title="Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces,...">readline_from_config_file()</a> and return atoi() of it.  <br /></td></tr>
 <tr class="separator:a3592af0f8d9b1295dda2aff6ce434764"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a601b5aed21941535ac63a233e3c2cfde" id="r_a601b5aed21941535ac63a233e3c2cfde"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#a601b5aed21941535ac63a233e3c2cfde">read_double</a> (FILE *ffile)</td></tr>
+<tr class="memdesc:a601b5aed21941535ac63a233e3c2cfde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the next token with <a class="el" href="SortUtils_8hh.html#aac8d71dd8a788a631c946b966440089e" title="Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces,...">readline_from_config_file()</a> and return atof() of it.  <br /></td></tr>
 <tr class="separator:a601b5aed21941535ac63a233e3c2cfde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbc7d3430edec9136f3859b279dfe952" id="r_adbc7d3430edec9136f3859b279dfe952"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#adbc7d3430edec9136f3859b279dfe952">read_config_file</a> (const char *name, sort_class *&amp;sorter, int &amp;command, double &amp;offset_sum_u, double &amp;offset_sum_v, double &amp;offset_sum_w, double &amp;w_offset, double &amp;pos_offset_x, double &amp;pos_offset_y)</td></tr>
+<tr class="memdesc:adbc7d3430edec9136f3859b279dfe952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a sorter configuration from the text file name, in a fixed order, into sorter and the output arguments: command, HEX and common-start flags, channel numbers (stored minus 1), offsets, time-sum half widths, scale factors (stored halved), w_offset, runtimes, MCP radius, dead times, correction flags, and a check value that must be 88888.  <br /></td></tr>
 <tr class="separator:adbc7d3430edec9136f3859b279dfe952"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50c9c2a531efb53d38b230cf0083a5bd" id="r_a50c9c2a531efb53d38b230cf0083a5bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#a50c9c2a531efb53d38b230cf0083a5bd">read_calibration_tables</a> (const char *filename, sort_class *sorter)</td></tr>
+<tr class="memdesc:a50c9c2a531efb53d38b230cf0083a5bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read sum- and position-correction points (a count, then x y pairs, for layers U, V and, with use_HEX, W) from filename and add them to the sorter's signal correctors when use_sum_correction or use_pos_correction is set.  <br /></td></tr>
 <tr class="separator:a50c9c2a531efb53d38b230cf0083a5bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab660a4037ff1f65770503711e92f816e" id="r_ab660a4037ff1f65770503711e92f816e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#ab660a4037ff1f65770503711e92f816e">create_calibration_tables</a> (const char *filename, sort_class *sorter)</td></tr>
+<tr class="memdesc:ab660a4037ff1f65770503711e92f816e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run sorter-&gt;do_calibration() and write the sum-walk correction points of layers U, V (and W with use_HEX) and the position-walk points of U, V and W to filename as text (a count line, then x y pairs); the position-walk counts are 0 unless use_HEX is set.  <br /></td></tr>
 <tr class="separator:ab660a4037ff1f65770503711e92f816e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6af8da86ab8393ed9402d86115e818a7" id="r_a6af8da86ab8393ed9402d86115e818a7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SortUtils_8hh.html#a6af8da86ab8393ed9402d86115e818a7">sorter_scalefactors_calibration_map_is_full_enough</a> (sort_class *sorter)</td></tr>
+<tr class="memdesc:a6af8da86ab8393ed9402d86115e818a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return sorter-&gt;scalefactors_calibrator-&gt;map_is_full_enough(), or false if sorter is null.  <br /></td></tr>
 <tr class="separator:a6af8da86ab8393ed9402d86115e818a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares helpers for the RoentDek sort_class: reading sorter config and calibration tables, writing calibration tables, and keyboard polling. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ab660a4037ff1f65770503711e92f816e" name="ab660a4037ff1f65770503711e92f816e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab660a4037ff1f65770503711e92f816e">&#9670;&#160;</a></span>create_calibration_tables()</h2>
 
@@ -144,6 +157,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Run sorter-&gt;do_calibration() and write the sum-walk correction points of layers U, V (and W with use_HEX) and the position-walk points of U, V and W to filename as text (a count line, then x y pairs); the position-walk counts are 0 unless use_HEX is set. </p>
+<p>Returns false if sorter or filename is null, otherwise true; a failed fopen() is not checked. </p>
+
 </div>
 </div>
 <a id="a3eb8f0e1cb509ea22d48c0f8bdbf8f90" name="a3eb8f0e1cb509ea22d48c0f8bdbf8f90"></a>
@@ -161,6 +177,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read one character from stdin with a 0.1 s timeout and return it, or 0 if none was read. </p>
+<p>It temporarily changes the terminal settings of fd 0; the code clears all local-mode flags (it uses !ICANON, which is 0) and restores them afterwards. </p>
 
 </div>
 </div>
@@ -189,6 +208,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read sum- and position-correction points (a count, then x y pairs, for layers U, V and, with use_HEX, W) from filename and add them to the sorter's signal correctors when use_sum_correction or use_pos_correction is set. </p>
+<p>Returns false if filename or sorter is null or the file cannot be opened, otherwise true. </p>
 
 </div>
 </div>
@@ -260,6 +282,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read a sorter configuration from the text file name, in a fixed order, into sorter and the output arguments: command, HEX and common-start flags, channel numbers (stored minus 1), offsets, time-sum half widths, scale factors (stored halved), w_offset, runtimes, MCP radius, dead times, correction flags, and a check value that must be 88888. </p>
+<p>Returns false if the file cannot be opened, if command is -1 (reading stops there), or if the check value is wrong (then sorter is deleted and set to 0); otherwise true. Progress is printed to stdout. </p>
+
 </div>
 </div>
 <a id="a601b5aed21941535ac63a233e3c2cfde" name="a601b5aed21941535ac63a233e3c2cfde"></a>
@@ -278,6 +303,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read the next token with <a class="el" href="SortUtils_8hh.html#aac8d71dd8a788a631c946b966440089e" title="Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces,...">readline_from_config_file()</a> and return atof() of it. </p>
+
 </div>
 </div>
 <a id="a3592af0f8d9b1295dda2aff6ce434764" name="a3592af0f8d9b1295dda2aff6ce434764"></a>
@@ -295,6 +322,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read the next token with <a class="el" href="SortUtils_8hh.html#aac8d71dd8a788a631c946b966440089e" title="Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces,...">readline_from_config_file()</a> and return atoi() of it. </p>
 
 </div>
 </div>
@@ -330,6 +359,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read the next token from ffile into text (at most max_len-1 characters): skip leading spaces, tabs, newlines and CR characters, skip comments that start with '/' and run to the end of the line, and stop at a space, tab, newline or comma. </p>
+<p>End of file is not detected. </p>
+
 </div>
 </div>
 <a id="a6af8da86ab8393ed9402d86115e818a7" name="a6af8da86ab8393ed9402d86115e818a7"></a>
@@ -347,6 +379,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return sorter-&gt;scalefactors_calibrator-&gt;map_is_full_enough(), or false if sorter is null. </p>
+<p>The check itself is in the RoentDek library; not visible here. </p>
 
 </div>
 </div>

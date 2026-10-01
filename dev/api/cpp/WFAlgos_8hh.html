@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('WFAlgos_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">WFAlgos.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Declares the waveform edge finder <a class="el" href="namespacepsalg.html#ae59253c0fecc36fb6d77da59ca931676" title="Find pulses in wf that go beyond threshold (above it if threshold &gt; baseline, else below) for more th...">psalg::find_edges()</a> and its helper _add_edge().  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
@@ -109,20 +112,26 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a96700f40507e71bbd37cd792b287a30d" id="r_a96700f40507e71bbd37cd792b287a30d"><td class="memItemLeft" align="right" valign="top">typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">psalg::index_t</a></td></tr>
+<tr class="memdesc:a96700f40507e71bbd37cd792b287a30d"><td class="mdescLeft">&#160;</td><td class="mdescRight">uint32_t; index type of the <a class="el" href="namespacepsalg.html#ae59253c0fecc36fb6d77da59ca931676" title="Find pulses in wf that go beyond threshold (above it if threshold &gt; baseline, else below) for more th...">find_edges()</a> results.  <br /></td></tr>
 <tr class="separator:a96700f40507e71bbd37cd792b287a30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6469effcd18ee6223ad958344f725324" id="r_a6469effcd18ee6223ad958344f725324"><td class="memItemLeft" align="right" valign="top">typedef double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#a6469effcd18ee6223ad958344f725324">psalg::wfdata_t</a></td></tr>
+<tr class="memdesc:a6469effcd18ee6223ad958344f725324"><td class="mdescLeft">&#160;</td><td class="mdescRight">double.  <br /></td></tr>
 <tr class="separator:a6469effcd18ee6223ad958344f725324"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac3873a61ac7ec3055858c5126afaba0f" id="r_ac3873a61ac7ec3055858c5126afaba0f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac3873a61ac7ec3055858c5126afaba0f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#ac3873a61ac7ec3055858c5126afaba0f">psalg::_add_edge</a> (const std::vector&lt; T &gt; &amp;v, bool rising, double fraction, double deadtime, T peak, <a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a> start, double &amp;last, <a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a> &amp;ipk, T *pkvals, <a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a> *pkinds)</td></tr>
+<tr class="memdesc:ac3873a61ac7ec3055858c5126afaba0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">From sample start, find the first sample i where v reaches the level fraction (an absolute level: upward if rising, downward otherwise) and interpolate the edge position linearly between samples i-1 and i (0 if i is 0).  <br /></td></tr>
 <tr class="separator:ac3873a61ac7ec3055858c5126afaba0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae59253c0fecc36fb6d77da59ca931676" id="r_ae59253c0fecc36fb6d77da59ca931676"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae59253c0fecc36fb6d77da59ca931676"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacepsalg.html#ae59253c0fecc36fb6d77da59ca931676">psalg::find_edges</a> (<a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a> npkmax, T *pkvals, <a class="el" href="namespacepsalg.html#a96700f40507e71bbd37cd792b287a30d">index_t</a> *pkinds, const std::vector&lt; T &gt; &amp;wf, double baseline, double threshold, double fraction, double deadtime, bool leading_edge)</td></tr>
+<tr class="memdesc:ae59253c0fecc36fb6d77da59ca931676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find pulses in wf that go beyond threshold (above it if threshold &gt; baseline, else below) for more than deadtime samples; for each, store its extreme value in pkvals and the interpolated index of the edge at level fraction*(peak-baseline)+baseline in pkinds (leading edge, or with leading_edge false the trailing edge searched from the peak).  <br /></td></tr>
 <tr class="separator:ae59253c0fecc36fb6d77da59ca931676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Declares the waveform edge finder <a class="el" href="namespacepsalg.html#ae59253c0fecc36fb6d77da59ca931676" title="Find pulses in wf that go beyond threshold (above it if threshold &gt; baseline, else below) for more th...">psalg::find_edges()</a> and its helper _add_edge(). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
