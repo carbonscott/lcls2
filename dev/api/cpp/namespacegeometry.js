@@ -1,0 +1,38 @@
+var namespacegeometry =
+[
+    [ "GeometryAccess", "classgeometry_1_1GeometryAccess.html", "classgeometry_1_1GeometryAccess" ],
+    [ "GeometryObject", "classgeometry_1_1GeometryObject.html", "classgeometry_1_1GeometryObject" ],
+    [ "SegGeometry", "classgeometry_1_1SegGeometry.html", "classgeometry_1_1SegGeometry" ],
+    [ "SegGeometryCspad2x1V1", "classgeometry_1_1SegGeometryCspad2x1V1.html", "classgeometry_1_1SegGeometryCspad2x1V1" ],
+    [ "SegGeometryEpix100V1", "classgeometry_1_1SegGeometryEpix100V1.html", "classgeometry_1_1SegGeometryEpix100V1" ],
+    [ "SegGeometryEpix10kaV1", "classgeometry_1_1SegGeometryEpix10kaV1.html", "classgeometry_1_1SegGeometryEpix10kaV1" ],
+    [ "SegGeometryMatrixV1", "classgeometry_1_1SegGeometryMatrixV1.html", "classgeometry_1_1SegGeometryMatrixV1" ],
+    [ "SegGeometryStore", "classgeometry_1_1SegGeometryStore.html", "classgeometry_1_1SegGeometryStore" ],
+    [ "angle_t", "namespacegeometry.html#ac1dfb61370be4d68d253919fc6c1f532", null ],
+    [ "bitword_t", "namespacegeometry.html#a6c43726137a640ae6e3fa320529c2cdc", null ],
+    [ "gsize_t", "namespacegeometry.html#ac432ae5f3dcb57138088099bc0e0995b", null ],
+    [ "pixel_area_t", "namespacegeometry.html#aa84822ec430cb331fbdf67a75787822b", null ],
+    [ "pixel_coord_t", "namespacegeometry.html#a629e23f81e350c841f324f38f7aa7a37", null ],
+    [ "pixel_idx_t", "namespacegeometry.html#af5c594a63e87b7cb8b63b561f60df359", null ],
+    [ "pixel_mask_t", "namespacegeometry.html#a752609e266e805ef2d1e5463cd733a72", null ],
+    [ "psalg_size_t", "namespacegeometry.html#ad9ccde467cefdc3ec41c6736dcf6cc12", null ],
+    [ "segindex_t", "namespacegeometry.html#a3d05a5f7ac623f1414257a007f1fb3e8", null ],
+    [ "shape_t", "namespacegeometry.html#a6b58bb9063053772572b20ce9fdd5138", null ],
+    [ "AXIS", "namespacegeometry.html#ac4513c627d25389af1bc1789784b3a6b", [
+      [ "AXIS_X", "namespacegeometry.html#ac4513c627d25389af1bc1789784b3a6ba224564e4d7f832614318b5532ad38835", null ],
+      [ "AXIS_Y", "namespacegeometry.html#ac4513c627d25389af1bc1789784b3a6ba6ad5429725d50ac76aabac475dacad33", null ],
+      [ "AXIS_Z", "namespacegeometry.html#ac4513c627d25389af1bc1789784b3a6ba37a2a70b80637311c3ac18e93a4a482d", null ]
+    ] ],
+    [ "data2x2ToTwo2x1", "namespacegeometry.html#a42504392a2ac0503d82dbb169a25e55d", null ],
+    [ "matrix_pars", "group__geometry.html#ga33c5544907fdb8592e5f9d559ff9fcc8", null ],
+    [ "max_of_arr", "namespacegeometry.html#a5d1b8d8477db3c71c5bbead11ef43c45", null ],
+    [ "min_of_arr", "namespacegeometry.html#a7e6376424dad7fe7146f156b03cceb38", null ],
+    [ "two2x1ToData2x2", "namespacegeometry.html#a322960711d30d1bbd2a5174783ac1e6c", null ],
+    [ "two2x1ToData2x2", "namespacegeometry.html#ae3240953345b4b7da8201e804254afd2", null ],
+    [ "COLS2X1", "namespacegeometry.html#a1cc5d6c295e1607e8fd791daa02a2ef6", null ],
+    [ "DEG_TO_RAD", "group__geometry.html#gab305600e8b7f63d61fe2fcc9afc9d213", null ],
+    [ "N2X1", "namespacegeometry.html#a425774c499b58eb45a9805b55ee7c460", null ],
+    [ "ROWS2X1", "namespacegeometry.html#ac3b3eaf175472bd30810aa73392e91b4", null ],
+    [ "SIZE2X1", "namespacegeometry.html#adb97b2cdeac14534ffe4170f35f7b3d3", null ],
+    [ "SIZE2X2", "namespacegeometry.html#a585edada13f8bc699b3984258bcbdcd0", null ]
+];

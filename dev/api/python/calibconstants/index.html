@@ -1,0 +1,2953 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/api/python/calibconstants/">
+      
+      
+        <link rel="prev" href="../areadetector/">
+      
+      
+        <link rel="next" href="../control/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>psana.detector.calibconstants - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#psanadetectorcalibconstants" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              psana.detector.calibconstants
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        calibconstants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="calibconstants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class CalibConstants with convenience methods to access info from dict returned from DB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CalibConstants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CalibConstants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.calibconst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        calibconst
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cons_and_meta_for_ctype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cons_and_meta_for_ctype
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cached_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cached_array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pedestals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pedestals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.rms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.common_mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        common_mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        offset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.mask_calib" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mask_calib
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.status_extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status_extra
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.gain_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gain_factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.shape_as_daq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shape_as_daq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.number_of_segments_total" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        number_of_segments_total
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.segment_numbers_total" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        segment_numbers_total
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.geotxt_and_meta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geotxt_and_meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.geo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.seg_geo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        seg_geo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pixel_coords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pixel_coords
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pixel_coord_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pixel_coord_indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.seed_cached_pixel_coord_indexes_shared" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        seed_cached_pixel_coord_indexes_shared
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cached_pixel_coord_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cached_pixel_coord_indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pix_rc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pix_rc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pix_xyz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pix_xyz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.interpol_pars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interpol_pars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.info_calibconst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info_calibconst
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.is_none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_none
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.is_dict_like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_dict_like
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        calibconstants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="calibconstants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class CalibConstants with convenience methods to access info from dict returned from DB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CalibConstants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CalibConstants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.calibconst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        calibconst
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cons_and_meta_for_ctype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cons_and_meta_for_ctype
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cached_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cached_array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pedestals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pedestals
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.rms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.common_mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        common_mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        offset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.mask_calib" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mask_calib
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.status_extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status_extra
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.gain_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gain_factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.shape_as_daq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shape_as_daq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.number_of_segments_total" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        number_of_segments_total
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.segment_numbers_total" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        segment_numbers_total
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.geotxt_and_meta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geotxt_and_meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.geo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.seg_geo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        seg_geo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pixel_coords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pixel_coords
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pixel_coord_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pixel_coord_indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.seed_cached_pixel_coord_indexes_shared" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        seed_cached_pixel_coord_indexes_shared
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.cached_pixel_coord_indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cached_pixel_coord_indexes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pix_rc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pix_rc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.pix_xyz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pix_xyz
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.interpol_pars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interpol_pars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.CalibConstants.info_calibconst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        info_calibconst
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.is_none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_none
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.detector.calibconstants.is_dict_like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_dict_like
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="psanadetectorcalibconstants">psana.detector.calibconstants<a class="headerlink" href="#psanadetectorcalibconstants" title="Permanent link">&para;</a></h1>
+<p><code>CalibConstants</code> wraps the calibration constants of one detector
+(<code>det.calibconst</code>, a dict <code>{ctype: (data, metadata)}</code> fetched from the
+calibration database when the run is opened) and provides convenience
+accessors (<code>pedestals()</code>, <code>rms()</code>, <code>gain()</code>, <code>gain_factor()</code>, <code>status()</code>),
+geometry (<code>geo()</code>, pixel coordinates and indexes) and <code>image(nda, ...)</code>. Area
+detectors create it on demand (<code>det.raw._calibconstants()</code>).</p>
+<p>See <a href="../../../features/calibration/">Calibration constants</a>.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="psana.detector.calibconstants" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">psana.detector.calibconstants</span>
+
+
+<a href="#psana.detector.calibconstants" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <h3 id="psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db">Class CalibConstants with convenience methods to access info from dict returned from DB<a class="headerlink" href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" title="Permanent link">&para;</a></h3>
+<p>Usage::</p>
+<p>from psana.detector.calibconstants import CalibConstants</p>
+<p>o = CalibConstants(calibconst, <strong>kwa)
+  v = o.calibconst()
+  v = o.cons_and_meta_for_ctype(ctype='pedestals')
+  v = o.cached_array(p, ctype='pedestals')
+  v = o.pedestals()
+  v = o.rms()
+  v = o.status(ctype='pixel_status') # for ctype pixel_status or specified
+  v = o.status_extra()               # for ctype status_extra
+  v = o.mask_calib()
+  v = o.common_mode()
+  v = o.gain()
+  v = o.gain_factor()
+  v = o.shape_as_daq()
+  v = o.number_of_segments_total()
+  v = o.geotxt_and_meta()
+  v = o.geotxt_default()
+  v = o.geo()
+  v = o.pixel_coords(</strong>kwa)
+  v = o.pixel_coord_indexes(<strong>kwa)
+  v = o.cached_pixel_coord_indexes(segnums, </strong>kwa)
+  v = o.image(self, nda, segnums=None, **kwa)
+  v = o.pix_rc()
+  v = o.pix_xyz()
+  v = o.interpol_pars()
+  s = o.info_calibconst()</p>
+<p>2022-07-07 created by Mikhail Dubrovin</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.detector.calibconstants.CalibConstants" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CalibConstants</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">CalibConstants</span><span class="p">(</span><span class="n">calibconst</span><span class="p">,</span> <span class="n">detname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Access to one detector's calibration constants and to the geometry-based image mapping.</p>
+<p><code>calibconst</code> is the dict from the calibration DB that maps a constant type to a (data, metadata)
+tuple. Instances are shared per <code>detname</code>: creating the class again with the same name returns
+the existing instance, reset to the new <code>calibconst</code>.</p>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>calibconst</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>calib_constants_all_types</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwa</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.calibconst" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">calibconst</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.calibconst" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">calibconst</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the calibration dict, or None (with a debug message) if it is None.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.cons_and_meta_for_ctype" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cons_and_meta_for_ctype</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.cons_and_meta_for_ctype" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cons_and_meta_for_ctype</span><span class="p">(</span><span class="n">ctype</span><span class="o">=</span><span class="s1">'pedestals'</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the (data, metadata) tuple stored for <code>ctype</code>, or (None, None) if the calibration dict or that entry is missing.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.cached_array" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cached_array</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.cached_array" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cached_array</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">ctype</span><span class="o">=</span><span class="s1">'pedestals'</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Returns cached array of constants for ctype.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.pedestals" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pedestals</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.pedestals" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pedestals</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'pedestals' constant array, or None if it is absent.</p>
+<p>Calls <code>cached_array(self._pedestals, 'pedestals')</code>. <code>_pedestals</code> is reset to None and never filled in
+this class, so the array is looked up in the calibration dict on each call.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.rms" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">rms</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.rms" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">rms</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'pixel_rms' constant array, or None if it is absent.</p>
+<p>Calls <code>cached_array(self._rms, 'pixel_rms')</code>. <code>_rms</code> is reset to None and never filled in
+this class, so the array is looked up in the calibration dict on each call.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.common_mode" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">common_mode</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.common_mode" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">common_mode</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'common_mode' constant array, or None if it is absent.</p>
+<p>Calls <code>cached_array(self._common_mode, 'common_mode')</code>. <code>_common_mode</code> is reset to None and never filled in
+this class, so the array is looked up in the calibration dict on each call.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.gain" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">gain</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.gain" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">gain</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'pixel_gain' constant array, or None if it is absent.</p>
+<p>Calls <code>cached_array(self._gain, 'pixel_gain')</code>. <code>_gain</code> is reset to None and never filled in
+this class, so the array is looked up in the calibration dict on each call.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.offset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">offset</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.offset" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">offset</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'pixel_offset' constant array, or None if it is absent.</p>
+<p>Calls <code>cached_array(self._offset, 'pixel_offset')</code>. <code>_offset</code> is reset to None and never filled in
+this class, so the array is looked up in the calibration dict on each call.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.mask_calib" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">mask_calib</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.mask_calib" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">mask_calib</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the 'pixel_mask' constant array converted to <code>DTYPE_MASK</code>, or None if it is absent.</p>
+<p>Looked up with <code>cached_array(self._mask_calib, 'pixel_mask')</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.status" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">status</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.status" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">status</span><span class="p">(</span><span class="n">ctype</span><span class="o">=</span><span class="s1">'pixel_status'</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>for ctype pixel_status</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.status_extra" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">status_extra</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.status_extra" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">status_extra</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>for ctype status_extra</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.gain_factor" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">gain_factor</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.gain_factor" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">gain_factor</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Evaluates and returns gain factor as 1/gain if gain is available in calib constants else 1.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.shape_as_daq" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">shape_as_daq</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.shape_as_daq" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">shape_as_daq</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the DAQ data shape derived from the pedestals, or None if there are no pedestals.</p>
+<p>This is the pedestal shape when it has fewer than 4 dimensions, otherwise its last three
+dimensions.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.number_of_segments_total" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">number_of_segments_total</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.number_of_segments_total" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">number_of_segments_total</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the total number of segments derived from <code>shape_as_daq()</code>.</p>
+<p>None if that shape is None, 1 if it has fewer than 3 dimensions, otherwise its third-from-last
+dimension.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.segment_numbers_total" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">segment_numbers_total</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.segment_numbers_total" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">segment_numbers_total</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Returns total list of segment numbers.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.geotxt_and_meta" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">geotxt_and_meta</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.geotxt_and_meta" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">geotxt_and_meta</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the (geometry text, metadata) tuple stored under 'geometry'.</p>
+<p>Returns (None, None) if that entry is missing, and a single None if the calibration dict itself
+is None.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.geo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">geo</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.geo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">geo</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return GeometryAccess() object.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.seg_geo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">seg_geo</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.seg_geo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">seg_geo</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>returns SegGeometry object from full GeometryAccess object or None if GeometryAccess is None</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.pixel_coords" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pixel_coords</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.pixel_coords" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pixel_coords</span><span class="p">(</span><span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>DEPRECATED - can't load detector-dependent default geometry here...
+returns x, y, z - three np.ndarray</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.pixel_coord_indexes" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pixel_coord_indexes</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.pixel_coord_indexes" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pixel_coord_indexes</span><span class="p">(</span><span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>DEPRECATED - can't load detector-dependent default geometry here...
+returns ix, iy - two np.ndarray</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.seed_cached_pixel_coord_indexes_shared" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">seed_cached_pixel_coord_indexes_shared</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.seed_cached_pixel_coord_indexes_shared" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">seed_cached_pixel_coord_indexes_shared</span><span class="p">(</span><span class="n">segnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Precompute and package CalibConstants image-mapping artifacts for shared memory.</p>
+<p>Returns a payload dict containing a shared-memory cache key (<code>meta</code>), array
+specifications (<code>specs</code>), and the computed numpy arrays (<code>arrays</code>). The caller
+is responsible for allocating shared arrays and copying these data into them.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.cached_pixel_coord_indexes" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cached_pixel_coord_indexes</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.cached_pixel_coord_indexes" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cached_pixel_coord_indexes</span><span class="p">(</span><span class="n">segnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Compute and store the pixel row/column indexes and image-mapping tables; returns None.</p>
+<p><code>segnums</code> defaults to all segments. When the shared calib cache (<code>_shared_calibc_cache</code>) is
+enabled and holds every array for this key they are taken from it; otherwise the indexes come
+from <code>pixel_coord_indexes(**kwa)</code> (nothing is stored if that is None), and multi-pixel
+statistics, hole tables (<code>fillholes</code>, default True) or, for <code>mapmode</code> 4, interpolation parameters
+are computed (<code>mapmode</code> default 2). The mapmode-4 path calls <code>self._pixel_coords</code>, which this
+class does not define.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.image" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">image</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.image" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">image</span><span class="p">(</span><span class="n">nda</span><span class="p">,</span> <span class="n">segnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwa</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create 2-d image.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>nda</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>array shaped as daq raw data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>segnums</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mapmode</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>control on overlapping pixels on image map.
+0/1/2/3/4: statistics of entries / last / max / mean pixel intensity / interpolated (TBD) - ascending data index.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fillholes</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>control on map bins inside the panel with 0 entries from data.
+True/False: fill empty bin with minimal intensity of four neares neighbors/ do not fill.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>vbase</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>value substituted for all image map bins without entry from data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>image</code></td>            <td>
+                  <code>np.array, ndim=2</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.pix_rc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pix_rc</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.pix_rc" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pix_rc</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the stored (rows, cols) pixel index arrays; (None, None) until <code>cached_pixel_coord_indexes</code> fills them.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.pix_xyz" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pix_xyz</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.pix_xyz" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pix_xyz</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the stored (x, y, z) pixel coordinate arrays; (None, None, None) unless the mapmode-4 path filled them.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.interpol_pars" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">interpol_pars</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.interpol_pars" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">interpol_pars</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the stored interpolation parameters; None unless the mapmode-4 path set them.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.detector.calibconstants.CalibConstants.info_calibconst" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">info_calibconst</span>
+
+
+<a href="#psana.detector.calibconstants.CalibConstants.info_calibconst" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">info_calibconst</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>grabs det.raw._calibconst from self and returns info about available constants</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.detector.calibconstants.is_none" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_none</span>
+
+
+<a href="#psana.detector.calibconstants.is_none" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">is_none</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">logger_method</span><span class="o">=</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return True if <code>par</code> is None, calling <code>logger_method(msg)</code> in that case; otherwise return False.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.detector.calibconstants.is_dict_like" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_dict_like</span>
+
+
+<a href="#psana.detector.calibconstants.is_dict_like" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">is_dict_like</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return True if <code>d</code> is a dict or a <code>weakref.WeakValueDictionary</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

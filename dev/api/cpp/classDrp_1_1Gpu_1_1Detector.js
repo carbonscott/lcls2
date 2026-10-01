@@ -1,0 +1,25 @@
+var classDrp_1_1Gpu_1_1Detector =
+[
+    [ "Detector", "classDrp_1_1Gpu_1_1Detector.html#a4a75dd361f9ba686622f008507a3dae7", null ],
+    [ "~Detector", "classDrp_1_1Gpu_1_1Detector.html#a88eaf3bf13f979dc2abb64f7a198ed09", null ],
+    [ "_initialize", "classDrp_1_1Gpu_1_1Detector.html#a329bc962d0977e6cc2bada85014f8499", null ],
+    [ "beginrun", "classDrp_1_1Gpu_1_1Detector.html#a1ceb287abf29aee20c56b7d7bb25b32c", null ],
+    [ "beginstep", "classDrp_1_1Gpu_1_1Detector.html#a65fbad344bcedafda8826ed92b3480d6", null ],
+    [ "configure", "classDrp_1_1Gpu_1_1Detector.html#a4c4371594d77c1c167e21a70d8a18644", null ],
+    [ "connect", "classDrp_1_1Gpu_1_1Detector.html#a481237de589d5e2fe3558af7914a569f", null ],
+    [ "connectionInfo", "classDrp_1_1Gpu_1_1Detector.html#a8f6a11518e3dddc55b4c1a0fe6050f1b", null ],
+    [ "connectionShutdown", "classDrp_1_1Gpu_1_1Detector.html#a35a9957f94be185cc55e714a592a75a6", null ],
+    [ "disable", "classDrp_1_1Gpu_1_1Detector.html#a460a0e7a3ffed45a293d9d1a6062e63e", null ],
+    [ "enable", "classDrp_1_1Gpu_1_1Detector.html#a19af6092dd74f4735c1625f18c3e332c", null ],
+    [ "gains_d", "classDrp_1_1Gpu_1_1Detector.html#a52f258d9519622c12f9019e6efa82f77", null ],
+    [ "getTimingHeader", "classDrp_1_1Gpu_1_1Detector.html#ac4dfb48074cfeaa9504d0486713ab4af", null ],
+    [ "gpuDetector", "classDrp_1_1Gpu_1_1Detector.html#a715ed99c061177c9e09200bd26e3f52d", null ],
+    [ "issuePhase2", "classDrp_1_1Gpu_1_1Detector.html#a6d00c5a88ac1e647b1d14e1e7dd9707c", null ],
+    [ "pedestals_d", "classDrp_1_1Gpu_1_1Detector.html#a69c65d8a3f7ad94a9b3e9d054cb306e5", null ],
+    [ "rangeBits", "classDrp_1_1Gpu_1_1Detector.html#a0d5db6afe83d43adc3f25044529e3325", null ],
+    [ "rangeOffset", "classDrp_1_1Gpu_1_1Detector.html#a33ff71ee7c7027ad664e8f71e9cae61c", null ],
+    [ "referenceBufCnt", "classDrp_1_1Gpu_1_1Detector.html#a3dd594ef4f81ad59ee45c53607671717", null ],
+    [ "referenceBuffers", "classDrp_1_1Gpu_1_1Detector.html#ac757c74f6a82020f21ebcde309529787", null ],
+    [ "shutdown", "classDrp_1_1Gpu_1_1Detector.html#ad85e7933a1957b5d3d97fcd9bcb0d338", null ],
+    [ "m_det", "classDrp_1_1Gpu_1_1Detector.html#a288635331e2bbefae306f324b6032283", null ]
+];

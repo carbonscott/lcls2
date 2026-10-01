@@ -1,0 +1,3503 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/api/python/run/">
+      
+      
+        <link rel="prev" href="../ds_base/">
+      
+      
+        <link rel="next" href="../event/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>psana.psexp.run - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#psanapsexprun" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              psana.psexp.run
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.psexp.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StepEvent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StepEvent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.dgrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dgrams
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.docstring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docstring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.CallbackRunState" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CallbackRunState
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CallbackRunState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.CallbackRunState.reset_envstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset_envstore
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.scannames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scannames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.detnames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detnames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.epicsinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        epicsinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.scaninfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scaninfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.xtcinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        xtcinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.terminate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        terminate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.close_shared_memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        close_shared_memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.Detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.get_filtered_detinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_filtered_detinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.build_detinfo_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_detinfo_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunShmem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunShmem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunDrp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunDrp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.add_detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.add_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.remove_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remove_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSingleFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSingleFile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSerial
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunSerial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial.build_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSmallData
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunSmallData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.psexp.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StepEvent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StepEvent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.dgrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dgrams
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.docstring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        docstring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.StepEvent.value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.CallbackRunState" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CallbackRunState
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CallbackRunState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.CallbackRunState.reset_envstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset_envstore
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.scannames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scannames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.detnames" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detnames
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.epicsinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        epicsinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.scaninfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scaninfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.xtcinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        xtcinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.terminate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        terminate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.close_shared_memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        close_shared_memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.Detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.get_filtered_detinfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_filtered_detinfo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.build_detinfo_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_detinfo_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.Run.step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunShmem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunShmem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunDrp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunDrp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.add_detector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_detector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.add_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.remove_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remove_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunDrp.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSingleFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSingleFile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSerial
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunSerial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial.build_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSerial.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunSmallData
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunSmallData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData.steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.psexp.run.RunSmallData.events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        events
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="psanapsexprun">psana.psexp.run<a class="headerlink" href="#psanapsexprun" title="Permanent link">&para;</a></h1>
+<p>The run classes yielded by <code>ds.runs()</code>. <code>Run</code> is the base class with the
+methods most user code calls: <code>events()</code> (one <code>Event</code> per L1Accept),
+<code>steps()</code> (one <code>Step</code> per BeginStep), <code>Detector(name, accept_missing=False, **kwargs)</code>,
+and the properties <code>detnames</code>, <code>epicsinfo</code>, <code>scaninfo</code>, <code>xtcinfo</code>. Which
+subclass you get depends on the data source:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Data source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RunSerial</code></td>
+<td><code>SerialDataSource</code> (<code>exp=</code>, one process)</td>
+</tr>
+<tr>
+<td><code>RunSingleFile</code></td>
+<td><code>SingleFileDataSource</code> (<code>files=</code>)</td>
+</tr>
+<tr>
+<td><code>RunShmem</code></td>
+<td><code>ShmemDataSource</code> (<code>shmem=</code>)</td>
+</tr>
+<tr>
+<td><code>RunDrp</code></td>
+<td><code>DrpDataSource</code> (<code>drp=</code>)</td>
+</tr>
+<tr>
+<td><code>RunSmallData</code></td>
+<td>created internally (<code>eventbuilder_manager.py</code>, <code>smdreader_manager.py</code>) and passed to <code>smd_callback</code></td>
+</tr>
+<tr>
+<td><code>RunParallel</code></td>
+<td><code>MPIDataSource</code>; defined in <a href="../mpi_ds/"><code>psana.psexp.mpi_ds</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../../../features/datasource-run-events/">DataSource, Run and the event loop</a>
+and <a href="../../../features/detector-interface/">Detector interface</a>.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="psana.psexp.run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">psana.psexp.run</span>
+
+
+<a href="#psana.psexp.run" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Run classes returned by the psana data sources.</p>
+<p><code>Run</code> is the base class; <code>RunShmem</code>, <code>RunDrp</code>, <code>RunSingleFile</code>, <code>RunSerial</code> and <code>RunSmallData</code>
+are the variants for shared memory, the DRP, single files, serial reading and smalldata
+callbacks. Also defines <code>StepEvent</code> and <code>CallbackRunState</code>.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.StepEvent" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">StepEvent</span>
+
+
+<a href="#psana.psexp.run.StepEvent" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">StepEvent</span><span class="p">(</span><span class="n">env_store</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="object">object</span></code></p>
+
+
+
+        <p>Use by AMI to access</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.StepEvent.dgrams" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">dgrams</span>
+
+
+<a href="#psana.psexp.run.StepEvent.dgrams" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">dgrams</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return, for each stream, the last step dgram at or before the timestamp of <code>evt</code> (None if there is none).</p>
+<p>Delegates to <code>EnvStore.get_step_dgrams_of_event</code> of the env store given to the constructor.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.StepEvent.docstring" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">docstring</span>
+
+
+<a href="#psana.psexp.run.StepEvent.docstring" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">docstring</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the value of the "step_docstring" env variable for <code>evt</code>, or None if it is not found.</p>
+<p>Uses <code>EnvStore.values([evt], "step_docstring")</code>, which looks back up to PS_N_STEP_SEARCH_STEPS
+(default 10) stored dgrams.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.StepEvent.value" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">value</span>
+
+
+<a href="#psana.psexp.run.StepEvent.value" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">value</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the value of the "step_value" env variable for <code>evt</code>, or None if it is not found.</p>
+<p>Uses <code>EnvStore.values([evt], "step_value")</code>, which looks back up to PS_N_STEP_SEARCH_STEPS
+(default 10) stored dgrams.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.CallbackRunState" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CallbackRunState</span>
+
+
+<a href="#psana.psexp.run.CallbackRunState" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">CallbackRunState</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Holds callback-side run state that must persist across SMD chunks.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.CallbackRunState.reset_envstore" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">reset_envstore</span>
+
+
+<a href="#psana.psexp.run.CallbackRunState.reset_envstore" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">reset_envstore</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create a new <code>EnvStoreManager</code> for <code>configs</code>, clear the step state and return the new manager.</p>
+<p>Sets <code>in_step</code> to False and <code>current_step_evt</code> to None.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.Run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Run</span>
+
+
+<a href="#psana.psexp.run.Run" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Run</span><span class="p">(</span><span class="n">expt</span><span class="p">,</span> <span class="n">runnum</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">smdr_man</span><span class="p">,</span> <span class="n">begingrun_dgrams</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="object">object</span></code></p>
+
+
+
+        <p>Base class for a psana run.</p>
+<p>The constructor stores the experiment, run number, BeginRun timestamp, <code>dsparms</code>, the
+<code>DgramManager</code> and the smalldata reader manager, creates a <code>RunCtx</code> and an <code>Event</code> from the
+BeginRun dgrams, fills <code>detinfo</code> with <code>build_detinfo_dict</code>, and registers the run with
+<code>RunHelper</code>. Subclasses set <code>configs</code>, the env store manager <code>esm</code> and the iterator
+<code>_evt_iter</code> that <code>events()</code> and <code>steps()</code> read from.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.psexp.run.Run.scannames" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">scannames</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.psexp.run.Run.scannames" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">scannames</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set of scan variable names (first element of each key of <code>scaninfo</code>).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.psexp.run.Run.detnames" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">detnames</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.psexp.run.Run.detnames" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">detnames</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Set of detector names in the "normal" detector class table (detectors with a matching detector class).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.psexp.run.Run.epicsinfo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">epicsinfo</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.psexp.run.Run.epicsinfo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">epicsinfo</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Dict describing the epics variables, from <code>get_info()</code> of the "epics" env store.</p>
+<p>Keys are (variable name, epics name) and values are the epics name ("" if unknown).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.psexp.run.Run.scaninfo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">scaninfo</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.psexp.run.Run.scaninfo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">scaninfo</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Dict describing the scan variables, from <code>get_info()</code> of the "scan" env store.</p>
+<p>Keys are (variable name, algorithm name) and values are the algorithm name.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.psexp.run.Run.xtcinfo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">xtcinfo</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.psexp.run.Run.xtcinfo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">xtcinfo</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List of (detector name, detector type, data type name, version) tuples from the Configure dgrams (<code>dsparms.xtc_info</code>).</p>
+<p>The version is the version numbers joined with "_".</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">run</span>
+
+
+<a href="#psana.psexp.run.Run.run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">run</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Returns integer representaion of run no.
+default: (when no run is given) is set to -1</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.events" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">events</span>
+
+
+<a href="#psana.psexp.run.Run.events" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">events</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield the L1Accept events of the run as <code>Event</code> objects.</p>
+<p>Other transitions are not yielded but update the env store. Iteration stops at EndRun or when
+the underlying iterator ends.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.steps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">steps</span>
+
+
+<a href="#psana.psexp.run.Run.steps" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">steps</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield a <code>Step</code> for each BeginStep transition.</p>
+<p>Every non-L1Accept transition updates the env store and L1Accepts seen here are skipped;
+iteration stops at EndRun. Each Step reads its events from this run's shared iterator.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.terminate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">terminate</span>
+
+
+<a href="#psana.psexp.run.Run.terminate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">terminate</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Sets terminate flag</p>
+<p>The Events iterators of all Run types check this flag
+to see if they need to stop (raise StopIterator for
+RunSerial, RunShmem, &amp; RunSinglefile or skip events
+for RunParallel (see BigDataNode implementation).</p>
+<p>Note that mpi_ds implements this differently by adding
+Isend prior to setting this flag.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.close_shared_memory" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">close_shared_memory</span>
+
+
+<a href="#psana.psexp.run.Run.close_shared_memory" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">close_shared_memory</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Hook for cleaning up shared-memory resources (no-op by default).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.Detector" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">Detector</span>
+
+
+<a href="#psana.psexp.run.Run.Detector" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Detector</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">accept_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the detector interface object for <code>name</code>.</p>
+<p>If <code>name</code> is a detector in the "normal" detector class table, the result is a container with
+one attribute per data type (for example <code>raw</code>), each an instance of the matching detector
+class created with the detector's config info, calibration constants (an empty dict if none)
+and <code>**kwargs</code>; the container also gets <code>calibconst</code>, a <code>step</code> attribute when the detector has
+its own env store, and cached calibration attributes when <code>use_calib_cache</code> is set and the
+detector is in <code>cached_detectors</code>. Otherwise, if <code>name</code> is an epics or scan variable name, or an
+epics name that maps to one, the result is a single detector object for that variable built
+with the env store.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Detector name or env variable name.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>accept_missing</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, return <code>MissingDet()</code> instead of raising when <code>name</code> is unknown.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Passed to the detector class constructors (detector case only).</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="KeyError">KeyError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>name</code> is neither a detector nor an env variable and <code>accept_missing</code> is False.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.get_filtered_detinfo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_filtered_detinfo</span>
+
+
+<a href="#psana.psexp.run.Run.get_filtered_detinfo" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_filtered_detinfo</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Returns detector info filtered by detector names present in detinfo.</p>
+<p>Returns:
+    dict[str, str]: A dictionary mapping detector names to unique IDs,
+                    filtered to only include detectors present in self.detinfo.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.build_detinfo_dict" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">build_detinfo_dict</span>
+
+
+<a href="#psana.psexp.run.Run.build_detinfo_dict" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">build_detinfo_dict</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Creates a dictionary of detector interfaces and their enumerated attributes,
+using minimal instantiation with config=None, calib=None, env=None.</p>
+<p>Returns:
+    dict[tuple[str, str], Any]: Mapping of (detname, xface_name) -&gt; attribute summary</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.analyze" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">analyze</span>
+
+
+<a href="#psana.psexp.run.Run.analyze" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">analyze</span><span class="p">(</span><span class="n">event_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">det</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Loop over <code>events()</code> and call <code>event_fn(event, det)</code> for each event.</p>
+<p>If <code>event_fn</code> is None the events are still read but nothing is called. Returns None.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.Run.step" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">step</span>
+
+
+<a href="#psana.psexp.run.Run.step" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">step</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return an <code>Event</code> made of the step dgrams in effect for <code>evt</code>.</p>
+<p>For each stream it takes the last dgram in the "scan" env store with a timestamp at or before
+<code>evt.timestamp</code> (None if there is none).</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.RunShmem" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunShmem</span>
+
+
+<a href="#psana.psexp.run.RunShmem" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunShmem</span><span class="p">(</span><span class="n">expt</span><span class="p">,</span> <span class="n">runnum</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">smdr_man</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">begingrun_dgrams</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Run (psana.psexp.run.Run)" href="#psana.psexp.run.Run">Run</a></code></p>
+
+
+
+        <p>Yields list of events from a shared memory client (no event building routine).</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.RunDrp" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunDrp</span>
+
+
+<a href="#psana.psexp.run.RunDrp" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunDrp</span><span class="p">(</span><span class="n">expt</span><span class="p">,</span> <span class="n">runnum</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">smdr_man</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">begingrun_dgrams</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Run (psana.psexp.run.Run)" href="#psana.psexp.run.Run">Run</a></code></p>
+
+
+
+        <p>Yields list of events from drp python (no event building routine).</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunDrp.add_detector" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_detector</span>
+
+
+<a href="#psana.psexp.run.RunDrp.add_detector" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">add_detector</span><span class="p">(</span><span class="n">detdef</span><span class="p">,</span> <span class="n">algdef</span><span class="p">,</span> <span class="n">datadef</span><span class="p">,</span> <span class="n">nodeId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">namesId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Add a detector definition to the dgram being edited and return the result.</p>
+<p>Calls <code>curr_dgramedit.Detector(detdef, algdef, datadef, nodeId, namesId, segment)</code>; the work is
+done by the <code>psana.dgramedit</code> extension (not visible here). Only allowed before the run is
+primed by <code>events()</code> or <code>steps()</code>.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If event iteration has already started.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunDrp.add_data" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_data</span>
+
+
+<a href="#psana.psexp.run.RunDrp.add_data" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">add_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Add <code>data</code> to the dgram being edited by calling <code>curr_dgramedit.adddata(data)</code>, and return its result.</p>
+<p>The work is done by the <code>psana.dgramedit</code> extension; not visible here.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunDrp.remove_data" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">remove_data</span>
+
+
+<a href="#psana.psexp.run.RunDrp.remove_data" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">remove_data</span><span class="p">(</span><span class="n">det_name</span><span class="p">,</span> <span class="n">alg</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Remove the data of <code>det_name</code> / <code>alg</code> from the dgram being edited and return the result.</p>
+<p>Calls <code>curr_dgramedit.removedata(det_name, alg)</code> (work done by the <code>psana.dgramedit</code>
+extension).</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If event iteration has not started yet.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunDrp.events" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">events</span>
+
+
+<a href="#psana.psexp.run.RunDrp.events" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">events</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield the L1Accept events of the DRP run, saving every dgram to the DRP result shared memory.</p>
+<p>On first use the Configure and BeginRun dgrams are saved and configuration edits are frozen.
+For every dgram a new <code>DgramEdit</code> becomes <code>curr_dgramedit</code>; transitions update the env store
+and are saved at once (iteration stops at EndRun), while each L1Accept is yielded first, so it
+can be edited, and saved to <code>dm.shm_res_mv</code> when the caller resumes the iteration.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunDrp.steps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">steps</span>
+
+
+<a href="#psana.psexp.run.RunDrp.steps" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">steps</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield a <code>Step</code> for each BeginStep transition of the DRP run, saving transitions to the DRP result shared memory.</p>
+<p>Primes the run on first use as <code>events()</code> does. L1Accepts seen here are skipped; every other
+transition updates the env store and gets a new <code>DgramEdit</code>, a BeginStep is saved after the
+caller resumes the iteration, other transitions are saved at once, and iteration stops at
+EndRun. Each Step is created with <code>run=self</code>, so its events are saved too.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.RunSingleFile" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunSingleFile</span>
+
+
+<a href="#psana.psexp.run.RunSingleFile" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunSingleFile</span><span class="p">(</span><span class="n">expt</span><span class="p">,</span> <span class="n">runnum</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">smdr_man</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">begingrun_dgrams</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Run (psana.psexp.run.Run)" href="#psana.psexp.run.Run">Run</a></code></p>
+
+
+
+        <p>Yields list of events from a single bigdata file.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.RunSerial" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunSerial</span>
+
+
+<a href="#psana.psexp.run.RunSerial" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunSerial</span><span class="p">(</span><span class="n">expt</span><span class="p">,</span> <span class="n">runnum</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">dm</span><span class="p">,</span> <span class="n">smdr_man</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">begingrun_dgrams</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Run (psana.psexp.run.Run)" href="#psana.psexp.run.Run">Run</a></code></p>
+
+
+
+        <p>Yields list of events from multiple smd/bigdata files using single core.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunSerial.build_table" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">build_table</span>
+
+
+<a href="#psana.psexp.run.RunSerial.build_table" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">build_table</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Build timestamp→(fd offset, size) table by scanning SMD.
+Updates EnvStore for any non-L1 transitions encountered during the scan.
+Yields True if any L1 timestamps were captured.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunSerial.event" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">event</span>
+
+
+<a href="#psana.psexp.run.RunSerial.event" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">event</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Read and return the event with timestamp <code>ts</code>, using the table built by <code>build_table</code>.</p>
+<p>Each stream's dgram is read with <code>os.pread</code> at the offset and size recorded for <code>ts</code> and wrapped
+in <code>dgram.Dgram</code>; streams without an entry are None.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>build_table</code> has not been used yet.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>ts</code> is not in the table.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.psexp.run.RunSmallData" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunSmallData</span>
+
+
+<a href="#psana.psexp.run.RunSmallData" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunSmallData</span><span class="p">(</span><span class="n">eb</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">dsparms</span><span class="p">,</span> <span class="n">callback_run_state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Run (psana.psexp.run.Run)" href="#psana.psexp.run.Run">Run</a></code></p>
+
+
+
+        <p>Yields list of smalldata events</p>
+<p>This class is created by SmdReaderManager and used exclusively by EventBuilder.
+There's no DataSource class associated with it a "bigdata" run is passed in
+so that we can propagate some values (w/o the ds). This class makes step and
+event generator available to user in smalldata callback.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunSmallData.steps" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">steps</span>
+
+
+<a href="#psana.psexp.run.RunSmallData.steps" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">steps</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield a <code>Step</code> for each BeginStep transition in the event builder output.</p>
+<p>If <code>callback_run_state</code> says a step is already in progress (from an earlier chunk), a Step for
+it is yielded first. Non-L1Accept transitions update the env store (a BeginRun resets it first)
+and have their proxy event appended to <code>proxy_events</code>; a BeginStep is recorded in
+<code>callback_run_state</code>, and iteration stops at EndRun.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.psexp.run.RunSmallData.events" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">events</span>
+
+
+<a href="#psana.psexp.run.RunSmallData.events" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">events</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Yield the L1Accept events from the event builder as <code>Event</code> objects with their proxy events.</p>
+<p>Transitions are not yielded: they update the env store (a BeginRun resets it first) and their
+proxy events are appended to <code>proxy_events</code>; iteration stops at EndRun. The events come from a
+new <code>_iter_events()</code> generator, which reads <code>eb.events()</code> while <code>eb.has_more()</code> is true.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

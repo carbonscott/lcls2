@@ -1,0 +1,1762 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/features/xtc2/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../datasource-run-events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>XTC2 data format - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#xtc2-data-format" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              XTC2 data format
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xtc-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Xtc containers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#names-shapesdata-and-namesid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Names, ShapesData and NamesId
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Iterating
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#small-data-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Small-data files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-tools-xtcdataxtcdataapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command-line tools (xtcdata/xtcdata/app/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-in-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where in the code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/python/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xtc-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Xtc containers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#names-shapesdata-and-namesid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Names, ShapesData and NamesId
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Iterating
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#small-data-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Small-data files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-tools-xtcdataxtcdataapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command-line tools (xtcdata/xtcdata/app/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-in-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where in the code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="xtc2-data-format">XTC2 data format<a class="headerlink" href="#xtc2-data-format" title="Permanent link">&para;</a></h1>
+<h2 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h2>
+<p>XTC2 is the file and network format written by the LCLS-II DAQ and read by
+psana2. A file (or a shared-memory buffer) is a sequence of <strong>datagrams</strong>
+(<code>Dgram</code>). Each datagram is one transition (Configure, BeginRun, ...,
+L1Accept) and holds a tree of <strong>Xtc</strong> containers. Data are self-describing:
+the Configure datagram carries <code>Names</code> (field names, types and ranks for every
+detector and algorithm), and each event carries <code>ShapesData</code> that are decoded
+with those names.</p>
+<p>The C++ library is <code>xtcdata</code> (<code>xtcdata/xtcdata/xtc/</code>). psana reads the same
+format through the <code>psana.dgram</code> extension (<code>psana/src/dgram.cc</code>).</p>
+<h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
+<h3 id="datagram">Datagram<a class="headerlink" href="#datagram" title="Permanent link">&para;</a></h3>
+<p><code>XtcData::Dgram</code> (<code>xtcdata/xtcdata/xtc/Dgram.hh</code>) derives from <code>Transition</code>,
+which holds <code>TimeStamp time</code> and a packed 32-bit <code>env</code>. <code>Dgram</code> adds the
+top-level <code>Xtc xtc</code>; the payload follows it in memory.</p>
+<ul>
+<li><code>service()</code> returns the transition id (from bits of <code>env</code>); <code>isEvent()</code> is
+  true for L1Accept; <code>readoutGroups()</code> is <code>env &amp; 0xffff</code>.</li>
+<li><code>TimeStamp</code> (<code>TimeStamp.hh</code>) has 32-bit seconds and nanoseconds;
+  <code>value()</code> packs them as <code>(seconds &lt;&lt; 32) | nanoseconds</code>. This is the value
+  psana returns as <code>evt.timestamp</code>.</li>
+</ul>
+<p>Transition ids (<code>TransitionId.hh</code>, <code>enum Value</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Name</th>
+<th>Value</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>ClearReadout</td>
+<td>7</td>
+<td>EndStep</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Reset</td>
+<td>8</td>
+<td>Enable</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Configure</td>
+<td>9</td>
+<td>Disable</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Unconfigure</td>
+<td>10</td>
+<td>SlowUpdate</td>
+</tr>
+<tr>
+<td>4</td>
+<td>BeginRun</td>
+<td>11</td>
+<td>Unused_11</td>
+</tr>
+<tr>
+<td>5</td>
+<td>EndRun</td>
+<td>12</td>
+<td>L1Accept ("Must be 12 to agree with firmware")</td>
+</tr>
+<tr>
+<td>6</td>
+<td>BeginStep</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The Python mirror is <code>psana.psexp.TransitionId</code>
+(<code>psana/psana/psexp/transitionid.py</code>), which names value 11
+<code>L1Accept_EndOfBatch</code>.</p>
+<h3 id="xtc-containers">Xtc containers<a class="headerlink" href="#xtc-containers" title="Permanent link">&para;</a></h3>
+<p><code>XtcData::Xtc</code> (<code>Xtc.hh</code>) is a 12-byte header with <code>Src src</code>, <code>Damage damage</code>,
+<code>TypeId contains</code> and <code>uint32_t extent</code> (header plus payload size in bytes).</p>
+<ul>
+<li><code>payload()</code> points just after the header; <code>sizeofPayload()</code> is
+  <code>extent - sizeof(Xtc)</code>; <code>next()</code> points to the following sibling.</li>
+<li>Children are allocated inside a parent with <code>alloc()</code>, which grows the
+  parent's <code>extent</code>.</li>
+<li><code>TypeId::Type</code> is one of <code>Parent</code>, <code>ShapesData</code>, <code>Shapes</code>, <code>Data</code>, <code>Names</code>.</li>
+<li><code>Damage</code> (<code>Damage.hh</code>) records problems such as <code>Truncated</code>, <code>OutOfOrder</code>,
+  <code>DroppedContribution</code>, <code>MissingData</code>, <code>TimedOut</code>.</li>
+</ul>
+<h3 id="names-shapesdata-and-namesid">Names, ShapesData and NamesId<a class="headerlink" href="#names-shapesdata-and-namesid" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Names</code> (<code>ShapesData.hh</code>) describes one detector segment and algorithm:
+  detector name, type and id, an <code>Alg</code> (name and version), a segment number,
+  and a list of <code>Name</code> entries (field name, <code>DataType</code>, rank). Constructor:
+  <code>Names(const void* bufEnd, const char* detName, Alg&amp; alg, const char* detType, const char* detId, const NamesId&amp; namesId, unsigned segment=0)</code>.</li>
+<li><code>ShapesData</code> holds the event data for one <code>Names</code>: a <code>Shapes</code> child (array
+  shapes) and a <code>Data</code> child (the values).</li>
+<li><code>NamesId(unsigned nodeId, unsigned namesId)</code> (<code>NamesId.hh</code>) is stored in the
+  <code>src</code> field of both. Readers build a <code>NamesLookup</code> (<code>NamesLookup.hh</code>) from
+  the Configure datagram and use the <code>NamesId</code> of each <code>ShapesData</code> to find
+  its <code>Names</code>.</li>
+<li><code>DescData</code> (<code>DescData.hh</code>) combines a <code>ShapesData</code> with its <code>NameIndex</code> to
+  read values (<code>get_value</code>, <code>get_array</code>); <code>CreateData</code> writes them.</li>
+</ul>
+<h3 id="iterating">Iterating<a class="headerlink" href="#iterating" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>XtcFileIterator(int fd, size_t maxDgramSize)</code> (<code>XtcFileIterator.hh</code>):
+  <code>next()</code> returns the next <code>Dgram*</code> from a file descriptor, or 0 at the end.
+  It reuses one internal buffer.</li>
+<li><code>XtcIterator(Xtc* root, const void* bufEnd)</code> (<code>XtcIterator.hh</code>): subclass it
+  and implement <code>virtual int process(Xtc* xtc, const void* bufEnd)</code>;
+  <code>iterate()</code> calls <code>process()</code> for each direct child. It does not recurse by
+  itself: implementations call <code>iterate(xtc, bufEnd)</code> on <code>Parent</code> children.</li>
+</ul>
+<h3 id="small-data-files">Small-data files<a class="headerlink" href="#small-data-files" title="Permanent link">&para;</a></h3>
+<p>For each big-data file <code>&lt;exp&gt;-r&lt;run&gt;-s&lt;stream&gt;-c&lt;chunk&gt;.xtc2</code> there is a
+small-data file <code>smalldata/&lt;exp&gt;-r&lt;run&gt;-s&lt;stream&gt;-c&lt;chunk&gt;.smd.xtc2</code>. It is
+produced by <code>XtcData::Smd::generate</code> (<code>xtcdata/xtcdata/xtc/Smd.hh</code>; the
+<code>smdwriter</code> tool uses it): all transitions are copied, and each L1Accept is
+replaced by a small <code>smdinfo</code>/<code>offsetAlg</code> record with the fields
+<code>intOffset</code> and <code>intDgramSize</code>, the position and size of that event in the
+big-data file. psana reads the small-data files first to build events and
+then reads only the needed bytes from the big-data files (see
+<a href="../mpi-parallel/">MPI parallel analysis</a>). The test helper
+<code>psana/psana/tests/setup_input_files.py</code> shows the naming.</p>
+<h3 id="command-line-tools-xtcdataxtcdataapp">Command-line tools (<code>xtcdata/xtcdata/app/</code>)<a class="headerlink" href="#command-line-tools-xtcdataxtcdataapp" title="Permanent link">&para;</a></h3>
+<p>Installed by <code>xtcdata/xtcdata/app/meson.build</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Options (from the source)</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xtcreader</code></td>
+<td><code>-f &lt;file&gt;</code> <code>[-d] [-n N] [-w nWords] [-s] [-T] [-c config]</code></td>
+<td>Prints one line per datagram (transition, time, env, payload size, damage, extent); <code>-d</code> dumps every Names and ShapesData.</td>
+</tr>
+<tr>
+<td><code>xtcwriter</code></td>
+<td><code>-f &lt;file&gt;</code> <code>-n N</code> <code>-s seg</code> <code>-e period</code> <code>-m steps</code> <code>-t</code> <code>-i nodeId</code> <code>-c</code></td>
+<td>Writes a synthetic run (used by the psana tests).</td>
+</tr>
+<tr>
+<td><code>smdwriter</code></td>
+<td><code>-f &lt;in.xtc2&gt;</code> <code>-o &lt;out.smd.xtc2&gt;</code> <code>[-n N]</code></td>
+<td>Writes the small-data file for a big-data file.</td>
+</tr>
+<tr>
+<td><code>amiwriter</code></td>
+<td><code>-f &lt;file&gt;</code> ...</td>
+<td>Writes synthetic data for AMI tests.</td>
+</tr>
+<tr>
+<td><code>xtcupdate</code></td>
+<td><code>-f &lt;file&gt;</code> <code>[-n N]</code></td>
+<td>Demonstrates <code>XtcUpdateIter</code> (adds data in memory; writes no file).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="minimal-examples">Minimal examples<a class="headerlink" href="#minimal-examples" title="Permanent link">&para;</a></h2>
+<p>Print the datagram headers of a test file (output from
+<code>psana/psana/tests/test_ts.xtc2</code>, shortened):</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>xtcreader<span class="w"> </span>-f<span class="w"> </span>psana/psana/tests/test_ts.xtc2<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+<span class="go">event 1,   Configure transition:  time 0x00f53438.0x2e6a3cde,  env 0x02820010, payloadSize 221248 damage 0x0 extent 221260</span>
+<span class="go">event 2,    BeginRun transition:  time 0x00f53451.0x2eb309e3,  env 0x04040010, payloadSize 0 damage 0x0 extent 12</span>
+<span class="go">event 3,   BeginStep transition:  time 0x00f53451.0x2f40eacd,  env 0x06860010, payloadSize 0 damage 0x0 extent 12</span>
+</code></pre></div>
+<p>Read datagrams from Python with the low-level <code>psana.dgram</code> extension (most
+analysis code uses <code>DataSource</code> instead). The pattern
+<code>dgram.Dgram(file_descriptor=fd)</code> is the one in
+<code>psana/psana/tests/test_dgraminit.py</code>; <code>Dgram(config=config)</code> reads the next
+datagram, decoding it with the Configure datagram:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">psana</span><span class="w"> </span><span class="kn">import</span> <span class="n">dgram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">psana.psexp</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransitionId</span>
+
+<span class="n">fd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"psana/psana/tests/test_ts.xtc2"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">O_RDONLY</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">dgram</span><span class="o">.</span><span class="n">Dgram</span><span class="p">(</span><span class="n">file_descriptor</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>        <span class="c1"># first datagram: Configure</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">software</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">))</span>           <span class="c1"># detector names, here ['xppts']</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">dgram</span><span class="o">.</span><span class="n">Dgram</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">TransitionId</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">service</span><span class="p">()),</span> <span class="n">d</span><span class="o">.</span><span class="n">timestamp</span><span class="p">())</span>
+</code></pre></div>
+<p>In C++, the core loop of <code>xtcdata/xtcdata/app/xtcreader.cc</code> is an
+<code>XtcFileIterator</code> plus an <code>XtcIterator</code> subclass (<code>DebugIter</code>) that fills a
+<code>NamesLookup</code> from <code>Names</code> and decodes each <code>ShapesData</code> with <code>DescData</code>.</p>
+<p>Writing or editing xtc2 from Python: <code>DgramEdit</code>, <code>AlgDef</code>, <code>DetectorDef</code> in
+<code>psana/psana/dgramedit.pyx</code> (example: <code>psana/psana/tests/test_dgramedit.py</code>).</p>
+<h2 id="where-in-the-code">Where in the code<a class="headerlink" href="#where-in-the-code" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>xtcdata/xtcdata/xtc/</code>: <code>Dgram.hh</code>, <code>Xtc.hh</code>, <code>TransitionId.hh</code>, <code>TypeId.hh</code>, <code>TimeStamp.hh</code>, <code>Damage.hh</code>, <code>Src.hh</code>, <code>NamesId.hh</code>, <code>ShapesData.hh</code>, <code>DescData.hh</code>, <code>NamesLookup.hh</code>, <code>XtcIterator.hh</code>, <code>XtcFileIterator.hh</code>, <code>ConfigIter.hh</code>, <code>DataIter.hh</code>, <code>Smd.hh</code>.</li>
+<li><code>xtcdata/xtcdata/app/</code>: <code>xtcreader.cc</code>, <code>xtcwriter.cc</code>, <code>smdwriter.cc</code>, ...</li>
+<li><code>psana/src/dgram.cc</code>: the <code>psana.dgram</code> Python extension.</li>
+<li><code>psana/psana/dgramedit.pyx</code>: writing and editing datagrams from Python.</li>
+<li><code>psana/psana/dgrammanager.py</code>: how psana opens files and reads Configure.</li>
+<li><code>psana/psana/psexp/transitionid.py</code>: Python transition ids.</li>
+</ul>
+<p>C++ API pages: <a href="../../api/cpp/classXtcData_1_1Dgram.html">Dgram</a>,
+<a href="../../api/cpp/classXtcData_1_1Xtc.html">Xtc</a>,
+<a href="../../api/cpp/classXtcData_1_1TransitionId.html">TransitionId</a>,
+<a href="../../api/cpp/classXtcData_1_1Names.html">Names</a>,
+<a href="../../api/cpp/classXtcData_1_1ShapesData.html">ShapesData</a>,
+<a href="../../api/cpp/classXtcData_1_1NamesId.html">NamesId</a>,
+<a href="../../api/cpp/classXtcData_1_1DescData.html">DescData</a>,
+<a href="../../api/cpp/classXtcData_1_1XtcIterator.html">XtcIterator</a>,
+<a href="../../api/cpp/classXtcData_1_1XtcFileIterator.html">XtcFileIterator</a>.
+Python: <a href="../../api/python/dgrammanager/">psana.dgrammanager</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

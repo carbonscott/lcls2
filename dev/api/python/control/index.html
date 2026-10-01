@@ -1,0 +1,5741 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/api/python/control/">
+      
+      
+        <link rel="prev" href="../calibconstants/">
+      
+      
+        <link rel="next" href="../daqcontrol/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>psdaq.control.control - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#psdaqcontrolcontrol" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              psdaq.control.control
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psdaq.control.control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        control
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PvInfo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PvInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo.get_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo.get_desc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_desc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunParams
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunParams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.updateFileSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        updateFileSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.updatePvSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        updatePvSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.unconfigure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unconfigure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.beginrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        beginrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.ControlError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ControlError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.ConfigDBError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConfigDBError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DaqPVA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DaqPVA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA.pv_get" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pv_get
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA.pv_put" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pv_put
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DaqXPM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DaqXPM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.allocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        allocate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.deallocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deallocate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        recording
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.clear_readout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clear_readout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.set_master" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_master
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.set_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.group_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        group_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.insert_transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        insert_transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.step_groups_clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step_groups_clear
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_seq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_seq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.monitor_StepDone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitor_StepDone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollectionManager
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollectionManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.cmstate_levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cmstate_levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_fast
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.register_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        register_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.confirm_response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirm_response
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.process_reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        process_reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.next_transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        next_transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setstate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setconfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setrecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setrecord
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setbypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setbypass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.status_msg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status_msg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.check_answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_phase2_replies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_phase2_replies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_alloc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_alloc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_dealloc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_dealloc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_beginrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_beginrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_endrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_endrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_beginstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_beginstep
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_endstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_endstep
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_slowupdate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_slowupdate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_connect
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_disconnect
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getstate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getstatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_chunkrequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_chunkrequest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_storejsonconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_storejsonconfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getinstrument" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getinstrument
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getblock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_selectplatform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_selectplatform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.on_enter_reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_enter_reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.subtract_clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subtract_clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.read_json_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_json_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_active_and_inactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_active_and_inactive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.progressReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        progressReport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_rollcall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_rollcall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.check_for_dups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_for_dups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_active_set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_active_set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_active_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_active_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_level
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_aliases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_warning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.start_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        start_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.add_run_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_run_params
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.add_update_run_param_descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_update_run_param_descriptions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.end_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        end_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_last_run_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_last_run_number
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_unconfigure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_unconfigure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.set_slow_update_enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_slow_update_enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.after_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        after_enable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_enable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_disable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.slow_update_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        slow_update_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.fast_reply_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_reply_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.step_done_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step_done_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.set2csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set2csv
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.detector_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detector_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.segment_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        segment_count
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.timestampStr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        timestampStr
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.get_readout_group_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_readout_group_mask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.wait_for_answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        wait_for_answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.levels_to_activedet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        levels_to_activedet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psdaq.control.control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        control
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PvInfo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PvInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo.get_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.PvInfo.get_desc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_desc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RunParams
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RunParams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.updateFileSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        updateFileSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.updatePvSet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        updatePvSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.unconfigure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unconfigure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.RunParams.beginrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        beginrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.ControlError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ControlError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.ConfigDBError" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConfigDBError
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DaqPVA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DaqPVA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA.pv_get" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pv_get
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqPVA.pv_put" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pv_put
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DaqXPM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DaqXPM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.allocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        allocate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.deallocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        deallocate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.recording" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        recording
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.clear_readout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clear_readout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.set_master" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_master
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.set_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.group_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        group_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.insert_transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        insert_transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.step_groups_clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step_groups_clear
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.setup_seq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_seq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.DaqXPM.monitor_StepDone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitor_StepDone
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollectionManager
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollectionManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.cmstate_levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cmstate_levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_fast
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.register_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        register_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.confirm_response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirm_response
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.process_reports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        process_reports
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.service_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        service_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.next_transition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        next_transition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setstate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setconfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setrecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setrecord
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_setbypass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_setbypass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.status_msg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status_msg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.check_answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_phase2_replies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_phase2_replies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_alloc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_alloc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_dealloc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_dealloc
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_beginrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_beginrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_endrun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_endrun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_beginstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_beginstep
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_endstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_endstep
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_slowupdate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_slowupdate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_connect
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_disconnect
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getstate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getstatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_chunkrequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_chunkrequest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_storejsonconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_storejsonconfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getinstrument" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getinstrument
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_getblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_getblock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.handle_selectplatform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle_selectplatform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.on_enter_reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_enter_reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.subtract_clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        subtract_clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.read_json_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_json_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_active_and_inactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_active_and_inactive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.progressReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        progressReport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_rollcall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_rollcall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.check_for_dups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_for_dups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_active_set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_active_set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_active_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_active_dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.filter_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter_level
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_aliases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_error
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.report_warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        report_warning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.start_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        start_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.add_run_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_run_params
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.add_update_run_param_descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_update_run_param_descriptions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.end_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        end_run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_last_run_number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_last_run_number
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.get_experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_common
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_configure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_unconfigure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_unconfigure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.set_slow_update_enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_slow_update_enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.after_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        after_enable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_enable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_disable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.condition_reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        condition_reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.slow_update_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        slow_update_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.fast_reply_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_reply_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.CollectionManager.step_done_func" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step_done_func
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.set2csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set2csv
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.detector_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        detector_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.segment_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        segment_count
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.timestampStr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        timestampStr
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.get_readout_group_mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_readout_group_mask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.wait_for_answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        wait_for_answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.levels_to_activedet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        levels_to_activedet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psdaq.control.control.main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="psdaqcontrolcontrol">psdaq.control.control<a class="headerlink" href="#psdaqcontrolcontrol" title="Permanent link">&para;</a></h1>
+<p>The DAQ control process (<code>control</code> command). <code>CollectionManager</code> runs the
+state machine (states and transitions from <code>ControlDef</code>), talks to the DRP,
+TEB and MEB processes over ZMQ, answers client requests (<code>DaqControl</code>,
+<code>daqstate</code>, the GUI) and drives the XPM through <code>DaqXPM</code>. <code>RunParams</code> reads
+the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the command line.</p>
+<p>See <a href="../../../features/daq-control/">DAQ control</a>.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="psdaq.control.control" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">psdaq.control.control</span>
+
+
+<a href="#psdaq.control.control" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.PvInfo" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">PvInfo</span>
+
+
+<a href="#psdaq.control.control.PvInfo" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">PvInfo</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>PV</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.PvInfo.get_name" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_name</span>
+
+
+<a href="#psdaq.control.control.PvInfo.get_name" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_name</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.PvInfo.get_desc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_desc</span>
+
+
+<a href="#psdaq.control.control.PvInfo.get_desc" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_desc</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.RunParams" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">RunParams</span>
+
+
+<a href="#psdaq.control.control.RunParams" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">RunParams</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">pva</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Run Parameters</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.RunParams.updateFileSet" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">updateFileSet</span>
+
+
+<a href="#psdaq.control.control.RunParams.updateFileSet" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">updateFileSet</span><span class="p">(</span><span class="n">fileSet</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.RunParams.updatePvSet" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">updatePvSet</span>
+
+
+<a href="#psdaq.control.control.RunParams.updatePvSet" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">updatePvSet</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.RunParams.configure" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">configure</span>
+
+
+<a href="#psdaq.control.control.RunParams.configure" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">configure</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.RunParams.unconfigure" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">unconfigure</span>
+
+
+<a href="#psdaq.control.control.RunParams.unconfigure" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">unconfigure</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.RunParams.beginrun" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">beginrun</span>
+
+
+<a href="#psdaq.control.control.RunParams.beginrun" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">beginrun</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.ControlError" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ControlError</span>
+
+
+<a href="#psdaq.control.control.ControlError" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="Exception">Exception</span></code></p>
+
+
+
+        <p>Base class for exceptions in this module.</p>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.ConfigDBError" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ConfigDBError</span>
+
+
+<a href="#psdaq.control.control.ConfigDBError" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">ConfigDBError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ControlError (psdaq.control.control.ControlError)" href="#psdaq.control.control.ControlError">ControlError</a></code></p>
+
+
+
+        <p>Exception raised for ConfigDB errors.
+Attributes:
+    message -- explanation of the error</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.DaqPVA" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">DaqPVA</span>
+
+
+<a href="#psdaq.control.control.DaqPVA" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DaqPVA</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">report_error</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqPVA.pv_get" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pv_get</span>
+
+
+<a href="#psdaq.control.control.DaqPVA.pv_get" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pv_get</span><span class="p">(</span><span class="n">pvList</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqPVA.pv_put" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">pv_put</span>
+
+
+<a href="#psdaq.control.control.DaqPVA.pv_put" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">pv_put</span><span class="p">(</span><span class="n">pvName</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.DaqXPM" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">DaqXPM</span>
+
+
+<a href="#psdaq.control.control.DaqXPM" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DaqXPM</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">platform</span><span class="p">,</span> <span class="n">xpm_master</span><span class="p">,</span> <span class="n">pv_base</span><span class="p">,</span> <span class="n">pva</span><span class="p">,</span> <span class="n">zctxt</span><span class="p">,</span> <span class="n">xpm_host</span><span class="p">,</span> <span class="n">report_error</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.allocate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">allocate</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.allocate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">allocate</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.setup_common" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">setup_common</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.setup_common" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">setup_common</span><span class="p">(</span><span class="n">platform</span><span class="p">,</span> <span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.deallocate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">deallocate</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.deallocate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">deallocate</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.recording" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">recording</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.recording" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">recording</span><span class="p">(</span><span class="n">recording</span><span class="p">,</span> <span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.clear_readout" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">clear_readout</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.clear_readout" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">clear_readout</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.set_master" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set_master</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.set_master" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_master</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.set_common" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set_common</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.set_common" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_common</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.group_run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">group_run</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.group_run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">group_run</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">enable</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.insert_transition" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">insert_transition</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.insert_transition" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">insert_transition</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.setup_step" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">setup_step</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.setup_step" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">setup_step</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">readout</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.step_groups_clear" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">step_groups_clear</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.step_groups_clear" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">step_groups_clear</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.setup_seq" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">setup_seq</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.setup_seq" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">setup_seq</span><span class="p">(</span><span class="n">seqpv</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.DaqXPM.monitor_StepDone" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">monitor_StepDone</span>
+
+
+<a href="#psdaq.control.control.DaqXPM.monitor_StepDone" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">monitor_StepDone</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psdaq.control.control.CollectionManager" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CollectionManager</span>
+
+
+<a href="#psdaq.control.control.CollectionManager" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">CollectionManager</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.cmstate_levels" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cmstate_levels</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.cmstate_levels" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cmstate_levels</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.service_requests" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">service_requests</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.service_requests" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">service_requests</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.service_fast" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">service_fast</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.service_fast" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">service_fast</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.register_file" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">register_file</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.register_file" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">register_file</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.confirm_response" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">confirm_response</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.confirm_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">confirm_response</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">wait_time</span><span class="p">,</span> <span class="n">msg_id</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress_txt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.process_reports" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">process_reports</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.process_reports" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">process_reports</span><span class="p">(</span><span class="n">report_list</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.service_status" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">service_status</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.service_status" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">service_status</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">run</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">run</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_trigger" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_trigger</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_trigger" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_trigger</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stateChange</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.next_transition" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">next_transition</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.next_transition" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">next_transition</span><span class="p">(</span><span class="n">oldstate</span><span class="p">,</span> <span class="n">newstate</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_setstate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_setstate</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_setstate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_setstate</span><span class="p">(</span><span class="n">newstate</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_setconfig" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_setconfig</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_setconfig" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_setconfig</span><span class="p">(</span><span class="n">newconfig</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_setrecord" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_setrecord</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_setrecord" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_setrecord</span><span class="p">(</span><span class="n">newrecording</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_setbypass" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_setbypass</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_setbypass" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_setbypass</span><span class="p">(</span><span class="n">newbypass</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.status_msg" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">status_msg</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.status_msg" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">status_msg</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.report_status" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">report_status</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.report_status" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">report_status</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.check_answers" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">check_answers</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.check_answers" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">check_answers</span><span class="p">(</span><span class="n">answers</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.get_phase2_replies" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_phase2_replies</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.get_phase2_replies" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_phase2_replies</span><span class="p">(</span><span class="n">transition</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_alloc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_alloc</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_alloc" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_alloc</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_dealloc" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_dealloc</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_dealloc" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_dealloc</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_beginrun" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_beginrun</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_beginrun" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_beginrun</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_endrun" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_endrun</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_endrun" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_endrun</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_beginstep" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_beginstep</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_beginstep" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_beginstep</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_endstep" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_endstep</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_endstep" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_endstep</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_slowupdate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_slowupdate</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_slowupdate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_slowupdate</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_connect" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_connect</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_connect" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_connect</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_disconnect" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_disconnect</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_disconnect" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_disconnect</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_getstate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_getstate</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_getstate" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_getstate</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_getstatus" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_getstatus</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_getstatus" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_getstatus</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_chunkrequest" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_chunkrequest</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_chunkrequest" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_chunkrequest</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_storejsonconfig" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_storejsonconfig</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_storejsonconfig" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_storejsonconfig</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_getinstrument" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_getinstrument</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_getinstrument" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_getinstrument</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_getblock" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_getblock</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_getblock" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_getblock</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.handle_selectplatform" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle_selectplatform</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.handle_selectplatform" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle_selectplatform</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.on_enter_reset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">on_enter_reset</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.on_enter_reset" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">on_enter_reset</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.subtract_clients" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">subtract_clients</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.subtract_clients" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">subtract_clients</span><span class="p">(</span><span class="n">missing_set</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.read_json_file" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">read_json_file</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.read_json_file" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">read_json_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.get_active_and_inactive" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_active_and_inactive</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.get_active_and_inactive" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_active_and_inactive</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.progressReport" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">progressReport</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.progressReport" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">progressReport</span><span class="p">(</span><span class="n">begin_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress_txt</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_rollcall" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_rollcall</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_rollcall" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_rollcall</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.check_for_dups" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">check_for_dups</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.check_for_dups" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">check_for_dups</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.filter_active_set" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">filter_active_set</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.filter_active_set" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">filter_active_set</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.filter_active_dict" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">filter_active_dict</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.filter_active_dict" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">filter_active_dict</span><span class="p">(</span><span class="n">oldstate</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.filter_level" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">filter_level</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.filter_level" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">filter_level</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.get_aliases" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_aliases</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.get_aliases" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_aliases</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.report_error" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">report_error</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.report_error" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">report_error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.report_warning" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">report_warning</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.report_warning" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">report_warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.start_run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">start_run</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.start_run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">start_run</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.add_run_params" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_run_params</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.add_run_params" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">add_run_params</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.add_update_run_param_descriptions" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_update_run_param_descriptions</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.add_update_run_param_descriptions" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">add_update_run_param_descriptions</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">,</span> <span class="n">param_descs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.end_run" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">end_run</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.end_run" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">end_run</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.get_last_run_number" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_last_run_number</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.get_last_run_number" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_last_run_number</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.get_experiment" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_experiment</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.get_experiment" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_experiment</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_common" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_common</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_common" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_common</span><span class="p">(</span><span class="n">transition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_configure" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_configure</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_configure" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_configure</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_unconfigure" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_unconfigure</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_unconfigure" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_unconfigure</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.set_slow_update_enabled" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set_slow_update_enabled</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.set_slow_update_enabled" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_slow_update_enabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.after_enable" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">after_enable</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.after_enable" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">after_enable</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_enable" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_enable</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_enable" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_enable</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_disable" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_disable</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_disable" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_disable</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.condition_reset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">condition_reset</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.condition_reset" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">condition_reset</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.slow_update_func" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">slow_update_func</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.slow_update_func" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">slow_update_func</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.fast_reply_func" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">fast_reply_func</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.fast_reply_func" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">fast_reply_func</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psdaq.control.control.CollectionManager.step_done_func" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">step_done_func</span>
+
+
+<a href="#psdaq.control.control.CollectionManager.step_done_func" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">step_done_func</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.set2csv" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set2csv</span>
+
+
+<a href="#psdaq.control.control.set2csv" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set2csv</span><span class="p">(</span><span class="n">seg_set</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.detector_name" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">detector_name</span>
+
+
+<a href="#psdaq.control.control.detector_name" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">detector_name</span><span class="p">(</span><span class="n">drp_alias</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.segment_count" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">segment_count</span>
+
+
+<a href="#psdaq.control.control.segment_count" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">segment_count</span><span class="p">(</span><span class="n">det_name</span><span class="p">,</span> <span class="n">platform_dict</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">only_active</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.timestampStr" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">timestampStr</span>
+
+
+<a href="#psdaq.control.control.timestampStr" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">timestampStr</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.get_readout_group_mask" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_readout_group_mask</span>
+
+
+<a href="#psdaq.control.control.get_readout_group_mask" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_readout_group_mask</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.wait_for_answers" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">wait_for_answers</span>
+
+
+<a href="#psdaq.control.control.wait_for_answers" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">wait_for_answers</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">wait_time</span><span class="p">,</span> <span class="n">msg_id</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Wait and return all messages from socket that match msg_id</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>socket</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>wait_time</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>msg_id</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.levels_to_activedet" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">levels_to_activedet</span>
+
+
+<a href="#psdaq.control.control.levels_to_activedet" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">levels_to_activedet</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psdaq.control.control.main" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">main</span>
+
+
+<a href="#psdaq.control.control.main" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">main</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

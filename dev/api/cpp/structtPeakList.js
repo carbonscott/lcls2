@@ -1,0 +1,25 @@
+var structtPeakList =
+[
+    [ "memoryAllocated", "structtPeakList.html#a12eb794cd90127c85af395ea7e8cffb9", null ],
+    [ "nHot", "structtPeakList.html#ae35e4c17d1c65b613a4e4d395574a4ab", null ],
+    [ "nPeaks", "structtPeakList.html#a235efe589c5d66a46294428425ddc171", null ],
+    [ "nPeaks_max", "structtPeakList.html#afced5414f5e227eb6204c1967f1ee58f", null ],
+    [ "peak_com_index", "structtPeakList.html#a0c4fbc7d1f6aca9a0458c964f0c9205e", null ],
+    [ "peak_com_q", "structtPeakList.html#a4652e1b542abb9c27734bcc9db3f2d3f", null ],
+    [ "peak_com_r_assembled", "structtPeakList.html#a05ea56df845ed413c10cbd59b064ab11", null ],
+    [ "peak_com_res", "structtPeakList.html#a2f9eaf8e138354eaf0158c40cb1afa60", null ],
+    [ "peak_com_x", "structtPeakList.html#af86209f1239a6801d6d76be5bd533268", null ],
+    [ "peak_com_x_assembled", "structtPeakList.html#a78b36914dfe92ab63708838c5828d6a8", null ],
+    [ "peak_com_y", "structtPeakList.html#a93490e21ba17b9aa7e02d6fa0bb586c2", null ],
+    [ "peak_com_y_assembled", "structtPeakList.html#a2a78d8c9bf06ada46ed304f9d1d3d558", null ],
+    [ "peak_maxintensity", "structtPeakList.html#ae0ff2bbc9a7c41c9e0ce04f256f85f69", null ],
+    [ "peak_npix", "structtPeakList.html#a675bd43b5bae7cd97f0a53c5b0be746c", null ],
+    [ "peak_sigma", "structtPeakList.html#ae42e105db3c08053a4003f42edbd0a84", null ],
+    [ "peak_snr", "structtPeakList.html#a91d7673fbc4c7a08210d1301b86bf29f", null ],
+    [ "peak_totalintensity", "structtPeakList.html#ab971d642af9aeaa1a8afa1071b291b19", null ],
+    [ "peakDensity", "structtPeakList.html#aeebfc62b9c7fe6fded39c67011c2dd6a", null ],
+    [ "peakNpix", "structtPeakList.html#af3558f64480774e0fb7caf692493b8d2", null ],
+    [ "peakResolution", "structtPeakList.html#a3a8b665d40376da4e1a74272e50b4f0d", null ],
+    [ "peakResolutionA", "structtPeakList.html#a00f29d055e3933f6915f18ba46dc90e2", null ],
+    [ "peakTotal", "structtPeakList.html#af826cacfb242160b8ec71c0f6e5134ad", null ]
+];

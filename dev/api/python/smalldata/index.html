@@ -1,0 +1,3662 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/api/python/smalldata/">
+      
+      
+        <link rel="prev" href="../shmem_ds/">
+      
+      
+        <link rel="next" href="../detector_impl/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>psana.smalldata - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#psanasmalldata" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              psana.smalldata
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.smalldata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        smalldata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="smalldata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CacheArray
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CacheArray">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray.append" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        append
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray.reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.recv_loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        recv_loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.handle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.new_dset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        new_dset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.append_to_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        append_to_cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.write_to_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_to_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        done
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SmallData
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SmallData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.setup_parms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_parms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.get_rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_rank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.get_world_rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_world_rank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.sum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sum
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        max
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        min
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.prod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        prod
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.land" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        land
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.band" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        band
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.lor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.bor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.lxor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lxor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.bxor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.save_summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.join_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        join_files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.set_keytypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_keytypes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.get_len_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_len_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_len_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_len_key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_var_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_var_key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.get_group_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_group_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#psana.smalldata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        smalldata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="smalldata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CacheArray
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CacheArray">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray.append" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        append
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.CacheArray.reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.recv_loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        recv_loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.handle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.new_dset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        new_dset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.append_to_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        append_to_cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.write_to_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_to_file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backfill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.Server.done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        done
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SmallData
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SmallData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.setup_parms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_parms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.get_rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_rank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.get_world_rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_world_rank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.sum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sum
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        max
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        min
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.prod" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        prod
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.land" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        land
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.band" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        band
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.lor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.bor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.lxor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lxor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.bxor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bxor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.save_summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.done" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        done
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.SmallData.join_files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        join_files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.set_keytypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        set_keytypes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.get_len_map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_len_map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_len_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_len_key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_var_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_var_key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.is_group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#psana.smalldata.get_group_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_group_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="psanasmalldata">psana.smalldata<a class="headerlink" href="#psanasmalldata" title="Permanent link">&para;</a></h1>
+<p><code>SmallData</code> is the object returned by <code>ds.smalldata(filename=..., batch_size=..., callbacks=[...])</code>.
+On big-data ranks it collects per-event values (<code>event()</code>) and summary data
+(<code>save_summary()</code>, reductions such as <code>sum()</code>), and sends them in batches to
+<code>Server</code> objects on the <code>PS_SRV_NODES</code> server ranks, which write HDF5 files
+with h5py. In parallel mode each server writes <code>&lt;base&gt;_part&lt;N&gt;.h5</code> and
+<code>done()</code> joins them into one file with HDF5 virtual datasets; in serial mode
+the file is written directly.</p>
+<p>See <a href="../../../features/mpi-parallel/">MPI parallel analysis</a>.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="psana.smalldata" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">psana.smalldata</span>
+
+
+<a href="#psana.smalldata" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Smalldata (v2)
+Parallel data analysis with MPI send/recv</p>
+<p>Analysis consists of two different process types:</p>
+<ol>
+<li>
+<p>clients
+    &gt; these perform per-event analysis
+    &gt; are associted with one specific server
+    &gt; after processing <code>batch_size</code> events, send a
+      dict of data over to their server</p>
+</li>
+<li>
+<p>servers (srv)
+    &gt; recv a batch of events from one of many clients
+    &gt; add these batches to a <code>cache</code>
+    &gt; when the cache is full, write to disk
+    &gt; each server produces its OWN hdf5 file</p>
+</li>
+</ol>
+<blockquote>
+<blockquote>
+<p>at the end of execution, rank 0 "joins" all the
+   individual hdf5 files together using HDF virtual
+   datasets -- this provides a "virtual", unified
+   view of all processed data</p>
+</blockquote>
+</blockquote>
+<div class="highlight"><pre><span></span><code>         CLIENT                SRV
+     [ --------- ]       | [ --------- ]
+     [ -{event}- ]  send | [ --------- ]
+</code></pre></div>
+<p>batch  [ --------- ]  ~~~&gt; | [ --------- ]
+         [ --------- ]       | [ --------- ]
+         [ --------- ]       | [ --------- ]
+                             |
+                             | [ --------- ]
+                             | [ --------- ]
+                             | [ --------- ]
+                             | [ --------- ]
+                             | [ --------- ]
+                             | -- cache</p>
+<p>(I apologize for indulging in some ASCII art)</p>
+<p>Some Notes:
+  * number of servers to use is set by PS_SRV_NODES
+    environment variable
+  * if running in psana parallel mode, clients ARE
+    BD nodes (they are the same processes)
+  * eventual time-stamp sorting would be doable with
+    code conceptually similar to this (but would need
+    to be optimized for performance):</p>
+<div class="highlight"><pre><span></span><code>import numpy as np
+import h5py
+f = h5py.File('smalldata_test.h5')
+ts = f['timestamp'][:]
+tsneg = f['tsneg']
+for i in np.argsort(ts):
+    print(tsneg[i])
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.smalldata.CacheArray" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CacheArray</span>
+
+
+<a href="#psana.smalldata.CacheArray" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">CacheArray</span><span class="p">(</span><span class="n">singleton_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">cache_size</span><span class="p">,</span> <span class="n">is_var</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>The CacheArray class provides for a <em>data cache</em> in
+the server's memory.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.CacheArray.append" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">append</span>
+
+
+<a href="#psana.smalldata.CacheArray.append" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Add one event's <code>data</code> to the cache.</p>
+<p>For a fixed-shape cache, <code>data</code> is written into the next row of the preallocated array and
+<code>size</code> grows by 1. For a variable-length cache, the entries of <code>data</code> are appended along axis 0
+and <code>size</code> grows by <code>len(data)</code>; None or empty <code>data</code> adds nothing. <code>n_events</code> is incremented
+in every case.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.CacheArray.reset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">reset</span>
+
+
+<a href="#psana.smalldata.CacheArray.reset" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">reset</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Mark the cache as empty.</p>
+<p>Sets <code>size</code> and <code>n_events</code> to 0 and, for a variable-length cache, sets <code>data</code> to None. A
+fixed-shape cache keeps its buffer; old rows are overwritten later.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.smalldata.Server" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Server</span>
+
+
+<a href="#psana.smalldata.Server" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">Server</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smdcomm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span> <span class="n">swmr_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Receive per-event data from smalldata clients and write it to one HDF5 file.</p>
+<p>For each alignment group it records the dtype and shape of every dataset and keeps a
+<code>CacheArray</code> per dataset, which is flushed to the file when it holds <code>cache_size</code> entries;
+datasets missing from an event are backfilled. If <code>filename</code> is None nothing is written, but
+the callbacks are still called for every event.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>filename</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>HDF5 file to create (opened with mode "w" and <code>libver="latest"</code> in the constructor).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>smdcomm</code>
+            </td>
+            <td>
+                  <code>MPI communicator</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Communicator used by <code>recv_loop</code>; every rank in it except one is counted as a client.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cache_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of entries cached per dataset before writing.</p>
+              </div>
+            </td>
+            <td>
+                  <code>10000</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>callbacks</code>
+            </td>
+            <td>
+                  <code>list of callable</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Each is called with one flattened dict per event in <code>handle</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>swmr_mode</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, turn on HDF5 SWMR mode after the first dataset is created and flush the file after
+every batch.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.recv_loop" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">recv_loop</span>
+
+
+<a href="#psana.smalldata.Server.recv_loop" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">recv_loop</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Receive batches from clients on <code>smdcomm</code> until every client has sent "done".</p>
+<p>The number of clients is <code>smdcomm.Get_size() - 1</code>. A received list is passed to <code>handle</code>; the
+string "done" counts one finished client. The receive wait time and
+<code>number of events / processing seconds * 1e-3</code> are set on the "psana_srv_wait" and
+"psana_srv_rate" Prometheus gauges.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.handle" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">handle</span>
+
+
+<a href="#psana.smalldata.Server.handle" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">handle</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Process a batch of events: store their datasets and call the callbacks.</p>
+<p>When a file is open, new datasets are created with <code>new_dset</code>, values go through
+<code>append_to_cache</code>, datasets seen before but absent from this event are backfilled, and the length of "var_"
+data is appended to the shared "_len" dataset (once per event when the keys sharing it have
+equal lengths). Each callback gets one flat dict
+per event whose keys are "<group>/<name>" (just "<name>" for the default group).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>batch</code>
+            </td>
+            <td>
+                  <code>list of dict</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>One dict per event, mapping alignment group name to that event's
+{dataset name: value} dict, which must contain "timestamp" when a file is written.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="KeyError">KeyError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If an event key is itself a "var_..._len" length key.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.new_dset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">new_dset</span>
+
+
+<a href="#psana.smalldata.Server.new_dset" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">new_dset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">datagroup</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create an empty, resizable HDF5 dataset for <code>dataset_name</code> in <code>datagroup</code>.</p>
+<p>The per-event shape and dtype come from <code>data</code> (from its first element for a "var_" key) and
+are recorded in <code>_dsets</code>; the dataset is created at the file root for the default group and in
+the group <code>datagroup</code> otherwise, chunked by <code>cache_size</code>. Then, except for non-length "var_"
+keys, <code>num_events_seen[datagroup]</code> zero entries are backfilled.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="TypeError">TypeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>data</code> is not an int, float or object with a <code>dtype</code>, or a "var_" key's data is not a
+list or array.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the per-event shape is (0,).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.append_to_cache" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">append_to_cache</span>
+
+
+<a href="#psana.smalldata.Server.append_to_cache" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">append_to_cache</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">datagroup</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Append <code>data</code> to the cache of <code>dataset_name</code> in <code>datagroup</code>.</p>
+<p>Creates a <code>CacheArray</code> from the recorded dtype and shape on first use. When the cache holds
+<code>cache_size</code> or more entries, it is written out with <code>write_to_file</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.write_to_file" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">write_to_file</span>
+
+
+<a href="#psana.smalldata.Server.write_to_file" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">write_to_file</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">datagroup</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Write the entries held in <code>cache</code> to the end of the HDF5 dataset and reset the cache.</p>
+<p>The dataset (<code>dataset_name</code> at the root for the default group, else
+<code>datagroup/dataset_name</code>) is resized by <code>cache.size</code> and the first <code>cache.size</code> cached rows are
+written into the new space. If the cache has no data, a warning is printed, the cache is reset
+and nothing is written.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.backfill" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">backfill</span>
+
+
+<a href="#psana.smalldata.Server.backfill" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">backfill</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">num_to_backfill</span><span class="p">,</span> <span class="n">datagroup</span><span class="p">,</span> <span class="n">missing_value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Append <code>num_to_backfill</code> fill entries to the cache of <code>dataset_name</code>.</p>
+<p>The fill entry has the dataset's recorded shape and dtype and is filled with <code>missing_value</code>,
+or, when that is None, with -99999 for integer dtypes and NaN for float dtypes.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>missing_value</code> is None and the dtype is neither integer nor float.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.Server.done" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">done</span>
+
+
+<a href="#psana.smalldata.Server.done" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">done</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flush all non-empty caches, close the HDF5 file and fsync it.</p>
+<p>Does nothing if <code>filename</code> is None. Errors from the final HDF5 flush and from the fsync are
+ignored.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="psana.smalldata.SmallData" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">SmallData</span>
+
+
+<a href="#psana.smalldata.SmallData" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">SmallData</span><span class="p">(</span><span class="n">server_group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">client_group</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Client-side object for saving per-event and summary data to HDF5 with smalldata.</p>
+<p>In parallel mode (more than one MPI rank) the constructor builds communicators from
+<code>server_group</code> and <code>client_group</code> and gives this rank the role "server", "client" or "other";
+in serial mode the constructor does nothing. Clients collect events in batches and send them to
+their server, servers write part files, and <code>done</code> joins the part files into one file with HDF5
+virtual datasets (on client rank 0).</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="Exception">Exception</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>In parallel mode, if <code>server_group</code> is empty.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>server_group</code>
+            </td>
+            <td>
+                  <code><span title="mpi4py.MPI.Group">Group</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The MPI group to allocate to server processes</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>client_group</code>
+            </td>
+            <td>
+                  <code><span title="mpi4py.MPI.Group">Group</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The MPI group to allocate to client processes</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="psana.smalldata.SmallData.summary" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">summary</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#psana.smalldata.SmallData.summary" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">summary</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>This "flag" is required when you save summary data OR
+do a "reduction" operation (e.g. sum) across MPI procs</p>
+<blockquote>
+<blockquote>
+<p>if SmallData.summary:
+    whole = SmallData.sum(part)
+    SmallData.save_summary(mysum=whole)</p>
+</blockquote>
+</blockquote>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.setup_parms" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">setup_parms</span>
+
+
+<a href="#psana.smalldata.SmallData.setup_parms" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">setup_parms</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[],</span> <span class="n">swmr_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>filename</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The file path of the (new) HDF5 file to write data to,
+will be overwritten if it exits -- if "None", data
+will not be written to disk.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>batch_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of events before send/recv</p>
+              </div>
+            </td>
+            <td>
+                  <code>1000</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cache_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of events before write</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>callbacks</code>
+            </td>
+            <td>
+                  <code>list of functions</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Functions that get called on each server's data before
+being written to disk. The functions should take as
+arguments a dictionary, where the keys are the data field
+names and the values are the data themselves. Each event
+processed will have it's own dictionary of this form
+containing the data saved for that event.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>swmr_mode</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Enable SWMR (Single Writer Multiple Reader) mode for HDF5 files.
+Allows concurrent read access while writing.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.get_rank" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_rank</span>
+
+
+<a href="#psana.smalldata.SmallData.get_rank" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_rank</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return this rank's number in the smalldata communicator (servers plus clients).</p>
+<p>The communicator is created by the constructor only in parallel mode; in serial mode the
+attribute does not exist and AttributeError is raised.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.get_world_rank" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_world_rank</span>
+
+
+<a href="#psana.smalldata.SmallData.get_world_rank" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_world_rank</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the rank in MPI.COMM_WORLD, or 0 in serial mode.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.event" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">event</span>
+
+
+<a href="#psana.smalldata.SmallData.event" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>event: int, psana.event.Event</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.sum" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">sum</span>
+
+
+<a href="#psana.smalldata.SmallData.sum" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">sum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Sum <code>value</code> element-wise across client ranks (MPI.SUM) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode ints and floats become
+one-element arrays, client ranks with no array contribute zeros, and the result is returned on
+client rank 0; other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client
+ranks get None.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>value</code>
+            </td>
+            <td>
+                  <code>(<span title="int">int</span>, <span title="float">float</span> or <span title="numpy.ndarray">ndarray</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Local value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inplace</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, reduce into <code>value</code> itself instead of a new array.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="Exception">Exception</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If no client rank has an array, or the arrays differ in shape or dtype.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.max" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">max</span>
+
+
+<a href="#psana.smalldata.SmallData.max" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">max</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Take the element-wise maximum of <code>value</code> across client ranks (MPI.MAX) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode ints and floats become
+one-element arrays, client ranks with no array contribute an array filled with the global
+minimum, and the result is returned on client rank 0; other client ranks get None (or their
+own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.min" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">min</span>
+
+
+<a href="#psana.smalldata.SmallData.min" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">min</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Take the element-wise minimum of <code>value</code> across client ranks (MPI.MIN) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode ints and floats become
+one-element arrays, client ranks with no array contribute an array filled with the global
+maximum, and the result is returned on client rank 0; other client ranks get None (or their
+own <code>value</code> if <code>inplace</code>), and non-client ranks get None.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.prod" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">prod</span>
+
+
+<a href="#psana.smalldata.SmallData.prod" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">prod</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Multiply <code>value</code> element-wise across client ranks (MPI.PROD) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data, so every client rank must
+pass an array or number.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.land" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">land</span>
+
+
+<a href="#psana.smalldata.SmallData.land" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">land</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with logical AND (MPI.LAND) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.band" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">band</span>
+
+
+<a href="#psana.smalldata.SmallData.band" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">band</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with bitwise AND (MPI.BAND) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.lor" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">lor</span>
+
+
+<a href="#psana.smalldata.SmallData.lor" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">lor</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with logical OR (MPI.LOR) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.bor" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">bor</span>
+
+
+<a href="#psana.smalldata.SmallData.bor" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">bor</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with bitwise OR (MPI.BOR) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.lxor" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">lxor</span>
+
+
+<a href="#psana.smalldata.SmallData.lxor" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">lxor</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with logical XOR (MPI.LXOR) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.bxor" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">bxor</span>
+
+
+<a href="#psana.smalldata.SmallData.bxor" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">bxor</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Combine <code>value</code> across client ranks with bitwise XOR (MPI.BXOR) onto client rank 0.</p>
+<p>In serial mode <code>value</code> is returned unchanged. In parallel mode the result is returned on client
+rank 0, other client ranks get None (or their own <code>value</code> if <code>inplace</code>), and non-client ranks
+get None. No stand-in array is made for a client rank without data.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.save_summary" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">save_summary</span>
+
+
+<a href="#psana.smalldata.SmallData.save_summary" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">save_summary</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Save 'summary data', ie any data that is not per-event (typically
+slower, e.g. at the end of the job).</p>
+<p>Interface is identical to SmallData.event()</p>
+<p>Note: this function should be called in a SmallData.summary: block</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.done" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">done</span>
+
+
+<a href="#psana.smalldata.SmallData.done" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">done</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Finish any final communication and join partial files
+(in parallel mode).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="psana.smalldata.SmallData.join_files" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">join_files</span>
+
+
+<a href="#psana.smalldata.SmallData.join_files" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">join_files</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Join the per-server part files into the main HDF5 file with virtual datasets.</p>
+<p>Looks for <code>&lt;basename&gt;_part&lt;i&gt;.h5</code> for every server rank i, printing a warning for each one
+that is missing. For every dataset found in any part file, it creates a virtual dataset whose
+rows are the part files' rows in server order; a part file without that dataset leaves a gap as
+long as its "/timestamp" dataset, filled with -99999 (integers) or NaN (floats). The main file
+is opened with <code>_get_full_file_handle</code> and closed at the end.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.set_keytypes" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">set_keytypes</span>
+
+
+<a href="#psana.smalldata.set_keytypes" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">set_keytypes</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Classify dataset key <code>k</code> and record the result in the module dicts.</p>
+<p>A key is variable-length (<code>var_dict[k] = True</code>) if any "/"-separated part starts with "var_".
+If that part is the last one and ends with "<em>len", the key is itself a length key; otherwise
+the name of its length key (the path up to and including that part, plus "_len") is stored in
+<code>len_map[k]</code>, marked as a length key in <code>len_dict</code> and given an empty entry in <code>len_evt</code>. Keys
+with no "var</em>" part are marked as neither variable nor length keys.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.get_len_map" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_len_map</span>
+
+
+<a href="#psana.smalldata.get_len_map" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_len_map</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the name of the length key for variable key <code>k</code>.</p>
+<p>Looks <code>k</code> up in <code>len_map</code>, calling <code>set_keytypes(k)</code> first if it is not there yet.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="KeyError">KeyError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>k</code> has no length key (it has no "var_" part, or it is itself a length key).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.is_len_key" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_len_key</span>
+
+
+<a href="#psana.smalldata.is_len_key" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">is_len_key</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return True if <code>k</code> is a length key, as classified by <code>set_keytypes</code>.</p>
+<p>The classification is computed on first lookup and cached in <code>len_dict</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.is_var_key" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_var_key</span>
+
+
+<a href="#psana.smalldata.is_var_key" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">is_var_key</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return True if any "/"-separated part of <code>k</code> starts with "var_".</p>
+<p>The classification is computed by <code>set_keytypes</code> on first lookup and cached in <code>var_dict</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.is_group" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">is_group</span>
+
+
+<a href="#psana.smalldata.is_group" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">is_group</span><span class="p">(</span><span class="n">event_data_dict</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return True if <code>event_data_dict</code> contains the reserved key "align_group".</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="psana.smalldata.get_group_name" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">get_group_name</span>
+
+
+<a href="#psana.smalldata.get_group_name" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">get_group_name</span><span class="p">(</span><span class="n">event_data_dict</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the value of the "align_group" key of <code>event_data_dict</code>, or "default" if it is absent.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

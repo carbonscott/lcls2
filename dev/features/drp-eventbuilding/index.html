@@ -1,0 +1,1647 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/features/drp-eventbuilding/">
+      
+      
+        <link rel="prev" href="../daq-control/">
+      
+      
+        <link rel="next" href="../../api/python/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>DRP and event building - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#drp-and-event-building" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DRP and event building
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-drp-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The DRP process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-detector-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Detector interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-builders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event builders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trigger plugins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-in-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where in the code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/python/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-drp-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The DRP process
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-detector-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Detector interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-builders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event builders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trigger plugins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-in-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where in the code
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="drp-and-event-building">DRP and event building<a class="headerlink" href="#drp-and-event-building" title="Permanent link">&para;</a></h1>
+<h2 id="what-it-is">What it is<a class="headerlink" href="#what-it-is" title="Permanent link">&para;</a></h2>
+<p>The LCLS-II DAQ data path, as implemented in this repository:</p>
+<ol>
+<li>A <strong>DRP</strong> (data reduction pipeline) process per detector readout
+   (<code>psdaq/drp/</code>, executable <code>drp</code> and variants) receives detector data over
+   PGP/DMA, turns it into XTC2 datagrams with a detector-specific <code>Detector</code>
+   class, and sends a small <strong>trigger contribution</strong> for each event to the
+   trigger event builder.</li>
+<li>The <strong>TEB</strong> (trigger event builder, executable <code>teb</code>,
+   <code>psdaq/psdaq/eb/src/teb.cc</code>) builds the contributions of all DRPs for an
+   event, runs a trigger plugin, and sends back a <strong>result</strong>: whether to record
+   the event (<code>persist</code>/<code>prescale</code>) and whether to send it to monitoring
+   (<code>monitor</code>).</li>
+<li>Each DRP writes accepted events to its own file and posts monitored events
+   to the <strong>MEB</strong> (monitoring event builder, executable <code>monReqServer</code>,
+   <code>psdaq/psdaq/monreq/monReqServer.cc</code>), which builds them and serves them in
+   shared memory to online analysis (see
+   <a href="../shmem-live/">Shared memory and live analysis</a>).</li>
+</ol>
+<p>All three are controlled by the control process through the transitions
+described in <a href="../daq-control/">DAQ control</a>. The code needs DAQ hardware (or the
+simulators/emulators in the tree); nothing here runs against offline data.</p>
+<h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
+<h3 id="the-drp-process">The DRP process<a class="headerlink" href="#the-drp-process" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>drp</code> (<code>psdaq/drp/drp.cc</code>) parses its options (getopt
+  <code>"p:o:l:D:S:C:d:u:k:P:M:W:Q:v"</code>; e.g. <code>-p</code> platform, <code>-P</code> instrument, <code>-C</code>
+  collection host, <code>-d</code> DMA device, <code>-l</code> lane mask, <code>-D</code> detector type, <code>-u</code>
+  alias, <code>-o</code> output directory, <code>-k</code> keyword arguments) and runs a
+  <code>PGPDetectorApp</code>.</li>
+<li><code>PGPDetectorApp</code> (<code>psdaq/drp/PGPDetectorApp.hh</code>) derives from
+  <code>CollectionApp</code> (<code>psdaq/psdaq/service/Collection.hh</code>), so it takes part in
+  rollcall/alloc/connect and receives the transitions from control.</li>
+<li>The detector class is chosen with <code>Factory&lt;Detector&gt;</code> (<code>psdaq/drp/Detector.hh</code>)
+  from the <code>-D</code> name. Names registered in <code>psdaq/drp/PGPDetectorApp.cc</code>:
+  <code>fakecam</code>, <code>cspad</code>, <code>hsd</code>, <code>epixquad</code>, <code>epixquad1kfps</code>, <code>epixhr2x2</code>,
+  <code>epixhremu</code>, <code>epixm320</code>, <code>epixUHR</code>, <code>epix100</code>, <code>jungfrau</code>, <code>jungfrauemu</code>,
+  <code>opal</code>, <code>tt</code>, <code>tb</code>, <code>ts</code>, <code>wave8</code>, <code>hrencoder</code>, <code>piranha4</code>, <code>epixuhr3x2</code>.</li>
+<li><code>DrpBase(Parameters&amp; para, MemPool&amp; pool, Detector&amp; det, ZmqContext&amp; context)</code>
+  (<code>psdaq/drp/DrpBase.hh</code>) holds what all DRPs share: the TEB and MEB
+  contributors, the TEB result receiver, file writing, and the trigger
+  primitive.</li>
+<li>Buffers (<code>psdaq/drp/drp.hh</code>): <code>Parameters</code> (command-line settings),
+  <code>PGPEvent</code> (DMA buffers of one event), <code>Pebble</code> (one large buffer for
+  datagrams) and <code>MemPool</code>/<code>MemPoolCpu</code>.</li>
+<li>Other DRP executables built by <code>psdaq/drp/meson.build</code>: <code>drp_bld</code> (beam-line
+  data), <code>drp_pva</code> (EPICS PV Access), <code>drp_udpencoder</code>, <code>tpr_trigger</code>, plus
+  test tools (<code>pgpread</code>, <code>drp_validate</code>, ...). <code>epicsArch</code>
+  (<code>psdaq/epicsArch/</code>) records EPICS variables. With CUDA available,
+  <code>psdaq/drpGpu/</code> builds a GPU variant, <code>drp_gpu</code>.</li>
+<li>Python DRP: with <code>-k drp=python</code>, <code>drp</code> starts the worker
+  <code>python -u -m psdaq.drp.drp_python ...</code> (<code>psdaq/psdaq/drp/drp_python.py</code>),
+  and Python code inside it reads the data with
+  <code>DataSource(drp=...)</code> (<code>psana/psana/psexp/drp_ds.py</code>).</li>
+</ul>
+<h3 id="the-detector-interface">The <code>Detector</code> interface<a class="headerlink" href="#the-detector-interface" title="Permanent link">&para;</a></h3>
+<p><code>Drp::Detector</code> (<code>psdaq/drp/Detector.hh</code>) is what a new detector implements.
+Key virtual methods (declarations from the header):</p>
+<div class="highlight"><pre><span></span><code><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">collectionId</span><span class="p">)</span><span class="w"> </span><span class="p">{};</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">config_alias</span><span class="p">,</span><span class="w"> </span><span class="n">XtcData</span><span class="o">::</span><span class="n">Xtc</span><span class="o">&amp;</span><span class="w"> </span><span class="n">xtc</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">bufEnd</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">beginrun</span><span class="w"> </span><span class="p">(</span><span class="n">XtcData</span><span class="o">::</span><span class="n">Xtc</span><span class="o">&amp;</span><span class="w"> </span><span class="n">xtc</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">bufEnd</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">runInfo</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;}</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">slowupdate</span><span class="p">(</span><span class="n">XtcData</span><span class="o">::</span><span class="n">Xtc</span><span class="o">&amp;</span><span class="w"> </span><span class="n">xtc</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">bufEnd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">};</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="n">XtcData</span><span class="o">::</span><span class="n">Dgram</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dgram</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">bufEnd</span><span class="p">,</span><span class="w"> </span><span class="n">PGPEvent</span><span class="o">*</span><span class="w"> </span><span class="n">event</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">count</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span>
+</code></pre></div>
+<p>For example, in <code>psdaq/drp/AreaDetector.cc</code> (the <code>fakecam</code>/<code>cspad</code> class)
+<code>configure</code> adds <code>Names</code> to the Configure datagram's <code>Xtc</code>, and <code>event</code>
+writes the event's values with <code>CreateData</code> against those names (see
+<a href="../xtc2/">XTC2 data format</a>). Many hardware detectors derive from
+<code>BEBDetector</code> (<code>psdaq/drp/BEBDetector.hh</code>); <code>XpmDetector</code>
+(<code>psdaq/drp/XpmDetector.hh</code>) is another base class used by several of them.</p>
+<h3 id="event-builders">Event builders<a class="headerlink" href="#event-builders" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Pds::Eb::EventBuilder</code> and <code>EbAppBase</code> (<code>psdaq/psdaq/eb/src/EventBuilder.hh</code>,
+  <code>EbAppBase.hh</code>) are the common event-building code; <code>EbAppBase(EbParams&amp; prms, const std::string&amp; pfx)</code>.
+  Transport uses libfabric (<code>EbLfServer</code>/<code>EbLfClient</code> in the same directory).</li>
+<li>DRP side: <code>TebContributor(const TebCtrbParams&amp;, unsigned numBuffers)</code> and
+  <code>MebContributor(const MebCtrbParams&amp;)</code> send to the TEB and MEB.</li>
+<li><code>ResultDgram</code> (<code>psdaq/psdaq/eb/src/ResultDgram.hh</code>) is what the TEB returns:
+  <code>persist()</code>, <code>prescale()</code>, <code>monitor()</code>, <code>auxdata()</code>, <code>monBufNo()</code>. The DRP
+  writes an L1Accept if <code>persist() || prescale()</code> and posts it to the MEB if
+  <code>monitor()</code> is non-zero (<code>psdaq/drp/TebReceiver.cc</code>).</li>
+<li><code>teb</code> (<code>class Teb : public EbAppBase</code>, <code>class TebApp : public CollectionApp</code>
+  in <code>teb.cc</code>) and <code>monReqServer</code> (<code>class Meb : public EbAppBase</code>,
+  <code>class MebApp : public CollectionApp</code>) are the two event-builder
+  executables. The MEB's shared-memory tag is set with <code>-t</code>.</li>
+</ul>
+<h3 id="trigger-plugins">Trigger plugins<a class="headerlink" href="#trigger-plugins" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Pds::Trg::Trigger</code> (<code>psdaq/psdaq/trigger/src/Trigger.hh</code>) runs in the TEB:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">virtual</span><span class="w"> </span><span class="kt">int</span><span class="w">  </span><span class="nf">configure</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">connectMsg</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">configureMsg</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Pds</span><span class="o">::</span><span class="n">Eb</span><span class="o">::</span><span class="n">EbParams</span><span class="o">&amp;</span><span class="w"> </span><span class="n">prms</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Pds</span><span class="o">::</span><span class="n">EbDgram</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Pds</span><span class="o">::</span><span class="n">EbDgram</span><span class="o">**</span><span class="w"> </span><span class="n">end</span><span class="p">,</span><span class="w"> </span><span class="n">Pds</span><span class="o">::</span><span class="n">Eb</span><span class="o">::</span><span class="n">ResultDgram</span><span class="o">&amp;</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">transition</span><span class="p">(</span><span class="n">Pds</span><span class="o">::</span><span class="n">Eb</span><span class="o">::</span><span class="n">ResultDgram</span><span class="o">&amp;</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<ul>
+<li><code>Pds::Trg::TriggerPrimitive</code> (<code>psdaq/psdaq/trigger/src/TriggerPrimitive.hh</code>)
+  runs in each DRP and produces that DRP's trigger contribution.</li>
+<li>Both are loaded at Configure time from a shared library whose name is the
+  <code>soname</code> key of the trigger configuration in the configuration database
+  (the control process's <code>-t TRIGGER_CONFIG</code>). The TEB looks up the symbol
+  <code>create_consumer</code>; the DRP tries <code>create_producer_&lt;detName&gt;</code> and then
+  <code>create_producer</code> (<code>psdaq/psdaq/eb/src/teb.cc</code>, <code>psdaq/drp/DrpBase.cc</code>).</li>
+<li>Plugin libraries built by <code>psdaq/psdaq/trigger/meson.build</code> include
+  <code>tmoTeb</code>, <code>tmoTrigger</code>, <code>mfxTripperTeb</code>, <code>calibTrigger</code> and <code>tstTebPy</code>; see
+  <code>psdaq/psdaq/trigger/src/tmoTeb.cc</code> for a small example
+  (<code>extern "C" Pds::Trg::Trigger* create_consumer()</code>).</li>
+</ul>
+<h2 id="minimal-example">Minimal example<a class="headerlink" href="#minimal-example" title="Permanent link">&para;</a></h2>
+<p>There is no stand-alone example for this part; the realistic "example" is a
+platform description. From <code>psdaq/psdaq/cnf/tmo.cnf</code> (excerpt), each line
+starts one process under <code>procmgr</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">std_opts</span> <span class="o">=</span> <span class="s1">'-P '</span><span class="o">+</span><span class="n">hutch</span><span class="o">+</span><span class="s1">' -C '</span><span class="o">+</span><span class="n">collect_host</span><span class="o">+</span><span class="s1">' -M '</span><span class="o">+</span><span class="n">prom_dir</span>
+<span class="n">teb_cmd</span>  <span class="o">=</span> <span class="n">task_set</span><span class="o">+</span><span class="s1">' teb '</span>         <span class="o">+</span><span class="n">std_opts</span><span class="o">+</span><span class="s1">' -k '</span><span class="o">+</span><span class="n">scripts</span>
+<span class="n">meb_cmd</span>  <span class="o">=</span> <span class="n">task_set</span><span class="o">+</span><span class="s1">' monReqServer '</span><span class="o">+</span><span class="n">std_opts</span>
+<span class="n">drp_cmd0</span> <span class="o">=</span> <span class="n">task_set</span><span class="o">+</span><span class="s1">' drp '</span>    <span class="o">+</span><span class="n">std_opts0</span>
+<span class="o">...</span>
+<span class="p">{</span> <span class="n">host</span><span class="p">:</span> <span class="s1">'drp-srcf-cmp030'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="s1">'teb0'</span><span class="p">,</span>     <span class="n">flags</span><span class="p">:</span><span class="s1">'spu'</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span><span class="n">teb_cmd</span><span class="p">},</span>
+<span class="p">{</span> <span class="n">host</span><span class="p">:</span> <span class="s1">'drp-srcf-mon001'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="s1">'meb1'</span><span class="p">,</span>     <span class="n">flags</span><span class="p">:</span><span class="s1">'spu'</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">meb_cmd</span><span class="si">}</span><span class="s1"> -t </span><span class="si">{</span><span class="n">hutch</span><span class="si">}</span><span class="s1">_meb1 -d -n 64 -q </span><span class="si">{</span><span class="n">ami_workers_per_node</span><span class="si">}</span><span class="s1">'</span><span class="p">},</span>
+<span class="p">{</span> <span class="n">host</span><span class="p">:</span> <span class="s1">'drp-srcf-cmp028'</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="s1">'timing_0'</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span><span class="s1">'spu'</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span><span class="n">drp_cmd1</span><span class="o">+</span><span class="s1">' -l 0x1 -D ts'</span><span class="p">},</span>
+</code></pre></div>
+<p>Here <code>-D ts</code> selects the <code>TimingSystem</code> detector class and <code>-l 0x1</code> the PGP
+lane mask; the <code>p</code> and <code>u</code> flags make <code>procmgr</code> add <code>-p &lt;platform&gt;</code> and
+<code>-u &lt;id&gt;</code>.</p>
+<h2 id="where-in-the-code">Where in the code<a class="headerlink" href="#where-in-the-code" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>psdaq/drp/</code>: <code>drp.cc</code>, <code>drp.hh</code>, <code>PGPDetectorApp.*</code>, <code>DrpBase.*</code>, <code>Detector.hh</code>, <code>BEBDetector.*</code>, <code>XpmDetector.*</code>, <code>TebReceiver.*</code>, and one source pair per detector (<code>Opal.cc</code>, <code>Wave8.cc</code>, <code>Jungfrau.cc</code>, ...).</li>
+<li><code>psdaq/drpGpu/</code>: GPU DRP.</li>
+<li><code>psdaq/psdaq/eb/src/</code>: <code>EventBuilder</code>, <code>EbAppBase</code>, <code>TebContributor</code>, <code>MebContributor</code>, <code>ResultDgram</code>, <code>teb.cc</code>.</li>
+<li><code>psdaq/psdaq/monreq/monReqServer.cc</code>: MEB.</li>
+<li><code>psdaq/psdaq/trigger/src/</code>: <code>Trigger</code>, <code>TriggerPrimitive</code>, plugin examples.</li>
+<li><code>psdaq/psdaq/service/Collection.hh</code>: <code>CollectionApp</code> (control protocol).</li>
+<li><code>psdaq/psdaq/drp/drp_python.py</code>, <code>psana/psana/psexp/drp_ds.py</code>: Python inside the DRP.</li>
+</ul>
+<p>C++ API pages: <a href="../../api/cpp/classDrp_1_1Detector.html">Drp::Detector</a>,
+<a href="../../api/cpp/classDrp_1_1DrpBase.html">Drp::DrpBase</a>,
+<a href="../../api/cpp/classDrp_1_1PGPDetectorApp.html">Drp::PGPDetectorApp</a>,
+<a href="../../api/cpp/classDrp_1_1Factory.html">Drp::Factory</a>,
+<a href="../../api/cpp/classDrp_1_1MemPool.html">Drp::MemPool</a>,
+<a href="../../api/cpp/classCollectionApp.html">CollectionApp</a>,
+<a href="../../api/cpp/classPds_1_1Eb_1_1EbAppBase.html">Pds::Eb::EbAppBase</a>,
+<a href="../../api/cpp/classPds_1_1Eb_1_1TebContributor.html">Pds::Eb::TebContributor</a>,
+<a href="../../api/cpp/classPds_1_1Eb_1_1MebContributor.html">Pds::Eb::MebContributor</a>,
+<a href="../../api/cpp/classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a>,
+<a href="../../api/cpp/classPds_1_1Trg_1_1Trigger.html">Pds::Trg::Trigger</a>,
+<a href="../../api/cpp/classPds_1_1Trg_1_1TriggerPrimitive.html">Pds::Trg::TriggerPrimitive</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
