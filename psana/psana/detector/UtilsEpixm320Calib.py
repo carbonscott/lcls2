@@ -48,6 +48,14 @@ KEY_CTYPE = {'p' : 'pedestals',
 
 def pedestals_calibration(parser):
 
+  """Dark processing for epixm320, one gain mode per step, driven by the options of `parser`.
+
+  For each selected step (`stepnum`, `stepmax` default 1) raw data go to a `UtilsCalib.DarkProc`
+  until `nrecs` records or `events` events, and the step's pedestals, RMS, status, max and min are
+  saved with `save_constants_in_repository` under the gain mode from `gain_mode`. At the end the
+  five dark types are combined over the detector's gain modes with `deploy_constants` (DB upload
+  only with `deploy`) and the log file is saved.
+  """
   args = parser.parse_args()
   kwa = vars(args)
 
@@ -294,11 +302,17 @@ def gain_mode(odet, metadic, nstep):
 
 
 def calib_file_name(fprefix, ctype, gainmode, fmt='%s-%s-%s.data'):
+    """Return `fmt % (fprefix, ctype, gainmode)`, by default `<fprefix>-<ctype>-<gainmode>.data` (also when `gainmode` is None)."""
     return fmt % (fprefix, ctype, gainmode)
 
 
 def save_constants_in_repository(dic_consts, **kwa):
 
+    """Save each array of `dic_consts` as a text file in the calibration repository.
+
+    Files go to the repository's `<segment id>/<ctype>` directory, the segment id being the part of
+    `longname` after the first "_", as `<prefix>-<ctype>-<gainmode>.data` with per-type formats.
+    """
     logger.debug('save_constants_in_repository kwa:', kwa)
 
     CTYPE_DTYPE = cc.dic_calib_name_to_dtype # {'pedestals': np.float32,...}
@@ -365,6 +379,14 @@ def save_constants_in_repository(dic_consts, **kwa):
 
 def deploy_constants(ctypes, gainmodes, **kwa):
 
+    """Combine per-gain-mode constant files into one array per type, save it, and optionally add it to the DB.
+
+    Files `<prefix>-<ctype>-<gm>.data` are read with `data_from_file`; on AssertionError a substitute
+    of shape `shape_as_daq` is used (ones for gain and rms, zeros for pedestals and offset, 1000 for
+    max, zeros otherwise). The stacked array is saved as `<prefix>-<ctype>-comb.data`; with `deploy`
+    it is added with `add_data_and_two_docs` and `exit()` is called if that returns nothing,
+    otherwise a warning is logged.
+    """
     from psana.pscalib.calib.MDBUtils import data_from_file
     from psana.pscalib.calib.MDBWebUtils import add_data_and_two_docs
 
@@ -479,6 +501,12 @@ def deploy_constants(ctypes, gainmodes, **kwa):
 
 def deploy_constants_script(parser):
 
+    """Command entry point: build metadata for detector `det` of the dataset's first run and call `deploy_constants`.
+
+    The types come from the letters of `select` (default 'psr') looked up in `KEY_CTYPE`
+    (p pedestals, r rms, s status, x max, n min, e status_extra, o offset, g gain); the gain modes
+    are the detector's `_gain_modes`.
+    """
     args = parser.parse_args()
     kwa = vars(args)
 

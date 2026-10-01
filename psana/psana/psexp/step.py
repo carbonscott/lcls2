@@ -55,12 +55,11 @@ class Step(object):
     def events(self):
         """Yield the L1Accept events of this step as `Event` objects, stopping at EndStep.
 
-        Other transitions are not yielded: they update `esm`, are saved to DRP shared memory and have
-        their proxy event appended to `proxy_events` (each only when set), and EndStep also clears the
-        step state in `callback_run_state` and ends the iteration. With `run` set, each L1Accept is
-        saved to shared memory when the caller resumes the iteration. After an L1Accept whose loop
-        index is a multiple of 1000, the "psana_bd_ana_rate" gauge is set to 1000 / seconds since the
-        last update.
+        Other transitions are not yielded: they update `esm`, are saved to DRP shared memory and have their proxy event appended to `proxy_events` (each only when set), and EndStep also clears the step state in `callback_run_state` and ends the iteration. With `run` set, each L1Accept is saved to shared memory when the caller resumes the iteration.
+
+        Notes
+        -----
+        After an L1Accept whose loop index is a multiple of 1000, the "psana_bd_ana_rate" gauge is set to 1000 / seconds since the last update.
         """
         st = time.time()
         for i, item in enumerate(self._evt_iter):

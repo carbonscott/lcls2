@@ -108,6 +108,12 @@ def make_calibcons(**kwargs):
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this script.
+
+    Options -t/--tname (default '0'), -k/--dskwargs ('exp=mfx100848724,run=51'), -d/--detname
+    ('jungfrau'), -n/--events (10), -L/--loglevel ('INFO'), -p/--plot_img (0) and -v/--cversion
+    (3; Jungfrau calibration constants version 1, 2 or 3).
+    """
     from argparse import ArgumentParser
     d_tname    = '0'
     d_dskwargs = 'exp=mfx100848724,run=51'  # None
@@ -138,6 +144,9 @@ def argument_parser():
 
 
 def usage():
+    """Return the usage text: an example command, the generic form, and the lines of the `selector`
+    source that contain 'tname ==' or 'tnum in'.
+    """
     import inspect
     return '\n  example: %s -t0 -k exp=mfx100848724,run=51 -d jungfrau' % SCRNAME \
         +'\n\n  %s -t <tname> [other kwargs]\n' % sys.argv[0].split('/')[-1]\
@@ -145,6 +154,13 @@ def usage():
 
 
 def selector():
+    """Entry point: parse the options and run the test selected by `--tname`.
+
+    Prints the usage and exits if no arguments are given, and sets up logging at `--loglevel`. Test
+    '0' runs `raw_in_event_loop`, '1' `make_calibcons`, '2' `make_data` and '3' `make_calibcons`
+    then `make_data`; other names exit with a 'not implemented' message, and a non-numeric name
+    raises ValueError at int(tname) first.
+    """
     if len(sys.argv) < 2:
         print(usage())
         sys.exit('EXIT due to MISSING PARAMETERS')

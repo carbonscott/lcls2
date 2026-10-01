@@ -33,6 +33,13 @@ info_ndarr, reshape_to_3d = au.info_ndarr, au.reshape_to_3d
 
 class epix_base(AreaDetectorRaw):
 
+    """Base area-detector interface (`AreaDetectorRaw` subclass) for epix multi-gain detectors.
+
+    The constructor sets epix10ka defaults: no segment geometry, data mask M14 (0x3fff), gain bit B14
+    (bit number 14), gain bit shift 9 and default gains (16.4, 5.466, 0.164); `calib` uses
+    `UtilsEpix10ka.calib_epix10ka_any`. Subclasses provide `_cbits_config_segment`, whose base version
+    logs a warning and returns None.
+    """
     def __init__(self, *args, **kwa):
         logger.debug('epix_base.__init__') # self.__class__.__name__
         AreaDetectorRaw.__init__(self, *args, **kwa)

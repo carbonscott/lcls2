@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The jungfrau_deploy_constants command: merge Jungfrau constants from the repository and optionally deploy them (`UtilsJungfrauCalib`)."""
 import sys
 from psana.detector.dir_root import DIR_REPO_JUNGFRAU
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
@@ -22,6 +23,13 @@ USAGE = 'Usage:'\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--detname, -t/--tstamp, -o/--dirrepo (default `DIR_REPO_JUNGFRAU`),
+    -N/--nsegstot, -L/--logmode, --high, --medium, --low, -p/--ctdepl (default 'psr'),
+    -I/--paninds, -v/--version, -B/--run_beg, -R/--run_end (default 'end'), -C/--comment,
+    -S/--dbsuffix, and the flags -D/--deploy and -F/--depfiles.
+    """
     from argparse import ArgumentParser
 
     d_dskwargs= None
@@ -93,6 +101,12 @@ def argument_parser():
 
 def do_main():
 
+    """Check the arguments and deploy Jungfrau constants, logging the time taken.
+
+    Exits with the usage text if fewer than two arguments are given and asserts that `-k` is set.
+    With -F runs `UtilsJungfrauCalib.jungfrau_deploy_constants_from_files(parser)`, otherwise
+    `UtilsJungfrauCalib.jungfrau_deploy_constants(parser)`.
+    """
     from time import time
     t0_sec = time()
 

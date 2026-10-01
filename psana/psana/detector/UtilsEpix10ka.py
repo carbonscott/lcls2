@@ -65,9 +65,11 @@ B15 = 0o100000 # 32768 or 1<<15 (16-th bit starting from 1)
 M15 = 0x7fff   # 32767 or (1<<15)-1 - 15-bit mask
 
 def gain_bitshift(dettype):
+    """Return the gain bit shift for `dettype`: 9 for 'epix10ka', 10 for 'epixhr', 'epixhr2x2' and 'epixhremu', None otherwise."""
     return {'epix10ka':9, 'epixhr':10, 'epixhr2x2':10, 'epixhremu':10}.get(dettype, None)
 
 def gain_bitword(dettype):
+    """Return the gain bit mask for `dettype`: B14 (0o40000) for 'epix10ka', B15 (0o100000) for 'epixhr', 'epixhr2x2' and 'epixhremu', None otherwise."""
     return {'epix10ka':B14, 'epixhr':B15, 'epixhr2x2':B15, 'epixhremu':B15}.get(dettype, None)
 
 def data_bitword(dettype):
@@ -78,6 +80,12 @@ def data_bitword(dettype):
 
 
 class Storage:
+    """Cached calibration parameters for epix multi-gain calibration with common-mode correction.
+
+    The constructor (see its docstring) stores the DAQ shape, a ones array, pedestals and gain factors
+    (1/gain, reshaped per pixel when `perpix`), the mask (`_mask`, else `_mask_from_status`, else
+    ones), the common-mode parameters and an event counter.
+    """
     def __init__(self, det_raw, **kwa):
         """Holds cached calibration parameters for the epix multi-gain getector.
 
@@ -149,6 +157,13 @@ class Storage:
 
 
 class Storage_v02(): # Storage):
+    """Like `Storage`, but holds pedestals and gain factors for the two states of the gain bit.
+
+    From the configuration bits it picks per-pixel H/M constants and L constants (adding config bit
+    0b100000 for L), stacks them into arrays of shape (2,) + detector shape, multiplies the gain
+    factors by the mask, and keeps the common-mode parameters; arrays are reshaped per pixel when
+    `perpix`.
+    """
     def __init__(self, det_raw, **kwa):
         """The same as Storage, but holds constants for 2-indices of the gain switching data bit 14.
         Parameters
@@ -537,6 +552,7 @@ def gain_maps_epix10ka_any_alg(cbits):
 
 
 def gain_maps_epix10ka_any(det_raw, evt=None):
+    """Return the 7 boolean gain-range maps from `gain_maps_epix10ka_any_alg(det_raw._cbits_config_and_data_detector(evt))`, or None if those bits are None."""
     return gain_maps_epix10ka_any_alg(det_raw._cbits_config_and_data_detector(evt))
 
 
@@ -584,6 +600,7 @@ def pixel_gain_mode_fractions(det_raw, evt=None):
 
 
 def info_pixel_gain_mode_for_fractions(grp_prob, msg='pixel gain mode fractions: '):
+    """Return `msg` followed by the values of `grp_prob` formatted as '%.5f' and joined by ", ", or None if `grp_prob` is None."""
     return None if grp_prob is None else '%s%s' % (msg, ', '.join(['%.5f'%p for p in grp_prob]))
 
 
@@ -646,6 +663,12 @@ def event_constants_for_gmaps(gmaps, cons, default=0):
 
 
 def event_constants(det_raw, evt, cons, default=0):
+    """Return per-pixel constants for `evt` chosen by each pixel's gain range.
+
+    The event's gain maps (`gain_maps_epix10ka_any`) select from `cons` with
+    `event_constants_for_gmaps` (`default` where no map is True). Returns None if the gain maps or
+    `cons` are None.
+    """
     gmaps = gain_maps_epix10ka_any(det_raw, evt) #tuple: 7 x shape:(4, 352, 384)
     if cond_msg(gmaps is None, msg='gmaps is None', output_meth=logger.debug):
         return None
@@ -716,10 +739,12 @@ def test_event_constants_for_gmaps(det_raw, evt, gfac, peds):
 
 
 def print_gmaps_info(gmaps):
+    """Log at debug level summaries of the 7 gain-range maps and the number of pixels in each."""
     logger.debug('%s\n%s' %\
       (info_gain_mode_arrays(gmaps), info_pixel_gain_mode_statistics(gmaps)))
 
 def cond_msg(c, msg='condition is True', output_meth=logger.debug):
+    """Return `c` unchanged, calling `output_meth(msg)` first if it is truthy."""
     if c: output_meth(msg)
     return c
 
@@ -890,6 +915,7 @@ def common_mode_epix_multigain_apply(arrf, gmaps, store):
 
 
 def map_gain_range_index_for_gmaps(gmaps, default=10):
+    """Return the per-pixel gain range index (0 to 6) from the 7 boolean maps `gmaps` via `np.select` (`default` where none is True), or None if `gmaps` is None."""
     if gmaps is None:
         logger.debug('gmaps is None')
         return None

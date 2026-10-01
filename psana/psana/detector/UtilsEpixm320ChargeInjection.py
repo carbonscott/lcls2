@@ -72,12 +72,19 @@ class DataBlock():
         return self.is_full()
 
     def is_full(self):
+        """Return True when all `nrecs` records have been filled (`irec` >= `nrecs` - 1)."""
         return not self.not_full()
 
     def not_full(self):
+        """Return True while fewer than `nrecs` records have been filled (`irec` < `nrecs` - 1)."""
         return self.irec < self.nrecs-1
 
     def max_min(self):
+        """Return `(max, min)` of the block over the record axis (axis 0).
+
+        The whole block is used, so entries not written in the current pass keep zeros or values from
+        earlier slices.
+        """
         return np.max(self.block, axis=0),\
                np.min(self.block, axis=0)
 
@@ -92,9 +99,16 @@ class DataBlockProc(DataBlock):
         self.figpref = kwa.get('figpref', 'figs/fig')
 
     def init_accumulation(self, istep):
+        """Print a line announcing accumulation for step `istep` and the block's gain mode; does nothing else."""
         print('-- step %02d: init for gmode %s' % (istep, self.gmode))
 
     def summary(self, istep, gmode, cmt=''):
+        """Print a summary line, check the gain mode, plot the block if requested and call the placeholder `_evaluate_constants`.
+
+        Raises AssertionError if `gmode` differs from the block's gain mode. The block masked to 15 bits
+        is plotted with `plot_block` (bit 2 of `plotim`) and `graph_block` (bit 4); `_evaluate_constants`
+        only prints.
+        """
         print('-- %s step %02d: summary for gmode %s' % (cmt, istep, self.gmode))
         assert gmode==self.gmode, 'gain mode in summary %s difers rom init/collect %s' % (gmode, self.gmode)
         block = self.block & M15
@@ -108,6 +122,11 @@ class DataBlockProc(DataBlock):
 
 
 def plot_block(block, figpref=None, gmode='N/A'):
+        """Show the image of record nrecs/4 of each ASIC of the 4-D `block` (records, asics, rows, cols).
+
+        Uses one `fleximage` (limits 0 to 40000), saves each image as
+        `<figpref>-img-asic<a>-rec<r>-<gmode>.png`, and ends with a blocking `show()`.
+        """
         flimg1 = None
         #logger.info(info_ndarr(self.evnums, 'evnums', last=128))
         logger.info(info_ndarr(block, 'data block'))
@@ -133,6 +152,12 @@ def plot_block(block, figpref=None, gmode='N/A'):
 
 
 def graph_block(block, figpref=None, gmode='N/A', ncbanks=6, nrbanks=4):
+        """Plot, for each ASIC, the median intensity of regions of `block` against the record index.
+
+        Regions are `nrbanks` row bands of rows/nrbanks rows and `ncbanks` column bands of
+        cols/ncbanks columns, whose start column the code computes as band index times rows/nrbanks.
+        Each ASIC's curves go in one figure, shown and saved as `<figpref>-graph-asic<a>-<gmode>.png`.
+        """
         flimg1 = None
         logger.info(info_ndarr(block, 'data block'))
         nrecs, nasics, rows, cols = shape0 = block.shape
@@ -179,6 +204,14 @@ def graph_block(block, figpref=None, gmode='N/A', ncbanks=6, nrbanks=4):
 
 def charge_injection(parser):
 
+    """Event loop over an epixm320 charge-injection run that collects raw data per step into `DataBlockProc` blocks.
+
+    Each step's docstring gives the ASIC, column range, number of events (`nrecs`) and gain mode; the data of that ASIC/column slice are collected until the block is full or `evstep` or `events` is reached, and a block is summarized when the gain mode changes and after the last step. Steps are limited by `stepmax` (default 230) and `stepnum`; with bit 1 of `plotim` images are shown and saved.
+
+    Notes
+    -----
+    No constants are saved or deployed: those calls at the end are commented out.
+    """
     args = parser.parse_args()
     kwa = vars(args)
     repoman = init_repoman_and_logger(parser=parser, **kwa)
@@ -507,6 +540,10 @@ def charge_injection(parser):
 
 def summary(dbo, **kwa):
 
+    """Log the block of `dbo`, compute its per-pixel max and min over records, and save them as 'pixel_max' and 'pixel_min'.
+
+    Saving uses `UtilsEpixm320Calib.save_constants_in_repository(dic, **kwa)`.
+    """
     block  = dbo.block
     evnums = dbo.evnums
     logger.info('block summary: \n  %s\n  %s\n' % (

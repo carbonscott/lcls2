@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+"""The det_calib_ave_and_max command: accumulate the per-pixel average and maximum of a detector
+array over events and save them as .npy files.
+
+The module calls `det_calib_ave_and_max()` when imported or executed; it parses sys.argv and ends
+with sys.exit.
+"""
 import sys
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES, DICT_NAME_TO_LEVEL
 logger = logging.getLogger(__name__)
@@ -11,6 +17,12 @@ USAGE = '%s -k <dataset-kwargs> -d <detector-name> -n <number-of-events> -m <num
       + '\n  %s -k exp=uedc00106,run=25 -d epixquad1kfps -n 10000 -M c'%SCRNAME\
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs (default 'exp=uedc00106,run=25'), -d/--detname ('epixquad1kfps'),
+    -n/--events (100), -m/--evskip (0), -L/--logmode ('INFO'), -f/--prefix ('img'), -S/--aslice
+    (':') and -M/--mode ('p'; r/c/i/p for raw, calib, image, raw minus pedestals).
+    """
     import argparse
 
     d_dskwargs = 'exp=uedc00106,run=25'
@@ -46,6 +58,20 @@ def argument_parser():
 
 def det_calib_ave_and_max():
 
+    """Accumulate the per-pixel sum and maximum of the selected array over events and save the average and maximum.
+
+    For each event from index `--evskip` on (the DataSource is opened with max_events=`--events`)
+    the array is det.raw.raw for modes 'r', 'p' and unknown modes, det.raw.calib for 'c' or
+    det.raw.image for 'i', optionally sliced with `--aslice` and cast to the pedestals dtype; events
+    whose raw is None are skipped. For mode 'p' the pedestals are subtracted from both results,
+    which are saved as '<prefix>-<detname>-<exp>-r<run>-e<nevents>-mode-<mode>-max.npy' and
+    '...-ave.npy', and the function ends with sys.exit.
+
+    Notes
+    -----
+    Pedestals are read only for event indices below 5 (asserted not None), so an `--evskip` of 5 or
+    more leaves them None and the cast fails. Exits if the DataSource cannot be created.
+    """
     parser = argument_parser()
     args = parser.parse_args()
 

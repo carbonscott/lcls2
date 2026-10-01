@@ -806,10 +806,11 @@ class RunDrp(Run):
     def steps(self):
         """Yield a `Step` for each BeginStep transition of the DRP run, saving transitions to the DRP result shared memory.
 
-        Primes the run on first use as `events()` does. L1Accepts seen here are skipped; every other
-        transition updates the env store and gets a new `DgramEdit`, a BeginStep is saved after the
-        caller resumes the iteration, other transitions are saved at once, and iteration stops at
-        EndRun. Each Step is created with `run=self`, so its events are saved too.
+        Primes the run on first use as `events()` does. L1Accepts seen here are skipped; every other transition updates the env store and gets a new `DgramEdit`, a BeginStep is saved after the caller resumes the iteration, other transitions are saved at once, and iteration stops at EndRun.
+
+        Notes
+        -----
+        Each Step is created with `run=self`, so its events are saved too.
         """
         self._prime_run_once()
 

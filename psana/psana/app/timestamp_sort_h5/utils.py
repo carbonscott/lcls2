@@ -1,3 +1,4 @@
+"""Helpers for timestamp_sort_h5: create a dask client on a SLURM cluster and build a virtual HDF5 dataset from part files."""
 import os
 from psana import utils
 
@@ -10,6 +11,28 @@ def get_dask_client(
     # TODO: make local_directory default to output directory (dask_scratch)
     # also check how dask cleans up its tmp dir try cluster.close()
     # SBATCH_PARTITION
+    """Start a dask_jobqueue `SLURMCluster`, scale it to `n_jobs` jobs, and return (client, cluster).
+
+    The account is taken from SLURM_JOB_ACCOUNT.
+
+    Parameters
+    ----------
+    n_procs : int
+        Passed as `cores` to SLURMCluster.
+    partition : str, optional
+        SLURM queue, default 'milano'.
+    n_jobs : int, optional
+        Number of jobs passed to `cluster.scale`, default 1.
+    memory : str, optional
+        Passed as `memory` to SLURMCluster, default '512GB'.
+    local_directory : str, optional
+        Worker local directory; default $SCRATCH, or './' if unset.
+
+    Raises
+    ------
+    TypeError
+        If SLURM_JOB_ACCOUNT is unset or empty: the code raises a str, which Python rejects with TypeError.
+    """
     from dask_jobqueue import SLURMCluster
     from dask.distributed import Client
 

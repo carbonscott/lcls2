@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The epix10ka_deploy_constants command: merge epix10ka panel constants from the repository and optionally deploy them (`UtilsEpix10kaCalib.deploy_constants`)."""
 import sys
 from psana.detector.dir_root import DIR_REPO_EPIX10KA
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
@@ -27,6 +28,11 @@ USAGE = 'Usage:'\
 
 def do_main():
 
+    """Check the arguments and run `UtilsEpix10kaCalib.deploy_constants(parser)`, logging the time taken.
+
+    Exits with the usage text if fewer than two arguments are given and asserts that `-k` and `-d`
+    are set.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     #opts = vars(args)
@@ -42,6 +48,12 @@ def do_main():
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--det, -t/--tstamp, -o/--dirrepo (default `DIR_REPO_EPIX10KA`),
+    -L/--logmode, --high, --medium, --low, -p/--proc (default 'psr'), -I/--paninds, -v/--version,
+    -B/--run_beg, -R/--run_end (default 'end'), -C/--comment, -S/--dbsuffix and -D/--deploy.
+    """
     from argparse import ArgumentParser
 
     d_dskwargs = None

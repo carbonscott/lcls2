@@ -50,6 +50,7 @@ M15 = 0x7fff   # 32767 or (1<<15)-1 - 15-bit maskdef gain_bitword(dettype):
 DTYPE_MASK = np.uint8
 
 def cond_msg(c, msg='condition is True', output_meth=logger.debug):
+    """Return `c` unchanged, calling `output_meth(msg)` first if it is truthy."""
     if c: output_meth(msg)
     return c
 
@@ -310,6 +311,10 @@ def combine_peds_offs(peds, offs):
 
 
 class Storage_epixuhr_v01():
+    """Cached constants for epixuhr calibration, one set for each state of the gain bit (see the constructor docstring).
+
+    Pedestals are extended with the offsets (`combine_peds_offs`) and gains default to `gain_default` when missing; the mask and the common-mode parameters are also stored. Per-pixel constants are picked with the gain maps of the configuration bits (bit 0b1000000 added for the low-gain state) and stacked into arrays of shape (2,) + detector shape; gain factors (1/gain times the mask) are set only when gains exist.
+    """
     def __init__(self, det_raw, **kwa):
         """Holds constants for 2-indices of the gain switching data bit (1st for epixuhr3x2).
         Parameters
@@ -401,6 +406,7 @@ class Storage_epixuhr_v01():
 
 
 def calib_v01(det_raw, evt, **kwa):
+    """Print a note and return `det_raw.raw(evt)` unchanged."""
     print('UtilsEpixUHR: calib_v01 - returns raw')
     return det_raw.raw(evt)
 
@@ -416,7 +422,13 @@ def grindex_array(raw, gbit=0):
 
 
 def calib_v02(det_raw, evt, **kwa):
-    """ """
+    """Return calibrated epixuhr data, choosing pedestal and gain factor per pixel by its gain bit.
+
+    Uses `kwa['nda_raw']` or `det_raw.raw(evt)` (None if missing) and the cached
+    `Storage_epixuhr_v01` (created on the first call and kept in `det_raw._store_`). The data shifted
+    right by one bit are converted to float32, the pedestals subtracted and the result multiplied by
+    the gain factors (pedestal 0 and factor 1 if there are no pedestals).
+    """
     logger.debug(f'UtilsEpixUHR: calib_v02 kwa: {str(kwa)}')
 
     nda_raw = kwa.get('nda_raw', None)

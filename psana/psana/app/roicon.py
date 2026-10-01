@@ -31,6 +31,15 @@ USAGE = '\n'\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of the roicon command.
+
+    Positional `args` (process number: 1 construct image, 2 mask editor, 3 convert image mask to
+    ndarray; default 1) and options -g/--gfname, -a/--afname (None), -i/--ifname ('mask-img.txt'),
+    -m/--mfname ('mask-roi.txt'), -n/--nfname ('mask-nda.txt'), -c/--cbits (0xffff), the flags
+    -v/--verb and -t/--dotest, -F/--figprefix ('fig'), -o/--dirrepo ('./work-roicon'),
+    -L/--logmode ('INFO') and -k/--kwargs ('{}', evaluated and passed to
+    geo.get_pixel_coord_indexes).
+    """
     import argparse
 
     d_proc   = 1
@@ -81,6 +90,17 @@ def argument_parser():
 
 def run_parser_do_main():
 
+    """Entry point of the roicon command: set up logging and the output repository, then run `utils_roicon.do_main`.
+
+    Exits with a hint to use -h if no arguments are given. Otherwise it parses the options, creates a
+    `RepoManager` on --dirrepo, adds a log file '<script>_<login>' in it, makes its 'figs' directory
+    and saves a start record, logs the command and options, attaches the repo manager to the parser
+    as `parser.repoman`, calls `psana.detector.utils_roicon.do_main(parser)`, and exits.
+
+    Notes
+    -----
+    The module calls this function at import time.
+    """
     if len(sys.argv)==1:
         sys.exit('Try command: %s -h' % SCRNAME)
 

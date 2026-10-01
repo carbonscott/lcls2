@@ -1,8 +1,10 @@
 """Script that averages `det.raw.image` over the events of each step of a run and publishes the averages with psmon.
 
-Options --expt, --detname, --nevents (parsed but not used) and --run; the data are read from
-/cds/data/psdm/<first 3 letters of expt>/<expt>/xtc. Each step's average image is saved as
-`avgimg_r<run>_<step>.txt`. The code runs at import time.
+Options --expt, --detname, --nevents (parsed but not used) and --run; the data are read from /cds/data/psdm/<first 3 letters of expt>/<expt>/xtc. Each step's average image is saved as `avgimg_r<run>_<step>.txt`.
+
+Notes
+-----
+The code runs at import time.
 """
 from psana import DataSource
 #from cfg_utils import *

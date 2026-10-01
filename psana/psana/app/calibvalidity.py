@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The calibvalidity command: print run and time validity ranges of calibration constants (`UtilsCalibValidity.calib_validity_ranges`)."""
 import sys
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
 from psana.pscalib.calib.CalibConstants import list_calib_names
@@ -22,6 +23,11 @@ USAGE = '\n\nCLI:'\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Optional positional `allargs` (exp=...,run=...,shortname=...,ctype=... to query the DB without
+    psana), -k/--dskwargs, -d/--detname, -c/--ctype, -s/--show (default 'rd') and -v/--version.
+    """
     from argparse import ArgumentParser
 
     d_allargs = None # 'exp=mfxdaq23,run=7,shortname=jungfrau_000003,ctype=pedestals'
@@ -58,6 +64,7 @@ def argument_parser():
 
 
 def do_main():
+    """Parse the arguments, call `UtilsCalibValidity.calib_validity_ranges(**args)`, print the time taken and end with `sys.exit`."""
     from time import time
     parser = argument_parser()
     args = parser.parse_args()

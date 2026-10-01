@@ -11,13 +11,11 @@ from psana import utils
 class DrpDataSource(DataSourceBase):
     """Data source that reads dgrams from the DRP shared memory and message queues.
 
-    The object given as `drp` supplies the segment, supervisor flag, worker number, tcp and ipc
-    socket names and Prometheus config directory; worker 0 is the publisher. The constructor makes
-    PUB/SUB zmq sockets from those flags (supervisor publisher: tcp PUB and ipc PUB; other
-    publisher: tcp SUB and ipc PUB; non-publishers: ipc SUB), a `SmallData` object and the
-    `DgramManager`, and starts the Prometheus HTTP exposer. Note: the first line after the base
-    constructor reads `self.drp`, which `DataSourceBase.__init__` in this file version does not
-    set, so as written it raises AttributeError unless the attribute is set elsewhere.
+    The object given as `drp` supplies the segment, supervisor flag, worker number, tcp and ipc socket names and Prometheus config directory; worker 0 is the publisher. The constructor makes PUB/SUB zmq sockets from those flags (supervisor publisher: tcp PUB and ipc PUB; other publisher: tcp SUB and ipc PUB; non-publishers: ipc SUB), a `SmallData` object and the `DgramManager`, and starts the Prometheus HTTP exposer.
+
+    Notes
+    -----
+    The first line after the base constructor reads `self.drp`, which `DataSourceBase.__init__` in this file version does not set, so as written it raises AttributeError unless the attribute is set elsewhere.
     """
     def __init__(self, *args, **kwargs):
         super(DrpDataSource, self).__init__(**kwargs)

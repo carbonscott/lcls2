@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The parallel_proc command: run one command several times in parallel, once per value of a chosen option, and wait for the subprocesses."""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 
@@ -17,6 +18,12 @@ import subprocess # for subprocess.Popen
 from time import time, sleep
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options --cmd (command prefix), --opt (option name, default 'stepnum'), --vals (comma-separated
+    values, default '0,1,2,3,4'), --logpref (default './log'), --dtsec (default 5) and --nchk
+    (default 100).
+    """
     from argparse import ArgumentParser
 
     d_cmd     = 'epix10ka_pedestals_calibration -k exp=uedc00104,run=177 -d epixquad -o ./work1'
@@ -45,12 +52,20 @@ def argument_parser():
 
 
 def subproc_open(command_seq, logname, env=None, shell=False): # e.g, command_seq=['bsub', '-q', cp.batch_queue, '-o', 'log-ls.txt', 'ls -l']
+    """Start `command_seq` with `subprocess.Popen`, sending stdout and stderr to the file `logname` (opened for writing), and return the `Popen` object."""
     log = open(logname, 'w')
     return subprocess.Popen(command_seq, stdout=log, stderr=log, env=env, shell=shell) #, stdin=subprocess.STDIN
 
 
 def do_main():
 
+    """Start one subprocess per option value and wait for them.
+
+    Saves a start record in './', prints the usage (exiting if no arguments are given), starts
+    `<cmd> --<opt> <value>` for each value with the log file `<logpref>-<command>-<opt>-<value>.txt`,
+    and polls the subprocesses every `dtsec` seconds up to `nchk` times, stopping when all have exited
+    with 0 or one has exited with an error.
+    """
     logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d: %(message)s', level=logging.INFO)
 
     #from psana.detector.RepoManager import RepoManager

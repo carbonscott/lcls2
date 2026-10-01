@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The epix10ka_charge_injection command: process charge-injection data of one epix10ka/epixhr panel (`UtilsEpix10kaChargeInjection.charge_injection`)."""
 import sys
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
 from psana.detector.dir_root import DIR_REPO_EPIX10KA
@@ -9,6 +10,11 @@ SCRNAME = sys.argv[0].split('/')[-1]
 
 def do_main():
 
+    """Check the arguments and run `UtilsEpix10kaChargeInjection.charge_injection(parser)`, logging the time taken.
+
+    Exits with the usage text if fewer than three arguments are given and raises IOError if `-k`,
+    `-d` or `-i` is missing.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     #kwa = vars(args)
@@ -33,6 +39,14 @@ USAGE = 'TEST EXAMPLE'\
 
 
 def argument_parser() :
+    """Return the `ArgumentParser` of this command.
+
+    Options include -k/--dskwargs, -d/--det, -i/--idx (panel index), -b/--nbs (default 4600),
+    -n/--nspace (5), -o/--dirrepo (default `DIR_REPO_EPIX10KA`), -X/--npoff, -c/--ccnum, -m/--ccmax
+    (50), -s/--ccskip, -P/--pixrc, -S/--nsigm, --slice, --dirmode, --filemode, --group and
+    -v/--version; the flags -D/--display, -N/--nperiods and -C/--savechi2 turn their (default True)
+    settings off, and -E/--errskip turns error skipping on.
+    """
     d_dskwargs = None  # exp=ascdaq18,run=171
     d_det      = None  # 'NoDetector.0:Epix10ka.3'
     d_idx      = None  # 0-15 for epix10ka2m, 0-3 for epix10kaquad

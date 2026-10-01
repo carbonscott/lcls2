@@ -39,11 +39,11 @@ class EnvStoreManager(object):
     def update_by_event(self, evt):
         """Update the env stores and stored configs from the transition dgrams in `evt`.
 
-        Each non-None dgram is re-created with `Dgram(view=d, config=..., offset=0)` using its stream's
-        config; SlowUpdate dgrams are added to the "epics" store and BeginStep or BeginRun dgrams to
-        the "scan" store. For BeginStep and BeginRun, the `config` fields of the detector segments in
-        the dgram are also copied into the stored configs, for detector names that do not start with
-        "_" and already exist in the stored config. Does nothing if `evt` is falsy (for example None).
+        Each non-None dgram is re-created with `Dgram(view=d, config=..., offset=0)` using its stream's config; SlowUpdate dgrams are added to the "epics" store and BeginStep or BeginRun dgrams to the "scan" store. For BeginStep and BeginRun, the `config` fields of the detector segments in the dgram are also copied into the stored configs, for detector names that do not start with "_" and already exist in the stored config.
+
+        Notes
+        -----
+        Does nothing if `evt` is falsy (for example None).
         """
         if not evt:
             return

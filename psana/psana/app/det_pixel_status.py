@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The det_pixel_status command: evaluate pixel status of a detector or segment from raw dark or light data with `UtilsPixelStatus.det_pixel_status`."""
 DESCRIPTION = 'Evaluates pixel status of any detector/segment using raw dark/light data'
 
 import sys
@@ -28,6 +29,15 @@ USAGE ='\n%s works with 2-d raw arrays ONLY! For 3-d the segment index --segind 
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs (default 'exp=mfx100848724,run=51'), -d/--detname ('epix100_0'),
+    -n/--events (1000), -m/--evskip (0), -N/--stepnum, -M/--stepmax, --steps (int), -c/--evcode,
+    -i/--segind, -S/--slice, -r/--nrecs (100), -w/--shwind ('15,15'), -R/--snrmax (8.0),
+    -t/--ctype ('status_data'), -L/--loglevel ('INFO'), -o/--dirrepo (DIR_REPO), -F/--features
+    ('1,2,3'), --dirmode, --filemode, --group, --databits (None), --gainbits (0), --gmode,
+    -p/--plotim (0), -v/--version ('V2025-10-06') and the flag -s/--reset.
+    """
     from argparse import ArgumentParser
 
     d_dirrepo  = DIR_REPO_STATUS
@@ -125,6 +135,9 @@ def argument_parser():
 
 def do_main():
 
+    """Entry point: exit with the description and usage if no arguments are given, otherwise parse
+    the options, run `UtilsPixelStatus.det_pixel_status(parser)` and exit with sys.exit(0).
+    """
     if len(sys.argv)<2:
         sys.exit('%s\n%s\n%s\nEXIT - MISSING PARAMETERS' % (40*'_', DESCRIPTION, USAGE))
 

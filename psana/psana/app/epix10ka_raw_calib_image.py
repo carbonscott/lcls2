@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-"""
+"""Test and display tool for epix10ka and similar detector data (the examples use epixquad and
+epixhr): raw and calib printouts, event images and single-array images such as pedestals,
+status, mask or pixel coordinates.
+
+Importing the module prints the time taken to import numpy.
 """
 import sys
 import logging
@@ -19,6 +23,9 @@ from psana.detector.utils_psana import datasource_kwargs_from_string, timestamp_
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 def print_det_raw_attrs(det):
+    """Print `dir()` of `det` and `det.raw` and the values of a fixed list of detector and `det.raw`
+    attributes (dettype, calibconst, configs, segments, uniqueid and others).
+    """
     print('dir(det):', dir(det))
     print('det._dettype:', det._dettype)
     print('det._detid:', det._detid)
@@ -44,6 +51,12 @@ def print_det_raw_attrs(det):
 
 
 def test_calib_constants_directly(expname, runnum, detnameid):
+    """Fetch pedestals, pixel_rms, pixel_status and pixel_gain for `detnameid`, `expname` and
+    `runnum` with `MDBWebUtils.calib_constants` and log a summary of each array.
+
+    Returns None. The pedestals, rms and status results are unpacked as (data, meta) pairs; only
+    the pixel_gain result is checked for None.
+    """
     logger.info('in test_calib_constants_directly')
     from psana.pscalib.calib.MDBWebUtils import calib_constants
     #'pixel_rms', 'pixel_status', 'pedestals', 'pixel_gain', 'geometry'
@@ -62,6 +75,11 @@ def test_calib_constants_directly(expname, runnum, detnameid):
 
 def det_calib_constants(det, ctype):
     #ctype = 'pixel_rms', 'pixel_status', 'pedestals', 'pixel_gain', 'geometry'
+    """Return (data, meta) of calibration type `ctype` from `det.calibconst`, logging the keys and a summary.
+
+    Returns (None, None) if `det` has no `calibconst` attribute, if it is None, or if `ctype` is not
+    among its keys.
+    """
     calib_const = det.calibconst if hasattr(det,'calibconst') else None
     if calib_const is not None:
       keys = calib_const.keys()
@@ -76,11 +94,17 @@ def det_calib_constants(det, ctype):
 
 
 def datasource_run(**kwa):
+    """Create `DataSource(**kwa)` and return (ds, first run)."""
     ds = DataSource(**kwa)
     return ds, next(ds.runs())
 
 
 def datasource_run_det(**kwa):
+    """Create `DataSource(**kwa)`, its first run and the detector `kwa.get('detname', 'opal')`,
+    printing `dir()` of each, and return (ds, run, det).
+
+    The `detname` entry stays in `kwa` and is passed to DataSource as well.
+    """
     ds = DataSource(**kwa)
     print('\n  dir(ds):', dir(ds))
 
@@ -95,6 +119,12 @@ def datasource_run_det(**kwa):
 
 def ds_run_det(args):
 
+    """Open the data source from `args.dskwargs`, take the first run, create detector `args.detname`
+    and return (ds, run, det).
+
+    Prints run attributes and details (and, with `args.pattrs`, the attributes of run, detector and
+    det.raw), then calls `test_calib_constants_directly` and `det_calib_constants(det, 'pedestals')`.
+    """
     logger.info('ds_run_det dskwargs (str):\n  %s' % args.dskwargs)
 
     kwa = datasource_kwargs_from_string(args.dskwargs)
@@ -140,6 +170,9 @@ def ds_run_det(args):
 
 
 def selected_record(nrec):
+    """Return True for record numbers to print: below 5, multiples of 10 below 50, multiples of 100
+    below 500, and multiples of 1000.
+    """
     return nrec<5\
        or (nrec<50 and not nrec%10)\
        or (nrec<500 and not nrec%100)\
@@ -148,6 +181,11 @@ def selected_record(nrec):
 
 def test_raw(args):
 
+    """Print segment numbers and raw-data summaries for selected events (see `selected_record`) of
+    each step, without graphics.
+
+    Calls sys.exit when an event number exceeds `args.events`.
+    """
     ds, run, det = ds_run_det(args)
 
     for stepnum,step in enumerate(run.steps()):
@@ -165,6 +203,12 @@ def test_raw(args):
 
 
 def test_calib(args):
+    """Print detector attributes, calibration constants and per-segment configuration
+    (asicPixelConfig, trbit), then time det.raw.calib for selected events of each step.
+
+    Calls sys.exit when an event number exceeds `args.events`. The configuration printout expects
+    segment configs that have asicPixelConfig and trbit fields.
+    """
     from time import time
 
     ds, run, det = ds_run_det(args)
@@ -241,6 +285,20 @@ def test_calib(args):
 
 def test_image(args):
 
+    """Show detector images in the event loop for the correction selected by `args.show`.
+
+    `args.show` selects raw-peds-med, calibcm (common mode (7,7,100,10) with edge masks), calibcm8
+    (common mode (8,7,10,10)), calib, peds, grind (gain range index), raw-peds, rawbm (raw and data
+    bit mask), ones, or otherwise raw and `args.bitmask`; events are selected by step
+    (`args.stepnum`), skip (`args.evskip`), limit (`args.events`) and jump (`args.evjump`, after
+    event 2), optionally accumulated with `args.cumulat`, and plotted per `args.dograph` (i image,
+    h histogram, c combined). At the end it prints the median and the 5% and 95% quantiles of the
+    per-event medians and, with `args.dograph` and `args.ofname`, saves the figures.
+
+    Notes
+    -----
+    For epix10ka detectors it also prints the gain-mode fractions and major gain mode of each event.
+    """
     import psana.detector.UtilsEpix10ka as ue
     from psana.detector.UtilsGraphics import gr, fleximage, flexhist, fleximagespec
 
@@ -421,6 +479,15 @@ def test_image(args):
 
 
 def test_single_image(args):
+    """Show one per-pixel array, selected by `args.tname`, as a detector image.
+
+    'mask' gives 1 plus a mask from status, neighbors, edges, center and a fixed user mask of shape
+    (4, 352, 384); 'peds', 'status', 'rms' and 'gain' give that constant for gain index
+    `args.grindex` (default 0); 'xcoords', 'ycoords' and 'zcoords' give pixel coordinates in frame
+    `args.cframe`; any other name gives `det.raw._mask_calib()`. With `args.dograph` the image is
+    built using the first non-None event (sys.exit if all are None), shown, and saved to
+    `args.ofname` if set.
+    """
     ds, run, det = ds_run_det(args)
     #mask = det.raw._mask_from_status()
     #raw = det.raw.raw()
@@ -481,6 +548,12 @@ def test_single_image(args):
 
 def do_main():
 
+    """Entry point: parse the options and run the test named by the positional argument.
+
+    'raw' runs `test_raw`, 'calib' `test_calib`, 'image' or no name `test_image`, and mask, peds,
+    status, rms, gain, xcoords, ycoords and zcoords run `test_single_image`; other names log a
+    warning. Prints the usage and exits if no command-line arguments are given.
+    """
     DICT_NAME_TO_LEVEL = logging._nameToLevel # {'INFO': 20, 'WARNING': 30, 'WARN': 30,...
     LEVEL_NAMES = [k for k in DICT_NAME_TO_LEVEL.keys() if isinstance(k,str)]
     STR_LEVEL_NAMES = ', '.join(LEVEL_NAMES)

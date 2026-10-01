@@ -231,9 +231,11 @@ class EventLoopStatus(EventLoop):
         #print('proc_event ievt/nevtot: %d/%d' % (self.ievt, self.nevtot))
         """Add the current event's raw data to the data block.
 
-        The raw array is reduced to segment `segind` and slice `aslice` when they are set. `status`
-        becomes 2 when `DataBlock.event` reports the block full (which ends the event loop) and 1
-        otherwise; `plot_event` is called when `plotim` is set. `msgmaxnum` is not used.
+        The raw array is reduced to segment `segind` and slice `aslice` when they are set. `status` becomes 2 when `DataBlock.event` reports the block full (which ends the event loop) and 1 otherwise; `plot_event` is called when `plotim` is set.
+
+        Notes
+        -----
+        `msgmaxnum` is not used.
         """
         raw = self.odet.raw.raw(self.evt)
         if self.segind is not None: raw = raw[self.segind,:]

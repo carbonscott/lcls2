@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Manual checks for psana detector issues from 2022: `python test_issues_2022.py <test-number> <loglevel>` (1 to 12).
+
+Test 0 runs the template. The selected check runs at import time and the script then exits.
+"""
 import sys
 import logging
 SCRNAME = sys.argv[0].rsplit('/')[-1]
@@ -233,7 +237,10 @@ def issue_2022_06_17():
 
 
 def issue_2022_07_12():
-    """
+    """Print pedestal and mask information of detector epixquad in uedcom103 run 7 (public01).
+
+    Prints the pedestal metadata and summary, then summaries of `det.raw._mask_from_status()` and
+    `det.raw._mask_comb()`.
     """
     from psana.detector.NDArrUtils import info_ndarr
     from psana import DataSource
@@ -284,6 +291,7 @@ def issue_2022_11_17():
 
 
 def issue_2022_01_dd():
+    """Template: print "template". It is what test name '0' runs."""
     print('template')
 
 USAGE = '\nUsage:'\

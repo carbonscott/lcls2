@@ -39,6 +39,11 @@ merge_panels = uc.merge_panels
 
 def find_file_for_timestamp(dirname, pattern, tstamp):
     # list of file names in directory, dirname, containing pattern
+    """Return the path of the '.data' file in `dirname` that contains `pattern` and has the latest timestamp not after `tstamp`, or None.
+
+    The timestamp is the third '-'-separated field of the file name, compared as an int; the
+    selection or a not-found message is logged.
+    """
     fnames = [name for name in os.listdir(dirname) if os.path.splitext(name)[-1]=='.data' and pattern in name]
 
     # list of int tstamps
@@ -66,6 +71,7 @@ def find_file_for_timestamp(dirname, pattern, tstamp):
 
 
 def load_panel_constants(dir_ctype, pattern, tstamp):
+    """Return the array loaded with `np.loadtxt` from the file chosen by `find_file_for_timestamp(dir_ctype, pattern, tstamp)`, or None if there is no file."""
     fname = find_file_for_timestamp(dir_ctype, pattern, tstamp)
     arr=None
     if fname is not None and os.path.exists(fname):
@@ -85,6 +91,7 @@ def dir_names(repoman, panel_id, ctypes=('pixel_offset', 'pedestals', 'plots', '
 
 
 def path_prefixes(fnprefix, dir_offset, dir_peds, dir_plots, dir_gain, dir_rms, dir_status, dir_min, dir_max):
+    """Return `['<d>/<fnprefix>' for each directory]` for the eight directories in argument order (offset, pedestals, plots, gain, rms, status, min, max)."""
     return ['%s/%s' % (d, fnprefix) for d in (dir_offset, dir_peds, dir_plots, dir_gain, dir_rms, dir_status, dir_min, dir_max)]
 
 
@@ -99,6 +106,12 @@ def tstamps_run_and_now(trun_sec): # unix epoch time, e.g. 1607569818.532117 sec
 
 def step_counter(metadata, nstep_tot, nstep_run, stype='pedestal', nspace=None):
     #nspace=7 - for 103 charge injection calib-cycles, =None for 5 dark
+    """Return the step number from step `metadata`.
+
+    Returns `nstep_tot` (with a warning) when `metadata` is empty, None when `metadata['scantype']`
+    differs from `stype`, otherwise `int(metadata['step'])`, with a warning if that differs from
+    `nstep_tot`. `nspace` is only logged.
+    """
     logger.info('step_counter metadata:%s nstep_tot:%d nstep_run:%d stype:%s nspace:%s'%\
                               (metadata, nstep_tot, nstep_run,stype, str(nspace)))
     if not metadata:
@@ -329,12 +342,14 @@ def proc_dark_block(block, **kwa):
 
 
 def selected_record(nrec):
+    """Return True for nrec < 5, multiples of 10 below 50, and multiples of 100."""
     return nrec<5\
        or (nrec<50 and not nrec%10)\
        or (not nrec%100)
 
 
 def print_statistics(nevt, nrec):
+    """Log at debug level the event count `nevt`, the record count `nrec` and their difference (lost frames)."""
     logger.debug('statistics nevt:%d nrec:%d lost frames:%d' % (nevt, nrec, nevt-nrec))
 
 
@@ -641,6 +656,12 @@ def pedestals_calibration(parser):
 
 def get_config_info_for_dataset_detname(**kwargs):
 
+    """Return a dict of configuration info for detector `det` in the first run of the dataset given in `kwargs`.
+
+    The DataSource comes from `data_source_kwargs(**kwargs)`. The dict holds the experiment, segment
+    shape, gain mode from the configuration (`UtilsEpix10ka.find_gain_mode`), panel ids and indexes,
+    long and short names, detector name and type, run timestamps, default gains and run number.
+    """
     detname = kwargs.get('det', None)
     idx     = kwargs.get('idx', None)
 
@@ -694,6 +715,14 @@ def get_config_info_for_dataset_detname(**kwargs):
 
 def merge_panel_gain_ranges(dir_ctype, panel_id, ctype, tstamp, shape, dtype, ofname, fmt='%.3f', fac_mode=0o777):
 
+    """Merge one panel's per-gain-mode constant files into a (7, 1) + `shape` array, save it to `ofname` and return it.
+
+    For each mode in `UtilsEpix10ka.GAIN_MODES` the latest '<ctype>-<mode>' file not after `tstamp`
+    is loaded; status and rms types are not looked up for AHL_L and AML_L, and missing files give
+    ones (gain and rms types, gains scaled by `GAIN_FACTOR_DEF`) or zeros. The 'gainci' rescaling
+    path uses the name `GAIN_MODES_IN`, which this module does not define, and the module global
+    `GAIN_FACTOR_DEF`, which only `deploy_constants` sets.
+    """
     logger.debug('In merge_panel_gain_ranges for\n  dir_ctype: %s\n  id: %s\n  ctype=%s tstamp=%s shape=%s dtype=%s fmt=%s'%\
                  (dir_ctype, panel_id, ctype, str(tstamp), str(shape), str(dtype), str(fmt)))
 
@@ -792,6 +821,14 @@ def add_links_for_gainci_fixed_modes(dir_gain, fnprefix):
 
 def deploy_constants(parser):
 
+    """Merge per-panel epix10ka constants from the repository and optionally deploy them (command entry point).
+
+    For each selected panel (`paninds`) and each type chosen by the letters of `proc` (default 'prsg':
+    p pedestals, r rms, s status, g gain, c charge-injection gain, m min, x max) the gain-mode files
+    are merged with `merge_panel_gain_ranges`; the panels are then stacked, saved in the merge
+    directory, read back and, with `deploy`, sent with `MDBWebUtils.deploy_constants`. Sets the
+    module global `GAIN_FACTOR_DEF` from `high`, `medium` and `low`, and saves the log file.
+    """
     from psana.pscalib.calib.NDArrIO import save_txt; global save_txt
     import psana.pscalib.calib.MDBUtils as mu
     import psana.pscalib.calib.MDBWebUtils as wu
@@ -991,12 +1028,15 @@ def deploy_constants(parser):
 if __name__ == "__main__":
 
   def test_pedestals_calibration_epix10ka(tname):
+    """Print a deprecation note pointing to the epix10ka_pedestals_calibration script; `tname` is not used."""
     print("""DEPRECATED - use script epix10ka_pedestals_calibration""")
 
   def test_offset_calibration_epix10ka(tname):
+    """Print 'N/A'; `tname` is not used."""
     print('N/A')
 
   def test_deploy_constants_epix10ka(tname):
+    """Print a deprecation note pointing to the epix10ka_deploy_constants script; `tname` is not used."""
     print("""DEPRECATED - use script epix10ka_deploy_constants""")
 
   USAGE = 'DEPRECATED: python %s <test-name>' % SCRNAME\

@@ -81,12 +81,10 @@ class Event:
         return event_bytes
 
     def timestamp_diff(self, ts):
-        """Subtract the given timestamp from the event timestamp and return
-        differences in nanasecond unit.
+        """Subtract the given timestamp from the event timestamp and return the difference in nanoseconds.
 
-        Since timestamp format is [32 bits of seconds][32 bits of nanoseconds],
-        we need to convert these two parts in seconds and nanoseconds
-        respectively prior to the calculation
+        A timestamp packs seconds in its upper 32 bits and nanoseconds in its lower 32 bits, so both
+        parts of each timestamp are converted to a total number of nanoseconds before subtracting.
         """
         evt_sec = self._seconds
         evt_nsec = self._nanoseconds

@@ -18,10 +18,11 @@ import numpy as np
 class epicsinfo_epicsinfo_1_0_0(DetectorImpl):
     """Table of information about epics variables, built from the `epicsinfo` entries of the configs.
 
-    Calling the object (no arguments) returns the table. For each attribute n of an epicsinfo object
-    (except `keys` and names starting with "_"), `table[n]` maps the comma-separated names in `keys`
-    to the newline-separated parts of attribute n. The code comment says n is the detname of an
-    epics variable, so the table can, for example, give the real epics name of a user-defined name.
+    Calling the object (no arguments) returns the table. For each attribute n of an epicsinfo object (except `keys` and names starting with "_"), `table[n]` maps the comma-separated names in `keys` to the newline-separated parts of attribute n.
+
+    Notes
+    -----
+    The code comment says n is the detname of an epics variable, so the table can, for example, give the real epics name of a user-defined name.
     """
     def __init__(self, *args):
         super().__init__(*args)

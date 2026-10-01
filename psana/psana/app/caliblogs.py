@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The caliblogs command: list calibration log files ("at start" records and log directories) for a year, optionally filtered by detector name."""
 import os
 import sys
 from psana.detector.Utils import str_tstamp
@@ -17,6 +18,13 @@ USAGE = 'Usage:'\
       + '\n  %s -d jungfrau' % SCRNAME
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -d/--detname (default None), -y/--year (current year), -s/--diratstart (default
+    /sdf/group/lcls/ds/ana/detector/logs/atstart), -c/--dirconstants (default
+    /sdf/group/lcls/ds/ana/detector/calib2/constants), -L/--logmode, -v/--version, -C/--comment and
+    the flag -S/--show_files.
+    """
     from argparse import ArgumentParser
 
 #    d_dskwargs= None
@@ -60,9 +68,15 @@ def argument_parser():
 
 
 def info_xtc2dirs(sep='\n  '):
+    """Return `sep` followed by '/sdf/data/lcls/ds/' and '/sdf/data/lcls/drpsrcf/ffb/' joined by `sep`."""
     return sep + sep.join(('/sdf/data/lcls/ds/', '/sdf/data/lcls/drpsrcf/ffb/'))
 
 def info_logfiles(topdir, detname, year, show_files=False):
+    """Return a text listing of the existing `<entry>/logs/<year>` directories under `topdir`.
+
+    Only entries whose names contain `detname` are used (all if it is None); each directory is shown
+    with its number of files and, with `show_files`, the sorted file names.
+    """
     gap = '    '
     spc = ('\n'+2*gap)
     lst_dirs = [os.path.join(topdir,fname) for fname in os.listdir(topdir)\
@@ -81,6 +95,11 @@ def info_logfiles(topdir, detname, year, show_files=False):
 
 def do_main():
 
+    """Print the calibration log information for the selected year.
+
+    Lists the "at start" files of that year (filtered by `detname`), the log directories under the
+    constants repository and under its 'scripts' directory, and some fixed reference paths.
+    """
     parser = argument_parser()
     args = parser.parse_args()
 

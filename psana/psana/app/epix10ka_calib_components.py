@@ -103,9 +103,12 @@ CROP2_IMG = False
 flims  = None
 fname = 'ims.png'
 
-def selection(arr): return np.where((arr>THRMIN) & (arr<THRMAX), arr, 0)
+def selection(arr):
+    """Return `arr` with values not strictly between THRMIN (100) and THRMAX (500) replaced by 0."""
+    return np.where((arr>THRMIN) & (arr<THRMAX), arr, 0)
 
 def amin_amax(args, amin_def=None, amax_def=None):
+    """Return (args.amin, args.amax), using `amin_def` or `amax_def` for a value that is falsy (None or 0)."""
     return args.amin if args.amin else amin_def,\
            args.amax if args.amax else amax_def
 

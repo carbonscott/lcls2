@@ -36,7 +36,7 @@ private:
 public:
   /** Start with no paths, no server and no open file. */
   XtcRunSet();
-  /** If connect() created a server, unlink its shared memory (XtcMonitorServer::unlink()); the server object is not deleted. */
+  /** If connect() created a server, call its XtcMonitorServer::unlink(), which sets its terminate flag and closes and unlinks its message queues (the shared memory is not unlinked); the server object is not deleted. */
   ~XtcRunSet();
   /** Append path to the file list (not sorted). */
   void addSinglePath(std::string path);
@@ -63,7 +63,7 @@ public:
   void run();
   /** Call wait() on the server created by connect(). */
   void wait();
-  /** Unlink the server's shared memory (XtcMonitorServer::unlink()) and print "Unlinked/exited server". */
+  /** Call the server's XtcMonitorServer::unlink() (sets its terminate flag and closes and unlinks its message queues; the shared memory is not unlinked) and print "Unlinked/exited server". */
   void exit();
 };
 

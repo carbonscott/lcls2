@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The epix10ka_pedestals_calibration command: process a dark run of an epix10ka-type detector with `UtilsEpix10kaCalib.pedestals_calibration`."""
 import sys
 from psana.detector.dir_root import DIR_REPO_EPIX10KA
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
@@ -26,6 +27,11 @@ USAGE = 'Usage:'\
 
 def do_main():
 
+    """Entry point: parse the options and run `UtilsEpix10kaCalib.pedestals_calibration(parser)`.
+
+    Exits with the usage text if fewer than two command-line arguments are given, and fails an
+    assert if -k or -d is missing. Logs the elapsed time and exits with sys.exit(0).
+    """
     parser = argument_parser()
     args = parser.parse_args()
     if len(sys.argv)<3: sys.exit('\n%s\n\nEXIT DUE TO MISSING ARGUMENTS\n' % USAGE)
@@ -43,6 +49,15 @@ def do_main():
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--det, -n/--nrecs (default 800), --nrecs1 (50), -i/--idx (segment
+    index, default None), -o/--dirrepo (default DIR_REPO_EPIX10KA), -L/--logmode ('INFO'),
+    -E/--errskip (store_false flag), --stepnum, --stepmax (5), --evskip (100), --events (1000000),
+    --dirmode (0o2775), --filemode (0o664), the gate parameters --int_lo, --int_hi, --intnlo,
+    --intnhi, --rms_lo, --rms_hi, --rmsnlo, --rmsnhi, --fraclm, --fraclo, --frachi, and
+    -v/--version ('V2025-03-24').
+    """
     from argparse import ArgumentParser
 
     d_dskwargs = None

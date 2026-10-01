@@ -154,6 +154,11 @@ USAGE = 'Usage:'\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this script.
+
+    Options -k/--dskwargs (default exp=mfxdaq23,run=7 in the drpsrcf ffb directory), -d/--detname
+    (default jungfrau) and the flag --fix.
+    """
     from argparse import ArgumentParser
 
     d_dskwargs= 'exp=mfxdaq23,run=7,dir=/sdf/data/lcls/drpsrcf/ffb/MFX/mfxdaq23/xtc' # None
@@ -176,6 +181,10 @@ def argument_parser():
 
 
 def do_main():
+    """Parse the arguments and run `jungfrau_dark_proc_mpi(parser)`, printing start and elapsed times.
+
+    Exits with the usage text when fewer than two command-line arguments are given.
+    """
     from time import time
 
     parser = argument_parser()

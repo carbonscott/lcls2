@@ -10,9 +10,6 @@ exclude_docs: |
   /hooks/
   /requirements.txt
 
-hooks:
-  - docs/hooks/docstring_xref_warnings.py
-
 # Fail the build on any warning (broken links, missing pages, mkdocstrings
 # errors). "mike deploy" does not pass --strict, so it is set here.
 strict: true

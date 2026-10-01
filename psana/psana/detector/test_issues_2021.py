@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Manual checks for psana detector issues from 2020 and 2021: `python test_issues_2021.py <test-number> <loglevel>` (1 to 14).
+
+The selected check runs at import time and the script then exits; several checks need data that
+is only available on specific hosts or directories.
+"""
 import sys
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 STRLOGLEV = sys.argv[2] if len(sys.argv)>2 else 'INFO'
@@ -11,6 +16,7 @@ logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d %(filename)s: %(mess
 
 
 def issue_2020_11_09():
+    """Open a tstx00417 test file and, for every event, print the type of `det.raw.raw(evt)` for detector epix10k2M and the shape of each panel."""
     from psana import DataSource
     ds = DataSource(files='/sdf/group/lcls/ds/ana/detector/data2_test/xtc/data-tstx00417-r0014-epix10kaquad-e000005.xtc2')
 
@@ -28,6 +34,7 @@ def issue_2020_11_09():
 
 
 def issue_2020_11_24():
+    """Print `det.calibconst` for detector tmoopal in experiment tmolw0618, run 52."""
     from psana import DataSource
     import numpy as np
     ds = DataSource(exp='tmolw0618',run=52)
@@ -37,6 +44,11 @@ def issue_2020_11_24():
 
 
 def issue_2020_12_02():
+    """Open a tstx00117 run-147 file and print data-source and run attributes, then call `exit`.
+
+    Prints `ds.runnum` and `ds.exp`, then the run number, detector names, experiment and id of each
+    run. The printed note says the file is only available on daq-det-drp01.
+    """
     from psana import DataSource
     print('DATA FILE IS AVAILABLE ON daq-det-drp01 ONLY')
 
@@ -178,6 +190,7 @@ def issue_2021_02_03():
      run, step, event loops
   """
   class Arguments:
+    """Fixed example arguments: experiment ueddaq02, run 66, at most 5 events, detector epixquad."""
     expt    = 'ueddaq02'
     run     = 66
     evtmax  = 5
@@ -265,8 +278,7 @@ def issue_2021_02_09():
     print(info_ndarr(image, 'C image '))
 
 def issue_2021_02_16():
-  """
-  """
+  """Fetch all calibration constants of an epix10ka detector given by its four-panel unique id for ueddaq02 run 86; the result is not printed."""
   import psana.pscalib.calib.MDBWebUtils as wu
   det_uniqueid = 'epix10ka_3926196238-0175152897-1157627926-0000000000-0000000000-0000000000-0000000000_3926196238-0174824449-0268435478-0000000000-0000000000-0000000000-0000000000_3926196238-0175552257-3456106518-0000000000-0000000000-0000000000-0000000000_3926196238-0176373505-4043309078-0000000000-0000000000-0000000000-0000000000'
   calib_const = wu.calib_constants_all_types(det_uniqueid, exp='ueddaq02', run=86)

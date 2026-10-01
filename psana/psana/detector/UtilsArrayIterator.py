@@ -11,10 +11,11 @@
 class ArrayIterator:
     """Iterate over equal rectangular blocks of a 3-D array of shape `shape`.
 
-    Each step yields (segment index, row slice, column slice), moving across the columns in steps of
-    `cstride`, then down the rows in steps of `rstride`, then to the next segment. The end tests use
-    equality, so `rstride` and `cstride` must divide the row and column sizes exactly. Asserts that
-    `shape` is a 3-tuple.
+    Each step yields (segment index, row slice, column slice), moving across the columns in steps of `cstride`, then down the rows in steps of `rstride`, then to the next segment. The end tests use equality, so `rstride` and `cstride` must divide the row and column sizes exactly.
+
+    Notes
+    -----
+    Asserts that `shape` is a 3-tuple.
     """
     def __init__(self, shape, rstride=176, cstride=192): # cstride=48
         """ e.g. shape=(4, 352, 384), and rstride, cstride should split segment for equal parts"""

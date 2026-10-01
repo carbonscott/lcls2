@@ -1,3 +1,4 @@
+"""Define `TsSort`, which sorts an HDF5 file's rows by its "timestamp" dataset with dask and writes the result with spawned MPI writers."""
 from mpi4py import MPI
 import os
 import sys
@@ -12,6 +13,21 @@ from psana import utils
 
 
 class TsSort:
+    """Timestamp sort of the HDF5 file `in_h5` into `out_h5`.
+
+    Parameters
+    ----------
+    in_h5, out_h5 : str
+        Input and output file names.
+    chunk_size : int
+        Dask chunk length; also passed to the writers.
+    n_procs, n_jobs : int
+        Passed to `get_dask_client`; `n_procs` is also passed to the writers.
+    batch_size : int
+        Number of rows per part file.
+    n_ranks : int
+        Number of writer processes to spawn.
+    """
     def __init__(self, in_h5, out_h5, chunk_size, n_procs, n_jobs, batch_size, n_ranks):
         self.in_h5fname = in_h5
         self.out_h5fname = out_h5
@@ -23,6 +39,11 @@ class TsSort:
         self.logger = utils.get_logger(name=utils.get_class_name(self))
 
     def sort(self):
+        """Return the row indexes of the input file's "timestamp" dataset in ascending timestamp order, as an int64 array.
+
+        Uses a dask client from `get_dask_client(n_procs, n_jobs=n_jobs)` and a dask dataframe sort with
+        chunks of `chunk_size`; the client and cluster are closed afterwards.
+        """
         client, cluster = get_dask_client(self.n_procs, n_jobs=self.n_jobs)
         ts_chunks = (self.chunk_size,)
         in_f = h5py.File(self.in_h5fname, "r")
@@ -42,6 +63,13 @@ class TsSort:
 
     def slice_and_write(self, inds_arr):
         # Spawn mpiworkers
+        """Write the rows in the order `inds_arr` with spawned MPI writers, then join the part files.
+
+        Spawns `n_ranks` processes running `parallel_h5_write.py`, broadcasts the file names and sizes,
+        sends each requesting writer the next `batch_size` slice of indexes, then sends empty messages to
+        stop them and builds the virtual dataset with `create_virtual_dataset`. Ends with `Abort(1)` on
+        the merged communicator.
+        """
         maxprocs = self.n_ranks
         source_dir = os.path.dirname(os.path.abspath(__file__))
         spawn_file = os.path.join(source_dir, "parallel_h5_write.py")
@@ -91,6 +119,7 @@ class TsSort:
 
     def view(self, n_rows=10):
         # Check the first n_rows timestamps
+        """Print the first `n_rows` values of the output file's "timestamp" dataset."""
         chk_f = h5py.File(self.out_h5fname, "r")
         print(f"{chk_f['timestamp'][:n_rows]}")
         chk_f.close()

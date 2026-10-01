@@ -156,6 +156,13 @@ def roi_mask_to_ndarray(gfname, ifname='roi-mask.txt', ofname='mask-nda.txt', mb
 
 
 def do_main(parser):
+    """Run the roicon step chosen by the first positional argument.
+
+    '1' runs `image_of_sensors`, '2' `roi_mask_editor` and '3' `roi_mask_to_ndarray`, with file
+    names, bits and options from the parsed arguments (`kwargs` is evaluated with `eval`); other
+    values log a message. Figures go to the repository 'figs' directory
+    (`parser.repoman.dir_in_repo`) unless `figprefix` is 'None'.
+    """
     nspace = parser.parse_args()
     proc = nspace.args # [0]
 

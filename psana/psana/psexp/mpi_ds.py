@@ -124,9 +124,11 @@ class RunParallel(Run):
     def build_xtc_buffer(self, det_info):
         """Convert the run's calibration constants into an xtc2 buffer stored in `_calib_xtc_buffer`.
 
-        Uses `CalibXtcConverter(det_info).convert_to_buffer`; `det_info` None means {}. If there are no
-        constants, `_calib_xtc_buffer` is set to None; a conversion error is logged as a warning and
-        leaves `_calib_xtc_buffer` unchanged. Returns None.
+        Uses `CalibXtcConverter(det_info).convert_to_buffer`; `det_info` None means {}. If there are no constants, `_calib_xtc_buffer` is set to None; a conversion error is logged as a warning and leaves `_calib_xtc_buffer` unchanged.
+
+        Returns
+        -------
+        None
         """
         if not self._calib_const:
             self._calib_xtc_buffer = None

@@ -468,10 +468,11 @@ class DarkProc():
     def summary(self):
         """Finish dark processing and compute the constants.
 
-        Returns early (with a log message) if `irec` <= 1. If fewer than `nrecs1` records were taken, the
-        block is first processed with `proc_block_short` and added to the statistics. Then sets
-        `arr_av1`, `arr_rms`, `arr_sta` (from `arr_status`) and the mask `arr_msk` (1 where the status is
-        0), plots images if `plotim` is set, and clears the block and the record counter.
+        If fewer than `nrecs1` records were taken, the block is first processed with `proc_block_short` and added to the statistics. Then it sets `arr_av1`, `arr_rms`, `arr_sta` (from `arr_status`) and the mask `arr_msk` (1 where the status is 0), plots images if `plotim` is set, and clears the block and the record counter.
+
+        Notes
+        -----
+        Returns early (with a log message) if `irec` <= 1.
         """
         logger.info('stage 2 - DATA ACCUMULATION for %d events time %.3f sec' % (self.irec+1, time()-self.t0_sec_init_proc))
         t0_sec = time()
@@ -512,9 +513,11 @@ class DarkProc():
     def add_event(self, raw, irec):
         """Add one event's data to the stage-2 statistics.
 
-        The data are masked with `datbits`. Pixels inside [`gate_lo`, `gate_hi`] add to the count, sum
-        and sum of squares; pixels below `int_lo` or above `int_hi` increment the low/high counters; the
-        per-pixel max and min are updated. `irec` is only used in the debug message.
+        The data are masked with `datbits`. Pixels inside [`gate_lo`, `gate_hi`] add to the count, sum and sum of squares; pixels below `int_lo` or above `int_hi` increment the low/high counters; the per-pixel max and min are updated.
+
+        Notes
+        -----
+        `irec` is only used in the debug message.
         """
         logger.debug(info_ndarr(raw, 'add_event irec: %3d raw' % irec))
         _raw = raw & self.datbits # use data bits only 16-bit default (should be 14 for jungfrau and epix10ka)
@@ -920,11 +923,11 @@ def pedestals_calibration(parser):
 
   """Run dark processing over a dataset and save the results.
 
-  Parses `parser`, sets up the repository manager and logging, and loops over runs, steps
-  (`stepmax` default 1, `stepnum`) and events (`evskip`, `events`), feeding the raw data of
-  `det` to a `DarkProc`. After each step the results are saved as block results (when
-  `nrecs == nrecs1` and only stage 1 ran) or summarized and passed to `save_results_in_db`. Exits
-  if the DataSource cannot be created; the log file is saved at the end.
+  Parses `parser`, sets up the repository manager and logging, and loops over runs, steps (`stepmax` default 1, `stepnum`) and events (`evskip`, `events`), feeding the raw data of `det` to a `DarkProc`. After each step the results are saved as block results (when `nrecs == nrecs1` and only stage 1 ran) or summarized and passed to `save_results_in_db`.
+
+  Notes
+  -----
+  Exits if the DataSource cannot be created; the log file is saved at the end.
   """
   from psana import DataSource
 

@@ -19,10 +19,11 @@ def detnames():
 
   """Print a table of the detectors in the first run of the data source given on the command line.
 
-  The argument is an exp=...,run=... string, a shmem=... string or an xtc2 file name. Options -r
-  (name, detector type, data type, version), -e (epics info), -s (scan info) and -i (data types,
-  segment ids and unique ids); by default it lists detector names and data types. Extra "XXX"
-  debug lines are printed, and a ":" in the argument makes it exit with status -1.
+  The argument is an exp=...,run=... string, a shmem=... string or an xtc2 file name. Options -r (name, detector type, data type, version), -e (epics info), -s (scan info) and -i (data types, segment ids and unique ids); by default it lists detector names and data types.
+
+  Notes
+  -----
+  Extra "XXX" debug lines are printed, and a ":" in the argument makes it exit with status -1.
   """
   parser = argparse.ArgumentParser()
   parser.add_argument("dsname", help="psana datasource experiment/run (e.g. exp=xppd7114,run=43) or xtc2 filename or shmem='my_shmem_identifier'")

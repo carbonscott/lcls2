@@ -77,17 +77,24 @@ class DarkProcJungfrau(uc.DarkProc):
 
 
     def init_proc(self):
+        """Run `DarkProc.init_proc` and add a zeroed uint8 `bad_switch` array with the gate shape."""
         uc.DarkProc.init_proc(self)
         shape_raw = self.gate_lo.shape
         self.bad_switch = np.zeros(shape_raw, dtype=np.uint8)
 
 
     def add_event(self, raw, irec):
+        """Add the event with `DarkProc.add_event`, then update the bad gain-switch map with `add_statistics_bad_gain_switch`."""
         uc.DarkProc.add_event(self, raw, irec)
         self.add_statistics_bad_gain_switch(raw, irec)
 
 
     def add_statistics_bad_gain_switch(self, raw, irec, evgap=10):
+        """Mark pixels whose gain bits (`raw >> 14`) equal 2 in `bad_switch` (logical OR, kept over events).
+
+        Every `evgap`-th record logs the number of pixels in each gain-bit state. Uses the attributes
+        `gmindex` and `gmname`, which must have been set on the object.
+        """
         igm    = self.gmindex
         gmname = self.gmname
 
@@ -105,6 +112,10 @@ class DarkProcJungfrau(uc.DarkProc):
 
 
     def summary(self):
+        """Run `DarkProc.summary`, add 64 to `arr_sta` for pixels with a bad gain switch, and clear the block and record counter.
+
+        Logs the number of bad-switch pixels and the time taken.
+        """
         t0_sec = time()
         uc.DarkProc.summary(self)
         logger.info('\n  status 64: %8d pixel with bad gain mode switch' % self.bad_switch.sum())
@@ -116,17 +127,24 @@ class DarkProcJungfrau(uc.DarkProc):
 
 
     def info_results(self, cmt='DarkProc results'):
+        """Return `DarkProc.info_results(self, cmt)` plus a summary of the `bad_switch` array."""
         return uc.DarkProc.info_results(self, cmt)\
          +info_ndarr(self.bad_switch, '\n  badswch')\
 
 
     def plot_images(self, titpref=''):
+        """Plot the `DarkProc` result images, plus the `bad_switch` map when bit 2048 of `plotim` is set.
+
+        The bad-switch plot calls the name `plot_image`, which this module does not define or import, so
+        that branch raises NameError.
+        """
         uc.DarkProc.plot_images(self, titpref)
         plotim = self.plotim
         if plotim &2048: plot_image(self.bad_switch, tit=titpref + 'bad gain mode switch')
 
 
 def info_gain_modes(gm):
+    """Return a text listing of `gm.names.items()` and `gm.values.items()`."""
     s = 'gm.names:'
     for name in gm.names.items(): s += '\n    %s' % str(name)
     s += '\ngm.values:'
@@ -135,6 +153,11 @@ def info_gain_modes(gm):
 
 
 def selected_record(i, events):
+    """Return True for record numbers worth reporting.
+
+    These are i < 5, multiples of 10 below 50, multiples of 20 below 200, all multiples of 100, and
+    i > `events` - 5.
+    """
     return i<5\
        or (i<50 and not i%10)\
        or (i<200 and not i%20)\
@@ -143,6 +166,7 @@ def selected_record(i, events):
 
 
 def print_uniqueid(uniqueid, segind):
+    """Log the '_'-separated parts of `uniqueid`, numbered from 0, marking part number `segind` as selected for processing."""
     s = 'panel_ids:'
     for i,pname in enumerate(uniqueid.split('_')):
         s += '\n  %02d panel id %s' % (i, pname)
@@ -156,6 +180,12 @@ def get_jungfrau_gain_mode_object(odet):
 
 
 def open_DataSource(**kwargs):
+    """Create a DataSource from `utils_psana.data_source_kwargs(**kwargs)` and return `(ds, dskwargs)`.
+
+    `batch_size` and `smd_callback` from `kwargs` are added when given, and `skip_calib_load` when
+    given and not already set; the xtc file list is logged unless `info_xtc_files` is False. Calls
+    `sys.exit` if the DataSource cannot be created.
+    """
     t0_sec = time()
     dskwargs = ups.data_source_kwargs(**kwargs)
     #dskwargs['max_events'] = kwargs.get('events', 3000)
@@ -527,6 +557,11 @@ def merge_jf_panel_gain_ranges(dir_ctype, panel_id, ctype, tstamp, shape, ofname
 
 
 def check_exists(path, errskip, msg):
+    """Check that `path` exists.
+
+    If it is None or missing: with `errskip` log `msg` as a warning and return; otherwise log an
+    error with hints and call `sys.exit(1)`.
+    """
     if path is None or (not os.path.exists(path)):
         if errskip: logger.warning(msg)
         else:
@@ -539,6 +574,14 @@ def check_exists(path, errskip, msg):
 
 def jungfrau_deploy_constants(parser):
 
+    """Merge per-panel, per-gain-mode Jungfrau constants from the repository into detector arrays and deploy them.
+
+    For each constant type selected by the letters of `ctdepl`, each panel's three gain-mode files are
+    merged with `merge_jf_panel_gain_ranges` (shape (3, 1) + `shape_seg`), panels without data get
+    zeros, and the stacked detector array is saved in the merge directory and passed with run and
+    detector metadata to `deploy_constants_for_data_and_metadata`, which writes to the DB only when
+    `deploy` is set. The log file is saved at the end.
+    """
     import psana.detector.UtilsJungfrau as uj
 
     args = parser.parse_args() # namespae of parameters
@@ -683,12 +726,14 @@ def jungfrau_deploy_constants(parser):
 
 
 def save_metadata_in_json_file(fname, **kwa):
+    """Write `kwa` as indented JSON to `fname` and log the file name."""
     with open(fname, 'w') as jfile:
        json.dump(kwa, jfile, indent=4)
     logger.info('metadata saved in %s' % fname)
 
 
 def load_metadata_from_json_file(fname):
+    """Return the dict read from the JSON file `fname`, or None if the file is missing (logged) or not valid JSON (printed)."""
     try:
         with open(fname, 'r') as file:
             d = json.load(file)
@@ -798,6 +843,12 @@ def jungfrau_deploy_dark_direct(merger, orun, odet, **kwargs):
 
 
 def deploy_constants_for_data_and_metadata(nda, expname, _longname, **kwa_depl):
+    """Add `nda` with metadata `kwa_depl` to the calibration DB when `kwa_depl['deploy']` is true.
+
+    Uses `add_data_and_doc_to_detdb_extended` when `dbsuffix` is set and `add_data_and_two_docs`
+    otherwise, logging the returned ids or an error if nothing was returned. Without `deploy` it only
+    logs a warning.
+    """
     deploy = kwa_depl.get('deploy', False)
     dbsuffix = kwa_depl.get('dbsuffix', '')
     #longname = kwa_depl.get('longname', None)

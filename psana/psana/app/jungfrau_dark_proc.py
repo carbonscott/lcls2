@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""The jungfrau_dark_proc command: process a Jungfrau dark run with
+`UtilsJungfrauCalibMPI.jungfrau_dark_proc`, or run its stages through the
+jungfrau_dark_proc_wrapper.sh shell script when --wrapper is set.
+"""
 from time import time
 t0_sec_tot = time()
 
@@ -32,6 +36,19 @@ USAGE = f'\n  {SCRNAME} -k <\"str-of-datasource-kwargs\"> -d <detector>'\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs (default 'exp=mfxdaq23,run=7,dir=/sdf/data/lcls/drpsrcf/ffb/MFX/mfxdaq23/xtc'),
+    -d/--detname ('jungfrau'), -n/--nrecs (1000), --nrecs1 (50), -o/--dirrepo (DIR_REPO_JUNGFRAU),
+    -L/--logmode ('INFO'), -E/--errskip (store_false flag), --stepnum, --stepmax (3), --evskip (0),
+    --events (10000), --dirmode, --filemode, --int_lo (1), --int_hi (0x3fff - 1), --intnlo,
+    --intnhi, --rms_lo (0.001), --rms_hi (0x3fff - 1), --rmsnlo, --rmsnhi, --fraclm, --fraclo,
+    --frachi, -v/--version ('V2026-04-02'), --datbits (0x3fff), the flag -S/--save, -i/--plotim (0),
+    -I/--segind, the flag --submit, --wrapper (0), --slurmpars, the flag -D/--deploy, -p/--ctdepl
+    ('prs'), --tstamp, --run_beg, --run_end ('end'), --comment and --dbsuffix. The default
+    --slurmpars (milano partition, account lcls:prjdat21, exclusive, one node with 19 tasks) writes
+    output to a log file named with the time the parser is built and the user name.
+    """
     from argparse import ArgumentParser
 
     d_dskwargs= 'exp=mfxdaq23,run=7,dir=/sdf/data/lcls/drpsrcf/ffb/MFX/mfxdaq23/xtc' # None
@@ -187,6 +204,14 @@ def set_slurmpars(defslp, optslp):
 
 
 def do_main():
+    """Entry point of the jungfrau_dark_proc command.
+
+    Exits with the usage text if fewer than two command-line arguments are given and fails an assert
+    if -k or -d is None. With --wrapper > 0 it builds a command line for jungfrau_dark_proc_wrapper.sh
+    in this directory (adding stage-2 options and the merged --slurmpars for bit 2, stage-3 deploy
+    options for bit 4, and --submit) and runs it with os.system; otherwise it calls
+    `UtilsJungfrauCalibMPI.jungfrau_dark_proc(parser)`, and then prints the total time since module import.
+    """
     from time import time
     t0_sec = time()
 

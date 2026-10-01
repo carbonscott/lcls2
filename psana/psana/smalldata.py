@@ -126,11 +126,11 @@ len_evt = {}  # len name to {timestamp: length}
 def set_keytypes(k):
     """Classify dataset key `k` and record the result in the module dicts.
 
-    A key is variable-length (`var_dict[k] = True`) if any "/"-separated part starts with "var_".
-    If that part is the last one and ends with "_len", the key is itself a length key; otherwise
-    the name of its length key (the path up to and including that part, plus "_len") is stored in
-    `len_map[k]`, marked as a length key in `len_dict` and given an empty entry in `len_evt`. Keys
-    with no "var_" part are marked as neither variable nor length keys.
+    A key is variable-length (`var_dict[k] = True`) if any "/"-separated part starts with "var_". If that part is the last one and ends with "_len", the key is itself a length key; otherwise the name of its length key (the path up to and including that part, plus "_len") is stored in `len_map[k]`, marked as a length key in `len_dict` and given an empty entry in `len_evt`.
+
+    Notes
+    -----
+    Keys with no "var_" part are marked as neither variable nor length keys.
     """
     parts = k.split("/")
     # New regime: any part can have "var_"!
@@ -273,10 +273,11 @@ class CacheArray:
     def append(self, data):
         """Add one event's `data` to the cache.
 
-        For a fixed-shape cache, `data` is written into the next row of the preallocated array and
-        `size` grows by 1. For a variable-length cache, the entries of `data` are appended along axis 0
-        and `size` grows by `len(data)`; None or empty `data` adds nothing. `n_events` is incremented
-        in every case.
+        For a fixed-shape cache, `data` is written into the next row of the preallocated array and `size` grows by 1. For a variable-length cache, the entries of `data` are appended along axis 0 and `size` grows by `len(data)`; None or empty `data` adds nothing.
+
+        Notes
+        -----
+        `n_events` is incremented in every case.
         """
         if self.is_var:
             if data is None or len(data) == 0:
@@ -361,10 +362,11 @@ class Server:  # (hdf5 handling)
     def recv_loop(self):
         """Receive batches from clients on `smdcomm` until every client has sent "done".
 
-        The number of clients is `smdcomm.Get_size() - 1`. A received list is passed to `handle`; the
-        string "done" counts one finished client. The receive wait time and
-        `number of events / processing seconds * 1e-3` are set on the "psana_srv_wait" and
-        "psana_srv_rate" Prometheus gauges.
+        The number of clients is `smdcomm.Get_size() - 1`. A received list is passed to `handle`; the string "done" counts one finished client.
+
+        Notes
+        -----
+        The receive wait time and `number of events / processing seconds * 1e-3` are set on the "psana_srv_wait" and "psana_srv_rate" Prometheus gauges.
         """
         num_clients_done = 0
         num_clients = self.smdcomm.Get_size() - 1
@@ -1035,64 +1037,77 @@ class SmallData:  # (client)
     def prod(self, value, inplace=False):
         """Multiply `value` element-wise across client ranks (MPI.PROD) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data, so every client rank must
-        pass an array or number.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data, so every client rank must pass an array or number.
         """
         return self._reduction(value, MPI.PROD, inplace)
 
     def land(self, value, inplace=False):
         """Combine `value` across client ranks with logical AND (MPI.LAND) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.LAND, inplace)
 
     def band(self, value, inplace=False):
         """Combine `value` across client ranks with bitwise AND (MPI.BAND) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.BAND, inplace)
 
     def lor(self, value, inplace=False):
         """Combine `value` across client ranks with logical OR (MPI.LOR) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.LOR, inplace)
 
     def bor(self, value, inplace=False):
         """Combine `value` across client ranks with bitwise OR (MPI.BOR) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.BOR, inplace)
 
     def lxor(self, value, inplace=False):
         """Combine `value` across client ranks with logical XOR (MPI.LXOR) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.LXOR, inplace)
 
     def bxor(self, value, inplace=False):
         """Combine `value` across client ranks with bitwise XOR (MPI.BXOR) onto client rank 0.
 
-        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client
-        rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks
-        get None. No stand-in array is made for a client rank without data.
+        In serial mode `value` is returned unchanged. In parallel mode the result is returned on client rank 0, other client ranks get None (or their own `value` if `inplace`), and non-client ranks get None.
+
+        Notes
+        -----
+        No stand-in array is made for a client rank without data.
         """
         return self._reduction(value, MPI.BXOR, inplace)
 
@@ -1261,11 +1276,11 @@ class SmallData:  # (client)
     def join_files(self):
         """Join the per-server part files into the main HDF5 file with virtual datasets.
 
-        Looks for `<basename>_part<i>.h5` for every server rank i, printing a warning for each one
-        that is missing. For every dataset found in any part file, it creates a virtual dataset whose
-        rows are the part files' rows in server order; a part file without that dataset leaves a gap as
-        long as its "/timestamp" dataset, filled with -99999 (integers) or NaN (floats). The main file
-        is opened with `_get_full_file_handle` and closed at the end.
+        Looks for `<basename>_part<i>.h5` for every server rank i, printing a warning for each one that is missing. For every dataset found in any part file, it creates a virtual dataset whose rows are the part files' rows in server order; a part file without that dataset leaves a gap as long as its "/timestamp" dataset, filled with -99999 (integers) or NaN (floats).
+
+        Notes
+        -----
+        The main file is opened with `_get_full_file_handle` and closed at the end.
         """
 
         joined_file = self._get_full_file_handle()

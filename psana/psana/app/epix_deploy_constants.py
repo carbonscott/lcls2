@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The epix_deploy_constants command: combine per-gain-mode epix constants from the repository and optionally deploy them (`UtilsEpixCalib.epix_deploy_constants`)."""
 import os
 import sys
 from psana.detector.dir_root import DIR_REPO_EPIX
@@ -19,6 +20,11 @@ USAGE = 'Usage:'\
 
 
 def do_main():
+    """Check the arguments and run `UtilsEpixCalib.epix_deploy_constants(parser)`.
+
+    Exits with the usage text if fewer than two arguments are given and asserts that `-k` and `-d`
+    are set and the repository directory exists; logs the time taken and ends with `sys.exit`.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     if len(sys.argv)<3: sys.exit('\n%s\n\nMISSING ARGUMENTS - EXIT\n' % USAGE)
@@ -36,6 +42,12 @@ def do_main():
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--det, -o/--dirrepo (default `DIR_REPO_EPIX`), -L/--logmode,
+    -v/--version, -p/--plotim, -D/--deploy, --ctdepl (default 'prs'), --tstamp, --run_beg, --run_end
+    (default 'end'), --comment and --dbsuffix.
+    """
     from argparse import ArgumentParser
 
     d_dskwargs = None

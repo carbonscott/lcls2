@@ -542,12 +542,11 @@ def charge_injection(parser):
 
     """Charge-injection calibration of one epix10ka-type panel, driven by the options of `parser`.
 
-    Loads earlier fit results from the work .npz file if it exists, otherwise loops over the
-    charge-injection steps (AML then AHL, `nspace`**2 steps each), fits gains and offsets with
-    `event_loop_and_fit` and saves them to that file. Then writes gain, offset, derived AHL-L/AML-L
-    pedestal and pixel-status text files to the repository, shows plots when `display` is set, and
-    saves the log file. The per-gain chi2 arrays passed to `ci_pixel_status` are defined only when
-    `savechi2` is set, so otherwise the status step raises NameError.
+    Intended flow: load earlier fit results from the work .npz file or loop over the charge-injection steps (AML then AHL, `nspace`**2 steps each) fitting gains and offsets with `event_loop_and_fit`, then write gain, offset, derived AHL-L/AML-L pedestal and pixel-status files and save the log. As written it fails before that: `UtilsEpix10kaCalib.dir_names` returns 10 paths but 8 names are unpacked (ValueError), and `uec.file_name_prefix` does not exist in that module.
+
+    Notes
+    -----
+    The chi2 arrays passed to `ci_pixel_status` are defined only when `savechi2` is set.
     """
     args = parser.parse_args()
     kwa = vars(args)

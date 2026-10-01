@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The epixm320_dark_proc command: process a dark run of an epixm320 detector with `UtilsEpixm320Calib.pedestals_calibration`."""
 import sys
 from psana.detector.dir_root import DIR_REPO_EPIX10KA
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
@@ -22,6 +23,11 @@ USAGE = 'Usage:'\
 
 def do_main():
 
+    """Entry point: parse the options and run `UtilsEpixm320Calib.pedestals_calibration(parser)`.
+
+    Exits with the usage text if fewer than two command-line arguments are given, and fails an
+    assert if -k or -d is missing. Logs the elapsed time and exits with the message 'End of <script name>'.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     if len(sys.argv)<3: sys.exit('\n%s\n\nEXIT DUE TO MISSING ARGUMENTS\n' % USAGE)
@@ -38,6 +44,15 @@ def do_main():
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--det, -n/--nrecs (default 100), --nrecs1 (50), -i/--idx,
+    -o/--dirrepo (DIR_REPO_EPIX10KA), -L/--logmode ('INFO'), -E/--errskip (store_false flag),
+    --stepnum, --stepmax (3), --evskip (0), --events (1000000), --dirmode, --filemode, the gate
+    parameters --int_lo, --int_hi, --intnlo, --intnhi, --rms_lo, --rms_hi, --rmsnlo, --rmsnhi,
+    --fraclm, --fraclo, --frachi, -v/--version ('V2024-12-18'), --datbits (0o77777), the flag
+    -D/--deploy and -p/--plotim (0).
+    """
     from argparse import ArgumentParser
 
     d_dskwargs = None

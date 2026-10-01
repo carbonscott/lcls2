@@ -412,6 +412,7 @@ def test_event_loop(*args, **kwargs):
 
 
 def title(arrts):
+    """Return the header line 'dt, ms:' followed by column labels t00, t01, ... for the columns of `arrts`."""
     ntpoints = arrts.shape[1]
     s = '     '.join(['  t%02d'%i for i in range(0, ntpoints)])
     return 'dt, ms:%s' % s
@@ -419,6 +420,10 @@ def title(arrts):
 
 def print_summary(arrts, show_arrts=False, cmt='', fname='summary.txt'):
     #print(ue.info_ndarr(arrts, 'arrts[msec]:', last=100))
+    """Print the per-column median of `arrts` and append that line, followed by `cmt`, to the text file `fname`.
+
+    With `show_arrts` every 100th row is printed as well.
+    """
     ntpoints = arrts.shape[1]
     fmt = ntpoints*' %9.4f'
     if show_arrts:
@@ -435,6 +440,10 @@ def print_summary(arrts, show_arrts=False, cmt='', fname='summary.txt'):
 
 
 def parse_summary(*args, **kwargs):
+    """Read the summary file `kwargs['fname']`, print each line, and print the column means of selected lines.
+
+    Lines whose last field equals `ptrn` (default '100') contribute their fields 2 to 9.
+    """
     fname = kwargs.get('fname', '')
     ptrn = kwargs.get('ptrn', '100')
     s = ut.load_textfile(fname)
@@ -453,6 +462,11 @@ def parse_summary(*args, **kwargs):
 #def test_sim_(*args, **kwargs):
 
 def myfunc(a, p, g, m):
+    """Return `((a & M14) - p) * g * m`.
+
+    `M14` is looked up as a module global, which this script does not define (only
+    `test_simulation` has a local M14), so calling it raises NameError.
+    """
     return ((a & M14) - p) * g * m
 
 uf = np.frompyfunc(myfunc, 3, 1)
@@ -461,6 +475,13 @@ vf = np.vectorize(myfunc) # , otypes=np.float32, signature='(1),(1),(1)->(1)')
 #vf = np.vectorize(myfunc, otypes=[np.float32], signature='(n),(n),(n)->(n)')
 
 def test_simulation(*args, **kwargs):
+    """Time simulated epix10ka-style calibration methods on random (16, 352, 384) arrays.
+
+    Generates `nloops` (default 500) raw frames plus random pedestals, gains and mask, then times per
+    frame the method selected by `CALIBMET` (SIM0 to SIM5: numpy expression, `np.select`, in-place
+    ufuncs, `np.vectorize`, `np.frompyfunc`, or `utilsdetector.calib_std`). Prints per-step time
+    summaries and appends the medians to summary.txt.
+    """
     import psana.pyalgos.generic.NDArrGenerators as ag
     import psana.pycalgos.utilsdetector as ud
     #import psana.pscalib.calib.CalibConstants import as cc
@@ -703,10 +724,16 @@ def test_simulation_nloops(*args, **kwargs):
 
 
 def test_mpi_for_data(*args, **kwargs):
+    """Print `args` and `kwargs`; does nothing else."""
     print('test_mpi_for_data args:', args)
     print('test_mpi_for_data kwargs:', kwargs)
 
 def argument_parser():
+    """Return the `ArgumentParser` of this test.
+
+    Positional `tname`, -k/--dskwargs (default exp=rixc00121,run=140 in the drpsrcf ffb directory),
+    -d/--detname (default archon) and -L/--loglevel (default INFO).
+    """
     from argparse import ArgumentParser
     d_tname = '0'
     d_dskwargs = 'exp=rixc00121,run=140,dir=/sdf/data/lcls/drpsrcf/ffb/rix/rixc00121/xtc'  # None
@@ -724,11 +751,18 @@ def argument_parser():
     return parser
 
 def usage():
+    """Return the usage text: the script name and the source lines of `selector` that contain "tname ==" or "tnum in"."""
     import inspect
     return '\n  %s <tname>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "tname ==" in s or "tnum in" in s])
 
 def selector():
+    """Parse the command line and run the selected test, then call `sys.exit(0)`.
+
+    0 to 3 run `test_event_loop` with different calibration methods, 50 `test_simulation_nloops`, the
+    numbers in `SIMS` (80 to 85) `test_simulation`, 98 `test_ArrayIterator` and 99 `parse_summary` of
+    a fixed file; missing or unknown names print the usage and exit.
+    """
     if len(sys.argv) < 2:
         print(usage())
         sys.exit('EXIT due to MISSING PARAMETERS')

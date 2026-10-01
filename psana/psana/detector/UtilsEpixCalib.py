@@ -29,6 +29,7 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 
 def selected_record(i, events=1000000):
+    """Return True for i < 5, multiples of 10 below 50, all multiples of 100, and i > `events` - 5."""
     return i<5\
        or (i<50 and not i%10)\
        or not i%100\
@@ -37,6 +38,14 @@ def selected_record(i, events=1000000):
 
 def pedestals_calibration(parser):
 
+  """Dark processing for epix-type detectors, one gain mode per step, driven by the options of `parser`.
+
+  For each selected step (`stepnum`, `stepmax`) raw data are fed to a `UtilsCalib.DarkProc` until
+  `nrecs` records or `events` events, and the step's pedestals, RMS, status, max and min are saved
+  with `save_constants_in_repository` under the gain mode from `gain_mode`. At the end the types
+  selected by the letters of `ctdepl` are combined over gain modes with `deploy_constants` (DB
+  upload only with `deploy`) and the log file is saved.
+  """
   args = parser.parse_args()
   kwa = vars(args)
 
@@ -284,11 +293,19 @@ def gain_mode(odet, metadic, nstep):
 
 
 def calib_file_name(fprefix, ctype, gainmode, fmt='%s-%s-%s.data'):
+    """Return `fmt % (fprefix, ctype, gainmode)`, by default `<fprefix>-<ctype>-<gainmode>.data` (also when `gainmode` is None)."""
     return fmt % (fprefix, ctype, gainmode)
 
 
 def save_constants_in_repository(dic_consts, **kwa):
 
+    """Save each array of `dic_consts` as a text file in the calibration repository.
+
+    Files go to the repository's `<segment id>/<ctype>` directory, the segment id being the part of
+    `longname` after the first "_", as `<prefix>-<ctype>-<gainmode>.data` with per-type formats.
+    When `dark_factor` is set, pedestals, rms, max and min are multiplied by it (keeping their dtype)
+    before saving.
+    """
     logger.debug('save_constants_in_repository kwa:', kwa)
 
     CTYPE_DTYPE = cc.dic_calib_name_to_dtype # {'pedestals': np.float32,...}
@@ -358,6 +375,10 @@ def save_constants_in_repository(dic_consts, **kwa):
 
 
 def ds_run_det(**kwa):
+    """Open the DataSource from the `dskwargs` string and return `(ds, orun, odet)` for its first run and detector `det`.
+
+    Also sets the repository manager's detector type and logs the detector info.
+    """
     repoman = set_repoman_and_logger(kwa)
     str_dskwargs = kwa.get('dskwargs', None)
     detname = kwa.get('det', None)
@@ -377,6 +398,13 @@ def ds_run_det(**kwa):
 
 
 def epix_deploy_constants(parser):
+    """Combine the per-gain-mode constant files of a detector and optionally deploy them (command entry point).
+
+    Maps the letters of `ctdepl` (default 'prs') to constant types, opens the data with `ds_run_det`,
+    adds run/detector metadata and calls `deploy_constants`. The gain modes are the detector's
+    `_gain_modes`: the test `'g' in ctypes` compares a letter with full type names, so
+    `_gain_states` is used only if a type name is exactly 'g'.
+    """
     args = parser.parse_args()
     kwa = vars(args)
     repoman = set_repoman_and_logger(kwa)
@@ -397,6 +425,14 @@ def epix_deploy_constants(parser):
 
 def deploy_constants(ctypes, gainmodes, **kwa):
 
+    """Combine per-gain-mode constant files into one array per type, save it, and optionally add it to the DB.
+
+    For each type the files `<prefix>-<ctype>-<gm>.data` for all `gainmodes` are read with
+    `data_from_file` (an AssertionError, for example for a missing file, gives zeros of
+    `shape_as_daq`), stacked and saved as `<prefix>-<ctype>-comb.data`. With `deploy` the array is
+    added with `add_data_and_two_docs` and `exit()` is called if that returns nothing; otherwise a
+    warning is logged.
+    """
     from psana.pscalib.calib.MDBUtils import data_from_file
     from psana.pscalib.calib.MDBWebUtils import add_data_and_two_docs
 

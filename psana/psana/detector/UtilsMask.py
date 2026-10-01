@@ -259,6 +259,7 @@ def convert_mask2d_to_ndarray_using_geometry_file(mask2d, gfname, **kwargs):
 
 
 def cart2r(x, y):
+    """Return the distance from the origin, `sqrt(x*x + y*y)` (element-wise for arrays)."""
     return np.sqrt(x*x + y*y)
 
 
@@ -269,12 +270,17 @@ def meshgrids(shape):
 
 
 def mask_circle(shape, center_row, center_col, radius, dtype=DTYPE_MASK):
+    """Return a 2-D mask of `shape` with 1 inside or on the circle of `radius` around (`center_row`, `center_col`) and 0 outside, as `dtype`."""
     c, r = meshgrids(shape)
     rad = cart2r(r-center_row, c-center_col)
     return np.select([rad>radius,], [0,], default=1).astype(dtype)
 
 
 def mask_ring(shape, center_row, center_col, radius_min, radius_max, dtype=DTYPE_MASK):
+    """Return a 2-D mask of `shape` that is 1 where the distance from (`center_row`, `center_col`) is between `radius_min` and `radius_max`.
+
+    Both limits are inclusive; other pixels are 0. The result has type `dtype`.
+    """
     c, r = meshgrids(shape)
     rad = cart2r(r-center_row, c-center_col)
     return np.select([rad<radius_min, rad>radius_max,], [0, 0,], default=1).astype(dtype)

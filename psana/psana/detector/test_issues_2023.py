@@ -12,6 +12,7 @@ logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d %(filename)s: %(mess
 
 
 def ds_run_det(exp='ascdaq18', run=171, detname='epixhr', **kwa):
+    """Open `DataSource(exp=exp, run=run, **kwa)` and return `(ds, first run, run.Detector(detname))`."""
     from psana import DataSource
     ds = DataSource(exp=exp, run=run, **kwa)
     orun = next(ds.runs())
@@ -210,6 +211,7 @@ def issue_2023_01_10():
 
 def issue_2023_02_07():
     #ds, orun, det = ds_run_det(exp='ascdaq18', run=171, detname='epixhr', dir='/cds/data/psdm/asc/ascdaq18/xtc/')
+    """Print the run number and timestamp of the first run of ascdaq18 runs 170 and 171."""
     from psana import DataSource
     for runnum in (170, 171):
       ds = DataSource(exp='ascdaq18', run=runnum)  # , dir='/cds/data/psdm/asc/ascdaq18/xtc/')
@@ -218,6 +220,11 @@ def issue_2023_02_07():
 
 
 def issue_2023_04_27():
+    """Print configuration and raw-data summaries of detector epixhr in ascdaq18 run 171.
+
+    Prints run and detector info, then for each of the first five steps the per-segment pixel
+    configuration and trbits and the raw-data summary of the first six events.
+    """
     from psana.detector.NDArrUtils import print_ndarr, info_ndarr
     #from psana import DataSource
     #ds, detname = DataSource(exp='tstx00417', run=277, dir='/cds/data/drpsrcf/tst/tstx00417/xtc'), 'epixhr_emu'
@@ -267,8 +274,7 @@ def issue_2023_04_28():
 
 
 def issue_2023_05_19():
-    """
-    """
+    """Print the timestamp and `tmo_opal1.raw.image` shape of the first six events of each run of tmoc00118 run 222 (public01)."""
     from psana import DataSource
     ds = DataSource(exp='tmoc00118', run=222, dir='/cds/data/psdm/prj/public01/xtc')
     for run in ds.runs():
@@ -314,7 +320,9 @@ def issue_2023_07_25():
 
 
 def issue_2023_07_26():
-    """
+    """Fetch all calibration constants of an epixhremu detector by long name for tstx00417, run 0.
+
+    Prints the time taken and the constant types.
     """
     from time import time
     import psana.pscalib.calib.MDBWebUtils as wu
@@ -388,6 +396,7 @@ def issue_2023_10_04():
     print('calib_const.keys:', calib_const.keys())
 
 def issue_2023_10_05():
+    """Time `next(ds.runs())` for uedcom103 run 812 and print the unique id of detector epixquad."""
     from time import time
     from psana import DataSource
     ds = DataSource(exp='uedcom103',run=812)
@@ -400,6 +409,10 @@ def issue_2023_10_05():
 
 def issue_2023_10_26():
 
+    """Print the min and max of `raw[:, 145:, :192] & 0x3fff` of detector epixhr for each event.
+
+    Loops over all runs, steps and events of rixx1003721 run 200, opened with `intg_det='epixhr'`.
+    """
     from psana import DataSource
     from psana.detector.NDArrUtils import info_ndarr
 
@@ -430,6 +443,7 @@ def issue_2023_10_26():
 
 
 def issue_2023_mm_dd():
+    """Template: print "template". It is what test name '0' runs."""
     print('template')
 
 USAGE = '\nUsage:'\

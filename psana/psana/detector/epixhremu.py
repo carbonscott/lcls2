@@ -15,10 +15,11 @@ logger = logging.getLogger(__name__)
 class epixhremu_raw_0_0_1(eb.epix_base):
     """Area-detector interface for detector type `epixhremu`, software `raw`, version 0.0.1.
 
-    `epix_base` subclass. The constructor sets the segment geometry "EPIXHR1X4:V1", data mask M14,
-    gain bit B15, gain bit shift 10, default gains (41.0, 13.7, 0.512) and the default geometry file
-    `pscalib/geometry/data/geometry-def-epixhr1x4-20.data`. Its private `_config_object` returns a
-    fake configuration (zero pixel config, trbit 0) for every segment index.
+    `epix_base` subclass. The constructor sets the segment geometry "EPIXHR1X4:V1", data mask M14, gain bit B15, gain bit shift 10, default gains (41.0, 13.7, 0.512) and the default geometry file `pscalib/geometry/data/geometry-def-epixhr1x4-20.data`.
+
+    Notes
+    -----
+    Its private `_config_object` returns a fake configuration (zero pixel config, trbit 0) for every segment index.
     """
     def __init__(self, *args, **kwargs):
         logger.debug('epixhremu_raw_0_0_1.__init__')

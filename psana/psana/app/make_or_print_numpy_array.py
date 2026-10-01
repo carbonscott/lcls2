@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Script that makes a numpy array and saves it as .npy, or loads and prints an existing .npy file.
+
+The array holds normal random values, or a constant when the rms is about 0; `-i` selects the
+print mode.
+"""
 import os
 import sys
 import numpy as np
@@ -15,6 +20,11 @@ USAGE = '\n  %s -s <shape> [kwargs]' % SCRNAME\
       + '\n  %s -i nda-random.npy  # load and print array from file' % SCRNAME\
 
 def make_random_nda(shape=(704, 768), mean=100, rms=10, dtype=np.float64, fname='fake.npy'):
+    """Create an array of `shape` and `dtype` and save it with `np.save` to `fname`.
+
+    The values are normal random numbers with `mean` and `rms`, or all equal to `mean` when
+    |rms| <= 0.001. `rms` and a summary of the array are printed.
+    """
     print('rms', rms)
     a = (mean + rms*np.random.standard_normal(size=shape).astype(dtype=dtype)) if abs(rms)>0.001 else\
          mean * np.ones(shape, dtype=dtype)
@@ -23,11 +33,17 @@ def make_random_nda(shape=(704, 768), mean=100, rms=10, dtype=np.float64, fname=
     np.save(fname, a)
 
 def load_print_nda(fname=None):
+    """Load the .npy file `fname` (asserting that it exists) and print a summary of the array."""
     assert os.path.exists(fname)
     a = np.load(fname)
     print(ndu.info_ndarr(a, 'file %s:'%fname, last=5))
 
 def argument_parser():
+    """Return the `ArgumentParser` of this script.
+
+    Options -s/--shape (default '(704,768)'), -m/--mean (2), -r/--rms (0), -t/--dtype ('np.float32'),
+    -f/--fname ('ndarray.npy') and -i/--ifname (None).
+    """
     from argparse import ArgumentParser
 
     d_shape   = '(704,768)'
@@ -57,6 +73,10 @@ def argument_parser():
 
 def do_main():
 
+    """Parse the arguments, print them, and either print the file given by `-i` or create and save an array.
+
+    The shape and dtype strings are evaluated with `eval`.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     opts = vars(args)

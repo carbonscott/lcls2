@@ -25,6 +25,12 @@ from psana.detector.NDArrUtils import info_ndarr
 
 class MaskAlgos:
 
+    """Masks computed from a detector's calibration constants and simple geometric rules.
+
+    The constructor wraps `calibconst` in a `CalibConstants` object (`cco`, shared per `detname`) and
+    keeps `kwa` as the options used by `mask()`; `logmet_init` (default `logger.debug`) receives
+    initialization messages.
+    """
     def __init__(self, calibconst, detname, **kwa):
         """calibconst: (dict) from DB
            detname (str) - any unique detector name to cach info in CalibConstants
@@ -41,12 +47,14 @@ class MaskAlgos:
 
 
     def mask_default(self, dtype=DTYPE_MASK, **kwa):
+        """Return an array of ones of type `dtype` with the DAQ data shape (`cco.shape_as_daq()`), or None if that shape is unknown."""
         shape = self.cco.shape_as_daq()
         self.logmet_init('mask_default(dtype=%s)' % type(dtype))
         return None if shape is None else np.ones(shape, dtype=dtype)
 
 
     def mask_calib_or_default(self, dtype=DTYPE_MASK, **kwa):
+        """Return the 'pixel_mask' constant converted to `dtype`, or `mask_default(dtype)` if there is none."""
         mask = self.cco.mask_calib()
         self.logmet_init('mask_calib_or_default(dtype=%s)' % type(dtype))
         return self.mask_default(dtype) if mask is None else mask.astype(dtype)
@@ -127,6 +135,11 @@ class MaskAlgos:
 
 
     def mask_edges(self, width=0, edge_rows=1, edge_cols=1, dtype=DTYPE_MASK, **kwa):
+        """Return `UtilsMask.mask_edges` applied to `mask_default()`.
+
+        The outermost `edge_rows` rows and `edge_cols` columns of each panel are set to 0 (both equal
+        `width` when it is > 0). Returns None if the default mask is None.
+        """
         self.logmet_init('MaskAlgos.mask_edges width:%d, edge_rows:%d, edge_cols:%d, dtype:%s, **kwa: %s'%\
                          (width, edge_rows, edge_cols, str(dtype), str(kwa)))
         return um.mask_edges(self.mask_default(),\

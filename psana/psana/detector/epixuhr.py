@@ -1,4 +1,7 @@
 #from time import time
+"""Detector interfaces for the epixuhr detector type: empty config interfaces (with aliases for later
+config versions) and `epixuhr_raw_0_0_0`, which descrambles the packed raw frames.
+"""
 from psana.detector.NDArrUtils import info_ndarr
 import numpy as np
 from amitypes import Array2d, Array3d
@@ -15,10 +18,21 @@ B16 = 0o100000 # the 16-th bit (counting from 1)
 # make an empty detector interface for Matt's hardware
 # configuration object so that config_dump works - cpo
 class epixuhrhw_config_0_1_0(DetectorImpl):
+    """Empty interface for detector type `epixuhrhw`, software `config`, version 0.1.0.
+
+    The code comment says it exists so that config_dump works; the module also binds the names for
+    versions 1.1.0 to 3.2.1 to this class. Keyword arguments given to the constructor are not passed
+    on.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
 class epixuhr_config_0_0_0(DetectorImpl):
+    """Empty interface for detector type `epixuhr`, software `config`, version 0.0.0.
+
+    The module also binds the names for versions 1.0.0 to 3.2.1 to this class. Keyword arguments
+    given to the constructor are not passed on.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
 
@@ -88,6 +102,14 @@ epixuhr_config_3_2_1   = epixuhr_config_0_0_0
 #        super().__init__(*args)
 
 class epixuhr_raw_0_0_0(eb.epix_base):
+    """Area-detector interface for detector type `epixuhr`, software `raw`, version 0.0.0.
+
+    `epix_base` subclass. The constructor sets the segment geometry "EPIXUHRASIC:V1", the default geometry file `pscalib/geometry/data/geometry-def-epixuhr.data`, ASIC numbers [0, 1, 2, 3] and the `UtilsEpixUHR` gain modes.
+
+    Notes
+    -----
+    `raw` descrambles the packed 12-bit frames of segment 0, and `calib` is not implemented yet (it returns `raw`).
+    """
     def __init__(self, *args, **kwargs):
         eb.epix_base.__init__(self, *args, **kwargs)
         self._seg_geo = eb.sgs.Create(segname='EPIXUHRASIC:V1')
@@ -278,12 +300,19 @@ class epixuhr_raw_0_0_0(eb.epix_base):
 #####################
 
     def raw(self, evt) -> Array3d:
+        """Return segment 0's `raw` frames descrambled into a uint16 array of shape (number of frames, 168, 192).
+
+        Each frame's bytes are unpacked from 8 serial lanes into 12-bit values, reordered with the UHR
+        lane map, and the lowest bit is moved to bit 11 (value // 2, plus 2048 when it was set). Returns
+        None if `evt` is None or the segments are missing.
+        """
         if evt is None: return None
         segs = self._segments(evt)    # dict = {seg_index: seg_obj}
         if segs is None: return None
         return self._descramble_3d_frames(segs[0].raw) # shape=(4, 192, 384)
 
     def calib(self, evt) -> Array3d: # already defined in epix_base and AreaDetectorRaw
+        """Return `raw(evt)` unchanged; calibration is not implemented. The first `nwarnings_max` (default 5) calls log a warning."""
         if self._nwarnings < self._nwarnings_max:
             self._nwarnings += 1
             s = 'TBD - calib IS NOT IMPLEMENTED YET!'

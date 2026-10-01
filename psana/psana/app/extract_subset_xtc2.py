@@ -318,6 +318,12 @@ def collect_selected_timestamps(exp, run, xtc_dir, detectors=None, event_indices
 
 
 def build_argument_parser():
+    """Return the `ArgumentParser` of this script.
+
+    Required --exp, --run (int) and --output-dir; optional --dir and --detectors (zero or more
+    names, default []); exactly one of --events (zero-based indices or ranges such as 0,10,20-25)
+    or --num-events (int) must be given.
+    """
     parser = argparse.ArgumentParser(
         description="Extract sparse regression subsets from xtc2 and smd.xtc2 files."
     )
@@ -349,6 +355,9 @@ def build_argument_parser():
 
 
 def format_summary(kind, results):
+    """Return one line per result dict: '<kind> <output file basename>: wrote <written_events> /
+    <total_events> events'.
+    """
     lines = []
     for result in results:
         lines.append(
@@ -364,6 +373,7 @@ def format_summary(kind, results):
 
 
 def format_index_timestamp_pairs(selected_pairs):
+    """Return one line 'event_index <i> -> timestamp <t>' per (event_index, timestamp) pair."""
     lines = []
     for event_index, timestamp in selected_pairs:
         lines.append("event_index %d -> timestamp %d" % (event_index, timestamp))
@@ -371,6 +381,15 @@ def format_index_timestamp_pairs(selected_pairs):
 
 
 def main(argv=None):
+    """Run the extraction: select events with the DataSource, copy them into new stream files and print a summary.
+
+    Parses `argv` (sys.argv when None), rejects a negative --num-events, collects the (event index,
+    timestamp) pairs of the selected events with `collect_selected_timestamps`, and calls
+    parser.error if no bigdata or smalldata files match. `extract_selected_streams` then copies every
+    bigdata file keeping all non-event datagrams and the events with the selected timestamps (so
+    --num-events means the first N events of the DataSource event stream) and runs smdwriter to make
+    the smalldata files, after which the mapping, per-file counts and elapsed time are printed.
+    """
     start_time = time.monotonic()
     parser = build_argument_parser()
     args = parser.parse_args(argv)

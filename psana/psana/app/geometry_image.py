@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""The geometry_image command: plot an image from a numpy array shaped like DAQ raw data using a
+geometry constants file, with rings around the (0,0) point and an optional r-phi projection.
+
+Importing the module configures logging at INFO level.
+"""
 import os
 import sys
 import logging
@@ -17,6 +22,14 @@ usage = '\n  Example:'\
 
 def argument_parser():
 
+    """Parse the command-line options, print them, and return the parsed namespace (not the parser).
+
+    Options -t/--tname ('0'; '1', '2', '3' select hard-wired test files), -g/--geofname ('geo.txt'),
+    -a/--ndafname ('nda.txt'), -o/--prefix ('fig'), -s/--suffix (''), -p/--nrmspos, -n/--nrmsneg,
+    -i/--segzero, -W/--imgwidth (11), -H/--imgheight (10), -R/--nrings (100), -C/--cframe (0),
+    -Z/--zplane, --amin, --amax, --fraclo (0.02), --frachi (0.98), --rmin (0), --rmax, -S/--show
+    ('i'), -L/--slice and -r/--radpsize (150); defaults not listed are None.
+    """
     import argparse
 
     d_tname    = '0'
@@ -96,6 +109,22 @@ def fname_geo_and_nda_for_tname(tname):
 
 def geometry_image():
 
+    """Run the geometry_image command: build, show and save the image.
+
+    Loads the geometry (pixel coordinates in frame --cframe, or at plane --zplane) and the array
+    (pixel X or Y for show 'x' or 'y', else the .npy or text file), sets the intensity range from
+    --amin/--amax, else median plus or minus n times the median absolute deviation, else the
+    --fraclo/--frachi quantiles, and optionally fills segment --segzero with a ramp. It shows the
+    image region within --radpsize pixels of the (0,0) point (or --slice) with a center mark and
+    --nrings circles from --rmin to --rmax, plus an r-phi projection made with `HPolar` when show
+    contains 'p', and saves '<prefix>-img-<suffix>.png' when show contains 'i' and
+    '<prefix>-rphi-<suffix>.png' when it contains 'p'.
+
+    Notes
+    -----
+    For --tname other than '0' the files come from `fname_geo_and_nda_for_tname`, which exits for
+    unknown names. Arrays of 2162688 or 4194304 elements are reshaped to (16,352,384) or (8,512,1024).
+    """
     args = argument_parser()
 
     from time import time
@@ -299,6 +328,11 @@ def geometry_image():
 
 
 def fig_img_cbar(img, **kwa):
+    """Create a figure showing `img` with a vertical colorbar and return (fig, axim, axcb, imsh, cbar).
+
+    `figsize` is popped from `kwa` (default (12,11)); the remaining `kwa` are passed to imshow and
+    vmin/vmax set the color limits. Uses the module-global `gr` that `geometry_image` imports.
+    """
     fig = gr.figure(figsize=kwa.pop('figsize', (12,11)))
     gr.move_fig(fig,100,10)
     axim, axcb = gr.fig_axes(fig, windows=((0.06, 0.03, 0.87, 0.93), (0.923,0.03, 0.02, 0.93)))
@@ -309,6 +343,12 @@ def fig_img_cbar(img, **kwa):
 
 
 def fig_img_proj_cbar(img, **kwa):
+    """Create a figure with `img` (an r-phi image), a side histogram of its row sums and a colorbar; return (fig, axim, axcb, imsh, cbar).
+
+    `figsize` is popped from `kwa` (default (6,12)); the remaining `kwa` go to imshow, and the
+    histogram covers the radial range from `kwa['extent']` (default (0, 360, 1, 100)). Uses the
+    module-global `gr` that `geometry_image` imports.
+    """
     fig = gr.figure(figsize=kwa.pop('figsize', (6,12)))
     gr.move_fig(fig,700,10)
     fymin, fymax = 0.050, 0.90
@@ -355,6 +395,7 @@ def fig_img_proj_cbar(img, **kwa):
     return fig, axim, axcb, imsh, cbar
 
 def do_main():
+    """Entry point: print the usage and exit if no arguments are given, otherwise run `geometry_image` and return 0."""
     if len(sys.argv)<2:
         print(usage)
         sys.exit('EXIT due to missing parameters\nTry > %s -h' % SCRNAME)

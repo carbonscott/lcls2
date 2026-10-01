@@ -49,12 +49,11 @@ class epix10k_raw_0_0_1(eb.epix_base):
 class epix10ka_raw_2_0_1(eb.epix_base):
     """Area-detector interface for detector type `epix10ka`, software `raw`, version 2.0.1.
 
-    `epix_base` subclass. The constructor sets the segment geometry "EPIX10KA:V1", data mask M14
-    (0x3fff), gain bit B14 (0o40000), gain bit shift 9, default gains (16.4, 5.466, 0.164) and the
-    default geometry file `pscalib/geometry/data/geometry-def-epix10kaquad.data`; configuration bits
-    come from `epix_base.cbits_config_epix10ka` with shape (352, 384), and `raw` and `calib` call the
-    `epix_base` methods. The module also binds the name `epix_raw_2_0_1` to this class (old detector
-    type, per the code comment).
+    `epix_base` subclass. The constructor sets the segment geometry "EPIX10KA:V1", data mask M14 (0x3fff), gain bit B14 (0o40000), gain bit shift 9, default gains (16.4, 5.466, 0.164) and the default geometry file `pscalib/geometry/data/geometry-def-epix10kaquad.data`; configuration bits come from `epix_base.cbits_config_epix10ka` with shape (352, 384), and `raw` and `calib` call the `epix_base` methods.
+
+    Notes
+    -----
+    The module also binds the name `epix_raw_2_0_1` to this class (old detector type, per the code comment).
     """
     def __init__(self, *args, **kwargs):
         logger.debug('epix10ka_raw_2_0_1.__init__')

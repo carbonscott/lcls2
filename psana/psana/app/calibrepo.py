@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""The calibrepo command: add per-panel, per-gain-range constants from a .npy file to the calibration repository (`UtilsCalibRepo.save_segment_constants_in_repository`)."""
 import sys
 from psana.detector.dir_root import DIR_REPO
 from psana.detector.UtilsLogging import logging, STR_LEVEL_NAMES
@@ -40,6 +41,12 @@ USAGE = DESCRIPTION\
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this command.
+
+    Options -k/--dskwargs, -d/--detname, -o/--dirrepo (default `DIR_REPO`), -c/--ctype, -I/--segind,
+    -G/--gainmode, -L/--logmode, --dirmode, --filemode, -v/--version and -F/--fname2darr (default
+    'test_2darr.npy').
+    """
     from argparse import ArgumentParser
 
     d_dskwargs= None # 'exp=mfxdaq23,run=7,dir=/sdf/data/lcls/drpsrcf/ffb/MFX/mfxdaq23/xtc'
@@ -88,6 +95,11 @@ def argument_parser():
 
 
 def do_main():
+    """Check the arguments and run `UtilsCalibRepo.save_segment_constants_in_repository(**args)`.
+
+    Exits with the usage text if fewer than two arguments are given and asserts that `-k`, `-d` and
+    `-c` are set; ends with `sys.exit`.
+    """
     from time import time
     parser = argument_parser()
     args = parser.parse_args()

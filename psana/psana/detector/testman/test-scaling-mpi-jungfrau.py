@@ -462,6 +462,12 @@ def test_event_loop(calibmet, **kwargs):
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of this test.
+
+    Options -t/--tname (default '0'), -k/--dskwargs (default exp=mfx100848724,run=51), -d/--detname
+    (default jungfrau), -n/--events (10), -L/--loglevel (INFO), -p/--plot_img (0), -c/--cmpars and
+    -s/--size_blk (1024).
+    """
     from argparse import ArgumentParser
     d_tname = '0'
     d_dskwargs = 'exp=mfx100848724,run=51'  # None
@@ -496,12 +502,18 @@ def argument_parser():
     return parser
 
 def usage():
+    """Return the usage text: a dataset hint, the command form and the source lines of `selector` that contain "tname ==" or "tnum in"."""
     import inspect
     return '\n  dataset test: datinfo -k exp=mfx100848724,run=51 -d jungfrau'\
         +'\n\n  %s -t <tname> [other kwargs]\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "tname ==" in s or "tnum in" in s])
 
 def selector():
+    """Parse the command line and run `test_event_loop` with the calibration method and `cversion` chosen by `tname`.
+
+    Tests 0 to 8 and 10 to 14 are listed in the code; `cmpars` is evaluated with `eval` when given.
+    Missing arguments or unknown names print the usage and exit; ends with `sys.exit(0)`.
+    """
     if len(sys.argv) < 2:
         print(usage())
         sys.exit('EXIT due to MISSING PARAMETERS')

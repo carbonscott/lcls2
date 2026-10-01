@@ -1,3 +1,13 @@
+"""Worker script that `sort_ts` spawns with MPI to write timestamp-sorted HDF5 part files.
+
+Each worker merges with the parent communicator, receives the file names and settings broadcast
+by rank 0, and starts a dask SLURM client with `get_dask_client(n_procs)`; it then repeatedly
+asks rank 0 for an array of row indices and writes, for every pytables Array dataset whose first
+dimension equals the timestamp length, those rows in the received order (read in sorted order
+through dask) to '<out basename>_part<tag>.h5', where tag is the MPI message tag. An empty
+message ends the loop, after which the worker closes its files and the dask cluster, waits at a
+barrier and calls Abort(1) on the merged communicator.
+"""
 from mpi4py import MPI
 import numpy as np
 import h5py

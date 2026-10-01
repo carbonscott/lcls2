@@ -31,6 +31,15 @@ import argparse
 SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 def do_main():
+    """Entry point: parse the options and convert a geometry file between psana and CrystFEL formats.
+
+    Exits with a hint to use -h if no arguments are given. Options -f/--fname (default a 16-segment
+    epix10ka2m psana file), -o/--ofname ('geo-crystfel.geom'), -l/--loglev ('INFO'), --cframe (1;
+    used for psana to CrystFEL only), -d/--dettype ('epix10ka'; CrystFEL to psana only), and
+    --dsname, --zpvname and --f_um (1000.0) for z correction from data; an input name ending in
+    '.geom' runs `UtilsConvertCrystFEL.convert_crystfel_to_geometry(args)`, any other runs
+    `UtilsConvert.convert_geometry_to_crystfel(args)`, and the function ends with sys.exit.
+    """
     if len(sys.argv)<2: sys.exit('Try command> %s -h' % SCRNAME)
 
     scrname = sys.argv[0].rsplit('/')[-1]

@@ -32,10 +32,11 @@ def calib_epix100(det_raw, evt, cmpars=None, **kwa): #cmpars=(0,7,100,10)):
 
     """Return calibrated epix100 data: raw minus pedestals, common-mode corrected, times gain factors and mask.
 
-    Uses `kwa['nda_raw']` instead of `det_raw.raw(evt)` when given. The common-mode correction
-    (`UtilsCommonMode.common_mode_apply`) runs only when `cmpars` is not None, and the mask is applied
-    only if `det_raw._mask()` is not None. Returns None without raw data and the raw data unchanged
-    when pedestals are missing.
+    Uses `kwa['nda_raw']` instead of `det_raw.raw(evt)` when given. The common-mode correction (`UtilsCommonMode.common_mode_apply`) runs only when `cmpars` is not None, and the mask is applied only if `det_raw._mask()` is not None.
+
+    Notes
+    -----
+    Returns None without raw data and the raw data unchanged when pedestals are missing.
     """
     t0_sec = time()
 

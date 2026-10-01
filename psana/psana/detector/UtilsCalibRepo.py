@@ -185,6 +185,13 @@ def _set_tstamp(kwa):
 
 def save_segment_constants_in_repository(**kwa):
 
+    """Save one segment's constants, read from the .npy file `fname2darr`, in the calibration repository.
+
+    Opens the dataset (`dskwargs`) and detector `detname`, builds metadata with
+    `UtilsCalib.add_metadata_kwargs`, adjusts the segment list for epixm320, checks the gain mode
+    (jungfrau, epix10ka) and constant type (exiting with status 1 if invalid), sets `tsshort` from
+    `tstampbegin`, and calls `save_constants_in_repository({ctype: array}, ...)`.
+    """
     repoman = set_repoman_and_logger(kwa)
 
     from psana.detector.Utils import info_dict
@@ -214,6 +221,7 @@ def save_segment_constants_in_repository(**kwa):
 if __name__ == "__main__":
 
     def nda_random(mu=100, sigma=5, shape=(512,1024), dtype=np.float32):
+        """Return an array of normal random values (mean `mu`, sigma `sigma`) of shape `shape`, cast to `dtype`."""
         a = mu + sigma*np.random.standard_normal(size=shape)
         return (a).astype(dtype=dtype)
 

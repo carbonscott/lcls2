@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 #import os
+"""The datinfo command: print information about a data source, its first run and a detector, and optionally loop over steps and events printing raw-data summaries."""
 import sys
 from time import time
 import json
@@ -39,6 +40,18 @@ USAGE = '\n  %s -d <detector> -k <datasource-kwargs> [kwargs]' % SCRNAME\
 
 def ds_run_det(args):
 
+    """Open the data source and detector selected by `args` and print information about them.
+
+    Returns None (after printing a message) if 'd' is not in `args.typeinfo` (case-insensitive).
+    Otherwise builds DataSource kwargs from `args.dskwargs` (calls sys.exit if DataSource fails),
+    takes the first run, creates detector `args.detname` (None if detname is None), prints data
+    source, run and detector details, and calls sys.exit('EXIT') if the detector is None.
+
+    Returns
+    -------
+    tuple or None
+        (ds, run, det), or None when detector information was not requested.
+    """
     if 'd' not in args.typeinfo.lower():
         print('detector information is not requested by -td option - skip it')
         return
@@ -111,12 +124,16 @@ def ds_run_det(args):
 
 
 def selected_record(nrec):
+    """Return True for record numbers to print: below 5, multiples of 10 below 50, and multiples of 100."""
     return nrec<5\
        or (nrec<50 and not nrec%10)\
        or (not nrec%100)
 
 
 def info_det_evt(det, evt, ievt):
+    """Return a one-line summary for event number `ievt`: 'Event NNNNN' followed by `info_ndarr` of
+    `det.raw.raw(evt)`, or 'detector is None' if `det` is None.
+    """
     return '  Event %05d    %s' % (ievt, ('detector is None'+80*' ' if det is None else info_ndarr(det.raw.raw(evt), 'raw ')))
 
 
@@ -217,6 +234,12 @@ def loop_run_step_evt(ds, run, det, args):
 
 def do_main():
 
+    """Entry point of the datinfo command.
+
+    Prints the usage and exits if no arguments are given; otherwise parses the options, sets up
+    logging at `--logmode`, prints the command line and options, calls `ds_run_det` and then
+    `loop_run_step_evt`, and logs the elapsed time. Exits if `ds_run_det` returns None.
+    """
     t0_sec = time()
     #print('len(sys.argv):', len(sys.argv))
     if len(sys.argv)<2:
@@ -245,6 +268,12 @@ def do_main():
 
 
 def argument_parser():
+    """Return the `ArgumentParser` of the datinfo command.
+
+    Options -k/--dskwargs (DataSource kwargs string, default None), -d/--detname (default None),
+    -n/--evtmax (default 1000000), -L/--logmode (default 'INFO') and -t/--typeinfo (default 'DRSE';
+    the letters D, R, S, E select detector info and the run, step and event loops).
+    """
     from argparse import ArgumentParser
 
     d_dskwargs = None

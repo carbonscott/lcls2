@@ -24,6 +24,13 @@ USAGE = f'{SCRNAME} -k <dataset-kwargs> -d <detector-name> [other arguments ...]
       + f'\n  {SCRNAME} -k exp=ued1016014,run=50 -d epixquad1kfps -M c --aminmax "(-10,10) --as2d"'\
 
 def argument_parser():
+    """Return the `ArgumentParser` of the detimage command.
+
+    Options -k/--dskwargs (default 'exp=ued1015999,run=185'), -d/--detname ('epixquad1kfps'),
+    -n/--events (5), -m/--evskip (0), -L/--logmode ('INFO'), -f/--fnprefix (None), --figsize
+    ('12,8'), --aminmax ('None, None'), -S/--aslice (':'), -M/--mode ('p'), the flag --as2d,
+    --segind (None), --gmind (0) and --databits ('0x7fff', parsed as hex).
+    """
     import argparse
 
     d_dskwargs = 'exp=ued1015999,run=185'
@@ -75,6 +82,12 @@ def argument_parser():
     return parser
 
 def seg_sunrise(sh=(512, 1024), dtype=np.int32, vmax=None):
+    """Return a 2-d test pattern of shape `sh` and dtype `dtype` whose values are column index plus row index.
+
+    If `vmax` is given the array is multiplied in place by vmax divided by the pattern's last row, so
+    each column is scaled to reach `vmax` in its last row; with an integer `dtype` this in-place
+    float multiply raises a numpy casting error. Prints the array shape.
+    """
     nrows, ncols = sh
     rows = np.arange(nrows, dtype=dtype)
     cols = np.arange(ncols, dtype=dtype)
@@ -85,6 +98,11 @@ def seg_sunrise(sh=(512, 1024), dtype=np.int32, vmax=None):
     return arr2d
 
 def segments_with_gaps(a, gappix=10, gapval=0):
+    """Return the segments of `a` stacked vertically with `gappix` rows of value `gapval` between them.
+
+    Arrays with fewer than 3 dimensions are returned unchanged; others are first reshaped to 3-d
+    with `NDArrUtils.reshape_to_3d`.
+    """
     if a.ndim < 3: return a
     a3d = ndu.reshape_to_3d(a)
     n,r,c = a3d.shape
@@ -96,6 +114,21 @@ def segments_with_gaps(a, gappix=10, gapval=0):
     return np.vstack(lstarrs)
 
 def detimage():
+    """Run the detimage command: show detector images for the events of the first run.
+
+    Exits with the usage text if fewer than four command-line arguments are given, or if DataSource
+    creation fails. Per event after `--evskip` the array is det.raw.calib for mode 'c', otherwise raw
+    masked with `--databits` (when below 0xffff), minus pedestals (gain index `--gmind` for 4-d
+    pedestals) for mode 'p'; an optional test pattern is written into segment `--segind`, the image
+    is det.raw.image or, with `--as2d`, the segments stacked with gaps, then it is sliced, shown with
+    `fleximagespec`, and the figure is saved when `--fnprefix` is set.
+
+    Notes
+    -----
+    The DataSource is opened with max_events set to `--events`. det.calibconst['geometry'] is read
+    directly, so a missing geometry entry raises KeyError. The module calls this function at import
+    time and then exits.
+    """
     if len(sys.argv)<5: sys.exit(f'{USAGE}\n\nEXIT DUE TO MISSING ARGUMENTS\ntry: {SCRNAME} -h')
 
     import os

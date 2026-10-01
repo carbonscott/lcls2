@@ -358,10 +358,11 @@ def tstamps_run_and_now(trun_sec): # unix epoch time, e.g. 1607569818.532117 sec
 def get_config_info_for_dataset_detname(**kwargs):
     """Return a dict of run and detector information for the first run of the dataset given in `kwargs`.
 
-    The DataSource comes from `data_source_kwargs(**kwargs)` and the detector from `detname` (or
-    `detector`). The dict holds the segment shape, panel ids, long and short names, detector name and
-    type when the detector exists, and always the experiment, run timestamps and run number. Returns
-    {} if the DataSource cannot be created (the error is printed).
+    The DataSource comes from `data_source_kwargs(**kwargs)` and the detector from `detname` (or `detector`). The dict holds the segment shape, panel ids, long and short names, detector name and type when the detector exists, and always the experiment, run timestamps and run number.
+
+    Notes
+    -----
+    Returns {} if the DataSource cannot be created (the error is printed).
     """
     import logging
     logger = logging.getLogger(__name__)

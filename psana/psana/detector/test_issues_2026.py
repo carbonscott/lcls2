@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def ds_run_det(exp='ascdaq18', run=171, detname='epixhr', **kwa):
+    """Open `DataSource(exp=exp, run=run, **kwa)` and return `(ds, first run, run.Detector(detname))`."""
     from psana import DataSource
     ds = DataSource(exp=exp, run=run, **kwa)
     orun = next(ds.runs())
@@ -1340,6 +1341,12 @@ def issue_2026_MM_DD(args):
 #===
 
 def argument_parser():
+    """Return the `ArgumentParser` of this script.
+
+    Positional `tname`, -k/--dskwargs (default exp=rixc00121,run=140 in the drpsrcf ffb directory),
+    -d/--detname (default archon), -L/--loglevel (default INFO), -s/--subtest and -n/--events
+    (default 5).
+    """
     from argparse import ArgumentParser
     d_tname = '0'
     d_dskwargs = 'exp=rixc00121,run=140,dir=/sdf/data/lcls/drpsrcf/ffb/rix/rixc00121/xtc'  # None
@@ -1365,6 +1372,11 @@ def argument_parser():
 
 
 def selector():
+    """Parse the arguments, set up root logging at `loglevel`, and run the check chosen by `tname`.
+
+    '0' and '99' are templates and '1' to '21' are the issue checks listed in the code; unknown names
+    print the usage and exit. Calls `exit` at the end.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     STRLOGLEV = args.loglevel
@@ -1403,6 +1415,7 @@ def selector():
 
 
 def USAGE():
+    """Return the usage text: the script name, the source lines of `selector` that contain "TNAME in", and help hints."""
     import inspect
     return '\n  %s <TNAME>\n' % sys.argv[0].split('/')[-1]\
          + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "TNAME in" in s])\

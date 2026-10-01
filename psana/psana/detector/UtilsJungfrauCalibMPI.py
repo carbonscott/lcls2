@@ -63,6 +63,7 @@ class DarkProcJungfrauMPI(DarkProcJungfrau):
         self.rank_sum = None
 
     def add_event(self, raw, irec):
+        """Log a debug message and call `DarkProcJungfrau.add_event(raw, irec)`."""
         logger.debug('add_event for %s' % s_rsch)
         DarkProcJungfrau.add_event(self, raw, irec)
 
@@ -76,6 +77,13 @@ class DarkProcJungfrauMPI(DarkProcJungfrau):
 
     def summary(self):
         #logger.info(uc.info_ndarr(self.arr_sum0, 'XXX summary begin irec: %d for %s arr_sum0:' % (self.irec, s_rsch), first=0, last=5))
+        """Reduce the statistics over MPI ranks with the smalldata object `self.smd` and finish processing where the result arrives.
+
+        Ranks without records first create empty accumulators. Counts, sums and low/high counters are
+        summed, max/min reduced and `bad_switch` OR-ed (`smd.sum`, `max`, `min`, `bor`); where the
+        reduced sums are not None they replace the local ones, `rank_sum` is set and
+        `DarkProcJungfrau.summary` runs.
+        """
         smd = self.smd
         local_irec = self.irec
         if self.irec == -1:
@@ -114,6 +122,7 @@ class DarkProcJungfrauMPI(DarkProcJungfrau):
 
 
 class Storage:
+    """Holder for event-loop parameters shared with `filter_callback`; `setattr_from_kwargs` copies selected keys from keyword arguments, once."""
     def __init__(self):
         self.isset = False
 
@@ -128,6 +137,10 @@ class Storage:
         logger.info('%s storage parameters: %s' % (s_rsch, self.info_pars()))
 
     def info_pars(self, sep=' ', fmt='%s:%s'):
+        """Return `sep` followed by `fmt % (key, value)` for each stored key, joined by `sep`.
+
+        Needs `self.keys`, which `setattr_from_kwargs` sets.
+        """
         lst_pars = [fmt % (k, str(getattr(self, k, None))) for k in self.keys]
         return sep + sep.join(lst_pars)
 

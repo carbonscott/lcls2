@@ -377,12 +377,11 @@ class CalibConstants:
     def cached_pixel_coord_indexes(self, segnums=None, **kwa):
         """Compute and store the pixel row/column indexes and image-mapping tables; returns None.
 
-        `segnums` defaults to all segments. When the shared calib cache (`_shared_calibc_cache`) is
-        enabled and holds every array for this key they are taken from it; otherwise the indexes come
-        from `pixel_coord_indexes(**kwa)` (nothing is stored if that is None), and multi-pixel
-        statistics, hole tables (`fillholes`, default True) or, for `mapmode` 4, interpolation parameters
-        are computed (`mapmode` default 2). The mapmode-4 path calls `self._pixel_coords`, which this
-        class does not define.
+        `segnums` defaults to all segments. When the shared calib cache (`_shared_calibc_cache`) is enabled and holds every array for this key they are taken from it; otherwise the indexes come from `pixel_coord_indexes(**kwa)` (nothing is stored if that is None), and multi-pixel statistics, hole tables (`fillholes`, default True) or, for `mapmode` 4, interpolation parameters are computed (`mapmode` default 2).
+
+        Notes
+        -----
+        The mapmode-4 path calls `self._pixel_coords`, which this class does not define.
         """
         logger.debug('CalibConstants.cached_pixel_coord_indexes')
 
