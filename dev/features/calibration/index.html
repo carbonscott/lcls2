@@ -1654,7 +1654,8 @@ the BeginRun transition in the data; if the data carry no experiment name, no
 constants are fetched. <code>det_uniqueid</code> is the detector type followed by the detector id of each
 segment, joined with <code>_</code> (built in <code>psana/psana/dgrammanager.py</code>);
 <code>detnames -i</code> prints it. The
-synthetic test experiment <code>xpptut15</code> is special-cased in the code.</p>
+synthetic test experiment <code>xpptut15</code> is special-cased: for it the code passes
+the fixed name <code>cspad_detnum1234</code> instead.</p>
 <p>Other modes:</p>
 <ul>
 <li>MPI: only the smd0 rank queries the database; the constants are packed and
@@ -1769,7 +1770,9 @@ experiment and run recorded in the file, so this needs network access:</p>
 constants of experiment <code>ued1006477</code>). The detector name for the database is
 <code>det.raw._uniqueid</code>: the detector type followed by the id of each segment,
 joined with <code>_</code>; it is the same value (<code>configinfo.uniqueid</code>) that psana
-passes as <code>det_uniqueid</code> when it opens a run.
+passes as <code>det_uniqueid</code> when it opens a run (except for <code>exp="xpptut15"</code>, for
+which <code>Run._setup_run_calibconst</code> in <code>psana/psana/psexp/run.py</code> uses the fixed
+name <code>cspad_detnum1234</code>).
 It is an attribute of every detector interface (set in <code>DetectorImpl._reset</code>,
 <code>psana/psana/detector/detector_impl.py</code>), not a method:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">psana</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataSource</span>

@@ -123,10 +123,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a1a60bcf0c932b49e85dbe38b2de0715b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in MemPool.cc.  <br /></td></tr>
 <tr class="separator:a1a60bcf0c932b49e85dbe38b2de0715b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c65229af40e27249f8e3a94d6849a4a" id="r_a5c65229af40e27249f8e3a94d6849a4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a5c65229af40e27249f8e3a94d6849a4a">fd</a> () const override</td></tr>
-<tr class="memdesc:a5c65229af40e27249f8e3a94d6849a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the device file descriptor.  <br /></td></tr>
+<tr class="memdesc:a5c65229af40e27249f8e3a94d6849a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the file descriptor of the device panel's <a class="el" href="classDrp_1_1Gpu_1_1DataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>.  <br /></td></tr>
 <tr class="separator:a5c65229af40e27249f8e3a94d6849a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d9e658a2362095331e97997eeda0aa4" id="r_a3d9e658a2362095331e97997eeda0aa4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a3d9e658a2362095331e97997eeda0aa4">setMaskBytes</a> (uint8_t laneMask, unsigned virtChan) override</td></tr>
-<tr class="memdesc:a3d9e658a2362095331e97997eeda0aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: configure the driver to deliver the lanes in laneMask on virtual channel virtChan.  <br /></td></tr>
+<tr class="memdesc:a3d9e658a2362095331e97997eeda0aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the driver DMA mask to the destinations (dmaDest of lane and virtChan) of the lanes in laneMask; once a call has succeeded, later calls only log that the earlier setting is in effect.  <br /></td></tr>
 <tr class="separator:a3d9e658a2362095331e97997eeda0aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef47b8cb875bf6a0a979e09dc2b48e67" id="r_aef47b8cb875bf6a0a979e09dc2b48e67"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classDrp_1_1Gpu_1_1CudaContext.html">CudaContext</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#aef47b8cb875bf6a0a979e09dc2b48e67">context</a> () const</td></tr>
 <tr class="memdesc:aef47b8cb875bf6a0a979e09dc2b48e67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the CUDA context.  <br /></td></tr>
@@ -609,7 +609,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: return the device file descriptor. </p>
+<p>Return the file descriptor of the device panel's <a class="el" href="classDrp_1_1Gpu_1_1DataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a9e3116fcdfba1136b3efef1eef152be6">Drp::MemPool</a>.</p>
 
@@ -939,7 +939,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: configure the driver to deliver the lanes in laneMask on virtual channel virtChan. </p>
+<p>Set the driver DMA mask to the destinations (dmaDest of lane and virtChan) of the lanes in laneMask; once a call has succeeded, later calls only log that the earlier setting is in effect. </p>
+<p>Returns 1 if dmaSetMaskBytes fails, else 0. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a1f712019bababb4c32758b38a46a0f78">Drp::MemPool</a>.</p>
 

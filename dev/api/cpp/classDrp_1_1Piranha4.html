@@ -116,10 +116,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a1589d84f790833ef90fd644dd1851b34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the simulator and the timetool object if present.  <br /></td></tr>
 <tr class="separator:a1589d84f790833ef90fd644dd1851b34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0af863cca4083b03f4e0d7b0a4cdf3e" id="r_ac0af863cca4083b03f4e0d7b0a4cdf3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Piranha4.html#ac0af863cca4083b03f4e0d7b0a4cdf3e">slowupdate</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
-<tr class="memdesc:ac0af863cca4083b03f4e0d7b0a4cdf3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset xtc to an empty Parent Xtc whose source is nodeId.  <br /></td></tr>
+<tr class="memdesc:ac0af863cca4083b03f4e0d7b0a4cdf3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">If timetool processing is set up (m_tt), call Piranha::TT::slowupdate; otherwise call <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35" title="Reset xtc to an empty Parent Xtc whose source is nodeId.">Detector::slowupdate</a>, which resets xtc to an empty Parent Xtc.  <br /></td></tr>
 <tr class="separator:ac0af863cca4083b03f4e0d7b0a4cdf3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeab968b42c3ac700a26d9ef876674e39" id="r_aeab968b42c3ac700a26d9ef876674e39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Piranha4.html#aeab968b42c3ac700a26d9ef876674e39">shutdown</a> () override</td></tr>
-<tr class="memdesc:aeab968b42c3ac700a26d9ef876674e39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>{detType}_unconfig</code> in Python with the device handle.  <br /></td></tr>
+<tr class="memdesc:aeab968b42c3ac700a26d9ef876674e39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call Piranha::TT::shutdown if timetool processing is set up, then <a class="el" href="classDrp_1_1BEBDetector.html#ac61229cd768b885fe2bfe3a7f3e2a938" title="Call {detType}_unconfig in Python with the device handle.">BEBDetector::shutdown</a>, which calls the Python unconfig function for the detector type.  <br /></td></tr>
 <tr class="separator:aeab968b42c3ac700a26d9ef876674e39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1adb6b49bcba136cdcb18db0bef711d8" id="r_a1adb6b49bcba136cdcb18db0bef711d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Piranha4.html#a1adb6b49bcba136cdcb18db0bef711d8">write_image</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd, std::vector&lt; <a class="el" href="classXtcData_1_1Array.html">XtcData::Array</a>&lt; uint8_t &gt; &gt; &amp;, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> &amp;)</td></tr>
 <tr class="memdesc:a1adb6b49bcba136cdcb18db0bef711d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the image (m_pixels UINT16 values) under namesId, copying it from subframes[2].  <br /></td></tr>
@@ -529,7 +529,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Call <code>{detType}_unconfig</code> in Python with the device handle. </p>
+<p>Call Piranha::TT::shutdown if timetool processing is set up, then <a class="el" href="classDrp_1_1BEBDetector.html#ac61229cd768b885fe2bfe3a7f3e2a938" title="Call {detType}_unconfig in Python with the device handle.">BEBDetector::shutdown</a>, which calls the Python unconfig function for the detector type. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1BEBDetector.html#ac61229cd768b885fe2bfe3a7f3e2a938">Drp::BEBDetector</a>.</p>
 
@@ -548,7 +548,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::Piranha4::slowupdate </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td>
-          <td class="paramname"><em>xtc</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -569,7 +569,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reset xtc to an empty Parent Xtc whose source is nodeId. </p>
+<p>If timetool processing is set up (m_tt), call Piranha::TT::slowupdate; otherwise call <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35" title="Reset xtc to an empty Parent Xtc whose source is nodeId.">Detector::slowupdate</a>, which resets xtc to an empty Parent Xtc. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35">Drp::Detector</a>.</p>
 

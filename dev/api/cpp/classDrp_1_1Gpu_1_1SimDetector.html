@@ -111,16 +111,16 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a3520720a880899284230a8effcf39040" id="r_a3520720a880899284230a8effcf39040"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a3520720a880899284230a8effcf39040">~SimDetector</a> ()</td></tr>
 <tr class="separator:a3520720a880899284230a8effcf39040"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50d5ae4feaaf7e5161207a8b92c663f9" id="r_a50d5ae4feaaf7e5161207a8b92c663f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a50d5ae4feaaf7e5161207a8b92c663f9">shutdown</a> () override</td></tr>
-<tr class="memdesc:a50d5ae4feaaf7e5161207a8b92c663f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
+<tr class="memdesc:a50d5ae4feaaf7e5161207a8b92c663f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a50d5ae4feaaf7e5161207a8b92c663f9" title="Call shutdown() on the wrapped detector, if any.">shutdown()</a> on the wrapped detector, if any.  <br /></td></tr>
 <tr class="separator:a50d5ae4feaaf7e5161207a8b92c663f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a023144a514a1288f6741cd840f187dc4" id="r_a023144a514a1288f6741cd840f187dc4"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a023144a514a1288f6741cd840f187dc4">connectionInfo</a> (const nlohmann::json &amp;msg) override</td></tr>
-<tr class="memdesc:a023144a514a1288f6741cd840f187dc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an empty JSON object unless overridden; msg is not used.  <br /></td></tr>
+<tr class="memdesc:a023144a514a1288f6741cd840f187dc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the wrapped detector's connectionInfo(msg), or a default-constructed (null) JSON value if there is no wrapped detector.  <br /></td></tr>
 <tr class="separator:a023144a514a1288f6741cd840f187dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4afaa3b8d12f40297b4f66f6a108e57" id="r_ae4afaa3b8d12f40297b4f66f6a108e57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#ae4afaa3b8d12f40297b4f66f6a108e57">connectionShutdown</a> () override</td></tr>
-<tr class="memdesc:ae4afaa3b8d12f40297b4f66f6a108e57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
+<tr class="memdesc:ae4afaa3b8d12f40297b4f66f6a108e57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#ae4afaa3b8d12f40297b4f66f6a108e57" title="Call connectionShutdown() on the wrapped detector, if any.">connectionShutdown()</a> on the wrapped detector, if any.  <br /></td></tr>
 <tr class="separator:ae4afaa3b8d12f40297b4f66f6a108e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa017592a988ba3a25ad5c09ee850b9fd" id="r_aa017592a988ba3a25ad5c09ee850b9fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#aa017592a988ba3a25ad5c09ee850b9fd">connect</a> (const nlohmann::json &amp;, const std::string &amp;collectionId) override</td></tr>
-<tr class="memdesc:aa017592a988ba3a25ad5c09ee850b9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
+<tr class="memdesc:aa017592a988ba3a25ad5c09ee850b9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">If there is a wrapped detector, copy nodeId to it and call its connect(connect_json, collectionId).  <br /></td></tr>
 <tr class="separator:aa017592a988ba3a25ad5c09ee850b9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97e33eff09cc96ceb88ea4de307a4a5d" id="r_a97e33eff09cc96ceb88ea4de307a4a5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a97e33eff09cc96ceb88ea4de307a4a5d">issuePhase2</a> (<a class="el" href="classXtcData_1_1TransitionId.html#a77fdbc76c92675556b0a726469e787e9">XtcData::TransitionId::Value</a>) override</td></tr>
 <tr class="memdesc:a97e33eff09cc96ceb88ea4de307a4a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start phase 2 of a transition; <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a> calls it after phase 1 only in simulator mode (device /dev/null).  <br /></td></tr>
@@ -139,28 +139,28 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a4a75dd361f9ba686622f008507a3dae7 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass para and pool to <a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Drp::Detector</a>; no wrapped detector until <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a329bc962d0977e6cc2bada85014f8499">_initialize()</a> is called.  <br /></td></tr>
 <tr class="separator:a4a75dd361f9ba686622f008507a3dae7 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a88eaf3bf13f979dc2abb64f7a198ed09"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a88eaf3bf13f979dc2abb64f7a198ed09">~Detector</a> ()</td></tr>
-<tr class="memdesc:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
+<tr class="memdesc:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the wrapped detector, if any.  <br /></td></tr>
 <tr class="separator:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a715ed99c061177c9e09200bd26e3f52d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a715ed99c061177c9e09200bd26e3f52d">gpuDetector</a> () override</td></tr>
-<tr class="memdesc:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return nullptr; <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> overrides it to return itself.  <br /></td></tr>
+<tr class="memdesc:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return this object.  <br /></td></tr>
 <tr class="separator:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c4371594d77c1c167e21a70d8a18644 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a4c4371594d77c1c167e21a70d8a18644"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a4c4371594d77c1c167e21a70d8a18644">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a4c4371594d77c1c167e21a70d8a18644 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
+<tr class="memdesc:a4c4371594d77c1c167e21a70d8a18644 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a4c4371594d77c1c167e21a70d8a18644" title="Call configure() on the wrapped detector, logging an error if it returns non-zero.">configure()</a> on the wrapped detector, logging an error if it returns non-zero.  <br /></td></tr>
 <tr class="separator:a4c4371594d77c1c167e21a70d8a18644 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ceb287abf29aee20c56b7d7bb25b32c inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a1ceb287abf29aee20c56b7d7bb25b32c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a1ceb287abf29aee20c56b7d7bb25b32c">beginrun</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;runInfo) override</td></tr>
-<tr class="memdesc:a1ceb287abf29aee20c56b7d7bb25b32c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a1ceb287abf29aee20c56b7d7bb25b32c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a1ceb287abf29aee20c56b7d7bb25b32c" title="Call beginrun() on the wrapped detector, logging an error if it returns non-zero.">beginrun()</a> on the wrapped detector, logging an error if it returns non-zero.  <br /></td></tr>
 <tr class="separator:a1ceb287abf29aee20c56b7d7bb25b32c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a65fbad344bcedafda8826ed92b3480d6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a65fbad344bcedafda8826ed92b3480d6">beginstep</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;stepInfo) override</td></tr>
-<tr class="memdesc:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a65fbad344bcedafda8826ed92b3480d6" title="Call beginstep() on the wrapped detector, logging an error if it returns non-zero.">beginstep()</a> on the wrapped detector, logging an error if it returns non-zero.  <br /></td></tr>
 <tr class="separator:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a19af6092dd74f4735c1625f18c3e332c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a19af6092dd74f4735c1625f18c3e332c">enable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
-<tr class="memdesc:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a19af6092dd74f4735c1625f18c3e332c" title="Call enable() on the wrapped detector, logging an error if it returns non-zero.">enable()</a> on the wrapped detector, logging an error if it returns non-zero.  <br /></td></tr>
 <tr class="separator:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a460a0e7a3ffed45a293d9d1a6062e63e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a460a0e7a3ffed45a293d9d1a6062e63e">disable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
-<tr class="memdesc:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a460a0e7a3ffed45a293d9d1a6062e63e" title="Call disable() on the wrapped detector, logging an error if it returns non-zero.">disable()</a> on the wrapped detector, logging an error if it returns non-zero.  <br /></td></tr>
 <tr class="separator:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_ac4dfb48074cfeaa9504d0486713ab4af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#ac4dfb48074cfeaa9504d0486713ab4af">getTimingHeader</a> (uint32_t index) const override</td></tr>
-<tr class="memdesc:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of DMA buffer index as a TimingHeader pointer.  <br /></td></tr>
+<tr class="memdesc:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address just past the DmaDsc at the start of host write buffer index of the <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> (hostWrtBufs()), as a TimingHeader pointer.  <br /></td></tr>
 <tr class="separator:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33ff71ee7c7027ad664e8f71e9cae61c inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a33ff71ee7c7027ad664e8f71e9cae61c"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a33ff71ee7c7027ad664e8f71e9cae61c">rangeOffset</a> () const =0</td></tr>
 <tr class="memdesc:a33ff71ee7c7027ad664e8f71e9cae61c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the bit position of the gain range field in a raw 16-bit value.  <br /></td></tr>
@@ -257,7 +257,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base of simulated GPU detectors (<a class="el" href="classDrp_1_1Gpu_1_1EpixUHRsim.html" title="Simulated GPU DRP detector for detType epixuhrsim (registered in PGPDetectorApp).">EpixUHRsim</a> uses it). </p>
-<p>A thread started by <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a023144a514a1288f6741cd840f187dc4" title="Return an empty JSON object unless overridden; msg is not used.">connectionInfo()</a> writes a TimingHeader, and for L1Accepts the payload from <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#afeb9acf4a6270f247592636ff2644ccf">_genL1Payload()</a> (copied only if the sim_l1_verify kwarg is present; its size is always counted), into the GPU DMA buffers for each transition queued by <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a97e33eff09cc96ceb88ea4de307a4a5d" title="Start phase 2 of a transition; PGPDetectorApp calls it after phase 1 only in simulator mode (device /...">issuePhase2()</a>. After Enable it keeps generating L1Accepts (every sim_l1_delay us, default 1 s) and SlowUpdates (sim_su_rate per second, default 1). </p>
+<p>A thread started by <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a023144a514a1288f6741cd840f187dc4" title="Return the wrapped detector&#39;s connectionInfo(msg), or a default-constructed (null) JSON value if ther...">connectionInfo()</a> writes a TimingHeader, and for L1Accepts the payload from <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#afeb9acf4a6270f247592636ff2644ccf">_genL1Payload()</a> (copied only if the sim_l1_verify kwarg is present; its size is always counted), into the GPU DMA buffers for each transition queued by <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a97e33eff09cc96ceb88ea4de307a4a5d" title="Start phase 2 of a transition; PGPDetectorApp calls it after phase 1 only in simulator mode (device /...">issuePhase2()</a>. After Enable it keeps generating L1Accepts (every sim_l1_delay us, default 1 s) and SlowUpdates (sim_su_rate per second, default 1). </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6d3bbd9004446efb49dd1bda415d01cb" name="a6d3bbd9004446efb49dd1bda415d01cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6d3bbd9004446efb49dd1bda415d01cb">&#9670;&#160;</a></span>SimDetector()</h2>
@@ -382,7 +382,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::Gpu::SimDetector::connect </td>
           <td>(</td>
           <td class="paramtype">const nlohmann::json &amp;&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"><em>connect_json</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -403,7 +403,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Does nothing unless overridden. </p>
+<p>If there is a wrapped detector, copy nodeId to it and call its connect(connect_json, collectionId). </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a481237de589d5e2fe3558af7914a569f">Drp::Gpu::Detector</a>.</p>
 
@@ -433,7 +433,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Return an empty JSON object unless overridden; msg is not used. </p>
+<p>Return the wrapped detector's connectionInfo(msg), or a default-constructed (null) JSON value if there is no wrapped detector. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a8f6a11518e3dddc55b4c1a0fe6050f1b">Drp::Gpu::Detector</a>.</p>
 
@@ -462,7 +462,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Does nothing unless overridden. </p>
+<p>Call <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#ae4afaa3b8d12f40297b4f66f6a108e57" title="Call connectionShutdown() on the wrapped detector, if any.">connectionShutdown()</a> on the wrapped detector, if any. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a35a9957f94be185cc55e714a592a75a6">Drp::Gpu::Detector</a>.</p>
 
@@ -522,7 +522,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Does nothing unless overridden. </p>
+<p>Call <a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html#a50d5ae4feaaf7e5161207a8b92c663f9" title="Call shutdown() on the wrapped detector, if any.">shutdown()</a> on the wrapped detector, if any. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#ad85e7933a1957b5d3d97fcd9bcb0d338">Drp::Gpu::Detector</a>.</p>
 

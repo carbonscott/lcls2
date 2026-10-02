@@ -2358,7 +2358,9 @@ API reference; <code>epix10ka.py</code> and <code>jungfrau.py</code> follow the 
   set in <code>DetectorImpl._reset</code> (<code>psana/psana/detector/detector_impl.py</code>) from
   the Configure data. It is the detector type followed by the id of each
   segment, joined with <code>_</code> (built in <code>psana/psana/dgrammanager.py</code>), and is
-  the detector name used to fetch calibration constants (see
+  the detector name used to fetch calibration constants (except for
+  <code>exp="xpptut15"</code>, for which <code>Run._setup_run_calibconst</code> in
+  <code>psana/psana/psexp/run.py</code> uses the fixed name <code>cspad_detnum1234</code>; see
   <a href="../../../features/calibration/">Calibration constants</a>).</li>
 <li><code>raw(evt, copy=True)</code>: <code>copy</code> is a parameter, although the generated
   section lists it under "Returns". For a detector with more than one segment
@@ -3234,7 +3236,10 @@ Use it in stead of similar decorator</p>
     <div class="doc doc-contents ">
 
         <p>Returns dense 3-d numpy array of segment data
-from dict self._segments(evt)</p>
+from dict self._segments(evt).</p>
+<p>With more than one segment, the segment arrays are stacked into an internal buffer that is
+reused across calls while their shape and dtype stay the same. With one segment, that
+segment's raw array is returned as is (not stacked and not copied, whatever <code>copy</code> is).</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3253,14 +3258,32 @@ from dict self._segments(evt)</p>
                 <code>evt</code>
             </td>
             <td>
+                  <code><a class="autorefs autorefs-internal" title="psana.event" href="../event/#psana.event">event</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>psana event object, ex. run.events().next().</p>
+                <p>psana event object, ex. next(run.events()).</p>
               </div>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>copy</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, returns a copy of the stacked buffer to avoid view aliasing across events;
+if False, returns a view of that buffer, which later calls can overwrite.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
             </td>
           </tr>
       </tbody>
@@ -3271,28 +3294,19 @@ from dict self._segments(evt)</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>raw data: np.array, ndim=3, shape: as data</code>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span> or None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td><code>copy</code></td>            <td>
-                  <code>bool, default True</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If True, returns a copy to avoid view aliasing across events.</p>
+                <p>Raw data, ndim=3, shape: as data (with one segment, that segment's raw array unchanged).
+None if <code>evt</code> is None or self._segments(evt) is None.</p>
               </div>
             </td>
           </tr>

@@ -2022,72 +2022,366 @@ place of the smalldata file.</p>
 
 
         <p>Base class for data sources in the psana2 framework.</p>
+<p><code>__init__</code> reads the options below from its keyword arguments; any other keyword is logged as a
+warning ("Unrecognized kwarg").</p>
 
 
-<details class="keyword-arguments:" open>
-  <summary>Keyword Arguments:</summary>
-  <p>exp : str
-    Experiment ID (e.g., 'xpptut13').
-run : int
-    Run number to process.
-dir : str
-    Manual path to XTC files.
-files : str or list
-    XTC2 file path(s).
-shmem : str
-    Shared memory identifier (for live mode).
-drp : str
-    DRP-specific parameters (not currently used).
-batch_size : int
-    Number of events per batch sent to bigdata core (default: 1000).
-max_events : int
-    Max number of events to read.
-detectors : list
-    User-selected detector names.
-xdetectors : list
-    Detectors to explicitly exclude.
-det_name : str
-    Deprecated (use 'detectors').
-live : bool
-    Enable live data mode (default: False).
-smalldata_kwargs : dict
-    Arguments forwarded to the SmallData interface.
-monitor : bool
-    Enable Prometheus monitoring client (default: False).
-small_xtc : list
-    Detectors to use bigdata files in place of SMD files.
-timestamps : np.ndarray
-    List of user-selected timestamps to filter on.
-dbsuffix : str
-    Suffix to use for private calibration constants.
-intg_det : str
-    Name of integrating detector for timestamp alignment.
-intg_delta_t : float
-    Integration delay in seconds.
-smd_callback : callable or int
-    Callback for SMD event handling.
-psmon_publish : psmon.publish
-    Enable publishing to psmon (default: None).
-prom_jobid : str
-    Prometheus job ID tag.
-skip_calib_load : str
-    List of detectors that skip calibration constant loading.
-use_calib_cache : bool
-    Enable calibration constant saving and loading in shared memory (default: False).
-fetch_calib_cache_max_retries: int
-    Max number of retries reading calibration constant from shared memory (default: 60).
-cached_detectors : list, optional
-    List of detector names to load cached calibration attributes for
-    when use_calib_cache is True. Default is [].
-mpi_ts : bool
-    Used internally to avoid repeated file I/O in MPI contexts.
-log_level : int
-    Python logging level (e.g., logging.DEBUG, logging.INFO). Default is logging.INFO.
-log_file : str
-    Log file path. If None, logs to stdout (default: None).
-auto_tune : bool
-    Enable auto-tuning of PS_EB_NODES and PS_SRV_NODES (default: False).</p>
-</details>
+<p><span class="doc-section-title">Other Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>exp</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Experiment ID (e.g., 'xpptut13').</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>run</code></td>
+            <td>
+                  <code>int or list of int</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Run number or list of run numbers to process (used with <code>exp</code>). If None (the default), every
+run that has a <code>*-r*.xtc2</code> file in the xtc directory is used; any other type raises
+InvalidDataSourceArgument.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>dir</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Manual path to XTC files.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>files</code></td>
+            <td>
+                  <code>str or list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>XTC2 file path(s); a single str is wrapped in a list.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>shmem</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Shared memory identifier (for live mode).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>drp</code></td>
+            <td>
+                  <code><span title="object">object</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>DRP parameters object. <code>DataSource</code> creates a <code>DrpDataSource</code> when <code>drp</code> is given without
+<code>shmem</code>, <code>exp</code> or <code>files</code>; that class reads attributes such as <code>det_segment</code>, <code>is_supervisor</code>
+and <code>worker_num</code> from it. This base class does not read it.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>batch_size</code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of events per batch sent to bigdata core (default: 1000). Must be greater than 0
+(asserted).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>max_events</code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Max number of events to read (default: 0).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>detectors</code></td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>User-selected detector names (default: []).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>xdetectors</code></td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Detectors to explicitly exclude (default: []).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>det_name</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Deprecated (use 'detectors'). Accepted without a warning but not read.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>live</code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Enable live data mode (default: False).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>smalldata_kwargs</code></td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Arguments forwarded to the SmallData interface (default: {}).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>monitor</code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Enable Prometheus monitoring client (default: False).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>small_xtc</code></td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Detectors to use bigdata files in place of SMD files (default: []).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>timestamps</code></td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span> or <span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>User-selected timestamps to filter on, as an array or the path of a .npy file; stored sorted
+as uint64 (default: empty array). Any other type is logged and gives no filtering.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>dbsuffix</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Suffix to use for private calibration constants (default: "").</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>intg_det</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of integrating detector for timestamp alignment (default: "").</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>intg_delta_t</code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Integration time window in nanoseconds; the smd reader adds it to each integrating-detector
+timestamp when it builds batches (default: 0).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>smd_callback</code></td>
+            <td>
+                  <code><span title="callable">callable</span> or <span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Callback for SMD event handling (default: 0).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>psmon_publish</code></td>
+            <td>
+                  <code><span title="psmon.publish">publish</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Enable publishing to psmon (default: None).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>prom_jobid</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Prometheus job ID tag (default: None). Stored as the <code>prom_jobid</code> attribute; no code in this
+repository reads it.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>skip_calib_load</code></td>
+            <td>
+                  <code>list of str or str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Names of detectors that skip calibration constant loading, or "all" to skip it for every
+detector (default: []).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>use_calib_cache</code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Enable calibration constant saving and loading in shared memory (default: False).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>fetch_calib_cache_max_retries</code></td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Max number of retries reading calibration constant from shared memory (default: 60).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>cached_detectors</code></td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of detector names to load cached calibration attributes for
+when use_calib_cache is True. Default is [].</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>mpi_ts</code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Used internally to avoid repeated file I/O in MPI contexts: when True, <code>timestamps</code> is not
+loaded or sorted here.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>log_level</code></td>
+            <td>
+                  <code><span title="int">int</span> or <span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Python logging level (e.g., logging.DEBUG, logging.INFO) or its name (e.g., "DEBUG"; an
+unknown name gives INFO). Default is logging.INFO.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>log_file</code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path of a rotating log file written in addition to the console output on stderr; its name
+gets a <code>.rank&lt;N&gt;</code> suffix (default: None, console only).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>auto_tune</code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Stored as the <code>auto_tune</code> attribute (default: False); no code in this repository reads it.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
 
 

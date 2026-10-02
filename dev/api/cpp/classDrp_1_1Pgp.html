@@ -122,10 +122,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:af70b4a988cad96f115cae93d008e3914"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 1000 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det; aborts with a message if that fails.  <br /></td></tr>
 <tr class="separator:af70b4a988cad96f115cae93d008e3914"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8041cc3f473440bfabdbeb2d24340bca" id="r_a8041cc3f473440bfabdbeb2d24340bca"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a8041cc3f473440bfabdbeb2d24340bca">handleBrokenEvent</a> (const <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &amp;event) override</td></tr>
-<tr class="memdesc:a8041cc3f473440bfabdbeb2d24340bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook called for events that are dropped; the default does nothing.  <br /></td></tr>
+<tr class="memdesc:a8041cc3f473440bfabdbeb2d24340bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward event to <a class="el" href="classDrp_1_1PGPDrp.html#aaa436efc8d7e5f04bffebacc7d570b7d" title="Count a broken event in the current batch, since the firmware advanced the event counter (per the cod...">PGPDrp::handleBrokenEvent</a>, which counts it in the current batch.  <br /></td></tr>
 <tr class="separator:a8041cc3f473440bfabdbeb2d24340bca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6b31df226b7bc171c2c86a1d4029cef" id="r_ab6b31df226b7bc171c2c86a1d4029cef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#ab6b31df226b7bc171c2c86a1d4029cef">resetEventCounter</a> () override</td></tr>
-<tr class="memdesc:ab6b31df226b7bc171c2c86a1d4029cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun.  <br /></td></tr>
+<tr class="memdesc:ab6b31df226b7bc171c2c86a1d4029cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1PgpReader.html#a6a1339089040f15b1c2418a31dc8b9b1" title="Reset the last completed event counter to 0; handle() calls this at BeginRun.">PgpReader::resetEventCounter</a> (last completed event counter to 0), then <a class="el" href="classDrp_1_1PGPDrp.html#aaf88c2ade021047f58913bf4e162e215" title="Restart batching at event counter 1 with an empty batch and an L1Accept count of 0.">PGPDrp::resetEventCounter</a> (batching restarts at event counter 1).  <br /></td></tr>
 <tr class="separator:ab6b31df226b7bc171c2c86a1d4029cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af52ca33387833dcbd152cbf5bed76cfe" id="r_af52ca33387833dcbd152cbf5bed76cfe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#af52ca33387833dcbd152cbf5bed76cfe">Pgp</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, <a class="el" href="classDrp_1_1Detector.html">Detector</a> *det)</td></tr>
 <tr class="memdesc:af52ca33387833dcbd152cbf5bed76cfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure.  <br /></td></tr>
@@ -487,7 +487,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Hook called for events that are dropped; the default does nothing. </p>
+<p>Forward event to <a class="el" href="classDrp_1_1PGPDrp.html#aaa436efc8d7e5f04bffebacc7d570b7d" title="Count a broken event in the current batch, since the firmware advanced the event counter (per the cod...">PGPDrp::handleBrokenEvent</a>, which counts it in the current batch. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1PgpReader.html#a3c24ee97c7443e4ab6b02c9259aa3aa4">Drp::PgpReader</a>.</p>
 
@@ -675,7 +675,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun. </p>
+<p>Call <a class="el" href="classDrp_1_1PgpReader.html#a6a1339089040f15b1c2418a31dc8b9b1" title="Reset the last completed event counter to 0; handle() calls this at BeginRun.">PgpReader::resetEventCounter</a> (last completed event counter to 0), then <a class="el" href="classDrp_1_1PGPDrp.html#aaf88c2ade021047f58913bf4e162e215" title="Restart batching at event counter 1 with an empty batch and an L1Accept count of 0.">PGPDrp::resetEventCounter</a> (batching restarts at event counter 1). </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1PgpReader.html#a6a1339089040f15b1c2418a31dc8b9b1">Drp::PgpReader</a>.</p>
 

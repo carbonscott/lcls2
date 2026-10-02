@@ -113,19 +113,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:af400c667c1c4a47b6408a24a0fe08461"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the global pointer used by the signal handler and call <a class="el" href="classDrp_1_1Jungfrau.html#a657e92415d26b2123042a02507615dbc" title="If the sls detector exists, stop it, destroy it and free its shared memory.">cleanup()</a>.  <br /></td></tr>
 <tr class="separator:af400c667c1c4a47b6408a24a0fe08461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c82286ce11a0ddbdebc08a248c0c729" id="r_a9c82286ce11a0ddbdebc08a248c0c729"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#a9c82286ce11a0ddbdebc08a248c0c729">configureScan</a> (const nlohmann::json &amp;scanKeys, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a9c82286ce11a0ddbdebc08a248c0c729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result.  <br /></td></tr>
+<tr class="memdesc:a9c82286ce11a0ddbdebc08a248c0c729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass scanKeys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure</a> with names index UpdateNamesIndex and the segment and serial numbers of the modules, and return its result.  <br /></td></tr>
 <tr class="separator:a9c82286ce11a0ddbdebc08a248c0c729"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94f120fa73a6a73e3ca0a6397e3080cb" id="r_a94f120fa73a6a73e3ca0a6397e3080cb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#a94f120fa73a6a73e3ca0a6397e3080cb">stepScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a94f120fa73a6a73e3ca0a6397e3080cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result.  <br /></td></tr>
+<tr class="memdesc:a94f120fa73a6a73e3ca0a6397e3080cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the XTC update with <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step</a> (returning its result if non-zero), then for each module set the sls gain mode from user.gainMode (mapped through the gainModeEnum names, and recording whether it is FIX_G1 or FIX_G2) or, if that key is absent, the trigger delay from user.trigger_delay_s.  <br /></td></tr>
 <tr class="separator:a94f120fa73a6a73e3ca0a6397e3080cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b2e5d8af9c6a6b587949a09635a3e71" id="r_a7b2e5d8af9c6a6b587949a09635a3e71"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#a7b2e5d8af9c6a6b587949a09635a3e71">beginrun</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;runInfo) override</td></tr>
-<tr class="memdesc:a7b2e5d8af9c6a6b587949a09635a3e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a7b2e5d8af9c6a6b587949a09635a3e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the frame counter of all modules to 1 with sls setNextFrameNumber.  <br /></td></tr>
 <tr class="separator:a7b2e5d8af9c6a6b587949a09635a3e71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31fa3856949a9928032226d76a1e3ff5" id="r_a31fa3856949a9928032226d76a1e3ff5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#a31fa3856949a9928032226d76a1e3ff5">enable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
-<tr class="memdesc:a31fa3856949a9928032226d76a1e3ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:a31fa3856949a9928032226d76a1e3ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start acquisition on all modules, then return 0 if every module reports RUNNING or WAITING, else 1.  <br /></td></tr>
 <tr class="separator:a31fa3856949a9928032226d76a1e3ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8123fe3c895b259f55fee03d768d388" id="r_ad8123fe3c895b259f55fee03d768d388"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#ad8123fe3c895b259f55fee03d768d388">disable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
-<tr class="memdesc:ad8123fe3c895b259f55fee03d768d388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
+<tr class="memdesc:ad8123fe3c895b259f55fee03d768d388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop acquisition on all modules, then return 0 if every module reports IDLE or STOPPED, else 1.  <br /></td></tr>
 <tr class="separator:ad8123fe3c895b259f55fee03d768d388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a657e92415d26b2123042a02507615dbc" id="r_a657e92415d26b2123042a02507615dbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html#a657e92415d26b2123042a02507615dbc">cleanup</a> ()</td></tr>
 <tr class="memdesc:a657e92415d26b2123042a02507615dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the sls detector exists, stop it, destroy it and free its shared memory.  <br /></td></tr>
@@ -370,7 +370,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Return 0 without doing anything unless overridden. </p>
+<p>Reset the frame counter of all modules to 1 with sls setNextFrameNumber. </p>
+<p>Returns 0, or 1 after logging an error if sls throws a RuntimeError. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a0a7c5dabf101c1363d8bf15517e9c57d">Drp::Detector</a>.</p>
 
@@ -408,7 +409,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">unsigned Drp::Jungfrau::configureScan </td>
           <td>(</td>
           <td class="paramtype">const nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>stepInfo</em>, </td>
+          <td class="paramname"><em>scanKeys</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -435,7 +436,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result. </p>
+<p>Pass scanKeys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure</a> with names index UpdateNamesIndex and the segment and serial numbers of the modules, and return its result. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1BEBDetector.html#a7e0676b7c94efabe705e7422028d9bac">Drp::BEBDetector</a>.</p>
 
@@ -481,7 +482,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Return 0 without doing anything unless overridden. </p>
+<p>Stop acquisition on all modules, then return 0 if every module reports IDLE or STOPPED, else 1. </p>
+<p>Returns 1 after logging an error if sls throws a RuntimeError. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#aea8bf0d28f260e4727507aa7b415cb76">Drp::Detector</a>.</p>
 
@@ -527,7 +529,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Return 0 without doing anything unless overridden. </p>
+<p>Start acquisition on all modules, then return 0 if every module reports RUNNING or WAITING, else 1. </p>
+<p>Returns 1 after logging an error if sls throws a RuntimeError. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a191f2cceb69098dee0e73b94215fe095">Drp::Detector</a>.</p>
 
@@ -573,7 +576,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result. </p>
+<p>Write the XTC update with <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step</a> (returning its result if non-zero), then for each module set the sls gain mode from user.gainMode (mapped through the gainModeEnum names, and recording whether it is FIX_G1 or FIX_G2) or, if that key is absent, the trigger delay from user.trigger_delay_s. </p>
+<p>A user.gainMode value missing from gainModeEnum is ignored. Returns 1 if the gain mode name has no sls equivalent, else 0. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1BEBDetector.html#aefdb733a9b979b92732cd28048f1c3f9">Drp::BEBDetector</a>.</p>
 

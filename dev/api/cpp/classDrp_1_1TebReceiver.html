@@ -114,10 +114,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a8aba9e08e7945b10553fbe43494f6a6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the base, keep the MEB contributor of drp, and create the file writer and the small-data writer with buffers of the larger of the pebble buffer size and para.maxTrSize (the file writer uses direct I/O per getDioFlag(para)).  <br /></td></tr>
 <tr class="separator:a8aba9e08e7945b10553fbe43494f6a6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfba72d19302b808b6af80b43a1c208a" id="r_abfba72d19302b808b6af80b43a1c208a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1FileWriterBase.html">FileWriterBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiver.html#abfba72d19302b808b6af80b43a1c208a">fileWriter</a> () override</td></tr>
-<tr class="memdesc:abfba72d19302b808b6af80b43a1c208a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the writer used for the data file.  <br /></td></tr>
+<tr class="memdesc:abfba72d19302b808b6af80b43a1c208a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> member that records events.  <br /></td></tr>
 <tr class="separator:abfba72d19302b808b6af80b43a1c208a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b23552329c99951c77c7621a26e822e" id="r_a2b23552329c99951c77c7621a26e822e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1SmdWriterBase.html">SmdWriterBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiver.html#a2b23552329c99951c77c7621a26e822e">smdWriter</a> () override</td></tr>
-<tr class="memdesc:a2b23552329c99951c77c7621a26e822e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the writer used for the small-data file.  <br /></td></tr>
+<tr class="memdesc:a2b23552329c99951c77c7621a26e822e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classDrp_1_1SmdWriter.html" title="Small-data writer that forwards open, close and writeEvent to an internal BufferedFileWriter.">SmdWriter</a> member used for the small-data output.  <br /></td></tr>
 <tr class="separator:a2b23552329c99951c77c7621a26e822e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1TebReceiverBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1TebReceiverBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1TebReceiverBase.html">Drp::TebReceiverBase</a></td></tr>
 <tr class="memitem:a1d41b8f6c2cdce869489206d8e13ff73 inherit pub_methods_classDrp_1_1TebReceiverBase" id="r_a1d41b8f6c2cdce869489206d8e13ff73"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a1d41b8f6c2cdce869489206d8e13ff73">TebReceiverBase</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, <a class="el" href="classDrp_1_1DrpBase.html">DrpBase</a> &amp;)</td></tr>
@@ -375,7 +375,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: return the writer used for the data file. </p>
+<p>Return the <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> member that records events. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1TebReceiverBase.html#aaba35bbca8b2c038920e85e4308ede1b">Drp::TebReceiverBase</a>.</p>
 
@@ -442,7 +442,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: return the writer used for the small-data file. </p>
+<p>Return the <a class="el" href="classDrp_1_1SmdWriter.html" title="Small-data writer that forwards open, close and writeEvent to an internal BufferedFileWriter.">SmdWriter</a> member used for the small-data output. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1TebReceiverBase.html#af8c189c8be1b55eb9a75e6cbbd65f1ee">Drp::TebReceiverBase</a>.</p>
 

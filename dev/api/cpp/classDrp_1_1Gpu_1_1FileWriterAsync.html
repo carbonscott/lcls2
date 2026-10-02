@@ -111,7 +111,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a856288103b5db342812ff6524f35c8ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate a GPU buffer of twice bufferSize, used as two halves of bufferSize bytes.  <br /></td></tr>
 <tr class="separator:a856288103b5db342812ff6524f35c8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad86b128d8d9a430900c17b27d8b0defa" id="r_ad86b128d8d9a430900c17b27d8b0defa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriterAsync.html#ad86b128d8d9a430900c17b27d8b0defa">writeEvent</a> (const void *devPtr, size_t size, const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a>) override</td></tr>
-<tr class="memdesc:ad86b128d8d9a430900c17b27d8b0defa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: write size bytes from data; the implementations use the seconds of ts to age their batches.  <br /></td></tr>
+<tr class="memdesc:ad86b128d8d9a430900c17b27d8b0defa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#af6b418c5ec2d52eae0b58b3a60e0d29b" title="Copy size bytes from device pointer devPtr into the GPU buffer (asynchronously on the registered stre...">FileWriter::writeEvent</a> but with two buffer halves: when the event does not fit in the current half or the batch is more than 2 seconds old, wait for the previous write, start a cuFileWriteAsync of the current half and switch halves.  <br /></td></tr>
 <tr class="separator:ad86b128d8d9a430900c17b27d8b0defa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Gpu_1_1FileWriter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html">Drp::Gpu::FileWriter</a></td></tr>
 <tr class="memitem:ab80515887765c39a29e50db3d3f2eb20 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter" id="r_ab80515887765c39a29e50db3d3f2eb20"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#ab80515887765c39a29e50db3d3f2eb20">FileWriter</a> (size_t bufferSize, bool dio)</td></tr>
@@ -127,10 +127,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:af1e9b80b5a29415f3ccae1c9c7616efc inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deregister the stream set by <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#a0bd20f7e9a3a8d3e89b2b59e201d90bf" title="Use stream for the buffer copies and register it with cuFile (flags 0x7).">registerStream()</a>, if any, and forget it; the argument is not used.  <br /></td></tr>
 <tr class="separator:af1e9b80b5a29415f3ccae1c9c7616efc inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a863d55159bcb04c92e9208107a1462c3 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter" id="r_a863d55159bcb04c92e9208107a1462c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#a863d55159bcb04c92e9208107a1462c3">open</a> (const std::string &amp;fileName) override</td></tr>
-<tr class="memdesc:a863d55159bcb04c92e9208107a1462c3 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: open fileName for writing; the implementations in FileWriter.cc return 0 on success.  <br /></td></tr>
+<tr class="memdesc:a863d55159bcb04c92e9208107a1462c3 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close any open file, log the cuFile properties, create or truncate fileName (with O_DIRECT if dio was set), take a write lock and register the file and the GPU buffer with cuFile, then reset the buffer count and file offset.  <br /></td></tr>
 <tr class="separator:a863d55159bcb04c92e9208107a1462c3 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a185dabab18fc2531ef5d53e443dbc321 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter" id="r_a185dabab18fc2531ef5d53e443dbc321"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#a185dabab18fc2531ef5d53e443dbc321">close</a> () override</td></tr>
-<tr class="memdesc:a185dabab18fc2531ef5d53e443dbc321 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: flush buffered data and close the current file.  <br /></td></tr>
+<tr class="memdesc:a185dabab18fc2531ef5d53e443dbc321 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a file is open, write out the buffered data, deregister the file and the GPU buffer from cuFile and close the descriptor.  <br /></td></tr>
 <tr class="separator:a185dabab18fc2531ef5d53e443dbc321 inherit pub_methods_classDrp_1_1Gpu_1_1FileWriter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1FileWriterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1FileWriterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
@@ -278,7 +278,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::Gpu::FileWriterAsync::writeEvent </td>
           <td>(</td>
           <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
+          <td class="paramname"><em>devPtr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -290,7 +290,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a>&#160;</td>
-          <td class="paramname"><em>ts</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -305,7 +305,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: write size bytes from data; the implementations use the seconds of ts to age their batches. </p>
+<p>Like <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#af6b418c5ec2d52eae0b58b3a60e0d29b" title="Copy size bytes from device pointer devPtr into the GPU buffer (asynchronously on the registered stre...">FileWriter::writeEvent</a> but with two buffer halves: when the event does not fit in the current half or the batch is more than 2 seconds old, wait for the previous write, start a cuFileWriteAsync of the current half and switch halves. </p>
+<p>Then copy the event device to device into the current half; exits if it does not fit or if an asynchronous write failed. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#af6b418c5ec2d52eae0b58b3a60e0d29b">Drp::Gpu::FileWriter</a>.</p>
 

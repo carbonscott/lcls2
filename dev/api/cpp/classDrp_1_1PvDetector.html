@@ -130,7 +130,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae66816e7f218d6f9b9b07702d423b881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1XpmDetector.html#a24314d4c50561b10da0dfc70ff30f458" title="Does nothing unless overridden.">XpmDetector::shutdown()</a> and drop the PV monitors; returns 0.  <br /></td></tr>
 <tr class="separator:ae66816e7f218d6f9b9b07702d423b881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31197f0482346c0fe184a37c74364797" id="r_a31197f0482346c0fe184a37c74364797"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a31197f0482346c0fe184a37c74364797">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a31197f0482346c0fe184a37c74364797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
+<tr class="memdesc:a31197f0482346c0fe184a37c74364797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run <a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e" title="Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.">XpmDetector::configure</a>, then for each PV monitor add its raw names (version from the data_vsn kwarg, default 0x010000) and, unless detType is pv, the XTC translation of the JSON returned by Python pvadetector_config (nothing when it returns None).  <br /></td></tr>
 <tr class="separator:a31197f0482346c0fe184a37c74364797"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3d7d960711ce35af9c5ccc1c7e57659" id="r_aa3d7d960711ce35af9c5ccc1c7e57659"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#aa3d7d960711ce35af9c5ccc1c7e57659">unconfigure</a> ()</td></tr>
 <tr class="memdesc:aa3d7d960711ce35af9c5ccc1c7e57659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the names lookup table; returns 0.  <br /></td></tr>
@@ -142,10 +142,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a132315f81c6f3e9c696bdff724b2360c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the running flag.  <br /></td></tr>
 <tr class="separator:a132315f81c6f3e9c696bdff724b2360c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e64a1128a473801b91a0c63211cf814" id="r_a8e64a1128a473801b91a0c63211cf814"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a8e64a1128a473801b91a0c63211cf814">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;evt, const void *bufEnd, <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *, uint64_t l1count) override</td></tr>
-<tr class="memdesc:a8e64a1128a473801b91a0c63211cf814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram.  <br /></td></tr>
+<tr class="memdesc:a8e64a1128a473801b91a0c63211cf814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body (marked unused).  <br /></td></tr>
 <tr class="separator:a8e64a1128a473801b91a0c63211cf814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6321c7485b8d97c77179aeb9e70dcc56" id="r_a6321c7485b8d97c77179aeb9e70dcc56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a6321c7485b8d97c77179aeb9e70dcc56">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;evt, const void *bufEnd, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) override</td></tr>
-<tr class="memdesc:a6321c7485b8d97c77179aeb9e70dcc56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden; called with the trigger result for an event.  <br /></td></tr>
+<tr class="memdesc:a6321c7485b8d97c77179aeb9e70dcc56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body (marked unused).  <br /></td></tr>
 <tr class="separator:a6321c7485b8d97c77179aeb9e70dcc56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e6df4b2e83c893203b36ef3927afcef" id="r_a0e6df4b2e83c893203b36ef3927afcef"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classDrp_1_1PvMonitor.html">PvMonitor</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a0e6df4b2e83c893203b36ef3927afcef">pvMonitors</a> () const</td></tr>
 <tr class="memdesc:a0e6df4b2e83c893203b36ef3927afcef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the PV monitors created by <a class="el" href="classDrp_1_1PvDetector.html#a078a702957ff390351312055e348dedf" title="Call XpmDetector::connect() and create one PvMonitor per PV spec, parsing an optional alias=,...">connect()</a>.  <br /></td></tr>
@@ -364,7 +364,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td>
-          <td class="paramname"><em>xtc</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -385,7 +385,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success. </p>
+<p>Run <a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e" title="Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.">XpmDetector::configure</a>, then for each PV monitor add its raw names (version from the data_vsn kwarg, default 0x010000) and, unless detType is pv, the XTC translation of the JSON returned by Python pvadetector_config (nothing when it returns None). </p>
+<p>Then add the pvdetinfo names and data listing the PV aliases (comma-separated) and PV names (newline-separated). Returns 0; 1 if the base configure or a monitor's getParams fails, -1 (as unsigned) if the JSON translation fails, and aborts if the config XTC exceeds maxTrSize. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a183aa15f691a48150c57b264c604975d">Drp::Detector</a>.</p>
 
@@ -590,7 +591,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::PvDetector::event </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;&#160;</td>
-          <td class="paramname"><em>dgram</em>, </td>
+          <td class="paramname"><em>evt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -602,7 +603,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;&#160;</td>
-          <td class="paramname"><em>result</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -617,7 +618,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Does nothing unless overridden; called with the trigger result for an event. </p>
+<p>Does nothing; empty body (marked unused). </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a9f187e8fe9f0d4a9c6a3f54faac3578c">Drp::Detector</a>.</p>
 
@@ -636,7 +637,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::PvDetector::event </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;&#160;</td>
-          <td class="paramname"><em>dgram</em>, </td>
+          <td class="paramname"><em>evt</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -648,13 +649,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *&#160;</td>
-          <td class="paramname"><em>event</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
+          <td class="paramname"><em>l1count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -669,7 +670,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram. </p>
+<p>Does nothing; empty body (marked unused). </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a6122859951cd436d9e724a61faa06fc5">Drp::Detector</a>.</p>
 

@@ -112,15 +112,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af1022c99172379c8192d7d29f03addaa" id="r_af1022c99172379c8192d7d29f03addaa"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#af1022c99172379c8192d7d29f03addaa">disconnect</a> ()</td></tr>
 <tr class="separator:af1022c99172379c8192d7d29f03addaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0fe27d3500ea91a5e19fe9586e5eef6" id="r_af0fe27d3500ea91a5e19fe9586e5eef6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#af0fe27d3500ea91a5e19fe9586e5eef6">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:af0fe27d3500ea91a5e19fe9586e5eef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
+<tr class="memdesc:af0fe27d3500ea91a5e19fe9586e5eef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run <a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e" title="Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.">XpmDetector::configure</a> (returning 1 if it fails), reset the stale count and add the PV names from the <a class="el" href="classDrp_1_1EpicsArchMonitor.html">EpicsArchMonitor</a> to xtc.  <br /></td></tr>
 <tr class="separator:af0fe27d3500ea91a5e19fe9586e5eef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa65ec5dd93028ebc5fd65dba8b576180" id="r_aa65ec5dd93028ebc5fd65dba8b576180"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#aa65ec5dd93028ebc5fd65dba8b576180">unconfigure</a> ()</td></tr>
 <tr class="separator:aa65ec5dd93028ebc5fd65dba8b576180"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad599641959239c3736fc760ff4cfd0a1" id="r_ad599641959239c3736fc760ff4cfd0a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#ad599641959239c3736fc760ff4cfd0a1">slowupdate</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:ad599641959239c3736fc760ff4cfd0a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset xtc to an empty Parent Xtc whose source is nodeId.  <br /></td></tr>
+<tr class="memdesc:ad599641959239c3736fc760ff4cfd0a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the current PV values and their stale flags to xtc with <a class="el" href="classDrp_1_1EpicsArchMonitor.html#a3f15d59ccb31f02896bc4b8f52f70a60">EpicsArchMonitor::getData</a>, which also sets the stale count returned by <a class="el" href="classDrp_1_1EaDetector.html#a1344d78ddf8e4b5421fdc49e2ee4703c">nStales()</a>.  <br /></td></tr>
 <tr class="separator:ad599641959239c3736fc760ff4cfd0a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeeb2ef61abc5aa779b9211a14e8207f7" id="r_aeeb2ef61abc5aa779b9211a14e8207f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#aeeb2ef61abc5aa779b9211a14e8207f7">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;dgram, const void *bufEnd, <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *event, uint64_t l1count) override</td></tr>
-<tr class="memdesc:aeeb2ef61abc5aa779b9211a14e8207f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram.  <br /></td></tr>
+<tr class="memdesc:aeeb2ef61abc5aa779b9211a14e8207f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body (marked unused).  <br /></td></tr>
 <tr class="separator:aeeb2ef61abc5aa779b9211a14e8207f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68fc86af2d6582d7e17083a98d5426a7" id="r_a68fc86af2d6582d7e17083a98d5426a7"><td class="memItemLeft" align="right" valign="top">const std::unique_ptr&lt; <a class="el" href="classDrp_1_1EpicsArchMonitor.html">EpicsArchMonitor</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html#a68fc86af2d6582d7e17083a98d5426a7">monitor</a> () const</td></tr>
 <tr class="separator:a68fc86af2d6582d7e17083a98d5426a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -338,7 +338,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success. </p>
+<p>Run <a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e" title="Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.">XpmDetector::configure</a> (returning 1 if it fails), reset the stale count and add the PV names from the <a class="el" href="classDrp_1_1EpicsArchMonitor.html">EpicsArchMonitor</a> to xtc. </p>
+<p>Aborts if the Configure datagram or the PV payload size reported by the monitor exceeds <a class="el" href="structDrp_1_1Parameters.html#ad18186f81f94d98bb62ca3a809758832" title="Maximum transition datagram size in bytes; drp.cc sets 8 MiB and several other executables 256 KiB.">Parameters::maxTrSize</a>; otherwise returns 0. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a183aa15f691a48150c57b264c604975d">Drp::Detector</a>.</p>
 
@@ -426,7 +427,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
+          <td class="paramname"><em>l1count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -441,7 +442,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram. </p>
+<p>Does nothing; empty body (marked unused). </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a6122859951cd436d9e724a61faa06fc5">Drp::Detector</a>.</p>
 
@@ -531,7 +532,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reset xtc to an empty Parent Xtc whose source is nodeId. </p>
+<p>Add the current PV values and their stale flags to xtc with <a class="el" href="classDrp_1_1EpicsArchMonitor.html#a3f15d59ccb31f02896bc4b8f52f70a60">EpicsArchMonitor::getData</a>, which also sets the stale count returned by <a class="el" href="classDrp_1_1EaDetector.html#a1344d78ddf8e4b5421fdc49e2ee4703c">nStales()</a>. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35">Drp::Detector</a>.</p>
 
