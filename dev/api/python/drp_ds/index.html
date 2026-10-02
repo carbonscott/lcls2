@@ -1596,12 +1596,14 @@
 
 
 <h1 id="psanapsexpdrp_ds">psana.psexp.drp_ds<a class="headerlink" href="#psanapsexpdrp_ds" title="Permanent link">&para;</a></h1>
-<p><code>DrpDataSource</code> is returned by <code>DataSource(drp=...)</code> when none of <code>shmem</code>,
-<code>exp</code> or <code>files</code> is given (see <a href="../datasource/">psana.datasource</a>). It reads
-dgrams through <code>DgramManager(["drp"])</code>, and its <code>runs()</code> yields one <code>RunDrp</code>
-(see <a href="../run/">psana.psexp.run</a>) for each BeginRun. The constructor reads the
-<code>drp</code> object itself; the other keyword arguments are read by
-<a href="../ds_base/"><code>DataSourceBase</code></a>.</p>
+<p><code>DataSource(drp=...)</code> calls <code>DrpDataSource</code> when none of <code>shmem</code>, <code>exp</code> or
+<code>files</code> is given (see <a href="../datasource/">psana.datasource</a>). As written, the first
+line after <code>DataSourceBase.__init__</code> reads <code>self.drp</code>, which <code>DataSourceBase</code>
+does not set, so the call raises AttributeError (see Notes below). The rest of
+the class reads dgrams through <code>DgramManager(["drp"])</code>, and its <code>runs()</code> yields
+one <code>RunDrp</code> (see <a href="../run/">psana.psexp.run</a>) for each BeginRun. The constructor
+also reads attributes of the <code>drp</code> keyword argument; the other keyword arguments
+are read by <a href="../ds_base/"><code>DataSourceBase</code></a>.</p>
 <p>See <a href="../../../features/drp-eventbuilding/">DRP and event building</a>.</p>
 
 
