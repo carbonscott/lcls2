@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "lcls2", "index.html", [
-    [ "Todo List", "todo.html", null ],
+    [ "lcls2 C++ API", "index.html", "index" ],
     [ "Topics", "topics.html", "topics" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
@@ -123,15 +123,15 @@ var NAVTREEINDEX =
 "classgeometry_1_1SegGeometryEpix100V1.html#a1f01315c5b338f76f5988b2ee51e9bf5",
 "classpsalg_1_1NDArray.html#a24f441e086364a3d8bb3176645033afb",
 "dir_11ea796663551824b6800316e02a9887.html",
-"globals_u.html",
-"namespacedetector.html#a2e03c0e57c56515758cd66bf64ec9586",
-"namespaceutilsdetector.html#a336a758dc360070264a897715ed2dcfe",
-"structClientReg.html#a72808d0b495809fc0947a7fe537b89c3",
-"structDrp_1_1Parameters.html#a32f1f8e4a9ead3f62411e5b00ea8e604",
-"structPds_1_1Eb_1_1EbParams.html#acbda9bfd3ad39363fb0a4bca1bde53e8",
-"structPds__Epics_1_1PutTracker.html#ac90e1d5483038168e6bfa372a9519450",
-"structPgpDevice.html#a3e9bf17b46bfb4d03f743b0ec207e026",
-"structpsalgos_1_1RingAvgRms.html#a6f6272877d3eb4fe95e27c6f7188d7a3"
+"globals_t.html",
+"namespacedetector.html#a1bbd8acc8f481fe46a9b49d98a88853e",
+"namespaceutil.html#abefc7de47d36221e9377602a2c2e315e",
+"structClient.html#abe4b624d6214a5f5aac163564015ae5b",
+"structDrp_1_1Parameters.html#a2f292a35cbe1a1913b4fbbad8a48b7ed",
+"structPds_1_1Eb_1_1EbParams.html#abfd0f9cbea6ac03ee02bf5fa723c99b2",
+"structPds__Epics_1_1PutTracker.html#a87d310c7106de1dce439113cb84e82a1",
+"structPgpDevice.html#a2bb4825575e99a5f06c4772b6b7ac3d6",
+"structpsalgos_1_1RingAvgRms.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

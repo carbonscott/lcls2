@@ -698,6 +698,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -815,6 +827,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../run/" class="md-nav__link">
         
   
@@ -843,6 +911,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../event/" class="md-nav__link">
         
   
@@ -851,6 +947,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1545,6 +1669,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../control/" class="md-nav__link">
         
   
@@ -1581,6 +1733,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -2128,38 +2308,33 @@ the file is written directly.</p>
 
     <div class="doc doc-contents first">
 
-        <p>Smalldata (v2)
-Parallel data analysis with MPI send/recv</p>
-<p>Analysis consists of two different process types:</p>
-<ol>
-<li>
-<p>clients
+        <div class="highlight"><pre><span></span><code>Smalldata (v2)
+Parallel data analysis with MPI send/recv
+
+Analysis consists of two different process types:
+
+1. clients
     &gt; these perform per-event analysis
     &gt; are associted with one specific server
-    &gt; after processing <code>batch_size</code> events, send a
-      dict of data over to their server</p>
-</li>
-<li>
-<p>servers (srv)
+    &gt; after processing `batch_size` events, send a
+      dict of data over to their server
+
+  2. servers (srv)
     &gt; recv a batch of events from one of many clients
-    &gt; add these batches to a <code>cache</code>
+    &gt; add these batches to a `cache`
     &gt; when the cache is full, write to disk
-    &gt; each server produces its OWN hdf5 file</p>
-</li>
-</ol>
-<blockquote>
-<blockquote>
-<p>at the end of execution, rank 0 "joins" all the
+    &gt; each server produces its OWN hdf5 file
+
+&gt;&gt; at the end of execution, rank 0 "joins" all the
    individual hdf5 files together using HDF virtual
    datasets -- this provides a "virtual", unified
-   view of all processed data</p>
-</blockquote>
-</blockquote>
-<div class="highlight"><pre><span></span><code>         CLIENT                SRV
-     [ --------- ]       | [ --------- ]
-     [ -{event}- ]  send | [ --------- ]
-</code></pre></div>
-<p>batch  [ --------- ]  ~~~&gt; | [ --------- ]
+   view of all processed data
+
+
+             CLIENT                SRV
+         [ --------- ]       | [ --------- ]
+         [ -{event}- ]  send | [ --------- ]
+  batch  [ --------- ]  ~~~&gt; | [ --------- ]
          [ --------- ]       | [ --------- ]
          [ --------- ]       | [ --------- ]
                              |
@@ -2168,23 +2343,27 @@ Parallel data analysis with MPI send/recv</p>
                              | [ --------- ]
                              | [ --------- ]
                              | [ --------- ]
-                             | -- cache</p>
-<p>(I apologize for indulging in some ASCII art)</p>
-<p>Some Notes:
+                             | -- cache
+
+
+  (I apologize for indulging in some ASCII art)
+
+Some Notes:
   * number of servers to use is set by PS_SRV_NODES
     environment variable
   * if running in psana parallel mode, clients ARE
     BD nodes (they are the same processes)
   * eventual time-stamp sorting would be doable with
     code conceptually similar to this (but would need
-    to be optimized for performance):</p>
-<div class="highlight"><pre><span></span><code>import numpy as np
-import h5py
-f = h5py.File('smalldata_test.h5')
-ts = f['timestamp'][:]
-tsneg = f['tsneg']
-for i in np.argsort(ts):
-    print(tsneg[i])
+    to be optimized for performance):
+
+    import numpy as np
+    import h5py
+    f = h5py.File('smalldata_test.h5')
+    ts = f['timestamp'][:]
+    tsneg = f['tsneg']
+    for i in np.argsort(ts):
+        print(tsneg[i])
 </code></pre></div>
 
 
@@ -3678,7 +3857,7 @@ slower, e.g. at the end of the job).</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

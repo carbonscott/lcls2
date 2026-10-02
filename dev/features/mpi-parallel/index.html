@@ -839,6 +839,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -956,6 +968,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/run/" class="md-nav__link">
         
   
@@ -984,6 +1052,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/event/" class="md-nav__link">
         
   
@@ -992,6 +1088,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1208,6 +1332,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/control/" class="md-nav__link">
         
   
@@ -1244,6 +1396,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1559,11 +1739,13 @@ In parallel mode it raises an exception if <code>PS_SRV_NODES</code> is 0.</p>
 <p>Adapted from <code>psana/psana/tests/run_smalldata.py</code>, which
 <code>psana/psana/tests/byhand_mpi.py</code> runs as
 <code>PS_SRV_NODES=2 mpirun -n 6 python run_smalldata.py</code> (1 smd0, 1 eb, 2 bd, 2 srv).
-<code>xpptut15</code> run 14 is the synthetic test data set; replace it with your
-experiment and run.</p>
+<code>xpptut15</code> run 14 is the synthetic test data set (to write it into <code>.tmp</code>,
+see <a href="../../getting-started/#synthetic-test-data">Synthetic test data</a>); replace
+it with your experiment and run.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">psana</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataSource</span>
 
+<span class="n">xtc_dir</span> <span class="o">=</span> <span class="s2">".tmp"</span>   <span class="c1"># see Getting started</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">exp</span><span class="o">=</span><span class="s2">"xpptut15"</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">xtc_dir</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">smd</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">smalldata</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">"smalldata_test.h5"</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
@@ -1650,7 +1832,7 @@ experiment and run.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

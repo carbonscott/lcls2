@@ -1,5 +1,10 @@
 var NAVTREEINDEX55 =
 {
+"namespacedetector.html#a1bbd8acc8f481fe46a9b49d98a88853e":[2,0,3,33],
+"namespacedetector.html#a1d6929505b7ebb5d2dedb508f5ecc082":[2,0,3,22],
+"namespacedetector.html#a241134da573a3238f9847a937abc162a":[2,0,3,21],
+"namespacedetector.html#a293c6505e0f2b12e16899f6a744fb8d1":[2,0,3,47],
+"namespacedetector.html#a2b96d98a0b0271d8bed1fddfad978eec":[2,0,3,44],
 "namespacedetector.html#a2e03c0e57c56515758cd66bf64ec9586":[2,0,3,43],
 "namespacedetector.html#a39b67ffaec7d4b5055bb777315f70c87":[2,0,3,28],
 "namespacedetector.html#a39b67ffaec7d4b5055bb777315f70c87a00ce21d2df3b39cda7832b3694b7e4d6":[2,0,3,28,7],
@@ -128,8 +133,8 @@ var NAVTREEINDEX55 =
 "namespacelocalextrema.html#ae0b9ecaa1d677f67e562c3e145ddf424":[2,0,8,8],
 "namespacelocalextrema.html#ae6fc1139107dec574e3a29e4d380dd55":[2,0,8,16],
 "namespacelocalextrema.html#afcfe8cb096f5b898751f7280f63fa881":[2,0,8,1],
-"namespacemembers.html":[2,1,0],
 "namespacemembers.html":[2,1,0,0],
+"namespacemembers.html":[2,1,0],
 "namespacemembers_a.html":[2,1,0,1],
 "namespacemembers_b.html":[2,1,0,2],
 "namespacemembers_c.html":[2,1,0,3],
@@ -244,10 +249,5 @@ var NAVTREEINDEX55 =
 "namespacetypes.html#ad8abe5232284c764d4742103590db9fd":[2,0,20,2],
 "namespaceutil.html":[2,0,21],
 "namespaceutil.html#a9b180b8e6c7ddbdede582e0a0170350c":[2,0,21,1],
-"namespaceutil.html#ab1261d85b516d7689cd4ffd1ee852650":[2,0,21,0],
-"namespaceutil.html#abefc7de47d36221e9377602a2c2e315e":[2,0,21,2],
-"namespaceutilsdetector.html":[2,0,22],
-"namespaceutilsdetector.html#a00357341636c55f28ea4cdc40ded0850":[2,0,22,3],
-"namespaceutilsdetector.html#a048b646d3cb5bf6c58831dc6266e9f9f":[2,0,22,6],
-"namespaceutilsdetector.html#a1e8d1d1003c892532f7a5a284bc34247":[2,0,22,12]
+"namespaceutil.html#ab1261d85b516d7689cd4ffd1ee852650":[2,0,21,0]
 };

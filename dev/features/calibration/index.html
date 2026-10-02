@@ -850,6 +850,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -967,6 +979,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/run/" class="md-nav__link">
         
   
@@ -995,6 +1063,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/event/" class="md-nav__link">
         
   
@@ -1003,6 +1099,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1219,6 +1343,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/control/" class="md-nav__link">
         
   
@@ -1255,6 +1407,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1526,7 +1706,7 @@ when the <code>CALIB_JWT</code> environment variable is set, otherwise with Kerb
 <h3 id="querying-the-database-directly">Querying the database directly<a class="headerlink" href="#querying-the-database-directly" title="Permanent link">&para;</a></h3>
 <p><code>psana/psana/pscalib/calib/MDBWebUtils.py</code>:</p>
 <ul>
-<li><code>calib_constants(det, exp=None, ctype='pedestals', run=None, time_sec=None, vers=None, dbsuffix='', **kwa)</code> returns <code>(data, doc)</code> for one constant type.</li>
+<li><code>calib_constants(det, exp=None, ctype='pedestals', run=None, time_sec=None, vers=None, dbsuffix='', **kwa)</code> returns <code>(data, doc)</code> for one constant type, or <code>None</code> if no document matches the query.</li>
 <li><code>calib_constants_all_types(det, exp=None, run=None, time_sec=None, vers=None, dbsuffix='', **kwa)</code> returns a dict with all types.</li>
 <li><code>deploy_constants(data, exp, detname_long, **kwa)</code> writes constants.</li>
 </ul>
@@ -1584,12 +1764,23 @@ experiment and run recorded in the file, so this needs network access:</p>
     <span class="n">calib</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">calib</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>     <span class="c1"># pedestal-subtracted, gain-corrected, masked</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>       <span class="c1"># needs geometry</span>
 </code></pre></div>
-<p>Querying one constant directly, as in
-<code>psana/psana/detector/test_issues_2025.py</code> (needs access to that experiment's
-data and constants):</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">psana.pscalib.calib.MDBWebUtils</span><span class="w"> </span><span class="kn">import</span> <span class="n">calib_constants</span>
+<p>Querying one constant directly, adapted from <code>issue_2025_03_18</code> in
+<code>psana/psana/detector/test_issues_2025.py</code> (needs access to the data and
+constants of experiment <code>ued1006477</code>). The detector name for the database is
+<code>det.raw._uniqueid</code>: the detector type followed by the id of each segment,
+joined with <code>_</code>; it is the same value (<code>configinfo.uniqueid</code>) that psana
+passes as <code>det_uniqueid</code> when it opens a run.
+It is an attribute of every detector interface (set in <code>DetectorImpl._reset</code>,
+<code>psana/psana/detector/detector_impl.py</code>), not a method:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">psana</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataSource</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">psana.pscalib.calib.MDBWebUtils</span><span class="w"> </span><span class="kn">import</span> <span class="n">calib_constants</span>
 
-<span class="n">peds</span><span class="p">,</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">calib_constants</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">_uniqueid</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="s2">"ued1006477"</span><span class="p">,</span> <span class="n">ctype</span><span class="o">=</span><span class="s2">"pedestals"</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">exp</span><span class="o">=</span><span class="s2">"ued1006477"</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">myrun</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">runs</span><span class="p">())</span>
+<span class="n">det</span> <span class="o">=</span> <span class="n">myrun</span><span class="o">.</span><span class="n">Detector</span><span class="p">(</span><span class="s2">"epixquad"</span><span class="p">)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">calib_constants</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">_uniqueid</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="s2">"ued1006477"</span><span class="p">,</span> <span class="n">ctype</span><span class="o">=</span><span class="s2">"pedestals"</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">resp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>          <span class="c1"># None if no document matches</span>
+    <span class="n">peds</span><span class="p">,</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">resp</span>
 </code></pre></div>
 <h2 id="where-in-the-code">Where in the code<a class="headerlink" href="#where-in-the-code" title="Permanent link">&para;</a></h2>
 <ul>
@@ -1665,7 +1856,7 @@ data and constants):</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

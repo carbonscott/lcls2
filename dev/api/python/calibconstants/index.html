@@ -16,7 +16,7 @@
         <link rel="prev" href="../areadetector/">
       
       
-        <link rel="next" href="../control/">
+        <link rel="next" href="../envstore/">
       
       
         
@@ -698,6 +698,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -815,6 +827,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../run/" class="md-nav__link">
         
   
@@ -843,6 +911,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../event/" class="md-nav__link">
         
   
@@ -851,6 +947,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1109,17 +1233,6 @@
   
     <nav class="md-nav" aria-label="calibconstants">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Class CalibConstants with convenience methods to access info from dict returned from DB
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#psana.detector.calibconstants.CalibConstants" class="md-nav__link">
@@ -1478,6 +1591,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../control/" class="md-nav__link">
         
   
@@ -1514,6 +1655,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1598,17 +1767,6 @@
   
     <nav class="md-nav" aria-label="calibconstants">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Class CalibConstants with convenience methods to access info from dict returned from DB
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#psana.detector.calibconstants.CalibConstants" class="md-nav__link">
@@ -1978,6 +2136,11 @@ calibration database when the run is opened) and provides convenience
 accessors (<code>pedestals()</code>, <code>rms()</code>, <code>gain()</code>, <code>gain_factor()</code>, <code>status()</code>),
 geometry (<code>geo()</code>, pixel coordinates and indexes) and <code>image(nda, ...)</code>. Area
 detectors create it on demand (<code>det.raw._calibconstants()</code>).</p>
+<p>The constructor is <code>CalibConstants(calibconst, detname, **kwa)</code>. The "Usage"
+block in the module docstring below writes <code>CalibConstants(calibconst, **kwa)</code>
+and leaves out <code>detname</code>, which is required: one instance is kept per
+<code>detname</code>, and creating it again with the same name returns that instance,
+reset to the new <code>calibconst</code>.</p>
 <p>See <a href="../../../features/calibration/">Calibration constants</a>.</p>
 
 
@@ -1993,10 +2156,14 @@ detectors create it on demand (<code>det.raw._calibconstants()</code>).</p>
 
     <div class="doc doc-contents first">
 
-        <h3 id="psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db">Class CalibConstants with convenience methods to access info from dict returned from DB<a class="headerlink" href="#psana.detector.calibconstants--class-calibconstants-with-convenience-methods-to-access-info-from-dict-returned-from-db" title="Permanent link">&para;</a></h3>
-<p>Usage::</p>
-<p>from psana.detector.calibconstants import CalibConstants</p>
-<p>o = CalibConstants(calibconst, <strong>kwa)
+        <div class="highlight"><pre><span></span><code>Class CalibConstants with convenience methods to access info from dict returned from DB
+=======================================================================================
+
+Usage::
+
+  from psana.detector.calibconstants import CalibConstants
+
+  o = CalibConstants(calibconst, **kwa)
   v = o.calibconst()
   v = o.cons_and_meta_for_ctype(ctype='pedestals')
   v = o.cached_array(p, ctype='pedestals')
@@ -2013,15 +2180,17 @@ detectors create it on demand (<code>det.raw._calibconstants()</code>).</p>
   v = o.geotxt_and_meta()
   v = o.geotxt_default()
   v = o.geo()
-  v = o.pixel_coords(</strong>kwa)
-  v = o.pixel_coord_indexes(<strong>kwa)
-  v = o.cached_pixel_coord_indexes(segnums, </strong>kwa)
+  v = o.pixel_coords(**kwa)
+  v = o.pixel_coord_indexes(**kwa)
+  v = o.cached_pixel_coord_indexes(segnums, **kwa)
   v = o.image(self, nda, segnums=None, **kwa)
   v = o.pix_rc()
   v = o.pix_xyz()
   v = o.interpol_pars()
-  s = o.info_calibconst()</p>
-<p>2022-07-07 created by Mikhail Dubrovin</p>
+  s = o.info_calibconst()
+
+2022-07-07 created by Mikhail Dubrovin
+</code></pre></div>
 
 
 
@@ -2943,7 +3112,7 @@ True/False: fill empty bin with minimal intensity of four neares neighbors/ do n
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

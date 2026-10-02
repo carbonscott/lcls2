@@ -16,7 +16,7 @@
         <link rel="prev" href="../datasource/">
       
       
-        <link rel="next" href="../run/">
+        <link rel="next" href="../serial_ds/">
       
       
         
@@ -698,6 +698,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1045,6 +1057,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../run/" class="md-nav__link">
         
   
@@ -1073,6 +1141,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../event/" class="md-nav__link">
         
   
@@ -1081,6 +1177,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1297,6 +1421,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../control/" class="md-nav__link">
         
   
@@ -1333,6 +1485,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1621,6 +1801,16 @@ small-data files of a run and provides <code>smalldata()</code>, <code>unique_us
 <code>is_bd()</code> and <code>is_srv()</code>. Subclasses implement <code>runs()</code> and <code>is_mpi()</code>.</p>
 <p><code>DsParms</code> is the dataclass of parameters that is passed from the data source
 to its runs.</p>
+<p>The "Keyword Arguments" list in the <code>DataSourceBase</code> docstring below is not in
+a format the generator recognizes, so it is shown as one paragraph. The table
+of commonly used keywords in
+<a href="../../../features/datasource-run-events/#datasourcekwargs">DataSource, Run and the event loop</a>
+gives the defaults read in <code>__init__</code>. Two entries of the docstring list are
+narrower than the code: <code>run</code> may also be a list of run numbers
+(<code>_setup_runnum_list</code> accepts an int or a list, and any other type raises
+<code>InvalidDataSourceArgument</code>), and <code>skip_calib_load</code> defaults to <code>[]</code>, a list
+of detector names, or may be the string <code>"all"</code> (checked in
+<code>Run._setup_run_calibconst</code>).</p>
 <p>See <a href="../../../features/datasource-run-events/">DataSource, Run and the event loop</a>.</p>
 
 
@@ -2199,7 +2389,7 @@ are done. The <code>smalldata_obj</code> attribute must have been created by the
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

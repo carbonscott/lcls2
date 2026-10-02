@@ -850,6 +850,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -967,6 +979,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/run/" class="md-nav__link">
         
   
@@ -995,6 +1063,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/event/" class="md-nav__link">
         
   
@@ -1003,6 +1099,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1219,6 +1343,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/control/" class="md-nav__link">
         
   
@@ -1255,6 +1407,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1643,7 +1823,8 @@ derive from <code>CollectionApp</code> (<code>psdaq/psdaq/service/Collection.hh<
 </table>
 <p><code>TimedRun</code>, <code>ConfigScan</code> and <code>BlueskyScan</code> (same directory) are library
 classes used by such scripts; <code>BlueskyScan</code> is a DAQ device for the bluesky
-RunEngine.</p>
+RunEngine. <code>TimedRun</code> has an API page:
+<a href="../../api/python/timedrun/">psdaq.control.TimedRun</a>.</p>
 <h3 id="launching-a-platform">Launching a platform<a class="headerlink" href="#launching-a-platform" title="Permanent link">&para;</a></h3>
 <p>The processes are listed in a <code>.cnf</code> file (examples in <code>psdaq/psdaq/cnf/</code>,
 e.g. <code>tmo.cnf</code>, <code>rix.cnf</code>, <code>lab3-base.cnf</code>) and started with <code>procmgr</code>
@@ -1658,11 +1839,23 @@ append <code>-u &lt;id&gt;</code> and <code>-p &lt;platform&gt;</code>. An excer
 <p><code>psdaq/psdaq/slurm/</code> provides an alternative launcher based on Slurm
 (<code>daqmgr</code> command).</p>
 <h2 id="minimal-example">Minimal example<a class="headerlink" href="#minimal-example" title="Permanent link">&para;</a></h2>
-<p>Record a timed run from Python, from <code>psdaq/psdaq/control/lab3_timed_run.py</code>
-(needs a running platform; <code>args</code> comes from <code>argparse</code> with <code>-p</code>, <code>-C</code>, <code>-t</code>,
-<code>--duration</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">psdaq.control.DaqControl</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaqControl</span>
+<p>Record a timed run from Python, adapted from
+<code>psdaq/psdaq/control/lab3_timed_run.py</code> (needs a running platform). <code>TimedRun</code>
+reads <code>args.v</code> in its constructor, so the parser must define <code>-v</code>; see the
+<a href="../../api/python/timedrun/">psdaq.control.TimedRun</a> API page:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">psdaq.control.DaqControl</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaqControl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">psdaq.control.TimedRun</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimedRun</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-p'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'platform'</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-C'</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">'COLLECT_HOST'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'collection host'</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-t'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">'TIMEOUT'</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'timeout msec'</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-v'</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'be verbose'</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'--duration'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'run duration seconds'</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
 <span class="n">control</span> <span class="o">=</span> <span class="n">DaqControl</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="n">platform</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
 <span class="n">daqState</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">getState</span><span class="p">()</span>
@@ -1689,7 +1882,8 @@ example <code>daqstate -p &lt;platform&gt; -P &lt;instrument&gt; -C &lt;collecti
 <li><code>psdaq/psdaq/service/Collection.hh</code>: the C++ side of the protocol (<code>CollectionApp</code>).</li>
 </ul>
 <p>API pages: <a href="../../api/python/control/">psdaq.control.control</a>,
-<a href="../../api/python/daqcontrol/">psdaq.control.DaqControl</a>.</p>
+<a href="../../api/python/daqcontrol/">psdaq.control.DaqControl</a>,
+<a href="../../api/python/timedrun/">psdaq.control.TimedRun</a>.</p>
 
 
 
@@ -1749,7 +1943,7 @@ example <code>daqstate -p &lt;platform&gt; -P &lt;instrument&gt; -C &lt;collecti
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

@@ -118,12 +118,12 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h1><a class="anchor" id="autotoc_md0"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md3"></a>
 Usage mainstream:</h1>
 <p>#include "psalg/include/Logger.hh" // MSG, MSGLOG, LOGGER, MSGSTREAM</p>
 <p>MSG(INFO, LOGGER.tstampStart() &lt;&lt; " Logger started"); // optional record LOGGER.setLogger(LL::DEBUG, "%H:%M:%S.%f"); // set level and time format</p>
 <p>MSG(DEBUG, "Test MSG DEBUG" &lt;&lt; " as stream"); MSG(TRACE, "Test MSG TRACE"); MSG(INFO, "Test MSG INFO"); MSG(WARNING, "Test MSG WARNING"); MSG(ERROR, "Test MSG ERROR"); MSG(FATAL, "Test MSG FATAL"); MSG(NOLOG, "Test MSG NOLOG"); <a class="el" href="Logger_8hh.html#afcac1c5c52d6e3808810661bcb526e37" title="If level sev is enabled, run the following statement or block once with a LogStream named strm (empty...">MSGSTREAM(INFO, out)</a>{out &lt;&lt; "Test MSGSTREAM INFO"; out &lt;&lt; " which supports block of output statements as a single message";}</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Usage optional</h1>
 <p>LOGGER.setLevel(LL::DEBUG); LOGGER.setTimeFormat("%Y-%m-%d %H:%M:%S.%f"); LOGGER.loggerInfo(std::cout); // or <a class="el" href="classLogger_1_1Logger.html#a0a28dab5411f4b21ce5e6224a1565aa0" title="Return the singleton, creating it on the first call (no locking).">Logger::Logger::instance()</a>-&gt;loggerIinfo(out); </p>
 </div></div><!-- contents -->

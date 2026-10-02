@@ -817,6 +817,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -934,6 +946,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/run/" class="md-nav__link">
         
   
@@ -962,6 +1030,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/event/" class="md-nav__link">
         
   
@@ -970,6 +1066,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1186,6 +1310,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/control/" class="md-nav__link">
         
   
@@ -1222,6 +1374,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1508,6 +1688,16 @@
 </table>
 <p>These modules are compiled; their signatures above are from the <code>.pyx</code>
 sources and they do not appear in the generated Python API pages.</p>
+<p>The Python class does not mirror the C++ class one to one.
+<code>peak_finder_algos</code> is defined in <code>psana/psana/peakFinder/peakFinder_ext.pyx</code>
+(<code>cdef class peak_finder_algos</code>, <code>__cinit__(self, seg=0, pbits=0, lim_rank=50, lim_peaks=4096)</code>)
+and passes all four values to the C++ constructor, so the C++ default
+<code>lim_peaks=6000</code> shown on the
+<a href="../../api/cpp/classpsalgos_1_1PeakFinderAlgos.html">psalgos::PeakFinderAlgos</a>
+page does not apply from Python. The Python methods call C++ methods with
+other names: <code>set_peak_selection_parameters</code> calls <code>setPeakSelectionPars</code>,
+<code>peak_finder_v3r3_d2</code> calls <code>peakFinderV3r3</code>, and <code>print_attributes</code> calls
+<code>printParameters</code>.</p>
 <h2 id="minimal-examples">Minimal examples<a class="headerlink" href="#minimal-examples" title="Permanent link">&para;</a></h2>
 <p>Peak finding on a 2-D array, from <code>psana/psana/tests/test_psalg.py</code>
 (<code>test_peakFinder</code>; <code>data</code> is a small float32 array, <code>mask</code> an array of ones):</p>
@@ -1607,7 +1797,7 @@ e.g. <code>det.raw.calib(evt)</code> for one segment.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

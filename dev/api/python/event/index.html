@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/api/python/event/">
       
       
-        <link rel="prev" href="../run/">
+        <link rel="prev" href="../step/">
       
       
-        <link rel="next" href="../dgrammanager/">
+        <link rel="next" href="../transitionid/">
       
       
         
@@ -698,6 +698,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -815,6 +827,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../run/" class="md-nav__link">
         
   
@@ -823,6 +891,34 @@
     
   
     psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
   
 
     
@@ -1095,6 +1191,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../dgrammanager/" class="md-nav__link">
         
   
@@ -1291,6 +1415,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../control/" class="md-nav__link">
         
   
@@ -1327,6 +1479,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1605,6 +1785,12 @@ nanoseconds in the lower 32 bits), <code>datetime()</code>, <code>service()</cod
 and <code>run()</code>, which returns a small <code>RunCtx</code> (<code>psana/psana/psexp/run_ctx.py</code>),
 not the full <code>Run</code>. Detector data are read through detector objects
 (<code>det.raw.calib(evt)</code>), not from the event directly.</p>
+<p><code>service()</code> returns <code>(env() &gt;&gt; 24) &amp; 0xF</code> of the first dgram that has
+<code>env()</code>, through <code>psana.utils.first_service</code>. That function raises
+<code>RuntimeError</code> unless the value is between 1 and 13. Transition id 0 is
+ClearReadout in both <a href="../transitionid/"><code>TransitionId</code></a> and the C++ enum (see
+<a href="../../../features/xtc2/">XTC2 data format</a>), so a dgram with that id makes
+<code>service()</code> raise instead of returning 0.</p>
 <p>See <a href="../../../features/datasource-run-events/">DataSource, Run and the event loop</a>.</p>
 
 
@@ -2149,7 +2335,7 @@ Multiple integrating detectors (future feature):
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

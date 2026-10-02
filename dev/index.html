@@ -763,6 +763,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -880,6 +892,62 @@
   
   
     <li class="md-nav__item">
+      <a href="api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api/python/run/" class="md-nav__link">
         
   
@@ -908,6 +976,34 @@
   
   
     <li class="md-nav__item">
+      <a href="api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api/python/event/" class="md-nav__link">
         
   
@@ -916,6 +1012,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1132,6 +1256,34 @@
   
   
     <li class="md-nav__item">
+      <a href="api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="api/python/control/" class="md-nav__link">
         
   
@@ -1168,6 +1320,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1328,10 +1508,13 @@ LCLS-II (SLAC). It holds four packages that are built together by the root
 <li><a href="api/python/">Python API</a>: reference pages generated from the
   docstrings of the main user-facing modules.</li>
 <li><a href="api/cpp/">C++ API</a>: Doxygen pages for the public headers of
-  xtcdata, psalg, psdaq and psana.</li>
+  xtcdata, psalg, psdaq and psana. The search box of this site does not cover
+  them; the C++ pages have their own search box.</li>
 </ul>
 <p>The site is versioned with <a href="https://github.com/jimporter/mike">mike</a>: <code>dev</code>
-follows the <code>better-docs</code> branch; tagged releases get their own version.</p>
+follows the <code>better-docs</code> branch of
+<a href="https://github.com/carbonscott/lcls2">carbonscott/lcls2</a>; tagged releases get
+their own version. The version selector is next to the site title.</p>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>With psana installed (see <a href="getting-started/">Getting started</a>), this reads
 one of the small xtc2 files that ship with the tests
@@ -1347,8 +1530,14 @@ one of the small xtc2 files that ship with the tests
     <span class="nb">print</span><span class="p">(</span><span class="n">nevt</span><span class="p">,</span> <span class="n">evt</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">det</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">evt</span><span class="p">))</span>
 </code></pre></div>
 <p>For real experiments you normally name the experiment and run instead of a
-file, for example <code>DataSource(exp='xpptut15', run=14, dir=xtc_dir)</code> as in
-<code>psana/psana/tests/ds.py</code>; this needs access to LCLS data. Continue with
+file, <code>DataSource(exp=..., run=...)</code>; psana then finds the run's files itself
+(see the <code>dir</code> keyword in
+<a href="features/datasource-run-events/">DataSource, Run and the event loop</a>),
+which needs access to LCLS data. Several examples on this site
+use <code>DataSource(exp='xpptut15', run=14, dir=xtc_dir)</code> instead, as in
+<code>psana/psana/tests/ds.py</code>: a small synthetic run that you can write yourself
+into the directory <code>xtc_dir</code> (see
+<a href="getting-started/#synthetic-test-data">Synthetic test data</a>). Continue with
 <a href="features/datasource-run-events/">DataSource, Run and the event loop</a>.</p>
 
 
@@ -1409,7 +1598,7 @@ file, for example <code>DataSource(exp='xpptut15', run=14, dir=xtc_dir)</code> a
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="assets/javascripts/bundle.d7400e89.min.js"></script>

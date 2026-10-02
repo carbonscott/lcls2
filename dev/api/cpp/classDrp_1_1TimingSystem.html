@@ -119,13 +119,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a6007578dff0733f634e2f55d3d8fa91c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e" title="Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.">XpmDetector::configure()</a> (returning 1 if it fails), append the configuration returned by ts_config() of the module as XTC (also taking serNo from its detId:RO entry), and declare the names of the L1Accept timing data (<a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a>) and of the trigger info (one UINT32 data field).  <br /></td></tr>
 <tr class="separator:a6007578dff0733f634e2f55d3d8fa91c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3eff0cf9bf29542096df1e28c61a1ad2" id="r_a3eff0cf9bf29542096df1e28c61a1ad2"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingSystem.html#a3eff0cf9bf29542096df1e28c61a1ad2">configureScan</a> (const nlohmann::json &amp;scan_keys, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a3eff0cf9bf29542096df1e28c61a1ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass scan_keys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call &lt;detType&gt;_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result.  <br /></td></tr>
+<tr class="memdesc:a3eff0cf9bf29542096df1e28c61a1ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass scan_keys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result.  <br /></td></tr>
 <tr class="separator:a3eff0cf9bf29542096df1e28c61a1ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a273c6f4db539f320a957abf2c013bfa9" id="r_a273c6f4db539f320a957abf2c013bfa9"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingSystem.html#a273c6f4db539f320a957abf2c013bfa9">beginstep</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;stepInfo) override</td></tr>
 <tr class="memdesc:a273c6f4db539f320a957abf2c013bfa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print stepInfo to stdout and return 0.  <br /></td></tr>
 <tr class="separator:a273c6f4db539f320a957abf2c013bfa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a768d7e081a9390ef9fa05f97c0a770ab" id="r_a768d7e081a9390ef9fa05f97c0a770ab"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingSystem.html#a768d7e081a9390ef9fa05f97c0a770ab">stepScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
-<tr class="memdesc:a768d7e081a9390ef9fa05f97c0a770ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call &lt;detType&gt;_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result.  <br /></td></tr>
+<tr class="memdesc:a768d7e081a9390ef9fa05f97c0a770ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result.  <br /></td></tr>
 <tr class="separator:a768d7e081a9390ef9fa05f97c0a770ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51171b8c1a86916a54ffaf6815e72847" id="r_a51171b8c1a86916a54ffaf6815e72847"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingSystem.html#a51171b8c1a86916a54ffaf6815e72847">scanEnabled</a> () override</td></tr>
 <tr class="memdesc:a51171b8c1a86916a54ffaf6815e72847"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true; per the code comment this makes the detector record scan information.  <br /></td></tr>
@@ -237,7 +237,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> for timing-system data. </p>
-<p><a class="el" href="classConfiguration.html">Configuration</a> comes from the Python module <code>psdaq.configdb.&lt;detType&gt;_config</code>; L1Accept data is the timing record that follows the TimingHeader in the DMA buffer, described with <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a>. </p>
+<p><a class="el" href="classConfiguration.html">Configuration</a> comes from the Python module <code>psdaq.configdb.{detType}_config</code>; L1Accept data is the timing record that follows the TimingHeader in the DMA buffer, described with <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a659356d5fbfed6c82793686e3e9494b6" name="a659356d5fbfed6c82793686e3e9494b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a659356d5fbfed6c82793686e3e9494b6">&#9670;&#160;</a></span>TimingSystem()</h2>
@@ -266,7 +266,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Construct the <a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> base, import the module <code>psdaq.configdb. </code></p>
-<p>&lt;detType&gt;_config and create a <a class="el" href="classDrp_1_1PythonConfigScanner.html" title="Scan support for Python-configured detectors: calls the functions &lt;detType&gt;_scan_keys and &lt;detType&gt;_u...">PythonConfigScanner</a> for it. Throws a C string if the import fails. </p>
+<p>{detType}_config and create a <a class="el" href="classDrp_1_1PythonConfigScanner.html" title="Scan support for Python-configured detectors: calls the functions {detType}_scan_keys and {detType}_u...">PythonConfigScanner</a> for it. Throws a C string if the import fails. </p>
 
 </div>
 </div>
@@ -488,7 +488,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pass scan_keys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call &lt;detType&gt;_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result. </p>
+<p>Pass scan_keys to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call {detType}_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#af4fbc5ed6786e6429905ba35e2db2079">Drp::Detector</a>.</p>
 
@@ -864,7 +864,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call &lt;detType&gt;_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result. </p>
+<p>Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call {detType}_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#af6343c41a83916537bb33cc86efd3041">Drp::Detector</a>.</p>
 

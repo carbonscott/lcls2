@@ -12,7 +12,7 @@ var indexSectionsWithContent =
   9: "emopstz",
   10: "_abcdefghilmnprstuv",
   11: "g",
-  12: "lt"
+  12: "acl"
 };
 
 var indexSectionNames =

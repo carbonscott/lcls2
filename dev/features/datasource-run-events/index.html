@@ -828,6 +828,18 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -945,6 +957,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/run/" class="md-nav__link">
         
   
@@ -973,6 +1041,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/event/" class="md-nav__link">
         
   
@@ -981,6 +1077,34 @@
     
   
     psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
   
 
     
@@ -1197,6 +1321,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/python/control/" class="md-nav__link">
         
   
@@ -1233,6 +1385,34 @@
     
   
     psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
   
 
     
@@ -1578,10 +1758,13 @@ files <code>smalldata/&lt;exp&gt;-r&lt;run&gt;-s&lt;stream&gt;-c&lt;chunk&gt;.sm
 <h2 id="minimal-example">Minimal example<a class="headerlink" href="#minimal-example" title="Permanent link">&para;</a></h2>
 <p>Adapted from <code>psana/psana/tests/user_loops.py</code>. <code>xpptut15</code> run 14 is a
 synthetic data set that the tests generate with the <code>xtcwriter</code> and <code>smdwriter</code>
-tools (<code>psana/psana/tests/setup_input_files.py</code>); with real LCLS data you would
-use your experiment name and run number and usually omit <code>dir</code>.</p>
+tools; <a href="../../getting-started/#synthetic-test-data">Synthetic test data</a> shows
+how to write it into <code>.tmp</code> with <code>psana/psana/tests/setup_input_files.py</code>.
+With real LCLS data you would use your experiment name and run number and
+usually omit <code>dir</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">psana</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataSource</span>
 
+<span class="n">xtc_dir</span> <span class="o">=</span> <span class="s2">".tmp"</span>   <span class="c1"># written by setup_input_files.py (see Getting started)</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">DataSource</span><span class="p">(</span><span class="n">exp</span><span class="o">=</span><span class="s2">"xpptut15"</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">xtc_dir</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">runs</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">expt</span><span class="p">,</span> <span class="n">run</span><span class="o">.</span><span class="n">runnum</span><span class="p">)</span>
@@ -1594,8 +1777,8 @@ use your experiment name and run number and usually omit <code>dir</code>.</p>
             <span class="nb">print</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">sdet</span><span class="p">(</span><span class="n">evt</span><span class="p">),</span> <span class="n">edet</span><span class="p">(</span><span class="n">evt</span><span class="p">),</span> <span class="n">calib</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </code></pre></div>
 <p>Without steps, iterate <code>run.events()</code> directly. Reading one file:
-<code>DataSource(files="xpptut15-r0014-s000-c000.xtc2")</code> works the same way but only
-sees the detectors stored in that file.</p>
+<code>DataSource(files=".tmp/xpptut15-r0014-s000-c000.xtc2")</code> works the same way but
+only sees the detectors stored in that file.</p>
 <h2 id="where-in-the-code">Where in the code<a class="headerlink" href="#where-in-the-code" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>psana/psana/datasource.py</code>: <code>DataSource</code>, <code>InvalidDataSource</code>.</li>
@@ -1671,7 +1854,7 @@ sees the detectors stored in that file.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

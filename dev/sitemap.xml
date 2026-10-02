@@ -45,6 +45,10 @@
          <lastmod>2026-10-02</lastmod>
     </url>
     <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/envstore/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/event/</loc>
          <lastmod>2026-10-02</lastmod>
     </url>
@@ -57,11 +61,31 @@
          <lastmod>2026-10-02</lastmod>
     </url>
     <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/serial_ds/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/shmem_ds/</loc>
          <lastmod>2026-10-02</lastmod>
     </url>
     <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/singlefile_ds/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/smalldata/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/step/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/timedrun/</loc>
+         <lastmod>2026-10-02</lastmod>
+    </url>
+    <url>
+         <loc>https://carbonscott.github.io/lcls2/dev/api/python/transitionid/</loc>
          <lastmod>2026-10-02</lastmod>
     </url>
     <url>
