@@ -28,7 +28,8 @@ the BeginRun transition in the data; if the data carry no experiment name, no
 constants are fetched. `det_uniqueid` is the detector type followed by the detector id of each
 segment, joined with `_` (built in `psana/psana/dgrammanager.py`);
 `detnames -i` prints it. The
-synthetic test experiment `xpptut15` is special-cased in the code.
+synthetic test experiment `xpptut15` is special-cased: for it the code passes
+the fixed name `cspad_detnum1234` instead.
 
 Other modes:
 
@@ -130,7 +131,9 @@ Querying one constant directly, adapted from `issue_2025_03_18` in
 constants of experiment `ued1006477`). The detector name for the database is
 `det.raw._uniqueid`: the detector type followed by the id of each segment,
 joined with `_`; it is the same value (`configinfo.uniqueid`) that psana
-passes as `det_uniqueid` when it opens a run.
+passes as `det_uniqueid` when it opens a run (except for `exp="xpptut15"`, for
+which `Run._setup_run_calibconst` in `psana/psana/psexp/run.py` uses the fixed
+name `cspad_detnum1234`).
 It is an attribute of every detector interface (set in `DetectorImpl._reset`,
 `psana/psana/detector/detector_impl.py`), not a method:
 

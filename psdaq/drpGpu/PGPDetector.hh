@@ -58,7 +58,9 @@ public:
   TebReceiver(const Parameters&, DrpBase&, const std::atomic<bool>& terminate);
   /** Destroy the recorder stream if one exists and stop the recorder thread (teardown()). */
   ~TebReceiver() override;
+  /** Return the cuFile FileWriter created by setup() (not valid before setup()). */
   FileWriterBase& fileWriter() override { return *m_fileWriter; }
+  /** Return the SmdWriter created by setup() (not valid before setup()). */
   SmdWriterBase& smdWriter() override { return *m_smdWriter; };
   /** Create a cuFile FileWriter with a 32 MiB buffer and O_DIRECT and an SmdWriter, then start the recorder thread, which creates its stream in green_ctx. */
   void setup(cudaExecutionContext_t green_ctx);

@@ -145,6 +145,7 @@ public:
     unsigned connect(const nlohmann::json&, const std::string& collectionId, std::string& msg);
     /** Call XpmDetector::shutdown() and drop the PV monitors; returns 0. */
     unsigned disconnect();
+    /** Run XpmDetector::configure, then for each PV monitor add its raw names (version from the data_vsn kwarg, default 0x010000) and, unless detType is pv, the XTC translation of the JSON returned by Python pvadetector_config (nothing when it returns None). Then add the pvdetinfo names and data listing the PV aliases (comma-separated) and PV names (newline-separated). Returns 0; 1 if the base configure or a monitor's getParams fails, -1 (as unsigned) if the JSON translation fails, and aborts if the config XTC exceeds maxTrSize. */
     unsigned configure(const std::string& config_alias, XtcData::Xtc&, const void* bufEnd) override;
     /** Clear the names lookup table; returns 0. */
     unsigned unconfigure();
@@ -154,7 +155,9 @@ public:
     using Detector::disable;            // Avoid 'hidden' warning
     /** Clear the running flag. */
     void disable();
+    /** Does nothing; empty body (marked unused). */
     void event(XtcData::Dgram& evt, const void* bufEnd, PGPEvent*, uint64_t l1count) override { /* unused */ };
+    /** Does nothing; empty body (marked unused). */
     void event(XtcData::Dgram& evt, const void* bufEnd, const Pds::Eb::ResultDgram&) override { /* unused */ };
     /** Return the PV monitors created by connect(). */
     const std::vector< std::shared_ptr<PvMonitor> >& pvMonitors() const { return m_pvMonitors; }

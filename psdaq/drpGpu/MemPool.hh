@@ -133,7 +133,9 @@ public:
   /** Declared but not defined in MemPool.cc. */
   int initialize(Parameters& para);
 public:   // Virtuals
+  /** Return the file descriptor of the device panel's DataDev. */
   int fd() const override { return m_panel->datadev.fd(); }
+  /** Set the driver DMA mask to the destinations (dmaDest of lane and virtChan) of the lanes in laneMask; once a call has succeeded, later calls only log that the earlier setting is in effect. Returns 1 if dmaSetMaskBytes fails, else 0. */
   int setMaskBytes(uint8_t laneMask, unsigned virtChan) override;
 private:  // Virtuals
   ssize_t _freeDma(unsigned count, uint32_t* indices) override { return 0; /* Nothing to do */ }

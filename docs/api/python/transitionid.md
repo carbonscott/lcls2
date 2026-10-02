@@ -1,6 +1,6 @@
 # psana.psexp.transitionid
 
-`TransitionId` is the Python list of transition codes; `psana.psexp` re-exports
+`TransitionId` is the Python class that holds the transition codes as class attributes; `psana.psexp` re-exports
 it, so `from psana.psexp import TransitionId` works. The values are
 ClearReadout=0, Reset=1, Configure=2, Unconfigure=3, BeginRun=4, EndRun=5,
 BeginStep=6, EndStep=7, Enable=8, Disable=9, SlowUpdate=10,

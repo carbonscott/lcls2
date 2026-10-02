@@ -21,7 +21,9 @@ public:
   /** Destroy the calibration buffers. */
   virtual ~AreaDetector() override;
 public:
+  /** Call configure on the wrapped XpmDetector, logging an error if it fails, and return 0 in every case. No event names are added (that code is disabled). */
   unsigned configure(const std::string& config_alias, XtcData::Xtc&, const void* bufEnd) override;
+  /** Log an info message; does nothing else (data handling is a TODO in the code). */
   void event(XtcData::Dgram& dgram, const void* bufEnd, PGPEvent* event, uint64_t count) override;
   using Gpu::Detector::event;
 public:

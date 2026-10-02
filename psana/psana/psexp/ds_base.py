@@ -102,72 +102,86 @@ class DsParms:
         return stream_id
 
 class DataSourceBase(abc.ABC):
-    """
-    Base class for data sources in the psana2 framework.
+    """Base class for data sources in the psana2 framework.
 
-    Keyword Arguments:
-    ------------------
+    `__init__` reads the options below from its keyword arguments; any other keyword is logged as a
+    warning ("Unrecognized kwarg").
+
+    Other Parameters
+    ----------------
     exp : str
         Experiment ID (e.g., 'xpptut13').
-    run : int
-        Run number to process.
+    run : int or list of int
+        Run number or list of run numbers to process (used with `exp`). If None (the default), every
+        run that has a `*-r*.xtc2` file in the xtc directory is used; any other type raises
+        InvalidDataSourceArgument.
     dir : str
         Manual path to XTC files.
-    files : str or list
-        XTC2 file path(s).
+    files : str or list of str
+        XTC2 file path(s); a single str is wrapped in a list.
     shmem : str
         Shared memory identifier (for live mode).
-    drp : str
-        DRP-specific parameters (not currently used).
+    drp : object
+        DRP parameters object. `DataSource` creates a `DrpDataSource` when `drp` is given without
+        `shmem`, `exp` or `files`; that class reads attributes such as `det_segment`, `is_supervisor`
+        and `worker_num` from it. This base class does not read it.
     batch_size : int
-        Number of events per batch sent to bigdata core (default: 1000).
+        Number of events per batch sent to bigdata core (default: 1000). Must be greater than 0
+        (asserted).
     max_events : int
-        Max number of events to read.
+        Max number of events to read (default: 0).
     detectors : list
-        User-selected detector names.
+        User-selected detector names (default: []).
     xdetectors : list
-        Detectors to explicitly exclude.
+        Detectors to explicitly exclude (default: []).
     det_name : str
-        Deprecated (use 'detectors').
+        Deprecated (use 'detectors'). Accepted without a warning but not read.
     live : bool
         Enable live data mode (default: False).
     smalldata_kwargs : dict
-        Arguments forwarded to the SmallData interface.
+        Arguments forwarded to the SmallData interface (default: {}).
     monitor : bool
         Enable Prometheus monitoring client (default: False).
     small_xtc : list
-        Detectors to use bigdata files in place of SMD files.
-    timestamps : np.ndarray
-        List of user-selected timestamps to filter on.
+        Detectors to use bigdata files in place of SMD files (default: []).
+    timestamps : np.ndarray or str
+        User-selected timestamps to filter on, as an array or the path of a .npy file; stored sorted
+        as uint64 (default: empty array). Any other type is logged and gives no filtering.
     dbsuffix : str
-        Suffix to use for private calibration constants.
+        Suffix to use for private calibration constants (default: "").
     intg_det : str
-        Name of integrating detector for timestamp alignment.
-    intg_delta_t : float
-        Integration delay in seconds.
+        Name of integrating detector for timestamp alignment (default: "").
+    intg_delta_t : int
+        Integration time window in nanoseconds; the smd reader adds it to each integrating-detector
+        timestamp when it builds batches (default: 0).
     smd_callback : callable or int
-        Callback for SMD event handling.
+        Callback for SMD event handling (default: 0).
     psmon_publish : psmon.publish
         Enable publishing to psmon (default: None).
     prom_jobid : str
-        Prometheus job ID tag.
-    skip_calib_load : str
-        List of detectors that skip calibration constant loading.
+        Prometheus job ID tag (default: None). Stored as the `prom_jobid` attribute; no code in this
+        repository reads it.
+    skip_calib_load : list of str or str
+        Names of detectors that skip calibration constant loading, or "all" to skip it for every
+        detector (default: []).
     use_calib_cache : bool
         Enable calibration constant saving and loading in shared memory (default: False).
-    fetch_calib_cache_max_retries: int
+    fetch_calib_cache_max_retries : int
         Max number of retries reading calibration constant from shared memory (default: 60).
     cached_detectors : list, optional
         List of detector names to load cached calibration attributes for
         when use_calib_cache is True. Default is [].
     mpi_ts : bool
-        Used internally to avoid repeated file I/O in MPI contexts.
-    log_level : int
-        Python logging level (e.g., logging.DEBUG, logging.INFO). Default is logging.INFO.
+        Used internally to avoid repeated file I/O in MPI contexts: when True, `timestamps` is not
+        loaded or sorted here.
+    log_level : int or str
+        Python logging level (e.g., logging.DEBUG, logging.INFO) or its name (e.g., "DEBUG"; an
+        unknown name gives INFO). Default is logging.INFO.
     log_file : str
-        Log file path. If None, logs to stdout (default: None).
+        Path of a rotating log file written in addition to the console output on stderr; its name
+        gets a `.rank<N>` suffix (default: None, console only).
     auto_tune : bool
-        Enable auto-tuning of PS_EB_NODES and PS_SRV_NODES (default: False).
+        Stored as the `auto_tune` attribute (default: False); no code in this repository reads it.
     """
 
     def __init__(self, **kwargs):

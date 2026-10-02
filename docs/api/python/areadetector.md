@@ -19,7 +19,9 @@ Notes for reading the reference below:
   set in `DetectorImpl._reset` (`psana/psana/detector/detector_impl.py`) from
   the Configure data. It is the detector type followed by the id of each
   segment, joined with `_` (built in `psana/psana/dgrammanager.py`), and is
-  the detector name used to fetch calibration constants (see
+  the detector name used to fetch calibration constants (except for
+  `exp="xpptut15"`, for which `Run._setup_run_calibconst` in
+  `psana/psana/psexp/run.py` uses the fixed name `cspad_detnum1234`; see
   [Calibration constants](../../features/calibration.md)).
 - `raw(evt, copy=True)`: `copy` is a parameter, although the generated
   section lists it under "Returns". For a detector with more than one segment

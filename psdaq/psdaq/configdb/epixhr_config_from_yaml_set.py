@@ -246,7 +246,7 @@ class ePixYml(object):
 def copyValues(din,dout,k=None):
     """Copy `din` into ``dout[k]``, recursing into dicts for keys that already exist there and converting bools to 1/0.
 
-    Keys missing from `dout` are skipped with a 'skip' message; each leaf prints whether it was
+    Keys of `din` missing from ``dout[k]`` are skipped with a 'skip' message; each leaf prints whether it was
     written or unchanged.
     """
     if isinstance(din,dict) and isinstance(dout[k],dict):

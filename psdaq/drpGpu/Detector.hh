@@ -37,19 +37,30 @@ public:
     Drp::Detector(para, pool),
     m_det(nullptr)
   {}
+  /** Delete the wrapped detector, if any. */
   virtual ~Detector() { if (m_det)  delete m_det; }
 
+  /** Return this object. */
   Gpu::Detector* gpuDetector() override { return this; }
 
+  /** Return the wrapped detector's connectionInfo(msg), or a default-constructed (null) JSON value if there is no wrapped detector. */
   nlohmann::json connectionInfo(const nlohmann::json& msg) override;
+  /** Call connectionShutdown() on the wrapped detector, if any. */
   void connectionShutdown() override;
+  /** If there is a wrapped detector, copy nodeId to it and call its connect(connect_json, collectionId). */
   void connect(const nlohmann::json& connect_json, const std::string& collectionId) override;
+  /** Call configure() on the wrapped detector, logging an error if it returns non-zero. Returns its result, or 0 if there is no wrapped detector. */
   unsigned configure(const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd) override;
+  /** Call beginrun() on the wrapped detector, logging an error if it returns non-zero. Returns its result, or 0 if there is no wrapped detector. */
   unsigned beginrun (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& runInfo) override;
+  /** Call beginstep() on the wrapped detector, logging an error if it returns non-zero. Returns its result, or 0 if there is no wrapped detector. */
   unsigned beginstep(XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& stepInfo) override;
+  /** Call enable() on the wrapped detector, logging an error if it returns non-zero. Returns its result, or 0 if there is no wrapped detector. */
   unsigned enable   (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& info) override;
+  /** Call disable() on the wrapped detector, logging an error if it returns non-zero. Returns its result, or 0 if there is no wrapped detector. */
   unsigned disable  (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& info) override;
   using Drp::Detector::event;
+  /** Call shutdown() on the wrapped detector, if any. */
   void shutdown() override;
 
   // @todo: What to do about these?
@@ -57,6 +68,7 @@ public:
   //unsigned configureScan(const nlohmann::json& stepInfo, XtcData::Xtc& xtc, const void* bufEnd) override {return 1;};
   //unsigned stepScan     (const nlohmann::json& stepInfo, XtcData::Xtc& xtc, const void* bufEnd) override {return 1;};
 
+  /** Return the address just past the DmaDsc at the start of host write buffer index of the MemPoolGpu (hostWrtBufs()), as a TimingHeader pointer. */
   Pds::TimingHeader* getTimingHeader(uint32_t index) const override
   {
     auto       memPool    = m_pool->getAs<MemPoolGpu>();

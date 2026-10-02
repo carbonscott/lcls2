@@ -34,7 +34,9 @@ class Pgp: public PgpReader
 public:
     /** Construct the PgpReader (at most 1000 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det; aborts with a message if that fails. */
     Pgp(const Parameters& para, MemPool& pool, Detector& det, PGPDrp& m_drp);
+    /** Forward event to PGPDrp::handleBrokenEvent, which counts it in the current batch. */
     virtual void handleBrokenEvent(const PGPEvent& event) override;
+    /** Call PgpReader::resetEventCounter (last completed event counter to 0), then PGPDrp::resetEventCounter (batching restarts at event counter 1). */
     virtual void resetEventCounter() override;
 private:
     static const unsigned MAX_RET_CNT_C = 1000;

@@ -31,8 +31,11 @@ public:  // ePixUHR parameters:
   static const unsigned RangeBits  {   2 };  ///< Width of the gain range field (2 bits).
   static const unsigned NRanges    {   4 };  ///< Number of gain ranges with their own pedestal and gain arrays (4).
 public:
+  /** Call configure on the wrapped simulator (logging an error if it fails), then add names for one UINT8 rank-1 array named array_raw under EventNamesIndex. Returns the wrapped detector's result. */
   unsigned configure  (const std::string& config_alias, XtcData::Xtc&, const void* bufEnd) override;
+  /** Call beginrun on the wrapped simulator (logging an error if it fails), fill the device pedestal and gain arrays with rand() values scaled to 0 through 16383 for every range and pixel, and have the simulator compute its reference calibrated data from them. Returns the wrapped detector's result. */
   unsigned beginrun   (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& info) override;
+  /** Increase the damage of dgram when the lane 0 DMA size minus the TimingHeader is below NPixels 16-bit values (MissingData) or equals the DMA buffer size (Truncated); no data is added. */
   void event(XtcData::Dgram& dgram, const void* bufEnd, PGPEvent* event, uint64_t count) override;
   using Gpu::Detector::event;
 public:

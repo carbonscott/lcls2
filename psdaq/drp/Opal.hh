@@ -20,7 +20,9 @@ public:
     Opal(Parameters* para, MemPool* pool);
     /** Delete the simulator and the timetool object if present. */
     ~Opal();
+    /** If timetool processing is set up (m_tt), call OpalTT::slowupdate; otherwise call Detector::slowupdate, which resets xtc to an empty Parent Xtc. */
     void slowupdate(XtcData::Xtc&, const void* bufEnd) override;
+    /** Call OpalTT::shutdown if timetool processing is set up, then BEBDetector::shutdown, which calls the Python unconfig function for the detector type. */
     void shutdown() override;
     /** Add the image (m_rows x m_columns UINT16) under namesId, copying it from subframes[2]. */
     void write_image(XtcData::Xtc&, const void* bufEnd, std::vector< XtcData::Array<uint8_t> >&, XtcData::NamesId&);

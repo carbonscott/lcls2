@@ -1,13 +1,12 @@
 
-"""
-Class CalibConstants with convenience methods to access info from dict returned from DB
+"""Class CalibConstants with convenience methods to access info from dict returned from DB
 =======================================================================================
 
 Usage::
 
   from psana.detector.calibconstants import CalibConstants
 
-  o = CalibConstants(calibconst, **kwa)
+  o = CalibConstants(calibconst, detname, **kwa)
   v = o.calibconst()
   v = o.cons_and_meta_for_ctype(ctype='pedestals')
   v = o.cached_array(p, ctype='pedestals')
@@ -22,12 +21,11 @@ Usage::
   v = o.shape_as_daq()
   v = o.number_of_segments_total()
   v = o.geotxt_and_meta()
-  v = o.geotxt_default()
   v = o.geo()
   v = o.pixel_coords(**kwa)
   v = o.pixel_coord_indexes(**kwa)
   v = o.cached_pixel_coord_indexes(segnums, **kwa)
-  v = o.image(self, nda, segnums=None, **kwa)
+  v = o.image(nda, segnums=None, **kwa)
   v = o.pix_rc()
   v = o.pix_xyz()
   v = o.interpol_pars()

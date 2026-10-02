@@ -30,8 +30,11 @@ public:
   int registerStream(cudaStream_t);
   /** Deregister the stream set by registerStream(), if any, and forget it; the argument is not used. Returns -1 on failure, else 0. */
   int deregisterStream(cudaStream_t);
+  /** Close any open file, log the cuFile properties, create or truncate fileName (with O_DIRECT if dio was set), take a write lock and register the file and the GPU buffer with cuFile, then reset the buffer count and file offset. Returns -1 if the file cannot be created, non-zero (after closing the file) if a cuFile registration fails, else 0; a failed lock is only logged. */
   int open(const std::string& fileName) override;
+  /** If a file is open, write out the buffered data, deregister the file and the GPU buffer from cuFile and close the descriptor. Returns the close() result (-1 on error), or 0 if no file was open. */
   int close() override;
+  /** Copy size bytes from device pointer devPtr into the GPU buffer (asynchronously on the registered stream), first writing the buffer to the file with cuFileWrite when the event does not fit or the batch is more than 2 seconds old. Returns early, logging an error, if that write is short; exits if the event is larger than the buffer. */
   void writeEvent(const void* devPtr, size_t size, const XtcData::TimeStamp) override;
 private:
   virtual void _reset();
@@ -56,6 +59,7 @@ class FileWriterAsync : public FileWriter
 public:
   /** Allocate a GPU buffer of twice bufferSize, used as two halves of bufferSize bytes. */
   FileWriterAsync(size_t bufferSize, bool dio);
+  /** Like FileWriter::writeEvent but with two buffer halves: when the event does not fit in the current half or the batch is more than 2 seconds old, wait for the previous write, start a cuFileWriteAsync of the current half and switch halves. Then copy the event device to device into the current half; exits if it does not fit or if an asynchronous write failed. */
   void writeEvent(const void* devPtr, size_t size, const XtcData::TimeStamp) override;
 protected:
   void _reset() override;

@@ -25,7 +25,9 @@ public:
     Piranha4(Parameters* para, MemPool* pool);
     /** Delete the simulator and the timetool object if present. */
     ~Piranha4();
+    /** If timetool processing is set up (m_tt), call Piranha::TT::slowupdate; otherwise call Detector::slowupdate, which resets xtc to an empty Parent Xtc. */
     void slowupdate(XtcData::Xtc&, const void* bufEnd) override;
+    /** Call Piranha::TT::shutdown if timetool processing is set up, then BEBDetector::shutdown, which calls the Python unconfig function for the detector type. */
     void shutdown() override;
     /** Add the image (m_pixels UINT16 values) under namesId, copying it from subframes[2]. */
     void write_image(XtcData::Xtc&, const void* bufEnd, std::vector< XtcData::Array<uint8_t> >&, XtcData::NamesId&);

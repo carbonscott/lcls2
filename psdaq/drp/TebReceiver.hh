@@ -20,7 +20,9 @@ class TebReceiver: public TebReceiverBase
 public:
     /** Construct the base, keep the MEB contributor of drp, and create the file writer and the small-data writer with buffers of the larger of the pebble buffer size and para.maxTrSize (the file writer uses direct I/O per getDioFlag(para)). */
     TebReceiver(const Parameters&, DrpBase&);
+    /** Return the BufferedFileWriterMT member that records events. */
     virtual FileWriterBase& fileWriter() override { return m_fileWriter; }
+    /** Return the SmdWriter member used for the small-data output. */
     virtual SmdWriterBase& smdWriter() override { return m_smdWriter; };
 protected:
     virtual int setupMetrics(const std::shared_ptr<Pds::MetricExporter>,

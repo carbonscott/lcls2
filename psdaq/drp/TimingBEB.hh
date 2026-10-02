@@ -17,8 +17,11 @@ public:
     TimingBEB(Parameters* para, MemPool* pool);
     /** Does nothing; empty body. */
     ~TimingBEB();
+    /** Call BEBDetector::connect (keeps the connect JSON and readout group), then call the Python function ts_connect with the connect JSON string. */
     void connect(const nlohmann::json&, const std::string&) override;
+    /** Return true. */
     bool scanEnabled() override;
+    /** Does nothing; empty body (BEBDetector::shutdown is not called). */
     void shutdown() override;
 protected:
     void           _connectionInfo(PyObject*) override;

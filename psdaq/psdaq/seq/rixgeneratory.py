@@ -126,7 +126,9 @@ def write_seq(gen,seqcodes,filename):
 
     """Write `gen.instr` with a header and `seqcodes` to `filename`, then `validate` it.
 
-    A warning is written to stderr if `gen.instr` has more than 1000 entries.
+    If `gen.instr` has more than 1000 entries a warning is written to stderr, but the warning message
+    reads `gen.ninstr`: a `gen` without that attribute raises AttributeError there, before the file is
+    written. TrainGenerator does not define `ninstr`; LaserGenerator and PeriodicGenerator do.
     """
     if (len(gen.instr) > 1000):
         sys.stderr.write('*** Sequence has {} instructions.  May be too large to load. ***\n'.format(gen.ninstr))
