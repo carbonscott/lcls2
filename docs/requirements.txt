@@ -9,3 +9,4 @@ mkdocs-autorefs==1.4.4
 griffelib==2.3.0
 pymdown-extensions==12.1
 mike==2.2.0
+jsonschema==4.26.0

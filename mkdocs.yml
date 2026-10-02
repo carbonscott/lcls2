@@ -10,6 +10,7 @@ exclude_docs: |
   /hooks/
   /requirements.txt
   /doxygen/
+  /design/tools/
 
 # Fail the build on any warning (broken links, missing pages, mkdocstrings
 # errors). "mike deploy" does not pass --strict, so it is set here.
@@ -111,6 +112,9 @@ nav:
       - psalg algorithms: features/psalg.md
       - DAQ control: features/daq-control.md
       - DRP and event building: features/drp-eventbuilding.md
+  - Design:
+      - How the DAQ works, detector to disk: design/index.html
+      - Editing the design model: design/editing-guide.md
   - Python API:
       - api/python/index.md
       - psana.datasource: api/python/datasource.md

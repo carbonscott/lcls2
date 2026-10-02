@@ -1,0 +1,1803 @@
+{
+  "$schema": "./daq-model.schema.json",
+  "schema_version": 1,
+  "title": "How the LCLS-II DAQ works, from detector to disk",
+  "question": "At a high level, how does the LCLS-II DAQ work, from detector to disk?",
+  "summary": "The LCLS-II DAQ (data acquisition system) records detector data one accelerator pulse at a time. The timing system triggers groups of detectors and gives every readout a pulse ID and a timestamp, the keys that later tie the pieces of an event together ([[timing]]). Besides these per-pulse events, called L1Accepts, the same timing stream carries transitions such as Configure, BeginRun and Enable, with which the control process steps every process through a run ([[control]]).\n\nEach detector readout has its own DRP (data reduction pipeline), which builds an XTC2 datagram for every event ([[drp]]). The trigger decision is kept off the data path: each DRP sends only a small trigger input to the TEB (trigger event builder), and the TEB answers every DRP with a result saying whether to record the event and whether to monitor it ([[teb]]). Each DRP then writes its own file stream, a big-data `.xtc2` file plus a small-data `.smd.xtc2` index ([[files]]), and sends monitored events to live monitoring ([[monitoring]]). For recording, the DAQ never assembles an event in one place: psana later joins the streams by timestamp ([[after-run]]).",
+  "code_base": {
+    "repo_url": "https://github.com/carbonscott/lcls2",
+    "commit": "09142fd27c503334eeb852182664802b7a10052d"
+  },
+  "sources": [
+    {
+      "id": "site-drp-eventbuilding",
+      "title": "DRP and event building (this site)",
+      "url": "../features/drp-eventbuilding/",
+      "kind": "site-page"
+    },
+    {
+      "id": "site-daq-control",
+      "title": "DAQ control (this site)",
+      "url": "../features/daq-control/",
+      "kind": "site-page"
+    },
+    {
+      "id": "site-shmem-live",
+      "title": "Shared memory and live analysis (this site)",
+      "url": "../features/shmem-live/",
+      "kind": "site-page"
+    },
+    {
+      "id": "site-xtc2",
+      "title": "XTC2 data format (this site)",
+      "url": "../features/xtc2/",
+      "kind": "site-page"
+    },
+    {
+      "id": "site-datasource",
+      "title": "DataSource, Run and the event loop (this site)",
+      "url": "../features/datasource-run-events/",
+      "kind": "site-page"
+    },
+    {
+      "id": "site-mpi-parallel",
+      "title": "MPI parallel analysis (this site)",
+      "url": "../features/mpi-parallel/",
+      "kind": "site-page"
+    },
+    {
+      "id": "conf-lcls2-timing",
+      "title": "LCLS2 Timing",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=348358265",
+      "kind": "confluence-public",
+      "note": "Accelerator bucket rate, event codes, beam destinations, trigger logic of timing receivers."
+    },
+    {
+      "id": "conf-psdaq",
+      "title": "psdaq (operator overview)",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=295077738",
+      "kind": "confluence-public",
+      "note": "Readout groups, monitor-only detectors, the control GUI and the state machine as seen by operators."
+    },
+    {
+      "id": "conf-hutch-daq-experts",
+      "title": "For LCLS-II Hutch DAQ Experts",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=295087727",
+      "kind": "confluence-public",
+      "note": "procmgr commands, .cnf files, and the XPM (eXperiment Partition Master) name."
+    },
+    {
+      "id": "conf-two-phase",
+      "title": "Two Phase Transitions",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=245704908",
+      "kind": "confluence-internal",
+      "note": "Why transitions after Connect are done in two phases (internal page, summarized)."
+    },
+    {
+      "id": "conf-standalone-detectors",
+      "title": "DAQ Support For User-Supplied Standalone Detectors/Computers",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=407259209",
+      "kind": "confluence-public",
+      "note": "Timestamping options for detectors: a timing receiver board with software, or timing-receiver firmware in the detector's FPGA."
+    },
+    {
+      "id": "conf-teb-meb",
+      "title": "TEB/MEB",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=277054385",
+      "kind": "confluence-internal",
+      "note": "Trigger data production and decisions, MEB choice, and readout-group handling (internal page, summarized)."
+    },
+    {
+      "id": "conf-bypass-events",
+      "title": "Bypass Events",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=373335144",
+      "kind": "confluence-internal",
+      "note": "Why every event must contain the common (primary) readout group (internal page, summarized)."
+    },
+    {
+      "id": "conf-monitoring-distribution",
+      "title": "Distributing Events for Monitoring",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=549617685",
+      "kind": "confluence-public",
+      "note": "How the TEB chooses an MEB for an event, and the Python trigger interface."
+    },
+    {
+      "id": "conf-xtc-lcls2",
+      "title": "XTC for LCLS-II",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=240275183",
+      "kind": "confluence-internal",
+      "note": "Design goals of XTC2 and the purpose of small-data files (internal page, summarized)."
+    },
+    {
+      "id": "conf-chunking",
+      "title": "Chunking",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=309318499",
+      "kind": "confluence-internal",
+      "note": "How and why big-data files are split into chunks (internal page, summarized)."
+    },
+    {
+      "id": "conf-live-mode",
+      "title": "Live Mode",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=309315154",
+      "kind": "confluence-internal",
+      "note": "Reading files while they are written, .inprogress files and the file writers (internal page, summarized)."
+    },
+    {
+      "id": "conf-psana",
+      "title": "psana (LCLS-II)",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=267391733",
+      "kind": "confluence-public",
+      "note": "User guide; its live-mode section describes the fast-feedback (FFB) file system."
+    },
+    {
+      "id": "conf-fsm",
+      "title": "Finite State Machine",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=243080470",
+      "kind": "confluence-internal",
+      "note": "States and transitions of the DAQ state machine (internal page, summarized)."
+    },
+    {
+      "id": "conf-ami",
+      "title": "ami",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=272306353",
+      "kind": "confluence-public",
+      "note": "User guide for AMI, the graphical online-analysis program."
+    },
+    {
+      "id": "conf-ami-latency",
+      "title": "Sources of Latency (AMI)",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=540147958",
+      "kind": "confluence-public",
+      "note": "Where AMI latency comes from, including back-pressure into the MEB shared memory."
+    },
+    {
+      "id": "conf-configdb",
+      "title": "ConfigDB",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=271092442",
+      "kind": "confluence-internal",
+      "note": "The MongoDB-based configuration database and its typed JSON (internal page, summarized)."
+    },
+    {
+      "id": "conf-smalldata-debug",
+      "title": "1.4 Debug smalldata h5 production",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=504430941",
+      "kind": "confluence-public",
+      "note": "Troubleshooting page that describes the data movers."
+    },
+    {
+      "id": "conf-slowupdate",
+      "title": "SlowUpdate Handling",
+      "url": "https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=407254760",
+      "kind": "confluence-internal",
+      "note": "SlowUpdate and deadtime, including psana's need for complete transitions (internal page, summarized)."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "timing",
+      "parent": null,
+      "title": "Timing and triggering",
+      "summary": "The timing system gives each readout a pulse ID and timestamp, decides which pulses trigger which detectors, and carries transitions.",
+      "prose": "The LCLS-II timing system sends one timing frame per accelerator bucket. An XPM (eXperiment Partition Master), a timing-system board, turns that stream into triggers: detectors are placed in readout groups, and all detectors in a readout group are triggered by the same event code.\n\nEvery readout that reaches the DAQ (data acquisition system) starts with a timing header that carries the pulse ID and a timestamp. The online event builders match the pieces of one event by pulse ID; after the run, psana builds events again from the recorded files.\n\nThe same timing stream also carries transitions such as Configure, BeginRun and Enable. The control process asks the XPM to insert them, so a detector's readout stream contains both transitions and per-pulse L1Accept events, each with its own pulse ID.",
+      "dev_notes": "Timing-side code in this repository: `psdaq/psdaq/pyxpm/` (XPM control software) and `psdaq/psdaq/service/EbDgram.hh` (the timing header as seen by a DRP, the data reduction pipeline). The control-to-XPM calls are in `DaqXPM` in `psdaq/psdaq/control/control.py`.",
+      "sources": [
+        "conf-lcls2-timing",
+        "conf-hutch-daq-experts",
+        "conf-psdaq",
+        "site-xtc2"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/service/EbDgram.hh",
+          "start": 35,
+          "end": 59,
+          "symbol": "TimingHeader",
+          "note": "The timing header at the start of the DMA data: pulse ID word, time, env, event counter."
+        },
+        {
+          "path": "psdaq/psdaq/control/control.py",
+          "start": 823,
+          "end": 856,
+          "symbol": "insert_transition",
+          "note": "The control process inserts a transition for a set of readout groups."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/EventBuilder.cc",
+          "start": 252,
+          "end": 262,
+          "symbol": "pulseId",
+          "note": "Online event building keys on the pulse ID."
+        }
+      ],
+      "decisions": [
+        {
+          "id": "dec-transitions-in-timing-stream",
+          "title": "Transitions travel through the timing system",
+          "decision": "After the software (ZeroMQ) message for a transition has been answered, the control process asks the XPM to insert the transition into the timing stream. Each DRP (data reduction pipeline) then receives the transition in a timing header, in the same DMA (direct memory access) stream as the L1Accepts, and builds its datagram from that header.",
+          "rationale": "The internal Two Phase Transitions page describes the split: the first phase is a broadcast so that slow work such as configuring can run in parallel, and the second phase, handled by the DRP thread that reads the timing stream and writes all XTC, only collects what the first phase prepared. The cited sources do not say why the second phase rides on the timing stream; the code shows that a transition therefore gets a pulse ID and a timestamp like any event.",
+          "sources": [
+            "conf-two-phase"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/psdaq/control/control.py",
+              "start": 823,
+              "end": 856,
+              "symbol": "insert_transition"
+            },
+            {
+              "path": "psdaq/drp/PGPDetector.cc",
+              "start": 603,
+              "end": 653,
+              "symbol": "stateTransition",
+              "note": "In the PGP reader, a transition arriving from DMA gets an EbDgram built from its timing header, and the XTC prepared in phase 1 is copied in."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "accelerator-timing",
+      "parent": "timing",
+      "title": "Accelerator pulses and event codes",
+      "summary": "The accelerator timing stream defines the buckets, event codes and beam destinations that triggers are built from.",
+      "outside_repo": true,
+      "prose": "The accelerator's timing system defines the time grid the DAQ (data acquisition system) works on. Per the LCLS2 Timing page, the accelerator provides exactly 910,000 buckets in 0.98 seconds, which gives the 929 kHz (about 1 MHz) machine rate, and its patterns repeat on that 0.98-second interval.\n\nTiming frames carry event codes, which arrive about 100 microseconds before the beam, and beam destinations, for example the SXR (soft X-ray) undulator line or the dump used for dropped shots. A trigger in a timing receiver is the logical AND of a rate component (a fixed rate, an AC (alternating-current) power-line rate, or an event code or sequence) and a beam-destination component (don't care, inclusive or exclusive). The DAQ readout groups travel as extra bits at the end of the timing frame.",
+      "sources": [
+        "conf-lcls2-timing"
+      ]
+    },
+    {
+      "id": "xpm",
+      "parent": "timing",
+      "title": "XPM: readout groups and triggers",
+      "summary": "The XPM decides, per readout group, which pulses trigger a readout, and inserts transitions when the control process asks.",
+      "prose": "An XPM (eXperiment Partition Master) is a timing-system board. Detectors are assigned to readout groups, and the detectors in one readout group are triggered by the same timing-system event code.\n\nIn this repository, `pyxpm` hosts EPICS (Experimental Physics and Industrial Control System) process variables (PVs) for an XPM and talks to the board through `pyrogue`, checking a minimum firmware version. For each readout group it offers a trigger-rate choice (a fixed rate, an AC (alternating-current) power-line rate, an event code or a sequence) and a `DstSelect` beam-destination choice, plus `MsgHeader`, `L0Groups` and `L0Delay` settings.\n\nThe control process drives these PVs: to insert a transition it writes the transition ID to the groups' `MsgHeader` PVs and the group mask to `GroupMsgInsert`, and it writes `GroupL0Enable` to start triggering.",
+      "sources": [
+        "conf-hutch-daq-experts",
+        "conf-psdaq",
+        "conf-lcls2-timing"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/pyxpm/pyxpm.py",
+          "start": 52,
+          "end": 105,
+          "symbol": "host PVs for XPM",
+          "note": "Command-line options (PV prefix, board address), the pyrogue Root and Top device, and the minimum firmware version check."
+        },
+        {
+          "path": "psdaq/psdaq/pyxpm/pvctrls.py",
+          "start": 355,
+          "end": 404,
+          "symbol": "DstSelect",
+          "note": "GroupSetup: per-group PVs, including the rate setup, beam destination, MsgHeader, L0Groups and L0Delay."
+        },
+        {
+          "path": "psdaq/psdaq/control/control.py",
+          "start": 797,
+          "end": 856,
+          "symbol": "GroupMsgInsert",
+          "note": "group_run() enables L0 triggering; insert_transition() writes MsgHeader and GroupMsgInsert."
+        }
+      ]
+    },
+    {
+      "id": "pulse-id",
+      "parent": "timing",
+      "title": "Pulse ID, timestamp and transitions",
+      "summary": "Every readout starts with a timing header: a 56-bit pulse ID, a timestamp, the triggered readout groups and the transition type.",
+      "prose": "Every DMA (direct memory access) buffer that a DRP (data reduction pipeline) receives starts with a timing header. Its first 64-bit word holds the pulse ID in the low 56 bits; the upper 8 bits are control bits from the timing system, and their low 4 bits are the transition ID. The header then holds a timestamp (32-bit seconds and 32-bit nanoseconds), an `env` word whose low 16 bits are the readout groups that triggered, and an event counter.\n\nTransition IDs run from 0 to 12. Configure, BeginRun, BeginStep, Enable, SlowUpdate and their counterparts are transitions; 12 is L1Accept, the per-pulse event, and the source notes that this value must agree with the firmware.\n\nThe online event builders match contributions by pulse ID. psana's `evt.timestamp` is the timestamp packed as (seconds << 32) | nanoseconds.",
+      "sources": [
+        "site-xtc2"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/service/EbDgram.hh",
+          "start": 16,
+          "end": 59,
+          "symbol": "pulseId",
+          "note": "PulseId (56-bit ID plus 8 control bits) and TimingHeader."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/EventBuilder.cc",
+          "start": 252,
+          "end": 262,
+          "symbol": "pulseId",
+          "note": "Contributions are inserted into events keyed by pulse ID."
+        }
+      ]
+    },
+    {
+      "id": "front-ends",
+      "parent": null,
+      "title": "Detector front-ends and readout links",
+      "summary": "On each trigger the detector electronics read out and send the data, led by the timing header, over PGP links into a readout card of a DRP node.",
+      "prose": "Detector front-ends are the electronics and FPGA (field-programmable gate array) firmware at each detector. When the XPM (eXperiment Partition Master) triggers their readout group, they read out and send the data over PGP links, the serial readout links of the DAQ (data acquisition system), to a readout card in a DRP (data reduction pipeline) node; the code calls it a PGP card and opens it as a device.\n\nThe card's firmware places each readout in a DMA (direct memory access) buffer in host memory, and every readout begins with the timing header that carries the pulse ID. The DRP software only reads and returns these buffers. Most of this layer is FPGA firmware, such as the timing-receiver module of the separate `lcls2-pgp-fw-lib` firmware library ([[detector-electronics]]).",
+      "sources": [
+        "site-drp-eventbuilding",
+        "conf-psdaq",
+        "conf-standalone-detectors"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/Detector.hh",
+          "start": 99,
+          "end": 103,
+          "symbol": "getTimingHeader",
+          "note": "The timing header is the start of each DMA buffer."
+        },
+        {
+          "path": "psdaq/drp/drp.hh",
+          "start": 220,
+          "end": 237,
+          "symbol": "MemPoolCpu",
+          "note": "The DRP side of the readout card: open the device and map its DMA buffers."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 180,
+          "end": 211,
+          "symbol": "dmaReadBulkIndex",
+          "note": "DMA buffers are allocated by the firmware; the DRP reads and returns them."
+        }
+      ],
+      "decisions": [
+        {
+          "id": "dec-timestamp-in-firmware",
+          "title": "Timestamp the data in firmware at high rates",
+          "decision": "Detectors that run at high rates get their timestamp in firmware, from a timing-receiver firmware module built into the detector's readout FPGA (field-programmable gate array). For low-rate standalone detectors, a timing receiver board in a computer and user software can timestamp the data instead.",
+          "rationale": "The public page on standalone detectors ties the choice to the rate: it gives about 100 Hz as a rule of thumb for the software option and says that at higher rates the timestamping typically has to be done in firmware. The page does not explain the limit further.",
+          "sources": [
+            "conf-standalone-detectors"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "detector-electronics",
+      "parent": "front-ends",
+      "title": "Detector firmware and timing receivers",
+      "summary": "Detector readout firmware receives the timing stream, makes the trigger decision in time, and attaches the event's timing information.",
+      "outside_repo": true,
+      "prose": "In the DAQ (data acquisition system), triggering and timestamping at the detector are done in FPGA (field-programmable gate array) firmware. The public page on user-supplied standalone detectors names the timing-receiver module of the open-source `lcls2-pgp-fw-lib` firmware library as the interface for triggering within the DAQ. That module receives the timing fiber and outputs in-time trigger decisions, an event header and the full event timing content; the timing stream runs at 3.71 Gb/s with 8B/10B encoding.\n\nThe same page describes two options for detectors outside the DAQ. At lower rates (about 100 Hz as a rule of thumb) a timing receiver board in a PCIe (PCI Express) slot plus user software can timestamp the data; at higher rates the timestamping typically has to be done in firmware with that module.",
+      "sources": [
+        "conf-standalone-detectors"
+      ]
+    },
+    {
+      "id": "pgp-dma",
+      "parent": "front-ends",
+      "title": "Readout card and DMA buffers",
+      "summary": "The DRP reads completed DMA buffers from the readout card in bulk and returns them when done.",
+      "prose": "On a DRP (data reduction pipeline) node the readout card is a device given with the `drp -d` option, and the PGP lanes to read are given as a lane mask with `-l`. The card's firmware allocates the DMA (direct memory access) buffers; the DRP only counts them.\n\nThe DRP's PGP reader thread calls `dmaReadBulkIndex()` to collect several completed buffers at once, each with a size, a buffer index and a destination word, and later hands buffers back to the driver. When readouts arrive faster than about 1 kHz the reader polls the driver; at lower rates it waits for an interrupt, and while nothing arrives it backs off exponentially. Readouts from several lanes of one detector are assembled into one event by the [[drp-pgp-reader|PGP reader]].",
+      "code_refs": [
+        {
+          "path": "psdaq/drp/drp.cc",
+          "start": 19,
+          "end": 48,
+          "symbol": "laneMask",
+          "note": "drp options: -d device, -l lane mask, -D detector type, -o output directory."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 180,
+          "end": 211,
+          "symbol": "dmaReadBulkIndex",
+          "note": "allocateDma (firmware allocates), readDma, freeDma."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 501,
+          "end": 523,
+          "symbol": "Polling",
+          "note": "PgpReader::read: polling above 1 kHz, interrupts below, exponential back-off."
+        }
+      ]
+    },
+    {
+      "id": "drp",
+      "parent": null,
+      "title": "DRP: readout and reduction",
+      "summary": "One DRP process per detector readout builds XTC2 datagrams, asks the TEB what to do with each event, and writes its own files.",
+      "prose": "A DRP (data reduction pipeline) is one process per detector readout. It reads the detector's DMA (direct memory access) buffers, uses a detector-specific class to turn each readout into an XTC2 datagram, and sends a small trigger contribution for every event to the TEB (trigger event builder). The TEB answers with a result that says whether to record the event and whether to send it to monitoring.\n\nThe DRP then writes the events it records to its own file and posts the monitored ones to the MEB (monitoring event builder). The detector data never go to the TEB: the TEB input of each event is only the datagram header plus the output of a trigger-primitive plugin. All DRPs are driven by the control process through transitions such as Configure, BeginRun and Enable.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 1595,
+          "end": 1612,
+          "symbol": "maxInputSize",
+          "note": "The TEB input size is the EbDgram header plus TriggerPrimitive::size()."
+        }
+      ],
+      "decisions": [
+        {
+          "id": "dec-small-trigger-input",
+          "title": "Send the TEB a small summary, not the data",
+          "decision": "Each DRP sends the TEB only an event header plus a few bytes made by a trigger-primitive plugin loaded from a shared library; the event data stay in the DRP until the result comes back.",
+          "rationale": "The internal TEB/MEB page notes that the trigger-input format between the DRP and the TEB can be kept simple because it is never written to disk, and that the input is produced in the DRP by compiled shared-library code while the decision itself may be written in C++ or Python. The cited sources do not state why the full data are kept out of the TEB; the code shows that the TEB input buffers are sized to the header plus `TriggerPrimitive::size()`.",
+          "sources": [
+            "conf-teb-meb"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/drp/DrpBase.cc",
+              "start": 1595,
+              "end": 1612,
+              "symbol": "create_producer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drp-process",
+      "parent": "drp",
+      "title": "The drp process",
+      "summary": "The drp executable parses its options, picks a detector class by name and joins the control protocol.",
+      "prose": "The `drp` executable parses options such as the platform (`-p`), output directory (`-o`), lane mask (`-l`), detector type (`-D`), collection host (`-C`) and device (`-d`), then creates a `PGPDetectorApp`, initializes it and runs it. `PGPDetectorApp` derives from `CollectionApp`, so the process takes part in rollcall, alloc and connect and receives the transitions from the control process.\n\nThe `-D` name selects the detector class through `Factory<Detector>`; registered names include `hsd`, `epix100`, `jungfrau`, `opal`, `wave8` and `ts` (the timing system). Other executables build on the same base code for other inputs, for example `drp_bld` (beam-line data) and `drp_pva` (EPICS PV Access: PV stands for process variable and EPICS for the Experimental Physics and Industrial Control System), and `epicsArch` records EPICS variables.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/drp.cc",
+          "start": 165,
+          "end": 177,
+          "symbol": "PGPDetectorApp",
+          "note": "Batch size, maximum transition size, and starting the app."
+        }
+      ]
+    },
+    {
+      "id": "drp-pipeline",
+      "parent": "drp",
+      "title": "Threads and buffers of a DRP",
+      "summary": "A reader, several workers, a collector and a result receiver pass events along through fixed buffer pools.",
+      "prose": "Inside a PGP-based DRP (data reduction pipeline) the work is split across threads connected by queues. One PGP reader thread collects DMA (direct memory access) buffers, checks the timing headers and groups events into batches; a configurable number of worker threads run the detector code on the batches; one collector thread passes finished events to the TEB (trigger event builder) contributor; and a result receiver handles what the TEB sends back.\n\nEvents live in fixed buffer pools: DMA buffers allocated by the driver (the DRP only counts them), pebble buffers that hold the datagram being built, which are allocated and freed strictly in order, and separate buffers for transitions. The reader closes a batch when the pulse ID moves into the next block of `batchSize` pulse IDs, or when a transition other than SlowUpdate arrives.",
+      "code_refs": [
+        {
+          "path": "psdaq/drp/PGPDetector.cc",
+          "start": 400,
+          "end": 428,
+          "symbol": "m_collectorThread",
+          "note": "PGPDrp::startup starts the worker threads, the PGP reader and the collector."
+        },
+        {
+          "path": "psdaq/drp/PGPDetector.cc",
+          "start": 603,
+          "end": 625,
+          "symbol": "batchSize",
+          "note": "Batch boundaries: a new block of pulse IDs, or a transition."
+        },
+        {
+          "path": "psdaq/drp/drp.hh",
+          "start": 135,
+          "end": 180,
+          "symbol": "MemPool",
+          "note": "The buffer pools; pebble buffers are allocated and freed in order."
+        }
+      ],
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "drp-pgp-reader",
+      "parent": "drp-pipeline",
+      "title": "PGP reader: lanes and timing header",
+      "summary": "The reader assembles the lanes of each readout into an event using the timing header, and drops events the rest of the system cannot handle.",
+      "prose": "For each DMA (direct memory access) buffer, the PGP reader reads the timing header at its start. The low 24 bits of the header's event counter select the event slot, and the buffer's lane is marked in that event's lane mask; the event is complete when all lanes in the lane mask of the DRP (data reduction pipeline) have arrived. The reader checks that the event counter advances by one; on a jump it logs an error and, for multi-lane detectors, discards incomplete events.\n\nIt then drops events whose readout groups do not include the common readout group (the bit numbered like the platform), and SlowUpdates missing any of the DRP's readout groups, counting both. The code comments say such events would upset the TEB (trigger event builder) and the MEB (monitoring event builder), or psana. Finally it allocates a pebble buffer for the complete event, which can block when all are in use.",
+      "sources": [
+        "conf-bypass-events",
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 566,
+          "end": 645,
+          "symbol": "evtCounter",
+          "note": "Event slot from the event counter, lane mask, completion and jump handling."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 646,
+          "end": 724,
+          "symbol": "common readout group",
+          "note": "Readout-group filters and pebble allocation."
+        }
+      ]
+    },
+    {
+      "id": "drp-workers",
+      "parent": "drp-pipeline",
+      "title": "Workers: building the datagram",
+      "summary": "Worker threads build each L1Accept's XTC2 datagram with the detector class and prepare the TEB input.",
+      "prose": "Each worker thread takes batches of events from the reader. For an L1Accept it constructs an `EbDgram` from the timing header at the start of the event's pebble buffer and calls the detector class's `event()` method, which appends the detector's data as XTC2 containers. When the DRP (data reduction pipeline) runs with Python (`-k drp=python`), the datagram is passed to a Python worker process, and the reply replaces the datagram.\n\nThe worker then fills the event's TEB (trigger event builder) input buffer: a copy of the datagram header plus, if a trigger-primitive plugin is loaded, the plugin's summary of this event. For a SlowUpdate the detector's `slowupdate()` method fills a transition buffer instead, and the TEB input is just the header.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/PGPDetector.cc",
+          "start": 186,
+          "end": 247,
+          "symbol": "trgPrimitive",
+          "note": "workerFunc: L1Accept and SlowUpdate handling."
+        }
+      ]
+    },
+    {
+      "id": "drp-collector",
+      "parent": "drp-pipeline",
+      "title": "Collector: trigger input to the TEB",
+      "summary": "The collector frees DMA buffers and hands TEB inputs, batched by pulse ID, to the TEB contributor.",
+      "prose": "The collector thread takes the workers' output batches in the same round-robin order in which the reader handed them out, so events leave it in the order they were read. For each event it returns the DMA (direct memory access) buffers to the driver and hands the event's TEB (trigger event builder) input to the `TebContributor`.\n\nThe contributor groups inputs into batches by pulse ID and closes a batch early when a transition other than SlowUpdate arrives or the batch expires. It queues every batch so that results can be matched to it later, and, if this DRP (data reduction pipeline) provides trigger input, sends the batch over libfabric to one TEB, chosen from the batch's first pulse ID when there are several TEBs.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/PGPDetector.cc",
+          "start": 694,
+          "end": 729,
+          "symbol": "tebContributor",
+          "note": "PGPDrp::collector."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/TebContributor.cc",
+          "start": 270,
+          "end": 349,
+          "symbol": "maxEntries",
+          "note": "Batch flushing, the pending queue and the TEB destination (pid / maxEntries) % numEbs."
+        }
+      ]
+    },
+    {
+      "id": "drp-result-receiver",
+      "parent": "drp-pipeline",
+      "title": "Result receiver: record and monitor",
+      "summary": "For each TEB result the receiver records the event if asked, posts it to monitoring if asked, and acknowledges transitions.",
+      "prose": "The result receiver takes the TEB (trigger event builder) results in order and finds the waiting event by its buffer index; it aborts if the pulse ID or transition type of the result and the event disagree. Damage flags from the result are added to the event.\n\nWhile recording, an L1Accept is written to the files if the result's `persist` or `prescale` bit is set; transitions are always written. An L1Accept is posted to the MEB (monitoring event builder) buffer named in the result if `monitor` is set, and transitions are always posted. For transitions other than SlowUpdate, the receiver also passes the pulse ID on so that it is forwarded to the collection, that is, the control process.",
+      "code_refs": [
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 1004,
+          "end": 1063,
+          "symbol": "pulseId mismatch",
+          "note": "TebReceiverBase::process: consistency checks and damage."
+        },
+        {
+          "path": "psdaq/drp/TebReceiver.cc",
+          "start": 62,
+          "end": 124,
+          "symbol": "monBufNo",
+          "note": "TebReceiver::complete: write, monitor, acknowledge."
+        }
+      ]
+    },
+    {
+      "id": "detector-classes",
+      "parent": "drp",
+      "title": "Detector classes",
+      "summary": "Each detector type implements one interface: describe the data at Configure, write it for every L1Accept.",
+      "prose": "A detector class implements `Drp::Detector`. Its `configure()` method adds the detector's Configure data to the Configure datagram, and its `event()` method adds each L1Accept's data; hooks for BeginRun, BeginStep, Enable, Disable and SlowUpdate let a detector add data to those transitions. A second `event()` hook receives the TEB (trigger event builder) result for an event.\n\nFor example, `AreaDetector` (the `fakecam` and `cspad` class) declares `Names` (field names, types and ranks) in `configure()` and writes the event's values against those names in `event()`. Many hardware detectors derive from `BEBDetector`, whose `configure()` calls a Python function `<type>_config` with the configuration alias and turns the returned settings into XTC.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/Detector.hh",
+          "start": 36,
+          "end": 70,
+          "symbol": "Detector",
+          "note": "The interface: configure, transition hooks, event, slowupdate."
+        },
+        {
+          "path": "psdaq/drp/BEBDetector.cc",
+          "start": 206,
+          "end": 235,
+          "symbol": "config_alias",
+          "note": "Calling the detector's Python configuration function at Configure."
+        }
+      ]
+    },
+    {
+      "id": "teb",
+      "parent": null,
+      "title": "TEB: trigger decisions",
+      "summary": "The TEB gathers each DRP's small trigger input for an event, runs a trigger plugin and tells every DRP: record it? monitor it?",
+      "prose": "The TEB (trigger event builder) is not on the data path. Each DRP (data reduction pipeline) sends it only a small trigger contribution per event. The TEB builds the contributions of all DRPs for one event, runs a trigger plugin that was loaded from a shared library at Configure, and sends back a result.\n\nThe result says whether to record the event (`persist` or `prescale`) and whether to send it to monitoring (`monitor`). Each DRP then records or monitors its own part of the event. For recording, the parts are never merged: each DRP writes its own file.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "decisions": [
+        {
+          "id": "dec-common-readout-group",
+          "title": "Every event must include the common readout group",
+          "decision": "One readout group, numbered like the platform and normally the one with the highest rate, is the common group. Every event the TEB builds must contain it, and DRPs discard events without it before they reach the TEB.",
+          "rationale": "The internal Bypass Events page explains that the event builder uses the highest-rate readout group to keep events in time order: without it, contributions from a slower group could be built and dismissed before an older event arrived, so events would come out of order, which makes several parts of the system abort. An earlier scheme that let such events bypass the TEB caused problems for offline reading and was removed. The public operator page states the same requirement on the group number, and the TEB code comments that the common readout group keeps events and batches in pulse ID order.",
+          "sources": [
+            "conf-bypass-events",
+            "conf-psdaq",
+            "conf-teb-meb"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/psdaq/eb/src/teb.cc",
+              "start": 538,
+              "end": 545,
+              "symbol": "common readout group"
+            }
+          ]
+        },
+        {
+          "id": "dec-trigger-as-plugin",
+          "title": "Trigger logic is a plugin named in the configuration",
+          "decision": "The TEB contains no trigger logic of its own. At Configure it loads the shared library named by the `soname` key of the trigger configuration and creates the trigger with the library's `create_consumer` function; the DRPs load their trigger-primitive producers from the same library.",
+          "rationale": "The internal TEB/MEB page records the view that loading every trigger as a shared library gives one uniform, configurable mechanism, even when the decision logic is written in Python. The public monitoring page shows the Python case: the `soname` is pointed at `libtstTebPy.so` and a Python script is named in the configuration.",
+          "sources": [
+            "conf-teb-meb",
+            "conf-monitoring-distribution",
+            "site-drp-eventbuilding"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/psdaq/eb/src/teb.cc",
+              "start": 1025,
+              "end": 1056,
+              "symbol": "create_consumer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teb-process",
+      "parent": "teb",
+      "title": "The teb process",
+      "summary": "The teb executable joins the control protocol, loads the trigger plugin at Configure and runs the event builder.",
+      "prose": "The `teb` executable runs a `TebApp`, which takes part in the control protocol like the DRPs (data reduction pipelines), and a `Teb` event builder. At Configure it receives the trigger configuration from the control process; from it and the connect information it builds, for each readout group, the list of DRPs expected to contribute, then reads the `soname` key and loads the trigger plugin from that shared library through its `create_consumer` symbol.\n\nFor each built event the `Teb` checks that the pulse ID has advanced: if not, it marks the event `OutOfOrder` and aborts, because it cannot recover. It then asks the plugin for the decision, picks a monitoring buffer if one is requested, and posts the result, in batches, back to the DRPs.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/eb/src/teb.cc",
+          "start": 999,
+          "end": 1056,
+          "symbol": "_buildContract",
+          "note": "Contributors per readout group, and loading the trigger plugin."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/teb.cc",
+          "start": 551,
+          "end": 630,
+          "symbol": "Pulse ID did not advance",
+          "note": "Teb::process: order check, decision, prescale, monitoring."
+        }
+      ]
+    },
+    {
+      "id": "teb-event-building",
+      "parent": "teb-process",
+      "title": "Building contributions by pulse ID",
+      "summary": "Contributions with the same pulse ID form one event; an event is complete when every expected DRP has contributed.",
+      "prose": "The event builder of the TEB (trigger event builder), which is shared with the MEB (monitoring event builder), receives batches of contributions from the DRPs (data reduction pipelines) and inserts each contribution into the event with the same pulse ID. When an event is created, its contract, the set of DRPs expected to contribute, is the OR of the contributor lists of the readout groups named in the first contribution.\n\nEvents are handed on in pulse ID order once their contract is met. An event that is still missing contributions when it times out, or when a newer complete event forces it out, is fixed up: it gets the `DroppedContribution` damage, and, for the first such event, the event builder sends an error message naming the DRPs it did not hear from.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/eb/src/EventBuilder.hh",
+          "start": 29,
+          "end": 60,
+          "symbol": "EventBuilder",
+          "note": "What the abstract event builder does."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/EbAppBase.cc",
+          "start": 476,
+          "end": 515,
+          "symbol": "DroppedContribution",
+          "note": "The contract from readout groups, and fix-up of missing contributions."
+        }
+      ]
+    },
+    {
+      "id": "teb-trigger-plugin",
+      "parent": "teb-process",
+      "title": "Trigger plugin: the decision",
+      "summary": "A trigger plugin looks at all contributions of an event and fills in the result.",
+      "prose": "A trigger plugin implements `Pds::Trg::Trigger`. The TEB (trigger event builder) calls its `event()` method with the contributions of one built event and a result to fill, for L1Accepts and for transitions.\n\nThe example `tmoTeb` plugin reads two values, `persistValue` and `monitorValue`, from the trigger configuration. For each event it sets `persist` if any contribution's `write` field equals `persistValue`, and asks for monitoring by any MEB (monitoring event builder) if any contribution's `monitor` field equals `monitorValue`. On the DRP (data reduction pipeline) side, a `TriggerPrimitive` plugin from the same library produces the contribution fields. The decision can also be written in Python through the `libtstTebPy.so` interface.",
+      "sources": [
+        "site-drp-eventbuilding",
+        "conf-monitoring-distribution"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/trigger/src/Trigger.hh",
+          "start": 20,
+          "end": 49,
+          "symbol": "Trigger",
+          "note": "The plugin interface."
+        },
+        {
+          "path": "psdaq/psdaq/trigger/src/tmoTeb.cc",
+          "start": 32,
+          "end": 84,
+          "symbol": "persistValue",
+          "note": "A small example plugin and its create_consumer factory."
+        }
+      ]
+    },
+    {
+      "id": "teb-result",
+      "parent": "teb",
+      "title": "The result: persist, prescale, monitor",
+      "summary": "A result is the event header plus one word of decision bits and one word naming a monitoring buffer.",
+      "prose": "A result is a `ResultDgram`: the event's datagram header followed by a 32-bit result word and a 32-bit monitor-buffer word. In the result word, bit 0 is `prescale`, bit 1 is `persist`, the bits from bit 2 up hold the `monitor` request for the MEBs (monitoring event builders), and the top 24 bits are `auxdata` for the plugin's use.\n\nThe trigger plugin sets `persist` and `monitor`; the TEB (trigger event builder) itself sets `prescale` from the `keepRaw` flag of the event's `env` word. The TEB sends each result only to the DRPs (data reduction pipelines) that expect results for the event's readout groups and that supplied their input. On the timing-system DRP, the result is also passed to the detector class, so that the trigger information is saved with that DRP's data.",
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/eb/src/ResultDgram.hh",
+          "start": 26,
+          "end": 85,
+          "symbol": "ResultDgram",
+          "note": "The bit layout of the result word."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/teb.cc",
+          "start": 596,
+          "end": 631,
+          "symbol": "keepRaw",
+          "note": "Prescale from keepRaw, monitoring, and the list of receivers."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 1093,
+          "end": 1099,
+          "symbol": "timing system DRP",
+          "note": "The timing-system DRP saves the trigger information."
+        }
+      ]
+    },
+    {
+      "id": "files",
+      "parent": null,
+      "title": "Files on disk",
+      "summary": "A run on disk is one .xtc2 big-data file and one .smd.xtc2 small-data file per DRP stream; big-data files are split into chunks.",
+      "prose": "Each DRP (data reduction pipeline) writes its own files, so a run on disk is a set of streams, one per DRP. For each big-data file `<exp>-r<run>-s<stream>-c<chunk>.xtc2` there is a small-data file `smalldata/<exp>-r<run>-s<stream>-c<chunk>.smd.xtc2`.\n\nThe big-data file holds the full datagrams of the recorded events. The small-data file holds a copy of every transition and, for each L1Accept, only its position and size in the big-data file; psana reads the small-data files first and then only the bytes it needs from the big-data files. Big-data files are split into chunks when they grow large; small-data files are not.",
+      "sources": [
+        "site-xtc2",
+        "site-drp-eventbuilding",
+        "conf-live-mode",
+        "conf-chunking"
+      ],
+      "decisions": [
+        {
+          "id": "dec-one-stream-per-drp",
+          "title": "One file stream per DRP",
+          "decision": "Recorded events are not merged before writing. Each DRP writes the events it records to its own big-data and small-data files, named with its node ID as the stream number, and psana joins the streams later by timestamp.",
+          "rationale": "The internal XTC for LCLS-II page states the plan that LCLS-II writes one or more XTC files per detector, in a self-describing format. The cited sources do not state why events are not merged before writing; the code shows that only the record/monitor decision is made centrally, by the TEB, while the data stay in each DRP.",
+          "sources": [
+            "conf-xtc-lcls2",
+            "site-xtc2",
+            "site-drp-eventbuilding"
+          ]
+        },
+        {
+          "id": "dec-coordinated-chunking",
+          "title": "Chunk big-data files at a shared Enable",
+          "decision": "A DRP whose big-data file grows past a threshold asks the control process for a Disable/Enable pair. At that Enable, every DRP whose file is past half the threshold starts a new chunk, and the Enable datagram records the new file name. Small-data files are never chunked.",
+          "rationale": "The internal Chunking page records a choice between this coordinated scheme and an uncoordinated one in which each DRP would chunk on its own at a SlowUpdate. The coordinated scheme was preferred, in part because the designers did not want a feature that depends on the reliability of deadtime. The internal Live Mode page adds that because the small-data files, which drive psana's live reading, are not chunked, live analysis does not have to deal with chunk boundaries.",
+          "sources": [
+            "conf-chunking",
+            "conf-live-mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "file-writer",
+      "parent": "files",
+      "title": "How a DRP writes its files",
+      "summary": "At BeginRun a recording DRP opens its two files; the result receiver writes Configure, the transitions and the accepted events.",
+      "prose": "At BeginRun, if the run has a run number (recording is on), each DRP (data reduction pipeline) creates `<output dir>/<instrument>/<experiment>/xtc/` and opens `<experiment>-r<run>-s<stream>-c000.xtc2` there, plus the matching `.smd.xtc2` in `xtc/smalldata/`; the stream number is the DRP's node ID. For each file it opens it sends a file report message.\n\nThe writing itself happens in the result receiver. When the BeginRun result arrives it first writes the cached Configure datagram and then BeginRun; after that it writes every transition and every L1Accept whose result has `persist` or `prescale` set. At EndRun the files are closed. A detector selected as monitor-only in the partition is shown in AMI (the online monitoring program) but not recorded.",
+      "sources": [
+        "conf-psdaq",
+        "conf-fsm"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 850,
+          "end": 903,
+          "symbol": "openFiles",
+          "note": "Directory layout, file names, file reports."
+        },
+        {
+          "path": "psdaq/drp/TebReceiver.cc",
+          "start": 62,
+          "end": 103,
+          "symbol": "m_configureBuffer",
+          "note": "What is written when."
+        }
+      ]
+    },
+    {
+      "id": "bigdata-file",
+      "parent": "file-writer",
+      "title": ".xtc2: the big-data file",
+      "summary": "The full datagrams, written through a buffered writer with its own writer thread.",
+      "prose": "The big-data file holds complete datagrams, one after another in the XTC2 format. The DRP (data reduction pipeline) writes it through `BufferedFileWriterMT`: `writeEvent()` copies each datagram into one of a pool of page-aligned buffers, and a separate writer thread writes full buffers to the file. A buffer is also queued when the batch in it is more than 2 seconds old by event timestamp.\n\nThe writer can open the file with direct I/O (`O_DIRECT`), in which case it uses two large buffers of at least 512 MiB each instead of 64 buffers. When it opens a file it waits for a write lock on it.",
+      "code_refs": [
+        {
+          "path": "psdaq/drp/FileWriter.hh",
+          "start": 21,
+          "end": 90,
+          "symbol": "BufferedFileWriterMT",
+          "note": "The two buffered writers; the multi-threaded one is used for big data."
+        }
+      ]
+    },
+    {
+      "id": "smalldata-file",
+      "parent": "file-writer",
+      "title": ".smd.xtc2: the small-data file",
+      "summary": "One small datagram per written datagram: transitions in full, L1Accepts reduced to an offset and a size.",
+      "prose": "For every datagram written to the big-data file, the DRP (data reduction pipeline) also writes a small-data datagram made by `Smd::generate()`. Transitions are copied whole (EndRun without payload), and the copy of Configure gains an extra `smdinfo` description with two fields, `intOffset` and `intDgramSize`. Each L1Accept is replaced by a datagram with the same time and `env` whose payload is just those two numbers: where the event starts in the big-data file and how many bytes it has.\n\nThe internal XTC for LCLS-II page describes the purpose: one small-data event per big-data event, used for parallel reading and, when small values are added, for filtering before the large data are fetched. The Live Mode page notes that it is written by a single-threaded writer.",
+      "sources": [
+        "conf-xtc-lcls2",
+        "conf-live-mode"
+      ],
+      "code_refs": [
+        {
+          "path": "xtcdata/xtcdata/xtc/Smd.hh",
+          "start": 14,
+          "end": 29,
+          "symbol": "intOffset",
+          "note": "What a small-data datagram contains."
+        },
+        {
+          "path": "psdaq/drp/TebReceiver.cc",
+          "start": 47,
+          "end": 60,
+          "symbol": "_writeDgram",
+          "note": "Each written datagram goes to both files."
+        }
+      ]
+    },
+    {
+      "id": "chunking",
+      "parent": "file-writer",
+      "title": "Chunking big-data files",
+      "summary": "Past a size threshold, the big-data file is closed at an Enable and continued in a new chunk file.",
+      "prose": "While recording, each DRP (data reduction pipeline) counts the bytes in its current big-data chunk. The threshold is 500 GB (500 × 1024³ bytes): past it, the DRP's result receiver requests a new chunk, and the control process answers with a Disable followed by an Enable. At any Enable, a DRP whose chunk is past half the threshold advances its chunk number and adds a `chunkinfo` record with the new file name and chunk ID to the Enable datagram.\n\nThat Enable is the last datagram of the old chunk; the DRP then closes the big-data file and opens the next one (`-c001`, and so on). The small-data file stays open, and its offsets count from the start of the new chunk.",
+      "sources": [
+        "conf-chunking",
+        "conf-live-mode"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/drp/DrpBase.hh",
+          "start": 136,
+          "end": 148,
+          "symbol": "DefaultChunkThresh",
+          "note": "Chunk size and the 500 GB threshold."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 1499,
+          "end": 1521,
+          "symbol": "chunkInfo",
+          "note": "DrpBase::enable: advance the chunk and record the new file name."
+        },
+        {
+          "path": "psdaq/drp/DrpBase.cc",
+          "start": 920,
+          "end": 950,
+          "symbol": "m_chunkOffset",
+          "note": "reopenFiles: only the big-data file is closed and reopened; offsets restart."
+        }
+      ]
+    },
+    {
+      "id": "xtc2-format",
+      "parent": "files",
+      "title": "XTC2 datagrams",
+      "summary": "Files, network messages and shared memory all carry the same self-describing XTC2 datagrams.",
+      "prose": "XTC2 is the file and network format of the LCLS-II DAQ (data acquisition system); a file or a shared-memory buffer is a sequence of datagrams. Each datagram is one transition or one L1Accept: a header (timestamp and the `env` word with the transition ID and readout groups) followed by a tree of `Xtc` containers.\n\nThe data are self-describing. The Configure datagram carries `Names` (field names, types and ranks for every detector and algorithm), and each event carries `ShapesData`, which are decoded with those names. The internal XTC for LCLS-II page lists design goals: the same format in memory and on disk, no copying step to serialize data for the network, and files that can be read while they are being written.",
+      "sources": [
+        "site-xtc2",
+        "conf-xtc-lcls2"
+      ],
+      "code_refs": [
+        {
+          "path": "xtcdata/xtcdata/xtc/Dgram.hh",
+          "start": 65,
+          "end": 78,
+          "symbol": "Dgram",
+          "note": "A datagram: the transition header plus the top-level Xtc."
+        }
+      ]
+    },
+    {
+      "id": "ffb",
+      "parent": "files",
+      "title": "Fast-feedback file system",
+      "summary": "During the experiment the DAQ's files live on the fast-feedback (FFB) file system, where live analysis reads them.",
+      "outside_repo": true,
+      "prose": "The DRP (data reduction pipeline) writes into the directory given with its `-o` option. Per the public psana page, analysis while the experiment runs should normally read the data from the fast-feedback (FFB) file system. For three of the instruments named on that page the DAQ (data acquisition system) writes the data directly to the FFB; for a fourth, the data are transferred to the FFB afterwards. The page also advises when automatic run-processing jobs should start in each case: at the start of a run for direct writing, and when the first file has been transferred otherwise.",
+      "sources": [
+        "conf-psana",
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "parent": null,
+      "title": "Live monitoring",
+      "summary": "Events chosen for monitoring are built by an MEB and served in shared memory to online analysis such as AMI.",
+      "prose": "Live monitoring runs next to recording. Each DRP (data reduction pipeline) posts the events that the TEB (trigger event builder) marked for monitoring to an MEB (monitoring event builder, the `monReqServer` program), which builds the parts from all DRPs into one event and serves it in shared memory. Online analysis, such as AMI and psana scripts in shared-memory mode, reads the events from there.\n\nMonitoring is driven by free buffers. An MEB tells a TEB about each buffer it has free, and an event is only monitored if a buffer is available, so monitoring may see only some of the events. Transitions are sent to every MEB.",
+      "sources": [
+        "site-drp-eventbuilding",
+        "site-shmem-live",
+        "conf-monitoring-distribution"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/eb/src/MebContributor.hh",
+          "start": 25,
+          "end": 50,
+          "symbol": "MebContributor",
+          "note": "L1Accepts go to one chosen MEB buffer; transitions go to every MEB."
+        }
+      ],
+      "decisions": [
+        {
+          "id": "dec-monitor-by-free-buffers",
+          "title": "Monitor an event only when an MEB buffer is free",
+          "decision": "An MEB announces each free buffer to a TEB. When the trigger asks for monitoring, the TEB puts one announced buffer number into the result, and each DRP sends its part of the event straight into that MEB buffer. If no buffer is free, the event is not monitored.",
+          "rationale": "The public page on distributing events for monitoring describes this behavior: the result carries a single buffer number, the TEB goes round-robin over the MEBs that have advertised buffers, and if none has one the event is not sent to an MEB. The sources do not state the reasoning behind the design; the code shows that in that case the TEB clears the monitor request and still sends the result, so the event can be recorded as usual.",
+          "sources": [
+            "conf-monitoring-distribution"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/psdaq/eb/src/teb.cc",
+              "start": 484,
+              "end": 525,
+              "symbol": "_monitor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "meb",
+      "parent": "monitoring",
+      "title": "MEB: monitoring event builder",
+      "summary": "monReqServer asks the TEBs for events by offering free buffers, then builds the events written into them.",
+      "prose": "The MEB (monitoring event builder) is the `monReqServer` program, and a hutch can run several of them. Its options include the shared-memory tag (`-t`), the number of event buffers (`-n`) and the number of event queues (`-q`).\n\nEach time the MEB has a free event buffer, it sends that buffer's index to a TEB (trigger event builder), spreading the indices evenly over the TEBs. DRPs (data reduction pipelines) then write the parts of a monitored event directly into the announced buffer over libfabric, while transitions go to every MEB. The MEB builds each event by pulse ID with the same event-building code as the TEB and hands it to its shared-memory server.",
+      "sources": [
+        "site-shmem-live",
+        "site-drp-eventbuilding"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/monreq/monReqServer.cc",
+          "start": 261,
+          "end": 315,
+          "symbol": "_requestDatagram",
+          "note": "Offer a free buffer index to a TEB (index modulo the number of TEBs)."
+        },
+        {
+          "path": "psdaq/psdaq/eb/src/MebContributor.hh",
+          "start": 25,
+          "end": 50,
+          "symbol": "post",
+          "note": "The DRP side: RDMA-write (remote direct memory access) an L1Accept into the chosen MEB buffer, transitions to all MEBs."
+        }
+      ]
+    },
+    {
+      "id": "shared-memory",
+      "parent": "monitoring",
+      "title": "Shared memory to analysis clients",
+      "summary": "The MEB's server copies events into shared memory; clients on the same machine read them and may skip events.",
+      "prose": "The MEB (monitoring event builder) serves built events through `XtcMonitorServer`, under a tag that clients use to find it. A transition is copied into a transition buffer and its index is sent to every ready client; an L1Accept is queued for a task thread that copies it into a free event buffer, and it is dropped if no buffer is free.\n\nA client, for example a psana script with `DataSource(shmem=tag)`, connects to the shared memory on the same machine. psana's background reader keeps every transition but only the most recent L1Accept, so a client that is slower than the data skips events. No event building happens in psana in this mode; the server already delivers built events.",
+      "sources": [
+        "site-shmem-live"
+      ],
+      "code_refs": [
+        {
+          "path": "psalg/psalg/shmem/XtcMonitorServer.hh",
+          "start": 73,
+          "end": 96,
+          "symbol": "Deferred",
+          "note": "How transitions and L1Accepts are served."
+        }
+      ]
+    },
+    {
+      "id": "ami",
+      "parent": "monitoring",
+      "title": "AMI: online analysis",
+      "summary": "AMI workers read the MEB's shared memory and feed a graphical analysis graph that operators and users build.",
+      "outside_repo": true,
+      "prose": "AMI is the graphical online-analysis program used with the LCLS-II DAQ (data acquisition system). The public AMI page describes building an analysis graph from data-source, operation and display boxes, and running it either on recorded files or live.\n\nIn a hutch configuration file such as `tmo.cnf`, each AMI worker node runs its own MEB (monitoring event builder) and an `ami-node` worker process that reads `psana://shmem=<hutch>`, together with `ami-manager`, `ami-global` and `ami-client` processes. The public page on AMI latency notes that when event processing is very slow, AMI pushes back into the MEB's shared-memory buffers, which adds latency.",
+      "sources": [
+        "conf-ami",
+        "conf-ami-latency"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/cnf/tmo.cnf",
+          "start": 188,
+          "end": 210,
+          "symbol": "ami-node",
+          "note": "AMI processes in a hutch configuration; one MEB per AMI worker node."
+        }
+      ]
+    },
+    {
+      "id": "control",
+      "parent": null,
+      "title": "Run control",
+      "summary": "One control process runs the DAQ state machine, sends each transition to all processes, and starts runs in the logbook.",
+      "prose": "One control process drives a DAQ (data acquisition system) platform: a set of DRP (data reduction pipeline), TEB (trigger event builder) and MEB (monitoring event builder) processes listed in a `.cnf` file. It runs a state machine, sends each transition to the other processes over ZeroMQ, collects their replies, and inserts the corresponding timing transitions through the XPM (eXperiment Partition Master). Operators drive it from the control GUI (graphical user interface), the `daqstate` command or Python scripts built on `DaqControl`.\n\nAt Configure the trigger configuration is fetched from the configuration database. At BeginRun, if recording is enabled, a run number is allocated and the run is recorded in the logbook.",
+      "sources": [
+        "site-daq-control",
+        "conf-fsm",
+        "conf-psdaq"
+      ],
+      "decisions": [
+        {
+          "id": "dec-two-phase-transitions",
+          "title": "Two-phase transitions",
+          "decision": "Each transition after Connect has two phases. In phase 1 the control process publishes the transition over ZeroMQ and waits for the DRP, TEB and MEB processes to answer; slow work such as configuring a detector happens here. In phase 2 it inserts the transition into the timing stream through the XPM and waits for the phase-2 answers; only after Enable's phase 2 does it turn triggers on.",
+          "rationale": "The internal Two Phase Transitions page gives the reasons: the phase-1 broadcast lets slow steps such as configuring run in parallel on all nodes; as much work as possible is done in phase 1 so that phase 2, in the DRP thread that handles the timing stream and writes all XTC, stays quick; and all timeouts are kept in the control level.",
+          "sources": [
+            "conf-two-phase",
+            "site-daq-control"
+          ],
+          "code_refs": [
+            {
+              "path": "psdaq/psdaq/control/control.py",
+              "start": 3030,
+              "end": 3096,
+              "symbol": "get_phase2_replies",
+              "note": "condition_enable: phase 1, insert Enable, phase-2 replies, then enable triggers."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "control-process",
+      "parent": "control",
+      "title": "Control process and state machine",
+      "summary": "control.py's CollectionManager walks the states from unallocated to running and back, one transition at a time.",
+      "prose": "The control process (`control`, class `CollectionManager` in `control.py`) runs a state machine with the states `reset`, `unallocated`, `allocated`, `connected`, `configured`, `starting`, `paused` and `running`. Transitions come in pairs: alloc/dealloc choose the processes that answered rollcall, connect/disconnect make the connections, then configure/unconfigure, beginrun/endrun, beginstep/endstep and enable/disable; `slowupdate` is allowed in `running` without changing state. A client can ask for a target state, and the control process walks the needed transitions one by one.\n\nAt BeginRun with recording on, the control process starts a run in the logbook to get the run number and puts it, together with the list of monitor-only detectors, into the BeginRun message for the DRPs (data reduction pipelines). Without recording, the run number is 0 by convention.",
+      "sources": [
+        "site-daq-control",
+        "conf-fsm"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/control/control.py",
+          "start": 1078,
+          "end": 1113,
+          "symbol": "add_transition",
+          "note": "The state machine."
+        },
+        {
+          "path": "psdaq/psdaq/control/control.py",
+          "start": 1826,
+          "end": 1870,
+          "symbol": "start_run",
+          "note": "condition_beginrun: run number and monitor-only list for phase 1."
+        }
+      ]
+    },
+    {
+      "id": "collection-protocol",
+      "parent": "control",
+      "title": "Collection: how processes take part",
+      "summary": "Every DRP, TEB and MEB is a CollectionApp: it receives transitions on ZeroMQ and sends its answers back.",
+      "prose": "Every process that the control process drives is built on `CollectionApp`. It receives transitions from the control process's ZeroMQ PUB socket, subscribed to the `all` topic and, after alloc, also to `partition`, and sends replies to the control process's PULL socket. The ports are a base port (29980) plus the platform number plus a fixed offset. Messages are JSON (JavaScript Object Notation) dictionaries with a header (key, message ID, sender ID) and a body; keys such as `configure`, `beginrun` or `enable` go to `handlePhase1`.\n\nA second, in-process channel lets the process's own threads send messages out. A `pulseId` message from one of these threads is forwarded to the control process as a `timingTransition` reply whose message ID is the pulse ID; file reports and chunk requests are forwarded the same way.",
+      "sources": [
+        "site-daq-control"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/service/Collection.cc",
+          "start": 478,
+          "end": 535,
+          "symbol": "timingTransition",
+          "note": "The CollectionApp loop: ZeroMQ messages to handlers, in-process messages to the control process."
+        }
+      ]
+    },
+    {
+      "id": "config-db",
+      "parent": "control",
+      "title": "Configuration database",
+      "summary": "Detector and trigger settings are typed JSON documents in a database, looked up by instrument, alias and device.",
+      "prose": "Detector and trigger settings live in a configuration database. The internal ConfigDB page describes it as a MongoDB database whose documents are typed JSON (JavaScript Object Notation): the values plus a `:types:` entry giving each value's type. It is reached at a URL that the control process passes to the other processes in the connect message.\n\nAt Configure the control process fetches the trigger configuration for its configuration alias (for example `BEAM`). Detector code uses `get_config()`, which returns the settings of `<detector>_<segment>` for an alias, using the instrument and database named in the connect message. Per the operator page, after the database is changed the DAQ (data acquisition system) must go back to Connected and through Configured again to pick up the new settings.",
+      "sources": [
+        "conf-configdb",
+        "site-daq-control",
+        "conf-psdaq"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/configdb/get_config.py",
+          "start": 68,
+          "end": 110,
+          "symbol": "get_config_with_params",
+          "note": "How a detector's settings are looked up."
+        }
+      ]
+    },
+    {
+      "id": "launching",
+      "parent": "control",
+      "title": "Launching: procmgr and .cnf files",
+      "summary": "A hutch's .cnf file lists every process with its host and command line; procmgr starts and stops them.",
+      "prose": "The processes of a platform are listed in a `.cnf` file, a small Python script per hutch, for example `tmo.cnf`. Each entry gives a host, a unique ID, flags and a command line, built from shared option strings such as the instrument (`-P`), the collection host (`-C`) and, for DRPs (data reduction pipelines), the output directory (`-o`) and device (`-d`).\n\n`procmgr` starts, stops, restarts and reports on them (`procmgr start | stop | stopall | restart | status <cnf>`); the `u` and `p` flags make it add `-u <id>` and `-p <platform>`. Processes that control the XPM (eXperiment Partition Master) boards are kept in a separate, long-lived `.cnf` file and are not stopped by a plain `stop`. A Slurm-based launcher, `daqmgr`, is an alternative.",
+      "sources": [
+        "site-daq-control",
+        "conf-hutch-daq-experts"
+      ],
+      "code_refs": [
+        {
+          "path": "psdaq/psdaq/cnf/tmo.cnf",
+          "start": 35,
+          "end": 43,
+          "symbol": "std_opts",
+          "note": "Shared options and the teb, monReqServer and drp command lines."
+        }
+      ]
+    },
+    {
+      "id": "after-run",
+      "parent": null,
+      "title": "After the run",
+      "summary": "Facility services move the files to storage; psana reads the small data, joins the streams by timestamp and fetches big data by offset.",
+      "prose": "Data movers copy the files that the DAQ (data acquisition system) wrote from the recording nodes to the storage nodes; while a file is being moved it carries an extra `.inprogress` extension. Analysis then reads the files with psana.\n\npsana finds the run's streams, reads the small-data files first, and builds each event by matching timestamps across the streams: an L1Accept may be present in some streams and missing from others, but every transition must be present in all of them. It then reads only the bytes it needs from the big-data files, using the offsets stored in the small data. The same files can also be read while the run is still being recorded (live mode).",
+      "sources": [
+        "conf-smalldata-debug",
+        "conf-live-mode",
+        "site-xtc2",
+        "site-shmem-live"
+      ],
+      "code_refs": [
+        {
+          "path": "psana/psana/eventbuilder.pyx",
+          "start": 322,
+          "end": 384,
+          "symbol": "_gather_event",
+          "note": "Joining the streams by timestamp."
+        }
+      ],
+      "decisions": [
+        {
+          "id": "dec-small-data-first",
+          "title": "Read the small data first, the big data by offset",
+          "decision": "psana does not scan the big-data files. It reads the small-data files of all streams, builds the events from them, and then reads only the needed bytes of the big-data files, using the stored offsets and sizes.",
+          "rationale": "The internal XTC for LCLS-II page gives the purpose of the small-data files: one small event per big event, used to parallelize the reading and, when small values are added, to filter events before paying for the large data. The public parallel-analysis page shows the parallel use: one rank reads the small data and sends batches on, and big-data ranks read the full events.",
+          "sources": [
+            "conf-xtc-lcls2",
+            "site-mpi-parallel",
+            "site-xtc2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-movement",
+      "parent": "after-run",
+      "title": "Moving files to storage",
+      "summary": "Data movers, a facility service, copy the run's files from the recording nodes to storage.",
+      "outside_repo": true,
+      "prose": "Moving the files from the recording nodes to storage is done by facility services. The public smalldata_tools debugging page describes the data movers as the services that copy the data from the recording nodes to the storage nodes, and says that when psana waits in vain for a run's files, the movers are usually the problem.\n\nThe internal Live Mode page adds that a mover gives an `.xtc2` file an extra `.inprogress` extension while the file is being moved, which lets users see when moving is complete. The same page discusses how this interacts with reading files while they are still growing, and notes that because the small-data files are not chunked, chunking does not complicate live reading.",
+      "sources": [
+        "conf-smalldata-debug",
+        "conf-live-mode"
+      ]
+    },
+    {
+      "id": "psana-reading",
+      "parent": "after-run",
+      "title": "psana: finding and reading a run",
+      "summary": "psana finds one small-data file per stream, matches each with its big-data file, and splits the work across MPI ranks.",
+      "prose": "With `DataSource(exp=..., run=...)`, psana reads from the experiment's `xtc` directory, by default `$SIT_PSDM_DATA/<exp[:3]>/<exp>/xtc`, which holds the files in the layout described under [[files]]. It asks the logbook's database for the run's file list and expects one small-data file per stream in `xtc/smalldata`; outside live mode, if no list is available, it scans that directory for `*r<run>-s*.smd.xtc2` files. Every small-data file must have a matching big-data file, and files still named `.inprogress` are accepted.\n\nUnder MPI (Message Passing Interface), one rank reads the small data, event-builder ranks build batches of events, and big-data ranks read the full events and run the user's event loop.",
+      "sources": [
+        "site-datasource",
+        "site-mpi-parallel",
+        "site-shmem-live"
+      ],
+      "code_refs": [
+        {
+          "path": "psana/psana/psexp/ds_base.py",
+          "start": 550,
+          "end": 630,
+          "symbol": "_setup_run_files",
+          "note": "Finding the small-data files and their big-data partners."
+        }
+      ]
+    },
+    {
+      "id": "stream-joining",
+      "parent": "after-run",
+      "title": "Joining the streams by timestamp",
+      "summary": "psana's event builder takes the smallest next timestamp across all streams and joins the datagrams that share it.",
+      "prose": "psana's event builder (`eventbuilder.pyx`) builds events from the small-data streams. At each step it looks at the next datagram of every stream and takes the smallest timestamp; every stream whose next datagram has that same timestamp contributes to the event, and the other streams keep their datagram for a later event. An L1Accept can therefore be present in only some streams, for example from detectors in a slower readout group.\n\nA transition, however, must be present in all streams: if it is not, psana raises an error that names the transition and the number of streams it expected and received. The internal SlowUpdate Handling page records this requirement as a constraint on the DAQ (data acquisition system).",
+      "sources": [
+        "conf-slowupdate",
+        "conf-psdaq"
+      ],
+      "code_refs": [
+        {
+          "path": "psana/psana/eventbuilder.pyx",
+          "start": 322,
+          "end": 384,
+          "symbol": "min_ts",
+          "note": "_gather_event: smallest timestamp, matching streams, complete transitions."
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-accelerator-to-xpm",
+      "from": "accelerator-timing",
+      "to": "xpm",
+      "label": "timing frames, event codes",
+      "kind": "timing",
+      "prose": "The XPM receives the accelerator timing stream and selects, per readout group, the pulses that trigger a readout.",
+      "sources": [
+        "conf-lcls2-timing"
+      ]
+    },
+    {
+      "id": "e-timing-to-front-ends",
+      "from": "timing",
+      "to": "front-ends",
+      "label": "triggers per readout group",
+      "kind": "timing",
+      "prose": "The XPM triggers the detectors of each readout group; the readout carries the timing header.",
+      "sources": [
+        "conf-psdaq"
+      ]
+    },
+    {
+      "id": "e-xpm-to-electronics",
+      "from": "xpm",
+      "to": "detector-electronics",
+      "label": "trigger and timing",
+      "kind": "timing",
+      "sources": [
+        "conf-standalone-detectors"
+      ]
+    },
+    {
+      "id": "e-electronics-to-dma",
+      "from": "detector-electronics",
+      "to": "pgp-dma",
+      "label": "data over PGP",
+      "kind": "data",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-front-ends-to-drp",
+      "from": "front-ends",
+      "to": "drp",
+      "label": "DMA buffers",
+      "kind": "data",
+      "prose": "Each readout lands in a DMA buffer of a DRP node, starting with its timing header.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-dma-to-reader",
+      "from": "pgp-dma",
+      "to": "drp-pgp-reader",
+      "label": "completed DMA buffers",
+      "kind": "data"
+    },
+    {
+      "id": "e-reader-to-workers",
+      "from": "drp-pgp-reader",
+      "to": "drp-workers",
+      "label": "batches of events",
+      "kind": "data"
+    },
+    {
+      "id": "e-workers-to-collector",
+      "from": "drp-workers",
+      "to": "drp-collector",
+      "label": "built events",
+      "kind": "data"
+    },
+    {
+      "id": "e-drp-to-teb",
+      "from": "drp",
+      "to": "teb",
+      "label": "trigger input per event",
+      "kind": "trigger",
+      "prose": "Each DRP sends the TEB a small trigger contribution per event (header plus trigger-primitive output), not its detector data.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-teb-to-drp",
+      "from": "teb",
+      "to": "drp",
+      "label": "result: record? monitor?",
+      "kind": "trigger",
+      "prose": "The TEB returns one result per event to each DRP in the event's readout groups.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-collector-to-teb-eb",
+      "from": "drp-collector",
+      "to": "teb-event-building",
+      "label": "batches of trigger input",
+      "kind": "trigger"
+    },
+    {
+      "id": "e-teb-eb-to-plugin",
+      "from": "teb-event-building",
+      "to": "teb-trigger-plugin",
+      "label": "built event",
+      "kind": "trigger"
+    },
+    {
+      "id": "e-plugin-to-result",
+      "from": "teb-trigger-plugin",
+      "to": "teb-result",
+      "label": "decision bits",
+      "kind": "trigger"
+    },
+    {
+      "id": "e-result-to-receiver",
+      "from": "teb-result",
+      "to": "drp-result-receiver",
+      "label": "batches of results",
+      "kind": "trigger"
+    },
+    {
+      "id": "e-drp-to-files",
+      "from": "drp",
+      "to": "files",
+      "label": "recorded events",
+      "kind": "data",
+      "prose": "Each DRP's file writer writes its own stream; the TEB result only decides which L1Accepts are written.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-receiver-to-bigdata",
+      "from": "drp-result-receiver",
+      "to": "bigdata-file",
+      "label": "persist or prescale",
+      "kind": "data"
+    },
+    {
+      "id": "e-receiver-to-smalldata",
+      "from": "drp-result-receiver",
+      "to": "smalldata-file",
+      "label": "offset and size",
+      "kind": "data"
+    },
+    {
+      "id": "e-writer-to-ffb",
+      "from": "file-writer",
+      "to": "ffb",
+      "label": "run files",
+      "kind": "data",
+      "sources": [
+        "conf-psana"
+      ]
+    },
+    {
+      "id": "e-drp-to-monitoring",
+      "from": "drp",
+      "to": "monitoring",
+      "label": "monitored events",
+      "kind": "monitoring",
+      "prose": "DRPs post L1Accepts whose result asks for monitoring, and every transition, to the MEBs.",
+      "sources": [
+        "site-drp-eventbuilding"
+      ]
+    },
+    {
+      "id": "e-monitoring-to-teb",
+      "from": "monitoring",
+      "to": "teb",
+      "label": "free buffer offers",
+      "kind": "monitoring",
+      "prose": "Each MEB sends the index of every free buffer to a TEB, which hands it out in results.",
+      "sources": [
+        "conf-monitoring-distribution"
+      ]
+    },
+    {
+      "id": "e-receiver-to-meb",
+      "from": "drp-result-receiver",
+      "to": "meb",
+      "label": "event part into MEB buffer",
+      "kind": "monitoring"
+    },
+    {
+      "id": "e-meb-to-teb-process",
+      "from": "meb",
+      "to": "teb-process",
+      "label": "free buffer index",
+      "kind": "monitoring"
+    },
+    {
+      "id": "e-meb-to-shmem",
+      "from": "meb",
+      "to": "shared-memory",
+      "label": "built events",
+      "kind": "monitoring"
+    },
+    {
+      "id": "e-shmem-to-ami",
+      "from": "shared-memory",
+      "to": "ami",
+      "label": "psana shmem source",
+      "kind": "monitoring",
+      "sources": [
+        "site-shmem-live"
+      ]
+    },
+    {
+      "id": "e-control-to-timing",
+      "from": "control",
+      "to": "timing",
+      "label": "insert transitions",
+      "kind": "control",
+      "prose": "In phase 2 the control process asks the XPM to insert the transition into the timing stream; for Enable it then turns triggers on.",
+      "sources": [
+        "site-daq-control"
+      ]
+    },
+    {
+      "id": "e-control-to-drp",
+      "from": "control",
+      "to": "drp",
+      "label": "transitions (phase 1)",
+      "kind": "control",
+      "sources": [
+        "site-daq-control"
+      ]
+    },
+    {
+      "id": "e-control-to-teb",
+      "from": "control",
+      "to": "teb",
+      "label": "transitions, trigger config",
+      "kind": "control",
+      "sources": [
+        "site-daq-control"
+      ]
+    },
+    {
+      "id": "e-drp-to-control",
+      "from": "drp",
+      "to": "control",
+      "label": "answers, file reports",
+      "kind": "control",
+      "prose": "DRPs answer phase 1, acknowledge phase 2 with the transition's pulse ID, and report the files they open.",
+      "sources": [
+        "site-daq-control"
+      ]
+    },
+    {
+      "id": "e-control-process-to-xpm",
+      "from": "control-process",
+      "to": "xpm",
+      "label": "transition ID, L0 enable",
+      "kind": "control"
+    },
+    {
+      "id": "e-control-process-to-collection",
+      "from": "control-process",
+      "to": "collection-protocol",
+      "label": "transitions over ZeroMQ",
+      "kind": "control"
+    },
+    {
+      "id": "e-receiver-to-collection",
+      "from": "drp-result-receiver",
+      "to": "collection-protocol",
+      "label": "pulse ID (phase 2)",
+      "kind": "control"
+    },
+    {
+      "id": "e-chunking-to-control-process",
+      "from": "chunking",
+      "to": "control-process",
+      "label": "chunk request",
+      "kind": "control"
+    },
+    {
+      "id": "e-configdb-to-detectors",
+      "from": "config-db",
+      "to": "detector-classes",
+      "label": "detector settings",
+      "kind": "control"
+    },
+    {
+      "id": "e-configdb-to-control-process",
+      "from": "config-db",
+      "to": "control-process",
+      "label": "trigger configuration",
+      "kind": "control"
+    },
+    {
+      "id": "e-launching-to-drp-process",
+      "from": "launching",
+      "to": "drp-process",
+      "label": "start processes",
+      "kind": "control"
+    },
+    {
+      "id": "e-files-to-after-run",
+      "from": "files",
+      "to": "after-run",
+      "label": "run files",
+      "kind": "data",
+      "prose": "The files are moved to storage and read by psana.",
+      "sources": [
+        "conf-smalldata-debug"
+      ]
+    },
+    {
+      "id": "e-ffb-to-movement",
+      "from": "ffb",
+      "to": "data-movement",
+      "label": "files to storage",
+      "kind": "data",
+      "sources": [
+        "conf-smalldata-debug"
+      ]
+    },
+    {
+      "id": "e-movement-to-reading",
+      "from": "data-movement",
+      "to": "psana-reading",
+      "label": ".xtc2 and .smd.xtc2 files",
+      "kind": "data"
+    },
+    {
+      "id": "e-ffb-to-reading",
+      "from": "ffb",
+      "to": "psana-reading",
+      "label": "live-mode reading",
+      "kind": "data",
+      "sources": [
+        "conf-psana"
+      ]
+    },
+    {
+      "id": "e-reading-to-joining",
+      "from": "psana-reading",
+      "to": "stream-joining",
+      "label": "small data per stream",
+      "kind": "data"
+    }
+  ],
+  "tour": {
+    "title": "Follow one L1Accept from the pulse to the files",
+    "intro": "This tour follows one L1Accept, the readout of a single accelerator pulse, from the timing system to the files and beyond. Each step zooms to the component it is about and highlights the flows involved; open a component to read more. The first step sets the scene: before any event is read out, the control process has configured the system, begun a run and enabled triggers.",
+    "steps": [
+      {
+        "id": "step-before-the-event",
+        "title": "Before the event: Configure, BeginRun and Enable",
+        "node": "control-process",
+        "edges": [
+          "e-control-to-drp",
+          "e-control-to-teb",
+          "e-control-to-timing"
+        ],
+        "prose": "Before any L1Accept, the control process steps the platform from Connected to Running. Each transition is first sent to the processes over ZeroMQ and then inserted into the timing stream through the XPM (eXperiment Partition Master). At Configure the trigger configuration is fetched from the configuration database and the TEB (trigger event builder) loads its trigger plugin. At BeginRun with recording on, a run number is allocated, and each DRP (data reduction pipeline) writes the cached Configure datagram and then BeginRun as the first datagrams of its files. Enable moves the DAQ (data acquisition system) to Running, where it receives per-pulse data.",
+        "sources": [
+          "site-daq-control",
+          "site-drp-eventbuilding",
+          "conf-fsm"
+        ],
+        "code_refs": [
+          {
+            "path": "psdaq/drp/TebReceiver.cc",
+            "start": 82,
+            "end": 94,
+            "symbol": "m_configureBuffer",
+            "note": "At BeginRun the cached Configure is written first."
+          }
+        ]
+      },
+      {
+        "id": "step-pulse",
+        "title": "The accelerator pulse and its pulse ID",
+        "node": "accelerator-timing",
+        "edges": [
+          "e-accelerator-to-xpm"
+        ],
+        "prose": "Our event begins as one accelerator bucket, one of 910,000 every 0.98 seconds. The timing frame for that bucket carries its event codes, which arrive about 100 microseconds before the beam, and its beam destination. Every readout of this pulse will start with a timing header whose first word holds the pulse ID in its low 56 bits, followed by the timestamp.",
+        "sources": [
+          "conf-lcls2-timing"
+        ],
+        "code_refs": [
+          {
+            "path": "psdaq/psdaq/service/EbDgram.hh",
+            "start": 16,
+            "end": 59,
+            "symbol": "pulseId",
+            "note": "PulseId and TimingHeader."
+          }
+        ]
+      },
+      {
+        "id": "step-trigger",
+        "title": "The XPM triggers the readout group",
+        "node": "xpm",
+        "edges": [
+          "e-xpm-to-electronics",
+          "e-timing-to-front-ends"
+        ],
+        "prose": "The detectors in a readout group are triggered by the same timing-system event code, so the XPM (eXperiment Partition Master) decides for each readout group whether this pulse triggers it. The readout groups that triggered travel as extra bits at the end of the timing frame. Every event must also include the partition's common readout group; an event without it is discarded early in the DRP (data reduction pipeline) and counted as an error.",
+        "sources": [
+          "conf-psdaq",
+          "conf-lcls2-timing",
+          "conf-bypass-events"
+        ]
+      },
+      {
+        "id": "step-readout",
+        "title": "The front-end reads out and sends the data over PGP",
+        "node": "detector-electronics",
+        "edges": [
+          "e-electronics-to-dma",
+          "e-front-ends-to-drp"
+        ],
+        "prose": "In the detector's readout firmware, a timing-receiver module turns the timing stream into an in-time trigger decision and the event's timing content. The detector reads out, and its data travel over a PGP link to a DRP (data reduction pipeline) node, where they arrive by DMA (direct memory access).",
+        "sources": [
+          "conf-standalone-detectors",
+          "site-drp-eventbuilding"
+        ]
+      },
+      {
+        "id": "step-dma",
+        "title": "The DRP reads the DMA buffers and checks the timing header",
+        "node": "drp-pgp-reader",
+        "edges": [
+          "e-dma-to-reader"
+        ],
+        "prose": "The PGP reader of the DRP (data reduction pipeline) collects the completed DMA (direct memory access) buffers. The event counter in each buffer's timing header picks the event's slot, and the event is complete when every PGP lane of the detector has delivered its buffer. The reader checks that the event counter advanced by one since the last complete event. Events that lack the common readout group are discarded at this point and counted.",
+        "sources": [
+          "conf-bypass-events"
+        ],
+        "code_refs": [
+          {
+            "path": "psdaq/drp/DrpBase.cc",
+            "start": 566,
+            "end": 645,
+            "symbol": "evtCounter"
+          }
+        ]
+      },
+      {
+        "id": "step-datagram",
+        "title": "A worker builds the XTC2 datagram with the detector class",
+        "node": "drp-workers",
+        "edges": [
+          "e-reader-to-workers"
+        ],
+        "prose": "A worker thread of the DRP (data reduction pipeline) takes our event and calls the detector class's `event()` method. The method writes the event's values into an XTC2 datagram with `CreateData`, against the `Names` that the class declared in the Configure datagram. The datagram is built in a pebble, the DRP's large buffer for datagrams.",
+        "sources": [
+          "site-drp-eventbuilding",
+          "site-xtc2"
+        ]
+      },
+      {
+        "id": "step-trigger-input",
+        "title": "The trigger input goes to the TEB",
+        "node": "drp-collector",
+        "edges": [
+          "e-workers-to-collector",
+          "e-collector-to-teb-eb",
+          "e-drp-to-teb"
+        ],
+        "prose": "Besides the datagram, the DRP (data reduction pipeline) prepares a small trigger contribution for the TEB (trigger event builder), produced in the DRP by its trigger-primitive plugin. The `TebContributor` sends it to the TEB. The detector data themselves stay in the DRP.",
+        "sources": [
+          "site-drp-eventbuilding",
+          "conf-teb-meb"
+        ]
+      },
+      {
+        "id": "step-teb-decides",
+        "title": "The TEB builds the event by pulse ID and the trigger plugin decides",
+        "node": "teb-event-building",
+        "edges": [
+          "e-teb-eb-to-plugin",
+          "e-plugin-to-result"
+        ],
+        "prose": "The TEB (trigger event builder) collects the contributions with our event's pulse ID from all DRPs (data reduction pipelines). Once every expected contributor has arrived, the event is passed on in pulse ID order to the trigger plugin, which fills in the result: whether to record the event and whether to monitor it. If a contribution is missing, the event is forced out after a timeout and fixed up.",
+        "sources": [
+          "site-drp-eventbuilding"
+        ],
+        "code_refs": [
+          {
+            "path": "psdaq/psdaq/eb/src/EventBuilder.hh",
+            "start": 29,
+            "end": 60,
+            "symbol": "EventBuilder"
+          }
+        ]
+      },
+      {
+        "id": "step-result",
+        "title": "The result returns to each DRP",
+        "node": "teb-result",
+        "edges": [
+          "e-result-to-receiver",
+          "e-teb-to-drp"
+        ],
+        "prose": "The TEB (trigger event builder) sends the result, a `ResultDgram`, back to the DRPs (data reduction pipelines). Each DRP's result receiver follows it: it writes the L1Accept if `persist()` or `prescale()` is set, and posts it to the MEB (monitoring event builder) if `monitor()` is non-zero.",
+        "sources": [
+          "site-drp-eventbuilding"
+        ]
+      },
+      {
+        "id": "step-write",
+        "title": "Each DRP writes the event to its .xtc2 and .smd.xtc2 files",
+        "node": "file-writer",
+        "edges": [
+          "e-receiver-to-bigdata",
+          "e-receiver-to-smalldata",
+          "e-drp-to-files"
+        ],
+        "prose": "Our event was accepted, so each DRP (data reduction pipeline) appends its datagram to its own big-data file, `<exp>-r<run>-s<stream>-c<chunk>.xtc2`. To the matching small-data file in `smalldata/` it appends a small record holding only the event's position and size in the big-data file. The pieces of the event now sit in as many files as there are DRPs, waiting for psana to join them ([[stream-joining]]).",
+        "sources": [
+          "site-xtc2",
+          "site-drp-eventbuilding"
+        ]
+      },
+      {
+        "id": "step-afterwards",
+        "title": "A copy goes to monitoring; later the files are chunked, moved and read",
+        "node": "shared-memory",
+        "edges": [
+          "e-receiver-to-meb",
+          "e-meb-to-shmem",
+          "e-shmem-to-ami",
+          "e-files-to-after-run"
+        ],
+        "prose": "If the result asked for monitoring and an MEB (monitoring event builder) buffer was available, the DRPs (data reduction pipelines) also send their parts of the event to that MEB, which builds the event and serves it in shared memory, where AMI or a psana script may see it. When a big-data file grows past the chunk threshold, it is closed at an Enable, which is its last datagram, and continued in a new chunk. Data movers copy the files to storage, and psana reads the small-data files first to build events, then reads only the bytes it needs from the big-data files.",
+        "sources": [
+          "conf-monitoring-distribution",
+          "site-shmem-live",
+          "conf-chunking",
+          "conf-smalldata-debug",
+          "site-xtc2"
+        ]
+      }
+    ]
+  }
+}
