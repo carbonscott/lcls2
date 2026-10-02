@@ -75,13 +75,13 @@ class CalibConstants:
         return cls._registry[detname]
 
     def __init__(self, calibconst, detname, **kwa):
-        """
-        Parameters
+        """Parameters
         ----------
         calibconst: dict - retrieved from DB by method calib_constants_all_types from psana.pscalib.calib.MDBWebUtils.
-        calib_constants_all_types is USED BY psana/psexp/ds_base.py TO RETRIEVE ALL CONSTANTS FROM DB
+        calib_constants_all_types is USED BY psana/psexp/run.py (Run._setup_run_calibconst) TO RETRIEVE ALL CONSTANTS FROM DB
 
-        **kwa: not used
+        **kwa: stored as self._kwa. kwa['logmet_init'] (default logger.debug) is the logging method
+        used by cached_pixel_coord_indexes, and seg_geo reads kwa['odet'] (default None).
         """
         logger.debug('__init__') #  self.__class__.__name__
 

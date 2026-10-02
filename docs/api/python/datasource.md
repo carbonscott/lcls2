@@ -8,10 +8,10 @@ classes, all derived from
 
 | Keyword | Returned class | Module |
 |---|---|---|
-| `shmem=` | `ShmemDataSource` (`NullDataSource` on the first `PS_SRV_NODES` MPI ranks) | [`psana.psexp.shmem_ds`](shmem_ds.md) |
-| `exp=` (and `run=`) | `SerialDataSource` when `PS_PARALLEL=none` or only one MPI rank; otherwise `MPIDataSource` on smd0/eb/bd ranks and `NullDataSource` on the other ranks | `psana.psexp.serial_ds`, [`psana.psexp.mpi_ds`](mpi_ds.md) |
-| `files=` | `SingleFileDataSource` | `psana.psexp.singlefile_ds` |
-| `drp=` | `DrpDataSource` | `psana.psexp.drp_ds` |
+| `shmem=` | `ShmemDataSource` (`NullDataSource` on the first `PS_SRV_NODES` MPI ranks) | [`psana.psexp.shmem_ds`](shmem_ds.md), [`psana.psexp.null_ds`](null_ds.md) |
+| `exp=` (and `run=`) | `SerialDataSource` when `PS_PARALLEL=none` or only one MPI rank; otherwise `MPIDataSource` on smd0/eb/bd ranks and `NullDataSource` on the other ranks | [`psana.psexp.serial_ds`](serial_ds.md), [`psana.psexp.mpi_ds`](mpi_ds.md), [`psana.psexp.null_ds`](null_ds.md) |
+| `files=` | `SingleFileDataSource` | [`psana.psexp.singlefile_ds`](singlefile_ds.md) |
+| `drp=` | `DrpDataSource` | [`psana.psexp.drp_ds`](drp_ds.md) |
 
 `PS_PARALLEL` is read in `psana/psana/psexp/tools.py` (default `"mpi"`). If
 none of these keywords is given, `InvalidDataSource` is raised. With `exp=` in

@@ -65,17 +65,26 @@ other names: `set_peak_selection_parameters` calls `setPeakSelectionPars`,
 
 ## Minimal examples
 
-Peak finding on a 2-D array, from `psana/psana/tests/test_psalg.py`
-(`test_peakFinder`; `data` is a small float32 array, `mask` an array of ones):
+Peak finding on a 2-D array. The calls and parameters are from
+`psana/psana/tests/test_psalg.py` (`test_peakFinder`); the test uses a fixed
+9x10 float32 array, which is replaced here by a synthetic image with one
+bright spot:
 
 ```python
 import numpy as np
 import psana.peakFinder as peakFinder
 
+# Synthetic float32 image: Gaussian noise plus one bright spot at row 25, column 25.
+rng = np.random.default_rng(seed=0)
+data = rng.normal(loc=20, scale=10, size=(50, 50)).astype(np.float32)
+data[24:27, 24:27] += 300
+data[25, 25] += 1200
+
 mask = np.ones_like(data, dtype=np.uint16)
 pk = peakFinder.peak_finder_algos(pbits=0, lim_peaks=2048)
 pk.set_peak_selection_parameters(npix_min=2, npix_max=30, amax_thr=200, atot_thr=600, son_min=7)
 rows, cols, intens = pk.peak_finder_v3r3_d2(data, mask, rank=3, r0=4, dr=2, nsigm=0)
+# one peak, at about row 25, column 25
 ```
 
 Constant-fraction discrimination on a waveform, from the same file

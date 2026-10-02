@@ -58,7 +58,8 @@ therefore needs a new class with the right name in one of those modules.
 `psana/psana/detector/detector_impl.py`. The base class of all interfaces.
 
 - Constructor: `DetectorImpl(det_name, drp_class_name, configinfo, calibconst, env_store=None, var_name=None, **kwargs)`.
-- `config(evt)` returns the per-segment configuration objects.
+- `config(evt)` returns one dict that merges this detector's per-segment
+  configuration entries from all Configure dgrams; `evt` is not used.
 - `_segments(evt)` returns this detector's data segments for the event, or
   `None` if any expected segment is missing; most `raw`/`calib` methods start
   from it.

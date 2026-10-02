@@ -228,7 +228,7 @@ private:
 //-------------------
 //-------------------
 
-/** Formats a LogRecord as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, file:line for levels other than INFO, and the message text. */
+/** Formats a LogRecord as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, for levels other than INFO the file name (without directories), a colon and the line number, and the message text. */
 class LogFormatter {
 
 public:

@@ -178,8 +178,10 @@ class DataSourceBase(abc.ABC):
         Python logging level (e.g., logging.DEBUG, logging.INFO) or its name (e.g., "DEBUG"; an
         unknown name gives INFO). Default is logging.INFO.
     log_file : str
-        Path of a rotating log file written in addition to the console output on stderr; its name
-        gets a `.rank<N>` suffix (default: None, console only).
+        Path of a rotating log file written in addition to the console output on stderr (default:
+        None, console only). The rank is inserted before the file extension, e.g. `run.log` becomes
+        `run.rank0.log`; the rank is the MPI world rank when PS_PARALLEL is "mpi" (the default) and
+        0 otherwise.
     auto_tune : bool
         Stored as the `auto_tune` attribute (default: False); no code in this repository reads it.
     """
@@ -344,9 +346,13 @@ class DataSourceBase(abc.ABC):
         return
 
     def unique_user_rank(self):
-        """Only applicable to MPIDataSource
-        All other types of DataSource always return True.
-        For MPIDataSource, only the last bigdata rank returns True."""
+        """Return whether this rank is the unique user rank.
+
+        When `is_mpi()` is False this base method returns True; that is the case for `SerialDataSource`,
+        `SingleFileDataSource`, `ShmemDataSource` and `DrpDataSource`. `NullDataSource` overrides it to
+        return False. For `MPIDataSource` only world rank `world_size - PS_SRV_NODES - 1` (the highest rank
+        that is not a srv rank; PS_SRV_NODES defaults to 0) returns True.
+        """
         if not self.is_mpi():
             return True
 

@@ -124,6 +124,8 @@ nav:
       - psana.dgrammanager: api/python/dgrammanager.md
       - psana.psexp.mpi_ds: api/python/mpi_ds.md
       - psana.psexp.shmem_ds: api/python/shmem_ds.md
+      - psana.psexp.drp_ds: api/python/drp_ds.md
+      - psana.psexp.null_ds: api/python/null_ds.md
       - psana.smalldata: api/python/smalldata.md
       - psana.detector.detector_impl: api/python/detector_impl.md
       - psana.detector.areadetector: api/python/areadetector.md

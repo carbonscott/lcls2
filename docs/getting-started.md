@@ -122,9 +122,10 @@ in `psana/psana/tests/ds.py`).
 `.github/workflows/release.yml` builds wheels with cibuildwheel on tag pushes
 and has a PyPI publish step. psdaq is not part of the wheel (comment in
 `pyproject.toml`). On 2026-10-01 the PyPI project
-[`psana`](https://pypi.org/project/psana/) listed version 4.3.4, the version
-and dependency list in this repository's `pyproject.toml`, with wheels for
-CPython 3.11, 3.12 and 3.13 on Linux x86_64 (manylinux_2_28). Installing it
+[`psana`](https://pypi.org/project/psana/) listed version 4.3.4. This is the
+same version as in this repository's `pyproject.toml`, and PyPI lists the same
+dependencies as that file. There were wheels for CPython 3.11, 3.12 and 3.13
+on Linux x86_64 (manylinux_2_28). Installing it
 with `pip install psana` was not tested here; note that the `mpi4py`
 dependency needs an MPI library on the system (comment in `pyproject.toml`).
 The wheel can be older or newer than the `dev` version of this site.

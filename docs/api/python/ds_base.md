@@ -13,16 +13,10 @@ small-data files of a run and provides `smalldata()`, `unique_user_rank()`,
 `DsParms` is the dataclass of parameters that is passed from the data source
 to its runs.
 
-The "Keyword Arguments" list in the `DataSourceBase` docstring below is not in
-a format the generator recognizes, so it is shown as one paragraph. The table
-of commonly used keywords in
-[DataSource, Run and the event loop](../../features/datasource-run-events.md#datasourcekwargs)
-gives the defaults read in `__init__`. Two entries of the docstring list are
-narrower than the code: `run` may also be a list of run numbers
-(`_setup_runnum_list` accepts an int or a list, and any other type raises
-`InvalidDataSourceArgument`), and `skip_calib_load` defaults to `[]`, a list
-of detector names, or may be the string `"all"` (checked in
-`Run._setup_run_calibconst`).
+The keyword arguments, with their defaults, are listed under "Other
+Parameters" in the `DataSourceBase` docstring below. A shorter table of the
+commonly used keywords is in
+[DataSource, Run and the event loop](../../features/datasource-run-events.md#datasourcekwargs).
 
 See [DataSource, Run and the event loop](../../features/datasource-run-events.md).
 

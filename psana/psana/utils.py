@@ -126,7 +126,8 @@ class Logger:
     level : int or str
         Logging level set on the logger.
     myrank : int, optional
-        Rank shown in the message prefix and appended to the log file name as `.rank<myrank>`.
+        Rank shown in the message prefix. When it is not None and `logfile` is given, it is inserted
+        before the log file's extension (e.g. `run.log` becomes `run.rank0.log`).
     timestamp : bool
         If True, prefix each message with the date and time.
     logfile : str, optional
