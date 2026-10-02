@@ -1,3 +1,4 @@
+"""Command-line tool to set 'user.gainMode' of all jungfrau segments in the production config database."""
 import argparse
 import sys
 from typing import List
@@ -6,6 +7,11 @@ from psdaq.configdb.configdb_multimod import configdb_multimod
 
 
 def change_gain_mode():
+    """Parse the arguments and call `configdb_multimod` with ``MODIFY=True`` to set ``['user','gainMode']`` on '<detname>_<seg>' for seg 0..nsegs-1.
+
+    --mode 'dynamic', 'med' and 'low' map to 0, 3 and 4; defaults are --cfg 'BEAM', --detname
+    'jungfrau', --hutch 'mfx' and --nsegs 32.
+    """
     parser: argparse.ArgumentParser = argparse.ArgumentParser(prog="jungfrau_gain_mode")
     parser.add_argument(
         "--cfg", type=str, default="BEAM", help="Config alias, e.g. BEAM, TEST, etc."

@@ -1,4 +1,8 @@
 /**
+ * @file
+ * @brief CUDA and GPU Async helpers (error checks, DataDev, CudaContext, FPGA and GPU memory mapping, DMA target selection, GPUTimer) from axi-pcie-devel. In psdaq they are built only into the pgpread_gpu tool.
+ */
+/**
  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
@@ -35,17 +39,24 @@
 #define deviceFunc __device__
 #else
 #define deviceFunc
+/** Empty when not compiling with nvcc; __global__ under nvcc. */
 #define globalFunc
+/** Empty when not compiling with nvcc; __host__ under nvcc. */
 #define hostFunc
 #endif
 
 //--------------------------------------------------------------------------------//
 // CUDA Prototypes
+/** Empty string literal put in front of the optional message, so that the message argument is never empty (per the code comment). */
 #define NOARG ""           // Ensures there is an arg when __VA_ARGS__ is blank
+/** Check a CUDA driver or runtime result rc with checkError(), logging any failure with the optional message and aborting. */
 #define chkFatal(rc, ...)  checkError((rc), #rc, __FILE__, __LINE__, true,  NOARG __VA_ARGS__)
+/** Check a CUDA driver or runtime result rc with checkError(), logging any failure with the optional message without aborting; evaluates to true on failure. */
 #define chkError(rc, ...)  checkError((rc), #rc, __FILE__, __LINE__, false, NOARG __VA_ARGS__)
 
+/** If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true. Returns true on failure, else false; func is not used. */
 bool checkError(CUresult  status, const char* func, const char* file, int line, bool crash=true, const char* msg="");
+/** If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true. Returns true on failure, else false; func is not used. */
 bool checkError(cudaError status, const char* func, const char* file, int line, bool crash=true, const char* msg="");
 //--------------------------------------------------------------------------------//
 
@@ -55,12 +66,15 @@ bool checkError(cudaError status, const char* func, const char* file, int line, 
 class DataDev
 {
 public:
+    /** Open path for reading and writing; logs a critical message and aborts on failure. */
     DataDev(const char* path);
+    /** Close the file descriptor. */
     ~DataDev()
     {
         close(fd_);
     }
 
+    /** Return the file descriptor. */
     int fd() const { return fd_; }
 
 protected:
@@ -73,6 +87,7 @@ protected:
 class CudaContext
 {
 public:
+    /** Initialize the CUDA driver API (cuInit()), aborting on failure. */
     CudaContext() { chkFatal(cuInit(0)); }
 
     /**
@@ -88,14 +103,18 @@ public:
      */
     void listDevices();
 
+    /** Return the value of device attribute attr for the selected device, or 0 if the query fails. */
     int getAttribute(CUdevice_attribute attr);
 
+    /** Return the device handle selected by init(). */
     CUdevice device() const { return device_; }
+    /** Return the context created by init(). */
     CUcontext context() const { return context_; }
+    /** Return the device number selected by init(). */
     int deviceNo() const { return _devNo; }
 
-    CUcontext context_;
-    CUdevice device_;
+    CUcontext context_;  ///< Context created by init().
+    CUdevice device_;  ///< Device handle selected by init().
 private:
     int _devNo;
 };
@@ -139,7 +158,8 @@ static void show_buf(CUdeviceptr dptr, size_t size, CUstream stream = 0) {
  */
 struct GpuDmaBuffer_t
 {
-    int fd;
+    int fd;  ///< File descriptor of the FPGA device.
+    /** Host-accessible address of the memory; set by gpuMapHostFpgaMem() and left null by gpuMapFpgaMem(). */
     uint8_t* ptr;       /** Host accessible pointer **/
     size_t size;        /** Size of the block **/
     CUdeviceptr dptr;   /** Pointer on the device **/
@@ -183,12 +203,13 @@ void gpuUnmapFpgaMem(GpuDmaBuffer_t* mem);
 
 //-----------------------------------------------------------------------------//
 
+/** A read buffer and a write buffer on the GPU, mapped to the FPGA by gpuInitBufferState(). */
 struct GpuBufferState_t
 {
-    uint8_t* swFpgaRegs;
+    uint8_t* swFpgaRegs;  ///< Register pointer; not set or read anywhere in psdaq.
 
-    GpuDmaBuffer_t bread;
-    GpuDmaBuffer_t bwrite;
+    GpuDmaBuffer_t bread;  ///< Buffer mapped with write set to 0.
+    GpuDmaBuffer_t bwrite;  ///< Buffer mapped with write set to 1.
 };
 
 /**
@@ -199,6 +220,7 @@ struct GpuBufferState_t
  * \return 0 for success, -1 on error
  */
 int gpuInitBufferState(GpuBufferState_t* b, int fd, size_t bufSize);
+/** Unmap and free both buffers of b with gpuUnmapFpgaMem(). */
 void gpuDestroyBufferState(GpuBufferState_t* b);
 
 //-----------------------------------------------------------------------------//
@@ -219,6 +241,7 @@ struct __attribute__((packed)) AxiWrDesc64_t
 
 static_assert(sizeof(AxiWrDesc64_t) == 8, "AxiWrDesc64_t must be 64-bits (8-bytes)");
 
+/** Return the 8 bytes at data as an AxiWrDesc64_t. */
 deviceFunc inline AxiWrDesc64_t UnpackAxiWriteDescriptor(const void* data)
 {
     return *(AxiWrDesc64_t*)data;
@@ -232,8 +255,10 @@ deviceFunc inline AxiWrDesc64_t UnpackAxiWriteDescriptor(const void* data)
  * \param mode The enumerated value of the destination
  */
 //enum DmaTgt_t { TGT_CPU=0x0000ffff, TGT_GPU=0xffff0000, TGT_ERR=-1u };
-enum DmaTgt_t { TGT_CPU=0x0, TGT_GPU=0x1, TGT_ERR=-1u };
+enum DmaTgt_t { TGT_CPU=0x0, /**< Value 0: destination CPU. */ TGT_GPU=0x1, /**< Value 1: destination GPU. */ TGT_ERR=-1u  /**< Returned by dmaTgtGet() for any other register value. */ };
+/** Read the AXI stream demux select register of the GPU Async core and return TGT_CPU or TGT_GPU for its value, or TGT_ERR for any other value. A read error is only reported with perror(). */
 DmaTgt_t dmaTgtGet(const DataDev&);
+/** Write tgt to the AXI stream demux select register of the GPU Async core; a write error is only reported with perror(). */
 void dmaTgtSet(const DataDev&, DmaTgt_t);
 
 /**
@@ -247,16 +272,20 @@ void dmaIdxReset(const DataDev&);
  */
 struct GPUTimer
 {
-  cudaEvent_t beg, end;
+  cudaEvent_t beg, /**< Start event, recorded by start(). */ end;  ///< Stop event, recorded by stop().
+  /** Create the start and stop events (return codes not checked). */
   GPUTimer() {
     cudaEventCreate(&beg);
     cudaEventCreate(&end);
   }
+  /** Destroy the two events. */
   ~GPUTimer() {
     cudaEventDestroy(beg);
     cudaEventDestroy(end);
   }
+  /** Record the start event on the default stream. */
   void start() { cudaEventRecord(beg, 0); }
+  /** Record the stop event on the default stream, wait for it and return the time since the start event in milliseconds. */
   float stop() {
     cudaEventRecord(end, 0);
     cudaEventSynchronize(end);

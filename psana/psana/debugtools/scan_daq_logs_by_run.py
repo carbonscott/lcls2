@@ -87,6 +87,10 @@ def group_by_run(files):
     return groups
 
 def main():
+    """Expand the glob arguments (warning for patterns with no match), group the files by run key with ``group_by_run`` and print, per run, the error lines found by ``find_errors_in_file`` in each file, or '(no errors found)'.
+
+    Exits with status 1 if no files match at all.
+    """
     p = argparse.ArgumentParser(
         description="Scan log files for errors and group them by run timestamp."
     )

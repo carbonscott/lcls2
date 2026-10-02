@@ -1,3 +1,8 @@
+"""Script: copy values from a YAML file into the 'expert' section of an epixhr configuration and write it back.
+
+--yaml must be '<base>:<file>'; the YAML entry `base` is copied with ``typed_json.copyValues``.
+A missing --yaml raises ValueError (after the configuration has been read).
+"""
 from psdaq.configdb.typed_json import cdict, copyValues
 import psdaq.configdb.configdb as cdb
 import pyrogue as pr

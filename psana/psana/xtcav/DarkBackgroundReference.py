@@ -37,6 +37,10 @@ from psana.pyalgos.generic.NDArrUtils import info_ndarr
 """
 
 class DarkBackgroundReference():
+    """Average the raw camera images of a run and store the result as ``self.image`` with the image ROI in ``self.ROI``; all work is done in the constructor.
+
+    Reads 'experiment', 'run_number', 'max_shots' (400), 'validity_range', 'save_to_file' (True) and 'calibration_path' from ``args``. Images are accumulated from the first event with a valid ROI until ``max_shots`` images; the validity range defaults to (run_number, 9999). If ``save_to_file``, the object is saved to 'cons-<expt>-<run>-xtcav-pedestals.data' with ``save``.
+    """
     def __init__(self, args):
 
         #self.args = args
@@ -149,6 +153,10 @@ class DarkBackgroundReference():
 
     def save(self, path): 
 
+        """Write a copy of this object to the HDF5 file ``path`` with ``FileInterface.Save`` and deploy it with the shell command 'cdb add ... -c xtcav_pedestals ...'.
+
+        When ``ROI`` is set, ROI and parameters are converted to dicts first (otherwise the later ``d['experiment']`` lookup on the namedtuple fails). A non-zero return of the command calls ``sys.error``, which does not exist, so that path raises AttributeError.
+        """
         instance = copy.deepcopy(self)
 
         # LCLS1:
@@ -176,6 +184,10 @@ class DarkBackgroundReference():
 
     @staticmethod    
     def load(path):        
+        """Load an object from HDF5 file ``path`` with ``FileInterface.Load`` and rebuild ``ROI`` as ``ROIMetrics`` and ``parameters`` as ``DarkBackgroundParameters``.
+
+        Returns None (with an info message) if that conversion raises AttributeError or TypeError.
+        """
         obj = constLoad(path)
         try:
             obj.ROI = ROIMetrics(**obj.ROI)

@@ -1,3 +1,4 @@
+"""Unfinished class-based version of the epixUHR configuration; the comments mark the parts still to be filled in."""
 import logging
 import time
 import json
@@ -19,6 +20,7 @@ import epix_uhr_gtreadout_dev as epixUhrDev
 import surf.protocols.batcher as batcher
 
 class EpixUHRConfigurator:
+    """Holds the epixUHR configuration constants and state; only part of the configuration steps are implemented."""
     DET_SIZE = (4, 168, 192)
     EVENT_BUILDER_TIMEOUT = 0
     DELTA_DELAY = -192
@@ -108,10 +110,16 @@ class EpixUHRConfigurator:
 
     def panel_init(self, det_root: dict):
         # ... (copy the body of panel_init here, replacing write_to_detector with self.write_to_detector)
+        """Set ``det_root.App.WaveformControl.enable`` to True; nothing else is implemented (see the comments)."""
         self.write_to_detector(det_root.App.WaveformControl.enable, True)
         # ... (repeat for all other lines in panel_init)
 
     def epixUHR_init(self, arg, dev='/dev/datadev_0', lanemask=0xf, xpmpv=None, timebase="186M", verbosity=0) -> dict:
+        """Open and enter an ``epix_uhr_gtreadout_dev.Root`` on `dev`, store it in ``self.base['cam']``, log its firmware info, and call `panel_init`.
+
+        Returns None although annotated ``-> dict``. The root logger level is set to WARNING; `arg`,
+        `lanemask`, `xpmpv` and `verbosity` are unused.
+        """
         logging.getLogger().setLevel(logging.WARNING)
         logging.info('epixUHR_init')
         self.base = {}
@@ -137,6 +145,7 @@ class EpixUHRConfigurator:
 
     @staticmethod
     def write_to_detector(var, val):
+        """Set `var` to `val` if it differs, then read it back and log an error if it still differs."""
         if (var.get() != val):
             var.set(val)
             if var.get() != val:

@@ -1,3 +1,8 @@
+"""DRP configuration functions for a Piranha4 camera behind a cameralink gateway (``cameralink_gateway.ClinkDevRoot``), with a custom UART receiver for its multi-line replies.
+
+State (device, timebase, lane, channel, group, root) is kept in the module dict `args`, the last
+configuration in `ocfg`, and a module `Barrier` coordinates processes sharing the board.
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.xpmmini import *
@@ -35,6 +40,11 @@ clksPerFrame = 200
 
 class MyUartPiranha4Rx(clink.ClinkSerialRx):
 
+    """Camera-link serial receiver that collects reply lines (other than 'USER>') in `_resp` and the current partial line in `_cur`.
+
+    ``_await(tmo=5.0)`` waits until the current line is 'USER>' and at least one reply was received,
+    and raises Exception after `tmo` seconds.
+    """
     def __init__(self, path):
         super().__init__(path=path)
         self._cur  = []
@@ -79,6 +89,10 @@ class MyUartPiranha4Rx(clink.ClinkSerialRx):
                 self._cur.append(c)
 
 def dict_compare(new,curr,result):
+    """Put into `result` the entries of `new` that differ from `curr`, recursing where ``curr[k]`` is a dict (empty nested results are left out).
+
+    A key of `new` missing from `curr` raises KeyError.
+    """
     for k in new.keys():
         if dict is type(curr[k]):
             resultk = {}
@@ -92,6 +106,11 @@ def dict_compare(new,curr,result):
                 result[k] = new[k]
 
 def setup_timing(cl):
+    """Set up the timing receiver for ``args['timebase']`` and write ``timTxId('piranha4')`` to TxId.
+
+    '119M' runs the PHY/PLL reset sequence in the code with ClkSel 0; any other timebase calls
+    ``ConfigLclsTimingV2``. Both then pulse ``TxUserRst``.
+    """
     timebase = args['timebase']
     # modifing for ued only 2026/04/30 RM
     if timebase=="119M":
@@ -120,6 +139,12 @@ def setup_timing(cl):
     
 def piranha4_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbosity=0):
 
+    """Create and start a ``ClinkDevRoot`` for one Piranha4 lane on `dev`, install `MyUartPiranha4Rx` on its UART, store state in `args`, and return the root.
+
+    The lane is the single set bit of `lanemask` (asserted); '119M' sets the module clock constants to
+    119 MHz and 238 clocks per frame. ``cl.stop`` is registered with ``weakref.finalize``; `arg` and
+    `verbosity` are unused.
+    """
     global pv
     global args
     global xpmpv_global
@@ -177,12 +202,24 @@ def piranha4_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M"
 
 def piranha4_init_feb(slane=None,schan=None):
     # cpo: ignore "slane" because lanemask is given to piranha4_init() above
+    """Set ``args['chan']`` from `schan` if given; `slane` is ignored (the lane comes from `piranha4_init`)."""
     global args
     if schan is not None:
         args['chan'] = int(schan)
 
 # called on alloc
 def piranha4_connectionInfo(cl, alloc_json_str):
+    """Set up the barrier and timing, query the camera with 'GCP', and return ``{'paddr', 'model', 'serno', 'bist'}``.
+
+    Without `xpmpv` the supervisor runs `setup_timing` and RxId is read after a barrier wait; with
+    `xpmpv` an XpmMini `PVCtrls` thread is started instead and `rxId` is never assigned (UnboundLocalError).
+    It also prints the 'VT' and 'VV' replies.
+
+    Raises
+    ------
+    Exception
+        If no 'GCP' reply line starting with 'CPA' arrives within 5 s, or a UART await times out.
+    """
     global args
 
     print('piranha4_connectionInfo')
@@ -282,9 +319,21 @@ def piranha4_connectionInfo(cl, alloc_json_str):
 
 # called on dealloc
 def piranha4_connectionShutdown():
+    """Shut down the module barrier."""
     barrier_global.shutdown()
 
 def user_to_expert(cfg, full=False):
+    """Translate the user settings in `cfg` into expert entries and write them into `cfg` with `update_config_entry`.
+
+    'start_ns' gives TriggerDelay ``int(start_ns*clkRate/1000 - PartitionDelay[group]*clksPerFrame)``,
+    'gate_ns' sets TrigPulseWidth 1.0 and the UART 'SET' to gate_ns, 'black_level' and 'vertical_bin' set
+    'SSB' and 'SBV'; with `full` the buffer 'Partition' is set to the group.
+
+    Raises
+    ------
+    ValueError
+        If the TriggerDelay is negative or gate_ns is below 4000 or above 8000.
+    """
     global args
 
     cl    = args['cl']
@@ -328,6 +377,11 @@ def user_to_expert(cfg, full=False):
     update_config_entry(cfg,ocfg,d)
 
 def config_expert(cfg):
+    """Write the values in `cfg` to the matching nodes of the camera root, mapping generic names (e.g. 'ClinkFeb', 'Red') to lane/channel-specific ones.
+
+    For nodes whose name contains 'UartPiranha4', the UART reply buffer is cleared before and awaited
+    after each write.
+    """
     global args
 
     cl   = args['cl']
@@ -374,6 +428,13 @@ def config_expert(cfg):
 
 #  Apply the full configuration
 def piranha4_config(cl,connect_str,cfgtype,detname,detsegm,grp):
+    """Apply the full configuration to the camera and its lane, start the run, enable this lane, and return the configuration as JSON.
+
+    Checks the PGP link (ValueError if down), applies `user_to_expert` and `config_expert` with blowoff
+    held, loads flat-field coefficients from user set `coeff_user_set` with 'LPC', and adds
+    'firmwareVersion'/'firmwareBuild'. The supervisor calls ``StartRun()`` and disables all 4 trigger
+    buffers; after the barrier the camera is set to 'STM' 1 and this lane's buffer is enabled.
+    """
     global ocfg
     global args
 
@@ -487,6 +548,7 @@ def piranha4_config(cl,connect_str,cfgtype,detname,detsegm,grp):
 
 
 def piranha4_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values), plus derived expert entries and the 'detType:RO'-style header keys."""
     global ocfg
 
     #  extract updates
@@ -501,6 +563,7 @@ def piranha4_scan_keys(update):
     return json.dumps(cfg)
 
 def piranha4_update(update):
+    """Merge the JSON `update` into a new dict, add derived expert entries, write its 'expert' part with `config_expert`, and return it as JSON with the header keys."""
     global ocfg
 
     #  extract updates
@@ -517,6 +580,10 @@ def piranha4_update(update):
     return json.dumps(cfg)
 
 def piranha4_unconfig(cl):
+    """Supervisor calls ``cl.StopRun()``; all processes then wait on the barrier; returns `cl`.
+
+    The code comment says it is called on the disconnect transition.
+    """
     print('piranha4_unconfig')
 
     # this routine gets called on disconnect transition

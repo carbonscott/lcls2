@@ -1,3 +1,4 @@
+"""HTTP client for the configuration database web service, using basic authentication (`configdb` class)."""
 import os
 
 import requests
@@ -7,7 +8,16 @@ import logging
 from psdaq.configdb.typed_json import cdict
 
 class JSONEncoder(json.JSONEncoder):
+    """JSON encoder meant to write non-finite floats as strings and datetimes in ISO format.
+
+    `math` and `datetime` are not imported in this module, so `default` raises NameError on every call.
+    """
     def default(self, o):
+        """Intended to return ``str(o)`` for non-finite floats, ``o.isoformat()`` for datetimes, else defer to ``json.JSONEncoder.default``.
+
+        Because `math` and `datetime` are not imported here, a float fails at ``math.isfinite`` and any
+        other object at the `datetime` check, both with NameError.
+        """
         if isinstance(o, float) and not math.isfinite(o):
             return str(o)
         elif isinstance(o, datetime):
@@ -24,6 +34,16 @@ class configdb(object):
     #     root   - Database name, usually "configDB"
     #     user   - User for HTTP authentication
     #     password - Password for HTTP authentication
+    """Client for the configuration database web service at ``url.strip('/') + '/' + root + '/'``.
+
+    Requests use HTTP basic authentication with `user`/`password` and a 15.05 s timeout. If `create`
+    is True, the 'create_collections/<hutch>/' request is sent and failures are only logged.
+
+    Raises
+    ------
+    Exception
+        If `root` is left at its default 'NONE'.
+    """
     def __init__(self, url, hutch, create=False, root="NONE", user="xppopr", password=os.getenv("CONFIGDB_AUTH")):
         if root == "NONE":
             raise Exception("configdb: Must specify root!")
@@ -59,6 +79,17 @@ class configdb(object):
     # values are typed JSON objects representing the device configuration(s).
     # On error return an empty dictionary.
     def get_configuration(self, alias, device, hutch=None):
+        """Return the 'value' of the 'get_configuration/<hutch>/<alias>/<device>/' request, or an empty dict on a request error or unsuccessful reply.
+
+        Parameters
+        ----------
+        alias : str
+            Configuration alias, e.g. 'BEAM'.
+        device : str
+            Device name.
+        hutch : str, optional
+            Defaults to the hutch given to the constructor.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -78,6 +109,11 @@ class configdb(object):
     # in plist.  The variables are dot-separated names with the first
     # component being the the device configuration name.
     def get_history(self, alias, device, plist, hutch=None):
+        """Return the reply of 'get_history/<hutch>/<alias>/<device>/' for the variable list `plist` (sent as JSON text), or [] on a request error.
+
+        It tries to drop non-alphanumeric keys from each item of the reply's 'value', but
+        ``bad_keys += kk`` adds the characters of each key, so single characters are popped instead.
+        """
         if hutch is None:
             hutch = self.hutch
         value = JSONEncoder().encode(plist)
@@ -107,6 +143,7 @@ class configdb(object):
     # Return version as a dictionary.
     # On error return an empty dictionary.
     def get_version(self):
+        """Return the 'value' of the 'get_version/' request, or an empty dict on a request error or unsuccessful reply."""
         try:
             xx = self._get_response('get_version/')
         except requests.exceptions.RequestException as ex:
@@ -122,6 +159,10 @@ class configdb(object):
     # aliases in the hutch if not specified.
     # On error return an empty list.
     def get_key(self, alias=None, hutch=None, session=None):
+        """Return the 'value' of the 'get_key/<hutch>/' request (with '?alias=<alias>' if given), or [] on a request error.
+
+        An unsuccessful reply is logged and its 'value' still returned. `session` is unused.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -140,6 +181,7 @@ class configdb(object):
     # Return a list of all hutches available in the config db.
     # On error return an empty list.
     def get_hutches(self):
+        """Return the 'value' of the 'get_hutches/' request, or [] on a request error or unsuccessful reply."""
         try:
             xx = self._get_response('get_hutches/')
         except requests.exceptions.RequestException as ex:
@@ -154,6 +196,7 @@ class configdb(object):
     # Return a list of all aliases in the hutch.
     # On error return an empty list.
     def get_aliases(self, hutch=None):
+        """Return the 'value' of the 'get_aliases/<hutch>/' request, or [] on a request error or unsuccessful reply."""
         if hutch is None:
             hutch = self.hutch
         try:
@@ -169,6 +212,7 @@ class configdb(object):
 
     # Create a new alias in the hutch, if it doesn't already exist.
     def add_alias(self, alias):
+        """Send 'add_alias/<hutch>/<alias>/' for the constructor's hutch; errors are only logged and None is returned."""
         try:
             xx = self._get_response('add_alias/' + self.hutch + '/' + alias + '/')
         except requests.exceptions.RequestException as ex:
@@ -181,6 +225,7 @@ class configdb(object):
     # Create a new device_configuration if it doesn't already exist!
     # Note: session is ignored
     def add_device_config(self, cfg, session=None):
+        """Send 'add_device_config/<cfg>/'; errors are only logged and None is returned. `session` is unused."""
         try:
             xx = self._get_response('add_device_config/' + cfg + '/')
         except requests.exceptions.RequestException as ex:
@@ -193,6 +238,7 @@ class configdb(object):
 
     # Return a list of all device configurations.
     def get_device_configs(self):
+        """Return the 'value' of the 'get_device_configs/' request, or [] on a request error or unsuccessful reply."""
         try:
             xx = self._get_response('get_device_configs/')
         except requests.exceptions.RequestException as ex:
@@ -206,6 +252,10 @@ class configdb(object):
 
     # Return a list of all devices in an alias/hutch.
     def get_devices(self, alias, hutch=None):
+        """Return the 'value' of the 'get_devices/<hutch>/<alias>/' request, or [] on a request error.
+
+        An unsuccessful reply is logged and its 'value' still returned.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -223,6 +273,21 @@ class configdb(object):
     # configuration.  Return the new configuration key if successful and
     # raise an error if we fail.
     def modify_device(self, alias, value, hutch=None):
+        """Send `value` with 'modify_device/<hutch>/<alias>/' and return the reply's 'value'.
+
+        A `cdict` is converted with ``typed_json()`` first.
+
+        Raises
+        ------
+        NameError
+            If `alias` is not in ``get_aliases(hutch)``.
+        TypeError
+            If `value` is not a dict.
+        ValueError
+            If 'detType:RO' or 'detName:RO' is missing.
+        Exception
+            If the reply is unsuccessful; request errors are logged and re-raised.
+        """
         if hutch is None:
             hutch = self.hutch
 
@@ -255,6 +320,7 @@ class configdb(object):
     # Print all of the device configurations, or all of the configurations
     # for a specified device.
     def print_device_configs(self, name="device_configurations"):
+        """Print the stripped 'value' of the 'print_device_configs/<name>/' request; errors are only logged."""
         try:
             xx = self._get_response('print_device_configs/' + name + '/')
         except requests.exceptions.RequestException as ex:
@@ -268,6 +334,7 @@ class configdb(object):
 
     # Print all of the configurations for the hutch.
     def print_configs(self, hutch=None):
+        """Print the stripped 'value' of the 'print_configs/<hutch>/' request; errors are only logged."""
         if hutch is None:
             hutch = self.hutch
         try:
@@ -286,6 +353,14 @@ class configdb(object):
     # On error return zero.
     def transfer_config(self, oldhutch, oldalias, olddevice, newalias,
                         newdevice):
+        """Copy the configuration at (`oldhutch`, `oldalias`, `olddevice`) to `newalias` in this hutch with 'detName:RO' set to `newdevice`.
+
+        Returns
+        -------
+        object
+            The 'value' returned by `modify_device`, or 0 if the read gave an empty config or any
+            exception occurred (logged).
+        """
         try:
             # read configuration from old location
             read_val = self.get_configuration(oldalias, olddevice, hutch=oldhutch)

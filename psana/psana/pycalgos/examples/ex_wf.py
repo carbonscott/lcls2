@@ -1,3 +1,4 @@
+"""Test data: defines ``WF``, a tuple of integer sample values used as a waveform by ex-ndarray-00-np-to-cpp.py."""
 WF = (\
     1,\
    -1,\

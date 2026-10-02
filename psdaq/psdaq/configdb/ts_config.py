@@ -1,3 +1,4 @@
+"""DRP configuration functions for the timing system: write readout-group trigger settings to XPM PVs over PVA."""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.ts_connect import ts_connector
@@ -18,11 +19,13 @@ DEST_HXR = 3
 DEST_SXR = 4
 
 def ts_connect(json_connect_info):
+    """Create the module-level `ts_connector` for `json_connect_info` (which enables the XPM links) and return the JSON text '{}'."""
     global connector
     connector = ts_connector(json_connect_info)
     return json.dumps({})
 
 def ts_config(connect_json,cfgtype,detname,detsegm):
+    """Read the configuration, record the readout groups of the DRP and TPR nodes and the master XPM PV prefix from the connect JSON, and return ``apply_config(cfg)``."""
     global ocfg
     global pv_prefix
     global readout_groups
@@ -51,6 +54,17 @@ def ts_config(connect_json,cfgtype,detname,detsegm):
     return apply_config(cfg)
 
 def apply_config(cfg):
+    """Write the trigger, destination and inhibit settings of every recorded readout group to '<pv_prefix>PART:<group>:<name>' PVs and return JSON of a copy of `cfg` whose 'user'/'expert' sections hold only the used entries.
+
+    'user.LINAC' 0 selects the 'Cu' event-code settings, otherwise the 'SC' settings; the PV values
+    are built as in the code. Afterwards it calls ``connector.check_errors('config')`` and adds
+    'firmwareBuild' from the 'FwBuild' PV.
+
+    Raises
+    ------
+    RuntimeError
+        In SC mode, if a group has no 'keepRawRate' entry.
+    """
     global pv_prefix
     rcfg = {}
     rcfg = cfg.copy()
@@ -136,6 +150,11 @@ def apply_config(cfg):
     return json.dumps(rcfg)
 
 def apply_update(cfg):
+    """Write scanned 'user' (Cu mode only) and 'expert' inhibit values for the recorded readout groups to the XPM PVs and return JSON.
+
+    A 'user' key reaches the undefined name `full` and raises NameError; only 'expert' updates
+    work as written.
+    """
     global pv_prefix
 
     rcfg = {}
@@ -200,6 +219,7 @@ def apply_update(cfg):
     return json.dumps(rcfg)
 
 def ts_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values) plus the 'detType:RO'-style header keys."""
     global ocfg
     #  extract updates
     cfg = {}
@@ -212,6 +232,7 @@ def ts_scan_keys(update):
     return json.dumps(cfg)
 
 def ts_update(update):
+    """Merge the JSON `update` into a new dict (types from the stored configuration), write it with `apply_update`, and return it as JSON with the header keys."""
     global ocfg
     #  extract updates
     cfg = {}
@@ -228,4 +249,5 @@ def ts_update(update):
 
 def ts_unconfig():
     #  Check the errors
+    """Call ``connector.check_errors('unconfig')``, which raises RuntimeError if link error counts changed."""
     connector.check_errors('unconfig')

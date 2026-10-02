@@ -1,3 +1,7 @@
+"""Build, validate and write typed JSON configuration dictionaries (`cdict`), and read or update values in them.
+
+The long comment at the top of this file describes the dictionary format and the public API.
+"""
 import numpy as np
 import numbers
 import re
@@ -129,6 +133,7 @@ nptypedict = {
 }
 
 def namify(l):
+    """Join the path elements of `l` with '.', converting non-str elements with ``str``."""
     s = ""
     for v in l:
         if isinstance(v, str):
@@ -141,6 +146,7 @@ def namify(l):
     return s
 
 def splitname(name):
+    """Split dotted `name` into a list, turning components that start with a digit into ints; return None if such a component is not an integer."""
     n = name.split(".")
     r = []
     for nn in n:
@@ -154,6 +160,7 @@ def splitname(name):
     return r
 
 def pythonizeName(name):
+    """Rewrite dotted `name` with integer components appended as '_<n>' (e.g. 'b.0.c' becomes 'b_0.c')."""
     n = splitname(name)
     r = n[0]
     for i in n[1:]:
@@ -167,6 +174,12 @@ def pythonizeName(name):
 # Return None for a valid dictionary and an error string otherwise.
 #
 def validate_typed_json(d, edef={}, top=[], headers=True):
+    """Return None if `d` follows the typed JSON rules, else an error string.
+
+    At the top level (empty `top`) with `headers`, 'detType:RO', 'detName:RO' and 'detId:RO' must be
+    strings and 'doc:RO'/'alg:RO' well formed; values must be dicts, lists of dicts, numpy arrays or
+    (type, value) tuples whose type is in `typerange` or `edef`, with integer values in range.
+    """
     if not isinstance(d, dict):
         return "Not a dictionary"
     k = list(d.keys())
@@ -230,6 +243,11 @@ def validate_typed_json(d, edef={}, top=[], headers=True):
         return None
 
 def write_json_dict(f, d, edef, tdict, top=[], indent="    ", **hw):
+    """Write the entries of `d` as JSON text to file `f` and record their types in `tdict`.
+
+    If ``hw['headers']`` is False the header keys ('detType:RO', ..., 'alg:RO') are left out. Values
+    are written according to their kind (str, dict, list, (type, value) tuple, numpy array, enum int).
+    """
     prefix = indent
     k = list(d.keys())
     try:
@@ -318,6 +336,14 @@ def write_json_dict(f, d, edef, tdict, top=[], indent="    ", **hw):
         prefix = ",\n" + indent
 
 def write_typed_json(filename_or_fd, d, edef, headers=True):
+    """Validate `d` and write it, followed by its ':types:' section (enums, header types and value types), as JSON to a file name or open file.
+
+    Returns
+    -------
+    bool
+        False if validation failed (the error is printed), else True. A file opened by name is not
+        explicitly closed.
+    """
     r = validate_typed_json(d, edef, [], headers)
     if r is not None:
         print(r)
@@ -364,6 +390,14 @@ def write_typed_json(filename_or_fd, d, edef, headers=True):
 #     - A list of cdicts will add the list of dictionaries.
 #
 class cdict(object):
+    """Builder for typed JSON dicts: values are kept as (type, value) tuples, numpy arrays or nested dicts/lists, plus enum definitions.
+
+    Parameters
+    ----------
+    old : cdict or dict, optional
+        A `cdict` to copy (shallow), a typed JSON dict with ':types:', or a plain dict whose
+        types are inferred.
+    """
     def __init__(self, old=None):
         self.dict = {}
         self.enumdef = {}
@@ -384,6 +418,11 @@ class cdict(object):
                 self.init_from_dict(old)
 
     def init_from_dict(self, old, base=None):
+        """Add the values of plain dict/list `old` under dotted prefix `base`, inferring types: str 'CHARSTR', float 'DOUBLE', bool 'UINT8', anything else 'INT32'.
+
+        For each dict visited, missing header keys are set in the top-level dict ('' or an empty
+        'alg:RO' entry).
+        """
         if isinstance(old, dict):
             for k in old.keys():
                 if base is None:
@@ -411,6 +450,11 @@ class cdict(object):
             self.set(base, old, type="INT32")
 
     def init_from_json(self, old, jt, base=None):
+        """Add the values of typed JSON `old` with types `jt` under dotted prefix `base`.
+
+        Header strings and a complete 'alg:RO' entry are copied as is, numeric lists become numpy arrays
+        of the listed type and shape, and scalars are set with their type.
+        """
         if isinstance(old, dict):
             for k in old.keys():
                 if k in ["detType:RO", "detName:RO", "detId:RO", "doc:RO"]:
@@ -444,6 +488,7 @@ class cdict(object):
                 self.init_from_json(v, jt, n)
 
     def typed_json(self):
+        """Return the stored data as a typed JSON dict with a ':types:' entry (including ':enum:' if enums are defined)."""
         (d, t) = self.create_json(self.dict, True)
         if self.enumdef != {}:
             t[":enum:"] = {}
@@ -454,6 +499,7 @@ class cdict(object):
     # Add all of t2 to t1.  We'd use update, but we want to merge all 
     # the way down...
     def merge_dict(self, t1, t2):
+        """Recursively add the keys of `t2` that are missing from `t1`; existing entries of `t1` are never replaced."""
         for k in t2.keys():
             if k in t1.keys():
                 if isinstance(t1[k], dict):
@@ -465,6 +511,17 @@ class cdict(object):
                 t1[k] = t2[k]
 
     def create_json(self, input, top=False):
+        """Convert stored data `input` into a ``(values, types)`` pair for typed JSON.
+
+        Dicts and lists are converted recursively (list types are merged), numpy arrays become flat
+        lists with type ``[TYPE, *shape]``, and (type, value) tuples are split; with `top`, header keys
+        get 'CHARSTR' types.
+
+        Raises
+        ------
+        ValueError
+            For any other kind of value.
+        """
         if isinstance(input, dict):
             d = {}
             t = {}
@@ -501,6 +558,10 @@ class cdict(object):
         return (d, t)
 
     def get(self, name, withtype=False):
+        """Return the entry at dotted `name`, or None if the name is empty, invalid or missing.
+
+        (type, value) tuples are returned as the value only, unless `withtype` is True.
+        """
         if len(name) == 0:
             return None
         n = splitname(name)
@@ -526,6 +587,7 @@ class cdict(object):
             return d
 
     def getenumdict(self, name, reverse=False):
+        """Return the enum mapping (label to value, or value to label if `reverse`) of the enum-typed entry `name`, or None if it is missing or not an enum."""
         r = self.get(name, True)
         if isinstance(r, tuple):
             if r[0] in typerange.keys():
@@ -541,6 +603,7 @@ class cdict(object):
             return None
 
     def getenum(self, name):
+        """Return the enum label of entry `name` (or its value if no label matches); basic-typed entries return their value and other entries are returned as is."""
         r = self.get(name, True)
         if isinstance(r, tuple):
             if r[0] in typerange.keys():
@@ -553,6 +616,7 @@ class cdict(object):
             return r
 
     def checknumlist(self, l):
+        """Return True if list `l` (possibly nested) contains only numbers."""
         for v in l:
             if isinstance(v, list):
                 if not self.checknumlist(v):
@@ -563,10 +627,26 @@ class cdict(object):
 
     def define_enum(self, name, value):
         # Validate the value dictionary?!?
+        """Store enum `name` with label-to-value dict `value` (not validated) and return True."""
         self.enumdef[name] = value
         return True
 
     def set(self, name, value, type="INT32", override=False, append=False):
+        """Store `value` at dotted `name`, creating intermediate dicts and lists as needed.
+
+        Numbers become (`type`, value) tuples (enum values are checked with ``assert``), strings need
+        `type` 'CHARSTR', numeric lists become numpy arrays of `type`, and a `cdict` or list of cdicts is
+        copied in (appended to an existing list with `append`). Without `override`, an existing scalar keeps
+        its stored type, and changing an array's dtype/shape or a container's kind raises ValueError.
+
+        Raises
+        ------
+        ValueError
+            For an empty or unsplittable name, or a disallowed change without `override`.
+        TypeError
+            For an invalid `type` or value kind (the parameter `type` shadows the built-in, so the two
+            branches that call ``type(...)`` raise TypeError about a str not being callable instead).
+        """
         if len(name) == 0:
             raise ValueError("set: received name with length 0")
         n = splitname(name)
@@ -689,6 +769,7 @@ class cdict(object):
             return
 
     def setAlg(self, alg, version=[0,0,0], doc=""):
+        """Set the 'alg:RO' entry to `alg`, `doc` and `version`; if `version` is not a 3-element list or `alg`/`doc` are not strings, print a message and change nothing."""
         if not isinstance(version, list) or len(version) != 3:
             print("version should be a length 3 list!\n")
             return
@@ -705,6 +786,7 @@ class cdict(object):
         }
 
     def setString(self, name, value):
+        """Set top-level entry `name` to `value` if it is a str; print a message for other non-None values; ignore None."""
         if value is not None:
             if not isinstance(value, str):
                 print("%s must be a str!" % name)
@@ -712,12 +794,14 @@ class cdict(object):
                 self.dict[name] = value
 
     def setInfo(self, detType=None, detName=None, detSegm=None, detId=None, doc=None):
+        """Set the header strings 'detType:RO', 'detName:RO' ('<detName>_<detSegm>' if `detSegm` is given), 'detId:RO' and 'doc:RO'; None arguments are skipped."""
         self.setString("detType:RO", detType)
         self.setString("detName:RO", detName if detSegm is None else detName+'_%d'%detSegm)
         self.setString("detId:RO", detId)
         self.setString("doc:RO", doc)
 
     def writeFile(self, file, headers=True):
+        """Return ``write_typed_json(file, self.dict, self.enumdef, headers)``."""
         return write_typed_json(file, self.dict, self.enumdef, headers)
 
 
@@ -738,6 +822,15 @@ class cdict(object):
 #    type dictionary, and the remaining items are the dimensions of the array.
 #
 def getType(typed_json, name):
+    """Return the type of dotted `name` in a typed JSON dict (or a dict of them): a basic type string, an enum dict, or a list of that plus array dimensions.
+
+    Returns None if the path does not exist.
+
+    Raises
+    ------
+    TypeError
+        If `typed_json` is not a dict, no ':types:' entry is found, or the stored type is invalid.
+    """
     if not isinstance(typed_json, dict):
         raise TypeError("getType: First argument should be a typed JSON dictionary!")
     try:
@@ -786,6 +879,10 @@ def getType(typed_json, name):
 # Get the value from a typed JSON dictionary.
 #
 def getValue(typed_json, name):
+    """Return the value at dotted `name` in `typed_json`, or None if the path does not exist.
+
+    Raises TypeError (with a message naming getType) if `typed_json` is not a dict.
+    """
     if not isinstance(typed_json, dict):
         raise TypeError("getType: First argument should be a typed JSON dictionary!")
     v = typed_json
@@ -802,6 +899,18 @@ def getValue(typed_json, name):
 # enum dictionary.  Arrays need not apply.
 #
 def simpleConvert(v, t, e):
+    """Convert string `v` to simple type `t` (`e` holds the enums).
+
+    Enum labels map to their value and integer strings must be enum values; 'CHARSTR' is returned
+    as is, 'FLOAT'/'DOUBLE' use ``float``, and integer types use ``int`` with a range check.
+
+    Raises
+    ------
+    TypeError
+        For an invalid enum value or type specifier.
+    ValueError
+        If an integer is out of range (or ``int``/``float`` fails).
+    """
     if t in e.keys():
         if v in e[t].keys():
             return e[t][v]
@@ -823,6 +932,13 @@ def simpleConvert(v, t, e):
         raise TypeError("convertValue: %s is not a valid type specifier." % t)
 
 def convertValue(v, t, e={}):
+    """Convert string `v` to type `t`: a simple type via `simpleConvert`, or for an array type a list from the space-separated items.
+
+    Raises
+    ------
+    TypeError
+        If the item count does not match the array dimensions or `t` is neither str nor list.
+    """
     if isinstance(t, str):
         return simpleConvert(v, t, e)
     elif isinstance(t, list):
@@ -846,6 +962,14 @@ def convertValue(v, t, e={}):
 #     =3 - invalid dictionary
 #
 def updateValue(typed_json, name, value):
+    """Convert string `value` to the type of dotted `name` and store it in `typed_json`.
+
+    Returns
+    -------
+    int
+        0 on success, 1 if the path does not exist, 2 if the conversion failed, 3 if the
+        dictionary is invalid.
+    """
     if not isinstance(typed_json, dict):
         return 3
     try:

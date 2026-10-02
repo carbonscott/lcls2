@@ -1,3 +1,8 @@
+"""DRP configuration functions for HSD digitizers: PCIe-side setup through ``l2si_drp.DrpPgpIlvRoot`` and digitizer settings through PVA PVs under the HSD prefix (e.g. '<prefix>:CONFIG').
+
+A module `Barrier` coordinates processes sharing the PCIe card; state is kept in `args` and
+module globals.
+"""
 from psdaq.utils import enable_l2si_drp
 import l2si_drp
 from psdaq.configdb.barrier import *
@@ -22,6 +27,11 @@ barrier_global = Barrier()
 args = {}
 
 def hsd_init(prefix, dev='dev/datadev_0'):
+    """Store the PV prefix, open and enter a ``DrpPgpIlvRoot`` on `dev`, record its 'core'/'swclk' flags in `args`, and run `hsd_unconfig`.
+
+    The default `dev` is 'dev/datadev_0' (no leading '/'); the board-detection branch is disabled by
+    ``if True``. Returns None.
+    """
     global args
     global epics_prefix
     epics_prefix = prefix
@@ -57,6 +67,18 @@ def hsd_init(prefix, dev='dev/datadev_0'):
 
 def hsd_connect(msg):
 
+    """Set up the barrier, check the clock and PGP QPLL, set the PGP TxLinkIds, verify the HSD IOC, and return ``{'paddr': value}``.
+
+    The supervisor (with 'swclk') reprograms the Si570 if MonClkRate_3 is outside 180-190 MHz; each of the
+    4 TxLinkIds is ``0xfb000000 | ip[2]<<8 | ip[3]`` (plus 0x40000 if not 'core') with the lane in bits 16+.
+    'PADDR_U' is polled up to 50 times while 0.
+
+    Raises
+    ------
+    ValueError
+        If the ':FEXOOR' timestamp is more than 100 s old or ':MONPGP' remlinkid[0] differs from
+        the link ID.
+    """
     root = args['root']
 
     alloc_json = json.loads(msg)
@@ -150,6 +172,19 @@ def hsd_connect(msg):
     return d
 
 def hsd_config(connect_str,prefix,cfgtype,detname,detsegm,rog):
+    """Reset the PGP links, apply the configuration through the HSD PVs, and return it as JSON with firmware version/build added.
+
+    After a first apply it waits (without timeout) until ':MONTIMING' shows group `rog`, reads the
+    L0 delay and buffer sizes, runs `user_to_expert`, copies user raw/fex settings into 'expert',
+    applies again and pulses 'jesdclear' in ':RESET'. `prefix` is unused (the module prefix is used).
+
+    Raises
+    ------
+    RuntimeError
+        If the config 'alg:RO' version is not [3,3,0].
+    ValueError
+        If fex xpre/xpost exceed the ':KEEPROWS' limit.
+    """
     global partitionDelay
     global rawBuffSize
     global fexBuffSize
@@ -284,6 +319,13 @@ def hsd_config(connect_str,prefix,cfgtype,detname,detsegm,rog):
     return json.dumps(cfg)
 
 def hsd_unconfig(prefix):
+    """Disable the HSDs '<prefix minus last char>A' and '...B' through their ':CONFIG' PVs, waiting for ':READY'; returns None.
+
+    Raises
+    ------
+    Exception
+        If ':READY' stays 0 for 100 polls (0.1 s apart) after disabling.
+    """
     global epics_prefix
     epics_prefix = prefix
     
@@ -320,6 +362,17 @@ def hsd_unconfig(prefix):
     return None;
 
 def user_to_expert(cfg):
+    """Compute raw/fex start and gate register values (and buffer full thresholds) from the user settings and write them into `cfg` with `update_config_entry`.
+
+    Starts are ``int((start_ns*1300/7000 - partitionDelay*200)*160/200)`` and gates
+    ``int(gate_ns*0.160*13/14)``; thresholds above the free buffer size are lowered with a warning.
+
+    Raises
+    ------
+    ValueError
+        If a start is negative or above 0xfffff, a gate is negative, the raw gate exceeds the raw
+        buffer size, or the fex gate exceeds 4000.
+    """
     global group
     global ocfg
 
@@ -417,6 +470,17 @@ def user_to_expert(cfg):
     update_config_entry(cfg,ocfg,d)
 
 def apply_config(ctxt,cfg):
+    """Write `cfg` to the HSD PVs and wait for ':READY'.
+
+    Puts ':READY' 0, merges 'adccal' into ':ADCCAL', sets the ':CONFIG' fields that also appear in
+    'expert' plus 'fex_corr_baseline'/'fex_corr_accum' from 'user.fex.corr', then polls ':READY' up to
+    100 times (0.1 s apart) and sleeps 2 s on success.
+
+    Raises
+    ------
+    Exception
+        If ':READY' never becomes non-zero.
+    """
     global epics_prefix
 
     # program the values
@@ -453,6 +517,7 @@ def apply_config(ctxt,cfg):
 
 
 def hsd_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values), plus derived expert entries and the 'detType:RO'-style header keys."""
     global ocfg
     print('hsd_scan_keys update {}'.format(update))
     print('hsd_scan_keys ocfg {}'.format(ocfg))
@@ -468,6 +533,7 @@ def hsd_scan_keys(update):
     return json.dumps(cfg)
 
 def hsd_update(update):
+    """Merge the JSON `update` into a new dict, add derived expert entries, write it with `apply_config`, and return it as JSON with the header keys."""
     global ocfg
     #  extract updates
     cfg = {}

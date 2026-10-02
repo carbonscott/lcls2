@@ -70,9 +70,11 @@ except ImportError:
         QSettings = QThread = Qt = None
 
         def pyqtSignal(*args, **kwargs):
+            """Fallback defined only when no Qt binding can be imported: accepts any arguments and returns None."""
             return None
 
         def pyqtSlot(*args, **kwargs):
+            """Fallback defined only when no Qt binding can be imported: returns a decorator that leaves the function unchanged."""
             return lambda fn: fn
 
 from psdaq.configdb.configdb import configdb
@@ -123,6 +125,7 @@ def read_only_url(url):
 
 
 def is_prod(url):
+    """Return True unless 'devconfigdb' appears in `url`."""
     return 'devconfigdb' not in url
 
 
@@ -169,6 +172,7 @@ class TypeInfo(object):
         return self.kind in ('int', 'float')
 
     def hint(self):
+        """Return the input hint shown for this parameter: 'one of: <labels>' for enums, '<n> values, space separated (<display>)' for arrays, else the display text."""
         if self.kind == 'enum':
             return 'one of: %s' % self.display
         if self.kind == 'array':
@@ -273,6 +277,7 @@ class ValueSpec(object):
 
     @property
     def relative(self):
+        """True if the value text started with 'delta:' (a relative change)."""
         return self.delta is not None
 
     def __str__(self):
@@ -297,9 +302,11 @@ class Change(object):
 
     @property
     def unchanged(self):
+        """True if the change is valid (`ok`) and the new value equals the old one."""
         return self.ok and self.new == self.old
 
     def describe(self):
+        """Return a one-line summary: the error for an invalid change, '<det>: <path> already <value>' if unchanged, else '<det>: <path>  <old> -> <new>' (long values shortened)."""
         if not self.ok:
             return '%s: %s' % (self.detector, self.error)
         if self.unchanged:
@@ -397,13 +404,16 @@ class Worker(QObject):
         self._running = True
 
     def stop(self):
+        """Ask the worker to stop; checked between items of `_map` and before emitting results."""
         self._running = False
 
     def db(self, hutch):
+        """Return a new configdb client for `hutch` built with `open_db` and this worker's URL, root and credentials."""
         return open_db(self.url, hutch, self.root, self.user, self.password)
 
     @pyqtSlot()
     def run(self):
+        """Run `work`; any exception is logged and emitted on `failed` with the generation, and `finished` is always emitted."""
         try:
             self.work()
         except Exception as exc:
@@ -413,6 +423,7 @@ class Worker(QObject):
             self.finished.emit()
 
     def work(self):
+        """Abstract: subclasses implement the job; the base raises NotImplementedError."""
         raise NotImplementedError
 
     def _map(self, fn, items):
@@ -452,6 +463,7 @@ class TreeWorker(Worker):
     loaded = pyqtSignal(int, object)         # generation, [(hutch, [alias, ...])]
 
     def work(self):
+        """Read the hutches and each hutch's aliases (in parallel) and emit ``loaded(generation, [(hutch, [alias, ...]), ...])`` unless stopped."""
         hutches = self.db(None).get_hutches()
         tree = list(self._map(lambda h: (h, self._aliases(h)), hutches))
         if self._running:
@@ -483,6 +495,7 @@ class DeviceWorker(Worker):
         self.alias = alias
 
     def work(self):
+        """Read the devices of the worker's hutch/alias with one ``get_devices`` call and emit ``loaded(generation, (hutch, alias), devices)`` unless stopped."""
         devices = self.db(self.hutch).get_devices(self.alias, hutch=self.hutch)
         if self._running:
             self.loaded.emit(self.generation, (self.hutch, self.alias), devices)
@@ -510,6 +523,7 @@ class ScanWorker(Worker):
         self.keep_config = keep_config
 
     def work(self):
+        """Read the configuration of every device (in parallel), plan the change for each, and emit ``scanned(generation, [Change, ...])`` unless stopped; each device is also emitted on `row`."""
         changes = list(self._map(self._one, self.devices))
         if self._running:
             self.scanned.emit(self.generation, changes)
@@ -551,6 +565,7 @@ class WriteWorker(Worker):
         self.spec = spec
 
     def work(self):
+        """Write the confirmed changes one device at a time with `_write`, emitting `result` and `progress` for each; stops early if asked."""
         total = len(self.changes)
         db = self.db(self.hutch)
         for done, planned in enumerate(self.changes, start=1):
@@ -600,12 +615,14 @@ class LogBridge(QObject):
 
 
 class SignalLogHandler(logging.Handler):
+    """Logging handler that forwards each formatted record to the GUI thread through ``bridge.message`` (a `LogBridge` signal)."""
     def __init__(self, bridge):
         logging.Handler.__init__(self)
         self.bridge = bridge
         self.setFormatter(logging.Formatter('%(levelname)s %(name)s: %(message)s'))
 
     def emit(self, record):
+        """Emit ``bridge.message(levelname, formatted_text)``; any exception is swallowed so logging cannot break the GUI."""
         try:
             self.bridge.message.emit(record.levelname, self.format(record))
         except Exception:
@@ -708,6 +725,24 @@ class ConfirmDialog(QtWidgets.QDialog if HAVE_QT else object):
 
 class ConfigdbGUI(QtWidgets.QMainWindow if HAVE_QT else object):
 
+    """Main window: hutch/alias tree, detector list, parameter tree and log pane for viewing and bulk-editing configdb parameters.
+
+    It starts in read-only mode unless `allow_write`, reads through the unauthenticated form of `url`,
+    and loads the hutch tree in the background at construction.
+
+    Parameters
+    ----------
+    url : str
+        Database URL used for writes (reads use the 'ws-auth'/'ws-kerb' to 'ws' form).
+    root : str, optional
+        Database root (default 'configDB').
+    user, password : str, optional
+        Credentials for writes; without `user` the selected hutch's '<hutch>opr' account is used.
+    hutch : str, optional
+        Hutch to expand at start-up.
+    allow_write : bool, optional
+        Start with writing enabled (default False).
+    """
     def __init__(self, url, root=DEFAULT_ROOT, user=None, password=None,
                  hutch=None, allow_write=False):
         super(ConfigdbGUI, self).__init__()
@@ -949,6 +984,7 @@ class ConfigdbGUI(QtWidgets.QMainWindow if HAVE_QT else object):
 
     @property
     def read_url(self):
+        """The database URL with 'ws-auth'/'ws-kerb' replaced by 'ws' (used for all reads)."""
         return read_only_url(self.auth_url)
 
     def _worker_args(self, write=False):
@@ -961,6 +997,7 @@ class ConfigdbGUI(QtWidgets.QMainWindow if HAVE_QT else object):
         return dict(url=self.read_url, root=self.root)
 
     def reload(self):
+        """Clear the trees and lists and start a `TreeWorker` to reload the hutches and aliases (stale replies are ignored by generation)."""
         generation = self._fresh()
         self.hutch_tree.clear()
         self.device_list.clear()
@@ -1386,6 +1423,7 @@ class ConfigdbGUI(QtWidgets.QMainWindow if HAVE_QT else object):
         _exec(box)
 
     def closeEvent(self, event):
+        """Ask for confirmation if a write is still running (ignoring the close if declined), then remove the log handler, stop all workers, save the settings and close."""
         if self._busy('write'):
             box = QtWidgets.QMessageBox(self)
             box.setIcon(_qt_enum(QtWidgets.QMessageBox, 'Icon', 'Warning'))
@@ -1410,6 +1448,10 @@ class ConfigdbGUI(QtWidgets.QMainWindow if HAVE_QT else object):
 # --------------------------------------------------------------------------
 
 def main():
+    """Parse the arguments, set up logging, and run the `ConfigdbGUI` window until it closes (exits with a message if no Qt binding is available).
+
+    The URL comes from --url, else production unless --dev; --allow-write starts with writing enabled.
+    """
     parser = argparse.ArgumentParser(
         description='browse the configuration database and change a parameter '
                     'across many detectors')

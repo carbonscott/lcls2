@@ -137,6 +137,17 @@ def _save_geometry_preview(path, detector_mask, geometry_file):
 
 
 def main():
+    """Convert a detector-shaped mask .npy (--input) to the store-layout text file and print the suggested upload command.
+
+    The output path is --output, else '<cwd>/<input stem>_gainmap.txt'; --assembled-output and
+    --geometry-output (which needs --geometry-file) write PNG previews.
+
+    Raises
+    ------
+    ValueError
+        If a preview path does not end in '.png', or --geometry-output is given without
+        --geometry-file.
+    """
     args = _parse_args()
 
     detector_mask = _read_detector_mask(args.input)

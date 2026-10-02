@@ -1,3 +1,4 @@
+"""Script: write a default 'epixm320hw' configuration to the config database; --dir (rogue project root) is required, --update keeps existing values via ``update_config`` and --dryrun skips writing."""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 from psdaq.configdb.get_config import update_config
@@ -17,6 +18,12 @@ nRows    = 192
 
 def epixm320_cdict(prjCfg):
 
+    """Return a `cdict` with the default epixM320 configuration (alg version [1,0,0]).
+
+    User defaults include start_ns 107749, run_trigger_group 6, asic_enable 0xf and gain_mode 2; expert
+    registers and enums are as written in the code, and three PLL tables are loaded with ``np.loadtxt``
+    from 'EPixHRM320KPllConfig{250,125,168}Mhz.csv' in directory `prjCfg`.
+    """
     top = cdict()
     top.setAlg('config', [1,0,0])
 

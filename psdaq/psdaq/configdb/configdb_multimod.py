@@ -11,6 +11,7 @@ import os
 import numpy as np
 
 def nested_set(dic, keys, value):
+    """Set ``dic[keys[0]]...[keys[-1]]`` to `value` only if the whole path already exists, and return `dic`."""
     d = dic
     for key in keys[:-1]:
         if key in d:
@@ -23,6 +24,17 @@ def nested_set(dic, keys, value):
 
 def configdb_multimod(URI_CONFIGDB = 'https://pswww.slac.stanford.edu/ws-kerb/configdb/ws', DEV = 'BEAM',ROOT_CONFIGDB = 'configDB', INSTRUMENT = 'tmo', DETECTOR=['hsd_0'] , CONFIG_KEY=['user','raw','prescale'], CONFIG_VALUE=1, MODIFY=False):
     
+    """Print, and optionally modify, one configuration value (path `CONFIG_KEY`) of each detector in `DETECTOR`.
+
+    With `MODIFY`, the new value is ``type(old)(CONFIG_VALUE)``, or old plus the number after 'delta:'
+    for values like 'delta:5'; it is written with ``modify_device`` when ``old is not new`` (an identity
+    test), and write errors are only printed. A 'ws-auth' URL uses the user '<INSTRUMENT>opr'.
+
+    Returns
+    -------
+    list of str
+        The '<det>:<key>:<value> original' / 'modified' lines that were printed.
+    """
     sout=[]
     if "ws-auth" in URI_CONFIGDB:
         confdb = configdb(URI_CONFIGDB, INSTRUMENT, create=False, root=ROOT_CONFIGDB, user=f"{INSTRUMENT}opr")
@@ -66,6 +78,10 @@ def configdb_multimod(URI_CONFIGDB = 'https://pswww.slac.stanford.edu/ws-kerb/co
 
 
 def main():
+    """Parse the command line and call ``args.func``; since no subcommands are registered, `args.func` is missing whenever parsing succeeds.
+
+    The error branch then calls ``parser.print_help(sys.stderr)``, but `sys` is not imported here, so it raises NameError.
+    """
     import argparse
     # create the top-level parser
     parser = argparse.ArgumentParser(description='configuration database CLI')

@@ -1,3 +1,4 @@
+"""Script: build an epix100 configuration from a rogue YAML file and write it to the config database."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import pyrogue
@@ -13,11 +14,16 @@ import re
 mem = pyrogue.interfaces.simulation.MemEmulate()
 
 class EpixBoard(pyrogue.Root):
+    """pyrogue Root 'ePixBoard' holding an ``ePixFpga.Epix100a`` on a simulated memory (``MemEmulate``)."""
     def __init__(self):
         super().__init__(name = 'ePixBoard', description = 'ePix 100a Board')
         self.add(fpga.Epix100a(name='ePix100aFPGA', memBase=mem))
 
 def get_configuration_values(key, value, current_entry_path, entry_list):
+    """Append ``(path, value)`` to `entry_list` for every leaf below `key`/`value`, where `path` is the list of keys leading to it.
+
+    `current_entry_path` is appended to in place at the top level.
+    """
     if isinstance(value, dict):
         current_entry_path.append(key)
         for key, value in value.items():
@@ -27,12 +33,18 @@ def get_configuration_values(key, value, current_entry_path, entry_list):
         entry_list.append((current_entry_path, value))
 
 def retrieve_rogue_information(entry_path, tree_dict):
+    """Return the entry of nested dict `tree_dict` found by following the keys in `entry_path`."""
     value = tree_dict
     for branch in entry_path:
         value = value[branch]
     return value
 
 def epix100_cdict(data_from_yaml):
+    """Return a `cdict` holding the YAML register values under 'expert' (with types from the rogue tree) plus default user/timing entries.
+
+    Drops 'runControl' and 'dataWriter', skips LinkVariables, turns '[n]' in names into '_n', converts
+    enum values, and calls ``sys.exit(0)`` on a type missing from its conversion table.
+    """
     root = EpixBoard()
 
     with EpixBoard() as root:

@@ -46,6 +46,7 @@ def rotate_vector_xy(v, angle_deg):
 
 
 def create_directory(dname, mode=0o2775):
+    """Create directory ``dname`` (with ``os.makedirs`` and ``mode``) if it does not exist; do nothing for an empty name or an existing path."""
     if not dname or dname is None: return
     if os.path.exists(dname):
         pass
@@ -228,6 +229,7 @@ def make_table_of_segments(arr,qoff=0):
 
 
 def is_correct_numeration(mylst):
+    """Return True if the first value of ``mylst`` is 4k+1 and every following value is the previous one plus 1; otherwise False."""
     for i, v in enumerate(mylst):
         if i==0:
             if (v-1)%4 != 0: return False
@@ -237,6 +239,7 @@ def is_correct_numeration(mylst):
 
 
 def check_points_numeration(arr_segs):
+    """Log at debug level whether all point numbers in ``arr_segs`` are sequential from 4k+1, followed by the same check for each segment's four points."""
     logger.debug('%s\nIn %s' % (60*'-', sys._getframe().f_code.co_name))
 
     msg = ''
@@ -265,6 +268,7 @@ def segment_center_coordinates(arr1seg):
 
 
 def evaluate_short_long_average(S1, S2, L1, L2, dS1, dS2, dL1, dL2, dZS1, dZS2, dZL1, dZL2):
+    """Return ``(LA, SA, dSA, dLA, dZLA, dZSA)``, each the mean of the corresponding pair of ``...1``/``...2`` arguments."""
     dZSA = 0.5 * (dZS1 + dZS2)
     dZLA = 0.5 * (dZL1 + dZL2)
     SA   = 0.5 * (S1   + S2)
@@ -529,6 +533,7 @@ def txt_qc_table_z(arr_segs, arr_iorgn):
 
 def print_quality_check_tables(arr_segs, arr_iorgn):
 
+    """Log the X-Y and Z quality-check tables from ``txt_qc_table_xy`` and ``txt_qc_table_z`` at info level."""
     logger.info('X-Y quality check for optical metrology measurements \n%s'%\
                 txt_qc_table_xy(arr_segs, arr_iorgn))
 
@@ -737,6 +742,7 @@ def geometry_constants_v1(arr_segs, arr_iorgn, def_constants, segnums_in_daq, ce
 
 
 def last_record_v1(name_subd, ind_subd, ip_twister):
+    """Return the geometry record tuple ``('IP', 0, name_subd, ind_subd) + ip_twister + (0, 0, 0)``."""
     return ('IP', 0, name_subd, ind_subd) + ip_twister + (0, 0, 0)
     #return ('IP', 0, name_subd, ind_subd, 0, 0,  1000000, 0, 0, 0, 0, 0, 0)
 
@@ -748,11 +754,13 @@ def str_geo_constants(lst):
 
 
 def str_comment(comments):
+    """Return the comment strings as ``'# COMMENT:NN <text>'`` lines, each preceded by a newline."""
     return '\n# '+'\n# '.join(['COMMENT:%02d %s'%(i,s) for i,s in enumerate(comments)])
 
 
 def str_geo_constants_hat():
     #from CalibManager.GlobalUtils import get_login, get_current_local_time_stamp
+    """Return the header of a psana geometry file: date/time, user, calibration type, parameter descriptions and the column-name line."""
     from time import localtime, strftime #, gmtime, clock, time, sleep
     import getpass
     return \
@@ -779,6 +787,7 @@ def str_geo_constants_hat():
 
 def default_constants_epix10ka2m_v0():
     # HDR PARENT IND     OBJECT IND    X0[um]   Y0[um]   Z0[um]   ROT-Z ROT-Y ROT-X     TILT-Z   TILT-Y   TILT-X
+    """Return a hard-coded tuple of geometry records for 4 quads of 4 ``EPIX10KA:V1`` sensors, the quads in ``CAMERA`` and the camera at ``IP`` (z 100000)."""
     SENSOR   = 'EPIX10KA:V1'
     QUAD     = 'QUAD'
     CAMERA   = 'CAMERA'
@@ -815,6 +824,7 @@ def default_constants_epix10ka2m_v0():
 
 def default_constants_epix10ka2m_v1():
     # HDR PARENT IND  OBJECT IND    X0[um]   Y0[um]   Z0[um]     ROT-Z   ROT-Y   ROT-X TILT-Z TILT-YTILT-X
+    """Return a hard-coded tuple of geometry records for 16 ``EPIX10KA:V1`` sensors placed directly in ``CAMERA`` and the camera at ``IP`` (z 100000)."""
     SENSOR   = 'EPIX10KA:V1'
     CAMERA   = 'CAMERA'
     IP       = 'IP'
@@ -851,6 +861,10 @@ class OpticalMetrologyEpix10ka2M():
         else: self.proc_optical_metrology_data_v1()
 
     def init_parameters(self):
+        """Parse ``self.parser`` and store the options as attributes (input/output file names, camera-center offsets, IP position and angle, rotation, quad offset, log level, version, ``usez``, ``docorr``); log the command line.
+
+        The first positional argument, if given, overrides ``--ifn``.
+        """
         (popts, pargs) = self.parser.parse_args()
         self.ifname = pargs[0] if len(pargs) else popts.ifn # popts['ifn']
         #self.ifname = popts.ifn # popts['ifn']

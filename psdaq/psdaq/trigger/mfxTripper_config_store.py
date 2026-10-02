@@ -4,12 +4,18 @@
 # Load with (be careful with --prod and --alias):
 #  python teb_config_store.py --prod --inst tst --name trigger --segm 0 --alias BEAM --user tstopr
 
+"""Define a 'teb' configdb entry for the 'libmfxTripperEvSelectTeb.so' trigger library and store it with `configdb`.
+
+As a script it adds the alias and 'teb' device config and calls `modify_device` with
+`calib_cdict()` for alias 'CALIB', else `usual_cdict()`.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import os
 import io
 
 def usual_cdict():
+    """Return the 'tebConfig' v0.1.0 `cdict`: like the default TEB config but with soname 'libmfxTripperEvSelectTeb.so', tripBasePV 'MFX:JF16M:BLOCKER' and acceptEventCode 0."""
     top = cdict()
 
     top.setAlg('tebConfig', [0,1,0])
@@ -53,6 +59,7 @@ def usual_cdict():
     return top
 
 def calib_cdict():
+    """Return the 'triggerConfig' v0.0.0 `cdict` for CALIB: help text, soname 'libcalibTrigger.so', read-only buildAll 1 and prescale 1."""
     top = cdict()
 
     top.setAlg('triggerConfig', [0,0,0])

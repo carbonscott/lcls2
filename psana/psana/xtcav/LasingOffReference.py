@@ -60,6 +60,10 @@ size = 1
 
 class LasingOffReference():
 
+    """Build averaged per-group profiles from the camera images of a run and store them in ``self.averaged_profiles``; all work is done in the constructor.
+
+    Reads experiment, run number, max_shots, num_bunches, num_groups, snr_filter, roi_expand and other settings from ``args``, loads the 'xtcav_pedestals' constants, processes valid images with ``Utils.processImage`` and averages them with ``averageXTCAVProfilesGroups``. Only rank 0 continues after the event loop; with 'save_to_file' (default True) the result is saved to 'cons-<expt>-<run>-xtcav-lasingoff.data'. With 'plot_image' each image is also displayed.
+    """
     def __init__(self, args):
         """
         """
@@ -313,6 +317,10 @@ class LasingOffReference():
 #        constSave(instance,path)
 
     def save(self, path):
+        """Write a copy of this object (parameters and averaged profiles converted to dicts) to the HDF5 file ``path`` with ``FileInterface.Save`` and deploy it with the shell command 'cdb add ... -c xtcav_lasingoff ...'.
+
+        A non-zero return of the command prints an error message to stderr.
+        """
         instance = copy.deepcopy(self)
         instance.parameters        = dict(self.parameters._asdict())
         instance.averaged_profiles = dict(self.averaged_profiles._asdict())
@@ -339,6 +347,10 @@ class LasingOffReference():
     
     @staticmethod
     def load(path):
+        """Load an object from HDF5 file ``path`` with ``FileInterface.Load`` and rebuild ``parameters`` as ``LasingOffParameters`` and ``averaged_profiles`` as ``AveragedProfiles``.
+
+        Returns None (with a printed message) if that conversion raises AttributeError or TypeError.
+        """
         lor = constLoad(path)
         try:
             lor.parameters = LasingOffParameters(**lor.parameters)

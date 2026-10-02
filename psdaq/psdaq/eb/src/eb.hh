@@ -88,7 +88,7 @@ namespace Pds {
     {
       /** Alias for std::string. */
       using string_t = std::string;
-      /** Alias for std::vector<std::string>. */
+      /** Alias for `std::vector<std::string>`. */
       using vecstr_t = std::vector<std::string>;
       /** Alias for a std::string to std::string map. */
       using kwmap_t  = std::map<std::string,std::string>;
@@ -137,9 +137,9 @@ namespace Pds {
     {
       /** Alias for std::string. */
       using string_t  = std::string;
-      /** Alias for std::vector<std::string>. */
+      /** Alias for `std::vector<std::string>`. */
       using vecstr_t  = std::vector<std::string>;
-      /** Alias for std::vector<unsigned>. */
+      /** Alias for `std::vector<unsigned>`. */
       using vecuint_t = std::vector<unsigned>;
       /** Alias for a std::string to std::string map. */
       using kwmap_t   = std::map<std::string,std::string>;
@@ -178,11 +178,11 @@ namespace Pds {
     {
       /** Alias for std::string. */
       using string_t  = std::string;
-      /** Alias for std::vector<std::string>. */
+      /** Alias for `std::vector<std::string>`. */
       using vecstr_t  = std::vector<std::string>;
-      /** Alias for std::vector<size_t>. */
+      /** Alias for `std::vector<size_t>`. */
       using vecsize_t = std::vector<size_t>;
-      /** Alias for std::vector<unsigned>. */
+      /** Alias for `std::vector<unsigned>`. */
       using vecuint_t = std::vector<unsigned>;
       /** Array of NUM_READOUT_GROUPS uint64_t values (one per readout group). */
       using u64arr_t  = std::array<uint64_t, NUM_READOUT_GROUPS>;

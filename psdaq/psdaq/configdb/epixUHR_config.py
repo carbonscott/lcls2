@@ -1,3 +1,7 @@
+"""DRP configuration functions for the ePixUHR camera (``epix_uhr_gtreadout_dev.Root``) with a `PgpMonitor` on the PCIe card.
+
+State is kept in the module dict `base` and module globals (`orig_cfg`, `group`, `asics`, `gain_map`, ...).
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -87,6 +91,7 @@ def _dict_compare(d1,d2,path):
 
 # Sanitize the json for json2xtc by removing offensive characters
 def sanitize_config(src: dict) -> dict:
+    """Return a copy of nested dict `src` with '[', ']', '(' and ')' removed from every key (the code comment says this is for json2xtc)."""
     dst = {}
     for k, v in src.items():
         if isinstance(v, dict):
@@ -97,6 +102,7 @@ def sanitize_config(src: dict) -> dict:
 #Initialization of ASICs, this happens after getting configdb data because we need to know which ASIC to init
 def panel_ASIC_init(det_root: dict, asics: list):
     
+    """For each ASIC number in `asics`, write the batcher, framer and GT-data enable/reset settings listed in the code with `write_to_detector`."""
     for asic in asics:				
 
         write_to_detector(getattr(det_root.App,f"BatcherEventBuilder{asic}").enable,True)			  	
@@ -111,6 +117,7 @@ def panel_ASIC_init(det_root: dict, asics: list):
                             
 #Initialization of the detector; this is meant to put the detector in a pre defined working state.
 def panel_init(det_root: dict):
+        """Write the fixed WaveformControl, TriggerRegisters, GTReadoutBoardCtrl, clock, timing and DAC settings listed in the code to `det_root` with `write_to_detector`."""
         write_to_detector(det_root.App.WaveformControl.enable,              True)			  	
         write_to_detector(det_root.App.WaveformControl.GlblRstPolarity,     True)
         write_to_detector(det_root.App.WaveformControl.AsicSroEn,           True)			  			  	
@@ -164,6 +171,17 @@ def panel_init(det_root: dict):
 #  Initialize the rogue accessor
 #
 def epixUHR_init(arg, dev='/dev/datadev_0',lanemask=0xf,xpmpv=None,timebase="186M",verbosity=0) -> dict:
+    """Open a `PgpMonitor` and an ``epix_uhr_gtreadout_dev.Root`` on `dev`, run `panel_init`, set up timing for `timebase`, wait for a valid RxId, and return the module `base` dict.
+
+    '119M' sets mode/clock registers directly; other timebases call ``ConfigLclsTimingV2``; both call
+    `epixUHR_unconfig` first. The root logger level is set to WARNING; `arg`, `xpmpv` and `verbosity`
+    are unused.
+
+    Raises
+    ------
+    ValueError
+        If RxId is still 0xffffffff after 15 one-second polls.
+    """
     global base
     
     logging.getLogger().setLevel(logging.WARNING)
@@ -257,6 +275,7 @@ def epixUHR_init(arg, dev='/dev/datadev_0',lanemask=0xf,xpmpv=None,timebase="186
 #  Set the PGP lane
 #
 def epixUHR_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
     if slane is not None:
@@ -269,6 +288,10 @@ def epixUHR_init_feb(slane=None,schan=None):
 #
 def epixUHR_connectionInfo(base, alloc_json_str) -> dict:
 
+    """Check the PGP lanes, write ``timTxId('epixUHR')`` to TxId, and return ``{'paddr': rxId, 'serno': '-'}`` with the RxId read before the write.
+
+    `alloc_json_str` is unused.
+    """
     base['pcie'].check_lanes('connect')
 
 #
@@ -296,6 +319,17 @@ def epixUHR_connectionInfo(base, alloc_json_str) -> dict:
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, fullConfig=False) -> bool:
+    """Translate 'start_ns' into trigger delays in `cfg` (via `update_config_entry`) and return whether 'user.Gain' is present.
+
+    Buffer 1 gets ``int(start_ns/clk_period - PartitionDelay[group]*msg_period)`` and EvrV2TriggerReg[0]
+    ``int(start_ns/clk_period) - DELTA_DELAY``; with `fullConfig` the Partitions of buffers 0 and 1 are set
+    to ``group + 1`` and `group`.
+
+    Raises
+    ------
+    ValueError
+        If a computed delay is negative.
+    """
     global orig_cfg
     global group
     global lane
@@ -346,6 +380,12 @@ def user_to_expert(base, cfg, fullConfig=False) -> bool:
 #  Apply the cfg dictionary settings
 #
 def config_expert(base, cfg, writeCalibRegs=True, second_pass=False):
+    """Apply `cfg` to the camera: trigger settings, (unless `second_pass`) the PLL table, ASIC init and YAML-based register loading, batcher bypass for the enabled ASICs, and with `writeCalibRegs` the gain matrices and charge-injection DAC.
+
+    Gain values come from 'user.Gain' (one map or value for all ASICs, or per ASIC) and are also kept in
+    the module `gain_map`. The per-ASIC branches use the name `i`, which is not defined in this
+    function, so they raise NameError.
+    """
     global asics  # Need to maintain this across configuration updates
     global gain_map
 
@@ -592,6 +632,7 @@ def config_expert(base, cfg, writeCalibRegs=True, second_pass=False):
     
 def reset_counters(base: dict):
     # Reset the timing counters
+    """Reset the camera's timing frame counters and the counters of TriggerEventBuffer[1]."""
     base['cam'].App.TimingRx.TimingFrameRx.countReset()
 
     # Reset the trigger counters
@@ -601,6 +642,11 @@ def reset_counters(base: dict):
 #  Called on Configure
 #
 def epixUHR_config(base,connect_str, cfgtype,detname,detsegm,rog) -> list:
+    """Configure the camera from the database and return two sanitized JSON strings (full config and an 'epixuhr' segment holding 'gainMap').
+
+    If the translated configuration equals the previous one, the previous result is returned; otherwise
+    it stops, applies `config_expert`, starts, resets counters and switches to internal (auto) triggering.
+    """
     global orig_cfg
     global group
     global seg_ids
@@ -696,6 +742,7 @@ def epixUHR_config(base,connect_str, cfgtype,detname,detsegm,rog) -> list:
     return result
 
 def epixUHR_unconfig(base) -> dict:
+    """Check the PGP lanes, stop the run (``App.StopRun()`` then a 0.1 s sleep), and return `base`."""
     logging.info('epixUHR_unconfig')
     base['pcie'].check_lanes('unconfig')
     _stop(base)
@@ -706,6 +753,11 @@ def epixUHR_unconfig(base) -> dict:
 #  in response to the scan parameters
 #
 def epixUHR_scan_keys(update) -> list:
+    """Return sanitized JSON strings for a scan: the entries named in `update` copied from the stored configuration (not the new values) with header keys, plus the 'gainMap' segment if 'user.Gain' is in the update.
+
+    The result is stored in ``base['scan_keys']`` and an error is logged if its keys do not match the
+    configure result (`check_json_keys`).
+    """
     logging.debug('epixUHR_scan_keys')
     global orig_cfg
     global base
@@ -753,6 +805,7 @@ def epixUHR_scan_keys(update) -> list:
 #  Return the set of configuration updates for a scan step
 #
 def epixUHR_update(update) -> list:
+    """Stop, apply the JSON `update` with `config_expert` (second pass), start again, and return sanitized JSON strings for the renamed full config and, if gains changed, the 'gainMap' segment."""
     logging.debug('epixUHR_update')
     global orig_cfg
     global base
@@ -813,6 +866,7 @@ def epixUHR_update(update) -> list:
 
 def epixUHR_external_trigger(base):
     #  Switch to external triggering
+    """Call ``App.TriggerRegisters.SetTimingTrigger()``."""
     logging.info("external triggering")
     det_root = base['cam']
     det_root.App.TriggerRegisters.SetTimingTrigger()
@@ -825,6 +879,7 @@ def write_to_detector(var, val):
 #    var.set(val)
 #    return
 #
+    """Set `var` to `val` if it differs, then read it back and log an error if it still differs."""
     if (var.get() != val):
         var.set(val)
         if var.get() != val:
@@ -835,6 +890,7 @@ def write_to_detector(var, val):
         logging.debug(f"Variable already set {var}:{val}")
         
 def epixUHR_internal_trigger(base):
+    """Call ``App.TriggerRegisters.StartAutoTrigger()``."""
     logging.info('internal triggering')
 
     #  Switch to internal triggering
@@ -842,12 +898,14 @@ def epixUHR_internal_trigger(base):
     det_root.App.TriggerRegisters.StartAutoTrigger()
     
 def epixUHR_enable(base):
+    """Check the PGP lanes, switch to timing triggers, and start the run (event builders released, trigger buffers 0 and 1 enabled, RunState True)."""
     logging.info('epixUHR_enable')
     base['pcie'].check_lanes('enable')
     epixUHR_external_trigger(base)
     _start(base)
 
 def epixUHR_disable(base):
+    """Only checks the PGP lanes with ``check_lanes('disable')``."""
     logging.info('epixUHR_disable')
     base['pcie'].check_lanes('disable')
     # Prevents transitions going through: epixUHR_internal_trigger(base)

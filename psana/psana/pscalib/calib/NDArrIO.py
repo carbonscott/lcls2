@@ -240,6 +240,7 @@ if __name__ == "__main__":
 
   def test_save_txt():
 
+    """Save a 2x2x3 int32 test array to ``nda.txt`` with :func:`save_txt` and two comment lines (defined only when run as a script)."""
     arr3 = (((111,112,113),
              (121,122,123)),
             ((211,212,213),
@@ -256,6 +257,7 @@ if __name__ == "__main__":
 
   def test_load_txt():
 
+    """Read the comments and the array of a hard-coded Andor3d pedestals file with :func:`list_of_comments` and :func:`load_txt` and print them with timings (defined only when run as a script)."""
     from time import time
 
     fname = 'nda.txt'

@@ -15,6 +15,7 @@ from psana.pyalgos.generic.Utils import do_print #, get_login,
 from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
 def usage() :
+    """Return the usage text with the optional positional arguments IFNAME OFNAME DIRTMP EXPNAME RUNNUM DETNAME DETTYPE SERNUM NAMESID EVENTS and examples."""
     scrname = sys.argv[0]
     return '\nUsage:'\
       + '\n  in LCLS2 environment after'\
@@ -30,6 +31,7 @@ def usage() :
 
 
 def time_stamp(t_sec_nsec) :
+    """Return ``(t_sec << 32) | t_nsec`` for the pair ``t_sec_nsec``."""
     t_sec, t_nsec = t_sec_nsec
     tstamp = t_sec<<32 | t_nsec
     #print('TIME_STAMP', t_sec, t_nsec, tstamp)
@@ -68,6 +70,10 @@ LIST_SAVE = (RAW, RUNINFO, EBEAM, EVENTID, GASDET, XTCAVPARS)
 
 def convert_hdf5_to_xtc2_with_runinfo() :
 
+    """Convert the HDF5 file ``FNAME_HDF5`` to the xtc2 file ``FNAME_XTC2`` with ``dgramCreate.CyDgram``, one datagram per entry of dataset 'raw' (up to ``EVENTS``).
+
+    For each kind listed in ``LIST_SAVE`` it adds runinfo (events 0-1 only), ebeam, eventid, gasdetector and xtcavpars values read from the HDF5 groups and the raw array. The timestamp is built from the event's 'time' with ``time_stamp`` (the event index if the seconds are 0); transition ids are 2, 4, then 12.
+    """
     import dgramCreate as dc # .../psana/peakFinder/dgramCreate.pyx (Lord, why it is here?)
     import numpy as np
     import os
@@ -216,6 +222,7 @@ def convert_hdf5_to_xtc2_with_runinfo() :
 
 def test_xtc2_runinfo() :
 
+    """Run the shell command 'detnames -r' on ``FNAME_XTC2``, then open it with ``DataSource`` and print, per event, the stored values both from the first datagram directly and through ``run.Detector`` interfaces."""
     os.system('detnames -r %s' % FNAME_XTC2)
 
     from psana import DataSource

@@ -26,6 +26,10 @@ except ImportError:
 
 
 def parse_args():
+    """Parse and return the command-line options (data selection, DataSource settings, --debug_detector (required), --detector-method, --backend, --host-mem, --gpu-map, --gpu-id, printing and --json_out).
+
+    If any --skip_calib_load value is 'all', the option is replaced by the string 'all'.
+    """
     parser = argparse.ArgumentParser(
         description="Profile psana detector event loop with optional GPU staging copies."
     )
@@ -84,6 +88,10 @@ def parse_args():
 
 
 def create_datasource(args, rank):
+    """Create and return the ``DataSource`` for the profiling run.
+
+    With --xtc_files the files are used directly (listed on rank 0); otherwise --exp and --run are required (ValueError if missing), and the directory is --dir, the FFB path '/sdf/data/lcls/drpsrcf/ffb/<exp[:3]>/<exp>/xtc' with --live, or None. Common options (max_events, batch_size, log level, detector lists, calib cache, monitor, log file, skip_calib_load) are passed through.
+    """
     common_kwargs = dict(
         max_events=args.max_events,
         batch_size=args.batch_size,
@@ -154,13 +162,19 @@ def _get_detector_data(det, method, evt):
 
 
 class NoCopyBackend:
+    """Backend that performs no host-to-device copy (CPU-only baseline)."""
     name = "none"
 
     def copy_array(self, arr: np.ndarray) -> Tuple[int, float]:
+        """Return ``(arr.nbytes, 0.0)`` without copying anything."""
         return arr.nbytes, 0.0
 
 
 class CupyBackend:
+    """Host-to-device copy backend using CuPy on GPU ``gpu_id``.
+
+    Keeps a growing uint8 device buffer and, for ``host_mem`` 'pinned', a growing pinned host buffer and a non-blocking CUDA stream.
+    """
     name = "cupy"
 
     def __init__(self, gpu_id: int, host_mem: str):
@@ -189,6 +203,10 @@ class CupyBackend:
             self.pin_cap = nbytes
 
     def copy_array(self, arr: np.ndarray) -> Tuple[int, float]:
+        """Copy the bytes of ``arr`` into the device buffer with CuPy and return ``(nbytes, seconds)``.
+
+        In 'pinned' mode the data are first copied to the pinned buffer and sent with ``memcpyAsync`` on the stream, which is then synchronized; otherwise a synchronous ``memcpy`` from the array is used. Only the copy is timed (buffer allocation happens before the timer starts).
+        """
         src = arr.view(np.uint8).reshape(-1)
         nbytes = src.nbytes
         self._ensure_device(nbytes)
@@ -215,6 +233,10 @@ class CupyBackend:
 
 
 class TorchBackend:
+    """Host-to-device copy backend using PyTorch on device 'cuda:<gpu_id>'; raises RuntimeError if torch CUDA is not available.
+
+    Keeps a growing uint8 device tensor and, for ``host_mem`` 'pinned', a growing pinned host tensor.
+    """
     name = "torch"
 
     def __init__(self, gpu_id: int, host_mem: str):
@@ -244,6 +266,10 @@ class TorchBackend:
             self.pin_cap = nbytes
 
     def copy_array(self, arr: np.ndarray) -> Tuple[int, float]:
+        """Copy the bytes of ``arr`` into the device tensor with PyTorch and return ``(nbytes, seconds)``.
+
+        In 'pinned' mode the data go through the pinned tensor with a non-blocking copy; otherwise the array is wrapped with ``torch.from_numpy`` and copied blocking. Both paths call ``torch.cuda.synchronize`` before the time is taken.
+        """
         src = arr.view(np.uint8).reshape(-1)
         nbytes = src.nbytes
         self._ensure_device(nbytes)
@@ -317,6 +343,10 @@ def _rss_gb(process):
 
 
 def main():
+    """Run the MPI profiling loop: per rank, choose a GPU and copy backend, iterate over all events, time the detector method and the host-to-device copies, and print progress every --print_interval events.
+
+    Per-rank statistics (events, bytes, times, throughputs, RSS, parallel-pread counters) are gathered on rank 0, which prints an aggregate summary, optionally per-rank lines, and writes JSON to --json_out if given.
+    """
     args = parse_args()
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()

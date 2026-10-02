@@ -1,3 +1,4 @@
+"""REST client and command-line tool for the Big Optical Switch (BOS): cross connections, ports, alarms."""
 import os
 
 import requests
@@ -5,6 +6,7 @@ import requests
 
 class Bos(object):
 
+    """HTTP session for the BOS REST API at `urlBase`, using basic auth (`user`, `password` from $BOS_AUTH by default)."""
     def __init__(self, urlBase, user="admin", password=os.getenv("BOS_AUTH"), verbose=False):
         self._session = requests.Session()
         self._urlBase = urlBase
@@ -26,6 +28,14 @@ class Bos(object):
         return response.json()
 
     def add(self, inPort, outPort):
+        """POST 'crossconnects/?id=add' with a bidirectional connection '<inPort>-<outPort>' (band 'O').
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply when the status is 200 and `verbose` is set (else None); None
+            for 401/404; the decoded reply for other errors.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('id',   'add')]
         data = {'in':   inPort,
@@ -37,18 +47,40 @@ class Bos(object):
         return self._handle_response(response)
 
     def delete(self, conn):
+        """DELETE 'crossconnects/?conn=<conn>'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply when the status is 200 and `verbose` is set (else None); None
+            for 401/404; the decoded reply for other errors.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('conn', conn)]
         response = self._session.delete(url, auth=self._auth, params=params)
         return self._handle_response(response)
 
     def list(self):
+        """GET 'crossconnects/?id=list'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply on status 200 or other errors; None for 401/404.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('id', 'list')]
         response = self._session.get(url, auth=self._auth, params=params)
         return self._handle_response(response, True)
 
     def detail(self, conn):
+        """GET 'crossconnects/?id=detail&conn=<conn>'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply on status 200 or other errors; None for 401/404.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('id',   'detail'),
                   ('conn', conn)]
@@ -56,6 +88,14 @@ class Bos(object):
         return self._handle_response(response, True)
 
     def activate(self, conn):
+        """POST 'crossconnects/?id=activate&conn=<conn>'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply when the status is 200 and `verbose` is set (else None); None
+            for 401/404; the decoded reply for other errors.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('id',   'activate'),
                   ('conn', conn)]
@@ -63,6 +103,14 @@ class Bos(object):
         return self._handle_response(response)
 
     def deactivate(self, conn):
+        """POST 'crossconnects/?id=deactivate&conn=<conn>'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply when the status is 200 and `verbose` is set (else None); None
+            for 401/404; the decoded reply for other errors.
+        """
         url = self._urlBase + 'crossconnects/'
         params = [('id',   'deactivate'),
                   ('conn', conn)]
@@ -70,12 +118,26 @@ class Bos(object):
         return self._handle_response(response)
 
     def portSummary(self):
+        """GET 'ports/?id=summary'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply on status 200 or other errors; None for 401/404.
+        """
         url = self._urlBase + 'ports/'
         params = [('id', 'summary')]
         response = self._session.get(url, auth=self._auth, params=params)
         return self._handle_response(response, True)
 
     def portDetail(self, port):
+        """GET 'ports/?id=detail&port=<port>'.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply on status 200 or other errors; None for 401/404.
+        """
         url = self._urlBase + 'ports/'
         params = [('id',   'detail'),
                   ('port', port)]
@@ -83,6 +145,13 @@ class Bos(object):
         return self._handle_response(response, True)
 
     def alarms(self, type_, class_):
+        """GET 'alarms/?id=all', adding 'type' and 'class' parameters when not None.
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply on status 200 or other errors; None for 401/404.
+        """
         url = self._urlBase + 'alarms/'
         params = [('id',    'all'),]
         if type_ is not None:
@@ -93,6 +162,14 @@ class Bos(object):
         return self._handle_response(response, True)
 
     def backup(self):
+        """GET 'node/?id=backup' with fixed placeholder backup parameters (host 'my.backup.host', folder '/tmp').
+
+        Returns
+        -------
+        dict or None
+            The decoded JSON reply when the status is 200 and `verbose` is set (else None); None
+            for 401/404; the decoded reply for other errors.
+        """
         url = self._urlBase + 'node/'
         params = [('id',           'backup'),
                   ('type',         'Remote'),
@@ -109,6 +186,10 @@ import pprint
 
 def main():
 
+    """Command-line interface: subcommands add, delete, list, detail, activate, deactivate, ports, port and alarms; prints any non-None reply.
+
+    Without a subcommand it calls `sys.stderr`/`sys.exit`, but `sys` is not imported in this module (NameError).
+    """
     def _add(bos, args):
         response = bos.add(args.inPort, args.outPort)
         if response is not None:

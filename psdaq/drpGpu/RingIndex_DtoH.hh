@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief RingIndexDtoH, a ring of buffer indices filled by the GPU and drained by the host.
+ */
 #ifndef RINGINDEX_DTOH_HH
 #define RINGINDEX_DTOH_HH
 
@@ -9,15 +13,18 @@
 #include <cuda/std/atomic>
 
 #ifndef __NVCC__
+/** Defined as a no-op when not compiling with nvcc, so that host-only code can include this header. */
 #define __nanosleep(x) {}
 #endif
 
 namespace Drp {
   namespace Gpu {
 
+/** Lock-free ring of buffer indices with a device producer (push()) and a host consumer (pop()). Head and tail are stored in pinned host memory; one slot always stays empty. Used for the TrgInpGen queue. */
 class RingIndexDtoH
 {
 public:
+  /** Allocate the pinned head and tail words and start empty; asserts that capacity is a power of 2. */
   __host__ RingIndexDtoH(const unsigned capacity) :
     m_head        (nullptr),
     m_tail        (nullptr),
@@ -34,6 +41,7 @@ public:
     *m_tail = 0;
   }
 
+  /** Free the pinned head and tail words. */
   __host__ ~RingIndexDtoH()
   {
     if (m_tail)  chkError(cudaFreeHost(m_tail));
@@ -65,18 +73,21 @@ public:
     return true;
   }
 
+  /** Return the head, the next position to be pushed. */
   __host__ __device__ unsigned head() const
   {
     using namespace cuda::std;
     return m_head->load(memory_order_acquire);
   }
 
+  /** Return the tail, the next position to be popped. */
   __host__ __device__ unsigned tail() const
   {
     using namespace cuda::std;
     return m_tail->load(memory_order_acquire);
   }
 
+  /** Return the number of entries (head minus tail, modulo the capacity). */
   __host__ __device__ unsigned occupancy() const
   {
     using namespace cuda::std;
@@ -85,11 +96,13 @@ public:
     return (head - tail) & m_capacityMask;
   }
 
+  /** Return the capacity. */
   __host__ __device__ size_t size() const
   {
     return m_capacityMask + 1;
   }
 
+  /** Set the head and tail to 0 (empty); not synchronized with the device. */
   __host__ void reset()
   {
     *m_head = 0;

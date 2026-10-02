@@ -1,3 +1,7 @@
+"""DRP configuration functions for the ePixHR 2x2 (10kT) camera: an ``lcls2_epix_hr_pcie.DevRoot`` PCIe card plus a `Board` root reached with SRPv3 on lane 0 VC0.
+
+State is kept in the module dict `base` and module globals (`group`, `ocfg`, `asics`, `segids`).
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -208,11 +212,17 @@ def _dict_compare(d1,d2,path):
             print(f'key[{k}] not in d2')
 
 def gain_mode_map(gain_mode):
+    """Return ``(mapv, trbit)`` for gain modes 0-4 (H/M/L/AHL/AML per the code comment): mapv (0xc, 0xc, 0x8, 0x0, 0x0) and trbit (1, 0, 0, 1, 0)."""
     mapv  = (0xc,0xc,0x8,0x0,0x0)[gain_mode] # H/M/L/AHL/AML
     trbit = (0x1,0x0,0x0,0x1,0x0)[gain_mode]
     return (mapv,trbit)
 
 class Board(pr.Root):
+    """pyrogue Root 'ePixHr10kT' with an ``epix_hr_core.SysReg`` ('Core') and an ``ePixFpga.EpixHR10kT`` ('EpixHR') on an SRPv3 link over DMA channel 0 of `dev`.
+
+    `lanes` is passed to 'Core' as ``numberOfLanes``; the 'QSfpI2C' node is removed (code comment:
+    unreliable readout) and `top_level` is '/tmp'.
+    """
     def __init__(self,dev='/dev/datadev_0',lanes=4):
         super().__init__(name='ePixHr10kT',description='ePixHrGen1 board')
         self.dmaCtrlStreams = [None]
@@ -231,6 +241,7 @@ class Board(pr.Root):
         del self.Core._nodes['QSfpI2C']
 
 def setSaci(reg,field,di):
+    """If `field` is in dict `di`, write ``di[field]`` to register `reg` and print it; otherwise print that it is not updated."""
     if field in di:
         v = di[field]
         reg.set(v)
@@ -242,6 +253,10 @@ def setSaci(reg,field,di):
 #  Construct an asic pixel mask with square spacing
 #
 def pixel_mask_square(value0,value1,spacing,position):
+    """Return a (288, 384) int32 array of `value0` with `value1` at every `spacing`-th row and column, offset by `position` (row ``position // spacing``, column ``position % spacing``).
+
+    A `position` of ``spacing**2`` or more is logged as an error and replaced by 0.
+    """
     ny,nx=288,384;
     if position>=spacing**2:
         logging.error('position out of range')
@@ -260,6 +275,7 @@ def pixel_mask_square(value0,value1,spacing,position):
 #    A0   |   A2
 #
 def user_to_rogue(a):
+    """Rearrange a user-view pixel array (288x384, flattened or not) into a (4, 146, 192) per-ASIC array, rotating ASICs 1 and 3 by 180 degrees as in the code comment's layout."""
     v = a.reshape((elemRowsD*2,elemCols*2))
     s = np.zeros((4,elemRowsC,elemCols),dtype=np.uint8)
     s[0,:elemRowsD] = v[elemRowsD:,:elemCols]
@@ -270,6 +286,7 @@ def user_to_rogue(a):
     return s
 
 def rogue_to_user(s):
+    """Inverse of `user_to_rogue`: rebuild the flattened 288*384 user-view array from a (4, 146, 192) per-ASIC array (rows beyond 144 are dropped)."""
     vf = np.zeros((elemRowsD*2,elemCols*2),dtype=np.uint8)
     vf[elemRowsD:,:elemCols] = s[3,:elemRowsD]
     vf[elemRowsD:,elemCols:] = s[1,:elemRowsD]
@@ -282,6 +299,12 @@ def rogue_to_user(s):
 #  Initialize the rogue accessor
 #
 def epixhr2x2_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbosity=0):
+    """Open the PCIe root and the camera `Board` on `dev`, enable slow-ADC monitoring, set up timing for `timebase`, initialize the HS ADC, and return the module `base` dict.
+
+    '119M' uses PCIe-side timing (4 camera lanes); other timebases use camera timing via
+    ``ConfigLclsTimingV2`` (2 lanes); both call `epixhr2x2_unconfig` first. The root logger level is
+    set to 30 (WARNING).
+    """
     global base
     global pv
 #    logging.getLogger().setLevel(40-10*verbosity) # way too much from rogue
@@ -367,6 +390,7 @@ def epixhr2x2_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M
 #  Set the PGP lane
 #
 def epixhr2x2_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
     if slane is not None:
@@ -382,6 +406,7 @@ def epixhr2x2_connect(base):
 #
 #  To do:  get the IDs from the detector and not the timing link
 #
+    """Write ``timTxId('epixhr2x2')`` to the TxId of the PCIe card (PCIe timing) or camera, and return ``{'paddr': rxId, 'serno': '-'}`` with the RxId read there (0xffffffff if the needed root is missing)."""
     txId = timTxId('epixhr2x2')
     logging.warning('TxId {:x}'.format(txId))
 
@@ -411,6 +436,17 @@ def epixhr2x2_connect(base):
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, full=False):
+    """Translate user settings into expert entries in `cfg` (via `update_config_entry`) and return whether 'pixel_map' or 'gain_mode' was present.
+
+    'start_ns' gives trigger delays (one PCIe buffer, or camera buffers for the run trigger group
+    `RTP` and `group`); with `full` the Partitions are set too. Gain mode 5 copies 'user.pixel_map';
+    other modes set the 4 ASIC 'trbit' values.
+
+    Raises
+    ------
+    ValueError
+        If a computed TriggerDelay is negative.
+    """
     global ocfg
     global group
     global lane
@@ -472,6 +508,12 @@ def user_to_expert(base, cfg, full=False):
 #  Apply the cfg dictionary settings
 #
 def config_expert(base, cfg, writePixelMap=True, secondPass=False):
+    """Apply `cfg`: trigger settings, batcher bypass for the enabled ASICs, and (unless `secondPass`) the YAML-based ASIC initialization, then the pixel map.
+
+    With `writePixelMap`, gain mode 5 (or no gain mode) writes 'user.pixel_map' per ASIC through CSV files,
+    other modes clear each matrix to the mode's value and set 'trbit'. If `readPixelMaps` is set the maps
+    are read back to '/tmp'.
+    """
     global asics  # Need to maintain this across configuration updates
 
     #  Disable internal triggers during configuration
@@ -642,6 +684,7 @@ def config_expert(base, cfg, writePixelMap=True, secondPass=False):
 
 def reset_counters(base):
     # Reset the timing counters
+    """Reset the PCIe timing frame counters and the counters of TriggerEventBuffer[1]."""
     base['pci'].DevPcie.Hsio.TimingRx.TimingFrameRx.countReset()
 
     # Reset the trigger counters
@@ -651,6 +694,13 @@ def reset_counters(base):
 #  Called on Configure
 #
 def epixhr2x2_config(base,connect_str,cfgtype,detname,detsegm,rog):
+    """Configure the camera from the database and return two JSON strings (full config and one 'epixhr2x2' segment).
+
+    When `base['pcie_timing']` is false and the config has no camera-side TriggerEventManager entry, the
+    DevPcie TriggerEventBuffer entry is copied under EpixHR and removed from DevPcie first. If the translated
+    configuration equals the previous one, the previous result is returned; otherwise it stops, applies
+    `config_expert`, starts, and builds the segment with 'asicPixelConfig' and 'trbit'.
+    """
     global ocfg
     global group
     global segids
@@ -796,6 +846,7 @@ def epixhr2x2_config(base,connect_str,cfgtype,detname,detsegm,rog):
     return result
 
 def epixhr2x2_unconfig(base):
+    """Stop the camera and PCIe runs (then sleep 0.1 s) and return `base`."""
     _stop(base)
     return base
 
@@ -804,6 +855,7 @@ def epixhr2x2_unconfig(base):
 #  in response to the scan parameters
 #
 def epixhr2x2_scan_keys(update):
+    """Return JSON strings for a scan: the entries named in `update` copied from the stored configuration (not the new values) with header keys, plus the segment config if the pixel map changed."""
     logging.warning('epixhr2x2_scan_keys')
     global ocfg
     global base
@@ -857,6 +909,11 @@ def epixhr2x2_scan_keys(update):
 #  Return the set of configuration updates for a scan step
 #
 def epixhr2x2_update(update):
+    """Stop, apply the JSON `update` with `config_expert` (second pass), start again, and return JSON strings for the full config and, if the pixel map changed, the segment.
+
+    The renamed copy of the full config is overwritten by `cfg` itself, so it keeps its original
+    'detName:RO'.
+    """
     logging.warning('epixhr2x2_update')
     global ocfg
     global base
@@ -948,12 +1005,14 @@ def _resetSequenceCount():
 
 def epixhr2x2_external_trigger(base):
     #  Switch to external triggering
+    """Call ``EpixHR.TriggerRegisters.SetTimingTrigger(1)`` and print the current bypass mask."""
     print('=== external triggering with bypass {:x} ==='.format(base['bypass']))
     cbase = base['cam'].EpixHR
     cbase.TriggerRegisters.SetTimingTrigger(1)
 
 def epixhr2x2_internal_trigger(base):
     #  Disable frame readout
+    """Set the PCIe event-builder Bypass to 0x3f (PCIe timing) or 0x3b and return; the switch to auto triggering after the early return is never reached."""
     mask = 0x3f if base['pcie_timing'] else 0x3b
     print('=== internal triggering with bypass {:x} ==='.format(mask))
     pbase = base['pci']
@@ -966,11 +1025,13 @@ def epixhr2x2_internal_trigger(base):
     cbase.TriggerRegisters.SetAutoTrigger(1)
 
 def epixhr2x2_enable(base):
+    """Print a message and call `epixhr2x2_external_trigger`."""
     print('epixhr2x2_enable')
     epixhr2x2_external_trigger(base)
 #    _start(base)
 
 def epixhr2x2_disable(base):
+    """Only prints 'epixhr2x2_disable'; the internal-trigger call is commented out."""
     print('epixhr2x2_disable')
 #    epixhr2x2_internal_trigger(base)
 

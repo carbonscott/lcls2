@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Example: run ``peaks_adaptive`` and ``peaks_droplet`` from ``psana.peakFinder.pypsalg`` on random 2-d, 3-d or list-of-2-d arrays and print the found peaks; the peak finding happens in compiled code not visible here."""
 from time import time
 import numpy as np
 from psana.pyalgos.generic.NDArrUtils import print_ndarr
@@ -8,6 +9,10 @@ from psana.peakFinder.pypsalg import peaks_adaptive, peaks_droplet
 
 def test_pfv3r3(tname):
 
+    """Generate random data (mean 200, sigma 25) of shape (1000,1000) for ``tname`` '1' or (32,185,388) otherwise (split into a list of 2-d arrays for '3'), run ``peaks_adaptive`` with fixed parameters, and print the time and each peak's seg, row, col, npix and son.
+
+    A ``tname`` other than '1'-'3' raises KeyError in the first print.
+    """
     print('test_pfv3r3: %s' % {'1':'2-d np.array', '2':'3-d np.array', '3':'list of 2-d np.array'}[tname])
 
     data = None
@@ -42,6 +47,10 @@ def test_pfv3r3(tname):
 
 def test_pfv4r3(tname):
 
+    """Generate random data (mean 0, sigma 25) of shape (1000,1000) for ``tname`` '4' or (32,185,388) otherwise (split into a list for '6'), run ``peaks_droplet`` with thresholds 50/80 and fixed parameters, and print the time and each peak's seg, row, col, npix and son.
+
+    A ``tname`` other than '4'-'6' raises KeyError in the first print.
+    """
     print('test_pfv4r3: %s' % {'4':'2-d np.array', '5':'3-d np.array', '6':'list of 2-d np.array'}[tname])
 
     data = None

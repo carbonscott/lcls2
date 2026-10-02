@@ -24,6 +24,7 @@ from typing import Dict, Iterable, List, Set, Tuple
 
 
 def parse_cpulist(s: str) -> List[int]:
+    """Return the list of CPU numbers described by a cpulist string such as '0-3,8,10-11' (ranges are inclusive; empty parts are ignored)."""
     cpus: List[int] = []
     for part in s.split(","):
         part = part.strip()
@@ -38,6 +39,10 @@ def parse_cpulist(s: str) -> List[int]:
 
 
 def build_cpu_to_numa() -> Dict[int, int]:
+    """Return a dict mapping CPU number to NUMA node id, read from /sys/devices/system/node/node*/cpulist.
+
+    Nodes whose id cannot be parsed or whose file cannot be read are skipped; the dict is empty if no node files exist.
+    """
     cpu_to_numa: Dict[int, int] = {}
     node_paths = sorted(glob("/sys/devices/system/node/node*/cpulist"))
     for path in node_paths:
@@ -57,6 +62,7 @@ def build_cpu_to_numa() -> Dict[int, int]:
 
 
 def read_cpus_allowed() -> Set[int]:
+    """Return the set of CPUs in the 'Cpus_allowed_list' line of /proc/self/status, or an empty set if it is not found or the file cannot be read."""
     try:
         with open("/proc/self/status", "r") as f:
             for line in f:
@@ -69,6 +75,7 @@ def read_cpus_allowed() -> Set[int]:
 
 
 def get_cpu_from_stat(pid: str) -> int:
+    """Return the 0-based field 38 of /proc/<pid>/stat as int (the 'processor' field in proc(5)), or -1 if the file cannot be read or parsed."""
     try:
         with open(f"/proc/{pid}/stat", "r") as f:
             parts = f.read().split()
@@ -78,6 +85,10 @@ def get_cpu_from_stat(pid: str) -> int:
 
 
 def find_weka_numa(cpu_to_numa: Dict[int, int]) -> Tuple[Set[int], Set[int], List[int]]:
+    """Scan /proc for processes whose comm is 'wekanode' and return ``(weka_numa, weka_cpus, weka_pids)``.
+
+    weka_cpus are the CPUs from ``get_cpu_from_stat`` (when >= 0), weka_numa the NUMA ids of those CPUs found in ``cpu_to_numa``, and weka_pids the matching PIDs.
+    """
     weka_cpus: Set[int] = set()
     weka_pids: List[int] = []
     for pid in os.listdir("/proc"):
@@ -103,6 +114,7 @@ def build_allowed_cpus(
     skip_numa: Set[int],
     respect_cpuset: bool,
 ) -> List[int]:
+    """Return the sorted CPUs of ``cpu_to_numa``, restricted to ``read_cpus_allowed()`` when ``respect_cpuset`` is true and that set is non-empty, and excluding CPUs on NUMA nodes in ``skip_numa``."""
     cpus = set(cpu_to_numa.keys())
     if respect_cpuset:
         allowed = read_cpus_allowed()
@@ -118,6 +130,10 @@ def build_cpu_sequence(
     cpu_to_numa: Dict[int, int],
     assign_mode: str,
 ) -> List[int]:
+    """Return the order in which CPUs are assigned to ranks.
+
+    With ``assign_mode`` 'pack' the CPUs are sorted; otherwise they are taken round-robin across NUMA nodes (one CPU per node in turn, each node's CPUs in ascending order).
+    """
     if assign_mode == "pack":
         return sorted(cpus)
 
@@ -143,6 +159,7 @@ def build_cpu_sequence(
 
 
 def parse_hosts(hosts_arg: str | None) -> List[str]:
+    """Return the non-empty entries of the comma-separated ``hosts_arg``, or ``[socket.gethostname()]`` if it is empty, None or has no entries."""
     if not hosts_arg:
         return [socket.gethostname()]
     hosts = []
@@ -154,6 +171,10 @@ def parse_hosts(hosts_arg: str | None) -> List[str]:
 
 
 def main() -> None:
+    """Parse the command line, build the CPU sequence and write an OpenMPI rankfile with lines 'rank N=<host> slot=<cpu>' to ``--out``.
+
+    Ranks fill each host's CPU sequence in turn; with --oversubscribe extra ranks reuse CPUs round-robin. Exits with ``SystemExit`` if --use-all-numa is combined with --skip-numa, no NUMA topology or CPUs are found, or nranks exceeds the capacity without --oversubscribe. Prints a summary at the end.
+    """
     ap = argparse.ArgumentParser(description="Generate an OpenMPI rankfile skipping NUMA nodes.")
     ap.add_argument("--nranks", type=int, required=True, help="Total ranks to map.")
     ap.add_argument("--out", required=True, help="Rankfile output path.")

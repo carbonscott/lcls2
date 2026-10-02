@@ -1,3 +1,7 @@
+"""DRP configuration functions for the ePixM320k camera (``ePix320kM.Root``) with a `PgpMonitor` on the PCIe card.
+
+State is kept in the module dict `base` and module globals (`origcfg`, `group`, `asics`, ...).
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -240,18 +244,22 @@ def _dict_compare(d1,d2,path):
             print(f'key[{k}] not in d2')
 
 def gain_mode_name(gain_mode):
+    """Return ('SH', 'SL', 'AHL', 'User')[gain_mode]."""
     return ('SH', 'SL', 'AHL', 'User')[gain_mode]
 
 def gain_mode_value(gain_mode):
+    """Return the index of `gain_mode` in ('SH', 'SL', 'AHL', 'User') (ValueError if absent)."""
     return ('SH', 'SL', 'AHL', 'User').index(gain_mode)
 
 def gain_mode_map(gain_mode):
+    """Return ``(compTH, precharge_DAC)`` for gain modes 0-2: compTH (0, 44, 24)[gain_mode] and precharge_DAC 50; other values raise IndexError."""
     compTH        = ( 0,   44,   24)[gain_mode] # SoftHigh/SoftLow/Auto
     precharge_DAC = (50,   50,   50)[gain_mode]
     return (compTH, precharge_DAC)
 
 # Sanitize the json for json2xtc by removing offensive characters
 def sanitize_config(src):
+    """Return a copy of nested dict `src` with '[', ']', '(' and ')' removed from every key (the code comment says this is for json2xtc)."""
     dst = {}
     for k, v in src.items():
         if isinstance(v, dict):
@@ -260,6 +268,7 @@ def sanitize_config(src):
     return dst
 
 def setSaci(reg,field,di):
+    """If `field` is in dict `di`, write ``di[field]`` to register `reg`."""
     if field in di:
         v = di[field]
         reg.set(v)
@@ -268,6 +277,17 @@ def setSaci(reg,field,di):
 #  Initialize the rogue accessor
 #
 def epixm320_init(arg,dev='/dev/datadev_0',lanemask=0xf,xpmpv=None,timebase="186M",verbosity=0):
+    """Open a `PgpMonitor` and an ``ePix320kM.Root`` on `dev`, enable the slow ADCs, set up timing for `timebase`, wait for a valid RxId, and return the module `base` dict.
+
+    '119M' selects mode/clock settings directly; other timebases call ``ConfigLclsTimingV2``; both call
+    `epixm320_unconfig` first. The root logger level is set to 30 (WARNING); `arg`, `xpmpv` and
+    `verbosity` are unused.
+
+    Raises
+    ------
+    ValueError
+        If RxId is still 0xffffffff after 15 one-second polls.
+    """
     global base
     global pv
 #    logging.getLogger().setLevel(40-10*verbosity) # way too much from rogue
@@ -359,6 +379,7 @@ def epixm320_init(arg,dev='/dev/datadev_0',lanemask=0xf,xpmpv=None,timebase="186
 #  Set the PGP lane
 #
 def epixm320_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
     if slane is not None:
@@ -371,6 +392,10 @@ def epixm320_init_feb(slane=None,schan=None):
 #
 def epixm320_connectionInfo(base, alloc_json_str):
 
+    """Check the PGP lanes, write ``timTxId('epixm320')`` to TxId, and return ``{'paddr': rxId, 'serno': '-'}`` with the RxId read before the write.
+
+    `alloc_json_str` is unused.
+    """
     base['pcie'].check_lanes('connect')
 #
 #  To do:  get the IDs from the detector and not the timing link
@@ -397,6 +422,17 @@ def epixm320_connectionInfo(base, alloc_json_str):
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, full=False):
+    """Translate user settings into expert entries in `cfg` (via `update_config_entry`) and return whether 'gain_mode' was present.
+
+    'start_ns' sets TriggerDelay of buffers 0 and 1 from the run-trigger group and `group`; with `full`
+    their Partitions are set too. 'gain_mode' 3 copies the stored per-ASIC CompTH/Precharge values,
+    other modes use `gain_mode_map`, and non-zero charge-injection 'step' settings are copied.
+
+    Raises
+    ------
+    ValueError
+        If a computed TriggerDelay is negative.
+    """
     global origcfg
     global group
     global lane
@@ -453,6 +489,11 @@ def user_to_expert(base, cfg, full=False):
 #  Apply the cfg dictionary settings
 #
 def config_expert(base, cfg, writeCalibRegs=True, secondPass=False):
+    """Apply `cfg` to the camera: trigger-manager settings, batcher bypass/timeout for the enabled ASICs, and (unless `secondPass`) the full YAML/PLL/ASIC initialization and lane delay determination.
+
+    With `writeCalibRegs`, the per-ASIC CompTH/Precharge values for the gain mode and the charge
+    injection settings are written as well. ASICs not in 'user.asic_enable' get their lanes disabled.
+    """
     global asics  # Need to maintain this across configuration updates
 
     #  Disable internal triggers during configuration
@@ -626,6 +667,7 @@ def config_expert(base, cfg, writeCalibRegs=True, secondPass=False):
     logging.warning('config_expert complete')
 
 def reset_counters(base):
+    """Reset the timing frame counters, the trigger counters of TriggerEventBuffer[1], and the stream counters of every ASIC."""
     cbase = base['cam']
 
     # Reset the timing counters
@@ -642,6 +684,12 @@ def reset_counters(base):
 #  Called on Configure
 #
 def epixm320_config(base,connect_str,cfgtype,detname,detsegm,rog):
+    """Configure the camera from the database and return a list of JSON strings, one per entry of `seglist`.
+
+    If the translated configuration equals the previous one, the previous result is returned unchanged.
+    Otherwise it stops, applies `config_expert`, starts, resets counters, and builds segment 0 (full
+    config, renamed '<name>hw_<segm>') and segment 1 (gain and charge-injection values with a hardware id).
+    """
     global origcfg
     global group
     global segids
@@ -767,6 +815,7 @@ def epixm320_config(base,connect_str,cfgtype,detname,detsegm,rog):
     return result
 
 def epixm320_unconfig(base):
+    """Check the PGP lanes, stop the run (``App.StopRun()`` then a 0.1 s sleep), and return `base`."""
     logging.info('epixm320_unconfig')
     base['pcie'].check_lanes('unconfig')
     _stop(base)
@@ -931,6 +980,7 @@ def _resetSequenceCount():
 
 def epixm320_external_trigger(base):
     #  Switch to external triggering
+    """Call ``App.AsicTop.TriggerRegisters.SetTimingTrigger()``."""
     print(f"=== external triggering ===")
     cbase = base['cam']
     cbase.App.AsicTop.TriggerRegisters.SetTimingTrigger()
@@ -946,11 +996,13 @@ def epixm320_internal_trigger(base):
     #return
 
     #  Switch to internal triggering
+    """Call ``App.AsicTop.TriggerRegisters.SetAutoTrigger()``."""
     print('=== internal triggering ===')
     cbase = base['cam']
     cbase.App.AsicTop.TriggerRegisters.SetAutoTrigger()
 
 def epixm320_enable(base):
+    """Start the charge-injection engine if its 'step' is non-zero (printing its status), then switch to timing triggers with `epixm320_external_trigger`."""
     logging.info('epixm320_enable')
     cbase = base['cam']
 
@@ -969,6 +1021,7 @@ def epixm320_enable(base):
     #_start(base)
 
 def epixm320_disable(base):
+    """Stop the charge-injection engine if its 'step' is non-zero (printing its status); triggering is left unchanged."""
     logging.info('epixm320_disable')
     cbase = base['cam']
 

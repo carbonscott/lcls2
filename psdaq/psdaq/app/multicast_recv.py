@@ -1,3 +1,9 @@
+"""Script that joins a BLD multicast group on UDP port 10148 and prints packet fields and latency warnings.
+
+The single option selects the group: -h, -s, -g, -x, -w, -i, -p or -f. The first 4
+packets are printed; afterwards a line is printed when latency exceeds 0.5 s or the gap
+between packets exceeds 5 s.
+"""
 import socket
 import struct
 import sys
@@ -50,26 +56,33 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # matt has some c++ code to dump bld
 # psdaq/psdaq/app/xcasttest.cc
 class BldPacket:
+    """Accessors for words of a received packet viewed as a uint32 array; most field meanings are marked as guesses in the code comments."""
     def __init__(self,array):
         self.array = array
     def fiducials(self):
         # fiducials also in the lower 17 bits of nanoseconds()
+        """Return word 3 (comment: fiducials are also in the lower 17 bits of nanoseconds)."""
         return self.array[3]
     def seconds(self):
         # a guess from looking at the ebeam packet
+        """Return word 1 (comment: "a guess from looking at the ebeam packet")."""
         return self.array[1]
     def damage(self):
         # a guess from looking at the ebeam packet
+        """Return word 5 (comment: "a guess from looking at the ebeam packet")."""
         return self.array[5]
     def nanoseconds(self):
         # a guess from looking at the ebeam packet
         # lower 17 bits are the fiducial
+        """Return word 0 (comment: "a guess from looking at the ebeam packet")."""
         return self.array[0]
     def pulseId(self):
         # From the BLD DRP code
+        """Return ``(word3 << 32) + word2`` (comment: from the BLD DRP code)."""
         return (self.array[3] << 32) + self.array[2]
     def bldId(self):
         # A guess from a comment in BldDetectorSlow.cc
+        """Return word 4 (comment: a guess from a comment in BldDetectorSlow.cc)."""
         return self.array[4]
 
 # Receive/respond loop

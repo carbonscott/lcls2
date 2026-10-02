@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+"""Command-line script: print as JSON the raw and calibrated pixel statistics of an epixquad detector run, separately for pixels whose run-configured ``asicPixelConfig`` code equals a 'low' and a 'medium' value."""
 import argparse
 import json
 
@@ -8,6 +9,7 @@ from psana import DataSource
 
 
 def parse_args():
+    """Parse and return the command-line options --exp and --run (required), --detector (default 'epixquad1kfps'), --max-events (12), --low-value (8), --med-value (12) and --indent (2)."""
     parser = argparse.ArgumentParser(
         description=(
             "Inspect epixquad raw/calibrated noise for pixels selected by the "
@@ -49,6 +51,7 @@ def parse_args():
 
 
 def stats(arr):
+    """Return a dict with the mean, std, min and max of ``arr`` as floats."""
     return {
         "mean": float(arr.mean()),
         "std": float(arr.std()),
@@ -58,6 +61,10 @@ def stats(arr):
 
 
 def asics_to_segments(pixel_map, raw_shape):
+    """Rearrange a (16, rows, 192) per-ASIC ``pixel_map`` into 4 segments of 2x2 ASICs as a uint8 array and check it against ``raw_shape``.
+
+    Rows beyond 176 are dropped; in each segment ASICs 2 and 1 (flipped up-down and left-right) form the top half and ASICs 3 and 0 the bottom half. Raises RuntimeError if the input shape is not (16, *, 192) or the result shape differs from ``raw_shape``.
+    """
     if pixel_map.shape[0] != 16 or pixel_map.shape[2] != 192:
         raise RuntimeError(f"unexpected asic pixel_map shape {pixel_map.shape}")
 
@@ -80,6 +87,10 @@ def asics_to_segments(pixel_map, raw_shape):
 
 
 def event_summary(evt_idx, det, evt, pixel_map, low_value, med_value):
+    """Return a dict of statistics for one event, or None if ``det.raw.raw(evt)`` is None.
+
+    Includes the raw shape, the counts of pixels whose segment map equals ``low_value`` and ``med_value``, ``stats`` of the raw values masked with 0x3FFF for both groups, the same for ``det.raw.calib(evt)`` when its shape matches, and the image shape from ``det.raw.image``.
+    """
     raw = det.raw.raw(evt)
     if raw is None:
         return None
@@ -115,6 +126,10 @@ def event_summary(evt_idx, det, evt, pixel_map, low_value, med_value):
 
 
 def analyze_run(args):
+    """Open run ``args.run`` of ``args.exp``, read the ``asicPixelConfig`` and ``trbit`` values of all segment configurations, summarize up to ``args.max_events`` non-empty events with ``event_summary`` and return everything as a dict.
+
+    When there are events it also adds an 'aggregate' entry with the mean of the per-event raw (and, if present in every event, calibrated) means and stds.
+    """
     ds = DataSource(exp=args.exp, run=args.run)
     run = next(ds.runs())
     det = run.Detector(args.detector)
@@ -168,6 +183,7 @@ def analyze_run(args):
 
 
 def main():
+    """Parse the arguments and print ``analyze_run(args)`` as JSON with indentation ``args.indent``."""
     args = parse_args()
     print(json.dumps(analyze_run(args), indent=args.indent))
 

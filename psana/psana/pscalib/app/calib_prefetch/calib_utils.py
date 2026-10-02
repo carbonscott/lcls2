@@ -1,3 +1,4 @@
+"""Helpers of the calibration prefetcher: fetch calibration constants for the detectors of each run, store them in a pickle file and fill detector caches."""
 import os
 import pickle
 import time
@@ -12,6 +13,7 @@ RESET = '\033[0m'
 CALIB_PICKLE_FILENAME = 'calibconst.pkl'
 
 class CalibSource:
+    """Holds the prefetcher settings (experiment, run, xtc dir, output dir, shmem id, detector names, check flag, logger) and runs the prefetch loop."""
     def __init__(self, expcode, run, xtc_dir, output_dir, shmem, detectors, check_before_update, log):
         self.expcode = expcode
         self.run = run
@@ -38,6 +40,13 @@ class CalibSource:
             cache_mgr.ensure()
 
     def run_loop(self):
+        """Open a psana ``DataSource`` (shmem or exp/run, with ``skip_calib_load='all'``) and, for each run, refresh and load the calibration pickle and fill detector caches.
+
+        For each run it calls :func:`update_calib` with the run's filtered detector info, loads the pickle with
+        :func:`try_load_data_from_file` into ``run._calib_const`` and ``run.dsparms.calibconst``, then calls
+        :meth:`on_run_begin`. A ``DataSource`` creation error is logged and re-raised; if the pickle cannot be
+        loaded, ``loaded_data.get`` raises AttributeError.
+        """
         from psana import DataSource
         try:
             if self.shmem:

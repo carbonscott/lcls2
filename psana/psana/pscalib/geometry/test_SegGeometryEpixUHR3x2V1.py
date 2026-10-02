@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
 
   def test_xyz_maps():
-    """Print the segment coordinate maps in um and plot the X and Y pixel-index maps."""
+    """Print the segment coordinate maps in um and plot the X and Y coordinate maps in pixel units (from ``get_seg_xy_maps_pix``)."""
     w = sgs.Create(segname=SEGNAME)
     w.print_maps_seg_um()
 

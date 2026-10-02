@@ -1,4 +1,8 @@
 # leak_probe_single.py
+"""Script: repeatedly open a run with ``DataSource`` and print the process RSS change per iteration, optionally inspecting unreachable objects with ``gc`` and calling ``malloc_trim``; all work runs at import time.
+
+Settings come from environment variables EXP, RUNS, DET, NLOOPS, FORCE_GC, FORCE_TRIM and SIMULATE_LEAK (which keeps references to the pedestal constants).
+"""
 import ctypes
 import gc
 import os
@@ -44,6 +48,7 @@ def garbage_by_prefixes(prefixes, limit=None):
                 return
 
 def garbage_type_hist(n=30):
+    """Return the ``n`` most common class names of the objects in ``gc.garbage`` as (name, count) pairs."""
     c = Counter()
     for o in gc.garbage:
         try:
@@ -53,6 +58,10 @@ def garbage_type_hist(n=30):
     return c.most_common(n)
 
 def print_chain(o, depth=0, seen=None):
+    """Print the type names of ``o`` and, recursively, of its referrers (from ``gc.get_referrers``), indented by depth up to depth 4.
+
+    Referrers whose type string contains 'frame' or 'module' are skipped, and each object is printed once.
+    """
     if seen is None:
         seen = set()
     if depth > 4 or id(o) in seen:
@@ -69,6 +78,7 @@ libc = ctypes.CDLL("libc.so.6")
 
 
 def trim():
+    """Call ``libc.malloc_trim(0)`` through ctypes, ignoring any exception."""
     try:
         libc.malloc_trim(0)
     except Exception:
@@ -85,6 +95,7 @@ SIMULATE_LEAK = bool(int(os.environ.get("SIMULATE_LEAK","0")))  # 1 => keep refs
 LEAK_BAG = []  # strong refs (to simulate leaks)
 
 def rss():
+    """Return the resident set size of the current process in MiB (``psutil`` RSS / 1024**2)."""
     return psutil.Process().memory_info().rss / 1024 ** 2  # MB
 base = rss()
 

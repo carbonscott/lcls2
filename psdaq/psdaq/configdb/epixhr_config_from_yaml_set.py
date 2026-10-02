@@ -1,3 +1,7 @@
+"""Script: copy register values from a numbered set of epixhr YAML files into the 'expert' section of an epixhr configuration and write it back.
+
+The YAML directory is the hard-coded `path` at the top of the file.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import pyrogue as pr
@@ -18,6 +22,10 @@ path = '/cds/home/w/weaver/epix-hr-new/software'
 #  Put a dictionary here to hold several different configuration sets
 #
 class ePixYml(object):
+    """File names of YAML set ``arg[0]`` (the sets are listed in the code); `files` holds MMCM, PowerSupply, RegisterControl, ASIC0-3, SSP and PacketReg (not TriggerReg).
+
+    An unknown set number, or set 16 (which has no SSP file), raises AttributeError when `files` is built.
+    """
     def __init__(self,arg):
         # copy and paste from epix-hr-single10k/software/python/ePixFpga
         arguments = np.asarray(arg)
@@ -236,6 +244,11 @@ class ePixYml(object):
 #
 
 def copyValues(din,dout,k=None):
+    """Copy `din` into ``dout[k]``, recursing into dicts for keys that already exist there and converting bools to 1/0.
+
+    Keys missing from `dout` are skipped with a 'skip' message; each leaf prints whether it was
+    written or unchanged.
+    """
     if isinstance(din,dict) and isinstance(dout[k],dict):
         for key,value in din.items():
             if key in dout[k]:
@@ -257,6 +270,11 @@ def copyValues(din,dout,k=None):
             print(f'{k} unchanged')
 
 def main():
+    """Read the configuration, copy the 'ePixHr10kT' entry of every file in the selected set into its 'expert' section, and write it back.
+
+    Defaults come from ``createArgs(inst='rix', prod=True, name='epixhr', segm=0, user='rixopr', yaml='5')``;
+    --yaml selects the set number. For --inst 'asc' the development database and user 'detopr' are used.
+    """
     create = False
     dbname = 'configDB'     #this is the name of the database running on the server.  Only client care about this name.
 

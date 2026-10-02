@@ -1,3 +1,8 @@
+"""TEB trigger script that persists every event and routes it to one MEB group, chosen round-robin by timing event code.
+
+Runs at import: events whose 'timing_1' contribution has event code 30 go to the
+'acr-meb' MEBs, code 256 to the 'ami-meb' MEBs, others to the remaining MEBs.
+"""
 from psdaq.trigger import tebTrigger
 from psdaq import TimingTebData
 from psdaq import TmoTebData
@@ -15,18 +20,21 @@ ami_eventcode = 256
 
 class MebScheduler(object):
 
+    """Round-robin list of single-bit MEB masks."""
     def __init__(self):
         self._idx = 0
         self._val = []
         self._nval = 0
 
     def insert(self, node):
+        """Append the mask ``1 << node``."""
         self._val.append(1<<node)
         self._nval += 1
 
     #  Attempt some round-robin here, since a partial mask 
     #  disables the teb round-robin
     def schedule(self):
+        """Return the next mask in round-robin order, or 0 if none were inserted."""
         if self._nval==0:
             return 0
         idx = self._idx

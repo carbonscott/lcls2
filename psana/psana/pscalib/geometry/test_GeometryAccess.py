@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive tests of ``GeometryAccess`` with a CSPAD geometry file under ``/sdf/group/lcls/ds/ana/detector/alignment``.
+
+Run as a script with test number ``'1'``-``'14'`` (no argument logs the usage). All code, including
+the import of ``GeometryAccess``, runs only when the module is executed as a script.
+"""
 if __name__ == "__main__":
   from psana.pscalib.geometry.GeometryAccess import *
 
@@ -152,6 +157,7 @@ if __name__ == "__main__":
 
 
   def test_init_is_silent():
+    """Set this module's logger level to INFO and construct ``GeometryAccess(fname_geometry)``, to see whether construction logs anything at that level."""
     logger.info('Init GeometryAccess is silentin INFO level? (see below)')
     logger.setLevel(logging.INFO)
     ga0 = GeometryAccess(fname_geometry)
@@ -270,6 +276,7 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``."""
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0', '1'): s+='\n 1 - test_access(geometry)'

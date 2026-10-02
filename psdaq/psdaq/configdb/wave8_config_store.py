@@ -1,3 +1,4 @@
+"""Script: write a default 'wave8' configuration to the config database (see `write_to_daq_config_db`)."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import sys
@@ -6,6 +7,10 @@ import IPython
 import pyrogue as pr
 
 def lookupValue(d,name):
+    """Return the value at dotted path `name` in nested dict `d`, with bools converted to 1/0, or None if a path component is missing.
+
+    If a dict is reached when `name` has no more components, IndexError is raised.
+    """
     key = name.split('.',1)
     if key[0] in d:
         v = d[key[0]]
@@ -19,6 +24,13 @@ def lookupValue(d,name):
         return None
             
 class mcdict(cdict):
+    """`cdict` that can take values from a YAML file.
+
+    Parameters
+    ----------
+    fn : str, optional
+        YAML file loaded with ``pyrogue.yamlToData``; if not given the YAML dict is empty.
+    """
     def __init__(self, fn=None):
         super().__init__(self)
 
@@ -29,6 +41,7 @@ class mcdict(cdict):
 
     #  intercept the set call to replace value with yaml definition
     def init(self, prefix, name, value, type="INT32", override=False, append=False):
+        """Set the read-only entry '<prefix>:RO.<name>:RO', using the YAML value at `name` instead of `value` when that value is truthy."""
         v = lookupValue(self._yamld,name)
         if v:
             print('Replace {:}[{:}] with [{:}]'.format(name,value,v))  
@@ -48,6 +61,12 @@ def write_to_daq_config_db(args):
     #have two fields "collection" and ID field (note how collection here is a field. ID points to a unique document).  This collection field and 
     #ID point to the actuall Mongo DB collection and document
 
+    """Create the alias and the 'wave8' device config if needed and write a default wave8 configuration under ``args.alias``.
+
+    The database is 'configdb' if ``args.prod`` else 'devconfigdb' at pswww.slac.stanford.edu;
+    the values set (help text, 'user.delta_ns' = -807692, the expert TriggerDelay = 0) are in the code.
+    `args` comes from ``configdb.createArgs``.
+    """
     create = True
     dbname = 'configDB'     #this is the name of the database running on the server.  Only client care about this name.
 

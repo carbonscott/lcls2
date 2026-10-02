@@ -126,7 +126,7 @@ def write_seq(gen,seqcodes,filename):
 
     """Write `gen.instr` with a header and `seqcodes` to `filename`, then `validate` it.
 
-    A warning is written to stderr if there are more than 1000 lines.
+    A warning is written to stderr if `gen.instr` has more than 1000 entries.
     """
     if (len(gen.instr) > 1000):
         sys.stderr.write('*** Sequence has {} instructions.  May be too large to load. ***\n'.format(gen.ninstr))

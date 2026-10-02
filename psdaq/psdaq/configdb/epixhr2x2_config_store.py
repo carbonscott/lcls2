@@ -1,3 +1,4 @@
+"""Script: write a default 'epixhr2x2hw' configuration (from `epixhr2x2_cdict`) to the config database."""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 import psdaq.configdb.configdb as cdb
@@ -12,6 +13,11 @@ elemCols = 192
 
 def epixhr2x2_cdict():
 
+    """Return a `cdict` with the default epixhr2x2 configuration (alg version [2,0,0]).
+
+    User defaults include a zero (288,384) 'pixel_map', start_ns 107749, gain_mode 0 and asic_enable 0xf;
+    the expert registers and enums are as written in the code.
+    """
     top = cdict()
     top.setAlg('config', [2,0,0])
 

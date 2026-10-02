@@ -1,3 +1,4 @@
+"""Script: write a default 'timetool' configuration to the config database (see `write_to_daq_config_db`)."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import sys
@@ -17,6 +18,12 @@ def write_to_daq_config_db(args):
     #have two fields "collection" and ID field (note how collection here is a field. ID points to a unique document).  This collection field and
     #ID point to the actuall Mongo DB collection and document
 
+    """Create the alias and the 'timetool' device config if needed and write a default timetool configuration (alg version [2,0,0]) under ``args.alias``.
+
+    The database is 'configdb' if ``args.prod`` else 'devconfigdb' at pswww.slac.stanford.edu; the user,
+    TimeToolKcu1500 and ClinkFeb/UartPiranha4 values are those written in the code. `args` comes from
+    ``configdb.createArgs``.
+    """
     create = True
     dbname = 'configDB'     #this is the name of the database running on the server.  Only client care about this name.
 

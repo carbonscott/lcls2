@@ -1,3 +1,4 @@
+"""DRP configuration functions for the epix100 camera: an ``lcls2_epix_hr_pcie.DevRoot`` for the PCIe card plus an `EpixBoard` root reached with SRPv3 over the lane 0 VC0 DMA stream."""
 import json
 import logging
 import os
@@ -29,6 +30,7 @@ cfg = None
 
 
 class EpixBoard(pyrogue.Root):
+    """pyrogue Root 'ePixBoard' holding an ``ePixFpga.Epix100a`` ('ePix100aFPGA') whose registers are accessed through `srp`."""
     def __init__(self, srp, **kwargs):
         super().__init__(name="ePixBoard", description="ePix 100a Board", **kwargs)
 
@@ -127,6 +129,7 @@ def epix100_init(
 
 
 def epix100_init_feb(slane=None, schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given; asserts the lane is 0."""
     global lane
     global chan
     if slane is not None:
@@ -356,6 +359,7 @@ def epix100_config(base, connect_str, cfgtype, detname, detsegm, rog):
 
 
 def epix100_unconfig(base):
+    """Call ``StopRun()`` on the PCIe root ``base['pci']`` and return `base`."""
     logging.debug("epix100_unconfig")
     pbase = base["pci"]
     pbase.StopRun()
@@ -441,6 +445,7 @@ def epix100_update(update):
 
 
 def epix100_external_trigger(base):
+    """Switch the camera to DAQ triggering: 'AutoRunEnable' 0, then 'DaqTriggerEnable' True."""
     cbase = base['cam']
     # Switch to external triggering
     cbase.ePix100aFPGA.EpixFpgaRegisters.AutoRunEnable.set(0)
@@ -448,6 +453,7 @@ def epix100_external_trigger(base):
 
 
 def epix100_internal_trigger(base):
+    """Switch the camera to auto-run: 'DaqTriggerEnable' False, then 'AutoRunEnable' 1."""
     cbase = base['cam']
     # Switch to internal triggering
     cbase.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerEnable.set(False)
@@ -455,9 +461,11 @@ def epix100_internal_trigger(base):
 
 
 def epix100_enable(base):
+    """Call `epix100_external_trigger`."""
     epix100_external_trigger(base)
 
 
 def epix100_disable(base):
+    """Sleep 5 ms (code comment: so the readout of the last event completes), then call `epix100_internal_trigger`."""
     time.sleep(0.005)  # Need to make sure readout of last event is complete
     epix100_internal_trigger(base)

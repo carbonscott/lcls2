@@ -84,6 +84,7 @@ def _parse_args():
 
 
 def diamond_offsets(radius, debug_print=False):
+    """Return all offsets ``(dr, dc)`` with ``abs(dr) + abs(dc) <= radius``, ordered by `dr` then `dc`; each is printed if `debug_print`."""
     if debug_print:
         print(f'Calculating diamond offsets for radius {radius}')
     offsets = []
@@ -176,11 +177,19 @@ def _validate_module_shape(array, name):
 
 
 def assemble_epixquad_panel(array):
+    """Check that `array` has shape (MODULE_COUNT, 2*ASIC_ROWS, 2*ASIC_COLS) (ValueError otherwise) and return ``raw_detector_view(array)``."""
     array = _validate_module_shape(array, 'assemble_epixquad_panel')
     return raw_detector_view(array)
 
 
 def write_roi_geometry_png(image, roi_mask, det, png_path):
+    """Save a PNG at `png_path` showing `image` placed with the detector geometry of `det`, with `roi_mask` overlaid in red and outlined in cyan.
+
+    Raises
+    ------
+    RuntimeError
+        If no geometry text is available for `det`.
+    """
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -246,6 +255,18 @@ def _output_stem(output_dir, runnum, detobj, expand_radius):
 
 
 def main():
+    """Build an ROI mask from events: pixels at or above --threshold in any analyzed event (optionally expanded by --expand-radius) are set, and the mask is saved as .npy.
+
+    The file is '<path>/roiFromAboveThreshold_r<run>_c0_<detobj>[_expand<r>].npy'; --write-png also writes
+    '<stem>_geometry.png'. With --test-diamond it only prints a 5x5 expansion example.
+
+    Raises
+    ------
+    ValueError
+        If --exp, --run or --threshold is missing, or --expand-radius/--max-nevents is out of range.
+    RuntimeError
+        If no valid detector events are found.
+    """
     args = _parse_args()
 
     if args.test_diamond:

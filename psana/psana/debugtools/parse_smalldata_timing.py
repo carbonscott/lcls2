@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""Command-line script: collect the timing values from '[DEBUG ...]' lines of a smalldata log, grouped by stage and rank, and print per-stage statistics (mean, min, max with rank, median, std) or only the maxima.
+
+Usage: ``parse_smalldata_timing.py <logfile> [--ignore-rank N] [--show-max] [--show-more] [--no-label]``.
+"""
 import argparse
 import re
 import sys
@@ -17,6 +21,10 @@ RANK_PATTERNS = (
 def match_rank(line):
     # Some launchers (e.g. LUTE) prefix debug lines with logger metadata
     # such as "INFO:lute.execution.executor:". Keep only the debug payload.
+    """Return ``(rank, message)`` for a debug line, or ``(None, None)`` if it has no '[DEBUG' marker pattern.
+
+    Text before '[DEBUG' is dropped first. Lines matching '[DEBUG] RankN', '[DEBUG RankN]' or '[DEBUG] rank N' give an int rank; a plain '[DEBUG] msg' gives the rank 'global'.
+    """
     if "[DEBUG" in line and not line.startswith("[DEBUG"):
         line = line[line.find("[DEBUG") :]
     for pat in RANK_PATTERNS:
@@ -28,14 +36,17 @@ def match_rank(line):
     return None, None
 
 def parse_since_start(msg):
+    """Return the number in 'since_start=<number>s' within ``msg`` as float, or None."""
     m = re.search(r'since_start=([0-9]+(?:\.[0-9]+)?)s', msg)
     return float(m.group(1)) if m else None
 
 def parse_delta(msg):
+    """Return the number in 'delta=<number>s' within ``msg`` as float, or None."""
     m = re.search(r'delta=([0-9]+(?:\.[0-9]+)?)s', msg)
     return float(m.group(1)) if m else None
 
 def parse_any_time(msg):
+    """Return ``parse_delta(msg)`` if found, otherwise the first number followed by 's' in ``msg`` as float, or None."""
     val = parse_delta(msg)
     if val is not None:
         return val
@@ -43,11 +54,16 @@ def parse_any_time(msg):
     return float(m.group(1)) if m else None
 
 def add_value(stage_map, stage, val, rank):
+    """Append ``(val, rank)`` to the list for ``stage`` in ``stage_map``, unless ``val`` is None."""
     if val is None:
         return
     stage_map.setdefault(stage, []).append((val, rank))
 
 def record_single(stage_map, stage, rank, val, warnings, seen):
+    """Record a value for a stage expected once: append ``(val, rank)`` with ``add_value`` and, if the stage was already in ``seen``, append a 'WARNING multiple ...' message to ``warnings``.
+
+    Does nothing if ``val`` is None.
+    """
     if val is None:
         return
     if stage in seen:
@@ -57,6 +73,7 @@ def record_single(stage_map, stage, rank, val, warnings, seen):
     add_value(stage_map, stage, val, rank)
 
 def count_events_from_stage(stage_map, stage):
+    """Return a dict mapping each int rank to the number of values recorded for ``stage`` in ``stage_map`` (string ranks are ignored)."""
     counts = {}
     for _, rank in stage_map.get(stage, []):
         if isinstance(rank, int):
@@ -64,6 +81,10 @@ def count_events_from_stage(stage_map, stage):
     return counts
 
 def main():
+    """Parse the log file, record the stage timings (skipping ranks given with --ignore-rank, which also excludes them from all statistics) and print the per-section tables in seconds and the per-rank event counts, followed by any warnings.
+
+    --show-max prints only the maximum and its rank, --show-more adds event, jungfrau and azav sections, and --no-label omits the label and rank columns.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("logfile", help="Path to log file")
     parser.add_argument(

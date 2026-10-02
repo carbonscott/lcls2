@@ -1,3 +1,4 @@
+"""Read detector configurations from the config database for the DAQ, merging referenced and serial-number configurations and removing ':RO' from key names."""
 import psdaq.configdb.configdb as cdb
 import json
 
@@ -25,6 +26,10 @@ def remove_read_only(cfg):
     # while deleting items can produce strange effects (which we
     # need to do to effectively "rename" the keys without ":RO"). So
     # create a new dict, unfortunately.
+    """Return a copy of nested dict `cfg` with ':RO' removed from every key, except the keys in `leave_alone` (e.g. 'detName:RO').
+
+    The module comment says json2xtc needs those keys to keep ':RO'.
+    """
     new = {}
     for k, v in cfg.items():
         if isinstance(v, dict):
@@ -36,6 +41,11 @@ def remove_read_only(cfg):
     return new
 
 def update_config(src, dst, verbose=False, pfx=None):
+    """Copy values from `src` into `dst` for keys present in both, recursing into dicts, and return `dst`.
+
+    Keys ending in ':RO' and anything under a ':types:' prefix keep the `dst` value; keys only in
+    `src` are skipped. With `verbose`, missing keys and changes are printed.
+    """
     for k, v in src.items():
         if k not in dst:
             if verbose:
@@ -57,6 +67,24 @@ def update_config(src, dst, verbose=False, pfx=None):
 # this interface requires the detector segment
 def get_config(connect_json,cfgtype,detname,detsegm):
 
+    """Return the configuration of '<detname>_<detsegm>' for alias `cfgtype`, using the instrument and database named in the connect JSON.
+
+    If the configuration has a true 'use_serial_db' and `get_serno` finds a serial-number id other
+    than '-', the configuration '<serno>_<detsegm>' from instrument 'det' is merged into it with
+    `update_config`; any error there is printed and ignored.
+
+    Parameters
+    ----------
+    connect_json : str
+        Connect message; body.control.'0'.control_info gives 'instrument' and 'cfg_dbase'
+        ('<url>/<db_name>').
+    cfgtype : str
+        Configuration alias, e.g. 'BEAM'.
+    detname : str
+        Detector name.
+    detsegm : int
+        Detector segment.
+    """
     connect_info = json.loads(connect_json)
     control_info = connect_info['body']['control']['0']['control_info']
     instrument = control_info['instrument']
@@ -82,6 +110,17 @@ def get_config(connect_json,cfgtype,detname,detsegm):
     return final_cfg
 
 def get_config_with_params(db_url, instrument, db_name, cfgtype, detname):
+    """Read the configuration of `detname` for alias `cfgtype`, merge it with its '_cfgTypeRef' configuration if it has one, and return it with ':RO' removed from key names.
+
+    When merging, the requested configuration's values replace the referenced one's for keys
+    present in both (`update_config`), and the referenced configuration is used.
+
+    Raises
+    ------
+    ValueError
+        If a configuration is None, '_cfgTypeRef' equals `cfgtype`, or the two configurations'
+        'alg:RO'/'version:RO' differ.
+    """
     create = False
     mycdb = cdb.configdb(db_url, instrument, create, db_name)
     cfg = mycdb.get_configuration(cfgtype, detname)
@@ -113,8 +152,10 @@ def get_config_with_params(db_url, instrument, db_name, cfgtype, detname):
     return cfg_no_RO_names
 
 def get_config_json(*args):
+    """Return ``json.dumps(get_config(*args))``."""
     return json.dumps(get_config(*args))
 
 def get_config_json_with_params(*args):
+    """Return ``json.dumps(get_config_with_params(*args))``."""
     return json.dumps(get_config_with_params(*args))
 

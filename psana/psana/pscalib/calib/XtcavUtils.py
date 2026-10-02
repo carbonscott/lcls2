@@ -90,6 +90,7 @@ def save_xtcav_calib_file(d, fname='ConstTest.h5') :
 if __name__ == "__main__":
 
   def test_const():
+    """Save a ``ConstTest`` object to ``ConstTest.h5`` with ``Save``, load it back with ``Load`` and print its attributes and ``parameters``."""
     ct = ConstTest()
     Save(ct,'ConstTest.h5')
     data = Load('ConstTest.h5')
@@ -98,6 +99,7 @@ if __name__ == "__main__":
 #--------------------
 
   def test_serialize_xtcav_dict():
+      """Load a hard-coded LCLS1 Xtcav pedestals file, convert it to a dict, serialize it with ``serialize_dict`` and print the result."""
       from psana.pscalib.calib.MDBConvertUtils import print_dict
       #fname = '/reg/d/psdm/AMO/amox23616/calib/'\
       #        'Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/lasingoffreference/56-end.data'

@@ -5,6 +5,12 @@
 # this allows one to put multiple devices in the same conda env.
 # a cleaner approach would be to use relative imports everywhere, but
 # that would be a lot of work for the tid-air people - cpo.
+"""Package `psdaq.pykcu`: KCU monitoring.
+
+Importing it imports `psdaq.utils.enable_cameralink_gateway` and `surf`, then inserts the
+sibling '../pyxpm' directory at the front of `sys.path`; the comments here say this lets pykcu
+use pyxpm's copy of packages such as surf.
+"""
 import sys
 import os
 from psdaq.utils import enable_cameralink_gateway

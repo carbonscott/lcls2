@@ -9,6 +9,7 @@
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 
+"""pyrogue device classes for the KCU register map used by `psdaq.pykcu.pykcu`."""
 import time
 import struct
 
@@ -19,6 +20,7 @@ import pyrogue as pr
 import surf.axi                     as axi
 
 class TDetSemi(pr.Device):
+    """pyrogue Device with one 128-bit read-only register 'rttBlock' at offset 0x50."""
     def __init__(self,
                  name        = 'TDetSemi',
                  description = 'Fake camera',
@@ -37,6 +39,14 @@ class TDetSemi(pr.Device):
         ))
 
     def getRTT(self):
+        """Read 'rttBlock' and return four pairs, one per 32-bit word (lane 0-3).
+
+        Returns
+        -------
+        tuple of tuple
+            ``((bits 0-15, bits 16-27), ...)`` of each word; `psdaq.pykcu.pykcu` stores them as
+            'FullTT' and 'nFullTT'.
+        """
         v = self.rttBlock.get()
 
         def fullToTrig(lane,v=v):
@@ -50,6 +60,7 @@ class TDetSemi(pr.Device):
                  (fullToTrig(3),nfullToTrig(3)) )
 
 class TDetTiming(pr.Device):
+    """pyrogue Device with 32-bit read-only registers 'rxRefClk' (offset 0x10) and 'txRefClk' (offset 0x28)."""
     def __init__(self,
                  name        = 'TDetTiming',
                  description = 'Template timed detector',
@@ -75,6 +86,14 @@ class TDetTiming(pr.Device):
         ))
 
     def getClkRates(self):
+        """Read 'rxRefClk' and 'txRefClk', sleep 1 s, read them again and return the scaled differences.
+
+        Returns
+        -------
+        tuple of float
+            ``((tx_after - tx_before) * 16e-6, (rx_after - rx_before) * 16e-6)``; counter wrap-around
+            is not handled.
+        """
         rxp = self.rxRefClk.get()
         txp = self.txRefClk.get()
         time.sleep(1)
@@ -83,6 +102,10 @@ class TDetTiming(pr.Device):
         return ( (txn-txp)*16.e-6, (rxn-rxp)*16.e-6 )
 
 class QSFPMonitor(pr.Device):
+    """pyrogue Device with the registers 'page', 'TmpVccBlock', 'RxPwrBlock', 'TxBiasBlock', 'BaseIdBlock', 'DateBlock' and 'DiagnType'.
+
+    Each register offset is a byte index shifted left by 2 (e.g. 'page' at ``127<<2``).
+    """
     def __init__(self,
                  name        = 'QSFPMonitor',
                  description = 'QSFP monitoring and diagnostics',
@@ -145,6 +168,13 @@ class QSFPMonitor(pr.Device):
 
 
     def getDate(self):
+        """Write 0 to 'page', read 'DateBlock' and return its bytes as a date string.
+
+        Returns
+        -------
+        str
+            'c2c3/c4c5/20c0c1', where cK is the low byte of 32-bit word K taken as a character.
+        """
         self.page.set(0)
         v = self.DateBlock.get()
         def toChar(sh,w=v):
@@ -155,6 +185,11 @@ class QSFPMonitor(pr.Device):
 
     def getRxPwr(self):  #mW
         #self.page.set(0)
+        """Read 'RxPwrBlock' and return four values (lanes 0-3); the code comment gives the unit as mW.
+
+        Each value is a 16-bit number made from the low bytes of words 2*lane and 2*lane+1 (via
+        ``struct`` with native byte order) times 0.0001.
+        """
         v = self.RxPwrBlock.get()
 
         def word(a,o):
@@ -170,6 +205,11 @@ class QSFPMonitor(pr.Device):
 
     def getTxBiasI(self):  #mA
         #self.page.set(0)
+        """Read 'TxBiasBlock' and return four values (lanes 0-3); the code comment gives the unit as mA.
+
+        Each value is a 16-bit number made from the low bytes of words 2*lane and 2*lane+1 (via
+        ``struct`` with native byte order) times 0.002.
+        """
         v = self.TxBiasBlock.get()
 
         def word(a,o):
@@ -183,6 +223,7 @@ class QSFPMonitor(pr.Device):
         return (pwr(0),pwr(1),pwr(2),pwr(3))
 
 class I2cBus(pr.Device):
+    """pyrogue Device with an 8-bit 'select' register at 0x0 and `QSFPMonitor` children 'QSFP0' (offset 0x400) and 'QSFP1' (offset 0x800)."""
     def __init__(self,
                  name        = 'I2cBus',
                  description = 'Local bus',
@@ -212,6 +253,15 @@ class I2cBus(pr.Device):
         ))
 
     def selectDevice(self, device):
+        """Write a bit mask to 'select' built from substrings found in `device`.
+
+        'QSFP0' sets bit 4, 'QSFP1' sets bit 1 and 'SI570' sets bit 2; if none match, 0 is written.
+
+        Parameters
+        ----------
+        device : str or container of str
+            Tested with ``in`` for each name.
+        """
         idev = 0
         if 'QSFP0' in device:
             idev |= (1<<4)
@@ -223,6 +273,7 @@ class I2cBus(pr.Device):
 
 class Top(pr.Device):
 
+    """pyrogue Device (default name 'KCU') holding `TDetSemi` at 0x00A00000, `TDetTiming` at 0x00C00000 and `I2cBus` at 0x00E00000, all on `memBase`."""
     def __init__(   self,       
             name        = "KCU",
             description = "Container for KCU",

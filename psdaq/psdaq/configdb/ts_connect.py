@@ -1,3 +1,4 @@
+"""Connect-phase helper for the timing system: computes the readout-group mask and enables XPM links over PVA."""
 from psdaq.configdb.get_config import get_config
 from p4p.client.thread import Context
 
@@ -6,17 +7,31 @@ import time
 import pprint
 
 class xpm_link:
+    """Wrapper around an XPM 'RemoteLinkId' value."""
     def __init__(self,value):
         self.value = value
 
     def is_xpm(self):
+        """Return True if bits 24-31 of the value are 0xff."""
         return (int(self.value)>>24)&0xff == 0xff
 
     def xpm_num(self):
+        """Print and return bits 16-23 of the value."""
         print('xpm_num {:x} {:}'.format(self.value,(int(self.value)>>16)&0xff))
         return (int(self.value)>>16)&0xff
 
 class ts_connector:
+    """Parse the connect JSON and enable the XPM links of the DRP nodes it lists.
+
+    The constructor reads 'pv_base' and 'xpm_master' from body.control.'0'.control_info,
+    collects (xpm_id, xpm_port, readout) for every DRP that has them, builds the readout-group
+    mask, and calls `xpm_link_enable` (which may raise ValueError).
+
+    Parameters
+    ----------
+    json_connect_info : str
+        Connect message as JSON text.
+    """
     def __init__(self,json_connect_info):
         self.connect_info = json.loads(json_connect_info)
         print('*** connect_info')
@@ -49,11 +64,13 @@ class ts_connector:
         self.ctxt.close()
 
     def get_readout_group_mask(self):
+        """Set `readout_group_mask` to the OR of ``1 << readout_group`` over `xpm_info`."""
         self.readout_group_mask = 0
         for _,_,readout_group in self.xpm_info:
             self.readout_group_mask |= (1<<readout_group)
 
     def get_xpm_info(self):
+        """Fill `xpm_info` with ``(xpm_id, xpm_port, readout_group)`` for each DRP entry; entries missing a key are skipped."""
         self.xpm_info = []
         for key,node_info in self.connect_info['body']['drp'].items():
             try:
@@ -67,6 +84,12 @@ class ts_connector:
                 pass
 
     def xpm_link_disable(self, pv, groups):
+        """Remove `groups` from the 'LinkGroupMask<port>' PVs (ports 0-13) of the XPM at PV prefix `pv`, recursing into downstream XPMs.
+
+        Links whose 'RemoteLinkId' is an XPM are set to 0xff instead, and for those XPMs
+        'PART:<g>:Master' (for each g in `groups`) and 'SEQENG:0..7:ENABLE' are set to 0.
+        A TimeoutError reading the link IDs makes it print and return without changes.
+        """
         pv_names = []
         for xpm_port in range(14):
             pv_names.append(pv+'RemoteLinkId' +str(xpm_port))
@@ -116,9 +139,19 @@ class ts_connector:
 
     def xpm_link_disable_all(self):
         # Start from the master and recursively remove the groups from each downstream link
+        """Call `xpm_link_disable` on the master XPM with `readout_group_mask`."""
         self.xpm_link_disable(self.master_xpm_pv, self.readout_group_mask)
 
     def xpm_link_enable(self):
+        """Remove the readout groups from the master XPM and the XPMs below it (`xpm_link_disable_all`), wait for the DRP links' 'LinkRxReady', latch 'LinkRxErrI', then set each DRP link's 'LinkGroupMask'.
+
+        Unready links get 'RxLinkReset' pulsed (1, 0.1 s, 0, then 1 s wait), for up to 15 tries.
+
+        Raises
+        ------
+        ValueError
+            If some links are still not ready after 15 tries.
+        """
         self.xpm_link_disable_all()
 
         d = {}
@@ -171,6 +204,13 @@ class ts_connector:
     def xpm_link_reset(self,style):
         # make pv name that looks like DAQ:LAB2:XPM:1:RxLinkReset11
         # for xpm_num 1 and xpm_port 11
+        """Write 1 to '<xpm>:<style>LinkReset<port>' for every DRP link in `xpm_info`, then sleep 2 s.
+
+        Parameters
+        ----------
+        style : str
+            Inserted in the PV name, e.g. 'Rx' or 'Tx'.
+        """
         pv_names = []
         for xpm_num,xpm_port,_ in self.xpm_info:
             pvname = self.xpm_base+str(xpm_num)+':'+style+'LinkReset'+str(xpm_port)
@@ -183,11 +223,22 @@ class ts_connector:
         time.sleep(2)
 
     def l0_count_reset(self):
+        """Write `readout_group_mask` to the master XPM's 'GroupL0Reset' PV.
+
+        It uses `self.ctxt`, which the constructor closes at its end (the call there is commented out).
+        """
         pvL0Reset = self.master_xpm_pv+'GroupL0Reset'
         print('*** resetting l0 count',self.readout_group_mask)
         self.ctxt.put(pvL0Reset,self.readout_group_mask)
 
     def check_errors(self,header):
+        """Re-read the 'LinkRxErrI' PVs latched by `xpm_link_enable` and raise RuntimeError if any value changed; otherwise store the new values.
+
+        Parameters
+        ----------
+        header : str
+            Included in the error message.
+        """
         ctxt = Context('pva')
         values_rxerri  = ctxt.get(self.pvnames_rxerri)
         for i,pv in enumerate(self.pvnames_rxerri):
@@ -200,5 +251,6 @@ class ts_connector:
 
 def ts_connect(json_connect_info):
 
+    """Create a `ts_connector` for `json_connect_info` and return the JSON text '{}'."""
     connector = ts_connector(json_connect_info)
     return json.dumps({})

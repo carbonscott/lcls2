@@ -1,3 +1,9 @@
+"""DRP configuration functions for the epixquad 1 kfps camera (``ePixQuad.Top`` behind an ``lcls2_pgp_pcie_apps.DevRoot``).
+
+Compared with `psdaq.configdb.epixquad_config` it uses two trigger buffers per lane (run trigger
+buffer ``lane + 4`` from EVR event code 6, DAQ trigger buffer ``lane`` from the XPM) and raw-view
+pixel maps ('user.pixel_map_raw'); the `epixquad1kfps_*` functions wrap the `epixquad_*` ones.
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -627,6 +633,7 @@ def calc_run_trigger_delay(base, rawStart_ns):
     return triggerDelay
 
 def mode(a):
+    """Return the most frequent value in array `a` (the smallest such value if several tie)."""
     uniqueValues = np.unique(a).tolist()
     uniqueCounts = [len(np.nonzero(a == uv)[0])
                     for uv in uniqueValues]
@@ -635,12 +642,14 @@ def mode(a):
     return uniqueValues[modeIdx]
 
 def dumpvars(prefix,c):
+    """Print `prefix` and then, recursively, the dotted path of every child in ``c.nodes``."""
     print(prefix)
     for key,val in c.nodes.items():
         name = prefix+'.'+key
         dumpvars(name,val)
 
 def retry(cmd,val):
+    """Call ``cmd(val)``, retrying after any exception; the fourth failure is re-raised (each failure is logged as a warning)."""
     itry=0
     while(True):
         try:
@@ -681,6 +690,12 @@ def _hydrate_map_mode_partial_config(cfg):
 #  Apply the configuration dictionary to the rogue registers
 #
 def apply_dict(pathbase,base,cfg):
+    """Walk config dict `cfg` alongside the pyrogue node tree below `base` and set each matching variable with `retry`.
+
+    Names like 'TriggerEventBuffer', 'Epix10kaSaci<i>' and 'DbgOutSel<i>' are mapped to their indexed
+    rogue names; unmatched names are logged and skipped. Some paths ('PixelDummy', several 'Saci3'
+    fields, 'PseudoScopeCore') are deliberately not written (code comment: 'Writes fail -- fix me!').
+    """
     rogue_translate = {}
     rogue_translate['TriggerEventBuffer'] = f'TriggerEventBuffer[{lane}]'
     for i in range(16):
@@ -718,6 +733,10 @@ def apply_dict(pathbase,base,cfg):
 #  Construct an asic pixel mask with square spacing
 #
 def pixel_mask_square(value0,value1,spacing,position):
+    """Return a (352, 384) int32 array of `value0` with `value1` at every `spacing`-th row and column, offset by `position` (row ``position // spacing``, column ``position % spacing``).
+
+    A `position` of ``spacing**2`` or more is logged as an error and replaced by 0.
+    """
     ny,nx=352,384;
     if position>=spacing**2:
         logging.error('position out of range')
@@ -731,6 +750,12 @@ def pixel_mask_square(value0,value1,spacing,position):
 #  Initialize the rogue accessor
 #
 def epixquad_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M", verbose=0):
+    """Open the PCIe root and the ``ePixQuad.Top`` camera on `dev`, set up timing for `timebase`, configure the run and DAQ trigger buffers, switch to external triggering, and return the module `base` dict.
+
+    The run buffer takes EVR event code 6 (code comment: ~1080 Hz) and is enabled; the DAQ buffer takes
+    the XPM, its Partition and delay being set at configure. Each AppLane gets XpmPauseThresh 0x20 and
+    Timeout ``int(156.25e6/1080)``; with `xpmpv` an XpmMini `PVCtrls` thread is started.
+    """
     global base
     global pv
     global lane
@@ -861,6 +886,7 @@ def epixquad_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M"
 #  Set the PGP lane
 #
 def epixquad_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
     if slane is not None:
@@ -873,6 +899,7 @@ def epixquad_init_feb(slane=None,schan=None):
 #
 def epixquad_connectionInfo(base, alloc_json_str):
 
+    """Return ``{'paddr': rxId, 'serno': '-'}``; with a PCIe root the RxId is read and ``timTxId('epixquad')`` written to TxId, otherwise rxId is 0xffffffff."""
     if 'pci' in base:
         pbase = base['pci']
         rxId = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId.get()
@@ -898,6 +925,17 @@ def epixquad_connectionInfo(base, alloc_json_str):
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, full=False):
+    """Translate user settings into expert entries in `cfg` (via `update_config_entry`) and return whether the raw pixel map was set.
+
+    'start_ns' delays are computed but not stored (the lines are commented out; `epixquad_config` writes
+    them), 'gate_ns' is ignored with a warning, `full` sets the Partition, and gain modes 0-4 rebuild
+    'user.pixel_map_raw' from the stored map and set all 16 'trbit' values.
+
+    Raises
+    ------
+    KeyError
+        If gain_mode is 5 and 'user.pixel_map_raw' is not given.
+    """
     global ocfg
     global group
     global lane
@@ -996,6 +1034,12 @@ def user_to_expert(base, cfg, full=False):
 def config_expert(base, cfg, writePixelMap=True):
 
     # Turn off the trigger
+    """Write `cfg` to the PCIe card and camera with all 16 ASICs enabled for configuration, holding the run trigger off meanwhile.
+
+    EpixQuad words AsicRoClkT, AsicRoClkHalfT and AdcPipelineDelay get 0xaaaa0000 ORed in. With
+    `writePixelMap`, a debug 'direct_write' override or else 'user.pixel_map_raw' is programmed into
+    the ASICs.
+    """
     epixquad_disable_runtrigger(base)
 
     # overwrite the low-level configuration parameters with calculations from the user configuration
@@ -1056,6 +1100,7 @@ def config_expert(base, cfg, writePixelMap=True):
 
 
 def reset_counters(base):
+    """Reset the timing frame counters, the DAQ trigger buffer counters, and the camera's RdoutStreamMonitoring counters."""
     base['pci'].DevPcie.Hsio.TimingRx.TimingFrameRx.countReset()
 
     _, daq_buf = get_trigger_buffers()
@@ -1118,6 +1163,16 @@ def stopRun(pbase):
 #  Called on Configure
 #
 def epixquad_config(base,connect_str,cfgtype,detname,detsegm,rog):
+    """Configure the camera from the database, write the trigger delays and DAQ Partition, start the run, and return five JSON strings (full config plus four 'epix10ka' segments).
+
+    AsicRoClkT is then forced to 0xaaaa0003 (code comment: '*HOTFIX*'). Each segment holds
+    'asicPixelConfig', 'trbit' and 'cbitsConfig' with an id from the firmware version and carrier ids.
+
+    Raises
+    ------
+    RuntimeError
+        If the ADC startup check fails.
+    """
     global ocfg
     global group
     global segids
@@ -1226,6 +1281,7 @@ def epixquad_config(base,connect_str,cfgtype,detname,detsegm,rog):
     return result
 
 def epixquad_unconfig(base):
+    """Call `stopRun` on the PCIe root and return `base`."""
     pbase = base['pci']
     #pbase.StopRun()
     stopRun(pbase)
@@ -1236,6 +1292,7 @@ def epixquad_unconfig(base):
 #  in response to the scan parameters
 #
 def epixquad_scan_keys(update):
+    """Return JSON strings for a scan: the entries named in `update` copied from the stored configuration (not the new values) with header keys, plus the four segment configs if the pixel map changed."""
     logging.debug('epixquad_scan_keys')
     global ocfg
     global base
@@ -1283,6 +1340,7 @@ def epixquad_scan_keys(update):
 #  Return the set of configuration updates for a scan step
 #
 def epixquad_update(update):
+    """Apply the JSON `update` to the camera with `config_expert` and return JSON strings for the renamed full config and, if the pixel map changed, the four segments."""
     logging.debug('epixquad_update')
     global ocfg
     global base
@@ -1330,6 +1388,7 @@ def epixquad_update(update):
     return result
 
 def epixquad_enable_runtrigger(base):
+    """Set MasterEnable 1 on the run trigger buffer (``lane + 4``) and print a debug line."""
     pbase = base['pci']
     run_buf, daq_buf = get_trigger_buffers()
     trigman = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager
@@ -1338,6 +1397,7 @@ def epixquad_enable_runtrigger(base):
 
 
 def epixquad_disable_runtrigger(base):
+    """Set MasterEnable 0 on the run trigger buffer (``lane + 4``) and print a debug line."""
     pbase = base['pci']
     run_buf, daq_buf = get_trigger_buffers()
     trigman = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager
@@ -1417,6 +1477,7 @@ def _resetSequenceCount():
     cbase.RdoutCore.SeqCountReset.set(0)
 
 def epixquad_external_trigger(base):
+    """Switch to external triggering (AutoTrigEn 0, TrigSrcSel 0, TrigEn 1) and enable frame readout (RdoutEn 1)."""
     cbase = base['cam']
     #  Switch to external triggering
     cbase.SystemRegs.AutoTrigEn.set(0)
@@ -1426,6 +1487,7 @@ def epixquad_external_trigger(base):
     cbase.RdoutCore.RdoutEn.set(1)
 
 def epixquad_internal_trigger(base):
+    """Disable frame readout (RdoutEn 0) and switch to internal triggering (TrigSrcSel 3, AutoTrigEn 1)."""
     cbase = base['cam']
     #  Disable frame readout
     cbase.RdoutCore.RdoutEn.set(0)
@@ -1434,39 +1496,50 @@ def epixquad_internal_trigger(base):
     cbase.SystemRegs.AutoTrigEn.set(1)
 
 def epixquad_enable(base):
+    """Does nothing."""
     pass
 
 def epixquad_disable(base):
+    """Does nothing."""
     pass
 
 
 # 1kfps wrappers -> reuse epixquad_* implementations
 def epixquad1kfps_init(*args, **kwargs):
+    """Return ``epixquad_init(*args, **kwargs)``."""
     return epixquad_init(*args, **kwargs)
 
 def epixquad1kfps_init_feb(*args, **kwargs):
+    """Return ``epixquad_init_feb(*args, **kwargs)``."""
     return epixquad_init_feb(*args, **kwargs)
 
 def epixquad1kfps_connectionInfo(*args, **kwargs):
+    """Return ``epixquad_connectionInfo(*args, **kwargs)``."""
     return epixquad_connectionInfo(*args, **kwargs)
 
 def epixquad1kfps_config(*args, **kwargs):
     # keep cfgtype as passed (should be 'epixquad1kfps' from C++), your code doesn’t care
+    """Return ``epixquad_config(*args, **kwargs)``."""
     return epixquad_config(*args, **kwargs)
 
 def epixquad1kfps_unconfig(*args, **kwargs):
+    """Return ``epixquad_unconfig(*args, **kwargs)``."""
     return epixquad_unconfig(*args, **kwargs)
 
 def epixquad1kfps_scan_keys(*args, **kwargs):
+    """Return ``epixquad_scan_keys(*args, **kwargs)``."""
     return epixquad_scan_keys(*args, **kwargs)
 
 def epixquad1kfps_update(*args, **kwargs):
+    """Return ``epixquad_update(*args, **kwargs)``."""
     return epixquad_update(*args, **kwargs)
 
 def epixquad1kfps_enable(*args, **kwargs):
+    """Return ``epixquad_enable(*args, **kwargs)`` (which does nothing)."""
     return epixquad_enable(*args, **kwargs)
 
 def epixquad1kfps_disable(*args, **kwargs):
+    """Return ``epixquad_disable(*args, **kwargs)`` (which does nothing)."""
     return epixquad_disable(*args, **kwargs)
 
 

@@ -17,11 +17,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+"""pyrogue `AmcCarrierBsa` device of the HPS BLD board."""
 import pyrogue        as pr
 import psdaq.pyhpsbld.hpsbld        as hps
 
 class AmcCarrierBsa(pr.Device):
 
+    """pyrogue Device with `BldAxiStream` children 'BsssControl' (offset 0x00030000, 9 EDEFs) and 'BldControl' (0x00040000, 4 EDEFs) and a `BsasControl` named 'BsasControl' (0x00050000)."""
     def __init__(   self, 
             name        = "AmcCarrierBsa", 
             description = "HPS BLD Application Module", 

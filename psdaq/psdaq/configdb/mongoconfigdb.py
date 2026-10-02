@@ -1,3 +1,8 @@
+"""Configuration database client that talks to MongoDB directly with pymongo (`configdb` class).
+
+Per the header comment, MongoDB transactions were replaced by ``session = None`` blocks, so the
+`session` arguments are passed through but no transaction is used.
+"""
 from pymongo import *
 from .typed_json import cdict
 import datetime
@@ -27,6 +32,17 @@ import time, re, sys
 # get_key changes to do the counter magic as well.
 
 class configdb(object):
+    """MongoDB-backed configuration database for one current hutch.
+
+    Connects to 'mongodb://<server>', uses database `root` and its 'device_configurations'
+    collection, and calls `set_hutch`; with `create`, the 'device_configurations' and 'counters'
+    collections are created (errors ignored).
+
+    Raises
+    ------
+    Exception
+        If `root` is left at its default 'NONE'.
+    """
     client = None
     cdb = None
     cfg_coll = None
@@ -59,6 +75,11 @@ class configdb(object):
 
     # Change to the specified hutch, creating it if necessary.
     def set_hutch(self, h, create=False):
+        """Make `h` the current hutch (its collection, or None if `h` is None).
+
+        With `create` and a hutch name, also create the hutch collection and a 'counters' document
+        ``{'hutch': h, 'seq': -1}`` if missing; errors there are ignored.
+        """
         self.hutch = h
         if h is None:
             self.hutch_coll = None
@@ -78,6 +99,11 @@ class configdb(object):
     # Return the highest key for the specified alias, or highest + 1 for all
     # aliases in the hutch if not specified.
     def get_key(self, alias=None, hutch=None, session=None):
+        """Return the highest 'key' stored for `alias`, or, if `alias` is not a string, increment the hutch's 'seq' counter and return the new value.
+
+        Any failure is re-raised as NameError (building that message raises TypeError if `alias` or
+        `hutch` is None).
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -96,6 +122,10 @@ class configdb(object):
 
     # Return the current entry (with the highest key) for the specified alias.
     def get_current(self, alias, hutch=None, session=None):
+        """Return the document with the highest 'key' for `alias` in the hutch collection.
+
+        Any failure is re-raised as NameError (building that message raises TypeError if `hutch` is None).
+        """
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -108,6 +138,7 @@ class configdb(object):
 
     # Create a new alias in the hutch, if it doesn't already exist.
     def add_alias(self, alias):
+        """If the current hutch has no document for `alias`, insert one with a new key from `get_key`, the UTC date and an empty device list."""
         if True:
                 session = None
                 if self.hutch_coll.find_one({'alias': alias},
@@ -121,6 +152,7 @@ class configdb(object):
     # Create a new device_configuration if it doesn't already exist!
     def add_device_config(self, cfg, session=None):
         # Validate name?
+        """If collection `cfg` is empty, create it and insert ``{'config': {}}`` into it and ``{'collection': cfg}`` into 'device_configurations'; otherwise do nothing."""
         if self.cdb[cfg].count_documents({}) != 0:
             return
         try:
@@ -133,6 +165,13 @@ class configdb(object):
     # Save a device configuration and return an object ID.  Try to find it if 
     # it already exists! Value should be a typed json dictionary.
     def save_device_config(self, cfg, value, session=None):
+        """Return the '_id' of the document in collection `cfg` whose 'config' equals `value`, inserting it first if not found.
+
+        Raises
+        ------
+        NameError
+            If collection `cfg` has no documents.
+        """
         if self.cdb[cfg].count_documents({}, session=session) == 0:
             raise NameError("save_device_config: No documents found for %s." % cfg)
         try:
@@ -150,6 +189,20 @@ class configdb(object):
     # configuration.  Return the new configuration key if successful and 
     # raise an error if we fail.
     def modify_device(self, alias, value, hutch=None):
+        """Store `value` as the configuration of its 'detName:RO' device in a new alias document and return the new key.
+
+        Copies the current document for `alias`, replaces the device's entry (collection 'detType:RO'),
+        assigns a new key and UTC date, and inserts it.
+
+        Raises
+        ------
+        TypeError
+            If `value` (after ``typed_json()`` for a `cdict`) is not a dict.
+        ValueError
+            If 'detType:RO' is missing or the stored config would not change.
+        NameError
+            If `get_current` fails.
+        """
         device = value.get('detName:RO')
         if hutch is None:
             hc = self.hutch_coll
@@ -190,6 +243,13 @@ class configdb(object):
     # This returns a dictionary where the keys are the collection names and the 
     # values are typed JSON objects representing the device configuration(s).
     def get_configuration(self, key_or_alias, device, hutch=None):
+        """Return the stored 'config' dict of `device` in the alias document with the given key (or the highest key of the given alias).
+
+        Raises
+        ------
+        ValueError
+            If `device` is not in that document.
+        """
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -217,10 +277,12 @@ class configdb(object):
 
     # Return a list of all hutches.
     def get_hutches(self):
+        """Return the 'hutch' field of every document in 'counters'."""
         return [v['hutch'] for v in self.cdb.counters.find()]
 
     # Return a list of all aliases in the hutch.
     def get_aliases(self, hutch=None):
+        """Return the distinct 'alias' values of the hutch collection."""
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -230,10 +292,12 @@ class configdb(object):
 
     # Return a list of all device configurations.
     def get_device_configs(self):
+        """Return the 'collection' field of every document in 'device_configurations'."""
         return [v['collection'] for v in self.cfg_coll.find()]
 
     # Return a list of all devices in an alias/hutch.
     def get_devices(self, key_or_alias, hutch=None):
+        """Return the device names in the alias document with the given key (or the highest key of the given alias)."""
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -248,6 +312,7 @@ class configdb(object):
 
     # Print all of the configurations for the hutch.
     def print_configs(self, hutch=None):
+        """Print every document of the hutch collection."""
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -258,12 +323,14 @@ class configdb(object):
     # Print all of the device configurations, or all of the configurations 
     # for a specified device.
     def print_device_configs(self, name="device_configurations"):
+        """Print every document of collection `name` (default 'device_configurations')."""
         for v in self.cdb[name].find():
             print(v)
 
     # Given a {"_id": ID, "collection": collection}, return a new one
     # changing the saved detName:RO to newname.
     def modify_name_in_config(self, cfg, newname, session=None):
+        """Load the config referenced by ``{'_id', 'collection'}`` `cfg`, set its 'detName:RO' to `newname`, save it with `save_device_config`, and return the new reference dict."""
         cname = cfg['collection']
         r = self.cdb[cname].find_one({"_id": cfg['_id']},
                                      session=session)
@@ -275,6 +342,12 @@ class configdb(object):
     # returning the new key.
     def transfer_config(self, oldhutch, oldalias, olddevice, newalias,
                         newdevice):
+        """Copy the configuration of `olddevice` at the highest key of `oldalias` in `oldhutch` to `newdevice` under `newalias` in the current hutch, and return the new key.
+
+        If `newdevice` already exists there with a different collection, ValueError is raised; if it
+        exists with the same collection, the comparison uses the undefined name `cfgs` and raises
+        NameError. The name in the copied config is changed when the device names differ.
+        """
         k = self.get_key(oldalias, oldhutch)
         pipeline = [
             {"$unwind": "$devices"},
@@ -308,6 +381,7 @@ class configdb(object):
     # in plist.  The variables are dot-separated names with the first
     # component being the the device configuration name.
     def get_history(self, alias, device, plist, hutch=None):
+        """Return, for every alias document containing `device` (in key order), a dict with 'date', 'key' and the value of each dotted name in `plist` from that device's config."""
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -367,9 +441,17 @@ class configdb(object):
     # If no one is using this entry, delete it.  Leaving this blank,
     # because it seems like an excessive amount of effort.
     def remove_orphan(self, cfg):
+        """Does nothing (stub); the comment says it was meant to delete unused config entries."""
         pass
 
     def modify_device_name(self, device, newname, alias, hutch=None):
+        """Rename `device` to `newname` (or remove it if `newname` is None) in every document of `alias`, updating the stored config's 'detName:RO' when renaming.
+
+        Raises
+        ------
+        ValueError
+            If no document of `alias` contains `device`.
+        """
         if hutch is None:
             hc = self.hutch_coll
         else:
@@ -408,8 +490,10 @@ class configdb(object):
                     self.remove_orphan(c)
 
     def rename_device(self, device, newname, alias, hutch=None):
+        """Return ``modify_device_name(device, newname, alias, hutch)``."""
         return self.modify_device_name(device, newname, alias, hutch)
 
     def remove_device(self, device, alias, hutch=None):
+        """Return ``modify_device_name(device, None, alias, hutch)``, which removes `device` from every document of `alias` that lists it."""
         return self.modify_device_name(device, None, alias, hutch)
             

@@ -54,6 +54,7 @@ def evaluate_limits(arr, nneg=5, npos=5, lim_lo=1, lim_hi=1000, cmt=''):
 
 
 def str_tstamp(fmt=TSFORMAT, time_sec=None): #fmt='%Y-%m-%dT%H:%M:%S
+    """Return ``time_sec`` (current time if None) formatted in local time with ``strftime(fmt)``; default ``fmt`` is ``TSFORMAT``."""
     return strftime(fmt, localtime(time_sec))
 
 
@@ -92,6 +93,13 @@ def fname_template(orun, detname, ofname, nevts, tsec=None, tnsec=None):
 
 class DetRawDarkProc:
 
+    """Accumulates raw data of one detector over events to produce average, RMS, status and mask arrays (dark processing).
+
+    Settings come from the ``args`` namespace (event counts, intensity/RMS limits, plot and save bit words,
+    ``addcdb``). Stage 1 accumulates all pixels within fixed intensity limits; after ``evstg1`` events stage 2
+    restarts accumulation inside a gate of ``nsigma`` times the mean RMS around each pixel average.
+    With ``loglev == 'DEBUG'`` the constructor refers to an undefined name ``o0377`` (NameError).
+    """
     def __init__(self, orun, detname, args):
 
         self.args    = args
@@ -133,6 +141,10 @@ class DetRawDarkProc:
 
 
     def print_attrs(self):
+        """Log the processing parameters (detector, file template, event counts, limits, bit words, auto-limit sigmas).
+
+        The RMS limits are formatted with ``%d``, so a None value (auto-evaluation) raises TypeError.
+        """
         msg = '\n%s\nAttributes of the %s object' % (60*'_', self.__class__.__name__)\
             + '\ndetector name                   : %s'   % self.detname\
             + '\noutput file name template       : %s'   % self.ofname\
@@ -238,6 +250,10 @@ class DetRawDarkProc:
 
     def event(self, evt):
 
+        """Process one event: initialize stage 1 on the first non-empty raw array, switch to stage 2 when due, and add the raw data to the accumulation sums.
+
+        Returns without accumulating if the detector raw data is missing or empty.
+        """
         if not self._init_stage1(evt): return
 
         ndaraw = self.det.raw(evt)
@@ -311,6 +327,12 @@ class DetRawDarkProc:
 
     def summary(self, evt):
 
+        """Compute average, RMS, bad-pixel status and mask from the accumulated sums, optionally plot them, save them to text files and add them to the calibration DB.
+
+        Returns after a log message if no event was accumulated. Status bits: 1 high RMS, 8 low RMS, 2/4
+        intensity above/below limit in more than ``fraclm`` of events, 16/32 average above/below limit. Saved
+        arrays are selected by ``savebw``; with ``addcdb`` each saved file is added with ``MDBCommands.add_constants``.
+        """
         logger.info('%s\nRaw data for %s found/selected in %d events' % (80*'_', self.detname, self.counter))
 
         if self.counter:
@@ -430,6 +452,10 @@ class DetRawDarkProc:
 
 def detectors_dark_proc(parser):
 
+    """Parse ``parser``, open ``DataSource(files=args.ifname)``, run :class:`DetRawDarkProc` for each detector in ``args.dnames`` over the selected events, then call ``summary`` for each.
+
+    Also prints several run attributes for debugging.
+    """
     args = parser.parse_args()
     #expnam, runnum, dnames, ifname, ofname, events, evskip, intlow, inthig, rmslow, rmshig, fraclm, nsigma,\
     #                    plotim, savebw, intnlo, intnhi, rmsnlo, rmsnhi, evcode

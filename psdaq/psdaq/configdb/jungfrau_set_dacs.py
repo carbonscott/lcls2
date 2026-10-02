@@ -1,3 +1,4 @@
+"""Command-line tool to write eight expert DAC values to all jungfrau segments in the production config database."""
 import argparse
 import sys
 from typing import List, Dict
@@ -6,6 +7,11 @@ from psdaq.configdb.configdb_multimod import configdb_multimod
 
 
 def set_dacs():
+    """Write each DAC value to ``['expert', <dac name>]`` of '<detname>_<seg>' for seg 0..nsegs-1 with `configdb_multimod` (``MODIFY=True``).
+
+    The default names and values are Python sets, so ``zip`` pairs them in set iteration order, which
+    need not match the order written in the code; --dacs (8 ints) replaces the values but not the names.
+    """
     dacnames: List[str] = {
         "vb_ds",
         "vb_comp",

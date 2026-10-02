@@ -1,3 +1,8 @@
+"""Script: update an existing hsd configuration in the config database.
+
+Replaces 'help:RO', adds 'user.raw.keep' = 1 and 'expert.raw_keep' = 0 (both UINT32), prints every
+top-level entry, and writes the result back unless --dryrun.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""Command-line script: summarize the timing values in '[DEBUG Rank<N>]' or '[DEBUG] Rank<N>' log lines of a smalldata_tools job for one rank.
+
+Usage: ``smd_debug_summary.py <logfile> [--rank N]``.
+"""
 import argparse
 import re
 
@@ -10,6 +14,7 @@ RANK_PATTERNS = (
 
 
 def match_rank(line):
+    """Return ``(rank, message)`` for a line matching '[DEBUG Rank<N>] msg' or '[DEBUG] Rank<N> msg', or ``(None, None)`` otherwise."""
     for pat in RANK_PATTERNS:
         m = pat.match(line)
         if m:
@@ -18,16 +23,22 @@ def match_rank(line):
 
 
 def parse_first_float(text):
+    """Return the first number followed by 's' in ``text`` as float, or None if there is none."""
     m = re.search(r'([0-9]+(?:\.[0-9]+)?)s', text)
     return float(m.group(1)) if m else None
 
 
 def parse_kv_time(text, key):
+    """Return the number in '<key>=<number>s' within ``text`` as float, or None if not found."""
     m = re.search(rf'{re.escape(key)}=([0-9]+(?:\.[0-9]+)?)s', text)
     return float(m.group(1)) if m else None
 
 
 def main():
+    """Parse the log file for one rank and print a summary of setup, per-detector, first-event, loop and finalize times.
+
+    With --rank only that rank's lines are used; without it lines of all ranks are used and the last rank seen is printed in the header. Values that are not found are reported as 'not found' or 'n/a'.
+    """
     parser = argparse.ArgumentParser(description="Summarize smalldata_tools DEBUG timings by rank.")
     parser.add_argument("logfile", help="Path to log file")
     parser.add_argument("--rank", type=int, default=None, help="Rank to summarize")

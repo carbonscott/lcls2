@@ -1,8 +1,14 @@
 
+"""Script: list the 'detType:RO' of every device configuration in the production and development config databases."""
 from psdaq.configdb.configdb import configdb
 import json
 
 def main():
+    """For each of the configdb and devconfigdb URLs, walk all hutches, aliases and devices and print a JSON dict mapping '<url>:<hutch>:<alias>:<device>' to the config's 'detType:RO'.
+
+    If reading a configuration fails, its entry is ''. Progress lines (url, hutch, alias, dev)
+    are printed along the way.
+    """
     data={}
     data["Root"]   = 'configDB'
     data["Inst"]   = 'TMO'

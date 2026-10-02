@@ -2,6 +2,10 @@
 # psana script for LCLS1!!
 # Assumes that typed_json is on the PYTHONPATH and json2xtc is on the path.
 #
+"""LCLS1 psana script: read the EvrData.IOConfigV2 and EvrData.ConfigV7 objects of run xpptut15:54, copy their fields into a ``typed_json`` cdict, write 'test_evr.json' and convert it with the external command ``json2xtc`` to 'test_evr.xtc2'.
+
+All work runs at import time. In the copied pulse records 'delay' is filled from ``width()``, and the sequencer entries are built but not added (the raw ``seq_config()`` object is stored instead).
+"""
 import sys
 from typed_json import *
 import subprocess

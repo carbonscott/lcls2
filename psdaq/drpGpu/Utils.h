@@ -1,4 +1,8 @@
 /**
+ * @file
+ * @brief General C, C++ and CUDA helpers from axi-pcie-devel: memory dumps, raw register access, a monotonic clock and min, max and clamp. Used in psdaq through GpuAsyncLib.hh by the pgpread_gpu tool.
+ */
+/**
  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
@@ -72,23 +76,28 @@ static inline T readRegister(void* fpgaRegs, uintptr_t reg)
 	return *(T*)(((uint8_t*)fpgaRegs) + reg);
 }
 
+/** Return the CLOCK_MONOTONIC time in seconds. */
 static inline double curTime() {
     timespec tp;
     clock_gettime(CLOCK_MONOTONIC, &tp);
     return double(tp.tv_sec) + (double(tp.tv_nsec) / 1e9);
 }
 
+/** Small generic helpers that return the common type of their arguments. */
 namespace util {
+  /** Return the smaller of a and b (b if they compare equal), as their common type. */
   template<typename A, typename B>
   typename std::common_type<A, B>::type min(const A& a, const B& b) {
     return a < b ? a : b;
   }
 
+  /** Return the larger of a and b (b if they compare equal), as their common type. */
   template<typename A, typename B>
   typename std::common_type<A, B>::type max(const A& a, const B& b) {
     return a > b ? a : b;
   }
 
+  /** Return val limited to the range from lower to upper, as the common type of the three arguments. */
   template<typename A, typename B, typename C>
   typename std::common_type<A, B, C>::type clamp(const A& val, const B& lower, const C& upper) {
     return val < lower ? lower : (val > upper ? upper : val);

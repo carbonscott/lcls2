@@ -1,3 +1,4 @@
+"""Script: write a default 'epix10kaquad' configuration (from `epixquad_cdict`) to the config database."""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 import psdaq.configdb.configdb as cdb
@@ -8,6 +9,11 @@ import argparse
 
 def epixquad_cdict():
 
+    """Return a `cdict` with the default epixquad configuration (alg version [3,0,0]); the body is the same as ``epixquad_cdict.epixquad_cdict``.
+
+    It holds a zero (4,352,384) 'user.pixel_map_raw', start_ns 107749, gate_ns 100000, gain_mode 0,
+    timing/XpmMini settings, and EpixQuad expert registers with the values written in the code.
+    """
     top = cdict()
     top.setAlg('config', [3,0,0])
 

@@ -1,9 +1,16 @@
+"""Default epixquad configuration as a `cdict` (`epixquad_cdict`)."""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 import numpy as np
 
 def epixquad_cdict():
 
+    """Return a `cdict` with the default epixquad configuration (alg version [3,0,0]).
+
+    It holds a zero (4,352,384) 'user.pixel_map_raw', start_ns 107749, gate_ns 100000, gain_mode 0
+    ('gainEnum'), timing/XpmMini settings, and EpixQuad expert registers (including 16 'Epix10kaSaci<i>'
+    ASIC blocks) with the values written in the code.
+    """
     top = cdict()
     top.setAlg('config', [3,0,0])
 

@@ -19,6 +19,7 @@ FixedFidRate  = 0   # seqplot
 FixedToACFids = 0   # needed for seqplot simulation
 
 def setUED():
+    """Set the module's fixed-rate and AC-rate tables to the UED values in the code (e.g. FixedFidRate 500e3)."""
     global fixedRates
     global fixedRateHzToMarker
     global FixedIntvs
@@ -62,6 +63,7 @@ def setUED():
     FixedToACFids = int(500e3/360)   # needed for seqplot simulation
 
 def setDefault():
+    """Set the module's fixed-rate and AC-rate tables to the default (non-UED) values in the code (e.g. FixedFidRate 910e3)."""
     global fixedRates
     global fixedRateHzToMarker
     global FixedIntvs
@@ -112,6 +114,10 @@ else:
 
 #  This can reset the values
 def set_instrument(name):
+    """Call `setUED` if `name` is 'ued' (any case), else `setDefault`.
+
+    This rebinds the module globals; names already copied by ``from tsdef import *`` keep their old values.
+    """
     if name.lower()=='ued':
         setUED()
     else:

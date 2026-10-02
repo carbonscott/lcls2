@@ -1,3 +1,4 @@
+"""DRP configuration functions that use a PCIe card's timing receiver (root chosen from the firmware image name) and program XPM readout-group settings over PVA, similar to `ts_config`."""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -83,6 +84,13 @@ class _DevRoot(shared.Root):
         super().start(**kwargs)
 
 def tb_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbosity=0):
+    """Detect the firmware image with a temporary `_DevRoot`, open and enter the matching root, set up its timing receiver, and return the module `base` dict.
+
+    Images starting 'Lcls2Xilinx', 'Lcls2EpixHr' or 'Clink' select lcls2_pgp_pcie_apps, lcls2_epix_hr_pcie or
+    cameralink_gateway roots (ValueError otherwise); 'surf' is removed from ``sys.modules`` after detection.
+    Timing: ModeSelEn 1, ModeSel 1, ClkSel 0 for '119M' (else 1), RxDown 0; `arg`, `lanemask`, `xpmpv` and
+    `verbosity` are unused.
+    """
     global base
     logging.debug('tb_init')
 
@@ -160,6 +168,7 @@ def tb_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbo
     return base
 
 def tb_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given, and print the lane."""
     global lane
     global chan
     if slane is not None:
@@ -169,11 +178,21 @@ def tb_init_feb(slane=None,schan=None):
     print(f'init_feb lane {lane}')
 
 def ts_connect(json_connect_info):
+    """Create the module-level `ts_connector` for `json_connect_info` and return the JSON text '{}'."""
     global connector
     connector = ts_connector(json_connect_info)
     return json.dumps({})
 
 def tb_connectionInfo(base):
+    """Read RxId, write ``timTxId('tdet')`` to TxId, set the event builder 'Bypass' for the image type, and return ``{'paddr': rxId, 'serno': '-'}``.
+
+    Bypass is 0x2 on ``AppLane[lane]`` for 'Lcls2Xilinx'/'Clink' images and 0x3c for 'Lcls2EpixHr'.
+
+    Raises
+    ------
+    ValueError
+        For any other image name.
+    """
     pbase = base['pcie']
     rxId = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId.get()
     logging.info('RxId {:x}'.format(rxId))
@@ -196,6 +215,11 @@ def tb_connectionInfo(base):
 
 
 def tb_config(base,connect_str,cfgtype,detname,detsegm,rog):
+    """Read the configuration, record the DRP readout groups and master XPM PV prefix, set up this lane's trigger buffer, start the run, and return ``apply_config(cfg, detsegm == 0)``.
+
+    The buffer gets Partition = the lowest readout group and TriggerDelay 0; ``connector.check_errors``
+    is called before applying. `rog` is unused.
+    """
     global ocfg
     global pv_prefix
     global readout_groups
@@ -228,6 +252,16 @@ def tb_config(base,connect_str,cfgtype,detname,detsegm,rog):
     return apply_config(cfg, detsegm==0)
 
 def apply_config(cfg,active):
+    """Build the trigger, destination and inhibit PV values of every recorded readout group, write them only if `active`, and return JSON of a copy of `cfg` with only the used 'user'/'expert' entries plus 'firmwareBuild'.
+
+    In SC mode 'L0Select_ACTimeslot' is the OR of ``1 << ac.ts<n>`` using the stored values as shift
+    counts, and 'L0Select_SeqBit' comes from seq.mode 15/16/17.
+
+    Raises
+    ------
+    ValueError
+        If seq.mode is not 15, 16 or 17 (SC mode).
+    """
     global pv_prefix
     rcfg = {}
     rcfg = cfg.copy()
@@ -310,6 +344,11 @@ def apply_config(cfg,active):
     return json.dumps(rcfg)
 
 def apply_update(cfg):
+    """Write scanned 'user' (Cu mode only) and 'expert' inhibit values for the recorded readout groups to the XPM PVs and return JSON.
+
+    A 'user' key reaches the undefined name `full` and raises NameError; only 'expert' updates
+    work as written.
+    """
     global pv_prefix
 
     rcfg = {}
@@ -374,6 +413,7 @@ def apply_update(cfg):
     return json.dumps(rcfg)
 
 def tb_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values) plus the 'detType:RO'-style header keys."""
     global ocfg
     #  extract updates
     cfg = {}
@@ -386,6 +426,7 @@ def tb_scan_keys(update):
     return json.dumps(cfg)
 
 def tb_update(update):
+    """Merge the JSON `update` into a new dict (types from the stored configuration), write it with `apply_update`, and return it as JSON with the header keys."""
     global ocfg
     #  extract updates
     cfg = {}
@@ -401,12 +442,14 @@ def tb_update(update):
     return json.dumps(cfg)
 
 def tb_unconfig():
+    """Call ``connector.check_errors('unconfig')``, then ``StopRun()`` on the PCIe root; returns the module `base` dict."""
     connector.check_errors('unconfig')
 
     base['pcie'].StopRun()
     return base
 
 def main():
+    """Print the firmware image name and raw RX/TX power readings of both QSFPs on '/dev/datadev_1', then remove 'surf' from ``sys.modules``."""
     dev = '/dev/datadev_1'
     #
     #  Invoke generic root to lookup firmware type

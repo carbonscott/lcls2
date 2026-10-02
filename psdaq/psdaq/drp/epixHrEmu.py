@@ -1,3 +1,9 @@
+"""DRP Python script (uses the `drp_info` global provided by `drp_python`) that compresses calibrated 'epixhr_emu' data with libpressio SZ3.
+
+It adds a 'config' entry holding the compressor JSON and a 'fex' entry per event with
+the compressed `raw.calib` data, removes the raw data except every 1000th event, and
+records calibration/compression times in Prometheus gauges.
+"""
 from psana import DataSource
 from psana.dgramedit import AlgDef, DetectorDef, DataType
 import psana.psexp.TransitionId

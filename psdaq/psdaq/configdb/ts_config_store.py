@@ -1,9 +1,20 @@
+"""Script: write a default timing-system ('ts') configuration to the config database.
+
+Alias 'CALIB' uses `calib_cdict`, others `usual_cdict`; with --update the existing values are
+copied into the new layout with ``update_config``, and --dryrun skips writing.
+"""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.get_config import update_config
 import psdaq.configdb.tsdef as tsdef
 import psdaq.configdb.configdb as cdb
 
 def usual_cdict():
+    """Return a `cdict` with the default 'ts' configuration (alg version [2,0,1]) for readout groups 0-7.
+
+    It holds the help text, enums (fixedRateEnum from ``tsdef.fixedRateHzToMarker``), 'user.LINAC' 0,
+    per-group Cu event codes (272 for group 6, else 40), SC settings (trigMode 0, fixed.rate 6, event code
+    272, destinations off, keepRawRate 1.0) and expert inhibits 0-3 (enable 0, interval 1, limit 1).
+    """
     top = cdict()
 
     top.setAlg('config', [2,0,1])
@@ -62,6 +73,11 @@ def usual_cdict():
     return top
 
 def calib_cdict():
+    """Return a `cdict` (alg version [2,0,1]) with '_cfgTypeRef' 'BEAM' and, for SC groups 0-7, trigMode 0 and fixed.rate 2.
+
+    Per the code comment, parameters not listed are inherited from the 'BEAM' configuration
+    (see ``get_config.get_config_with_params``).
+    """
     top = cdict()
 
     top.setAlg('config', [2,0,1])

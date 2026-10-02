@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Drp::Gpu::SimDetector, the base of simulated GPU DRP detectors that write events into the GPU DMA buffers without a PGP device.
+ */
 #pragma once
 
 #include "Detector.hh"
@@ -18,6 +22,7 @@ namespace Drp {
   class MemPool;
   namespace Gpu {
 
+    /** Base of simulated GPU detectors (EpixUHRsim uses it). A thread started by connectionInfo() writes a TimingHeader, and for L1Accepts the payload from _genL1Payload() (copied only if the sim_l1_verify kwarg is present; its size is always counted), into the GPU DMA buffers for each transition queued by issuePhase2(). After Enable it keeps generating L1Accepts (every sim_l1_delay us, default 1 s) and SlowUpdates (sim_su_rate per second, default 1). */
     class SimDetector : public Gpu::Detector
     {
     protected:

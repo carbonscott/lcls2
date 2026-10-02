@@ -1,3 +1,4 @@
+"""Command-line entry point of the calibration prefetcher (``python -m psana.pscalib.app.calib_prefetch``); see :func:`main`."""
 import argparse
 import logging
 import sys

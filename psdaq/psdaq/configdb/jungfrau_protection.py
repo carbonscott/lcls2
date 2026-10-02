@@ -1,3 +1,4 @@
+"""Command-line tool to set 'user.hot_pixel_threshold' and 'user.max_hot_pixels' of all jungfrau segments in the production config database."""
 import argparse
 import sys
 from typing import List
@@ -6,6 +7,10 @@ from psdaq.configdb.configdb_multimod import configdb_multimod
 
 
 def change_protection_settings():
+    """Parse --adu and --max_pix (required) and call `configdb_multimod` twice with ``MODIFY=True`` to write them to '<detname>_<seg>' for seg 0..nsegs-1.
+
+    Defaults: --cfg 'BEAM', --detname 'jungfrau', --hutch 'mfx', --nsegs 32.
+    """
     parser: argparse.ArgumentParser = argparse.ArgumentParser(prog="jungfrau_gain_mode")
     parser.add_argument(
         "--adu",

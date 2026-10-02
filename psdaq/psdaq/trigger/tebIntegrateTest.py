@@ -1,3 +1,9 @@
+"""Test TEB script using `WindowTriggerDataSource` with two integration windows (fast and slow camera).
+
+Runs at import: every event is added to both windows; readout group 2 closes window 0
+and group 5 closes window 1 (recorded, monitored and cleared), and such events are
+forwarded to all MEBs.
+"""
 from psdaq.trigger import tebTrigger
 from psdaq.configdb.typed_json import cdict
 import json

@@ -64,6 +64,18 @@ def _geometry_text(det):
 
 
 def main():
+    """Find the --event-index-th event (0-based) with both raw and calib data among the first --max-nevents, and save its raw, calib and assembled image arrays plus the geometry text.
+
+    Files '<path>/epixquad_mask_editor_r<run>_e<idx>_<detname>_raw.npy', '_calib.npy', '_img.npy' and
+    '_geometry.data' are written; the geometry comes from the database, else the default.
+
+    Raises
+    ------
+    ValueError
+        If --event-index is negative or --max-nevents is not positive.
+    RuntimeError
+        If no such event is found or the image is None.
+    """
     args = _parse_args()
     if args.event_index < 0:
         raise ValueError(f'event-index must be non-negative, got {args.event_index}')

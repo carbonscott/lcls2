@@ -427,7 +427,8 @@ def main():
     #  Need IP addresses to distinguish NEH/FEH
     """Parse arguments, set up XPM and timing-receiver monitors, register the collector and poll timing every 4 s.
 
-    Polling runs only while `createExposer` returns True.
+    `createExposer` is called once: if it returns a true value the 4 s polling loop runs until the process
+    is stopped; otherwise main returns without polling.
 
     Notes
     -----

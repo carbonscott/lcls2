@@ -1,3 +1,7 @@
+"""Example: run ``POP.Peel`` on a pickled image and plot the raw image, the fitted slice and the distributions from ``GetRadialDist`` and ``GetEnergyDist``, saving 'pop_example_plot.pdf'.
+
+The ``POP`` call passes ``RBFs_db=False``, which is not a parameter of ``POP.__init__``, so the script fails with TypeError there.
+"""
 import time
 import numpy as np
 import matplotlib.pyplot as plt

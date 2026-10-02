@@ -1,6 +1,11 @@
+"""Defines ``IonMomentumFlat``, which computes momentum components from hit positions and times with closed-form expressions and, for several field regions, by solving for the initial velocity numerically."""
 import numpy as np
 from psana.momentum.CalcPzArr import CalcPzArr
 class IonMomentumFlat():
+    """Hold the offsets ``t0_ns``, ``x0_mm``, ``y0_mm``, jet velocities, lengths and fields used by the ``Calc*`` methods.
+
+    The region lengths ``ls`` default to ``[l_mm, d_mm]`` and the fields ``Es`` to ``[U_V/l_mm, 0]`` (both as float32 arrays); fixed conversion constants are also stored.
+    """
     def __init__(self,t0_ns=0,x0_mm=0,y0_mm=0,vjetx_mmPns=0,vjety_mmPns=0,
     l_mm=None,d_mm=None,ls_mm=None,U_V=None,Es_VPmm=None):
         self.t0 = t0_ns
@@ -24,15 +29,19 @@ class IonMomentumFlat():
         self.amu2au = 1836.15
 
     def CalcPx(self,m_amu,x_mm,t_ns):
+        """Return ``amu2au*m_amu*mmPns2au*((x_mm - x0)/(t_ns - t0) - vjetx)``."""
         return self.amu2au*m_amu*self.mmPns2au*((x_mm-self.x0)/(t_ns-self.t0) - self.vjetx)
 
     def CalcPy(self,m_amu,y_mm,t_ns):
+        """Return ``amu2au*m_amu*mmPns2au*((y_mm - y0)/(t_ns - t0) - vjety)``."""
         return self.amu2au*m_amu*self.mmPns2au*((y_mm-self.y0)/(t_ns-self.t0) - self.vjety)
 
     def CalcPzOneAcc(self,m_amu,q_au,t_ns):
+        """Return ``amu2au*m_amu*mmPns2au*l/(t_ns - t0) - 8.04e-2*q_au*U*(t_ns - t0)/(2*l)``."""
         return self.amu2au*m_amu*self.mmPns2au*self.l/(t_ns-self.t0) - 8.04e-2*q_au*self.U*(t_ns-self.t0)/(2*self.l)
 
     def CalcPzOneAccApprox(self,ta_ns,ta0_ns,sfc=None,q_au=None):
+        """Return ``sfc*(ta0_ns - ta_ns)`` if ``sfc`` is given, else ``8.04e-2*q_au*U*(ta0_ns - ta_ns)/l`` if ``q_au`` is given, otherwise None."""
         if sfc is not None:
             return sfc*(ta0_ns-ta_ns)
         elif q_au is not None:
@@ -40,6 +49,10 @@ class IonMomentumFlat():
 
     #The algorithm for calculating Pz is adapted from that of Lutz Focar's CASS software.
     def CalcPzMultiAcc(self,m_amu,q_au,t_ns):
+        """Return the longitudinal value for the multi-region setup ``Es``/``ls``.
+
+        For list/tuple/array ``t_ns`` (scalars ``m_amu``, ``q_au`` are broadcast) the work is done by the compiled function ``CalcPzArr`` (not visible here). For a scalar time, an initial velocity from constant acceleration in the first region is refined with ``Newton`` and ``mmPns2au*v0*amu2au*m_amu`` is returned.
+        """
         if isinstance(t_ns,(list, tuple, np.ndarray)):
             if not isinstance(m_amu,(list, tuple, np.ndarray)):
                 m_amu = np.ones((len(t_ns),),dtype=np.float32)*m_amu
@@ -55,6 +68,7 @@ class IonMomentumFlat():
         return Pz_au
 
     def Newton(self,v0,m_amu,q_au,t_ns):
+        """Refine ``v0`` until ``|CalcTofd(v0, ...)| <= 0.01`` using secant steps (second point at 1.1*v0, step damped by 0.7) and return it; there is no iteration limit."""
         td0 = self.CalcTofd(v0,m_amu,q_au,t_ns)
         while (abs(td0) > 0.01):
             v1 = 1.1*v0
@@ -65,6 +79,10 @@ class IonMomentumFlat():
         return v0
 
     def CalcTofd(self,v0,m_amu,q_au,t_ns):
+        """Return the total transit time through all regions minus ``t_ns`` for initial velocity ``v0``.
+
+        In each region the acceleration is ``VPmm2mmPns*E*q_au/(amu2au*m_amu)`` and the time is solved from ``l = v*t + a*t**2/2`` (``l/v`` when a is 0); the velocity is updated between regions.
+        """
         v = v0
         t = 0
         for i, E in enumerate(self.Es):

@@ -1,3 +1,9 @@
+"""Script: upgrade an existing timing-system configuration in the config database.
+
+If 'user.SC.group0' lacks 'keepRawRate', adds 'keepRawRate' = 1.0 (FLOAT) to every SC group and a help
+line; if 'acRateEnum' lacks '0_5Hz', replaces the enum and adds 1 to every SC group's 'ac.rate'.
+With --verbose the config is printed; it is written back unless --dryrun.
+"""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 import psdaq.configdb.configdb as cdb

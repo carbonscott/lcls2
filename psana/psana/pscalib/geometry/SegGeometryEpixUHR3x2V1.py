@@ -202,6 +202,10 @@ class SegGeometryEpixUHR3x2V1(SegGeometryEpix10kaV1):
 
 
     def print_member_data(sp):
+        """Log the segment parameters (rows, cols, pixel sizes, ASIC sizes, half sizes, offset and ASIC origin indices) at info level.
+
+        The ``_accgap`` line prints the value of ``_pixd``.
+        """
         s = 'print_member_data()'\
           + '\n    _rows : %d' % sp._rows\
           + '\n    _cols : %d' % sp._cols\

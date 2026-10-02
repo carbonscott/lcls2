@@ -4,12 +4,18 @@
 # Load with (be careful with --prod and --alias):
 #  python teb_config_store.py --prod --inst tst --name trigger --segm 0 --alias BEAM --user tstopr
 
+"""Define the 'teb' configdb entry (production trigger configuration per the header comment) and store it with `configdb`.
+
+As a script it adds the alias and 'teb' device config and calls `modify_device` with
+`calib_cdict()` for alias 'CALIB', else `usual_cdict()`.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import os
 import io
 
 def usual_cdict():
+    """Return the 'tebConfig' v0.1.0 `cdict`: help text, soname 'libtmoTeb.so', pythonScript 'tebTstTrigger.py', buildAll 1, buildDets 'timing,bld,epics', prescale 1, persist/monitor values and rogRsrvdBuf[0..7] = 0."""
     top = cdict()
 
     top.setAlg('tebConfig', [0,1,0])
@@ -49,6 +55,7 @@ def usual_cdict():
     return top
 
 def calib_cdict():
+    """Return the 'triggerConfig' v0.0.0 `cdict` for CALIB: help text, soname 'libcalibTrigger.so', read-only buildAll 1 and prescale 1."""
     top = cdict()
 
     top.setAlg('triggerConfig', [0,0,0])

@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 #--------
 
+"""Example: pass numpy arrays to test functions of the compiled module ``ndarray`` (``test_nda_fused``, ``test_nda_fused_v2``, ``py_ctest_vector``, ``py_ndarray_double``, ``wfpkfinder_cfd``) and print the results; the compiled code is not visible here."""
 import numpy as np
 from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
 #--------
 
 def test_templ(nda) :
+    """Call ``ndarray.test_nda_fused(nda)`` and print ``nda`` afterwards."""
     from ndarray import test_nda_fused
     test_nda_fused(nda)
     print('In test_nda_fused returned array:\n', nda)
@@ -14,6 +16,7 @@ def test_templ(nda) :
 #--------
 
 def test_01() :
+    """Call ``test_templ`` with arrays of ones (times 1, 2, 3) of dtypes float64, int16 and uint16."""
     print(50*'_', '\nTest of templated function test_nda_fused')
     test_templ(1*np.ones((2,3), dtype=np.float64))
     test_templ(2*np.ones((2,4), dtype=np.int16))
@@ -22,6 +25,7 @@ def test_01() :
 #--------
 
 def test_02() :
+    """Print the attributes and strides of a 2x5 int32 array, call ``ndarray.test_nda_fused_v2`` on it and print it before and after."""
     from ndarray import test_nda_fused_v2
     print(50*'_', '\nTest of templated function test_nda_fused_v2')
     nda = np.arange(0, 10, 1, dtype=np.int32)
@@ -38,6 +42,7 @@ def test_02() :
 #--------
 
 def test_03() :
+    """Call ``ndarray.py_ctest_vector`` on four 1-d arrays (float64, float32, int32, float64 ones) and print them afterwards."""
     print(50*'_', '\nTest of py_ctest_vector')
     from ndarray import py_ctest_vector
 
@@ -59,6 +64,7 @@ def test_03() :
 #--------
 
 def test_04() :
+    """Create a ``ndarray.py_ndarray_double`` object and call its ``set_nda`` with a 2x3 float64 array of ones."""
     print(50*'_', '\nTest of py_ndarray')
     from ndarray import py_ndarray_double
     a = py_ndarray_double()
@@ -67,11 +73,13 @@ def test_04() :
 #--------
 
 def test_05() :
+    """Print a separator and 'Void'; no other action."""
     print(50*'_', '\nVoid')
 
 #--------
 
 def test_06() :
+    """Run ``ndarray.wfpkfinder_cfd`` on the waveform ``WF`` from the local module ``ex_wf`` with baseline 0, threshold -5, fraction 0.5, dead time 0 and leading edges, and print the peak count, values and indexes."""
     print(50*'_', '\nTest of wfpkfinder_cfd')
     from ndarray import wfpkfinder_cfd
     from ex_wf import WF # local import
@@ -89,6 +97,7 @@ def test_06() :
 #--------
 
 def usage(tname):
+    """Return the usage text, listing all tests for ``tname`` '0' or only the selected one."""
     s = '\nUsage: python psana/psana/hexanode/examples/ex-00-np-to-cpp-ndarray.py <test-number>'
     if tname in ('0',)    : s+='\n 0 - test ALL'
     if tname in ('0','1') : s+='\n 1 - templated function test_nda_fused'

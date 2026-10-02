@@ -1,3 +1,8 @@
+"""DRP configuration functions for an Opal camera behind a cameralink gateway (``cameralink_gateway.ClinkDevRoot``).
+
+State (device, lane, channel, group, root) is kept in the module dict `args`, the last
+configuration in `ocfg`, and a module `Barrier` coordinates processes sharing the board.
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.xpmmini import *
@@ -22,6 +27,10 @@ args = {}
 ocfg = None
 
 def dict_compare(new,curr,result):
+    """Put into `result` the entries of `new` that differ from `curr`, recursing where ``curr[k]`` is a dict (empty nested results are left out).
+
+    A key of `new` missing from `curr` raises KeyError.
+    """
     for k in new.keys():
         if dict is type(curr[k]):
             resultk = {}
@@ -35,6 +44,7 @@ def dict_compare(new,curr,result):
                 result[k] = new[k]
 
 def setup_timing(cl):
+    """Run ``ConfigLclsTimingV2`` (then sleep 1 s), pulse ``TimingPhyMonitor.TxUserRst`` (then sleep 0.1 s), and write ``timTxId('opal')`` to the XpmMessageAligner TxId."""
     cl.ClinkPcie.Hsio.TimingRx.ConfigLclsTimingV2()
     time.sleep(1.0)
             
@@ -46,6 +56,12 @@ def setup_timing(cl):
 
 def opal_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbosity=0):
 
+    """Create and start a ``ClinkDevRoot`` for one Opal1000 lane on `dev`, store state in `args`, and return the root.
+
+    The lane is the single set bit of `lanemask` (asserted), the channel starts at 0, and `xpmpv` is
+    kept for `opal_connectionInfo`; ``cl.stop`` is registered with ``weakref.finalize``.
+    `arg`, `timebase` and `verbosity` are unused.
+    """
     global args
     global pv
     global xpmpv_global
@@ -82,6 +98,7 @@ def opal_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",ver
 
 
 def opal_init_feb(slane=None,schan=None):
+    """Set ``args['chan']`` from `schan` if given; `slane` is ignored (the lane comes from `opal_init`)."""
     logging.warning(f'opal_init_feb {slane} {schan}')
     # cpo: ignore "slane" because lanemask is given to opal_init() above
     global args
@@ -90,6 +107,13 @@ def opal_init_feb(slane=None,schan=None):
 
 # called on alloc
 def opal_connectionInfo(cl, alloc_json_str):
+    """Set up the barrier from the allocate JSON, prepare timing, read the camera ID over the UART, and return ``{'paddr', 'model', 'serno'}``.
+
+    Without `xpmpv` the supervisor runs `setup_timing` and RxId is read after a barrier wait; with
+    `xpmpv` an XpmMini `PVCtrls` thread is started instead, and `rxId` is then never assigned, so
+    building the result raises UnboundLocalError. If the ID reply cannot be parsed, 'model' is 'none'
+    and 'serno' '1000'.
+    """
     print('opal_connectionInfo')
 
     lane = args['lane']
@@ -151,9 +175,21 @@ def opal_connectionInfo(cl, alloc_json_str):
 
 # called on dealloc
 def opal_connectionShutdown():
+    """Shut down the module barrier."""
     barrier_global.shutdown()
 
 def user_to_expert(cfg, full=False):
+    """Translate the user settings in `cfg` into expert entries and write them into `cfg` with `update_config_entry`.
+
+    'start_ns' gives TriggerDelay ``int(start_ns*1300/7000 - PartitionDelay[group]*200)``, 'gate_ns' gives
+    TrigPulseWidth ``gate_ns*0.001`` (a message is printed above 160000), 'black_level' and 'vertical_bin'
+    set the UART 'BL' and 'VBIN'; with `full` the buffer 'Partition' is set to the group.
+
+    Raises
+    ------
+    ValueError
+        If the computed TriggerDelay is negative.
+    """
     cl    = args['cl']
     group = args['group']
 
@@ -195,6 +231,11 @@ def user_to_expert(cfg, full=False):
     update_config_entry(cfg,ocfg,d)
 
 def config_expert(cfg):
+    """Intended to write the values in `cfg` to the matching nodes of the camera root, mapping generic names (e.g. 'ClinkFeb', 'Red') to lane/channel-specific ones.
+
+    The walk starts from the name `cl`, which is not defined in this function or module, so a call
+    raises NameError.
+    """
     lane = args['lane']
     chan = args['chan']
 
@@ -233,6 +274,12 @@ def config_expert(cfg):
 
 #  Apply the full configuration
 def opal_config(cl,connect_str,cfgtype,detname,detsegm,grp):
+    """Intended to apply the full configuration and return it as JSON.
+
+    It reads the configuration, checks the PGP link (ValueError if down), sets blowoff and the camera
+    trigger UART settings, then calls ``user_to_expert(cl, cfg, full=True)``, which does not match
+    ``user_to_expert(cfg, full=False)`` and raises TypeError, so the later steps are not reached.
+    """
     global args
     global ocfg
 
@@ -348,6 +395,7 @@ def opal_config(cl,connect_str,cfgtype,detname,detsegm,grp):
 
 
 def opal_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values), plus derived expert entries and the 'detType:RO'-style header keys."""
     global ocfg
     
     #  extract updates
@@ -362,6 +410,7 @@ def opal_scan_keys(update):
     return json.dumps(cfg)
 
 def opal_update(update):
+    """Merge the JSON `update` into a new dict and add derived expert entries, then call `config_expert`, which raises NameError as written."""
     global ocfg
 
     #  extract updates
@@ -378,6 +427,10 @@ def opal_update(update):
     return json.dumps(cfg)
 
 def opal_unconfig(cl):
+    """Supervisor calls ``cl.StopRun()``; all processes then wait on the barrier; returns `cl`.
+
+    The code comment says it is called on the disconnect transition.
+    """
     print('opal_unconfig')
 
     # this routine gets called on disconnect transition

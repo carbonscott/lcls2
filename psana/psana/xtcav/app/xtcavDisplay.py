@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Command-line script: run ``LasingOnCharacterization`` on an experiment run and display, per accepted event, the raw camera image, the lasing-off reference current and the current, energy and power profiles with matplotlib.
+
+Arguments: experiment, run number, -l/--loglev, -p/--pause, -g/--grmode and -n/--nevents. All work, including ``procEvents(args)``, runs at import time.
+"""
 import sys
 import argparse
 import logging
@@ -47,6 +51,10 @@ import psana.xtcav.UtilsPsana as xtup
 
 
 def getLasingOffShot(lon, fname_loff):
+    """Open ``fname_loff`` with ``DataSource``, print several attributes of its first run and call ``sys.exit('TEST EXIT')``.
+
+    The code after the exit (meant to return a lasing-off image) is never reached.
+    """
     results=lon._pulse_characterization
     loff = lon._lasingoffreference
     ibunch = 0
@@ -109,11 +117,13 @@ def figaxtitles(fig=None):
     return _fig, axes, titles
 
 class Control :
+    """Holder of the class attribute ``PAUSE`` (False by default) used to pause the event loop."""
     PAUSE = False
 
 CONTROL = Control
 
 def press(event):
+    """Handle a matplotlib key-press event: 'e' exits the program, 'h'/'p'/'d' set ``CONTROL.PAUSE`` to True, 'c'/'g' set it to False; a message is printed first."""
     print('pressed %s of possible e-exit, h/p/d-hold/pause/delay, c/g-continue/go' % event.key)
     sys.stdout.flush()
     #plt.ion()
@@ -133,6 +143,10 @@ def procEvents(args):
 
     #fname      = getattr(args, 'fname',      '/reg/g/psdm/detector/data2_test/xtc/data-amox23616-r0137-e000100-xtcav-v2.xtc2')
     #fname_loff = getattr(args, 'fname_loff', '/reg/g/psdm/detector/data2_test/xtc/data-amox23616-r0131-e000200-xtcav-v2.xtc2')
+    """Process events of ``args.experiment``/``args.run_number`` with ``LasingOnCharacterization`` and plot the results.
+
+    Events without a camera image, rejected by ``processEvent`` or with agreement below 0.5 are skipped; the loop stops after ``nevents`` processed images. With ``grmode`` 1 one figure is updated and paused for ``pause`` seconds (and while ``CONTROL.PAUSE`` is set); with 0 a new figure is shown per event and blocks until closed.
+    """
     nevents    = getattr(args, 'nevents', 100)
     mode       = getattr(args, 'mode', 'smd')
     exp        = getattr(args, 'experiment', None)

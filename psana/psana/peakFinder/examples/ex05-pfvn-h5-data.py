@@ -25,6 +25,10 @@ V4 = 4 # DROPLET v4r3
 
 def test01(tname) :
 
+    """Display up to 10 images from the HDF5 file ``FNAME`` (via ``data_hdf5_v0``) and, unless ``tname`` is '0', run the V3 ('3') or V4 (otherwise) peak finder of ``psalg_ext.peak_finder_algos`` on each and draw the peaks.
+
+    The first image is read only to get the shape and is not displayed. The peak finding happens in the compiled extension.
+    """
     PF = V3 if tname == '3' else V4
     SHOW_PEAKS = tname != '0'
 

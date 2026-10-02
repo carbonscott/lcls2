@@ -1,3 +1,9 @@
+"""Script: switch an epixhr configuration in the config database to pixel-map gain mode.
+
+Sets 'user.gain_mode' to 5 (code comment: 'Map'), 'user.pixel_map' to a (4,144,192) array of 0x8
+with the first 64x64 pixels of each ASIC set to 0xc, sets 'trbit' to 0 for 'Hr10kTAsic0'-'3', and
+writes the configuration back.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import pyrogue as pr
@@ -10,6 +16,11 @@ elemRows = 144
 elemCols = 192
 
 def copyValues(din,dout,k=None):
+    """Copy `din` into ``dout[k]``, recursing into dicts for keys that already exist there and converting bools to 1/0.
+
+    Keys missing from `dout` are skipped with a 'skip' message; each leaf prints whether it was
+    written or unchanged.
+    """
     if isinstance(din,dict) and isinstance(dout[k],dict):
         for key,value in din.items():
             if key in dout[k]:

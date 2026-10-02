@@ -1,3 +1,4 @@
+"""Register-access helper (`EpixUHR3x2_Manager`) for the ePixUHR3x2 readout system rogue tree, used by `psdaq.configdb.epixuhr3x2_config`."""
 import logging
 import os
 import time
@@ -14,6 +15,7 @@ from epixuhr_3x2_readout_testing import Uhr3x2ReadoutSystem
 
 
 class TimingParameters(TypedDict):
+    """TypedDict of the timing settings kept by the manager: 'bypass' (list of int), 'clk_period' (float), 'msg_period' (int) and 'pcie_timing' (bool)."""
     bypass: List[int]
     clk_period: float
     msg_period: int
@@ -21,6 +23,21 @@ class TimingParameters(TypedDict):
 
 
 class EpixUHR3x2_Manager:
+    """Wraps an ``epixuhr_3x2_readout_testing.Root`` and gives named access to readout-system nodes plus bulk configuration methods.
+
+    Parameters
+    ----------
+    root : epixuhr_3x2_readout_testing.Root
+        Started rogue root.
+    nasics : int, optional
+        Number of ASICs (default 6).
+    readout_system_num : int, optional
+        Index n of the 'ROS[n]' node (default 0).
+    logger_name : str, optional
+        Logger used for messages (default 'ePixUHR3x2').
+    emulator : bool, optional
+        True skips registers missing from the emulator (default True).
+    """
     def __init__(
         self,
         root: epixUhrDev.Root,
@@ -46,9 +63,11 @@ class EpixUHR3x2_Manager:
 
     @property
     def emulator(self) -> bool:
+        """Whether the manager was created for the emulator."""
         return self._emulator
 
     def write_and_check(self, register, value):
+        """Set `register` to `value` if it differs, then read it back and log an error if it still differs."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
         if register.get() != value:
             register.set(value)
@@ -62,6 +81,7 @@ class EpixUHR3x2_Manager:
             logger.debug(f"Skip writing {value} to {register}. It was already set.")
 
     def write_many(self, base_node, registers_and_vals: Dict[str, Any]):
+        """Call `write_and_check` for each ``name: value`` pair, looking each register up as an attribute of `base_node`."""
         for reg_name, value in registers_and_vals.items():
             register = getattr(base_node, reg_name)
             self.write_and_check(register, value)
@@ -70,9 +90,11 @@ class EpixUHR3x2_Manager:
         return getattr(base_node, template.format(asic=asic))
 
     def ReadAll(self):
+        """Call ``ReadAll()`` on the root."""
         self._root.ReadAll()
 
     def Stop(self):
+        """Call ``StopRun()`` on the readout system, then sleep 0.1 s and log 'Stopping run.'."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
         self.ReadoutSystem.StopRun()
         time.sleep(0.1)
@@ -92,6 +114,7 @@ class EpixUHR3x2_Manager:
             self.ReadoutSystem.DataDestination.set(target_val)
 
     def Start(self):
+        """Set timing triggers, reset the event batchers, call ``StartTimingRun()`` on the readout system, and enable FEB trigger buffers 0 and 1."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
 
         self.set_timing_trigger()
@@ -112,26 +135,32 @@ class EpixUHR3x2_Manager:
 
     @property
     def ReadoutSystem(self):
+        """The 'ROS[<readout_system_num>]' node of the root."""
         return getattr(self._root, f"ROS[{self._ros_num}]")
 
     @property
     def DataFpga(self):
+        """The 'DataFpga[0]' node of the readout system."""
         return getattr(self.ReadoutSystem, "DataFpga[0]")
 
     @property
     def DataAxiVersion(self):
+        """The data FPGA's ``AxiPcieCore.AxiVersion`` node."""
         return self.DataFpga.AxiPcieCore.AxiVersion
 
     @property
     def c1100_firmware_version(self):
+        """Read and return the data FPGA's 'FpgaVersion'."""
         return self.DataAxiVersion.FpgaVersion.get()
 
     @property
     def c1100_build_date(self):
+        """Read and return the data FPGA's 'BuildDate'."""
         return self.DataAxiVersion.BuildDate.get()
 
     @property
     def c1100_build_hash(self):
+        """Read and return the data FPGA's 'GitHashShort'."""
         return self.DataAxiVersion.GitHashShort.get()
 
     # EpixUHR FEB (Front end board)
@@ -139,18 +168,22 @@ class EpixUHR3x2_Manager:
 
     @property
     def FebFpga(self):
+        """The readout system's 'FebFpga' node."""
         return self.ReadoutSystem.FebFpga
 
     @property
     def FebTimingRx(self):
+        """The FEB's ``App.TimingRx`` node."""
         return self.FebFpga.App.TimingRx
 
     @property
     def FebTriggerEventManager(self):
+        """The FEB's ``App.TimingRx.TriggerEventManager`` node."""
         return self.FebTimingRx.TriggerEventManager
 
     @property
     def FebXpmMessageAligner(self):
+        """The FEB trigger event manager's 'XpmMessageAligner' node."""
         return self.FebTriggerEventManager.XpmMessageAligner
 
     def _get_feb_asic(self, asic: int):
@@ -159,6 +192,7 @@ class EpixUHR3x2_Manager:
     @property
     @lru_cache
     def FebAsics(self):
+        """Dict mapping ASIC numbers 1..nasics to the FEB 'Asic[n]' nodes (computed once per manager via ``lru_cache``)."""
         asic_dict: Dict[int, Any] = {}
         for i in range(1, self._nasics + 1):
             # asic_dict[i] = self._get_feb_asic(asic=i)
@@ -171,6 +205,7 @@ class EpixUHR3x2_Manager:
     @property
     @lru_cache
     def FebFramerAsics(self):
+        """Dict mapping ASIC numbers 1..nasics to the FEB 'FramerAsic[n]' nodes (computed once per manager via ``lru_cache``)."""
         asic_dict: Dict[int, Any] = {}
         for i in range(1, self._nasics + 1):
             # asic_dict[i] = self._get_feb_asic(asic=i)
@@ -202,15 +237,18 @@ class EpixUHR3x2_Manager:
 
     @property
     def FebWaveformControl(self):
+        """The FEB's ``App.WaveformControl`` node."""
         return self.FebFpga.App.WaveformControl
 
     @property
     def FebTriggerRegisters(self):
+        """The FEB's ``App.TriggerRegisters`` node."""
         return self.FebFpga.App.TriggerRegisters
 
     def init_waveform_control(self, raw_init: bool = False) -> None:
         # logger: logging.Logger = logging.getLogger(self._logger_name)
         # logger.info("**** Setting Initial Waveform Settings ****")
+        """Write the initial WaveformControl register values listed in the code; `raw_init` has no effect."""
         print("**** Setting Initial Waveform Settings ****")
         registers_and_vals: Dict[str, Any] = {
             "enable": True,
@@ -244,11 +282,13 @@ class EpixUHR3x2_Manager:
         )
 
     def running_waveform_control(self) -> None:
+        """Call `init_waveform_control` (same values)."""
         self.init_waveform_control()
 
     def init_trigger_registers(self) -> None:
         # logger: logging.Logger = logging.getLogger(self._logger_name)
         # logger.info("**** Setting Initial Trigger Settings ****")
+        """Write the initial TriggerRegisters values listed in the code (triggers disabled, PgpTrigEn True)."""
         print("**** Setting Initial Trigger Settings ****")
         registers_and_vals: Dict[str, Any] = {
             "enable": True,
@@ -269,6 +309,11 @@ class EpixUHR3x2_Manager:
         )
 
     def running_trigger_registers(self, rog: int, start_ns: int, trig_cfg: Dict[str, Any]) -> Tuple[int, int]:
+        """Disable the run trigger, set up the DAQ and run triggers for readout group `rog` and `start_ns`, then write the running TriggerRegisters values; return ``(daq_delay, run_delay)``.
+
+        The written values include a fixed DaqTriggerDelay of 1210 (code comment: overwriting the trigger
+        delay for now). `trig_cfg` is passed to `setup_daq_trigger`/`setup_run_trigger`.
+        """
         logger: logging.Logger = logging.getLogger(self._logger_name)
 
         # Make sure triggers are not running before doing this
@@ -430,6 +475,7 @@ class EpixUHR3x2_Manager:
         )
 
     def set_running_asics(self, asics: List[int], app_cfg: Dict[str, Any] = {}) -> None:
+        """For each ASIC number in `asics`, write the running SACI register values (updated with ``app_cfg['Asic[<n>]']``), sleep 0.1 s, and enable its framer with no lanes disabled."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
         for asic in asics:
             logger.info(f"Configuring Asic {asic}")
@@ -451,11 +497,13 @@ class EpixUHR3x2_Manager:
         )
 
     def init_asics(self, asics: Tuple[int, ...]):
+        """For each ASIC number in `asics`, write the initial SACI register values and disable its framer (DisableLane 0)."""
         for asic in asics:
             self._init_asic(asic=asic)
             self._init_framer_asic(asic=asic)
 
     def setup_event_batchers(self, timeout: Optional[int] = None):
+        """For every batcher event builder in the readout system: release Blowoff, soft-reset, and set Timeout to `timeout` (0 if None)."""
         for devPtr in self.ReadoutSystem.find(typ=batcher.AxiStreamBatcherEventBuilder):
             devPtr.Blowoff.set(False)
             devPtr.SoftRst()
@@ -463,6 +511,7 @@ class EpixUHR3x2_Manager:
 
     def setup_bypasses_for_disabled_asics(self, asic_mask: int) -> None:
         # Mux Bypasses
+        """Set the FEB EventSeqMux and readout-system batcher Bypass masks from the inverted `asic_mask` (bits 0-2 and 3-5 for the two muxes) so disabled ASICs are bypassed."""
         bypass0: int = ((~asic_mask) & 0b000111) << 2
         bypass1: int = ((~asic_mask) & 0b111000) >> 1
         self.FebFpga.App.EventSeqMux[0].Bypass.set(bypass0)
@@ -522,12 +571,14 @@ class EpixUHR3x2_Manager:
         )
 
     def power_on(self, asic_mask: int = 0x3F):
+        """Enable the common and digital ASIC power, write `asic_mask` to 'enableP1V3AAsic', and enable the FEB App."""
         self.FebFpga.App.EnableCommonAsicPower()
         self.FebFpga.App.EnableAllAsicDigitalPower()
         self.FebFpga.App.BoardCtrl3x2Readout.enableP1V3AAsic.set(asic_mask)
         self.FebFpga.App.enable.set(True)
 
     def reset_gt(self):
+        """Pulse 'gtRstAll' (1 s high); failures are only logged."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
         try:
             self.FebFpga.App.AsicGtClk.gtRstAll.set(True)
@@ -537,6 +588,7 @@ class EpixUHR3x2_Manager:
             logger.error(f"GT Reset failed: {err}")
 
     def reset_asic_gt(self, asics: Tuple[int, ...], emulator: bool = True):
+        """Unless `emulator`, pulse 'gtStableRst' (1 s) on the 'AsicGtData[i]' nodes for `asics`, logging failures; with `emulator` only a debug message is logged."""
         logger: logging.Logger = logging.getLogger(self._logger_name)
         if not emulator:
             for i in asics:
@@ -624,6 +676,7 @@ class EpixUHR3x2_Manager:
                     devPtr.FebFpga.App.AsicGtData[i + 1].gtStableRst.set(False)
 
     def init_board(self, timebase: str):
+        """Run the board start-up sequence: PLL lock check, ``ConfigLclsTimingV2`` (unless '119M'), clock dependencies, trigger and waveform init, power-up, then `initialize_timing` and a data-path kick toward the CPU."""
         self._check_pll_lock()
 
         if timebase != "119M":
@@ -653,25 +706,35 @@ class EpixUHR3x2_Manager:
         self._kick_data_path(use_cpu=True)
 
     def reset_counters(self):
+        """Reset the FEB timing frame counters and the counters of FEB TriggerEventBuffer[1]."""
         self.FebFpga.App.TimingRx.TimingFrameRx.countReset()
         self.FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].countReset()
 
     def set_timing_trigger(self):
+        """Call ``FebFpga.App.SetTimingTrigger()``."""
         self.FebFpga.App.SetTimingTrigger()
 
     def start_auto_trigger(self):
+        """Call ``FebFpga.App.TriggerRegisters.StartAutoTrigger()``."""
         self.FebFpga.App.TriggerRegisters.StartAutoTrigger()
 
     @property
     def timing_params(self) -> TimingParameters:
+        """Current `TimingParameters` (default: 186M values, no PCIe timing)."""
         return self._timing_params
 
     @timing_params.setter
     def timing_params(self, params: TimingParameters) -> None:
+        """Replace the stored `TimingParameters`."""
         self._timing_params = params
 
     def initialize_timing(self, timebase: str) -> None:
         # Stop the device before doing anything elsef
+        """Stop the run and set up the FEB timing receiver for `timebase` ('119M' writes ModeSelEn/ClkSel/RxDown, others call ``ConfigLclsTimingV2``).
+
+        Only the non-'119M' branch stores its parameters in `timing_params`; the '119M' parameters are
+        built but not stored.
+        """
         self.ReadoutSystem.StopRun()
         time.sleep(0.1)
 
@@ -1039,14 +1102,17 @@ class EpixUHR3x2_Manager:
 
     @property
     def RxId(self) -> int:
+        """Read and return the FEB XpmMessageAligner 'RxId'."""
         return self.FebTriggerEventManager.XpmMessageAligner.RxId.get()
 
     @property
     def TxId(self) -> int:
+        """Read and return the FEB XpmMessageAligner 'TxId'."""
         return self.FebTriggerEventManager.XpmMessageAligner.TxId.get()
 
     @TxId.setter
     def TxId(self, value: int) -> None:
+        """Write `value` to the FEB XpmMessageAligner 'TxId' with `write_and_check`."""
         self.write_and_check(
             register=self.FebTriggerEventManager.XpmMessageAligner.TxId, value=value
         )

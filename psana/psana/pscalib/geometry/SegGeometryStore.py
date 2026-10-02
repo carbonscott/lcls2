@@ -147,6 +147,7 @@ def segment_geometry(**kwa):
 
 
 class SegGeometryStore():
+    """Cache of segment-geometry objects keyed by detector object and segment name (``dict_dets``)."""
     def __init__(sp):
         sp.dict_dets = {} # {<det-object>:{segname:<seg_geo-object>}}
 
@@ -168,6 +169,10 @@ class SegGeometryStore():
         return seg_geo
 
     def Create(sp, **kwa):
+        """Return the cached segment geometry for kwa ``detector`` and ``segname``, creating it with ``segment_geometry(**kwa)`` if missing or if ``update_seggeo`` is True.
+
+        Returns None if ``segname`` is None; ``segment_geometry`` returns None for unknown segment names.
+        """
         return sp.create_single_segment_geometry(**kwa)
         #return segment_geometry(**kwa)
 

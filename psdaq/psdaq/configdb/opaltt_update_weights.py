@@ -1,3 +1,4 @@
+"""Script: run ``tt_update_weights.main('opal', opaltt_cdict)`` to update the time-tool weights/calibration of an opal configuration."""
 import psdaq.configdb.tt_update_weights as ttuw
 from psdaq.configdb.opaltt_config_store import opaltt_cdict
 

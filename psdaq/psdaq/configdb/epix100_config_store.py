@@ -1,3 +1,4 @@
+"""Script: write a default 'epix100' configuration (from `epix100_cdict`) to the config database."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import numpy as np
@@ -7,6 +8,7 @@ import argparse
 
 def epix100_cdict():
 
+    """Return a `cdict` with the default epix100 settings: alg 'config' version [2,0,0], 'user.start_ns' 88000, 'user.gate_ns' 154000, TriggerEventBuffer PauseThreshold 16 and 'expert.cfgyaml:RO' 'NoYaml'."""
     top = cdict()
     top.setAlg('config', [2,0,0])
 

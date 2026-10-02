@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 
+"""Template example script: runs ``ex_01`` for test name '1' or '2' given on the command line."""
 import sys
 #import math
 #import numpy as np
@@ -15,6 +16,7 @@ import sys
 #----------
 
 def ex_01(ntest) : 
+    """Print 'ntest <ntest>'; no other action."""
     print('ntest %s' % ntest)
 
 #----------

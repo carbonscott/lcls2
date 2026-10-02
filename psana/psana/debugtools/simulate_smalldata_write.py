@@ -45,6 +45,10 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 def detect_streams(exp, run, xtc_dir):
+    """Return the number of streams for run ``run`` of ``exp``: one more than the highest stream index NNN among files '<exp>-rRRRR-sNNN-c000.xtc2' in ``xtc_dir``.
+
+    Raises FileNotFoundError if ``xtc_dir`` is not a directory and RuntimeError if no matching file exists.
+    """
     run_str = f"r{run:04d}"
     stream_nums = []
 
@@ -62,6 +66,10 @@ def detect_streams(exp, run, xtc_dir):
     return max(stream_nums) + 1  # Streams are 0-indexed
 
 def create_symlinks(base_path, xtc_dir, exp, run, num_streams):
+    """Create ``base_path`` (if needed) and, for streams 0 to ``num_streams``-1, a symlink '<base_path>/<exp>-rRRRR-sNNN-c000.xtc2' pointing to the file of the same name in ``xtc_dir``.
+
+    An existing file or link at the destination is removed first; failures are printed and skipped.
+    """
     run_str = f"r{run:04d}"
     os.makedirs(base_path, exist_ok=True)
 
@@ -78,6 +86,10 @@ def create_symlinks(base_path, xtc_dir, exp, run, num_streams):
             print(f"Failed to create symlink {dest}: {e}")
 
 def run_smdwriter(output_dir, exp, run, stream_id, m, n):
+    """Run the external ``smdwriter`` command for stream ``stream_id`` with options -f, -o, -m ``m`` and -n ``n``, writing '<output_dir>/smalldata/<file>.smd.xtc2.inprogress', then rename that file to '.smd.xtc2'.
+
+    If the in-progress file does not exist after the command, a warning is printed instead of renaming.
+    """
     run_str = f"r{run:04d}"
     stream = f"s{str(stream_id).zfill(3)}"
     input_file = f"{exp}-{run_str}-{stream}-c000.xtc2"
@@ -107,6 +119,10 @@ def run_smdwriter(output_dir, exp, run, stream_id, m, n):
         print(f"Warning: {inprogress_path} not found after smdwriter finished.")
 
 def main():
+    """Parse the command line, detect the stream count, create the symlinks (unless the xtc directory equals the output path), recreate '<output_path>/smalldata' and run one ``run_smdwriter`` per stream in a thread pool.
+
+    Prints a warning when the hostname does not start with 'drp-srcf'. Without --xtc-dir the directory '/sdf/data/lcls/ds/<first 3 chars of exp>/<exp>/xtc' is used.
+    """
     parser = argparse.ArgumentParser(description="Simulate smalldata writing with symlinks.")
     parser.add_argument("exp", help="Experiment name, e.g. rixl1032923")
     parser.add_argument("run", type=int, help="Run number, e.g. 22")

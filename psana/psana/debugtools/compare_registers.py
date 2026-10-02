@@ -1,7 +1,12 @@
+"""Command-line script: print the keys whose values differ between two YAML files after flattening nested dicts into dotted keys.
+
+Usage: ``compare_registers.py <file1.yaml> <file2.yaml>``.
+"""
 import yaml
 import sys
 
 def load_yaml(file_path):
+    """Return the content of YAML file ``file_path`` parsed with ``yaml.safe_load``."""
     with open(file_path, 'r') as f:
         return yaml.safe_load(f)
 
@@ -17,6 +22,7 @@ def flatten_dict(d, parent_key='', sep='.'):
     return items
 
 def compare_registers(file1, file2):
+    """Load and flatten the YAML files ``file1`` and ``file2`` and print every dotted key whose values differ, showing '<missing>' for keys absent from one file."""
     data1 = flatten_dict(load_yaml(file1))
     data2 = flatten_dict(load_yaml(file2))
 

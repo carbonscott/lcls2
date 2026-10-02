@@ -1,8 +1,16 @@
+"""Script: start 60 threads that each query the CPU number 100 times and print it once with the process id; all of this runs at import time.
+
+The CPU query is ``os.sched_getcpu`` when available.
+"""
 import threading
 import os
 
 print(f"Start thread_cpu_demo pid: {os.getpid()}")
 def get_cpu():
+    """Return ``psutil.Process().cpu_num()``.
+
+    At import the name ``get_cpu`` is rebound to ``os.sched_getcpu`` if it exists; otherwise it is rebound to the integer returned by one call of this function, so the later calls in ``worker`` would fail.
+    """
     import psutil
     return psutil.Process().cpu_num()
 
@@ -12,6 +20,7 @@ except AttributeError:
     get_cpu = get_cpu()
 
 def worker(thread_id):
+    """Call ``get_cpu()`` 100 times and print the thread id, the CPU number of the first call and the process id."""
     for _ in range(100):
         cpu = get_cpu()
         if _  == 0:

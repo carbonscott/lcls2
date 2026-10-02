@@ -1,9 +1,22 @@
+"""ZeroMQ PUB/SUB plus REQ/REP barrier for DRP processes sharing a host, and a helper to pick the supervisor."""
 import zmq
 import time
 import os
 import socket
 
 def supervisor_info(json_msg,mydev):
+    """Find this process's role among the active DRPs on this host in a connect message.
+
+    DRPs count when their host is this host, they are active and, on hosts whose name contains
+    'gpu', their 'device' equals `mydev`.
+
+    Returns
+    -------
+    tuple
+        ``(supervisor, nworker)``: `supervisor` is True if the first counted entry has this
+        process's pid, False if not, None if no entry counted; `nworker` is the number of counted
+        entries after the first.
+    """
     nworker = 0
     supervisor=None
     mypid = os.getpid()
@@ -40,6 +53,19 @@ class Barrier:
         self.shutdown()
 
     def init(self, supervisor, nworker, port1=5561, port2=5562):
+        """Store the role and ports and, unless `nworker` is 0, run `supervisor_init` or `worker_init`.
+
+        Parameters
+        ----------
+        supervisor : bool
+            True for the supervisor process.
+        nworker : int
+            Number of workers; 0 makes every barrier call a no-op.
+        port1 : int, optional
+            PUB/SUB port. Default 5561.
+        port2 : int, optional
+            REQ/REP port. Default 5562.
+        """
         self.supervisor = supervisor
         self.nworker = nworker
         self.port1 = port1
@@ -52,6 +78,10 @@ class Barrier:
 
     def shutdown(self):
         # To be called on the deallocate transition
+        """Close this process's sockets and reset `nworker` to 0; does nothing if `nworker` is already 0.
+
+        The code comment says it is to be called on the deallocate transition.
+        """
         if self.nworker==0: return
         if self.supervisor:
             self.publisher.close()
@@ -65,6 +95,10 @@ class Barrier:
 
     def supervisor_init(self):
         # Socket to talk to workers
+        """Bind the PUB socket on `port1` and REP socket on `port2` (first time only), then answer one empty request from each of `nworker` workers.
+
+        Blocks until all workers have sent their request.
+        """
         if not self.publisher:
             self.publisher = self.context.socket(zmq.PUB)
             # set SNDHWM, so we don't drop messages for slow subscribers
@@ -85,6 +119,7 @@ class Barrier:
             subscribers += 1
 
     def worker_init(self):
+        """Connect SUB to localhost `port1` and REQ to localhost `port2` (first time only, with a 1 s sleep between), then send an empty request and wait for the reply."""
         if not self.subscriber:
             self.subscriber = self.context.socket(zmq.SUB)
             self.subscriber.connect(f"tcp://localhost:{self.port1}")
@@ -112,6 +147,10 @@ class Barrier:
         self.syncworker.recv()
 
     def wait(self):
+        """Supervisor: publish b'unblock'. Worker: block until a message arrives on the SUB socket.
+
+        Does nothing if `nworker` is 0.
+        """
         if self.nworker==0: return # do nothing if only one opal
         if self.supervisor:
             self.publisher.send(b"unblock")

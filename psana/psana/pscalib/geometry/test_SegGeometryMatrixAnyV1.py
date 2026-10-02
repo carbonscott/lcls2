@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
-    """For a (512, 512) matrix, print the coordinate maps in um and plot the X and Y pixel-index maps."""
+    """For a (512, 512) matrix, print the coordinate maps in um and plot the X and Y coordinate maps in pixel units (from ``get_seg_xy_maps_pix``)."""
     w = SegGeometryMatrixAnyV1()
     w.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
     w.print_maps_seg_um()

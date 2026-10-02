@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Drp::Gpu::Detector, the base of the GPU DRP detectors, the NamesId indices they use, and the createDetector() factory declaration.
+ */
 #pragma once
 
 #include "drp/Detector.hh"
@@ -11,20 +15,24 @@
 namespace Drp {
   namespace Gpu {
 
-enum { MaxPnlsPerNode = 10 };       // From BEBDetector.hh
-enum { ConfigNamesIndex = Drp::NamesIndex::BASE,
-       EventNamesIndex  = unsigned(ConfigNamesIndex) + unsigned(MaxPnlsPerNode),
-       FexNamesIndex    = unsigned(EventNamesIndex)  + unsigned(MaxPnlsPerNode),
-       ReducerNamesIndex };         // index for xtc NamesId
+/** Panel limit used to space the NamesId indices below. */
+enum { MaxPnlsPerNode = 10  /**< Maximum number of panels per node, 10 (per the code comment, taken from BEBDetector.hh). */ };       // From BEBDetector.hh
+/** NamesId indices for the xtc names of the GPU DRP (per the code comment). */
+enum { ConfigNamesIndex = Drp::NamesIndex::BASE, /**< Drp::NamesIndex::BASE. */ 
+       EventNamesIndex  = unsigned(ConfigNamesIndex) + unsigned(MaxPnlsPerNode), /**< ConfigNamesIndex plus MaxPnlsPerNode. */ 
+       FexNamesIndex    = unsigned(EventNamesIndex)  + unsigned(MaxPnlsPerNode), /**< EventNamesIndex plus MaxPnlsPerNode. */ 
+       ReducerNamesIndex  /**< FexNamesIndex plus 1; the reducers register the names of the reduced data under it. */ };         // index for xtc NamesId
 
 // Not working:
 //typedef void CalibrateFn_t(float*    const calib,
 //                           uint16_t* const raw,
 //                           unsigned  const nElements);
 
+/** Base of the GPU DRP detectors (Drp::Gpu::Detector). The transition methods forward to a wrapped Drp::Detector for the PGP device when one was created with _initialize(); the pure virtual methods give the Reader calibration kernel its constants. */
 class Detector : public Drp::Detector
 {
 public:
+  /** Pass para and pool to Drp::Detector; no wrapped detector until _initialize() is called. */
   Detector(Parameters* para, MemPoolGpu* pool) :
     Drp::Detector(para, pool),
     m_det(nullptr)
@@ -64,9 +72,13 @@ public:
   //                          unsigned  const count,
   //                          unsigned  const rangeOffset,
   //                          unsigned  const rangeBits) const;
+  /** Pure virtual: return the bit position of the gain range field in a raw 16-bit value. The Reader calibration kernel uses the bits below it as the data value. */
   virtual unsigned     rangeOffset() const = 0;
+  /** Pure virtual: return the width in bits of the gain range field. */
   virtual unsigned     rangeBits()   const = 0;
+  /** Pure virtual: return the device array of pedestals, one set per gain range of one value per pixel. The Reader kernel computes (data - pedestal) * gain. */
   virtual float const* pedestals_d() const = 0;
+  /** Pure virtual: return the device array of gains, laid out like pedestals_d(). */
   virtual float const* gains_d()     const = 0;
 
   //virtual void recordGraph(cudaStream_t          stream,
@@ -74,8 +86,11 @@ public:
   //                         uint16_t const* const data) = 0;
   //virtual CalibrateFn_t* getCalibFn() const { return nullptr; } // Not working
 
+  /** Start phase 2 of a transition; PGPDetectorApp calls it after phase 1 only in simulator mode (device /dev/null). Does nothing here. */
   virtual void issuePhase2(XtcData::TransitionId::Value) {} // Used in simulator mode only
+  /** Return device buffers of reference calibrated data for checking (used in simulator mode only, per the code comment); null here. */
   virtual float const* referenceBuffers() const { return nullptr; } // Used in simulator mode only
+  /** Return the number of reference buffers; 0 here. */
   virtual unsigned     referenceBufCnt()  const { return 0; }       // Used in simulator mode only
 protected:
   template<typename T>
@@ -93,7 +108,9 @@ protected:
 
 extern "C"
 {
+  /** Type of createDetector(). */
   typedef Drp::Gpu::Detector* DetectorFactoryFn_t(Drp::Parameters&, Drp::Gpu::MemPoolGpu&);
 
+  /** Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return a new detector. PGPDetectorApp's DetectorFactory loads it from the library named for the detector type. */
   Drp::Gpu::Detector* createDetector(Drp::Parameters& para, Drp::Gpu::MemPoolGpu& pool);
 }

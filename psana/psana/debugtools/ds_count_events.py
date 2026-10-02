@@ -38,6 +38,10 @@ except ImportError:
 
 
 def parse_args():
+    """Parse and return the command-line options (experiment/run or --xtc_files, --dir, detector lists, --max_events, --batch_size, --print_interval, --log_level, --debug_detector, --calib, calibration and mode flags, --log_file, --show_rank_stats, --test_pixel_coords).
+
+    If any --skip_calib_load value is 'all', the option is replaced by the string 'all'.
+    """
     parser = argparse.ArgumentParser(
         description="Count total number of events from an experiment/run or explicit XTC2 files."
     )
@@ -127,6 +131,10 @@ def _rss_gb():
 
 
 def main():
+    """Count events over MPI ranks and print timing and rate summaries.
+
+    Creates the DataSource (plus ``ds.smalldata`` when PS_SRV_NODES > 0), optionally times ``det.raw._pixel_coords()``, and loops over all events, calling detector methods for 'epix10ka', 'jungfrau' (raw or calib) or 'dream_hsd_lmcp' when --debug_detector is set and printing per-interval rates and RSS. Rank 0 prints the total count, load and loop times and, when available, big-data-rank event statistics, aggregate parallel-pread I/O and detector-call rates; other ranks print their own statistics with --show_rank_stats.
+    """
     args = parse_args()
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()

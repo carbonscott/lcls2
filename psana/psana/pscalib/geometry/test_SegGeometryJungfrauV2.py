@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
-    """Print the coordinate maps in um of ``jungfrau_front`` and plot its X and Y pixel-index maps."""
+    """Print the coordinate maps in um of ``jungfrau_front`` and plot its X and Y coordinate maps in pixel units (from ``get_seg_xy_maps_pix``)."""
     w = jungfrau_front
     w.print_maps_seg_um()
 

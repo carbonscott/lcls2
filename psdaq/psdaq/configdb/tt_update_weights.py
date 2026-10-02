@@ -1,3 +1,4 @@
+"""Command-line helper to store time-tool FIR weights and calibration polynomial coefficients in a detector configuration (used by the opal/piranha4 update_weights scripts)."""
 import os
 
 import psdaq.configdb.configdb as cdb
@@ -8,6 +9,11 @@ import argparse
 
 #  Copy values and shape from config dict into cdict
 def copyValues(din,dout,k=None):
+    """Copy the leaf values of config dict `din` into `cdict` `dout` under dotted keys, skipping keys containing ':RO'.
+
+    For each leaf, the existing entry ``dout.get(k, withtype=True)`` decides: None is skipped, length > 2
+    prints 'Skipping', length 1 is set as 'UINT8', otherwise it is set with the stored type ``v[0]``.
+    """
     if k is not None and ':RO' in k:
         return
     if isinstance(din,dict):
@@ -27,6 +33,23 @@ def copyValues(din,dout,k=None):
             dout.set(k,din,v[0])
 
 def main(name, cdict_fn):
+    """Parse arguments, rebuild the configuration of '<name>_<segm>' with `cdict_fn`, store the weights and calibration, and write it back.
+
+    The --weights and --calib files are read with ``np.loadtxt`` (an empty default path is passed as is);
+    non-empty 1-D arrays are stored as 'fex.fir_weights' and 'fex.calib_poly' (DOUBLE).
+
+    Parameters
+    ----------
+    name : str
+        Detector type passed to ``setInfo``.
+    cdict_fn : callable
+        Returns the default `cdict` that the database values are copied into.
+
+    Raises
+    ------
+    ValueError
+        If the configuration is not found or an array has more than one dimension.
+    """
     parser = argparse.ArgumentParser(description='Update weights and/or calib polynomial constants')
     parser.add_argument('--weights', help='space-delimited file of weights', default='')
     parser.add_argument('--calib', help='space-delimited file of coefficients', default='')

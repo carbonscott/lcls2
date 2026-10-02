@@ -149,6 +149,7 @@ def scan_logs(exp_name):
     return results
 
 def main():
+    """Parse the experiment name, collect error lines from the matching slurm logs with ``scan_logs`` and print them per log file with its modification time and, when found, the experiment and run; prints a message if no errors were found."""
     import argparse
     parser = argparse.ArgumentParser(description="Scan slurm logs for experiment runtime errors.")
     parser.add_argument("experiment", help="Experiment name (e.g. rixl1032923)")

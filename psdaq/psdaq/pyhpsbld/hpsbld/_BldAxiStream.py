@@ -17,10 +17,15 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+"""pyrogue `BldEdef` and `BldAxiStream` devices of the HPS BLD board."""
 import pyrogue        as pr
 
 class BldEdef(pr.Device):
 
+    """pyrogue Device with RW registers 'rateSel' (offset 0x0, bits 0-12), 'destSel' (0x0, bits 13-31), 'tsUpdate' (0x4, bits 0-4) and 'Enable' (0x4, bit 31).
+
+    `numEdefs` is accepted but unused.
+    """
     def __init__(   self, 
                     name        = "BldEdef", 
                     description = "HPS BLD Application Module", 
@@ -70,6 +75,7 @@ class BldEdef(pr.Device):
 
 class BldAxiStream(pr.Device):
 
+    """pyrogue Device with packet control registers ('packetSize', 'Enable', 'channelMask'), read-only status and diagnostic registers (offsets 0x10-0x30), and `numEdefs` (default 4) `BldEdef` children 'Edef<i>' at ``0x40 + 8*i``."""
     def __init__(   self, 
                     name        = "BldAxiStream", 
                     description = "HPS BLD Application Module", 
@@ -214,6 +220,7 @@ class BldAxiStream(pr.Device):
             ))
 
     def Dump(self):
+        """Print 'name : value' for every child node that has a `get` method (reads each one from the device)."""
         for k,v in self._nodes.items():
             if hasattr(v,'get'):
                 print('{:} : {:}'.format(k,v.get()))

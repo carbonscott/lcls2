@@ -24,6 +24,12 @@ from geoseg_base import geoseg_base
 
 class geoseg_cspad2x1(geoseg_base) :
 
+    """``geoseg_base`` subclass defined by class attributes only: ``shape`` (185, 388), pixel sizes ``dim_s``/``dim_f`` 109.92, ``dim_d`` 400 and ``dim_w = 2.5*dim_f``.
+
+    ``pixgrps`` lists three column blocks (0-192, 193-194 with width ``dim_w``, 195-387); ``vpix0``,
+    ``v_f`` and ``v_s`` give the position of pixel (0, 0) and the fast/slow index directions. The module
+    imports ``geoseg_base`` with ``from geoseg_base import ...``, which requires the ``geonew`` directory on ``sys.path``.
+    """
     shape = (185,388) # DAQ-like data array shape of segment
 
     dim_s = 109.92    

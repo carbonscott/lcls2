@@ -1,3 +1,4 @@
+"""Script: run 'lcls2-xpm/psdaq/psdaq/configdb/hsd_config_store.py' with --update (production tmo, alias BEAM, fixed user and password arguments) for each name in a hard-coded list of HSD segments, using ``subprocess.run``."""
 import subprocess
 
 path = 'lcls2-xpm/psdaq/psdaq/configdb/hsd_config_store.py'

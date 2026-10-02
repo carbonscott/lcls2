@@ -1,3 +1,4 @@
+"""Script: write a default 'opal' configuration (from `opal_cdict`) to the config database."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 from psdaq.configdb.tsdef import *
@@ -18,6 +19,12 @@ def opal_cdict():
     #have two fields "collection" and ID field (note how collection here is a field. ID points to a unique document).  This collection field and
     #ID point to the actuall Mongo DB collection and document
 
+    """Return a `cdict` with the default Opal1000 camera configuration (alg version [2,0,0]).
+
+    It holds the help text, user settings (start_ns 92000, gate_ns 10000, black_level 32, vertical_bin 0),
+    trigger-buffer and XpmMini rate settings, and ClinkFeb/UartOpal1000 expert registers with the values
+    and comments written in the code.
+    """
     top = cdict()
     top.setAlg('config', [2,0,0])
 

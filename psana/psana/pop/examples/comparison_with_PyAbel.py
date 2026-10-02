@@ -1,3 +1,4 @@
+"""Example: compare ``POP.Peel``/``GetSlice`` with several PyAbel inverse transforms on a pickled image, timing each, and save the normalized results as 'comparison_with_PyAbel.pdf'."""
 import time
 import numpy as np
 import matplotlib.pyplot as plt

@@ -16,9 +16,23 @@ from p4p import Value, Type
 logger = logging.getLogger(__name__)
 
 class DefaultPVHandler(object):
+    """SharedPV handler whose `put` posts the written value with a host timestamp."""
     type = None
 
     def put(self, pv, op):
+        """Post the value of PUT operation `op` to `pv` with the current time and complete the operation.
+
+        The current 'MDEL' field is only logged at debug level (the check against it is commented out).
+        The timestamp is split with ``divmod(time.time(), 1.0)``, so 'timeStamp.nanoseconds' is given
+        the fractional second, not a nanosecond count.
+
+        Parameters
+        ----------
+        pv : p4p.server.thread.SharedPV
+            PV being written.
+        op : p4p server operation
+            PUT operation; ``op.value()`` is posted and ``op.done()`` is called.
+        """
         logger.debug("Current MDEL %s", pv.current().get('MDEL'))
         # if pv.current().get('MDEL') and abs(pv.current().value() - op.value()) >= pv.current().get('MDEL'):
         postedval = op.value()
@@ -42,6 +56,10 @@ __pcastypes2startingval__ = {
 
 
 class PVAServer(object):
+    """p4p PVA server holding a `StaticProvider` named `provider_name` and the SharedPVs created by `createPV`.
+
+    The PVs are kept in `pvs` so their handlers are not garbage collected (per the code comment).
+    """
     def __init__(self, provider_name):
         self.provider = StaticProvider(provider_name)
         self.pvs = []
@@ -78,6 +96,10 @@ class PVAServer(object):
             logger.debug("Created PV for %s", prefix+name)
 
     def forever(self):
+        """Call ``p4p.server.Server.forever`` with this server's provider.
+
+        This blocks; when it returns is decided by p4p, not by this code.
+        """
         Server.forever(providers=[self.provider])
 
 if __name__=='__main__':

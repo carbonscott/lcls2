@@ -1,3 +1,8 @@
+"""Script: write a default opal time-tool configuration (from `opaltt_cdict`) to the config database under device type 'opal'.
+
+--update keeps existing values via ``update_config`` (and fixes the stored 'fex.fir_weights' length),
+and --dryrun skips writing.
+"""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.get_config import update_config
 import psdaq.configdb.configdb as cdb
@@ -8,6 +13,11 @@ import argparse
 
 def opaltt_cdict():
 
+    """Return `opal_config_store.opal_cdict()` extended with time-tool 'fex' settings and an extended help text.
+
+    Adds beam/laser event-code and destination selections, signal/reference/sideband ROIs, projection,
+    convergence and prescale settings, default FIR weights and calibration polynomial.
+    """
     top = opal.opal_cdict()
 
     #  append to the help string

@@ -1,3 +1,8 @@
+"""DRP configuration functions for the ePixUHR3x2 detector, using an ``epixuhr_3x2_readout_testing.Root`` and an `EpixUHR3x2_Manager` (from `psdaq.configdb.epixuhr3x2`) for register access.
+
+State is kept in the module dict `base` and module globals; a module `Barrier` coordinates the
+processes on one host.
+"""
 import copy  # deepcopy
 import fcntl
 import json
@@ -61,6 +66,7 @@ def _dict_compare(d1, d2, path):
 
 # Sanitize the json for json2xtc by removing offensive characters
 def sanitize_config(src):
+    """Return a copy of nested dict `src` with '[', ']', '(' and ')' removed from every key (the code comment says this is for json2xtc)."""
     dst = {}
     for k, v in src.items():
         if isinstance(v, dict):
@@ -70,6 +76,14 @@ def sanitize_config(src):
 
 
 def supervisor_info(json_msg):
+    """Find this process's role among the active DRPs on this host in a connect message.
+
+    Returns
+    -------
+    tuple
+        ``(supervisor, nworker)``: `supervisor` is True if the first active entry on this host has
+        this process's pid, False if not, None if there is none; `nworker` counts the later entries.
+    """
     nworker: int = 0
     supervisor: Optional[bool] = None
     mypid: int = os.getpid()
@@ -253,6 +267,7 @@ def epixuhr3x2_init(
 #  Set the PGP lane
 #
 def epixuhr3x2_init_feb(slane=None, schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
 
@@ -266,6 +281,11 @@ def epixuhr3x2_init_feb(slane=None, schan=None):
 #  Set the local timing ID and fetch the remote timing ID
 #
 def epixuhr3x2_connectionInfo(base, alloc_json_str):
+    """Set up the barrier, write the timing TxId and read RxId, sync the manager, and return ``{'paddr', 'serno', 'short_sn_id'}``.
+
+    The TxId is ``timTxId('epixuhr3x2')`` (an RxId of 0xFFFFFFFF is only logged); the branch for a
+    non-None `xpmpv_global` is an empty placeholder. 'short_sn_id' is 'epixuhr3x2_<ShortSerNo>_0'.
+    """
     global lane
     global chan
 
@@ -328,6 +348,7 @@ def epixuhr3x2_connectionInfo(base, alloc_json_str):
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, fullConfig=False):
+    """Stub: does nothing and returns `base`."""
     global origcfg
     global group
     global lane
@@ -337,6 +358,7 @@ def user_to_expert(base, cfg, fullConfig=False):
 #  Apply the cfg dictionary settings
 #
 def config_expert(base, cfg, writeCalibRegs=True, secondPass=False):
+    """Stub: does nothing and returns `base`."""
     global asics  # Need to maintain this across configuration updates
     global gainMapSelection
     global gainValSelection
@@ -531,6 +553,7 @@ def epixuhr3x2_config(base, connect_str, cfgtype, detname, detsegm, rog):
 
 
 def epixuhr3x2_unconfig(base):
+    """Supervisor calls ``manager.Stop()``; all processes then wait on the barrier; returns `base`."""
     logging.info("epixuhr3x2_unconfig")
 
     manager = base["manager"]
@@ -547,6 +570,11 @@ def epixuhr3x2_unconfig(base):
 #  in response to the scan parameters
 #
 def epixuhr3x2_scan_keys(update):
+    """Return two sanitized JSON strings for a scan: the entries named in `update` copied from the stored configuration (not the new values) with header keys, and a segment holding 'gainAsic'.
+
+    The first segment's 'detName:RO' becomes '<name>hw_<segment>'; the second is a new `cdict`
+    (alg [1,1,0], detType 'epixuhr3x2', doc 'Scan Key').
+    """
     logging.debug("epixuhr3x2_scan_keys")
     global origcfg
     global base
@@ -707,6 +735,7 @@ def epixuhr3x2_update(update):
 
 
 def epixuhr3x2_enable(base):
+    """Only logs 'epixuhr3x2_enable'; the trigger/start calls are commented out."""
     manager = base["manager"]
     logging.info("epixuhr3x2_enable")
 
@@ -715,6 +744,7 @@ def epixuhr3x2_enable(base):
 
 
 def epixuhr3x2_disable(base):
+    """Only logs 'epixuhr3x2_disable'; the trigger call is commented out."""
     logging.info("epixuhr3x2_disable")
     # Prevents transitions going through: epixuhr3x2_internal_trigger(base)
 

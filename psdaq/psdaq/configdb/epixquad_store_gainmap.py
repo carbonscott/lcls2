@@ -1,3 +1,4 @@
+"""Command-line tool that turns a binary raw-layout epixquad mask (.npy, labels 0/1 mapped to gains with --map) into the raw pixel gain map and per-ASIC 'trbit' values, and stores them in the configuration."""
 import argparse
 import os
 
@@ -25,6 +26,11 @@ ASIC_COUNT = 16
 
 
 def copyValues(din, dout, k=None):
+    """Copy the leaf values of config dict `din` into `cdict` `dout` under dotted keys, skipping keys containing ':RO'.
+
+    For each leaf, the existing entry ``dout.get(k, withtype=True)`` decides: None is skipped, length > 2
+    prints 'Skipping', length 1 is set as 'UINT8', otherwise it is set with the stored type ``v[0]``.
+    """
     if k is not None and ':RO' in k:
         return
     if isinstance(din, dict):
@@ -156,6 +162,17 @@ def _label_map_to_raw_pixel_map(raw_labels, label_map):
 
 
 def main():
+    """Parse the arguments, rebuild the stored configuration into `epixquad_cdict`, compute the raw gain map and trbits, and write the result unless --test.
+
+    'user.gain_mode' is set to 5 and 'user.pixel_map_raw' to the computed map; the device info uses
+    type 'epix10kaquad'. Defaults: --inst 'ued', --alias 'BEAM', --name 'epixquad', --user 'uedopr'.
+
+    Raises
+    ------
+    ValueError
+        If --map does not cover labels 0 and 1, the file is not a binary .npy of the raw shape,
+        or an ASIC mixes gains that need different trbit values.
+    """
     parser = argparse.ArgumentParser(description='Update epixquad raw gain map in configdb')
     parser.add_argument('--file', help='input raw detector mask .npy with shape (4,352,384)', type=str, required=True)
     parser.add_argument(

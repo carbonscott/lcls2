@@ -1,3 +1,7 @@
+"""Example: load simulated data from a fixed text file, compute momentum components with ``IonMomentumFlat`` (``CalcPx``, ``CalcPy``, ``CalcPzMultiAcc``, ``CalcPzOneAccApprox``) and ``CalcEnergy`` for mass 14 and charge 1, and plot histograms of the computed values against the values stored in the file, saving 'ionMomentumFlatPlots.pdf'.
+
+In the code the file's Z column is passed to ``CalcPy`` and the multi-region result is used as Py.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from psana.momentum.IonMomentumFlat import IonMomentumFlat

@@ -89,6 +89,7 @@ ALGORITHMS = {'basic': 0, 'filter': 1}
 
 
 def build_parser():
+    """Return the ``argparse.ArgumentParser`` for this script: device/lane/channel, the dark/flat phase choice, calibration lines, algorithm and target, user-set saving, camera timing/format/gain/ROI, coefficient reset/load and UART options."""
     parser = argparse.ArgumentParser(
         description='Piranha4 dark (ccf) + flat field (cpa) calibration, '
                     'saved with uss',
@@ -323,6 +324,18 @@ FLAT_PROMPT = ("Phase 2 of 2: BRIGHT.  The sensor must now see a UNIFORM\n"
 
 
 def main():
+    """Run the Piranha4 dark (FPN) and/or flat-field (PRNU) calibration on the camera and optionally save it to a user set; returns 0, or 1 if the user does not confirm.
+
+    After checking the options and asking for confirmation (unless --yes or --dry-run), it opens a
+    ``ClinkDevRoot`` (VC0 and VC2 only), reads 'gcp', builds the command plan and either prints it
+    (--dry-run) or sends it, pausing for the dark and bright setups and restoring the timing afterwards.
+    The root is stopped on exit.
+
+    Raises
+    ------
+    Piranha4Error
+        If the PGP link is down or a camera command fails.
+    """
     parser = build_parser()
     args = parser.parse_args()
 

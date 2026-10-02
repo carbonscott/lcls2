@@ -1,3 +1,9 @@
+"""Test TEB script using `CubeTriggerDataSource` with 8192 bins (dims [64, 64, 2]) and detectors timing_1, bld_0 and mono_hrencoder_0.
+
+Runs at import. With use_gasdet/use_encoder both 0 (the defaults) every event is
+persisted into bin ``count % 8192``; a bin is recorded and monitored when
+``count % 5121 == 4``.
+"""
 from psdaq.trigger import tebTrigger
 from psdaq.configdb.typed_json import cdict
 #from psdaq import BldTebData, GasDetTebData, GmdTebData, XGmdTebData, PhaseCavityTebData, EBeamTebData

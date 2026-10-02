@@ -17,10 +17,15 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+"""Alternative pyrogue `BsasControl` device with flat registers; `hpsbld/__init__.py` does not import this module (it imports `_BsasControl`)."""
 import pyrogue        as pr
 
 class BsasControl(pr.Device):
 
+    """pyrogue Device with registers 'MaxSize', 'Activate', 'ChannelMask', 'ChannelSevr' (from offset 0x30000), read-only status registers up to 'Paused' (0x30020), and 'Port'/'Addr' at 0x01000828/0x0100082C.
+
+    The register meanings are given only by their `description` strings in the code (e.g. 'Host IP Addr').
+    """
     def __init__(   self, 
             name        = "BsasControl", 
             description = "HPS BLD Application Module", 
@@ -150,6 +155,7 @@ class BsasControl(pr.Device):
         ))
 
     def Dump(self):
+        """Print 'name : value' for every child node that has a `get` method (reads each one from the device)."""
         for k,v in self._nodes.items():
             if hasattr(v,'get'):
                 print('{:} : {:}'.format(k,v.get()))

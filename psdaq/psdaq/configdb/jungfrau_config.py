@@ -1,3 +1,4 @@
+"""DRP configuration functions for Jungfrau modules read out through ``lcls2_udp_pcie_apps.DevRoot`` UDP lanes (one lane per segment)."""
 import time
 import json
 import weakref
@@ -25,6 +26,11 @@ group = None
 def jungfrau_init(
     arg, dev="/dev/datadev_0", lanemask=1, xpmpv=None, timebase="186M", verbosity=0
 ):
+    """Create and start a ``lcls2_udp_pcie_apps.DevRoot`` with the lanes in `lanemask`, and return it.
+
+    Stores the lane mask and lowest lane in globals and registers ``stop`` with ``weakref.finalize``.
+    `arg`, `xpmpv`, `timebase` and `verbosity` are unused.
+    """
     global pv
     global jungfrau_kcu
     global lm
@@ -56,6 +62,7 @@ def jungfrau_init(
 
 
 def jungfrau_connectionInfo(jungfrau_kcu, alloc_json_str):
+    """Write ``timTxId('jungfrau')`` to TxId, call ``StopRun()``, and return ``{'paddr': rxId}`` with the RxId read before the write."""
     print("jungfrau_connect")
 
     txId = timTxId("jungfrau")
@@ -72,6 +79,15 @@ def jungfrau_connectionInfo(jungfrau_kcu, alloc_json_str):
 
 
 def user_to_expert(jungfrau_kcu, cfg):
+    """If 'user.delay_ns' is present, set 'expert.TriggerDelay' in `cfg` to ``round(delay_ns*1300/7000 - PartitionDelay[group]*200)`` via `update_config_entry`.
+
+    Its calls in this module are commented out.
+
+    Raises
+    ------
+    ValueError
+        If the computed delay is negative.
+    """
     global group
 
     d = {}
@@ -101,6 +117,7 @@ def user_to_expert(jungfrau_kcu, cfg):
 
 
 def config_expert(jungfrau_kcu, cfg):
+    """Write ``cfg['TriggerDelay']`` and ``cfg['PauseThreshold']`` to ``jungfrau_kcu.App.TimingRx`` TriggerEventBuffer[0]; its call in this module is commented out."""
     trig_event_buf = getattr(
         jungfrau_kcu.App.TimingRx.TriggerEventManager, "TriggerEventBuffer[0]"
     )
@@ -114,6 +131,17 @@ def config_expert(jungfrau_kcu, cfg):
 
 def jungfrau_config(jungfrau_kcu, connect_str, cfgtype, detname, detsegm, grp):
     # detsegm is either int (1 module) or "_" delimited string (multiple modules)
+    """Configure each segment's UDP lane and trigger buffer, start the run, enable the lanes in the mask, and return one configuration JSON string per segment.
+
+    `detsegm` is an int or a '_'-separated string of segments; segments take the set lanes of the mask
+    in order. Per lane it sets the KCU MAC/IP from the config, fills 'RemapLut' (128 packets), sets
+    event builder Bypass/Timeout 0 and Partition `grp`; `jungfrau_reset` runs first.
+
+    Raises
+    ------
+    ValueError
+        If a lane's 'phyReady' is not 1.
+    """
     global ocfg
     global group
     global lm # May be multiple lanes
@@ -257,6 +285,7 @@ def jungfrau_update(update):
 
 
 def jungfrau_unconfig(jungfrau_kcu):
+    """Call ``StopRun()`` and return `jungfrau_kcu`."""
     print("jungfrau_unconfig")
 
     jungfrau_kcu.StopRun()

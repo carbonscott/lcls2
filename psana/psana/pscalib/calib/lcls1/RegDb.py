@@ -64,6 +64,7 @@ class RegDb ( object ) :
     #----------------
     #  Constructor --
     #----------------
+    """Read access to the LCLS1 registration database through a DB-API connection ``conn`` (SQL queries on instrument/experiment tables)."""
     def __init__ ( self, conn, log=None ) :
         """Constructor.
 
@@ -74,9 +75,11 @@ class RegDb ( object ) :
         self._log = log or logging.getLogger()
 
     def begin(self):
+        """Execute ``BEGIN`` on a new cursor of the connection."""
         self._conn.cursor().execute( 'BEGIN' )
 
     def commit(self):
+        """Execute ``COMMIT`` on a new cursor of the connection."""
         self._conn.cursor().execute( 'COMMIT' )
 
 
@@ -322,4 +325,5 @@ class RegDb ( object ) :
         return cursor.fetchall()
 
     def get_datapath(self, instr, exper):        
+        """Return the ``DATA_PATH`` parameter of experiment ``exper`` of instrument ``instr`` via ``get_experiment_param``, or None if it is not defined."""
         return self.get_experiment_param(instr, exper, param="DATA_PATH")

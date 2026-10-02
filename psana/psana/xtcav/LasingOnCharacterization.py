@@ -532,6 +532,10 @@ class LasingOnCharacterization():
         return peakpos
 
     def quadRefine(self,p):
+        """Return the x position of the vertex of the parabola through the three samples of ``self.wf`` around index ``p`` (x = p-1, p, p+1, offset by ``self.rangelim[0]``).
+
+        ``self.wf`` and ``self.rangelim`` are not set anywhere in this class, so calling it raises AttributeError unless they are set externally.
+        """
         x1,x2,x3 = p + np.array([-1,0,1])
         y1,y2,y3 = self.wf[(p-self.rangelim[0]-1):(p-self.rangelim[0]+2)]
         d = (x1-x2)*(x1-x3)*(x2-x3)
@@ -693,6 +697,7 @@ class LasingOnCharacterization():
 
 
     def resultsProcessImage(self):
+        """Return ``(t, power, agreement, pulse)`` from ``xRayPower()``, ``reconstructionAgreement()`` and ``pulseDelay()`` for the current event."""
         t, power  = self.xRayPower()  
         agreement = self.reconstructionAgreement()
         pulse     = self.pulseDelay()
@@ -700,6 +705,7 @@ class LasingOnCharacterization():
 
 
     def printProcessImageResults(self):
+        """Log at info level the agreement (in %), the maximum power and the first pulse delay from ``resultsProcessImage()``."""
         t, power, agr, pulse = self.resultsProcessImage()
         logger.info('%sAgreement: %.3f%%  Max power: %g  GW Pulse Delay: %.3f '%(12*' ', agr*100,np.amax(power), pulse[0]))
 
@@ -721,6 +727,7 @@ LasingOnParameters = xtu.namedtuple('LasingOnParameters',
 #----------
 
 class Empty():
+    """Empty attribute container; the body is ``pass``."""
     pass
 
 
@@ -749,10 +756,12 @@ def setDetectors(run, camera=None, ebeam=None, gasdetector=None, eventid=None, x
 def data_camera(camraw, evt):
     #o = Empty()
     #o.rawimage = camraw(evt)
+    """Return ``{'rawimage': camraw(evt)}``."""
     return {'rawimage' : camraw(evt)}
 
 
 def data_ebeam(valsebm, evt):
+    """Return a dict with 'ebeamcharge', 'xtcavrfamp', 'xtcavrfphase' read from ``valsebm`` for ``evt`` and 'dumpecharge' = DumpCharge times ``Constants.E_CHARGE``."""
     return {\
     'ebeamcharge'  : valsebm.Charge(evt),\
     'xtcavrfamp'   : valsebm.XTCAVAmpl(evt),\
@@ -762,6 +771,10 @@ def data_ebeam(valsebm, evt):
 
 
 def data_gasdetector(valsgd, evt):
+    """Return a dict with keys 'o.f_11_ENRC', 'o.f_12_ENRC' and 'o.energydetector' read from ``valsgd``.
+
+    The last value refers to an undefined name ``o``, so calling it raises NameError.
+    """
     return {\
     'o.f_11_ENRC' : valsgd.f_11_ENRC(evt),\
     'o.f_12_ENRC' : valsgd.f_12_ENRC(evt),\
@@ -770,6 +783,7 @@ def data_gasdetector(valsgd, evt):
 
 
 def data_eventid(valseid, evt):
+    """Return ``{'time': valseid.time(evt), 'fiducials': valseid.fiducials(evt)}``."""
     return {\
     'time'      : valseid.time(evt),\
     'fiducials' : valseid.fiducials(evt),\
@@ -814,6 +828,10 @@ def data_xtcavpars(valsxtp, evt):
 def procEvents(args):
 
     #fname     = getattr(args, 'fname', '/reg/g/psdm/detector/data2_test/xtc/data-amox23616-r0137-e000100-xtcav-v2.xtc2')
+    """Process events of ``args.experiment``/``args.run_number`` with ``LasingOnCharacterization`` and print the agreement, maximum power and pulse delay of each processed image.
+
+    Events without a camera image or rejected by ``processEvent`` are skipped; stops after ``args.max_shots`` (default 200) processed images.
+    """
     max_shots = getattr(args, 'max_shots', 200)
     mode      = getattr(args, 'mode', 'smd')
 

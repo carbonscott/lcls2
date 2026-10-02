@@ -1,3 +1,7 @@
+"""DRP configuration functions for the epix10ka quad camera (``ePixQuad.Top``) behind an ``lcls2_pgp_pcie_apps.DevRoot`` PCIe card.
+
+State is kept in the module dict `base` and module globals (`lane`, `group`, `ocfg`, `segids`).
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import cdict
@@ -32,6 +36,7 @@ seglist = [0,1,2,3,4]
 DEBUG_PIXEL_MASK_SAVED=False
 
 def mode(a):
+    """Return the most frequent value in array `a` (the smallest such value if several tie)."""
     uniqueValues = np.unique(a).tolist()
     uniqueCounts = [len(np.nonzero(a == uv)[0])
                     for uv in uniqueValues]
@@ -40,12 +45,14 @@ def mode(a):
     return uniqueValues[modeIdx]
 
 def dumpvars(prefix,c):
+    """Print `prefix` and then, recursively, the dotted path of every child in ``c.nodes``."""
     print(prefix)
     for key,val in c.nodes.items():
         name = prefix+'.'+key
         dumpvars(name,val)
 
 def retry(cmd,val):
+    """Call ``cmd(val)``, retrying after any exception; the fourth failure is re-raised (each failure is logged as a warning)."""
     itry=0
     while(True):
         try:
@@ -63,6 +70,12 @@ def retry(cmd,val):
 #  Apply the configuration dictionary to the rogue registers
 #
 def apply_dict(pathbase,base,cfg):
+    """Walk config dict `cfg` alongside the pyrogue node tree below `base` and set each matching variable with `retry`.
+
+    Names like 'TriggerEventBuffer', 'Epix10kaSaci<i>' and 'DbgOutSel<i>' are mapped to their indexed
+    rogue names; unmatched names are logged and skipped. Some paths ('PixelDummy', several 'Saci3'
+    fields, 'PseudoScopeCore') are deliberately not written (code comment: 'Writes fail -- fix me!').
+    """
     rogue_translate = {}
     rogue_translate['TriggerEventBuffer'] = f'TriggerEventBuffer[{lane}]'
     for i in range(16):
@@ -100,6 +113,10 @@ def apply_dict(pathbase,base,cfg):
 #  Construct an asic pixel mask with square spacing
 #
 def pixel_mask_square(value0,value1,spacing,position):
+    """Return a (352, 384) int32 array of `value0` with `value1` at every `spacing`-th row and column, offset by `position` (row ``position // spacing``, column ``position % spacing``).
+
+    A `position` of ``spacing**2`` or more is logged as an error and replaced by 0.
+    """
     ny,nx=352,384;
     if position>=spacing**2:
         logging.error('position out of range')
@@ -113,6 +130,12 @@ def pixel_mask_square(value0,value1,spacing,position):
 #  Initialize the rogue accessor
 #
 def epixquad_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M", verbose=0):
+    """Open the PCIe root and the ``ePixQuad.Top`` camera on `dev`, set up timing for `timebase`, switch to internal triggering, and return the module `base` dict.
+
+    Each AppLane gets XpmPauseThresh 0x20 and event-builder Timeout ``int(156.25e6/360)``; with `xpmpv`
+    an XpmMini `PVCtrls` thread is started. The root logger level is set to INFO; `arg`, `lanemask` and
+    `verbose` have no other effect.
+    """
     global base
     global pv
     global lane
@@ -201,6 +224,7 @@ def epixquad_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M"
 #  Set the PGP lane
 #
 def epixquad_init_feb(slane=None,schan=None):
+    """Set the global `lane` and `chan` from `slane` and `schan` when given."""
     global lane
     global chan
     if slane is not None:
@@ -213,6 +237,7 @@ def epixquad_init_feb(slane=None,schan=None):
 #
 def epixquad_connectionInfo(base, alloc_json_str):
 
+    """Return ``{'paddr': rxId, 'serno': '-'}``; with a PCIe root the RxId is read and ``timTxId('epixquad')`` written to TxId, otherwise rxId is 0xffffffff."""
     if 'pci' in base:
         pbase = base['pci']
         rxId = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId.get()
@@ -238,6 +263,17 @@ def epixquad_connectionInfo(base, alloc_json_str):
 #  reference for the full set.
 #
 def user_to_expert(base, cfg, full=False):
+    """Translate user settings into expert entries in `cfg` (via `update_config_entry`) and return whether the pixel map was set.
+
+    'start_ns' gives TriggerDelay, 'gate_ns' gives AsicAcqWidth ``int(gate_ns/10)``, `full` sets the
+    Partition, and 'gain_mode' 5 uses 'user.pixel_map' while modes 0-4 build it from the stored map with
+    the mode's value and set all 16 ASIC 'trbit' values.
+
+    Raises
+    ------
+    ValueError
+        If TriggerDelay is negative or AsicAcqWidth is below 1.
+    """
     global ocfg
     global group
     global lane
@@ -302,6 +338,12 @@ def user_to_expert(base, cfg, full=False):
 def config_expert(base, cfg, writePixelMap=True):
 
     #  Disable internal triggers during configuration
+    """Write `cfg` to the PCIe card and camera with all 16 ASICs enabled for configuration, then switch back to internal triggering.
+
+    EpixQuad register words AsicRoClkT, AsicRoClkHalfT and AdcPipelineDelay get 0xaaaa0000 ORed in
+    (code comment: write protection word). With `writePixelMap` and a 'user.pixel_map', each ASIC is set
+    to its most common value and then the other pixels are written one by one.
+    """
     epixquad_external_trigger(base)
 
     # overwrite the low-level configuration parameters with calculations from the user configuration
@@ -433,6 +475,7 @@ def config_expert(base, cfg, writePixelMap=True):
 
 def reset_counters(base):
     # Reset the timing counters
+    """Reset the timing frame counters, the trigger counters of this lane's TriggerEventBuffer, and the camera's RdoutStreamMonitoring counters."""
     base['pci'].DevPcie.Hsio.TimingRx.TimingFrameRx.countReset()
 
     # Reset the trigger counters
@@ -446,6 +489,7 @@ def reset_counters(base):
 #  Modified version of DevRoot.StartRun touching only our lane
 #
 def startRun(pbase):
+    """Start the run on this lane only: reset counters, release blowoff and soft-reset the lane's event builder, enable its trigger buffer, and set RunState True."""
     logging.info('StartRun() executed')
 
     # Get devices
@@ -474,6 +518,7 @@ def startRun(pbase):
 #  Modified version of DevRoot.StopRun touching only our lane
 #
 def stopRun(pbase):
+    """Stop the run on this lane only: disable its trigger buffer, set blowoff on its event builder, and set RunState False."""
     logging.info ('StopRun() executed')
 
     # Get devices
@@ -499,6 +544,16 @@ def stopRun(pbase):
 #  Called on Configure
 #
 def epixquad_config(base,connect_str,cfgtype,detname,detsegm,rog):
+    """Configure the camera from the database, start the run on this lane, and return five JSON strings (full config plus four 'epix10ka' segments).
+
+    The full config is renamed '<name>hw_<n>'; each segment holds 'asicPixelConfig' (4 ASICs, first 176
+    rows) and 'trbit' with an id built from the firmware version and carrier ids.
+
+    Raises
+    ------
+    RuntimeError
+        If the ADC startup check fails.
+    """
     global ocfg
     global group
     global segids
@@ -578,6 +633,7 @@ def epixquad_config(base,connect_str,cfgtype,detname,detsegm,rog):
     return result
 
 def epixquad_unconfig(base):
+    """Call `stopRun` on the PCIe root and return `base`."""
     pbase = base['pci']
     #pbase.StopRun()
     stopRun(pbase)
@@ -588,6 +644,7 @@ def epixquad_unconfig(base):
 #  in response to the scan parameters
 #
 def epixquad_scan_keys(update):
+    """Return JSON strings for a scan: the entries named in `update` copied from the stored configuration (not the new values) with header keys, plus the four segment configs if the pixel map changed."""
     logging.debug('epixquad_scan_keys')
     global ocfg
     global base
@@ -635,6 +692,11 @@ def epixquad_scan_keys(update):
 #  Return the set of configuration updates for a scan step
 #
 def epixquad_update(update):
+    """Apply the JSON `update` to the camera with `config_expert` and return JSON strings for the full config and, if the pixel map changed, the four segments.
+
+    The renamed copy of the full config is overwritten by `cfg` itself, so it keeps its original
+    'detName:RO'.
+    """
     logging.debug('epixquad_update')
     global ocfg
     global base
@@ -760,6 +822,7 @@ def _resetSequenceCount():
     cbase.RdoutCore.SeqCountReset.set(0)
 
 def epixquad_external_trigger(base):
+    """Switch to external triggering (AutoTrigEn 0, TrigSrcSel 0, TrigEn 1) and enable frame readout (RdoutEn 1)."""
     cbase = base['cam']
     #  Switch to external triggering
     cbase.SystemRegs.AutoTrigEn.set(0)
@@ -769,6 +832,7 @@ def epixquad_external_trigger(base):
     cbase.RdoutCore.RdoutEn.set(1)
 
 def epixquad_internal_trigger(base):
+    """Disable frame readout (RdoutEn 0) and switch to internal triggering (TrigSrcSel 3, AutoTrigEn 1)."""
     cbase = base['cam']
     #  Disable frame readout
     cbase.RdoutCore.RdoutEn.set(0)
@@ -777,9 +841,11 @@ def epixquad_internal_trigger(base):
     cbase.SystemRegs.AutoTrigEn.set(1)
 
 def epixquad_enable(base):
+    """Call `epixquad_external_trigger`."""
     epixquad_external_trigger(base)
 
 def epixquad_disable(base):
+    """Sleep 5 ms (code comment: so the readout of the last event completes), then call `epixquad_internal_trigger`."""
     time.sleep(0.005)  # Need to make sure readout of last event is complete
     epixquad_internal_trigger(base)
 

@@ -27,6 +27,7 @@ import os
 
 def ePixUHR3x2_cdict():
 
+    """Return a `cdict` with the default ePixUHR3x2 configuration (alg version [3,2,0]), holding the user entries and the 'expert.Core'/'expert.FebFpga' entries written in the code."""
     top = cdict()
     top.setAlg("config", [3, 2, 0])
     top.define_enum("boolEnum", {"False": 0, "True": 1})

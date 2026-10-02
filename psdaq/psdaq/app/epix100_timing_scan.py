@@ -1,3 +1,4 @@
+"""Configuration scan of '<detname>:user.start_ns' over 15000, 25000, ..., 95000 using `ConfigScan` directly."""
 import sys
 import logging
 import threading
@@ -9,6 +10,17 @@ import json
 import numpy as np
 
 def main():
+    """Parse arguments (defaults: platform 4, host 'drp-neh-cmp014', group mask 0x10, alias 'BEAM', detname 'epix100_0', 100 events) and run the scan.
+
+    Optionally sets the config alias and recording flag, then triggers one step per
+    start_ns value with 'step_keys', 'step_values', Names/ShapesData blocks and
+    'readout_count'/'group_mask'.
+
+    Notes
+    -----
+    The parser defines no 'run_type', which `ConfigScan.daq_communicator_thread` reads when
+    phase-1 info is given (AttributeError).
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', type=int, choices=range(0, 8), default=4,
                         help='platform (default 4)')

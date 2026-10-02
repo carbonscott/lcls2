@@ -1,3 +1,4 @@
+"""Print the local date/time ('%d-%m-%Y %H:%M:%S') for a timestamp given as seconds and nanoseconds since 1990-01-01 UTC (two command-line arguments)."""
 import datetime as dt
 import sys
 # two arguments are lcls2 seconds/nanoseconds from the timestamp

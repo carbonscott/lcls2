@@ -1,3 +1,4 @@
+"""Structure definitions used for the digitizer PVs: dicts mapping field name to (type code, default value[, description]) such as `daqConfig`, `pgpConfig`, `daqReset` and the monitoring structures."""
 daqConfig = {'readoutGroup'     :('i', 0, 'ROG'),
              'test_pattern'     :('i', 0),
              'fs_range_vpp'     :('i', 0xa000),

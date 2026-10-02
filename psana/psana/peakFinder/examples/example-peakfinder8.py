@@ -1,3 +1,7 @@
+"""Example: wrapper class ``Peakfinder8PeakDetection`` around ``psana.peakfinder8.peakfinder_8`` and a module-level usage example.
+
+The usage code at the end calls ``find_peaks(data)`` with an undefined name ``data``, so running the module raises NameError.
+"""
 from typing import Dict, List, Tuple, Union
 
 import numpy  # type: ignore
@@ -43,6 +47,15 @@ class Peakfinder8PeakDetection:
         self._mask_initialized: bool = False
 
     def find_peaks(self, data: numpy.ndarray) -> Dict:
+        """Run ``peakfinder_8`` on ``data`` (converted to float32) with the stored parameters and return the peaks as a dict.
+
+        The mask is the bad-pixel map as int8 (ones if None), multiplied by zero where the radius map is below ``min_res`` or above ``max_res``; because ``_mask_initialized`` is never set to True, this masking is redone on every call. The peak finding is done in the compiled ``peakfinder8`` module.
+
+        Returns
+        -------
+        dict
+            Keys 'num_peaks', 'fs', 'ss', 'intensity', 'num_pixels', 'max_pixel_intensity', 'snr' taken from the six lists returned by ``peakfinder_8``.
+        """
         if not self._mask_initialized:
             if self._mask is None:
                 self._mask = numpy.ones_like(data, dtype=numpy.int8)

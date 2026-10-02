@@ -1,5 +1,11 @@
 # From Calient "How to collect Port power levels over the REST API"
 
+"""Script (header: from Calient "How to collect Port power levels over the REST API") that logs a switch connection's power readings to 'calient_power_data.csv'.
+
+Arguments: switch IP, connection id and interval in minutes (at least 1). Every interval
+it GETs 'http://<ip>/rest/crossconnects/?id=detail&conn=<id>' with a hard-coded basic-auth
+header (later a session cookie) and appends time, conn, inp, outp and loss for half1 (and half2 if present).
+"""
 import time
 import platform
 import sys

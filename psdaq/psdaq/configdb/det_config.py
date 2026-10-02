@@ -1,9 +1,11 @@
+"""Shared helpers for detector config scripts: retries, YAML generation from config dicts, and applying config dicts to pyrogue trees."""
 import pyrogue as pr
 import numpy as np
 from collections import deque,OrderedDict
 import logging
 
 def mode(a):
+    """Return the most frequent value in array `a` (the smallest such value if several tie)."""
     uniqueValues = np.unique(a).tolist()
     uniqueCounts = [len(np.nonzero(a == uv)[0])
                     for uv in uniqueValues]
@@ -12,12 +14,17 @@ def mode(a):
     return uniqueValues[modeIdx]
 
 def dumpvars(prefix,c):
+    """Print `prefix` and then, recursively, the dotted path of every child in ``c.nodes``."""
     print(prefix)
     for key,val in c.nodes.items():
         name = prefix+'.'+key
         dumpvars(name,val)
 
 def retry(cmd,val=None):
+    """Call ``cmd()`` (or ``cmd(val)`` if `val` is not None), retrying after any exception; the fourth failure is re-raised.
+
+    Each failure is logged as a warning.
+    """
     itry=0
     while(True):
         try:
@@ -52,6 +59,10 @@ def _dict_compare(d1,d2,path):
 #  Helper function for calling underlying pyrogue interface
 #
 def intToBool(d,types,key):
+    """Convert ``d[key]`` in place to bool where `types` marks it 'boolEnum', recursing into nested dicts.
+
+    Zero becomes False and any other value True.
+    """
     if isinstance(d[key],dict):
         for k,value in d[key].items():
             intToBool(d[key],types[key],k)
@@ -59,6 +70,7 @@ def intToBool(d,types,key):
         d[key] = False if d[key]==0 else True
 
 def ordered(d,order):
+    """Return an OrderedDict of ``d[key]`` for each key in `order`, in that order (KeyError if one is missing)."""
     od = OrderedDict()
     for key in order:
         od[key] = d[key]
@@ -68,6 +80,13 @@ def ordered(d,order):
 #  Translate a dictionary of register value pairs to a yaml file for rogue configuration
 #
 def dictToYaml(d,types,keys,dev,path,name,tree,ordering=None):
+    """Write the entries `keys` of `d` as a rogue YAML file '<path><name>.yml' nested under the node names in `tree`, set ``dev.filename<name>``, and return the file name.
+
+    Each present key is copied (in `ordering[key]` order if given), 'boolEnum' values are made bool,
+    and 'enable' is True; absent keys get ``{'enable': False}``; outer `tree` levels get 'enable' True
+    and 'ForceWrite'/'InitAfterConfig' False. Afterwards any 'enable' entry in ``d[key]`` is deleted
+    (the code comment says Json2Xtc fails otherwise).
+    """
     v = OrderedDict()
     v['enable']=True
     for key in keys:
@@ -118,6 +137,12 @@ def dictToYaml(d,types,keys,dev,path,name,tree,ordering=None):
 #  Apply the configuration dictionary to the rogue registers
 #
 def apply_dict(pathbase,base,cfg):
+    """Walk config dict `cfg` alongside the pyrogue node tree below `base` and set each matching variable to its config value.
+
+    Names 'TriggerEventBuffer0'/'TriggerEventBuffer1' map to 'TriggerEventBuffer[0]'/'[1]'; names with
+    no matching node are logged at info level and skipped. Every visited node other than `base`
+    that has `get` and `set` attributes is set with `retry` and a 'Setting <path> to <value>' line is printed.
+    """
     rogue_translate = {}
     rogue_translate['TriggerEventBuffer0'] = 'TriggerEventBuffer[0]'
     rogue_translate['TriggerEventBuffer1'] = 'TriggerEventBuffer[1]'

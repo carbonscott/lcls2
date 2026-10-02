@@ -86,6 +86,13 @@ def _parse_args():
 
 
 def main():
+    """Read the assembled mask --input, convert it to the store layout, write it as text to --output, optionally save an assembled PNG preview, and print label counts and the next step.
+
+    Raises
+    ------
+    ValueError
+        If --assembled-output does not end in '.png'.
+    """
     args = _parse_args()
 
     assembled = _read_assembled_mask(args.input)

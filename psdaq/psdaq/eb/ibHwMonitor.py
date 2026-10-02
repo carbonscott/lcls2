@@ -1,3 +1,4 @@
+"""Bokeh server (port 50008) plotting 26 InfiniBand hardware counters received over ZMQ from 'tcp://psdev7b:55566'; starts at import."""
 import zmq
 import time
 import itertools
@@ -50,6 +51,12 @@ counters = [ "lifespan",                    #  0
              "sq_num_wrfe" ]                # 25
 
 def make_document(context, doc):
+    """Build the Bokeh document: a legend plot and one time plot per entry in `counters` (y label 'Counts/Second').
+
+    A 1 s periodic callback drains the SUB socket; each (hostname, metrics) message is
+    streamed into a per-host data source (new hosts get a new color) after shifting
+    'time' by `time.altzone` and converting to milliseconds.
+    """
     print('make document')
 
     socket = context.socket(zmq.SUB)

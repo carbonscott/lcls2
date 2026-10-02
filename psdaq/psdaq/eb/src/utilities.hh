@@ -6,7 +6,7 @@
 #define Pds_Eb_Utilities_hh
 
 #ifndef _GNU_SOURCE
-/** Defined here, if not already defined, before <pthread.h> is included; pinThread() uses the GNU extension pthread_setaffinity_np(). */
+/** Defined here, if not already defined, before `<pthread.h>` is included; pinThread() uses the GNU extension pthread_setaffinity_np(). */
 #  define _GNU_SOURCE
 #endif
 #include <pthread.h>

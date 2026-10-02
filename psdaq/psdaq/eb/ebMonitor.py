@@ -1,3 +1,4 @@
+"""Bokeh server (port 50007) plotting event-builder metrics received over ZMQ from 'tcp://psdev7b:55562'; starts at import."""
 import zmq
 import time
 import itertools
@@ -24,6 +25,12 @@ class MyHandler(Handler):
 
 
 def make_document(context, doc):
+    """Build the Bokeh document: a legend plot and time plots of EventCount, BatchCount, FreeBatchCnt, FreeEpochCnt and FreeEventCnt.
+
+    A 1 s periodic callback drains the SUB socket; each (hostname, metrics) message is
+    streamed into a per-host data source (new hosts get a new color) after shifting
+    'time' by `time.altzone` and converting to milliseconds.
+    """
     print('make document')
 
     socket = context.socket(zmq.SUB)

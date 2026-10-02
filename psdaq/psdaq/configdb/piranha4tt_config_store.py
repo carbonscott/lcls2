@@ -1,3 +1,8 @@
+"""Script: write a default piranha4 time-tool configuration (from `piranha4tt_cdict`) to the config database under device type 'piranha4'.
+
+--update keeps existing values via ``update_config`` (and fixes the stored 'fex.fir_weights' length),
+and --dryrun skips writing.
+"""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 from psdaq.configdb.get_config import update_config
@@ -9,6 +14,11 @@ import argparse
 
 def piranha4tt_cdict():
 
+    """Return `piranha4_config_store.piranha4_cdict()` extended with time-tool 'fex' settings and an extended help text.
+
+    Adds beam/laser event-code and destination selections, the signal ROI (x0 700, x1 900), convergence,
+    prescale and reference-record settings, default FIR weights and calibration polynomial.
+    """
     top = piranha4.piranha4_cdict()
 
     #  append to the help string

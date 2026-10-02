@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Serve KCU QSFP0 monitoring values (and TDetSemi counters unless --hsd) as a PVA NTTable PV.
+
+Run as a script; see `main` for the arguments.
+"""
 import sys
 import pyrogue as pr
 import argparse
@@ -17,16 +21,35 @@ provider = None
 
 class DefaultPVHandler(object):
 
+    """SharedPV handler whose `put` posts the written value with the current time."""
     def __init__(self):
         pass
 
     def put(self, pv, op):
+        """Post the value of PUT operation `op` to `pv` with a timestamp from ``time.time_ns()`` and call ``op.done()``.
+
+        Parameters
+        ----------
+        pv : p4p.server.thread.SharedPV
+            PV being written.
+        op : p4p server operation
+            PUT operation whose value is posted.
+        """
         postedval = op.value()
         postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
         pv.post(postedval)
         op.done()
 
 def toTable(t):
+    """Build the NTTable column list from a definition dict ``{name: (type, values)}``.
+
+    Returns
+    -------
+    tuple
+        ``(columns, n)``: `columns` is a list of ``(name, type[1:])`` (e.g. 'af' becomes 'f') and
+        `n` is the length of the values list of the last entry. An empty `t` raises
+        UnboundLocalError because `n` is never set.
+    """
     table = []
     for v in t.items():
         table.append((v[0],v[1][0][1:]))
@@ -34,12 +57,14 @@ def toTable(t):
     return table,n
 
 def toDict(t):
+    """Return ``{name: values}`` from a definition dict ``{name: (type, values)}`` (the value lists are shared, not copied)."""
     d = {}
     for v in t.items():
         d[v[0]] = v[1][1]
     return d
 
 def toDictList(t,n):
+    """Return a list of `n` row dicts, row ``i`` being ``{name: values[i]}`` for each entry of the definition dict `t`."""
     l = []
     for i in range(n):
         d = {}
@@ -49,6 +74,10 @@ def toDictList(t,n):
     return l
 
 def addPVT(name,t):
+    """Create an NTTable SharedPV from definition dict `t`, add it to the module-level `provider` under `name`, and return it.
+
+    `provider` must already be set (``main`` sets it); the PV uses `DefaultPVHandler`.
+    """
     table,n = toTable(t)
     init    = toDictList(t,n)
     pv = SharedPV(initial=NTTable(table).wrap(init),
@@ -64,6 +93,17 @@ pvdef = {'RxPwr'  : ('af',[0]*4),
 
 class PVStats(object):
 
+    """Publish the 'RxPwr', 'TxBiasI', 'FullTT' and 'nFullTT' columns (four rows each) of a `Top` device in the NTTable PV '<name>:MON'.
+
+    Parameters
+    ----------
+    name : str
+        PV name prefix; ':MON' is appended.
+    kcu : Top
+        Device tree read by `update`.
+    hsd : bool, optional
+        If True, `update` does not read 'FullTT'/'nFullTT'. Default False.
+    """
     def __init__(self, name, kcu, hsd=False):
         self.kcu   = kcu
         self.pv    = addPVT(name+':MON',pvdef)
@@ -71,9 +111,15 @@ class PVStats(object):
         self.hsd   = hsd
 
     def init(self):
+        """Does nothing (stub)."""
         pass
 
     def update(self):
+        """Read QSFP0 values from the device and post them to the PV with the current time.
+
+        Selects 'QSFP0' on the I2C bus, stores ``getRxPwr()`` and ``getTxBiasI()`` in 'RxPwr' and 'TxBiasI',
+        and, unless `hsd` is set, stores the pairs from ``TDetSemi.getRTT()`` in 'FullTT' and 'nFullTT'.
+        """
         self.kcu.I2cBus.selectDevice('QSFP0')
         v = self.kcu.I2cBus.QSFP0.getRxPwr()
         for i in range(len(v)):
@@ -95,6 +141,12 @@ class PVStats(object):
         self.pv.post(value)
 
 def main():
+    """Start the KCU monitor: open the device, print diagnostics, then post PV updates forever.
+
+    Arguments: -P PREFIX (required), -i/--interval seconds (default 10), -H/--hsd and -d/--dev
+    (default '/dev/datadev_0'). The PV name is '<PREFIX>:<HOSTNAME>:MON', with the host name upper-cased
+    and '-' replaced by '_'; `PVStats.update` is called every interval until KeyboardInterrupt.
+    """
     global pvdb
     pvdb = {}     # start with empty dictionary
     global prefix

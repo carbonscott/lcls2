@@ -1,3 +1,4 @@
+"""Script: convert '<det_type>.json' (written by parse_lcls1_data.py) to '<det_type>.xtc2' with ``dgramCreate``; at import it runs ``translate_xtc_demo('jungfrau')``."""
 import numpy as np
 import dgramCreate as dc
 import numpy as np
@@ -8,6 +9,14 @@ from psana import DataSource
 
 
 def load_json(filename):
+    """Load a JSON list of event dicts from ``filename`` and decode array values.
+
+    Each value given as [base64 data, shape, dtype] is replaced by the decoded numpy array; values that raise TypeError when decoded are left unchanged.
+
+    Returns
+    -------
+    list of dict
+    """
     with open(filename, 'r') as f:
         data = json.load(f)
 
@@ -23,6 +32,10 @@ def load_json(filename):
 
 
 def translate_xtc_demo(det_type, offset=1):
+    """Write the events of '<det_type>.json' to '<det_type>.xtc2' with ``dgramCreate.CyDgram`` (an existing output file is removed first).
+
+    Event 0 is added as 'cfg' (its 'version' key renamed to 'version.') and event ``offset`` as 'raw' in the first datagram; then every event from ``offset`` on is written as a further datagram, so event ``offset`` appears twice.
+    """
     xtcfile = '%s.xtc2' % det_type
 
     try:

@@ -230,6 +230,17 @@ def _parse_args():
 
 
 def main():
+    """Build a radial gain-map mask in the assembled view, write it in store layout as text to --output, optionally save a PNG preview, and print label counts and suggested upload commands.
+
+    The default mode labels pixels inside --radius 0 and outside 1; --three-gain-mode limits the radial
+    labels to the beam-center quadrant block and uses --outer-label elsewhere.
+
+    Raises
+    ------
+    ValueError
+        For an outer label of 0/1 in three-gain mode, a non-positive radius, an invalid radius for
+        the block, or a preview path not ending in '.png'.
+    """
     args = _parse_args()
 
     if args.outer_label in (0, 1) and args.three_gain_mode:

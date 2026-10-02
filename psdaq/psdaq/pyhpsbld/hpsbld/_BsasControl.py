@@ -17,11 +17,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+"""pyrogue `BsasModule` and `BsasControl` devices of the HPS BLD board (both re-exported by `hpsbld`)."""
 import pyrogue        as pr
 import psdaq.pyxpm.LclsTimingCore               as timing
 
 class BsasModule(pr.Device):
 
+    """pyrogue Device with RW registers 'Enable' (0x100, 1 bit), 'channelMask' (0x104, 31 bits) and 'channelSevr' (0x108, 64 bits) and `EvrV2ChannelReg` children 'acquire' (0x400), 'rowAdvance' (0x500) and 'tableReset' (0x600)."""
     def __init__(   self, 
             name        = "BsasControl", 
             description = "HPS BLD Application Module", 
@@ -76,6 +78,7 @@ class BsasModule(pr.Device):
 
 class BsasControl(pr.Device):
 
+    """pyrogue Device with `numEdefs` (default 4) `BsasModule` children named 'Bsas<i>' at offsets ``0x800*i``."""
     def __init__(   self, 
                     name        = "BsasControl", 
                     description = "HPS BLD Application Module", 

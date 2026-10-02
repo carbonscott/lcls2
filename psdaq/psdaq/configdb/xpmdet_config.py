@@ -1,3 +1,8 @@
+"""DRP functions for a timing-only detector using an ``l2si_drp.DrpTDetRoot`` (KCU1500 or C1100 board).
+
+State (device, lane mask, timebase, root) is kept in the module dict `args`, and a module
+`Barrier` coordinates processes sharing the board.
+"""
 from psdaq.utils import enable_l2si_drp
 import l2si_drp
 from psdaq.configdb.barrier import *
@@ -31,12 +36,18 @@ def detect_C1100():
         return False
 
 def dumpTiming(tim):
+    """Log (at warning level) the 'FidCount', 'RxRstCount', 'RxDecErrCount' and 'RxDspErrCount' values of timing receiver `tim`."""
     logging.warning(f'FidCount  : {tim.FidCount.get()}')
     logging.warning(f'RxRstCount: {tim.RxRstCount.get()}')
     logging.warning(f'RxDecErrs : {tim.RxDecErrCount.get()}')
     logging.warning(f'RxDspErrs : {tim.RxDspErrCount.get()}')
 
 def xpmdet_init(dev='/dev/datadev_0',lanemask=1,timebase="186M",verbosity=0):
+    """Open and enter a ``DrpTDetRoot`` on `dev` (with C1100 options if `detect_C1100` finds one), store settings in `args`, and return the root.
+
+    ``args['root']`` is set to ``root.PcieControl.DevPcie`` and ``args['core']`` to whether
+    'DRIVER_TYPE_ID_G' is 0. `verbosity` is unused.
+    """
     global args
     logging.info('xpmdet_init')
 
@@ -71,6 +82,18 @@ def xpmdet_init(dev='/dev/datadev_0',lanemask=1,timebase="186M",verbosity=0):
 # called on alloc
 def xpmdet_connectionInfo(alloc_json_str):
    # print("xpmdet_connectionInfo")
+    """Set up the barrier from the allocate JSON and, in the supervisor, prepare the timing link; return ``{'paddr': RxId}``.
+
+    The supervisor clears counters, reprograms the Si570 and resets the receiver if
+    ``refClockRate()`` is outside 180-190 (186M) or 115-125 (119M), writes ``timTxId('tdet')`` to TxId,
+    disables and resets the 8 trigger event buffers, and retries an RxPllReset if RxId is 0,
+    0xffffffff or has low byte > 15. All processes then wait on the barrier and read RxId.
+
+    Raises
+    ------
+    RuntimeError
+        If RxId is still illegal after the retry (supervisor only).
+    """
     root = args['root']
 
     xma = root.TDetTiming.TriggerEventManager.XpmMessageAligner
@@ -156,11 +179,17 @@ def xpmdet_connectionInfo(alloc_json_str):
 
 # called on dealloc
 def xpmdet_connectionShutdown():
+    """Shut down the module barrier and return True."""
     barrier_global.shutdown()
     return True
 
 #  Apply the full configuration
 def xpmdet_connect(grp,length):
+    """Configure each lane in the lane mask: set up its trigger event buffer for readout group `grp` and enable its TDetSemi channel with `length`; return True.
+
+    The buffer index is the lane (or lane + 4 if ``args['core']`` is False); it gets PauseThreshold 16,
+    Partition `grp`, TriggerSource 0, TriggerDelay 0 and MasterEnable True.
+    """
     root = args['root']
 
     lm = args["lanemask"]
@@ -183,6 +212,7 @@ def xpmdet_connect(grp,length):
     return True
 
 def xpmdet_unconfig():
+    """For each lane in the lane mask, set TDetSemi 'Enable_<i>' to 0 and 'Clear_<i>' to 1; return ``args['root']``."""
     root = args['root']
 
     #  Clear TDetSemi

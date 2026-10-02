@@ -1,3 +1,8 @@
+"""Example run at import time: connect to MongoDB ``psanaphi105:27017``, read one document of collection ``camera-0-cxids1-0`` in DB ``calib-cxi12345`` and its GridFS data.
+
+Prints timings, document attributes and the array made with ``numpy.fromstring``. It uses Python 2 /
+old pymongo calls (``doc.iteritems()``, ``col.count()``) that fail on current versions.
+"""
 import sys
 
 #------------------------------

@@ -9,6 +9,7 @@
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 
+"""pyrogue `Top` device of the HPS BLD board, accessed with SRPv3 over a RSSI UDP link."""
 import rogue
 import rogue.hardware.axi
 
@@ -26,6 +27,17 @@ import psdaq.pyhpsbld.hpsbld        as hps
 
 class Top(pr.Device):
 
+    """pyrogue Device that opens ``pyrogue.protocols.UdpRssiPack`` to `ipAddr` port 8193, connects SRPv3 on tDest 0, and adds the board devices on that SRP.
+
+    Devices: AxiVersion (0x0), AxiSysMonUltraScale (0x01000000), hidden AxiMicronN25Q 'MicronN25Q'
+    (0x02000000), AxiSy56040 (0x03000000), TimingFrameRx 'UsTiming' (0x08000000) and AmcCarrierBsa
+    (0x09000000). `memBase` is unused, and the raw-UDP/SRPv0 branch is disabled by ``if False``.
+
+    Parameters
+    ----------
+    ipAddr : str, optional
+        Board address. Default '10.0.1.101'.
+    """
     def __init__(   self,       
             name        = "Top",
             description = "Container for HPS BLD",

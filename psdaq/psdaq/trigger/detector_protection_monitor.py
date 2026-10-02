@@ -1,3 +1,8 @@
+"""PyQt5 tray application that monitors detector-protection ('blocker') PVs and shows a hot-pixel progress bar and a dialog when protection activates.
+
+PVs read: '<base>:BLOCKED', '<base>:NPIX', '<base>:NPIX_OT' and '<base>:ADU' (default
+base 'MFX:JF16M:BLOCKER').
+"""
 import argparse
 import os
 import time
@@ -26,6 +31,7 @@ from PyQt5.QtWidgets import (
 
 
 class TimeVarDict(TypedDict):
+    """TypedDict of the fields used from `epics.PV.get_timevars()`: status, severity, timestamp, posixseconds, nanoseconds."""
     status: int
     severity: int
     timestamp: float
@@ -34,6 +40,7 @@ class TimeVarDict(TypedDict):
 
 
 class BlockerPVMonitor(QThread):
+    """QThread polling the blocker PVs and emitting signals with thresholds, hot-pixel count and protection activations."""
     protectionActivatedSignal = Signal(bool, int, int)
     """Indicates the pulse picker has closed due to protection activation."""
     npixOverThreshSignal = Signal(int)
@@ -63,6 +70,13 @@ class BlockerPVMonitor(QThread):
         self._should_report: bool = True
 
     def run(self) -> None:
+        """Poll the PVs in a loop (no sleep) while running and emit signals when values change.
+
+        While ':BLOCKED' is connected, changed NPIX, ADU and NPIX_OT values are emitted; a
+        change of the ':BLOCKED' timestamp from the first one seen emits
+        `protectionActivatedSignal(True, npix_ot, adu)` if reporting is enabled (then reporting
+        is disabled). The values are printed once a minute.
+        """
         t0: float = time.monotonic()
         last_tripped_ts: float = -1
         blocked_pv: epics.pv.PV = epics.PV(f"{self._base_pv}:BLOCKED")
@@ -113,11 +127,13 @@ class BlockerPVMonitor(QThread):
 
     @Slot()
     def exit(self) -> None:
+        """Print a message and stop the polling loop."""
         print("[BlockerPVMonitor] Thread exiting.")
         self._running = False
 
 
 class MonitorProgressBar(QWidget):
+    """Window with a label and a progress bar of the hot-pixel count as a percentage of the hot-pixel threshold."""
     reportSignal = Signal(bool)
     exitSignal = Signal()
 
@@ -210,10 +226,12 @@ class MonitorProgressBar(QWidget):
         self._npix_ot_thresh = new_npix_over_threshold
 
     def detector_protection_acknowledge(self) -> None:
+        """Print an acknowledgement message."""
         print("It was acknowledged that the DAQ was unlatched.")
 
 
 class MonitorMW(QMainWindow):
+    """Hidden main window that owns the progress-bar window and the `BlockerPVMonitor` thread and connects their signals."""
     reportSignal = Signal(bool)
     exitSignal = Signal()
 
@@ -309,6 +327,7 @@ class MonitorMW(QMainWindow):
             self.reportSignal.emit(True)
 
     def exit(self) -> None:
+        """If the monitor thread is running, signal it to exit, quit it and wait for it (with messages)."""
         if not self._monitorThread.isRunning():
             return
         print("[MonitorMW] App waiting for thread")
@@ -319,6 +338,7 @@ class MonitorMW(QMainWindow):
 
 
 class MonitorTrayIcon(QSystemTrayIcon):
+    """System-tray icon with an 'Exit' menu action that quits the application."""
     def __init__(self, app: QApplication) -> None:
         """A simple tray icon for the detector protection monitor.
 
@@ -340,10 +360,12 @@ class MonitorTrayIcon(QSystemTrayIcon):
 
     @Slot(QSystemTrayIcon.ActivationReason)
     def tray_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
+        """Open the tray menu at the cursor on a left-click (Trigger) activation."""
         if reason == QSystemTrayIcon.Trigger:
             self._menu.exec_(QCursor.pos())
 
     def show(self) -> None:
+        """Show the icon and a 5 s 'Monitor Running' tray message."""
         super().show()
         self.showMessage(
             "Monitor Running",
@@ -354,6 +376,7 @@ class MonitorTrayIcon(QSystemTrayIcon):
 
 
 def main() -> None:
+    """Parse -b/--base_pv and -d/--detector, start the monitor window and tray icon, install a SIGINT handler that exits via `os._exit(0)`, and run the Qt event loop."""
     parser: argparse.ArgumentParser = argparse.ArgumentParser(
         prog="detector_protection_monitor",
         description="Monitor DAQ hot-pixel detector protection.",

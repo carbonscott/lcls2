@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Drp::Gpu::PGPDetectorApp, the collection application of the GPU DRP, and DetectorFactory, which loads the GPU detector libraries.
+ */
 #pragma once
 
 #include <utility>
@@ -19,10 +23,13 @@ namespace Drp {
 
 class PGPDrp;
 
+/** Creates GPU detectors from shared libraries: each detector type name is mapped to a library that defines createDetector(). */
 class DetectorFactory
 {
 public:
+    /** Map detector type name to library solib (both copied). */
     void register_type(const std::string& name, const std::string& solib);
+    /** Load the library registered for name and call its createDetector() with para and pool. Returns null if name is not registered or loading fails. */
     Drp::Gpu::Detector* create(const std::string& name, Parameters& para, MemPoolGpu& pool);
 private:
     static
@@ -33,11 +40,15 @@ private:
     std::unordered_map<std::string, std::string> m_create_funcs;
 };
 
+/** Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp and the GPU detector. In simulator mode (device /dev/null) it also starts phase 2 of each transition with Detector::issuePhase2(). */
 class PGPDetectorApp : public CollectionApp
 {
 public:
+    /** Join the collection as a drp process, create the GPU memory pool from para, initialize Python and release the GIL. initialize() must be called next. */
     PGPDetectorApp(Parameters& para);
+    /** Reset as handleReset() does, delete the detector and finalize Python. */
     virtual ~PGPDetectorApp();
+    /** Register the GPU detector types (fakecam, epixuhremu, epixuhrsim) with their libraries, create the detector for detType (throwing a std::string if that fails) and create the PGPDrp. It is separate from the constructor so that the destructor, which finalizes Python, runs if it throws (per the code comment). */
     void initialize();
 private:
     nlohmann::json connectionInfo(const nlohmann::json& msg) override;

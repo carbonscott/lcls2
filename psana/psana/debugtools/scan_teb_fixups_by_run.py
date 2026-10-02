@@ -36,6 +36,7 @@ PULSE_RATE = 929_000  # pulses per second
 
 
 def group_by_run(files):
+    """Return a dict mapping a run key (the first two '_'-separated parts of each file's base name, or 'UNKNOWN') to the list of paths in ``files`` with that key."""
     runs = defaultdict(list)
     for p in files:
         base = os.path.basename(p)
@@ -75,6 +76,7 @@ def find_closest_pulse(path, search_key):
 
 
 def print_context(lines, idx, before=1, after=7):
+    """Print lines ``idx-before`` to ``idx+after`` of ``lines`` with 1-based line numbers, marking line ``idx`` with '->'."""
     start = max(0, idx - before)
     end   = min(len(lines), idx + after + 1)
     for i in range(start, end):
@@ -83,6 +85,10 @@ def print_context(lines, idx, before=1, after=7):
 
 
 def main():
+    """Parse the glob arguments, group the matching TEB log files by run and, per run, print the run duration from the BeginRun/EndRun pulse IDs (or 'crashed' / 'no BeginRun found').
+
+    For each 'Fixup L1Accept' warning it prints the pulse ID and source, the offsets from start and end (in pulses and seconds at 929 kHz), and the closest pulse-ID line with context from the matching DAQ log '<prefix>_*:<src>.log'. Exits with status 1 if no files match.
+    """
     parser = argparse.ArgumentParser(
         description="Scan TEB Fixups and report run duration and pulse offsets."
     )

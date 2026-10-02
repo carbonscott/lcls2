@@ -33,7 +33,7 @@ if __name__ == "__main__":
   def test_xyz_maps():
 
     #w = SegGeometryEpixM320V1()
-    """Create the ``'EPIXMASIC:V1'`` segment, print its coordinate maps in um and plot the X and Y pixel-index maps."""
+    """Create the ``'EPIXMASIC:V1'`` segment, print its coordinate maps in um and plot the X and Y coordinate maps in pixel units (from ``get_seg_xy_maps_pix``)."""
     w = sgs.Create(segname='EPIXMASIC:V1')
     w.print_maps_seg_um()
 

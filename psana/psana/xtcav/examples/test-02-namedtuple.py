@@ -45,6 +45,7 @@ o = namedtuple('ROIMetrics',
 #----------
 
 def test_namedtuple() :
+    """Print the module-level namedtuple class ``o`` ('ROIMetrics' with default field values) and several of its attributes: dir, ``__dict__``, ``_fields``, the type and attributes of ``o.x``, ``__slots__``, ``xN`` and ``_field_defaults``."""
     print('\n object ROIMetrics:', o)
     print('\n dir(o)', dir(o))
     print('\n o.__dict__:', o.__dict__)

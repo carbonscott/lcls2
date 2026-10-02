@@ -46,9 +46,9 @@ public:
     bool   write_ref_image   () const { return m_record_ref_image; }
     /** Return true if the reference record mode asks for reference averages (mode 1). */
     bool   write_ref_average () const { return m_record_ref_average; }
-    /** Return true, and restart the count, once the number of lines analyzed since the last true reaches the image prescale. */
+    /** Always returns true: the function returns before its prescale logic, which is dead code. */
     bool   write_evt_image   ();
-    /** Return true, and restart the count, once the number of signal extractions since the last true reaches the averages prescale. */
+    /** Always returns false: the function returns before its prescale logic, which is dead code. */
     bool   write_evt_averages();
  public:
     /** Return the rolling average of the signal. */

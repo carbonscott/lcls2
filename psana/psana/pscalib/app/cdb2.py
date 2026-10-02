@@ -69,6 +69,7 @@ USAGE = '\nCommand: cdb <mode> [options]'\
 
 
 def argument_parser():
+    """Return the ``argparse.ArgumentParser`` of the ``cdb2`` command: like ``cdb`` but with ``-k/--dskwargs``, ``-d/--detname``, ``-B/--run_beg``, ``-L/--loglevel`` and default version ``'V2025-07-30'``."""
     from argparse import ArgumentParser
 
     d_dskwargs   = None    # 'files=<fname.xtc>,exp=<expname>,run=<runs>,dir=<xtc-dir>, ...'

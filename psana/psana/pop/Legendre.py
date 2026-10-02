@@ -1,6 +1,11 @@
+"""Defines ``Legendre``, which evaluates even-order Legendre polynomials."""
 import numpy as np
 
 def Legendre(l,x): 
+    """Return the Legendre polynomial P_l evaluated at ``x`` for even ``l`` from 0 to 12 (an array of ones for l = 0).
+
+    Raises ValueError for any other ``l`` (including odd values).
+    """
     if l==0:
         return np.ones(len(x))
     elif l==2:

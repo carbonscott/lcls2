@@ -93,6 +93,11 @@ def rotation(X, Y, angle_deg):
 
 class GeometryObject:
 
+    """One node of the detector geometry tree: parent name/index, object name/index, position ``x0, y0, z0``, design rotations and tilts.
+
+    The constructor also creates the segment geometry ``self.algo`` with ``sgs.Create(segname=oname, ...)``
+    (None for names without a segment implementation); ``parent`` and ``list_of_children`` are filled later.
+    """
     def __init__(self, pname=None, pindex=None,\
                  oname=None, oindex=None,\
                  x0=0, y0=0, z0=0,\
@@ -151,6 +156,7 @@ class GeometryObject:
 
 
     def print_geo(self):
+        """Log :meth:`info_geo` at info level."""
         logger.info(self.info_geo())
 
 
@@ -175,6 +181,10 @@ class GeometryObject:
 
 
     def print_geo_children(self):
+        """Log ``self.info_geo_children`` at info level.
+
+        The method object is passed without being called, so the logged text is its repr, not the children list.
+        """
         logger.info(self.info_geo_children)
 
 

@@ -1,5 +1,9 @@
 #!/cds/home/m/monarin/lcls2/setup_env.sh python3
 
+"""Script: check that the processes listed in a fixed set of procmgr-style configuration files are running, writing results to a dated log file.
+
+All work runs at import time. For each configured entry (except ignored UIDs) it looks up the executable's PIDs on the host over ssh, reports missing or zombie processes, and scans the Slurm job output file for error strings. If any '[FAIL]' line was logged, an email listing them is sent through the local SMTP server to a hard-coded address.
+"""
 import subprocess
 import os
 import re
@@ -27,6 +31,7 @@ LOGFILE = os.path.join(LOGDIR, f"process_check_{now:%Y%m%d_%H%M%S}.log")
 os.makedirs(LOGDIR, exist_ok=True)
 
 def get_entries_from_cfg(cfg_file):
+    """Return a list of ``(host, uid, cmd)`` tuples from ``psdaq.slurm.main.Runner(cfg_file).config``; missing host and cmd default to 'unknown' and ''."""
     runner = Runner(cfg_file)
     entries = []
     for uid, detail in runner.config.items():
@@ -36,6 +41,10 @@ def get_entries_from_cfg(cfg_file):
     return entries
 
 def get_pid_and_check_zombie(exe_name, host):
+    """Return ``(pids, zombies)`` for processes matching ``exe_name`` on ``host``.
+
+    Runs ``pgrep -f`` over ssh (10 s connect timeout) and, for each PID, reads /proc/<pid>/status over ssh to detect state 'Z'. Errors are printed; a failed pgrep gives empty lists, and a failed status read skips that PID.
+    """
     pids = []
     zombies = []
     try:
@@ -58,6 +67,7 @@ def get_pid_and_check_zombie(exe_name, host):
     return pids, zombies
 
 def get_job_output_file(uid, user):
+    """Return the StdOut path from ``scontrol show job`` for the first job of ``user`` (from ``squeue``) whose line contains ``uid``, or None if none is found or a command fails (the error is printed)."""
     try:
         out = subprocess.check_output(["squeue", "-u", user, "--format=%i %j", "-h"], text=True)
         for line in out.splitlines():
@@ -73,6 +83,7 @@ def get_job_output_file(uid, user):
     return None
 
 def log_has_error(logfile):
+    """Return True if file ``logfile`` contains a line with 'Aborted', 'Traceback', 'General Error' or 'core dumped'; otherwise False, also when the file cannot be read (the error is printed)."""
     try:
         with open(logfile) as f:
             for line in f:

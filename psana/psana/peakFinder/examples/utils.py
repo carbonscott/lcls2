@@ -37,6 +37,7 @@ def plot_peaks_on_img(peaks, axim, iX, iY, color='w', pbits=0, lw=2) :
 #----------
 
 class data_hdf5_v0() :
+    """Iterate over the images of dataset 'img' in an HDF5 file ``fname`` (opened read-only with h5py in the constructor, which prints the file name and shape)."""
     def __init__(self, fname='/reg/g/psdm/tutorials/ami2/tmo/amox27716_run100.h5') :
         import h5py
         f=h5py.File(fname, 'r')
@@ -46,6 +47,7 @@ class data_hdf5_v0() :
         print('hdf5: %s\n  data shape: %s' % (fname, str(self.images.shape)))
 
     def next_image(self) :
+        """Advance the counter and return the next image; at the end it prints a warning and keeps returning the last image."""
         self.counter += 1
         if not(self.counter < self.nevmax) :
             print('WARNING counter reached its max value: %d' % self.nevmax)
@@ -53,6 +55,10 @@ class data_hdf5_v0() :
         return self.images[self.counter,:,:]
 
     def print_images(self, nev_begin=0, nev_end=10) :
+        """Print images ``nev_begin`` to ``nev_end``-1 (limited to the number of images) with ``print_ndarr``.
+
+        ``print_ndarr`` is not imported in this module, so the call raises NameError.
+        """
         for nevt in range(min(nev_begin, self.nevmax), min(nev_end, self.nevmax)) :
             print_ndarr(self.images[nevt,:,:], 'Ev:%3d'%nevt) 
 

@@ -197,6 +197,10 @@ def _print_summary(results: Iterable[dict[str, float]]) -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """Profile ``SmdReaderManager`` over increasing numbers of the smalldata files matching the glob argument, printing per-run statistics and, unless --quiet-summary, a summary.
+
+    Sets PS_SMD_MAX_RETRIES to '0' if unset. The file counts are --single-count or those derived from the max-files/count-mode options; each count profiles the first N sorted files. Returns 1 (after an error message) if no file matches or more files are requested than exist, otherwise 0.
+    """
     args = _parse_args(argv)
     os.environ.setdefault("PS_SMD_MAX_RETRIES", "0")
 

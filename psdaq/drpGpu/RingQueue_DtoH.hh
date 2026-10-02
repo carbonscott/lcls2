@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief RingQueueDtoH, a ring of values of type T filled by the GPU and drained by the host.
+ */
 #ifndef RINGQUEUE_DTOH_HH
 #define RINGQUEUE_DTOH_HH
 
@@ -10,10 +14,12 @@
 namespace Drp {
   namespace Gpu {
 
+/** Lock-free ring of values of type T with one producer on the GPU (push()) and one consumer on the host (pop()). The values and the head and tail counters are in pinned host memory; one slot always stays empty. Used by Reducer for the per-worker output queues of ReducerTuple results. */
 template <typename T>
 class RingQueueDtoH
 {
 public:
+  /** Allocate the pinned head and tail words and a pinned ring of capacity values, starting empty; asserts that capacity is a power of 2. */
   __host__ RingQueueDtoH(const unsigned capacity) :
     m_head        (nullptr),
     m_tail        (nullptr),
@@ -34,6 +40,7 @@ public:
     chkError(cudaHostAlloc(&m_ringBuffer, capacity * sizeof(*m_ringBuffer), cudaHostAllocDefault));
   }
 
+  /** Free the pinned ring, tail and head. */
   __host__ ~RingQueueDtoH()
   {
     if (m_ringBuffer)  chkError(cudaFreeHost(m_ringBuffer));
@@ -66,18 +73,21 @@ public:
     return true;
   }
 
+  /** Return the head, the next slot to be pushed. */
   __host__ __device__ unsigned head() const
   {
     using namespace cuda::std;
     return m_head->load(memory_order_acquire);
   }
 
+  /** Return the tail, the next slot to be popped. */
   __host__ __device__ unsigned tail() const
   {
     using namespace cuda::std;
     return m_tail->load(memory_order_acquire);
   }
 
+  /** Return the number of values queued (head minus tail, modulo the capacity). */
   __host__ __device__ unsigned occupancy() const
   {
     using namespace cuda::std;
@@ -86,11 +96,13 @@ public:
     return (head - tail) & m_capacityMask;
   }
 
+  /** Return the capacity. */
   __host__ __device__ size_t size() const
   {
     return m_capacityMask + 1;
   }
 
+  /** Set the head and tail to 0 (empty); not synchronized with the other side. */
   __host__ void reset()
   {
     *m_head = 0;

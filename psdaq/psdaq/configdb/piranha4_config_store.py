@@ -1,3 +1,4 @@
+"""Script: write a default 'piranha4' configuration (from `piranha4_cdict`) to the config database; --update keeps existing values via ``update_config`` and --dryrun skips writing."""
 from psdaq.configdb.typed_json import cdict
 from psdaq.configdb.tsdef import *
 from psdaq.configdb.get_config import update_config
@@ -19,6 +20,12 @@ def piranha4_cdict():
     #have two fields "collection" and ID field (note how collection here is a field. ID points to a unique document).  This collection field and
     #ID point to the actuall Mongo DB collection and document
 
+    """Return a `cdict` with the default Piranha4 camera configuration (alg version [2,2,0]).
+
+    It holds the help text, the camera enums, user settings (start_ns 110000, gate_ns 4000, black_level 0,
+    vertical_bin 1), trigger-buffer and XpmMini rate settings, and ClinkFeb/UartPiranha4 expert registers
+    with the values and comments written in the code.
+    """
     top = cdict()
     top.setAlg('config', [2,2,0])
 

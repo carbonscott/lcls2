@@ -1,3 +1,7 @@
+"""Script that subscribes to a ZMQ server (default 'psdev7b', port 55560 + 2*platform or --port) and prints each (hostname, metrics) JSON message as one line.
+
+For each metric the first element of its value list is printed. Runs until KeyboardInterrupt.
+"""
 import argparse
 import zmq
 import time

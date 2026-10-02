@@ -1,4 +1,8 @@
 # Run from psanagpuXXX machine, source setup_env.sh and use python3
+"""Script: receive JSON events over a ZeroMQ PULL socket (tcp://127.0.0.1:5557) and write them as xtc2 datagrams with ``dgramCreate`` to '<outdir>/<fname>_evts.xtc2'.
+
+Command-line arguments: outdir, detector alias, detector id and file name. The arguments are read before the usage check, so too few arguments raise IndexError. All work runs at import time.
+"""
 import numpy as np
 import dgramCreate as dc
 import base64
@@ -23,6 +27,10 @@ consumer_receiver = context.socket(zmq.PULL)
 consumer_receiver.connect("tcp://127.0.0.1:5557")
 
 def munge_json(event):
+    """Decode one received JSON event.
+
+    Returns ``(None, None)`` if the event contains 'done'. Otherwise each value of ``event['data']`` given as [base64 data, shape, dtype] is replaced by the decoded numpy array (values raising TypeError are kept), and ``(event['data'], event['timestamp'])`` is returned.
+    """
     if 'done' in event:
         return None, None
     else:
@@ -36,6 +44,7 @@ def munge_json(event):
         return event_dict, timestamp
 
 def translate_xtc_demo(job_type):
+    """Write events received with ``munge_json`` to '<job_type>_evts.xtc2' as 'raw' cspad datagrams with ``dgramCreate.CyDgram`` until a 'done' message arrives, then print the output name."""
     event_file = '%s_evts.xtc2' % job_type
 
     ninfo = dc.nameinfo(detAlias, 'cspad', detID, 0)

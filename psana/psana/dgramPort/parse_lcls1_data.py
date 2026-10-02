@@ -1,5 +1,9 @@
 # Remember to run on psana machine and source /reg/g/psdm/etc/psconda.sh
 # Then run translate_xtc_demo.py on psbuild-rhel7 and source setup_env.sh
+"""Script for the LCLS1 psana environment (it imports ``cPickle`` and uses the Python-2 builtin ``reduce``): dump the configuration and the first events of several LCLS1 detectors (Jungfrau, Epix, two CsPad runs) to JSON files with ``parse_dgram``.
+
+Arrays are stored base64-encoded as [data, shape, dtype]. All work runs at import time and writes jungfrau.json, epix.json, crystal_dark.json and crystal_xray.json.
+"""
 from psana import *
 import json
 import cPickle as pickle
@@ -7,6 +11,10 @@ import numpy as np
 import inspect, base64
 
 class parse_dgram():
+    """Collect the attribute values of an LCLS1 configuration object and of the detector data of each event as dicts in ``self.events``; the constructor runs ``process_dgram``.
+
+    Attributes and methods are explored recursively by name; keys starting with '__' and a fixed list of numeric helper names are ignored.
+    """
     def __init__(self, ds, run, source, detector, config, event_limit):
         self.events=[]
         self.event_limit = event_limit
@@ -21,6 +29,7 @@ class parse_dgram():
         self.process_dgram()
 
     def strip_list(self, input_list, prepend=''):
+        """Return the names of ``input_list`` that do not start with '__' and are not in ``ignored_keys``, each prefixed with ``prepend + '__'`` when ``prepend`` is given."""
         filt_list = list(filter(lambda x: x[:2] != '__' and\
                                 x not in self.ignored_keys, input_list))
         if prepend:
@@ -30,6 +39,10 @@ class parse_dgram():
     # The fancy functional version works for regular classes (aa.bb.cc..)
     # Accessing with methods requires the messier looped version (aa().bb.cc()...)
     def getattr(self,obj, attr):
+        """Return the value at the '__'-separated attribute path ``attr`` of ``obj``.
+
+        First tries plain chained attribute access; on AttributeError it calls each intermediate element as a method (with an integer argument when the element has a '##<i>' suffix) and returns the last attribute.
+        """
         try:
             value = reduce(getattr, attr.split('__'), obj)
         except AttributeError:
@@ -46,6 +59,10 @@ class parse_dgram():
         return value
 
     def parse_event(self, dgram):
+        """Return a dict of all end values reachable from ``dgram`` by attribute names and method calls.
+
+        Plain methods and indexed methods (called with 0, 1, ... until IndexError, at most 4 for ``CsPad.DataV2`` and 128 otherwise) add new keys to explore; end values (int, float, ndarray, list) are stored under the key with '__' replaced by '_' and '##' removed, after ``bitwise_array``.
+        """
         config_keys = dir(dgram)
         config_keys = self.strip_list(config_keys)
         config_dict = {}
@@ -89,6 +106,13 @@ class parse_dgram():
 
     def parse_key(self,dgram, key):
 
+            """Classify attribute path ``key`` of ``dgram``.
+
+            Returns
+            -------
+            tuple
+                ``('Indexed method', False)`` if calling it fails with a 'Python argument types in' error, ``('List of methods', False)`` for a list whose first element is not an end type, ``('End value', value)`` for int, float, ndarray or list values (after trying ``int()``), otherwise ``('Method', False)``.
+            """
             try:
                 cdk = self.getattr(dgram, key)()
                 iterable_method = False
@@ -114,6 +138,7 @@ class parse_dgram():
                 return "Method", False
 
     def bitwise_array(self, value):
+        """Return ``value`` unchanged if it is a scalar, otherwise ``[base64 bytes, shape, dtype string]`` of ``np.asarray(value)``."""
         if np.isscalar(value):
             return value
         val = np.asarray(value)
@@ -121,6 +146,7 @@ class parse_dgram():
 
 
     def process_dgram(self):
+        """Append the parsed configuration object (``self.config`` for ``self.source`` from the configStore) and then the parsed detector data of events 0 to ``event_limit`` to ``self.events``."""
         cs = self.ds.env().configStore()
         configure = cs.get(self.config, self.source)
         self.events.append(self.parse_event(configure))

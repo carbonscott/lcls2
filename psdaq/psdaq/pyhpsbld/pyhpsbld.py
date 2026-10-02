@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Set up the HPS BLD board through pyrogue (`hps_init`) and host its DAQ control PVs over PVA (`PVCtrls`).
+
+Imports `hpsbld` as a top-level package, which works after `psdaq.pyhpsbld` has put its
+directory on `sys.path`.
+"""
 import sys
 import pyrogue as pr
 import logging
@@ -20,10 +25,22 @@ bldName = None
 
 class DefaultPVHandler(object):
 
+    """SharedPV handler that posts a written value and then calls ``parent.update()``.
+
+    Parameters
+    ----------
+    parent : PVCtrls
+        Object whose `update` is called after each PUT.
+    """
     def __init__(self, parent):
         self.parent = parent
 
     def put(self, pv, op):
+        """Post the value of PUT operation `op` to `pv` with the current time, call ``op.done()``, then call ``self.parent.update()``.
+
+        The timestamp is split with ``divmod(time.time(), 1.0)``, so 'timeStamp.nanoseconds' is given the
+        fractional second, not a nanosecond count.
+        """
         postedval = op.value()
         postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time()), 1.0)
         pv.post(postedval)
@@ -34,12 +51,27 @@ class DefaultPVHandler(object):
 #  Host the PVs used by DAQ control
 #
 class PVCtrls(threading.Thread):
+    """Daemon thread hosting '<prefix>:HPS:FIELDNAMES', '<prefix>:HPS:FIELDTYPES', '<prefix>:HPS:FIELDMASK' and '<prefix>:PAYLOAD' and applying the mask to `app`.
+
+    Parameters
+    ----------
+    prefix : str
+        PV name prefix; ':' is appended.
+    app : pyrogue Device
+        Device with 'Enable' and 'channelMask' variables (``hps_init`` passes the 'BldControl' `BldAxiStream`).
+    """
     def __init__(self, prefix, app):
         threading.Thread.__init__(self,daemon=True)
         self.prefix = prefix+':'
         self.app    = app
 
     def run(self):
+        """Create the PVs, call `update`, then serve them with ``p4p.server.Server.forever``.
+
+        Initial values: FIELDNAMES 'pid00'..'pid1e' (31 names), FIELDTYPES ``ord('i')`` x31,
+        FIELDMASK 0x8000 and an empty PAYLOAD structure. Any exception from the server is caught and
+        'Server exited' is printed.
+        """
         self.provider = StaticProvider(__name__)
 
         self.fieldNames = SharedPV(initial=NTScalar('as').wrap
@@ -69,6 +101,13 @@ class PVCtrls(threading.Thread):
             print('Server exited')
 
     def update(self):
+        """Rebuild the 'PAYLOAD' PV from the current mask, names and types and apply the mask to `app`.
+
+        Sets ``app.Enable`` to 0, then replaces PAYLOAD with a structure holding 'valid' ('i') plus,
+        for each set bit i of the mask (bits 0-30), a field names[i] of type ``chr(types[i])``, all 0;
+        the structure ID is ``str(mask)``, with 'a' appended if it equals the old ID.
+        If the mask is non-zero it is written to ``app.channelMask`` and ``app.Enable`` is set to 1.
+        """
         self.app.Enable.set(0)
 
         mask  = self.fieldMask .current().get('value')
@@ -104,6 +143,26 @@ class PVCtrls(threading.Thread):
 
 
 def hps_init(name, ipAddr, pktSize):
+    """Open an `HpsRoot` at `ipAddr`, configure the BLD, BSSS and BSAS engines, start a `PVCtrls` thread for `name`, and return the root.
+
+    Writes the register values shown in the code (crossbar ``OutputConfig[1]`` = 3, `pktSize` to
+    BLD/BSSS 'packetSize', EDEF/BSAS rate, destination and enable settings), prints diagnostics and
+    sleeps 2 s twice. ``root.__enter__()`` is called and not undone; the globals `bldName` and `pv` are set.
+
+    Parameters
+    ----------
+    name : str
+        PV prefix for `PVCtrls` and `hps_connect`.
+    ipAddr : str
+        Board IP address passed to `HpsRoot`.
+    pktSize : int
+        Value written to 'packetSize' of 'BldControl' and 'BsssControl'.
+
+    Returns
+    -------
+    HpsRoot
+        The started root.
+    """
     global pv
     global bldName
 
@@ -174,6 +233,11 @@ def hps_init(name, ipAddr, pktSize):
     
 def hps_connect(root):
 
+    """Read the PVs '<bldName>:ADDR' and '<bldName>:PORT' over PVA and return ``{'addr': ..., 'port': ...}``.
+
+    `root` is unused; `bldName` is the global set by `hps_init`. The values are what
+    ``p4p.client.thread.Context.get`` returns.
+    """
     ctxt = Context('pva')
     d = {}
     d['addr'] = ctxt.get(bldName+':ADDR')

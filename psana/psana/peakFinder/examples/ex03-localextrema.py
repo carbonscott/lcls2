@@ -9,6 +9,10 @@ import numpy as np
 
 def test01(tname='1', NUMBER_OF_EVENTS=5, DO_PRINT=True) :
 
+    """For ``NUMBER_OF_EVENTS`` 50x50 images (constant for ``tname`` '2', '4', '6', random otherwise), call the ``psalg_ext`` function selected by ``tname``: local minimums ('1', '2'), local maximums ('3', '4'), rank-1 cross maximums ('5', '6', '8') or threshold maximums ('7'); print the time and count and display the data and the extrema maps.
+
+    The computation is done in the compiled ``psana.psalg_ext`` module. With ``DO_PRINT`` the input and output arrays are printed.
+    """
     print('local extrema : %s' % ('minimums' if tname in ('1','2')\
                              else 'maximums' if tname in ('3','4')\
                              else 'maximums runk=1 cross' if tname in ('5','6')\
@@ -93,12 +97,14 @@ def test01(tname='1', NUMBER_OF_EVENTS=5, DO_PRINT=True) :
 #----------
 
 def test02(rank=6) :
+    """Call ``psalg_ext.print_matrix_of_diag_indexes(rank)`` and ``print_vector_of_diag_indexes(rank)``."""
     algos.print_matrix_of_diag_indexes(rank)
     algos.print_vector_of_diag_indexes(rank)
 
 #----------
 
 def usage() :
+    """Print the list of test numbers and what each test runs."""
     msg = 'Usage: python examples/ex02-localextrema.py <test-number>'\
           '\n  where <test-number> ='\
           '\n  1 - local_minimums for random image'\

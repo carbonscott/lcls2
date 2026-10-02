@@ -1,3 +1,8 @@
+"""DRP configuration functions for the timetool (``lcls2_timetool.TimeToolKcu1500Root`` with a ClinkFeb camera UART).
+
+The module keeps the root (`cl`), FEB lane/channel, readout group and last configuration
+(`ocfg`) in module globals.
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.cas.xpm_utils import timTxId
@@ -21,6 +26,7 @@ group = None
 ocfg = None
 
 def cl_poll(uart):
+    """Wait until ``uart._rx._last`` is set, then clear it; polls every 10 ms with no timeout."""
     while True:
         result = uart._rx._last
         if result is not None:
@@ -29,6 +35,12 @@ def cl_poll(uart):
         time.sleep(0.01)
 
 def tt_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbosity=0):
+    """Open and enter a ``TimeToolKcu1500Root`` on `dev`, set up XpmMini timing, and return it (also stored in the global `cl`).
+
+    If `xpmpv` is given, ``ConfigureXpmMini`` is called and a `PVCtrls` thread serving PVs under
+    `xpmpv` is started; otherwise ``ConfigureXpmMini`` and ``ConfigLclsTimingV2`` are called.
+    The root logger level is set to ``40 - 10*verbosity``; `arg`, `lanemask` and `timebase` are unused.
+    """
     global cl
 
     logging.getLogger().setLevel(40-10*verbosity)
@@ -57,6 +69,7 @@ def tt_init(arg,dev='/dev/datadev_0',lanemask=1,xpmpv=None,timebase="186M",verbo
     return cl
 
 def tt_init_feb(slane=None,schan=None):
+    """Set the global FEB `lane` and `chan` from `slane` and `schan` (converted to int) when they are not None."""
     global lane
     global chan
     if slane is not None:
@@ -66,6 +79,15 @@ def tt_init_feb(slane=None,schan=None):
 
 def tt_connect(cl):
 
+    """Check the PGP link, write the timetool transmitter ID, and return ``{'paddr': rxId}``.
+
+    `rxId` is the XpmMessageAligner 'RxId' read before ``TxId`` is set to ``timTxId('timetool')``.
+
+    Raises
+    ------
+    ValueError
+        If 'RxRemLinkReady' of ``PgpMon[lane]`` is not 1.
+    """
     if(getattr(cl.TimeToolKcu1500.Kcu1500Hsio,'PgpMon[%d]'%lane).RxRemLinkReady.get() != 1):
         raise ValueError(f'PGP Link is down' )
 
@@ -79,6 +101,17 @@ def tt_connect(cl):
     return d
 
 def user_to_expert(cl, cfg, full=False):
+    """Translate user settings in `cfg` into expert entries and write them into `cfg` with `update_config_entry` (types from the global `ocfg`).
+
+    'user.start_ns' sets TriggerDelay to ``int(start_ns*1300/7000 - PartitionDelay[group]*200)`` and
+    'user.gate_ns' sets ``expert.ClinkFeb.TrigCtrl.TrigPulseWidth`` to ``gate_ns*0.001``; with `full`,
+    the TriggerEventBuffer 'Partition' is set to the global `group`.
+
+    Raises
+    ------
+    ValueError
+        If the computed TriggerDelay is negative.
+    """
     global group
     global ocfg
 
@@ -107,6 +140,12 @@ def user_to_expert(cl, cfg, full=False):
     update_config_entry(cfg,ocfg,d)
 
 def config_expert(cl,cfg):
+    """Write the values in ``cfg['expert']`` to the matching nodes below `cl`, mapping generic names to the current lane/channel.
+
+    For example 'ClinkFeb' becomes 'ClinkFeb[<lane>]' and 'ClinkCh' becomes 'Ch[<chan>]'; values under
+    '.FIR.' are parsed as hex strings. After setting a node whose path contains 'Uart' (except
+    'ROI[0]', 'SAD[0]' and 'SAD[1]'), it waits for a UART reply with `cl_poll`.
+    """
     global lane
     global chan
 
@@ -156,6 +195,12 @@ def config_expert(cl,cfg):
 
 
 def tt_config(cl,connect_str,cfgtype,detname,detsegm,grp):
+    """Read the configuration, apply it to the timetool, enable the trigger buffer, and return the configuration as JSON.
+
+    Stores `grp` and the configuration in globals, applies `user_to_expert` (full), forces
+    EnableTrig/DataEn True and InvCC/Blowoff False, sends an escape and the expert values to the
+    camera UART, sends 'gcp' and waits for the reply, then adds 'firmwareVersion' and 'firmwareBuild'.
+    """
     global group
     global ocfg
     group = grp
@@ -192,6 +237,7 @@ def tt_config(cl,connect_str,cfgtype,detname,detsegm,grp):
     return json.dumps(cfg)
 
 def tt_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values), plus derived expert entries and the 'detType:RO'-style header keys."""
     global cl
     global ocfg
     #  extract updates
@@ -206,6 +252,7 @@ def tt_scan_keys(update):
     return json.dumps(cfg)
 
 def tt_update(update):
+    """Merge the JSON `update` into a new dict (types from the stored configuration), add the derived expert entries, write its 'expert' part to the hardware with `config_expert`, and return it as JSON with the header keys."""
     global cl
     global ocfg
     #  extract updates
@@ -222,5 +269,6 @@ def tt_update(update):
     return json.dumps(cfg)
 
 def tt_unconfig(cl):
+    """Set 'MasterEnable' of ``TriggerEventBuffer[lane]`` to False."""
     getattr(cl.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager,'TriggerEventBuffer[%d]'%lane).MasterEnable.set(False)
 

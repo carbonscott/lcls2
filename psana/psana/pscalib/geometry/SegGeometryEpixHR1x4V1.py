@@ -158,6 +158,10 @@ class SegGeometryEpixHR1x4V1(SegGeometryEpix10kaV1):
 
     def pixel_mask_array(sp, width=0, wcenter=0, edge_rows=1, edge_cols=1, center_rows=0, center_cols=0, dtype=DTYPE_MASK, **kwa):
 
+        """Return the edge mask from ``SegGeometryEpix10kaV1.pixel_mask_array`` (with no center masking) and additionally zero ``center_cols`` columns on each side of the three ASIC boundaries at multiples of ``_colsq``.
+
+        ``wcenter > 0`` overrides ``center_cols``; ``center_rows`` is not used and the base call always uses ``DTYPE_MASK``.
+        """
         mask = SegGeometryEpix10kaV1.pixel_mask_array(sp, width=width, wcenter=0,\
                                   edge_rows=edge_rows, edge_cols=edge_cols, center_rows=0, center_cols=0, dtype=DTYPE_MASK, **kwa)
 

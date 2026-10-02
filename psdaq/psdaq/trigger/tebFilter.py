@@ -1,3 +1,8 @@
+"""TEB trigger script that drops events whose 'timing_1' contribution has event code 257 and persists/monitors all others.
+
+Runs at import; persisted events are sent to all MEBs. The exit message says
+'tebMonRouter script exiting'.
+"""
 from psdaq.trigger import tebTrigger
 from TimingTebData import TimingTebData
 from TmoTebData import TmoTebData

@@ -154,9 +154,11 @@ class SegGeometryJungfrauV2(SegGeometryJungfrauV1):
         sp.pix_area_arr = np.multiply(sp.x_pix_size_um, sp.y_pix_size_um) * area_normf
 
     def get_xyz_min_um(sp):
+        """Return ``(x_arr_um[0], y_arr_um[0], 0)``: the smallest x and y coordinates in um (both 1-d arrays are ascending in this class) and 0 for z."""
         return sp.x_arr_um[0], sp.y_arr_um[0], 0
 
     def get_xyz_max_um(sp):
+        """Return ``(x_arr_um[-1], y_arr_um[-1], 0)``: the largest x and y coordinates in um and 0 for z."""
         return sp.x_arr_um[-1], sp.y_arr_um[-1], 0
 
 jungfrau_front = SegGeometryJungfrauV2(use_wide_pix_center=True)

@@ -1,3 +1,8 @@
+"""Python side of the TEB trigger: exchanges messages over POSIX message queues and reads/writes event data in POSIX shared memory.
+
+The queues are '/mqtebinp_<key>' (inputs) and '/mqtebres_<key>' (results), with
+<key> taken from the -b argument without its first character.
+"""
 import sys
 import numpy
 import posix_ipc
@@ -14,16 +19,25 @@ import psdaq.CubeResultDgram as qdg
 import psdaq.WindowResultDgram as wdg
 
 class ArgsParser(argparse.ArgumentParser):
+    """Argument parser with -p (partition 0-7, default 0) and -b (IPC key base, required)."""
     def __init__(self):
         super(ArgsParser, self).__init__()
         self.add_argument('-p', type=int, choices=range(0, 8), default=0, help='partition (default 0)')
         self.add_argument('-b', type=str, required=True, help='IPC key base value')
 
     def parse(self):
+        """Parse the command line, store the namespace in `self.args` and return it."""
         self.args = self.parse_args()
         return self.args
 
 class TriggerDataSource(object):
+    """Connect to the TEB message queues and shared memory and receive the connect info.
+
+    The constructor parses arguments, opens both queues (exits with status 1 on error),
+    maps the 'i' (inputs) and 'r' (results) shared memory announced by the TEB (replying
+    'g'), accumulates the connect JSON from 'c'/'d' messages into `connect_json`/
+    `connect_info`, then waits for 'g' (calling `cfg_cb` if given, else replying 'g') or 's'.
+    """
     def __init__(self, cfg_cb=None):
 
         logging.info(f"[Python] Starting")
@@ -164,6 +178,7 @@ class TriggerDataSource(object):
             self._shm_res = None
 
     def events(self):
+        """Generator yielding an `Event` for each 'g' message (contributor mask from the hex digits after 'g'); stops on 's'."""
         print("[Python] TriggerDataSource.events() called")
 
         while True:
@@ -180,6 +195,7 @@ class TriggerDataSource(object):
 
     def result(self, persist, monitor):
 
+        """Write a `ResultDgram(persist, monitor)` into the results shared memory and send 'g'."""
         result = rdg.ResultDgram(self._shm_res_mmap, persist, monitor)
         self._mq_res.send(b"g")
 
@@ -188,6 +204,11 @@ class TriggerDataSource(object):
         #)
 
     def mebs(self, names=None):
+        """Return a bitmask of 'meb_id' bits from the connect info's 'meb' entries.
+
+        With `names` None every MEB is included; a str or list selects MEBs whose alias
+        contains it (or any of them). Returns 0 if there is no 'meb' section.
+        """
         r = 0
         if 'meb' in self.connect_info['body'].keys():
             for nodes in self.connect_info['body']['meb'].values():
@@ -204,6 +225,13 @@ class TriggerDataSource(object):
         return r
 
     def detector(self, name, tebType):
+        """Register the drp named `name` (exact alias match) and return a `Detector(index, tebType)` for it.
+
+        Raises
+        ------
+        RuntimeError
+            If no drp has that alias.
+        """
         index = -1
         for nodes in self.connect_info['body']['drp'].values():
             if name == nodes['proc_info']['alias']:
@@ -218,12 +246,14 @@ class TriggerDataSource(object):
 
 class CubeTriggerDataSource(TriggerDataSource):
 
+    """`TriggerDataSource` whose configure step writes a 'Cube' `CubeConfigDgram` built from `config` (uses ``config['bins']``)."""
     def __init__(self, config):
         self.config = config
         TriggerDataSource.__init__(self, self.configure)
 
 
     def configure(self):
+        """Write a `CubeConfigDgram` with ``config['bins']`` bins, name 'Cube' and the JSON config into the results memory, then send 'g'."""
         nbins = self.config['bins']
         logging.warning(f'[Python] Setting nbins {nbins}')
         result = cdg.CubeConfigDgram(self._shm_res_mmap, nbins, 'Cube', json.dumps(self.config))
@@ -239,18 +269,24 @@ class CubeTriggerDataSource(TriggerDataSource):
          flush       : reset the cube after this event is processed
     """
     def result(self, persist, record, monitor, bin_index, bin_record, bin_monitor, flush=False):
+        """Write a `CubeResultDgram` with the given flags and bin index into the results memory and send 'g'.
+
+        The string above this method in the class body describes the arguments.
+        """
         result = qdg.CubeResultDgram(self._shm_res_mmap, persist, record, monitor, 
                                      bin_index, bin_record, bin_monitor, flush)
         self._mq_res.send(b"g")
 
 class WindowTriggerDataSource(TriggerDataSource):
 
+    """`TriggerDataSource` whose configure step writes a 'Window' `CubeConfigDgram` built from `config` (uses ``config['bins']``)."""
     def __init__(self, config):
         self.config = config
         TriggerDataSource.__init__(self, self.configure)
 
 
     def configure(self):
+        """Write a `CubeConfigDgram` with ``config['bins']`` bins, name 'Window' and the JSON config into the results memory, then send 'g'."""
         nbins = self.config['bins']
         logging.warning(f'[Python] Setting nbins {nbins}')
         result = cdg.CubeConfigDgram(self._shm_res_mmap, nbins, 'Window', json.dumps(self.config))
@@ -265,12 +301,20 @@ class WindowTriggerDataSource(TriggerDataSource):
          win_flush   : list of windows to reset after this event is processed
     """
     def result(self, persist, monitor, win_add, win_record, win_monitor, win_flush):
+        """Write a `WindowResultDgram` with the given flags and window lists into the results memory and send 'g'.
+
+        The string above this method in the class body describes the arguments.
+        """
         result = wdg.WindowResultDgram(self._shm_res_mmap, persist, monitor, 
                                         win_add, win_record, win_monitor, win_flush)
         self._mq_res.send(b"g")
 
 # Revisit: Move this into a .pyx?
 class Event(object):
+    """One event's contributions in the inputs shared memory; iterating yields an `EbDgram` per contributor bit set in `ctrb`.
+
+    Iteration stops early (with a printed message) on a pulse-ID mismatch.
+    """
     def __init__(self, shm_inp_mmap, shm_bufSizes, ctrb, det_src):
         self._shm_inp_mmap      = shm_inp_mmap
         self._shm_bufSizes = shm_bufSizes
@@ -311,6 +355,7 @@ class Event(object):
         return datagram
 
     def payload(self):
+        """Return (and cache) {detector index: xtc payload} for contributors registered with `TriggerDataSource.detector`."""
         if self._det_lookup is None:
             #            self._det_lookup = get_teb_lookup(self)
             self._det_lookup = dict()
@@ -326,6 +371,7 @@ class Event(object):
         return self._det_lookup
 
     def readoutGroups(self):
+        """Return the readout groups of the first contributing datagram (cached)."""
         if self._readout_groups is None:
             for i in range( len(self._shm_bufSizes) ):
                 if (self._ctrb >> i)&1:
@@ -337,10 +383,15 @@ class Event(object):
         return self._readout_groups
 
 class Detector(object):
+    """Handle for a registered drp: converts its payload with `tebType`."""
     def __init__(self, index, tebType):
         self._tebId   = index
         self._tebType = tebType
 
     def trigger(self, event):
+        """Return ``tebType(payload)`` for this detector in `event`, or None if the payload is empty.
+
+        Raises KeyError if the detector did not contribute to the event.
+        """
         payld = event.payload()[self._tebId]
         return self._tebType(payld) if payld else None

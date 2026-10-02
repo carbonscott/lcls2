@@ -19,6 +19,10 @@ import psana.pyalgos.generic.Graphics as gr
 
 def test01(tname='1', NUMBER_OF_EVENTS=10, DO_PRINT=False) :
 
+    """For ``NUMBER_OF_EVENTS`` 50x50 images (constant for ``tname`` '2' and '4', random otherwise), call ``psalg_ext.local_minima_1d`` ('1', '2') or ``local_maxima_1d`` ('3', '4') on the flattened data with rank 5, print the time and count, and display the data and the extrema map folded back to 2-d.
+
+    The computation is done in the compiled ``psana.psalg_ext`` module.
+    """
     print('local extrema : %s' % ('minimums' if tname in ('1','2')\
                              else 'maximums'))
 
@@ -93,6 +97,7 @@ def test01(tname='1', NUMBER_OF_EVENTS=10, DO_PRINT=False) :
 
 #----------
 def usage() :
+    """Print the list of test numbers ('1'-'4') and what each test runs."""
     msg = 'Usage: [python] %s <test-number>'%(sys.argv[0])\
         + '\n  where <test-number> ='\
           '\n  1 - local_minima_1d for random image'\

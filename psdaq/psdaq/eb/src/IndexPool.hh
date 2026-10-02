@@ -381,7 +381,7 @@ namespace Pds
 {
   namespace Eb
   {
-    /** Typed index pool over IndexPoolBaseW<L>, so allocate() waits for busy slots. */
+    /** Typed index pool over `IndexPoolBaseW<L>`, so allocate() waits for busy slots. */
     template <class T, class L = std::mutex>
     class IndexPoolW : public IndexPool<T, IndexPoolBaseW<L> >
     {
@@ -393,7 +393,7 @@ namespace Pds
       /** Does nothing; empty body. */
       ~IndexPoolW() {}
     public:
-      /** Return IndexPoolBaseW<L>::allocate(key), the waiting allocation, cast to T*. */
+      /** Return `IndexPoolBaseW<L>::allocate(key)`, the waiting allocation, cast to T*. */
       T* allocate(unsigned key)
       {
         return (T*)IndexPoolBaseW<L>::allocate(key);

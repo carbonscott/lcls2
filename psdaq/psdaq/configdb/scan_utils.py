@@ -1,3 +1,4 @@
+"""Helpers that copy or update dotted entries of typed configuration dicts for scans."""
 import json
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -6,6 +7,13 @@ pp = pprint.PrettyPrinter(indent=4)
 #  scan_utils.py
 #
 def copy_config_entry(d,old,key):
+    """Copy the value at dotted path `key` from `old` into `d`, creating intermediate dicts in `d`.
+
+    Raises
+    ------
+    KeyError
+        If the path is missing in `old` (a diagnostic is printed).
+    """
     o = old
     keys = key.split('.')
     for k in keys[:-1]:
@@ -29,6 +37,11 @@ def copy_config_entry(d,old,key):
 
 def update_config_entry(r,old,update):
     # Still need special handling for enums
+    """Write each dotted key of `update` with its new value into `r`, and copy its type from ``old[':types:']`` into ``r[':types:']``.
+
+    'step_docstring' and 'step_value' get the types 'CHARSTR' and 'FLOAT'. Each key and value is printed
+    ('(truncated)' if the value text is 64 characters or longer).
+    """
     if not ':types:' in r:
         r[':types:'] = {}
     for key in update.keys():
@@ -58,6 +71,10 @@ def update_config_entry(r,old,update):
 
 def copy_reconfig_keys(r,old,update):
     # Still need special handling for enums
+    """Copy each key named in `update`, with its type, from `old` into `r`, ignoring the new values.
+
+    'step_docstring' and 'step_value' are set to '' and 0.0 with types 'CHARSTR' and 'FLOAT'.
+    """
     if not ':types:' in r:
         r[':types:'] = {}
     for key in update:

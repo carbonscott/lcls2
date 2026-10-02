@@ -61,6 +61,7 @@ USAGE = '\nCommand: cdb <mode> [options]'\
 
 
 def argument_parser():
+    """Return the ``argparse.ArgumentParser`` of the ``cdb`` command: positional ``mode`` (default ``'print'``) and options for DB/collection/document names, detector, experiment, time, ctype, data type, run range, version, file, comment, log level, DB suffix, ``-C/--confirm`` and ``--cdbonly`` (``store_false``)."""
     from argparse import ArgumentParser
 
     d_mode       = 'print'

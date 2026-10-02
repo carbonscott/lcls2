@@ -1,3 +1,4 @@
+"""Client for the configuration database web service (`configdb` class) and the 'configdb' command-line tool (`main`)."""
 import os
 import time
 
@@ -12,7 +13,13 @@ import pytz
 from .typed_json import cdict
 
 class JSONEncoder(json.JSONEncoder):
+    """JSON encoder meant to write non-finite floats as strings and datetimes in ISO format; as written, `default` raises on every call."""
     def default(self, o):
+        """Intended to return ``str(o)`` for non-finite floats and ``o.isoformat()`` for datetimes.
+
+        `math` is not imported (NameError for floats), and `datetime` is the module, not the class, so
+        the ``isinstance`` check raises TypeError for any other object.
+        """
         if isinstance(o, float) and not math.isfinite(o):
             return str(o)
         elif isinstance(o, datetime):
@@ -29,6 +36,17 @@ class configdb(object):
     #     root   - Database name, usually "configDB"
     #     user   - User for HTTP authentication
     #     password - Password for HTTP authentication
+    """Client for the configuration database web service at ``url.strip('/') + '/' + root + '/'``.
+
+    URLs containing 'ws-auth' use HTTP basic authentication (`user`/`password`, up to 4 tries 1 s apart),
+    'ws-kerb' uses a Kerberos header, others no authentication; the timeout is 8.05 s. With `create`,
+    'create_collections/<hutch>/' is requested and failures are only logged.
+
+    Raises
+    ------
+    Exception
+        If `root` is left at its default 'NONE'.
+    """
     def __init__(self, url, hutch, create=False, root="NONE", user="tstopr", password=os.getenv("CONFIGDB_AUTH")):
         if root == "NONE":
             raise Exception("configdb: Must specify root!")
@@ -84,6 +102,13 @@ class configdb(object):
 
     # Remove the specified device configuration.
     def remove_device(self, alias, device, hutch=None):
+        """Send 'remove_device/<hutch>/<alias>/<device>/'.
+
+        Raises
+        ------
+        Exception
+            Request errors are logged and re-raised; an unsuccessful reply raises RuntimeError.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -103,6 +128,14 @@ class configdb(object):
     # Rename the specified device configuration.
     def rename_device(self, alias, device, newname, hutch=None):
 
+        """Send 'rename_device/<hutch>/<alias>/<device>/?newname=<newname>'.
+
+        Raises
+        ------
+        RuntimeError
+            If `newname` contains '/' or '.', or the reply is unsuccessful; request errors are
+            logged and re-raised.
+        """
         for xx in '/.':
             if xx in newname:
                 raise RuntimeError(f"Error: '{xx}' character not allowed in device names")
@@ -128,6 +161,11 @@ class configdb(object):
     # values are typed JSON objects representing the device configuration(s).
     # On error return an empty dictionary.
     def get_configuration(self, alias, device, hutch=None):
+        """Return the 'value' of the 'get_configuration/<hutch>/<alias>/<device>/' request.
+
+        Request errors are logged and re-raised, and an unsuccessful reply raises RuntimeError (the comment
+        above the method saying an empty dict is returned on error does not match the code).
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -150,6 +188,11 @@ class configdb(object):
     # in plist.  The variables are dot-separated names with the first
     # component being the the device configuration name.
     def get_history(self, alias, device, plist, hutch=None):
+        """Return the reply of 'get_history/<hutch>/<alias>/<device>/' for the variable list `plist` (sent as JSON), or [] if the request fails.
+
+        It tries to drop non-alphanumeric keys from each item of 'value', but ``bad_keys += kk`` adds the
+        characters of each key, so single characters are popped instead.
+        """
         if hutch is None:
             hutch = self.hutch
         #value = JSONEncoder().encode(plist)
@@ -182,6 +225,7 @@ class configdb(object):
     # Return version as a dictionary.
     # On error return an empty dictionary.
     def get_version(self):
+        """Return the 'value' of the 'get_version/' request, or an empty dict on any error or unsuccessful reply."""
         try:
             xx = self._get_response('get_version/')
         except requests.exceptions.RequestException as ex:
@@ -200,6 +244,10 @@ class configdb(object):
     # aliases in the hutch if not specified.
     # On error return an empty list.
     def get_key(self, alias=None, hutch=None, session=None):
+        """Return the 'value' of the 'get_key/<hutch>/' request (with '?alias=<alias>' if given), or [] if the request fails.
+
+        An unsuccessful reply is logged and its 'value' still returned. `session` is unused.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -221,6 +269,7 @@ class configdb(object):
     # Return a list of all hutches available in the config db.
     # On error return an empty list.
     def get_hutches(self):
+        """Return the 'value' of the 'get_hutches/' request, or [] on any error or unsuccessful reply."""
         try:
             xx = self._get_response('get_hutches/')
         except requests.exceptions.RequestException as ex:
@@ -238,6 +287,7 @@ class configdb(object):
     # Return a list of all aliases in the hutch.
     # On error return an empty list.
     def get_aliases(self, hutch=None):
+        """Return the 'value' of the 'get_aliases/<hutch>/' request, or [] on any error or unsuccessful reply."""
         if hutch is None:
             hutch = self.hutch
         try:
@@ -256,6 +306,7 @@ class configdb(object):
 
     # Create a new alias in the hutch, if it doesn't already exist.
     def add_alias(self, alias):
+        """Send 'add_alias/<hutch>/<alias>/' for the constructor's hutch; errors are only logged and None is returned."""
         try:
             xx = self._get_response('add_alias/' + self.hutch + '/' + alias + '/')
         except requests.exceptions.RequestException as ex:
@@ -270,6 +321,11 @@ class configdb(object):
     # Create a new device_configuration if it doesn't already exist!
     # Note: session is ignored
     def add_device_config(self, cfg, session=None):
+        """Create device configuration `cfg` unless `get_device_configs` already lists it.
+
+        Server major version 1 gets 'add_device_config/<cfg>/', later versions
+        'add_device_config/<hutch>/<cfg>/'; request errors are only logged. `session` is unused.
+        """
         if cfg in self.get_device_configs():
             # already exists!
             logging.info('device configuration \'%s\' already exists' % cfg)
@@ -294,6 +350,7 @@ class configdb(object):
 
     # Return a list of all device configurations.
     def get_device_configs(self):
+        """Return the 'value' of the 'get_device_configs/' request, or [] on any error or unsuccessful reply."""
         try:
             xx = self._get_response('get_device_configs/')
         except requests.exceptions.RequestException as ex:
@@ -310,6 +367,10 @@ class configdb(object):
 
     # Return a list of all devices in an alias/hutch.
     def get_devices(self, alias, hutch=None):
+        """Return the 'value' of the 'get_devices/<hutch>/<alias>/' request, or [] if the request fails.
+
+        An unsuccessful reply is logged and its 'value' still returned.
+        """
         if hutch is None:
             hutch = self.hutch
         try:
@@ -330,6 +391,21 @@ class configdb(object):
     # configuration.  Return the new configuration key if successful and
     # raise an error if we fail.
     def modify_device(self, alias, value, hutch=None):
+        """Send `value` with 'modify_device/<hutch>/<alias>/' and return the reply's 'value' (the new key per the code comment).
+
+        A `cdict` is converted with ``typed_json()`` first.
+
+        Raises
+        ------
+        NameError
+            If `alias` is not in ``get_aliases(hutch)``.
+        TypeError
+            If `value` is not a dict.
+        ValueError
+            If 'detType:RO' or 'detName:RO' is missing.
+        Exception
+            If the reply is unsuccessful; request errors are logged and re-raised.
+        """
         if hutch is None:
             hutch = self.hutch
 
@@ -362,6 +438,7 @@ class configdb(object):
     # Print all of the device configurations, or all of the configurations
     # for a specified device.
     def print_device_configs(self, name="device_configurations"):
+        """Print the stripped 'value' of the 'print_device_configs/<name>/' request; errors are only logged."""
         try:
             xx = self._get_response('print_device_configs/' + name + '/')
         except requests.exceptions.RequestException as ex:
@@ -378,6 +455,7 @@ class configdb(object):
 
     # Print all of the configurations for the hutch.
     def print_configs(self, hutch=None):
+        """Print the stripped 'value' of the 'print_configs/<hutch>/' request; errors are only logged."""
         if hutch is None:
             hutch = self.hutch
         try:
@@ -399,6 +477,14 @@ class configdb(object):
     # On error return zero.
     def transfer_config(self, oldhutch, oldalias, olddevice, newalias,
                         newdevice):
+        """Copy the configuration at (`oldhutch`, `oldalias`, `olddevice`) to `newalias` in this hutch with 'detName:RO' set to `newdevice`.
+
+        Returns
+        -------
+        object
+            The 'value' returned by `modify_device`, or 0 if the read gave an empty config or any
+            exception occurred (logged).
+        """
         try:
             # read configuration from old location
             read_val = self.get_configuration(oldalias, olddevice, hutch=oldhutch)
@@ -429,6 +515,7 @@ import pprint
 
 # Determine whether a device is an XPM
 def isXpm(xx):
+    """Return True if `xx` contains at least two '/' and its second '/'-separated part is 'XPM'."""
     return xx.find('/') != xx.rfind('/') and xx.split('/')[1] == 'XPM'
 
 # Parse a device name into 3 elements.
@@ -675,6 +762,12 @@ def _rollback(args):
 
 
 class createArgs(object):
+    """Parse the common command-line options of the config store scripts into `self.args`.
+
+    Options: --prod, --inst ('tst'), --alias ('BEAM'), --name ('tstts'), --segm (0), --id ('serial1234'),
+    --user ('xppopr'), --password ($CONFIGDB_AUTH), --yaml, --dir, --update, --dryrun and --verbose;
+    keyword arguments with those names replace the defaults.
+    """
     def __init__(self, **kwargs):
         def opt(key,default):
             return kwargs[key] if key in kwargs.keys() else default
@@ -699,6 +792,11 @@ class createArgs(object):
 def main():
 
     # create the top-level parser
+    """Run the 'configdb' command-line tool with the subcommands cat, rm, cp, mv, history, rollback and ls.
+
+    Without a subcommand the help is printed and the process exits with status 1; an exception from
+    the subcommand is passed to ``sys.exit``.
+    """
     parser = argparse.ArgumentParser(description='configuration database CLI')
     parser.add_argument('--url', default='https://pswww.slac.stanford.edu/ws-auth/configdb/ws/',
                         help='configuration database connection')

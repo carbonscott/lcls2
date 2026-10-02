@@ -1,3 +1,8 @@
+"""Command-line tool to set the epixhr pixel gain map and ASIC 'trbit' in a configuration.
+
+Without --file every pixel gets the value of the first --gain; with --file the map comes from
+`epixhr_readmap`. --test prints the result without writing it.
+"""
 import os
 
 from psdaq.configdb.epixhr2x2_config_store import epixhr2x2_cdict,elemRows,elemCols
@@ -20,6 +25,11 @@ gain_dict = {'H':{'trbit':1,'value':0xc},
              'AML':{'trbit':0,'value':0x0}}
 
 def copyValues(din,dout,k=None):
+    """Copy `din` into ``dout[k]``, recursing into dicts for keys that already exist there and converting bools to 1/0.
+
+    Keys missing from `dout` are skipped with a 'skip' message; each leaf prints whether it was
+    written or unchanged.
+    """
     if isinstance(din,dict) and isinstance(dout[k],dict):
         for key,value in din.items():
             if key in dout[k]:
@@ -41,6 +51,21 @@ def copyValues(din,dout,k=None):
             print(f'{k} unchanged')
 
 def epixhr_readmap(fname,gains):
+    """Build a gain-map update from text file `fname` (read with ``np.genfromtxt`` as uint8) and the two gain names `gains`.
+
+    Each pixel value becomes ``value[g0] + e*(value[g1] - value[g0])`` using `gain_dict`, and 'trbit' of
+    'Hr10kTAsic0'-'3' is set from the gains.
+
+    Returns
+    -------
+    dict
+        ``{'expert': {'EpixHR': {...}}, 'user': {'pixel_map': list}}``.
+
+    Raises
+    ------
+    ValueError
+        If the two gains have different 'trbit' values.
+    """
     d = {'expert':{'EpixHR':{}}}
 
     if gain_dict[gains[0]]['trbit']!=gain_dict[gains[1]]['trbit']:

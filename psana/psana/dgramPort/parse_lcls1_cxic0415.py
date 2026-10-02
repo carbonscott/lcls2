@@ -1,5 +1,9 @@
 # Run from psanagpuXXX machine, source /reg/g/psdm/etc/psconda.sh and use python2
 # Also run translate_xtc_demo.py
+"""Script for the LCLS1 psana environment (python2): for all events of a run, find peaks in the calibrated detector data with ``PyAlgos.peak_finder_v3r3`` and push events with raw data and at least 15 peaks as JSON (timestamp, raw array in four 8-segment blocks, EPICS PV 'SIOC:SYS0:ML00:AO541') over a ZeroMQ PUSH socket (tcp://127.0.0.1:5557), followed by a 'done' message.
+
+Arguments: expname, detname, outdir, run. All work runs at import time.
+"""
 from psana import *
 import numpy as np
 import base64
@@ -39,6 +43,7 @@ ebeamDet = Detector('EBeam')
 epics = ds.env().epicsStore()
 
 def bitwise_array(value):
+    """Return ``value`` unchanged if it is a scalar, otherwise ``[base64 bytes, shape, dtype string]`` of ``np.asarray(value)``."""
     if np.isscalar(value):
         return value
     val = np.asarray(value)

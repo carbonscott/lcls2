@@ -564,6 +564,13 @@ class OutputFormatter:
 
 
 def main():
+    """Parse the given .cnf/.py files with `CnfParser` (following imports unless --no-imports) and print the `OutputFormatter` summary.
+
+    Returns
+    -------
+    int
+        0 on success, 1 if a file fails to parse or another error occurs, 130 on KeyboardInterrupt.
+    """
     parser = argparse.ArgumentParser(
         description='Parse and analyze LCLS2 DAQ CNF configuration files',
         formatter_class=argparse.RawDescriptionHelpFormatter,

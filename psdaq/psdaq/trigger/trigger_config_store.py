@@ -4,12 +4,18 @@
 # Load with:
 #  python trigger_config_store.py --inst tst --name trigger --segm 0 --alias BEAM --user tstopr
 
+"""Define an example 'trigger' configdb entry for libtmoTrigger.so and store it (the header says it is not normally used and may be out of date).
+
+As a script it adds the alias and 'trigger' device config, calls `modify_device`
+(CALIB alias uses `calib_cdict()`) and prints the configs.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 import os
 import io
 
 def usual_cdict():
+    """Return the 'triggerConfig' v0.0.1 `cdict`: soname 'libtmoTrigger.so', prescale 1000, detector ids cam 0 / xpphsd 1 / bld 2, persist/monitor values, peaksThresh 3 and eBeamThresh 7."""
     top = cdict()
 
     top.setAlg('triggerConfig', [0,0,1])
@@ -57,6 +63,7 @@ def usual_cdict():
     return top
 
 def calib_cdict():
+    """Return the 'triggerConfig' v0.0.0 `cdict` for CALIB: help text, soname 'libcalibTrigger.so', read-only buildAll 1 and prescale 1."""
     top = cdict()
 
     top.setAlg('triggerConfig', [0,0,0])

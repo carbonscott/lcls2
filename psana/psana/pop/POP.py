@@ -1,3 +1,4 @@
+"""Defines ``POP``, which fits a quadrant image ring by ring in polar coordinates with even Legendre polynomials and removes each ring's projected contribution from the inner rings using radial basis function tables."""
 import numpy as np
 import pickle
 from psana.pop.Projection import GenerateRBFs
@@ -7,6 +8,10 @@ from psana.pop.CartPolar import GenerateCartGrid, GeneratePolarGrid, FindNbrs, C
 from psana.pscalib.calib.MDBWebUtils import calib_constants
 
 class POP:
+    """Ring-by-ring Legendre fit of a quadrant image, set up in the constructor.
+
+    The constructor chooses center and radius with ``GetCenterR(img, X0, Y0, Rmax)``, takes the radial basis functions from ``RBFs_dict``, the pickle file ``RBFs_fnm`` or a new ``GenerateRBFs`` run (5e6 samples, saved to 'RBFs_5e6_<Rmax>.pkl'), builds the Cartesian and polar grids with nearest-neighbour weights, and precomputes Legendre matrices (l = 0, 2, ..., lmax) and their SVDs per ring. Progress messages are printed.
+    """
     def __init__(self, lmax=4,reg=0,alpha=1,img=None,X0=None,Y0=None,Rmax=None,RBFs_dict = None,RBFs_fnm=None,edge_w=10):
     
         print('Start initialization......')                          
@@ -53,6 +58,10 @@ class POP:
         
     def Peel(self, img, s=[1,1,1,1]):
     
+        """Fit image ``img`` (quadrants selected by ``s``) and store the results in the object.
+
+        The folded quadrant is resampled to the polar grid; from the outermost ring inward, Legendre coefficients are fitted with Tikhonov regularization ``reg``, the fitted ring is stored in ``Q_polar_3D_slice_fit``, coefficients normalized to the first are stored in ``betas``, and the ring's projection (from the RBF table) is subtracted from the remaining inner values, clipping negatives to 0. Points within ``edge_w`` of the outer radius are set to 0 at the end.
+        """
         Q_cart = GetQuadrant(img,self.X0, self.Y0, self.Rmax,s=s)        
         self.Q_polar = Cart2Polar(Q_cart,self.inds_cart,self.cs_cart) 
         
@@ -85,6 +94,10 @@ class POP:
         
     def GetSlice(self,tp='fit'):
     
+        """Return a full image made from the fitted values (``tp='fit'``) or the remaining values (``tp='left_over'``) resampled to the Cartesian grid.
+
+        NaN and negative values are set to 0, the quadrant is normalized to its maximum and unfolded with ``Quadrant2img``. Raises ValueError for any other ``tp``.
+        """
         if tp=='fit':
             Qp = self.Q_polar_3D_slice_fit    
         elif tp=='left_over':
@@ -102,19 +115,29 @@ class POP:
         return slice_img  
     
     def GetBetas(self):
+        """Return the per-ring normalized Legendre coefficients from the last ``Peel`` call in reversed ring order (innermost first)."""
         return self.betas[::-1]      
     
     def GetRadialDist(self):
+        """Return ``(rbins, DistR)``: a histogram over radius of the fitted values weighted by ``sin(angle)*sqrt(r)``."""
         DistR,_ = np.histogram(self.Rarrs,bins = self.rbins,weights=self.Q_polar_3D_slice_fit*self.scf)    
         return self.rbins,DistR
         
     def GetEnergyDist(self):
+        """Return ``(Ebins, DistE)``: a histogram over ``alpha*r**2`` of the fitted values weighted by ``sin(angle)*sqrt(r)``."""
         DistE,_ = np.histogram(self.alpha*self.Rarrs**2,bins = self.Ebins,weights=self.Q_polar_3D_slice_fit*self.scf)    
         return self.Ebins,DistE        
     
         
     def LegendreMat_SVD(self, lnum, ls):
     
+        """Build, for every ring of the polar grid, the matrix of Legendre polynomials ``ls`` at the ring's angles, its SVD and the matrix for the projected positions on all inner rings.
+
+        Returns
+        -------
+        tuple
+            Lists ``(LegMat, U.T, diag(S), Vt.T, LegMat_Rr)`` with one entry per ring.
+        """
         LegMat_lst = []
         LegMatU_lst = []
         LegMatS_lst = []

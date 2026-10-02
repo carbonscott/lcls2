@@ -1,5 +1,9 @@
 # Run from psanagpuXXX machine, source /reg/g/psdm/etc/psconda.sh
 # Also run translate_xtc_demo.py
+"""Script for the LCLS1 psana environment: read events of an experiment run and push, for events with raw data, the timestamp, the raw array split into four 8-segment blocks (base64 encoded) and EPICS PV 'SIOC:SYS0:ML00:AO541' as JSON over a ZeroMQ PUSH socket (tcp://127.0.0.1:5557), followed by a 'done' message.
+
+Arguments: expname, run, detname, nevents, tag. The arguments are read before the usage check, so too few arguments raise IndexError. All work runs at import time.
+"""
 from psana import *
 import numpy as np
 import base64
@@ -26,6 +30,7 @@ epics = ds.env().epicsStore()
 
 
 def bitwise_array(value):
+    """Return ``value`` unchanged if it is a scalar, otherwise ``[base64 bytes, shape, dtype string]`` of ``np.asarray(value)``."""
     if np.isscalar(value):
         return value
     val = np.asarray(value)

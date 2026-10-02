@@ -1,3 +1,4 @@
+"""Read and write digitizer calibration constants as configdb entries; as a script it stores a fixed example set under alias 'CALIB'."""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 from psdaq.configdb.get_config import get_config_with_params
@@ -6,6 +7,7 @@ import json
 
 def get_calib(db_url,instrument,seg,alias):
 
+    """Return the configuration for segment `seg` (alias `alias`) from the configdb as a JSON string, or '' (with a message) on any error."""
     result = ''
     try:
         cal = get_config_with_params(db_url, instrument, 'configDB', alias, seg)
@@ -17,6 +19,11 @@ def get_calib(db_url,instrument,seg,alias):
 
 def set_calib(db_url,instrument,seg,alias,calib):
 
+    """Store the 'expert' values of JSON string `calib` as UINT16 fields of a 'calib' v0.0.0 entry for segment `seg` under `alias`.
+
+    Uses configdb with create=True, user '<instrument>opr', device config 'hsdcal' and
+    setInfo('hsd', <name>, <segment>, 'serial1234', ...); `seg` is '<name>_<number>'.
+    """
     dict = json.loads(calib)
 
     create = True

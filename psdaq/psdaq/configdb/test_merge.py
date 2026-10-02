@@ -1,3 +1,4 @@
+"""Demo script: merges two nested dicts by flattening them, keeping only common keys, and unflattening; `main` prints each step."""
 from collections.abc import MutableMapping
 import json
 
@@ -10,9 +11,11 @@ def _flatten_dict_gen(d, parent_key, sep):
             yield new_key, v
 
 def flatten_dict(d: MutableMapping, parent_key: str = '', sep: str = '.'):
+    """Return a flat dict whose keys are the paths of `d` joined with `sep` (keys converted to str), prefixed by `parent_key` if given."""
     return dict(_flatten_dict_gen(d, parent_key, sep))
 
 def unflatten_dict(dictionary):
+    """Rebuild a nested dict from a flat dict whose keys are '.'-separated paths."""
     resultDict = dict()
     for key, value in dictionary.items():
         parts = key.split(".")
@@ -25,6 +28,11 @@ def unflatten_dict(dictionary):
     return resultDict
 
 def trim(dictionary, keep_keys, parent_key: str = '', sep: str = '.'):
+    """Return the entries of `dictionary` whose (prefixed) key is in `keep_keys`.
+
+    If a value is a dict, the recursive call uses the undefined name `old_keys`, so it raises
+    NameError; with flat input (as in `main`) this does not happen.
+    """
     resultDict = {}
     for k, v in dictionary.items():
         new_key = str(parent_key) + sep + k if parent_key else k
@@ -36,6 +44,7 @@ def trim(dictionary, keep_keys, parent_key: str = '', sep: str = '.'):
 
 def main():
 
+    """Print two example nested dicts, their flattened forms, the common keys, the trimmed dicts and the unflattened results."""
     input_1 = {'config': {'group': {0: {'rate': 9},
                                  1: {'rate': 99},
                                  2: {'rate': 999}}}}

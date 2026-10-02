@@ -1,3 +1,9 @@
+"""Script: write a default 'hsd' configuration (alg version [3,3,0]) to the config database.
+
+The user/expert values and enums are written in the code. With --update the stored values are
+copied into the new layout and old 'fex.ymin'/'ymax' are converted to 'dymin'/'dymax' relative to
+'fex.corr.baseline'; --dryrun skips writing and --verbose prints the result.
+"""
 from psdaq.configdb.typed_json import cdict
 import psdaq.configdb.configdb as cdb
 from psdaq.configdb.get_config import update_config

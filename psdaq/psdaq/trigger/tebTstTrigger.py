@@ -1,3 +1,8 @@
+"""Test TEB script that persists/monitors events whose `TmoTebData` write/monitor words match the configdb 'trigger' entry's persistValue/monitorValue.
+
+Runs at import. Monitored events from readout groups other than the TEB's partition go
+to the 'ami-meb0' MEB, others to the remaining (or all) MEBs.
+"""
 from psdaq.trigger import tebTrigger
 from TmoTebData    import TmoTebData
 

@@ -1,3 +1,8 @@
+"""DRP configuration functions for the wave8, done through the wave8 IOC's EPICS PVs (pyepics) plus a `PgpMonitor` on the PCIe card.
+
+Per the comment above `ctxt_get`, the script only switches to LCLS2 timing, configures DAQ
+triggering and records the full configuration maintained by controls.
+"""
 from psdaq.configdb.get_config import get_config
 from psdaq.configdb.scan_utils import *
 from psdaq.configdb.typed_json import *
@@ -28,6 +33,7 @@ base = {'timebase':'186M', 'prefix':None, lane:0}
 #     3) record the full configuration (maintained by controls)
 #
 def ctxt_get(names):
+    """Return ``epics.PV(name).get()`` for a str, a list of such values for a list, or None for any other argument."""
     v = None
     if isinstance(names,str):
         v = epics.PV(names).get()
@@ -40,6 +46,7 @@ def ctxt_get(names):
 
 def ctxt_put(names, values):
 
+    """Put each value to the matching PV with ``epics.PV(name).put`` (one value for a str name) and print the arguments and put results."""
     r = []
     print(f'ctxt_put [{names}] [{values}]')
     if isinstance(names,str):
@@ -53,6 +60,12 @@ def ctxt_put(names, values):
 #  Create a dictionary of config key to PV name
 def epics_get(d):
     # translate legal Python names to Rogue names
+    """Return a dict mapping dotted config keys of `d` to PV name suffixes.
+
+    Nested keys are joined with '.' in the key and ':' in the PV name, names such as 'AdcReadout0' become
+    'AdcReadout[0]', the list entries 'BuffEn', 'DelayAdcALane' and 'DelayAdcBLane' are expanded per
+    element ('<key>.[i]' to '<pv>[i]'), and keys containing 'AdcPatternTester' or 'CorrCoefficient' are skipped.
+    """
     rogue_translate = {'TriggerEventBuffer':'TriggerEventBuffer[0]',
                        'AdcReadout0'       :'AdcReadout[0]',
                        'AdcReadout1'       :'AdcReadout[1]',
@@ -86,6 +99,7 @@ def epics_get(d):
     return out
 
 def confirm_xpm_rxid( txId, xpmId, json_str):
+    """Read the XPM PV '<pv_base>:XPM:<(xpmId>>16)&0xff>:RemoteLinkId<xpmId&0xf>' and log a warning if it differs from `txId` (its call in `wave8_connectionInfo` is commented out)."""
     json_msg = json.loads(json_str)
     xpm_base = json_msg['body']['control']['0']['control_info']['pv_base']
     xpm_pv = f'{xpm_base}:XPM:{(xpmId>>16)&0xff}:RemoteLinkId{xpmId&0xf}'
@@ -100,6 +114,12 @@ def config_timing(epics_prefix, timebase='186M'):
     # We used to go to LCLS1 timing on disconnect (which called
     # this routine) to be friendly to the controls group.  Since we're now
     # in the LCLS2 era, keep this always hardwired to ModeSel=1 (i.e. LCLS2 timing).
+    """Switch the wave8 timing receiver to LCLS2 timing through PVs under `epics_prefix`.
+
+    Writes timingUseMiniTpg 0, ModeSelEn 1, ModeSel 1, ClkSel (1 for '186M', else 0) and RxPllReset 1;
+    after 1 s RxPllReset 0; after another 1 s RxDown 0 and Timing:TriggerSource 0 (code comment:
+    '0=XPM/DAQ, 1=EVR').
+    """
     names = [epics_prefix+':Top:SystemRegs:timingUseMiniTpg',
              epics_prefix+':Top:TimingFrameRx:ModeSelEn',
              epics_prefix+':Top:TimingFrameRx:ModeSel',
@@ -122,6 +142,11 @@ def config_timing(epics_prefix, timebase='186M'):
     ctxt_put(names,values)
 
 def wave8_init(epics_prefix, dev='/dev/datadev_0', lanemask=1, xpmpv=None, timebase="186M", verbosity=0):
+    """Store the prefix, timebase and lane, open a `PgpMonitor` on `dev` (``init_lanes``), run `wave8_unconfig`, and return the module `base` dict.
+
+    The lane is the single set bit of `lanemask` (asserted); the root logger level is set to
+    ``40 - 10*verbosity``. `xpmpv` is unused.
+    """
     global prefix
     global lane
     global base
@@ -151,12 +176,17 @@ def wave8_init(epics_prefix, dev='/dev/datadev_0', lanemask=1, xpmpv=None, timeb
     return base
 
 def wave8_init_feb(slane=None,schan=None):
+    """Set the global `lane` from `slane` if given; `schan` is ignored."""
     global lane
     if slane is not None:
         lane = int(slane)
 
 def wave8_connectionInfo(base, alloc_json_str):
 
+    """Check the PGP lanes, switch to LCLS2 timing, write the wave8 TxId and MasterEnable 0, then return ``{'paddr': RxId}``.
+
+    RxId is re-read up to 50 times (0.1 s apart) while it is 0. `alloc_json_str` is unused.
+    """
     base['pcie'].check_lanes('connect')
 
     epics_prefix = base['prefix']
@@ -190,6 +220,17 @@ def wave8_connectionInfo(base, alloc_json_str):
     return d
 
 def user_to_expert(prefix, cfg, full=False):
+    """Check or set the trigger delay through PVs under `prefix`; `cfg` and `full` are not used.
+
+    If the old 'EvrV2TriggerReg[0]:Delay' PV can be read, TriggerDelay is set to
+    ``ctrlDelay - PartitionDelay[group]*clksPerFid`` (200 for '186M', else 238); otherwise the
+    IOC-managed TriggerDelay is only checked to be non-zero.
+
+    Raises
+    ------
+    ValueError
+        If the computed delay is negative, the IOC delay cannot be read, or it is 0.
+    """
     global group
     global ocfg
     global timebase
@@ -256,6 +297,13 @@ def user_to_expert(prefix, cfg, full=False):
 
 
 def wave8_config(base,connect_str,cfgtype,detname,detsegm,grp):
+    """Configure DAQ triggering through PVs, then record the configuration read back from the PVs and return it as JSON.
+
+    With the clears (Blowoff, RawBuffers/Integrators CntRst) asserted it writes Partition `grp`,
+    PauseThreshold 16, MasterEnable 1, EnableStream 0x2 and FIFO thresholds 127. The recorded config
+    starts from defaults set here, each value replaced by its PV reading only when that reading is
+    truthy (so 0 keeps the default); the block for ``base['pci']`` runs only if a caller added that key.
+    """
     global lane
     global group
     global ocfg
@@ -424,6 +472,7 @@ def wave8_config(base,connect_str,cfgtype,detname,detsegm,grp):
     return v
 
 def wave8_scan_keys(update):
+    """Return JSON with the entries named in the JSON `update` copied from the stored configuration (not the new values) plus the header keys, after running `user_to_expert`."""
     global prefix
     global ocfg
     #  extract updates
@@ -438,6 +487,7 @@ def wave8_scan_keys(update):
     return json.dumps(cfg)
 
 def wave8_update(update):
+    """Merge the JSON `update` into a new dict, run `user_to_expert` (which only handles the trigger delay), and return the dict as JSON with the header keys."""
     global prefix
     global ocfg
     #  extract updates
@@ -456,6 +506,10 @@ def wave8_update(update):
 #  This is really shutdown/disconnect
 def wave8_unconfig(base):
 
+    """Check the PGP lanes, write MasterEnable 0 and EnableStream 0, and call `config_timing` with its default timebase; returns None.
+
+    The code comment calls this 'really shutdown/disconnect'.
+    """
     base['pcie'].check_lanes('unconfig')
 
     epics_prefix = base['prefix']

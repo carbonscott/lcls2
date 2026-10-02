@@ -1,9 +1,17 @@
+"""Find connected regions above a threshold in 1-d or 2-d arrays with ``scipy.ndimage`` and return their centers of mass and sums (``find_blobs_1d``, ``find_blobs_2d``)."""
 import numpy as np
 import scipy.ndimage.measurements as smt
 import scipy.stats as stats
 
 
 def find_blobs_1d(waveform, threshold, min_sum):
+    """Label connected runs of ``waveform > threshold`` and keep those whose summed ``waveform`` exceeds ``min_sum``.
+
+    Returns
+    -------
+    tuple
+        ``(nblobs, x, adu_sum)``: the number of kept regions, their center-of-mass positions (float32) and their sums; empty arrays and 0 when nothing is above threshold.
+    """
     blobs, nblobs = smt.label(waveform > threshold)
     if nblobs > 0:
         index = np.arange(1, nblobs+1)
@@ -22,6 +30,13 @@ def find_blobs_1d(waveform, threshold, min_sum):
 
 
 def find_blobs_2d(img,threshold,min_sum):
+    """Label connected regions of ``img > threshold`` and keep those whose summed ``img`` exceeds ``min_sum``.
+
+    Returns
+    -------
+    tuple
+        ``(nblobs, x, y, adu_sum)``: the number of kept regions, the first and second center-of-mass coordinates (float32; the first is along axis 0) and the sums; empty arrays and 0 when nothing is above threshold.
+    """
     blobs, nblobs = smt.label(img > threshold)
     if nblobs > 0:
         index = np.arange(1, nblobs+1)

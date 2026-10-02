@@ -1,3 +1,7 @@
+"""Example: accumulate 'opal' camera images from an xtc2 file, take the 'pop_rbfs' constants from ``camera.calibconst``, and every 30 events run ``POP.Peel`` and replot the raw image, fitted slice and radial and energy distributions; the last figure is saved as 'pop_example_xtc2_plot.pdf'.
+
+Events 0 and 1 are skipped and the loop stops after event 150; the accumulated image is reset after each fit.
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 

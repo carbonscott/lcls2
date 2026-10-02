@@ -1,4 +1,5 @@
 
+"""Defines ``splitImage``, which splits an image into per-region masks of its connected components (via ``cv2.connectedComponents``, imported through ``psana.xtcav.Utils``) or copies it unchanged for the 'contourLabel' and 'autothreshold' methods."""
 import logging
 logger = logging.getLogger(__name__)
 

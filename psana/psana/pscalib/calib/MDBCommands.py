@@ -1,5 +1,6 @@
 #------------------------------
 
+"""Build and run ``cdb add`` shell commands that upload calibration constants from a file to the calibration DB."""
 import logging
 logger = logging.getLogger(__name__)
 

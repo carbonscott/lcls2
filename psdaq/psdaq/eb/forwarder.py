@@ -1,3 +1,7 @@
+"""ZMQ forwarder script: a SUB socket bound to port P (all topics) is forwarded to a PUB socket bound to port P+1.
+
+P is --port if given, else 55559 + 2*platform. Runs `zmq.device(zmq.FORWARDER, ...)` until KeyboardInterrupt.
+"""
 import argparse
 import zmq
 

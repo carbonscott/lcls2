@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Digitizer, the DRP detector class for the high-speed digitizer, configured through the Python module psdaq.configdb.hsd_config.
+ */
 #pragma once
 
 #include <vector>
@@ -12,10 +16,13 @@
 namespace Drp {
     class PythonConfigScanner;
 
+    /** Detector for the high-speed digitizer (detType hsd per drp.cc), configured through the Python module psdaq.configdb.hsd_config with the EPICS prefix from the hsd_epics_prefix kwarg. */
     class Digitizer : public Detector
     {
     public:
+        /** Keep the hsd_epics_prefix kwarg and the strm_limit kwarg (default 1000000), import psdaq.configdb.hsd_config, call its hsd_init with the prefix and device, and create a PythonConfigScanner. Aborts on a Python error. */
         Digitizer(Parameters* para, MemPool* pool);
+        /** Delete the config scanner and release the Python module. */
         ~Digitizer();
         nlohmann::json connectionInfo(const nlohmann::json& msg) override;
         void connect(const nlohmann::json&, const std::string& collectionId) override;

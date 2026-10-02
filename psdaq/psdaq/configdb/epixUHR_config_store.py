@@ -21,6 +21,7 @@ import os
 
 def epixUHR_cdict():
 
+    """Return a `cdict` with the default epixUHR configuration (alg version [3,2,1]): user settings such as start_ns, run_trigger_group and asic_enable, plus per-ASIC and DAC user/expert entries as written in the code."""
     top = cdict()
     top.setAlg('config', [3,2,1])
     top.define_enum('boolEnum', {'False':0, 'True':1})

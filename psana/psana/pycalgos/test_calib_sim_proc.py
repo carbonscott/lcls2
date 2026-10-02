@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-"""
-"""
+"""Script: read timing text files from a hard-coded directory (one file per CPU, records 'num t,s: time dt,us: dt'), compute the median dt per file, plot each file's start and end time, and repeat the median within a common time window; the file name pattern is selected by the test number."""
 import os
 import sys
 import logging
@@ -22,6 +21,7 @@ logger = logging.getLogger(__name__)
 DIRNAME = '/sdf/home/d/dubrovin/LCLS/con-lcls2/2024-10-29-test-calib-mpi/'
 
 def parse_record(rec):
+    """Return ``(num, time_s, dt_us)`` parsed from fields 0, 2 and 4 of record ``rec``, or None for an empty record."""
     if not rec: return None
     flds = rec.split()   # 484 t,s:   8480.583884 dt,us:       5207
     num, time_s, dt_us = int(flds[0]), float(flds[2]), int(flds[4])
@@ -29,6 +29,7 @@ def parse_record(rec):
 
 
 def number_of_records(recs):
+    """Return the number of records in ``recs`` before the first empty one."""
     nrecs = 0
     for r in recs:
         if not r: break
@@ -37,6 +38,7 @@ def number_of_records(recs):
 
 
 def arr_records(recs):
+    """Return an (n, 3) array of ``parse_record`` values for the first n non-empty records of ``recs`` (n from ``number_of_records``, which is also printed)."""
     nrecs = number_of_records(recs)
     print('number of records %d' % nrecs)
     arr3v = np.empty((nrecs,3))
@@ -50,6 +52,10 @@ def arr_records(recs):
 
 
 def proc_file(fname, tmin=None, tmax=None):
+    """Load the records of text file ``fname`` and return ``(dt_med, tmin, tmax, ntsel)``.
+
+    ``tmin``/``tmax`` default to the minimum/maximum record time; ``dt_med`` is the median dt of records with time inside [tmin, tmax] and ``ntsel`` their count. Intermediate arrays are printed.
+    """
     print('proc_ile: %s' % fname)
     s = ut.load_textfile(fname)
     recs = s.split('\n')
@@ -79,6 +85,7 @@ def proc_file(fname, tmin=None, tmax=None):
 #    return fig, ax
 
 def plot_tmin_tmax(atmin, atmax, ptrn='-vNN.txt'):
+    """Plot the start times ``atmin`` and end times ``atmax`` (relative to the earliest start) against the file index, show the figure, save it as an image in ``DIRNAME`` and return ``(tmin, tmax)`` (earliest start, latest end)."""
     import psana.detector.UtilsGraphics as ug
     gr = ug.gr
 
@@ -102,6 +109,7 @@ def plot_tmin_tmax(atmin, atmax, ptrn='-vNN.txt'):
     return tmin, tmax
 
 def test_proc(dirname=DIRNAME, ptrn='-v80.txt', dtmin=None, dtmax=None):
+    """Process all files in ``dirname`` whose names contain ``ptrn`` with ``proc_file``, plot their time ranges with ``plot_tmin_tmax``, then process them again within [tmin(+dtmin), tmin+dtmax or tmax] and print the median of the per-file medians (NaN values excluded)."""
     print('test_proc')
     fnames = sorted([name for name in os.listdir(dirname) if ptrn in name])
     nfiles = len(fnames)
@@ -147,6 +155,7 @@ def test_proc(dirname=DIRNAME, ptrn='-v80.txt', dtmin=None, dtmax=None):
 
 
 def argument_parser():
+    """Build and return an ArgumentParser with positional ``tname`` and options -k/--dskwargs, -d/--detname and -L/--loglevel (the DataSource and detector options are not used by the tests)."""
     from argparse import ArgumentParser
     d_tname = '0'
     d_dskwargs = 'exp=rixc00121,run=140,dir=/sdf/data/lcls/drpsrcf/ffb/rix/rixc00121/xtc'  # None
@@ -164,11 +173,16 @@ def argument_parser():
     return parser
 
 def usage():
+    """Return a usage string made of the script name and the test-selection lines of the ``selector`` source code."""
     import inspect
     return '\n  %s <tname>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "tname ==" in s or "tnum in" in s])
 
 def selector():
+    """Parse the command line, configure logging and run ``test_proc`` with the file pattern selected by ``tname`` ('0'-'6' for '-vNN.txt', '10'-'16' for '-sNN.txt'), then exit.
+
+    Without arguments it prints the usage and exits; an unknown test name prints the usage and exits with a message.
+    """
     if len(sys.argv) < 2:
         print(usage())
         sys.exit('EXIT due to MISSING PARAMETERS')

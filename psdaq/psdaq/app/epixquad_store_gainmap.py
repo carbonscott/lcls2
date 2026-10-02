@@ -1,3 +1,9 @@
+"""Script that writes an ePixQuad gain map (one gain inside an x/y ROI, another outside) into a configdb entry and shows the image.
+
+As a script it reads the existing configuration for '<name>_<segm>', copies it into
+a full `epixquad_cdict`, applies `epixquad_roi(x, y, 2, 1)`, stores it with
+`modify_device` and plots the image.
+"""
 import os
 
 from psdaq.configdb.epixquad_cdict import epixquad_cdict
@@ -8,6 +14,11 @@ import sys
 import argparse
 
 def copyValues(din,dout,k=None):
+    """Recursively copy leaf values from dict `din` into cdict `dout` under dotted keys, skipping ':RO' keys.
+
+    Keys not present in `dout` are ignored and keys whose stored entry has more than two
+    elements are skipped (printed); others are set with type 'UINT8' or the existing type.
+    """
     if k is not None and ':RO' in k:
         return
     if isinstance(din,dict):
@@ -27,6 +38,13 @@ def copyValues(din,dout,k=None):
             dout.set(k,din,v[0])
 
 def epixquad_roi(xroi,yroi,inner,outer):
+    """Build trbit settings and a (16, 178, 192) pixel map with gain `inner` inside the ROI and `outer` elsewhere.
+
+    Gain indices select from tables for H/M/L/AHL/AML. Raises ValueError if the two
+    gains need different trbit values. Returns (dict with the trbit keys and
+    'user.pixel_map', assembled image). As written the pixel-map index ``xa - x`` is a
+    float, so numpy indexing raises when any pixel is inside the ROI.
+    """
     d = {}
     gain_to_value = (0xc,0xc,0x8,0x0,0x0) # H/M/L/AHL/AML
     gain_to_trbit = (0x1,0x0,0x0,0x1,0x0) # H/M/L/AHL/AML

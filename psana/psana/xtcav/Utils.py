@@ -1,6 +1,7 @@
 #(c) Coded by Alvaro Sanchez-Gonzalez 2014
 #Functions related with the XTCAV pulse retrieval
 
+"""XTCAV image-processing functions (header comment: functions related with the XTCAV pulse retrieval): image statistics, background subtraction, denoising, ROI finding, axis scaling, single-shot processing, group averaging, and the namedtuple record types used by the xtcav modules."""
 import logging
 logger = logging.getLogger(__name__)
 
@@ -220,6 +221,10 @@ def findROI(masks, ROI, expandfactor=1):
 
 
 def calculatePhyscialUnits(ROI, center, shot_to_shot, global_calibration):
+    """Return a ``PhysicalUnits`` record with x and y axes and per-pixel scales computed from ``global_calibration`` and ``shot_to_shot``.
+
+    yMeVPerPix = umperpix*dumpe/dumpdisp*1e-3 and xfsPerPix = -umperpix*rfampcalib/(0.3*strstrength*xtcavrfamp), the latter multiplied by the sign of cos(rfphasecalib - xtcavrfphase); the axes are ``(ROI.x - center[0])*xfsPerPix`` and ``(ROI.y - center[1])*yMeVPerPix``. ``valid`` is 0 (with a warning) when the absolute cosine is below 0.5, otherwise 1.
+    """
     valid=1
     yMeVPerPix = global_calibration.umperpix*global_calibration.dumpe/global_calibration.dumpdisp*1e-3          #Spacing of the y axis in MeV
     #logger.debug('  XXX yMeVPerPix %f'% yMeVPerPix)
@@ -575,6 +580,10 @@ def averageXTCAVProfilesGroups(list_image_profiles, num_groups=0, method='hierar
 
 # http://stackoverflow.com/questions/26248654/numpy-return-0-with-divide-by-zero
 def divideNoWarn(numer,denom,default):
+    """Return ``numer/denom`` computed with numpy divide/invalid warnings suppressed, replacing every non-finite element (NaN, +inf, -inf) by ``default``.
+
+    The replacement indexes the result, so it expects array (not scalar) input.
+    """
     with np.errstate(divide='ignore', invalid='ignore'):
         ratio=numer/denom
         ratio[ ~ np.isfinite(ratio)]=default  # NaN/+inf/-inf

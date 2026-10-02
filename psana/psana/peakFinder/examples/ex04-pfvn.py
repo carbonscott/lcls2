@@ -18,12 +18,17 @@ from utils import plot_peaks_on_img
 #----------
 
 def plot_image(img, img_range=None, amp_range=None, figsize=(12,10)) : 
+    """Show ``img`` with ``Graphics.plotImageLarge`` using ``img_range``, ``amp_range`` and ``figsize``, then call ``Graphics.show()``."""
     axim = gr.plotImageLarge(img, img_range, amp_range, figsize)
     gr.show() 
 
 #----------
 
 def image_with_random_peaks(shape=(500, 500), add_water_ring=True) : 
+    """Return ``(img, peaks)``: a random image of ``shape`` (mean 0, sigma 10), optionally with a ring added, and with 10 random peaks added by ``add_random_peaks``.
+
+    ``peaks`` is the object returned by ``add_random_peaks``, a ``zip`` iterator that function has already consumed.
+    """
     img = random_standard(shape, mu=0, sigma=10)
     if add_water_ring : 
         rad = 0.3*shape[0]
@@ -53,6 +58,10 @@ def test_pf(tname) :
 
     ##-----------------------------
 
+    """Run the peak finder selected by ``tname`` (V3 'ranker' ``peak_finder_v3r3_d2`` for '3', V4 two-threshold ``peak_finder_v4r3_d2`` for '4' and by default) from ``psalg_ext.peak_finder_algos`` on 10 random 1000x1000 images, printing timing and found peaks and drawing them on the image.
+
+    For '1' and '2' no finder is called and ``peaks`` is None, so iterating over the found peaks raises TypeError. The peak finding happens in the compiled extension.
+    """
     PF = V4 # default
     if tname == '1' : PF = V1
     if tname == '2' : PF = V2
@@ -229,6 +238,10 @@ def test_pf(tname) :
 #----------
 
 def ex_image_with_random_peaks() :     
+    """Create an image with ``image_with_random_peaks``, print its returned peaks and show the image.
+
+    The returned iterator is already consumed, so no peak lines are printed.
+    """
     img, peaks = image_with_random_peaks()
     print('peaks:')
     for i, (r0, c0, a0, sigma) in enumerate(peaks) :

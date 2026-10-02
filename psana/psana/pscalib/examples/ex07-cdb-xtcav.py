@@ -14,6 +14,7 @@ from psana.pscalib.calib.CalibConstants import HOST, PORT
 #------------------------------
 
 def usage(fname) :
+    """Print the usage line for this script with ``fname`` as the default calibration file; returns None."""
     msg = 'Usage: python lcls2/psana/psana/pscalib/examples/ex07-cdb-xtcav.py [<full-path-to-calib-file>]'\
           '\n       by default calib file is %s' % fname
     print(msg)
@@ -24,6 +25,13 @@ def test_xtcav_calib_constants(fname=
                                '/reg/d/psdm/XPP/xpptut15/calib/Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/pedestals/101-102.data',\
                                add_constants_to_db=False) :
 
+    """Load an LCLS1 Xtcav calibration file and print it as a dict; optionally round-trip it through MongoDB and compare.
+
+    Experiment, detector, ctype and run are parsed from the path. If ``add_constants_to_db`` is False the
+    function returns after printing. Otherwise it deletes and re-creates the experiment and detector DBs
+    through ``MDBUtils`` functions (``connect_to_server``, ``delete_database``, ``insert_constants``, ...) that
+    the current ``MDBUtils`` does not define (AttributeError).
+    """
     _, exp, _, cvers, detname, ctype, cfname = fname.rsplit('/',6) 
     resp = parse_calib_file_name(cfname)
     begin, end, ext = resp if resp is not None else (None, None, None)

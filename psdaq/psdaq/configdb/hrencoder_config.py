@@ -1,3 +1,4 @@
+"""DRP configuration functions for the high-rate encoder (``high_rate_encoder_dev.Root``), with a `PgpMonitor` checking the PCIe PGP lanes."""
 from psdaq.configdb.get_config import get_config
 
 from psdaq.configdb.scan_utils import *
@@ -59,6 +60,11 @@ def cycle_timing_link(hr_enc):
 def hrencoder_init(
     arg, dev="/dev/datadev_0", lanemask=1, xpmpv=None, timebase="186M", verbosity=0
 ):
+    """Open a `PgpMonitor` for `lanemask` (``init_lanes``), create and start a ``high_rate_encoder_dev.Root`` on the lane, call ``StopRun()``, and return the root.
+
+    The lane is the single set bit of `lanemask` (asserted); ``hr_enc.stop`` is registered with
+    ``weakref.finalize``. `arg`, `xpmpv`, `timebase` and `verbosity` are unused.
+    """
     global pv
     global hr_enc
     global lm
@@ -99,6 +105,10 @@ def hrencoder_init(
 
 
 def hrencoder_connectionInfo(hr_enc, alloc_json_str):
+    """Check the PGP lanes, write ``timTxId('hrencoder')`` to TxId, and return ``{'paddr': rxId}`` with the RxId read before that write.
+
+    `alloc_json_str` is unused.
+    """
     print("hrencoder_connect")
 
     pgp_mon.check_lanes('connect')
@@ -115,6 +125,13 @@ def hrencoder_connectionInfo(hr_enc, alloc_json_str):
 
 
 def user_to_expert(hr_enc, cfg):
+    """If 'user.delay_ns' is present, set 'expert.TriggerDelay' in `cfg` to ``round(delay_ns*1300/7000 - PartitionDelay[group]*200)`` via `update_config_entry`.
+
+    Raises
+    ------
+    ValueError
+        If the computed delay is negative.
+    """
     global group
 
     d = {}
@@ -144,6 +161,7 @@ def user_to_expert(hr_enc, cfg):
 
 
 def config_expert(hr_enc, cfg):
+    """Write ``cfg['TriggerDelay']`` and ``cfg['PauseThreshold']`` to TriggerEventBuffer[0]."""
     trig_event_buf = getattr(
         hr_enc.App.TimingRx.TriggerEventManager, "TriggerEventBuffer[0]"
     )
@@ -156,6 +174,12 @@ def config_expert(hr_enc, cfg):
 
 
 def hrencoder_config(hr_enc, connect_str, cfgtype, detname, detsegm, grp):
+    """Read and apply the configuration, start the run, and return the configuration as JSON with 'firmwareVersion' added.
+
+    Checks the PGP lanes and remote link (ValueError 'PGP Link Down'), sets TriggerSource 0, applies
+    `user_to_expert`/`config_expert` and Partition `grp` with blowoff held, then sets event builder
+    Bypass 0x4 and Timeout 0 before ``StartRun()``.
+    """
     global ocfg
     global group
 
@@ -243,6 +267,7 @@ def hrencoder_update(update):
 
 
 def hrencoder_unconfig(hr_enc):
+    """Check the PGP lanes, call ``StopRun()``, and return `hr_enc`."""
     print("hrencoder_unconfig")
 
     pgp_mon.check_lanes('unconfig')

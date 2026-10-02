@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief RingIndexHtoD, a ring of buffer indices filled by the host and drained by the GPU.
+ */
 #ifndef RINGINDEX_HTOD_HH
 #define RINGINDEX_HTOD_HH
 
@@ -10,9 +14,11 @@
 namespace Drp {
   namespace Gpu {
 
+/** Lock-free ring of buffer indices with one host producer (push()) and one device consumer (pop()). Only the head and tail counters are stored, in pinned host memory, so the popped value is the tail position itself; one slot always stays empty. Used by Reader for its pebble queue. */
 class RingIndexHtoD
 {
 public:
+  /** Allocate the pinned head and tail words. The ring starts empty, or holding capacity - 1 entries if initEmpty is false; asserts that capacity is a power of 2. */
   __host__ RingIndexHtoD(const unsigned capacity,
                          bool           initEmpty=true) :
     m_head        (nullptr),
@@ -30,6 +36,7 @@ public:
     *m_tail = 0;
   }
 
+  /** Free the pinned head and tail words. */
   __host__ ~RingIndexHtoD()
   {
     if (m_tail)  chkError(cudaFreeHost(m_tail));
@@ -61,18 +68,21 @@ public:
     return true;
   }
 
+  /** Return the head, the next position to be pushed. */
   __host__ __device__ unsigned head() const
   {
     using namespace cuda::std;
     return m_head->load(memory_order_acquire);
   }
 
+  /** Return the tail, the next position to be popped. */
   __host__ __device__ unsigned tail() const
   {
     using namespace cuda::std;
     return m_tail->load(memory_order_acquire);
   }
 
+  /** Return the number of entries (head minus tail, modulo the capacity). */
   __host__ __device__ unsigned occupancy() const
   {
     using namespace cuda::std;
@@ -81,11 +91,13 @@ public:
     return (head - tail) & m_capacityMask;
   }
 
+  /** Return the capacity. */
   __host__ __device__ size_t size() const
   {
     return m_capacityMask + 1;
   }
 
+  /** Set the head to 0, or to capacity - 1 if initEmpty is false, and the tail to 0; not synchronized with the device. */
   __host__ void reset(bool initEmpty=true)
   {
     *m_head = initEmpty ? 0 : m_capacityMask;

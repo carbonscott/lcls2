@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief JungfrauEmulator, an XpmDetector that emulates Jungfrau panels (one per PGP lane).
+ */
 #pragma once
 
 #include "drp.hh"
@@ -11,9 +15,11 @@
 
 namespace Drp {
 
+/** XpmDetector that emulates Jungfrau panels, one per active PGP lane (detType jungfrauemu in PGPDetectorApp), optionally replaying image data from a file. */
 class JungfrauEmulator : public XpmDetector
 {
 public:
+    /** Build synthetic serial numbers for each active lane, read the segNums kwarg (aborting if it does not match the panel count, or if it is missing with more than one panel), and load substitute image data from the file named by the imgArray kwarg if set (aborting if it cannot be opened). */
     JungfrauEmulator(Parameters* para, MemPool* pool);
     unsigned configure(const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd) override;
     unsigned beginrun(XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& runInfo) override;
