@@ -97,16 +97,23 @@ $(document).ready(function(){initNavTree('classDrp_1_1EvtBatcherIterator.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Iterates backwards over the subframe tails of a batcher event, from the end of the buffer to the first line after the header.  
+ <a href="classDrp_1_1EvtBatcherIterator.html#details">More...</a></p>
+
 <p><code>#include &lt;EventBatcher.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9ffa608e87b5a8b207cb6219c8b1b397" id="r_a9ffa608e87b5a8b207cb6219c8b1b397"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherIterator.html#a9ffa608e87b5a8b207cb6219c8b1b397">EvtBatcherIterator</a> (<a class="el" href="classDrp_1_1EvtBatcherHeader.html">EvtBatcherHeader</a> *ebh, size_t bytes)</td></tr>
+<tr class="memdesc:a9ffa608e87b5a8b207cb6219c8b1b397"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start at the last line of the bytes-long buffer at ebh; iteration stops at the line after the header.  <br /></td></tr>
 <tr class="separator:a9ffa608e87b5a8b207cb6219c8b1b397"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08141733cfeee08e1f78a685c59dcd2b" id="r_a08141733cfeee08e1f78a685c59dcd2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html">EvtBatcherSubFrameTail</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherIterator.html#a08141733cfeee08e1f78a685c59dcd2b">next</a> ()</td></tr>
+<tr class="memdesc:a08141733cfeee08e1f78a685c59dcd2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next tail going backwards, or nullptr when all have been returned.  <br /></td></tr>
 <tr class="separator:a08141733cfeee08e1f78a685c59dcd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Iterates backwards over the subframe tails of a batcher event, from the end of the buffer to the first line after the header. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9ffa608e87b5a8b207cb6219c8b1b397" name="a9ffa608e87b5a8b207cb6219c8b1b397"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ffa608e87b5a8b207cb6219c8b1b397">&#9670;&#160;</a></span>EvtBatcherIterator()</h2>
 
@@ -141,6 +148,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Start at the last line of the bytes-long buffer at ebh; iteration stops at the line after the header. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -166,6 +175,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the next tail going backwards, or nullptr when all have been returned. </p>
+<p>Logs and throws std::runtime_error if a subframe would extend before the first line after the header. </p>
 
 </div>
 </div>

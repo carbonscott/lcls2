@@ -98,21 +98,29 @@ $(document).ready(function(){initNavTree('structPds_1_1Trg_1_1TimingTebData.html
 </div><!--header-->
 <div class="contents">
 
+<p>TEB input record written by timingTebPrimitive.cc from the timing data of an event.  
+ <a href="structPds_1_1Trg_1_1TimingTebData.html#details">More...</a></p>
+
 <p><code>#include &lt;TimingTebData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae76fc4b1eb85117b511a703bb991f0fd" id="r_ae76fc4b1eb85117b511a703bb991f0fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TimingTebData.html#ae76fc4b1eb85117b511a703bb991f0fd">TimingTebData</a> (const uint8_t ebeamDestn_, const uint32_t *eventcodes_)</td></tr>
+<tr class="memdesc:ae76fc4b1eb85117b511a703bb991f0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store ebeamDestn_ and copy nine 32-bit words from eventcodes_.  <br /></td></tr>
 <tr class="separator:ae76fc4b1eb85117b511a703bb991f0fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:abcedf992f23e2ada2f5715d78fd241ae" id="r_abcedf992f23e2ada2f5715d78fd241ae"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TimingTebData.html#abcedf992f23e2ada2f5715d78fd241ae">ebeamDestn</a></td></tr>
+<tr class="memdesc:abcedf992f23e2ada2f5715d78fd241ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Beam destination with bit 7 set when the beam is present (as filled by timingTebPrimitive.cc).  <br /></td></tr>
 <tr class="separator:abcedf992f23e2ada2f5715d78fd241ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace5e1a9e730b3c382ab0712daf90dc11" id="r_ace5e1a9e730b3c382ab0712daf90dc11"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TimingTebData.html#ace5e1a9e730b3c382ab0712daf90dc11">eventcodes</a> [9]</td></tr>
+<tr class="memdesc:ace5e1a9e730b3c382ab0712daf90dc11"><td class="mdescLeft">&#160;</td><td class="mdescRight">The 18 16-bit sequence words of the timing data, copied as nine 32-bit words.  <br /></td></tr>
 <tr class="separator:ace5e1a9e730b3c382ab0712daf90dc11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TEB input record written by timingTebPrimitive.cc from the timing data of an event. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae76fc4b1eb85117b511a703bb991f0fd" name="ae76fc4b1eb85117b511a703bb991f0fd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae76fc4b1eb85117b511a703bb991f0fd">&#9670;&#160;</a></span>TimingTebData()</h2>
 
@@ -147,6 +155,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Store ebeamDestn_ and copy nine 32-bit words from eventcodes_. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -162,6 +172,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Beam destination with bit 7 set when the beam is present (as filled by timingTebPrimitive.cc). </p>
+
 </div>
 </div>
 <a id="ace5e1a9e730b3c382ab0712daf90dc11" name="ace5e1a9e730b3c382ab0712daf90dc11"></a>
@@ -175,6 +187,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The 18 16-bit sequence words of the timing data, copied as nine 32-bit words. </p>
 
 </div>
 </div>

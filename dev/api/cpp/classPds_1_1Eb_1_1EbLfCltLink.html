@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbLfCltLink.html',''
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="structClient.html">Client</a> side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; writes data into the server's registered memory with RDMA.  
+ <a href="classPds_1_1Eb_1_1EbLfCltLink.html#details">More...</a></p>
+
 <p><code>#include &lt;EbLfLink.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">Pds::Eb::EbLfLink</a>.</p>
@@ -104,61 +107,87 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbLfCltLink.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae3f6e601c3ee9f2fab9cf8128c1f528c" id="r_ae3f6e601c3ee9f2fab9cf8128c1f528c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#ae3f6e601c3ee9f2fab9cf8128c1f528c">EbLfCltLink</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Fabrics::Endpoint</a> *, const unsigned rxDepth, const unsigned &amp;verbose, volatile uint64_t &amp;pending, volatile uint64_t &amp;posting)</td></tr>
+<tr class="memdesc:ae3f6e601c3ee9f2fab9cf8128c1f528c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the base <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a> with rxDepth receive credits.  <br /></td></tr>
 <tr class="separator:ae3f6e601c3ee9f2fab9cf8128c1f528c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad723515971f6bd243cb0dfa44bad1b55" id="r_ad723515971f6bd243cb0dfa44bad1b55"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#ad723515971f6bd243cb0dfa44bad1b55">exchangeId</a> (unsigned <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a2c4e5e1f1ba9966739dd2138c196b9aa">id</a>, const char *peer)</td></tr>
+<tr class="memdesc:ad723515971f6bd243cb0dfa44bad1b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synchronize with the server, send id, receive the server's ID (stored as <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a2c4e5e1f1ba9966739dd2138c196b9aa" title="Return the peer ID received in exchangeId(); (unsigned)-1 before that.">id()</a>), then synchronize again.  <br /></td></tr>
 <tr class="separator:ad723515971f6bd243cb0dfa44bad1b55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4200f87d32ae09ce7c5ed074896b47" id="r_aca4200f87d32ae09ce7c5ed074896b47"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#aca4200f87d32ae09ce7c5ed074896b47">prepare</a> (void *region, size_t lclSize, size_t rmtSize, const char *peer)</td></tr>
+<tr class="memdesc:aca4200f87d32ae09ce7c5ed074896b47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synchronize with the server.  <br /></td></tr>
 <tr class="separator:aca4200f87d32ae09ce7c5ed074896b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ebf2cbe74c54f774851d860880c1b8f" id="r_a0ebf2cbe74c54f774851d860880c1b8f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#a0ebf2cbe74c54f774851d860880c1b8f">prepare</a> (void *region, size_t size, const char *peer)</td></tr>
+<tr class="memdesc:a0ebf2cbe74c54f774851d860880c1b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call prepare(region, size, size, peer).  <br /></td></tr>
 <tr class="separator:a0ebf2cbe74c54f774851d860880c1b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49eb097a57a8b70f6b413904fce4ea6e" id="r_a49eb097a57a8b70f6b413904fce4ea6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#a49eb097a57a8b70f6b413904fce4ea6e">setupMr</a> (void *region, size_t size)</td></tr>
+<tr class="memdesc:a49eb097a57a8b70f6b413904fce4ea6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register (or reuse) a local memory region for size bytes at region with <a class="el" href="namespacePds_1_1Eb.html#a06a77c3e603fac8b907385085c9e9b6e" title="Make *mr a memory region on fabric that covers size bytes at region.">Pds::Eb::setupMr()</a>; returns -1 if there is no endpoint.  <br /></td></tr>
 <tr class="separator:a49eb097a57a8b70f6b413904fce4ea6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99388945b51a9a7ff1362e8fe442aa7d" id="r_a99388945b51a9a7ff1362e8fe442aa7d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#a99388945b51a9a7ff1362e8fe442aa7d">post</a> (const void *buf, size_t len, size_t offset, uint64_t immData, void *ctx=nullptr)</td></tr>
+<tr class="memdesc:a99388945b51a9a7ff1362e8fe442aa7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">RDMA-write len bytes from buf to the server's region at offset, with immediate data immData (Endpoint::writedata()), retrying -FI_EAGAIN for up to 300 s.  <br /></td></tr>
 <tr class="separator:a99388945b51a9a7ff1362e8fe442aa7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Eb_1_1EbLfLink"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Eb_1_1EbLfLink')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">Pds::Eb::EbLfLink</a></td></tr>
 <tr class="memitem:a6e2ec1301c5e08de24ee4df9437dcd69 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a6e2ec1301c5e08de24ee4df9437dcd69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a6e2ec1301c5e08de24ee4df9437dcd69">EbLfLink</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Fabrics::Endpoint</a> *, const unsigned depth, const unsigned &amp;verbose, volatile uint64_t &amp;pending, volatile uint64_t &amp;posting)</td></tr>
+<tr class="memdesc:a6e2ec1301c5e08de24ee4df9437dcd69 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrap the endpoint with depth receive credits, zero the shared pending and posting words and post depth zero-length receives.  <br /></td></tr>
 <tr class="separator:a6e2ec1301c5e08de24ee4df9437dcd69 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3826d94b1b2049c23f15a08b458d0e9d inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a3826d94b1b2049c23f15a08b458d0e9d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a3826d94b1b2049c23f15a08b458d0e9d">~EbLfLink</a> ()</td></tr>
+<tr class="memdesc:a3826d94b1b2049c23f15a08b458d0e9d inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the pending and posting words and print a message if fewer than depth credits are posted.  <br /></td></tr>
 <tr class="separator:a3826d94b1b2049c23f15a08b458d0e9d inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9db1df6f2910aa17d14974c170590f12 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a9db1df6f2910aa17d14974c170590f12"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9db1df6f2910aa17d14974c170590f12">recvU32</a> (uint32_t *u32, const char *peer, const char *name)</td></tr>
+<tr class="memdesc:a9db1df6f2910aa17d14974c170590f12 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait up to 7 s for one immediate data value and store its low 32 bits in u32.  <br /></td></tr>
 <tr class="separator:a9db1df6f2910aa17d14974c170590f12 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09faea56a52bdbe8b73194117b4cc314 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a09faea56a52bdbe8b73194117b4cc314"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a09faea56a52bdbe8b73194117b4cc314">sendU32</a> (uint32_t u32, const char *peer, const char *name)</td></tr>
+<tr class="memdesc:a09faea56a52bdbe8b73194117b4cc314 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send u32 as immediate data with <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#ac9b8c3c3af74d2586d82eeb661fbe70e" title="Send len bytes from buf with immediate data immData using Endpoint::injectdata(), retrying -FI_EAGAIN...">post()</a>; returns 0, or the error after printing a message.  <br /></td></tr>
 <tr class="separator:a09faea56a52bdbe8b73194117b4cc314 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa484d2e3abe6d31df37093b3d1a9ec81 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_aa484d2e3abe6d31df37093b3d1a9ec81"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#aa484d2e3abe6d31df37093b3d1a9ec81">sendMr</a> (<a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">Fabrics::MemoryRegion</a> *, const char *peer)</td></tr>
+<tr class="memdesc:aa484d2e3abe6d31df37093b3d1a9ec81 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a RemoteAddress built from the memory region (start address, length, key) to the peer as a series of 32-bit immediate data values; returns 0 or a negative error.  <br /></td></tr>
 <tr class="separator:aa484d2e3abe6d31df37093b3d1a9ec81 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16b0f3a92b7ccde7a822a7daff40a24e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a16b0f3a92b7ccde7a822a7daff40a24e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a16b0f3a92b7ccde7a822a7daff40a24e">recvMr</a> (<a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">Fabrics::RemoteAddress</a> &amp;, const char *peer)</td></tr>
+<tr class="memdesc:a16b0f3a92b7ccde7a822a7daff40a24e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive a RemoteAddress into ra as a series of 32-bit immediate data values (as sent by <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#aa484d2e3abe6d31df37093b3d1a9ec81" title="Send a RemoteAddress built from the memory region (start address, length, key) to the peer as a serie...">sendMr()</a>), waiting up to 7 s for each; returns 0 or the <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9a8c987ea054b2cdfabe9bf11c3bcaaf" title="Check the receive completion queue once without waiting and re-post the consumed receive.">poll()</a> error.  <br /></td></tr>
 <tr class="separator:a16b0f3a92b7ccde7a822a7daff40a24e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4df019aa1bb56a099b4c633a18d749e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_ab4df019aa1bb56a099b4c633a18d749e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#ab4df019aa1bb56a099b4c633a18d749e">lclAdx</a> (size_t offset) const</td></tr>
+<tr class="memdesc:ab4df019aa1bb56a099b4c633a18d749e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the local address that is offset bytes from the start of the local memory region.  <br /></td></tr>
 <tr class="separator:ab4df019aa1bb56a099b4c633a18d749e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9643189431d560756e6d97ff54dc7dfd inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a9643189431d560756e6d97ff54dc7dfd"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9643189431d560756e6d97ff54dc7dfd">lclOfs</a> (const void *buffer) const</td></tr>
+<tr class="memdesc:a9643189431d560756e6d97ff54dc7dfd inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the byte offset of buffer from the start of the local memory region.  <br /></td></tr>
 <tr class="separator:a9643189431d560756e6d97ff54dc7dfd inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94761915f6d6436e13825269e4e616c8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a94761915f6d6436e13825269e4e616c8"><td class="memItemLeft" align="right" valign="top">uintptr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a94761915f6d6436e13825269e4e616c8">rmtAdx</a> (size_t offset) const</td></tr>
+<tr class="memdesc:a94761915f6d6436e13825269e4e616c8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remote address that is offset bytes from the start of the remote region.  <br /></td></tr>
 <tr class="separator:a94761915f6d6436e13825269e4e616c8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47c5daeeebba7ad07ccb8d1cd1801666 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a47c5daeeebba7ad07ccb8d1cd1801666"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a47c5daeeebba7ad07ccb8d1cd1801666">rmtOfs</a> (uintptr_t buffer) const</td></tr>
+<tr class="memdesc:a47c5daeeebba7ad07ccb8d1cd1801666 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the byte offset of the remote address buffer from the start of the remote region.  <br /></td></tr>
 <tr class="separator:a47c5daeeebba7ad07ccb8d1cd1801666 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1055f55d7fdb3ebbdbb3e25071e1cfd6 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a1055f55d7fdb3ebbdbb3e25071e1cfd6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Fabrics::Endpoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a1055f55d7fdb3ebbdbb3e25071e1cfd6">endpoint</a> () const</td></tr>
+<tr class="memdesc:a1055f55d7fdb3ebbdbb3e25071e1cfd6 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the libfabric endpoint.  <br /></td></tr>
 <tr class="separator:a1055f55d7fdb3ebbdbb3e25071e1cfd6 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c4e5e1f1ba9966739dd2138c196b9aa inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a2c4e5e1f1ba9966739dd2138c196b9aa"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a2c4e5e1f1ba9966739dd2138c196b9aa">id</a> () const</td></tr>
+<tr class="memdesc:a2c4e5e1f1ba9966739dd2138c196b9aa inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the peer ID received in exchangeId(); (unsigned)-1 before that.  <br /></td></tr>
 <tr class="separator:a2c4e5e1f1ba9966739dd2138c196b9aa inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a874dd3ed92231265765eb4c65c2523ca inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a874dd3ed92231265765eb4c65c2523ca"><td class="memItemLeft" align="right" valign="top">const uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a874dd3ed92231265765eb4c65c2523ca">tmoCnt</a> () const</td></tr>
+<tr class="memdesc:a874dd3ed92231265765eb4c65c2523ca inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of timeouts counted by <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#ac9b8c3c3af74d2586d82eeb661fbe70e" title="Send len bytes from buf with immediate data immData using Endpoint::injectdata(), retrying -FI_EAGAIN...">post()</a> and <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9a8c987ea054b2cdfabe9bf11c3bcaaf" title="Check the receive completion queue once without waiting and re-post the consumed receive.">poll()</a>.  <br /></td></tr>
 <tr class="separator:a874dd3ed92231265765eb4c65c2523ca inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9b8c3c3af74d2586d82eeb661fbe70e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_ac9b8c3c3af74d2586d82eeb661fbe70e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#ac9b8c3c3af74d2586d82eeb661fbe70e">post</a> (const void *buf, size_t len, uint64_t immData)</td></tr>
+<tr class="memdesc:ac9b8c3c3af74d2586d82eeb661fbe70e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send len bytes from buf with immediate data immData using Endpoint::injectdata(), retrying -FI_EAGAIN for up to 300 s.  <br /></td></tr>
 <tr class="separator:ac9b8c3c3af74d2586d82eeb661fbe70e inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe6a0bb56f06df757244ff83c9893158 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_afe6a0bb56f06df757244ff83c9893158"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#afe6a0bb56f06df757244ff83c9893158">post</a> (uint64_t immData)</td></tr>
+<tr class="memdesc:afe6a0bb56f06df757244ff83c9893158 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send only the immediate data immData; same as post(nullptr, 0, immData).  <br /></td></tr>
 <tr class="separator:afe6a0bb56f06df757244ff83c9893158 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a8c987ea054b2cdfabe9bf11c3bcaaf inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a9a8c987ea054b2cdfabe9bf11c3bcaaf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9a8c987ea054b2cdfabe9bf11c3bcaaf">poll</a> (uint64_t *data)</td></tr>
+<tr class="memdesc:a9a8c987ea054b2cdfabe9bf11c3bcaaf inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the receive completion queue once without waiting and re-post the consumed receive.  <br /></td></tr>
 <tr class="separator:a9a8c987ea054b2cdfabe9bf11c3bcaaf inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f3bb7dcee74d0d8a9d28ffc099d84e8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a0f3bb7dcee74d0d8a9d28ffc099d84e8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a0f3bb7dcee74d0d8a9d28ffc099d84e8">poll</a> (uint64_t *data, int msTmo)</td></tr>
+<tr class="memdesc:a0f3bb7dcee74d0d8a9d28ffc099d84e8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a9a8c987ea054b2cdfabe9bf11c3bcaaf" title="Check the receive completion queue once without waiting and re-post the consumed receive.">poll(uint64_t*)</a>, but waits up to msTmo milliseconds for a completion.  <br /></td></tr>
 <tr class="separator:a0f3bb7dcee74d0d8a9d28ffc099d84e8 inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a494fc43bd8311ccf50ecfa40d78230bb inherit pub_methods_classPds_1_1Eb_1_1EbLfLink" id="r_a494fc43bd8311ccf50ecfa40d78230bb"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a494fc43bd8311ccf50ecfa40d78230bb">postCompRecv</a> (const unsigned count)</td></tr>
+<tr class="memdesc:a494fc43bd8311ccf50ecfa40d78230bb inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Consume count receive credits, then re-post zero-length receives until depth credits are posted again (on -FI_EAGAIN, retry up to 100000 times with 10 us sleeps).  <br /></td></tr>
 <tr class="separator:a494fc43bd8311ccf50ecfa40d78230bb inherit pub_methods_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classPds_1_1Eb_1_1EbLfLink"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classPds_1_1Eb_1_1EbLfLink')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">Pds::Eb::EbLfLink</a></td></tr>
 <tr class="memitem:a6f42ef64906e1717173d963d9b826fad inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink" id="r_a6f42ef64906e1717173d963d9b826fad"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a6f42ef64906e1717173d963d9b826fad">_depth</a></td></tr>
+<tr class="memdesc:a6f42ef64906e1717173d963d9b826fad inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of receive buffers (credits) to keep posted.  <br /></td></tr>
 <tr class="separator:a6f42ef64906e1717173d963d9b826fad inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a716ce87453135a210d88170b4e12b4b3 inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink" id="r_a716ce87453135a210d88170b4e12b4b3"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a716ce87453135a210d88170b4e12b4b3">_credits</a></td></tr>
+<tr class="memdesc:a716ce87453135a210d88170b4e12b4b3 inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of receive buffers currently posted.  <br /></td></tr>
 <tr class="separator:a716ce87453135a210d88170b4e12b4b3 inherit pub_attribs_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_types_classPds_1_1Eb_1_1EbLfLink"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classPds_1_1Eb_1_1EbLfLink')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">Pds::Eb::EbLfLink</a></td></tr>
 <tr class="memitem:ac2e381723b826376c6405549e7c96c5b inherit pro_types_classPds_1_1Eb_1_1EbLfLink" id="r_ac2e381723b826376c6405549e7c96c5b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#ac2e381723b826376c6405549e7c96c5ba263865946d45f37b6179a91b15173789">_BegSync</a> = 0x11111111
@@ -185,7 +214,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a4d42ca1f272c8160db17483fe1526bc6 inherit pro_attribs_classPds_1_1Eb_1_1EbLfLink" id="r_a4d42ca1f272c8160db17483fe1526bc6"><td class="memItemLeft" align="right" valign="top">volatile uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a4d42ca1f272c8160db17483fe1526bc6">_posting</a></td></tr>
 <tr class="separator:a4d42ca1f272c8160db17483fe1526bc6 inherit pro_attribs_classPds_1_1Eb_1_1EbLfLink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="structClient.html">Client</a> side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; writes data into the server's registered memory with RDMA. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae3f6e601c3ee9f2fab9cf8128c1f528c" name="ae3f6e601c3ee9f2fab9cf8128c1f528c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae3f6e601c3ee9f2fab9cf8128c1f528c">&#9670;&#160;</a></span>EbLfCltLink()</h2>
 
@@ -230,6 +261,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the base <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a> with rxDepth receive credits. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -258,6 +291,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Synchronize with the server, send id, receive the server's ID (stored as <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html#a2c4e5e1f1ba9966739dd2138c196b9aa" title="Return the peer ID received in exchangeId(); (unsigned)-1 before that.">id()</a>), then synchronize again. </p>
+<p>Returns 0 or the first error. </p>
 
 </div>
 </div>
@@ -305,6 +341,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>RDMA-write len bytes from buf to the server's region at offset, with immediate data immData (Endpoint::writedata()), retrying -FI_EAGAIN for up to 300 s. </p>
+<p>This peer's bit is set in the posting word while sending. Returns 0 or the last error. </p>
+
 </div>
 </div>
 <a id="aca4200f87d32ae09ce7c5ed074896b47" name="aca4200f87d32ae09ce7c5ed074896b47"></a>
@@ -345,6 +384,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Synchronize with the server. </p>
+<p>If region is non-null, send rmtSize, register (or reuse) a local memory region of lclSize bytes at region and receive the server's region description. Then synchronize again. Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="a0ebf2cbe74c54f774851d860880c1b8f" name="a0ebf2cbe74c54f774851d860880c1b8f"></a>
@@ -379,6 +421,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call prepare(region, size, size, peer). </p>
+
 </div>
 </div>
 <a id="a49eb097a57a8b70f6b413904fce4ea6e" name="a49eb097a57a8b70f6b413904fce4ea6e"></a>
@@ -406,6 +450,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register (or reuse) a local memory region for size bytes at region with <a class="el" href="namespacePds_1_1Eb.html#a06a77c3e603fac8b907385085c9e9b6e" title="Make *mr a memory region on fabric that covers size bytes at region.">Pds::Eb::setupMr()</a>; returns -1 if there is no endpoint. </p>
 
 </div>
 </div>

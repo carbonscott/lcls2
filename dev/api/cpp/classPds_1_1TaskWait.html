@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1TaskWait.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> that, once queued on a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a>, lets the caller block until the task has run all jobs queued before it (per the file comment).  
+ <a href="classPds_1_1TaskWait.html#details">More...</a></p>
+
 <p><code>#include &lt;TaskWait.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Routine.html">Pds::Routine</a>.</p>
@@ -104,13 +107,18 @@ $(document).ready(function(){initNavTree('classPds_1_1TaskWait.html',''); initRe
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2c4cd6c2e40af0f14b5f51ceb8283eab" id="r_a2c4cd6c2e40af0f14b5f51ceb8283eab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TaskWait.html#a2c4cd6c2e40af0f14b5f51ceb8283eab">TaskWait</a> (<a class="el" href="classPds_1_1Task.html">Task</a> *task)</td></tr>
+<tr class="memdesc:a2c4cd6c2e40af0f14b5f51ceb8283eab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the semaphore empty and queue this object on task.  <br /></td></tr>
 <tr class="separator:a2c4cd6c2e40af0f14b5f51ceb8283eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1516a0158637df211144628c35664bbd" id="r_a1516a0158637df211144628c35664bbd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TaskWait.html#a1516a0158637df211144628c35664bbd">~TaskWait</a> ()</td></tr>
+<tr class="memdesc:a1516a0158637df211144628c35664bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a1516a0158637df211144628c35664bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6adb91bbc5562cdc2c76c62ffeddfce" id="r_ae6adb91bbc5562cdc2c76c62ffeddfce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TaskWait.html#ae6adb91bbc5562cdc2c76c62ffeddfce">wait</a> ()</td></tr>
+<tr class="memdesc:ae6adb91bbc5562cdc2c76c62ffeddfce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Block until the task has run this routine (takes the semaphore that routine() gives).  <br /></td></tr>
 <tr class="separator:ae6adb91bbc5562cdc2c76c62ffeddfce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> that, once queued on a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a>, lets the caller block until the task has run all jobs queued before it (per the file comment). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2c4cd6c2e40af0f14b5f51ceb8283eab" name="a2c4cd6c2e40af0f14b5f51ceb8283eab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2c4cd6c2e40af0f14b5f51ceb8283eab">&#9670;&#160;</a></span>TaskWait()</h2>
 
@@ -134,6 +142,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Create the semaphore empty and queue this object on task. </p>
 
 </div>
 </div>
@@ -160,6 +170,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty virtual destructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -185,6 +197,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Block until the task has run this routine (takes the semaphore that routine() gives). </p>
 
 </div>
 </div>

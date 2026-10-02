@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1UdpApp.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the UDP encoder DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a> and handles the collection transitions.  
+ <a href="classDrp_1_1UdpApp.html#details">More...</a></p>
+
 <p><code>#include &lt;UdpEncoder.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classCollectionApp.html">CollectionApp</a>.</p>
@@ -104,17 +107,23 @@ $(document).ready(function(){initNavTree('classDrp_1_1UdpApp.html',''); initResi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2326199cdcdd0c29e83c0586ed951eee" id="r_a2326199cdcdd0c29e83c0586ed951eee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpApp.html#a2326199cdcdd0c29e83c0586ed951eee">UdpApp</a> (UdpParameters &amp;para)</td></tr>
+<tr class="memdesc:a2326199cdcdd0c29e83c0586ed951eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register with the collection as a drp, open the PGP pool, initialize Python, and create the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a>.  <br /></td></tr>
 <tr class="separator:a2326199cdcdd0c29e83c0586ed951eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a360a1f9b936217330a2e582167bc4c40" id="r_a360a1f9b936217330a2e582167bc4c40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpApp.html#a360a1f9b936217330a2e582167bc4c40">~UdpApp</a> ()</td></tr>
+<tr class="memdesc:a360a1f9b936217330a2e582167bc4c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1UdpApp.html#a349cf447bbce27331eacdcd1918664d1" title="Unsubscribe from the partition, unconfigure, disconnect and shut down the connection.">handleReset()</a> and finalize Python.  <br /></td></tr>
 <tr class="separator:a360a1f9b936217330a2e582167bc4c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a349cf447bbce27331eacdcd1918664d1" id="r_a349cf447bbce27331eacdcd1918664d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpApp.html#a349cf447bbce27331eacdcd1918664d1">handleReset</a> (const nlohmann::json &amp;msg) override</td></tr>
+<tr class="memdesc:a349cf447bbce27331eacdcd1918664d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribe from the partition, unconfigure, disconnect and shut down the connection.  <br /></td></tr>
 <tr class="separator:a349cf447bbce27331eacdcd1918664d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp" id="r_adc697792b5bb454148b34f1f1b1d90ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#adc697792b5bb454148b34f1f1b1d90ed">CollectionApp</a> (const std::string &amp;managerHostname, int platform, const std::string &amp;level, const std::string &amp;alias, const std::string &amp;device=std::string())</td></tr>
+<tr class="memdesc:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the resource limits (throwing a C string if they are inadequate), connect the PUSH and SUB sockets to managerHostname for platform, bind inproc://drp, and register handlers for rollcall, alloc, dealloc, connect, disconnect, reset and the phase-1 transitions (configure, unconfigure, beginrun, endrun, beginstep, endstep, enable, disable).  <br /></td></tr>
 <tr class="separator:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp" id="r_ad85f56b0061369d28f7371948fba8947"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#ad85f56b0061369d28f7371948fba8947">~CollectionApp</a> ()</td></tr>
+<tr class="memdesc:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp" id="r_a5333e0f78c49e83e0b2ffa0d7628c98e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a5333e0f78c49e83e0b2ffa0d7628c98e">run</a> ()</td></tr>
+<tr class="memdesc:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Message loop: dispatch collection messages from the SUB socket to their handlers by header key, and forward pulseId, fileReport, error and chunkRequest messages from inproc://drp to the manager.  <br /></td></tr>
 <tr class="separator:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -122,6 +131,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:a72e7f6bc6f81065a58017d52190f58d7 inherit pub_types_classCollectionApp" id="r_a72e7f6bc6f81065a58017d52190f58d7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db">zmq_base_port</a> = 29980
  }</td></tr>
+<tr class="memdesc:a72e7f6bc6f81065a58017d52190f58d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base TCP port of the collection sockets.  <a href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7">More...</a><br /></td></tr>
 <tr class="separator:a72e7f6bc6f81065a58017d52190f58d7 inherit pub_types_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:afdc346ac91bf9ec7d31417be9317dca3 inherit pro_methods_classCollectionApp" id="r_afdc346ac91bf9ec7d31417be9317dca3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#afdc346ac91bf9ec7d31417be9317dca3">handleRollcall</a> (const nlohmann::json &amp;msg)</td></tr>
@@ -145,7 +155,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a4c67537e683b2439ed17369252a85862 inherit pro_methods_classCollectionApp" id="r_a4c67537e683b2439ed17369252a85862"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a4c67537e683b2439ed17369252a85862">unsubscribePartition</a> ()</td></tr>
 <tr class="separator:a4c67537e683b2439ed17369252a85862 inherit pro_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the UDP encoder DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a> and handles the collection transitions. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2326199cdcdd0c29e83c0586ed951eee" name="a2326199cdcdd0c29e83c0586ed951eee"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2326199cdcdd0c29e83c0586ed951eee">&#9670;&#160;</a></span>UdpApp()</h2>
 
@@ -161,6 +173,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register with the collection as a drp, open the PGP pool, initialize Python, and create the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a>. </p>
 
 </div>
 </div>
@@ -178,6 +192,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classDrp_1_1UdpApp.html#a349cf447bbce27331eacdcd1918664d1" title="Unsubscribe from the partition, unconfigure, disconnect and shut down the connection.">handleReset()</a> and finalize Python. </p>
 
 </div>
 </div>
@@ -205,6 +221,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Unsubscribe from the partition, unconfigure, disconnect and shut down the connection. </p>
 
 <p>Implements <a class="el" href="classCollectionApp.html#a9ea92ed0a9b513acfa467bb7fe78c41d">CollectionApp</a>.</p>
 

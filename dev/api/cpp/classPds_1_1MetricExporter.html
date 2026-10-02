@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1MetricExporter.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Prometheus collectable holding named metrics whose values come from callbacks evaluated at each scrape (<a class="el" href="classPds_1_1MetricExporter.html#a54ae847c833b2471ec331927129939cc" title="Update every metric (rates, histograms, valid floats and callback values; constants unchanged) and re...">Collect()</a>).  
+ <a href="classPds_1_1MetricExporter.html#details">More...</a></p>
+
 <p><code>#include &lt;MetricExporter.hh&gt;</code></p>
 
 <p>Inherits prometheus::Collectable.</p>
@@ -104,19 +107,28 @@ $(document).ready(function(){initNavTree('classPds_1_1MetricExporter.html',''); 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:afab8796f26937e79779d6faa04250683" id="r_afab8796f26937e79779d6faa04250683"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#afab8796f26937e79779d6faa04250683">find</a> (const std::string &amp;name) const</td></tr>
+<tr class="memdesc:afab8796f26937e79779d6faa04250683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the index of the metric named name, or -1.  <br /></td></tr>
 <tr class="separator:afab8796f26937e79779d6faa04250683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a4a0429c6ee3d7155f44b0e71dac1dc" id="r_a4a4a0429c6ee3d7155f44b0e71dac1dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#a4a4a0429c6ee3d7155f44b0e71dac1dc">add</a> (const std::string &amp;name, const std::map&lt; std::string, std::string &gt; &amp;labels, <a class="el" href="namespacePds.html#a692df52a8d90772d504534a72a47b3a7">MetricType</a> type, std::function&lt; int64_t()&gt; value)</td></tr>
+<tr class="memdesc:a4a4a0429c6ee3d7155f44b0e71dac1dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metric name with labels, of the given type, whose value is read by calling value; an existing metric with that name is replaced.  <br /></td></tr>
 <tr class="separator:a4a4a0429c6ee3d7155f44b0e71dac1dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a940c90dba709929e5f61bf9839cf7f91" id="r_a940c90dba709929e5f61bf9839cf7f91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#a940c90dba709929e5f61bf9839cf7f91">addFloat</a> (const std::string &amp;name, const std::map&lt; std::string, std::string &gt; &amp;labels, std::function&lt; bool(double &amp;)&gt; value)</td></tr>
+<tr class="memdesc:a940c90dba709929e5f61bf9839cf7f91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a Float gauge name whose callback stores a double and returns whether it is valid; an existing metric with that name is replaced.  <br /></td></tr>
 <tr class="separator:a940c90dba709929e5f61bf9839cf7f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a084eda8aeb926b22a293c2ad8a48c485" id="r_a084eda8aeb926b22a293c2ad8a48c485"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#a084eda8aeb926b22a293c2ad8a48c485">constant</a> (const std::string &amp;name, const std::map&lt; std::string, std::string &gt; &amp;labels, int64_t value)</td></tr>
+<tr class="memdesc:a084eda8aeb926b22a293c2ad8a48c485"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a Constant metric name exported as a counter with the fixed value value.  <br /></td></tr>
 <tr class="separator:a084eda8aeb926b22a293c2ad8a48c485"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ad1572e2dd0972fb16dbb742a1e18e1" id="r_a6ad1572e2dd0972fb16dbb742a1e18e1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classPds_1_1PromHistogram.html">PromHistogram</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#a6ad1572e2dd0972fb16dbb742a1e18e1">histogram</a> (const std::string &amp;name, const std::map&lt; std::string, std::string &gt; &amp;labels, unsigned numBins, double binWidth=1.0, double binMin=0.0)</td></tr>
+<tr class="memdesc:a6ad1572e2dd0972fb16dbb742a1e18e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a histogram metric name with numBins buckets of width binWidth starting at binMin and return it for observe() calls.  <br /></td></tr>
 <tr class="separator:a6ad1572e2dd0972fb16dbb742a1e18e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54ae847c833b2471ec331927129939cc" id="r_a54ae847c833b2471ec331927129939cc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; prometheus::MetricFamily &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html#a54ae847c833b2471ec331927129939cc">Collect</a> () const override</td></tr>
+<tr class="memdesc:a54ae847c833b2471ec331927129939cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update every metric (rates, histograms, valid floats and callback values; constants unchanged) and return the metric families.  <br /></td></tr>
 <tr class="separator:a54ae847c833b2471ec331927129939cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Prometheus collectable holding named metrics whose values come from callbacks evaluated at each scrape (<a class="el" href="classPds_1_1MetricExporter.html#a54ae847c833b2471ec331927129939cc" title="Update every metric (rates, histograms, valid floats and callback values; constants unchanged) and re...">Collect()</a>). </p>
+<p>Adding a metric with an existing name replaces it. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4a4a0429c6ee3d7155f44b0e71dac1dc" name="a4a4a0429c6ee3d7155f44b0e71dac1dc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4a4a0429c6ee3d7155f44b0e71dac1dc">&#9670;&#160;</a></span>add()</h2>
 
@@ -155,6 +167,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register metric name with labels, of the given type, whose value is read by calling value; an existing metric with that name is replaced. </p>
+<p>For Rate, value is called once now to set the starting point. </p>
+
 </div>
 </div>
 <a id="a940c90dba709929e5f61bf9839cf7f91" name="a940c90dba709929e5f61bf9839cf7f91"></a>
@@ -189,6 +204,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register a Float gauge name whose callback stores a double and returns whether it is valid; an existing metric with that name is replaced. </p>
+
 </div>
 </div>
 <a id="a54ae847c833b2471ec331927129939cc" name="a54ae847c833b2471ec331927129939cc"></a>
@@ -213,6 +230,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Update every metric (rates, histograms, valid floats and callback values; constants unchanged) and return the metric families. </p>
 
 </div>
 </div>
@@ -248,6 +267,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register a Constant metric name exported as a counter with the fixed value value. </p>
+
 </div>
 </div>
 <a id="afab8796f26937e79779d6faa04250683" name="afab8796f26937e79779d6faa04250683"></a>
@@ -265,6 +286,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the index of the metric named name, or -1. </p>
 
 </div>
 </div>
@@ -311,6 +334,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register a histogram metric name with numBins buckets of width binWidth starting at binMin and return it for observe() calls. </p>
+<p>Note that, unlike <a class="el" href="classPds_1_1MetricExporter.html#a4a4a0429c6ee3d7155f44b0e71dac1dc" title="Register metric name with labels, of the given type, whose value is read by calling value; an existin...">add()</a> and <a class="el" href="classPds_1_1MetricExporter.html#a940c90dba709929e5f61bf9839cf7f91" title="Register a Float gauge name whose callback stores a double and returns whether it is valid; an existi...">addFloat()</a>, this does not append a Float callback slot, so the internal per-metric vectors can get out of step. </p>
 
 </div>
 </div>

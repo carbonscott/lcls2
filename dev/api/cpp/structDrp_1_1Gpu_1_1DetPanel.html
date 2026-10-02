@@ -98,29 +98,41 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1DetPanel.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>The PGP device of the GPU DRP and the GPU resources tied to it.  
+ <a href="structDrp_1_1Gpu_1_1DetPanel.html#details">More...</a></p>
+
 <p><code>#include &lt;MemPool.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7add8de05ab357ae7c3c97319b84d8a0" id="r_a7add8de05ab357ae7c3c97319b84d8a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#a7add8de05ab357ae7c3c97319b84d8a0">DetPanel</a> (std::string &amp;device)</td></tr>
+<tr class="memdesc:a7add8de05ab357ae7c3c97319b84d8a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open device (<a class="el" href="classDrp_1_1Gpu_1_1DataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a> aborts on failure) and keep its path as name.  <br /></td></tr>
 <tr class="separator:a7add8de05ab357ae7c3c97319b84d8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ab9516dda0a112d72f0c92332b8234e24" id="r_ab9516dda0a112d72f0c92332b8234e24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1DataDev.html">DataDev</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#ab9516dda0a112d72f0c92332b8234e24">datadev</a></td></tr>
+<tr class="memdesc:ab9516dda0a112d72f0c92332b8234e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">The opened device (/dev/null in simulator mode).  <br /></td></tr>
 <tr class="separator:ab9516dda0a112d72f0c92332b8234e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14c3e58698f9bda752b3a8924b9462b6" id="r_a14c3e58698f9bda752b3a8924b9462b6"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#a14c3e58698f9bda752b3a8924b9462b6">fpgaRegs</a></td></tr>
+<tr class="memdesc:a14c3e58698f9bda752b3a8924b9462b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host mapping of the GpuAsyncCore FPGA registers; in simulator mode, a zeroed pinned host block of 0x600 words.  <br /></td></tr>
 <tr class="separator:a14c3e58698f9bda752b3a8924b9462b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a681dcfe675a0091155151dd6aec492b3" id="r_a681dcfe675a0091155151dd6aec492b3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint8_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#a681dcfe675a0091155151dd6aec492b3">dmaBuffers</a></td></tr>
+<tr class="memdesc:a681dcfe675a0091155151dd6aec492b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device addresses of the DMA write buffers (FPGA to GPU), one per DMA buffer, kept on the host.  <br /></td></tr>
 <tr class="separator:a681dcfe675a0091155151dd6aec492b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39525b64dec84e94749db1dfd7d5282d" id="r_a39525b64dec84e94749db1dfd7d5282d"><td class="memItemLeft" align="right" valign="top">uint8_t **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#a39525b64dec84e94749db1dfd7d5282d">dmaBuffers_d</a></td></tr>
+<tr class="memdesc:a39525b64dec84e94749db1dfd7d5282d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device array holding the same DMA buffer addresses.  <br /></td></tr>
 <tr class="separator:a39525b64dec84e94749db1dfd7d5282d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13639c3d8d0536ef447e3f83a0cb0d28" id="r_a13639c3d8d0536ef447e3f83a0cb0d28"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#a13639c3d8d0536ef447e3f83a0cb0d28">name</a></td></tr>
+<tr class="memdesc:a13639c3d8d0536ef447e3f83a0cb0d28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device path.  <br /></td></tr>
 <tr class="separator:a13639c3d8d0536ef447e3f83a0cb0d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad545f1517ac23ae0ceedead0a13f9c36" id="r_ad545f1517ac23ae0ceedead0a13f9c36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html#ad545f1517ac23ae0ceedead0a13f9c36">coreRegs</a></td></tr>
+<tr class="memdesc:ad545f1517ac23ae0ceedead0a13f9c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register object for the GpuAsyncCore registers at fpgaRegs (simulated in simulator mode).  <br /></td></tr>
 <tr class="separator:ad545f1517ac23ae0ceedead0a13f9c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The PGP device of the GPU DRP and the GPU resources tied to it. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7add8de05ab357ae7c3c97319b84d8a0" name="a7add8de05ab357ae7c3c97319b84d8a0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7add8de05ab357ae7c3c97319b84d8a0">&#9670;&#160;</a></span>DetPanel()</h2>
 
@@ -145,6 +157,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Open device (<a class="el" href="classDrp_1_1Gpu_1_1DataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a> aborts on failure) and keep its path as name. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -160,6 +174,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register object for the GpuAsyncCore registers at fpgaRegs (simulated in simulator mode). </p>
+
 </div>
 </div>
 <a id="ab9516dda0a112d72f0c92332b8234e24" name="ab9516dda0a112d72f0c92332b8234e24"></a>
@@ -173,6 +189,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The opened device (/dev/null in simulator mode). </p>
 
 </div>
 </div>
@@ -188,6 +206,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Device addresses of the DMA write buffers (FPGA to GPU), one per DMA buffer, kept on the host. </p>
+
 </div>
 </div>
 <a id="a39525b64dec84e94749db1dfd7d5282d" name="a39525b64dec84e94749db1dfd7d5282d"></a>
@@ -201,6 +221,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Device array holding the same DMA buffer addresses. </p>
 
 </div>
 </div>
@@ -216,6 +238,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Host mapping of the GpuAsyncCore FPGA registers; in simulator mode, a zeroed pinned host block of 0x600 words. </p>
+
 </div>
 </div>
 <a id="a13639c3d8d0536ef447e3f83a0cb0d28" name="a13639c3d8d0536ef447e3f83a0cb0d28"></a>
@@ -229,6 +253,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Device path. </p>
 
 </div>
 </div>

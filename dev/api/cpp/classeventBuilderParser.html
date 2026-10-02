@@ -98,65 +98,94 @@ $(document).ready(function(){initNavTree('classeventBuilderParser.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>Parser for AxiStream batcher frames: splits a byte buffer into subframes by walking the subframe tails back from the end, and recursively parses subframes that are themselves batcher frames.  
+ <a href="classeventBuilderParser.html#details">More...</a></p>
+
 <p><code>#include &lt;AxiBatcherParser.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af83aaa78e8e32a7ce787afdefe5b7b32" id="r_af83aaa78e8e32a7ce787afdefe5b7b32"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#af83aaa78e8e32a7ce787afdefe5b7b32">frame_to_position</a> (int position)</td></tr>
+<tr class="memdesc:af83aaa78e8e32a7ce787afdefe5b7b32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the little-endian 16-bit value at byte position of raw_data (a subframe size field).  <br /></td></tr>
 <tr class="separator:af83aaa78e8e32a7ce787afdefe5b7b32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abae436a92fcb277bb0319d234acd8057" id="r_abae436a92fcb277bb0319d234acd8057"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#abae436a92fcb277bb0319d234acd8057">get_frame_size</a> ()</td></tr>
+<tr class="memdesc:abae436a92fcb277bb0319d234acd8057"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of raw_data in bytes.  <br /></td></tr>
 <tr class="separator:abae436a92fcb277bb0319d234acd8057"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4b97f73e81db9de3db4ea578beb7ed1" id="r_ad4b97f73e81db9de3db4ea578beb7ed1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ad4b97f73e81db9de3db4ea578beb7ed1">load_frame</a> (std::vector&lt; uint8_t &gt; &amp;incoming_data)</td></tr>
+<tr class="memdesc:ad4b97f73e81db9de3db4ea578beb7ed1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy incoming_data into raw_data; returns 0.  <br /></td></tr>
 <tr class="separator:ad4b97f73e81db9de3db4ea578beb7ed1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81f8fb60cbd61b9e71d8ed9217e295d5" id="r_a81f8fb60cbd61b9e71d8ed9217e295d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5">parse_array</a> ()</td></tr>
+<tr class="memdesc:a81f8fb60cbd61b9e71d8ed9217e295d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse raw_data: record the version and main header, walk back from the end reading the size, offsets and bytes of each subframe, then call <a class="el" href="classeventBuilderParser.html#ab7c129a1abfbb8ea778a47180c175a82" title="Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) ...">check_for_subframes()</a>.  <br /></td></tr>
 <tr class="separator:a81f8fb60cbd61b9e71d8ed9217e295d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7c129a1abfbb8ea778a47180c175a82" id="r_ab7c129a1abfbb8ea778a47180c175a82"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ab7c129a1abfbb8ea778a47180c175a82">check_for_subframes</a> ()</td></tr>
+<tr class="memdesc:ab7c129a1abfbb8ea778a47180c175a82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) and parse the nested ones into sub_frames.  <br /></td></tr>
 <tr class="separator:ab7c129a1abfbb8ea778a47180c175a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66e1f0597e6628c981667a2894f64296" id="r_a66e1f0597e6628c981667a2894f64296"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a66e1f0597e6628c981667a2894f64296">resolve_sub_frames</a> ()</td></tr>
+<tr class="memdesc:a66e1f0597e6628c981667a2894f64296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; returns 1.  <br /></td></tr>
 <tr class="separator:a66e1f0597e6628c981667a2894f64296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3518ca5a734c62f147136d4c680ccbdf" id="r_a3518ca5a734c62f147136d4c680ccbdf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a3518ca5a734c62f147136d4c680ccbdf">clear</a> ()</td></tr>
+<tr class="memdesc:a3518ca5a734c62f147136d4c680ccbdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty all member vectors; returns 0.  <br /></td></tr>
 <tr class="separator:a3518ca5a734c62f147136d4c680ccbdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3aa482dca3f2bde2c49f8b7f9227c7c" id="r_ae3aa482dca3f2bde2c49f8b7f9227c7c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ae3aa482dca3f2bde2c49f8b7f9227c7c">is_damaged</a> (uint8_t start, uint8_t end)</td></tr>
+<tr class="memdesc:ae3aa482dca3f2bde2c49f8b7f9227c7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true, after calling <a class="el" href="classeventBuilderParser.html#a3518ca5a734c62f147136d4c680ccbdf" title="Empty all member vectors; returns 0.">clear()</a>, if start is not below end or end is not inside raw_data; otherwise false.  <br /></td></tr>
 <tr class="separator:ae3aa482dca3f2bde2c49f8b7f9227c7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c6f96d2aabb93f620fd35bf3881c4fc" id="r_a4c6f96d2aabb93f620fd35bf3881c4fc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a4c6f96d2aabb93f620fd35bf3881c4fc">print_raw</a> ()</td></tr>
+<tr class="memdesc:a4c6f96d2aabb93f620fd35bf3881c4fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print up to the first 32 bytes of raw_data to stdout; returns 0.  <br /></td></tr>
 <tr class="separator:a4c6f96d2aabb93f620fd35bf3881c4fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1ad3c4be139d5d765e39c2d8e4e92ce" id="r_ad1ad3c4be139d5d765e39c2d8e4e92ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ad1ad3c4be139d5d765e39c2d8e4e92ce">print_frame</a> ()</td></tr>
+<tr class="memdesc:ad1ad3c4be139d5d765e39c2d8e4e92ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the subframe sizes, positions and nested-batcher flags, then the nested batchers, to stdout; returns 0.  <br /></td></tr>
 <tr class="separator:ad1ad3c4be139d5d765e39c2d8e4e92ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a176834d6b1d8b444f75e3641d9eeced7" id="r_a176834d6b1d8b444f75e3641d9eeced7"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a176834d6b1d8b444f75e3641d9eeced7"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a176834d6b1d8b444f75e3641d9eeced7">print_vector2d</a> (std::vector&lt; T &gt; &amp;my_vector)</td></tr>
+<tr class="memdesc:a176834d6b1d8b444f75e3641d9eeced7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print up to 32 elements of each entry of my_vector (or a note for entries flagged as nested batchers) to stdout; returns 0.  <br /></td></tr>
 <tr class="separator:a176834d6b1d8b444f75e3641d9eeced7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d6d50ba1422058e2a105755cdaa3236" id="r_a3d6d50ba1422058e2a105755cdaa3236"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a3d6d50ba1422058e2a105755cdaa3236">print_sub_batcher</a> ()</td></tr>
+<tr class="memdesc:a3d6d50ba1422058e2a105755cdaa3236"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classeventBuilderParser.html#ad1ad3c4be139d5d765e39c2d8e4e92ce" title="Print the subframe sizes, positions and nested-batcher flags, then the nested batchers,...">print_frame()</a> on each nested batcher parser; returns 0.  <br /></td></tr>
 <tr class="separator:a3d6d50ba1422058e2a105755cdaa3236"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2965c805d6f1cf4e1717c8944f6c16b" id="r_ad2965c805d6f1cf4e1717c8944f6c16b"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ad2965c805d6f1cf4e1717c8944f6c16b"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ad2965c805d6f1cf4e1717c8944f6c16b">print_vector</a> (std::vector&lt; T &gt; &amp;my_vector)</td></tr>
+<tr class="memdesc:ad2965c805d6f1cf4e1717c8944f6c16b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print up to the first 32 elements of my_vector to stdout; returns 0.  <br /></td></tr>
 <tr class="separator:ad2965c805d6f1cf4e1717c8944f6c16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aba43a60f2f89af91819128015d0cc69f" id="r_aba43a60f2f89af91819128015d0cc69f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#aba43a60f2f89af91819128015d0cc69f">raw_data</a></td></tr>
+<tr class="memdesc:aba43a60f2f89af91819128015d0cc69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bytes of the frame being parsed, set by <a class="el" href="classeventBuilderParser.html#ad4b97f73e81db9de3db4ea578beb7ed1" title="Copy incoming_data into raw_data; returns 0.">load_frame()</a>.  <br /></td></tr>
 <tr class="separator:aba43a60f2f89af91819128015d0cc69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92dfaef2a86ba26ec6e4cd1b9233891a" id="r_a92dfaef2a86ba26ec6e4cd1b9233891a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a92dfaef2a86ba26ec6e4cd1b9233891a">main_header</a></td></tr>
+<tr class="memdesc:a92dfaef2a86ba26ec6e4cd1b9233891a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy of the first HEADER_WIDTH bytes of raw_data, set by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a>.  <br /></td></tr>
 <tr class="separator:a92dfaef2a86ba26ec6e4cd1b9233891a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd866347535896dfaa9489d37ed98e4c" id="r_afd866347535896dfaa9489d37ed98e4c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#afd866347535896dfaa9489d37ed98e4c">frame_sizes_reverse_order</a></td></tr>
+<tr class="memdesc:afd866347535896dfaa9489d37ed98e4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subframe sizes read from the subframe tails, last subframe first.  <br /></td></tr>
 <tr class="separator:afd866347535896dfaa9489d37ed98e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32c180f90edbf238d99e8069adaf5183" id="r_a32c180f90edbf238d99e8069adaf5183"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; uint16_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a32c180f90edbf238d99e8069adaf5183">frame_positions_reverse_order</a></td></tr>
+<tr class="memdesc:a32c180f90edbf238d99e8069adaf5183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start and end byte offsets of each subframe in raw_data, last subframe first.  <br /></td></tr>
 <tr class="separator:a32c180f90edbf238d99e8069adaf5183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9a8197c53553717c6844d88d2f24d05" id="r_af9a8197c53553717c6844d88d2f24d05"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; uint8_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#af9a8197c53553717c6844d88d2f24d05">frames</a></td></tr>
+<tr class="memdesc:af9a8197c53553717c6844d88d2f24d05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bytes of each subframe, last subframe first.  <br /></td></tr>
 <tr class="separator:af9a8197c53553717c6844d88d2f24d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63fba7579ff7ba7f8bac3ba31387586b" id="r_a63fba7579ff7ba7f8bac3ba31387586b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classeventBuilderParser.html">eventBuilderParser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a63fba7579ff7ba7f8bac3ba31387586b">sub_frames</a></td></tr>
+<tr class="memdesc:a63fba7579ff7ba7f8bac3ba31387586b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parsers for the subframes that are themselves batcher frames, filled by <a class="el" href="classeventBuilderParser.html#ab7c129a1abfbb8ea778a47180c175a82" title="Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) ...">check_for_subframes()</a>.  <br /></td></tr>
 <tr class="separator:a63fba7579ff7ba7f8bac3ba31387586b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaf3e14c380582dfb3c240b4b4473c07" id="r_afaf3e14c380582dfb3c240b4b4473c07"><td class="memItemLeft" align="right" valign="top">std::vector&lt; short &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#afaf3e14c380582dfb3c240b4b4473c07">is_sub_frame</a></td></tr>
+<tr class="memdesc:afaf3e14c380582dfb3c240b4b4473c07"><td class="mdescLeft">&#160;</td><td class="mdescRight">One entry per subframe: 1 if it starts with the same two bytes as main_header (parsed as a nested batcher frame), else 0.  <br /></td></tr>
 <tr class="separator:afaf3e14c380582dfb3c240b4b4473c07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6c93926bbd9581417f701f06b807aab" id="r_ae6c93926bbd9581417f701f06b807aab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#ae6c93926bbd9581417f701f06b807aab">spsft</a> = 16</td></tr>
+<tr class="memdesc:ae6c93926bbd9581417f701f06b807aab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset (16) from the end of a subframe to its 16-bit size field; the code comment calls it the size position in the subframe tail.  <br /></td></tr>
 <tr class="separator:ae6c93926bbd9581417f701f06b807aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dbe6690c172a6f352e85bfce6a25ef2" id="r_a8dbe6690c172a6f352e85bfce6a25ef2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a8dbe6690c172a6f352e85bfce6a25ef2">HEADER_WIDTH</a> = 16</td></tr>
+<tr class="memdesc:a8dbe6690c172a6f352e85bfce6a25ef2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Width in bytes (16) of the main header copied by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a> and of each subframe tail counted while parsing.  <br /></td></tr>
 <tr class="separator:a8dbe6690c172a6f352e85bfce6a25ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d6e89bb118a56538bdbdd8b1dd0816a" id="r_a9d6e89bb118a56538bdbdd8b1dd0816a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#a9d6e89bb118a56538bdbdd8b1dd0816a">version</a></td></tr>
+<tr class="memdesc:a9d6e89bb118a56538bdbdd8b1dd0816a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Low 4 bits of the first byte of raw_data, set by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a>.  <br /></td></tr>
 <tr class="separator:a9d6e89bb118a56538bdbdd8b1dd0816a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2a6658d8424ed479d7633ae92714d91" id="r_aa2a6658d8424ed479d7633ae92714d91"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeventBuilderParser.html#aa2a6658d8424ed479d7633ae92714d91">DEBUG</a></td></tr>
+<tr class="memdesc:aa2a6658d8424ed479d7633ae92714d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug flag; not initialized and not read in AxiBatcherParser.cc.  <br /></td></tr>
 <tr class="separator:aa2a6658d8424ed479d7633ae92714d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Parser for AxiStream batcher frames: splits a byte buffer into subframes by walking the subframe tails back from the end, and recursively parses subframes that are themselves batcher frames. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab7c129a1abfbb8ea778a47180c175a82" name="ab7c129a1abfbb8ea778a47180c175a82"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab7c129a1abfbb8ea778a47180c175a82">&#9670;&#160;</a></span>check_for_subframes()</h2>
 
@@ -171,6 +200,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) and parse the nested ones into sub_frames. </p>
+<p>Returns 1, flagging none, if any frame is shorter than 2 bytes; otherwise 0. </p>
 
 </div>
 </div>
@@ -188,6 +220,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Empty all member vectors; returns 0. </p>
 
 </div>
 </div>
@@ -207,6 +241,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the little-endian 16-bit value at byte position of raw_data (a subframe size field). </p>
+
 </div>
 </div>
 <a id="abae436a92fcb277bb0319d234acd8057" name="abae436a92fcb277bb0319d234acd8057"></a>
@@ -223,6 +259,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the size of raw_data in bytes. </p>
 
 </div>
 </div>
@@ -252,6 +290,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return true, after calling <a class="el" href="classeventBuilderParser.html#a3518ca5a734c62f147136d4c680ccbdf" title="Empty all member vectors; returns 0.">clear()</a>, if start is not below end or end is not inside raw_data; otherwise false. </p>
+<p>start and end are uint8_t, so the 16-bit offsets passed by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a> are truncated. </p>
+
 </div>
 </div>
 <a id="ad4b97f73e81db9de3db4ea578beb7ed1" name="ad4b97f73e81db9de3db4ea578beb7ed1"></a>
@@ -270,6 +311,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy incoming_data into raw_data; returns 0. </p>
+
 </div>
 </div>
 <a id="a81f8fb60cbd61b9e71d8ed9217e295d5" name="a81f8fb60cbd61b9e71d8ed9217e295d5"></a>
@@ -286,6 +329,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Parse raw_data: record the version and main header, walk back from the end reading the size, offsets and bytes of each subframe, then call <a class="el" href="classeventBuilderParser.html#ab7c129a1abfbb8ea778a47180c175a82" title="Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) ...">check_for_subframes()</a>. </p>
+<p>Returns 0, or 1 after <a class="el" href="classeventBuilderParser.html#a3518ca5a734c62f147136d4c680ccbdf" title="Empty all member vectors; returns 0.">clear()</a> if a frame looks damaged. </p>
 
 </div>
 </div>
@@ -304,6 +350,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print the subframe sizes, positions and nested-batcher flags, then the nested batchers, to stdout; returns 0. </p>
+
 </div>
 </div>
 <a id="a4c6f96d2aabb93f620fd35bf3881c4fc" name="a4c6f96d2aabb93f620fd35bf3881c4fc"></a>
@@ -321,6 +369,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print up to the first 32 bytes of raw_data to stdout; returns 0. </p>
+
 </div>
 </div>
 <a id="a3d6d50ba1422058e2a105755cdaa3236" name="a3d6d50ba1422058e2a105755cdaa3236"></a>
@@ -337,6 +387,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classeventBuilderParser.html#ad1ad3c4be139d5d765e39c2d8e4e92ce" title="Print the subframe sizes, positions and nested-batcher flags, then the nested batchers,...">print_frame()</a> on each nested batcher parser; returns 0. </p>
 
 </div>
 </div>
@@ -358,6 +410,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Print up to the first 32 elements of my_vector to stdout; returns 0. </p>
+
 </div>
 </div>
 <a id="a176834d6b1d8b444f75e3641d9eeced7" name="a176834d6b1d8b444f75e3641d9eeced7"></a>
@@ -378,6 +432,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Print up to 32 elements of each entry of my_vector (or a note for entries flagged as nested batchers) to stdout; returns 0. </p>
+
 </div>
 </div>
 <a id="a66e1f0597e6628c981667a2894f64296" name="a66e1f0597e6628c981667a2894f64296"></a>
@@ -395,6 +451,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Does nothing; returns 1. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -410,6 +468,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Debug flag; not initialized and not read in AxiBatcherParser.cc. </p>
+
 </div>
 </div>
 <a id="a32c180f90edbf238d99e8069adaf5183" name="a32c180f90edbf238d99e8069adaf5183"></a>
@@ -423,6 +483,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Start and end byte offsets of each subframe in raw_data, last subframe first. </p>
 
 </div>
 </div>
@@ -438,6 +500,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Subframe sizes read from the subframe tails, last subframe first. </p>
+
 </div>
 </div>
 <a id="af9a8197c53553717c6844d88d2f24d05" name="af9a8197c53553717c6844d88d2f24d05"></a>
@@ -451,6 +515,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bytes of each subframe, last subframe first. </p>
 
 </div>
 </div>
@@ -466,6 +532,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Width in bytes (16) of the main header copied by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a> and of each subframe tail counted while parsing. </p>
+
 </div>
 </div>
 <a id="afaf3e14c380582dfb3c240b4b4473c07" name="afaf3e14c380582dfb3c240b4b4473c07"></a>
@@ -479,6 +547,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>One entry per subframe: 1 if it starts with the same two bytes as main_header (parsed as a nested batcher frame), else 0. </p>
 
 </div>
 </div>
@@ -494,6 +564,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Copy of the first HEADER_WIDTH bytes of raw_data, set by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a>. </p>
+
 </div>
 </div>
 <a id="aba43a60f2f89af91819128015d0cc69f" name="aba43a60f2f89af91819128015d0cc69f"></a>
@@ -507,6 +579,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bytes of the frame being parsed, set by <a class="el" href="classeventBuilderParser.html#ad4b97f73e81db9de3db4ea578beb7ed1" title="Copy incoming_data into raw_data; returns 0.">load_frame()</a>. </p>
 
 </div>
 </div>
@@ -522,6 +596,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Offset (16) from the end of a subframe to its 16-bit size field; the code comment calls it the size position in the subframe tail. </p>
+
 </div>
 </div>
 <a id="a63fba7579ff7ba7f8bac3ba31387586b" name="a63fba7579ff7ba7f8bac3ba31387586b"></a>
@@ -536,6 +612,8 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Parsers for the subframes that are themselves batcher frames, filled by <a class="el" href="classeventBuilderParser.html#ab7c129a1abfbb8ea778a47180c175a82" title="Flag each frame as a nested batcher frame or not (by comparing its first two bytes with main_header) ...">check_for_subframes()</a>. </p>
+
 </div>
 </div>
 <a id="a9d6e89bb118a56538bdbdd8b1dd0816a" name="a9d6e89bb118a56538bdbdd8b1dd0816a"></a>
@@ -549,6 +627,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Low 4 bits of the first byte of raw_data, set by <a class="el" href="classeventBuilderParser.html#a81f8fb60cbd61b9e71d8ed9217e295d5" title="Parse raw_data: record the version and main header, walk back from the end reading the size,...">parse_array()</a>. </p>
 
 </div>
 </div>

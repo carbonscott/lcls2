@@ -97,48 +97,71 @@ $(document).ready(function(){initNavTree('classDrp_1_1UdpReceiver.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue, and reports missing and out-of-order frames to the collection server.  
+ <a href="classDrp_1_1UdpReceiver.html#details">More...</a></p>
+
 <p><code>#include &lt;UdpEncoder.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aca75820c2099aa4674d2b3d7ea88bf3d" id="r_aca75820c2099aa4674d2b3d7ea88bf3d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#aca75820c2099aa4674d2b3d7ea88bf3d">UdpReceiver</a> (const UdpParameters &amp;para, size_t nBuffers)</td></tr>
+<tr class="memdesc:aca75820c2099aa4674d2b3d7ea88bf3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size the frame queue and free list for nBuffers entries, connect the error PUSH socket to the collection server, and create the UDP socket on the loopback port if one is set, else on <a class="el" href="classDrp_1_1UdpEncoder.html#a8f8ebe2f3341ca4e95a73ce18ed2068baa59f42a108a5a1b790b0b9662366639b" title="UDP data port used when no loopback port is set (5006).">UdpEncoder::DefaultDataPort</a>.  <br /></td></tr>
 <tr class="separator:aca75820c2099aa4674d2b3d7ea88bf3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee7cb547d2d0dd5ab10aa28a39865158" id="r_aee7cb547d2d0dd5ab10aa28a39865158"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#aee7cb547d2d0dd5ab10aa28a39865158">~UdpReceiver</a> ()</td></tr>
+<tr class="memdesc:aee7cb547d2d0dd5ab10aa28a39865158"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the UDP socket if it was opened.  <br /></td></tr>
 <tr class="separator:aee7cb547d2d0dd5ab10aa28a39865158"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80e9961c9f6b2bcf07ad2a4c6f2bd015" id="r_a80e9961c9f6b2bcf07ad2a4c6f2bd015"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a80e9961c9f6b2bcf07ad2a4c6f2bd015">name</a> () const</td></tr>
+<tr class="memdesc:a80e9961c9f6b2bcf07ad2a4c6f2bd015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the string encoder (the code marks this FIXME).  <br /></td></tr>
 <tr class="separator:a80e9961c9f6b2bcf07ad2a4c6f2bd015"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1db1a72e094a4b4eb1de283e87c8145b" id="r_a1db1a72e094a4b4eb1de283e87c8145b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a1db1a72e094a4b4eb1de283e87c8145b">start</a> ()</td></tr>
+<tr class="memdesc:a1db1a72e094a4b4eb1de283e87c8145b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the frame counter, (re)initialize the queue and free list with one buffer per entry (a Dgram plus one frame), start the receiver thread and, when a loopback port is set, open the loopback socket.  <br /></td></tr>
 <tr class="separator:a1db1a72e094a4b4eb1de283e87c8145b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2fef5275c4ee6f4497cb0a4cc9e5ccd" id="r_ab2fef5275c4ee6f4497cb0a4cc9e5ccd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#ab2fef5275c4ee6f4497cb0a4cc9e5ccd">stop</a> ()</td></tr>
+<tr class="memdesc:ab2fef5275c4ee6f4497cb0a4cc9e5ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop and join the receiver thread and shut down the queues.  <br /></td></tr>
 <tr class="separator:ab2fef5275c4ee6f4497cb0a4cc9e5ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4670d402ee96470c6a867ac948c945b" id="r_ae4670d402ee96470c6a867ac948c945b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#ae4670d402ee96470c6a867ac948c945b">setOutOfOrder</a> (std::string errMsg)</td></tr>
+<tr class="memdesc:ae4670d402ee96470c6a867ac948c945b"><td class="mdescLeft">&#160;</td><td class="mdescRight">On the first call, set the out-of-order flag, log errMsg as critical and send it as an asynchronous error message; later calls do nothing.  <br /></td></tr>
 <tr class="separator:ae4670d402ee96470c6a867ac948c945b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88a7b4907291f97ac30378945c69924d" id="r_a88a7b4907291f97ac30378945c69924d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a88a7b4907291f97ac30378945c69924d">getOutOfOrder</a> ()</td></tr>
+<tr class="memdesc:a88a7b4907291f97ac30378945c69924d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the out-of-order flag.  <br /></td></tr>
 <tr class="separator:a88a7b4907291f97ac30378945c69924d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa27bcba1d7cf4a27e8057d73831b73bb" id="r_aa27bcba1d7cf4a27e8057d73831b73bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#aa27bcba1d7cf4a27e8057d73831b73bb">setMissingData</a> (std::string errMsg)</td></tr>
+<tr class="memdesc:aa27bcba1d7cf4a27e8057d73831b73bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">On the first call, set the missing-data flag, log errMsg as critical and send it as an asynchronous error message; later calls do nothing.  <br /></td></tr>
 <tr class="separator:aa27bcba1d7cf4a27e8057d73831b73bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33db83063127bb8b24550942d9d3f576" id="r_a33db83063127bb8b24550942d9d3f576"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a33db83063127bb8b24550942d9d3f576">getMissingData</a> ()</td></tr>
+<tr class="memdesc:a33db83063127bb8b24550942d9d3f576"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the missing-data flag.  <br /></td></tr>
 <tr class="separator:a33db83063127bb8b24550942d9d3f576"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d3e4bf24918f655431239d6debd211f" id="r_a4d3e4bf24918f655431239d6debd211f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a4d3e4bf24918f655431239d6debd211f">process</a> ()</td></tr>
+<tr class="memdesc:a4d3e4bf24918f655431239d6debd211f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one frame into a free buffer and push it onto the frame queue; if no buffer is free, count it as missed and discard the frame.  <br /></td></tr>
 <tr class="separator:a4d3e4bf24918f655431239d6debd211f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15b191b1c311f32eeb487a2dbb3ac3a0" id="r_a15b191b1c311f32eeb487a2dbb3ac3a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a15b191b1c311f32eeb487a2dbb3ac3a0">consume</a> ()</td></tr>
+<tr class="memdesc:a15b191b1c311f32eeb487a2dbb3ac3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop the oldest frame from the queue and return its buffer to the free list; returns false if the queue was empty.  <br /></td></tr>
 <tr class="separator:a15b191b1c311f32eeb487a2dbb3ac3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08d0bccb4f86ce4a25805057b16fbeb9" id="r_a08d0bccb4f86ce4a25805057b16fbeb9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a08d0bccb4f86ce4a25805057b16fbeb9">drain</a> ()</td></tr>
+<tr class="memdesc:a08d0bccb4f86ce4a25805057b16fbeb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Consume all queued frames, printing a line for each.  <br /></td></tr>
 <tr class="separator:a08d0bccb4f86ce4a25805057b16fbeb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae29b55745d195c6cf4965e3e0db3c6c3" id="r_ae29b55745d195c6cf4965e3e0db3c6c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#ae29b55745d195c6cf4965e3e0db3c6c3">loopbackSend</a> ()</td></tr>
+<tr class="memdesc:ae29b55745d195c6cf4965e3e0db3c6c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send one simulated frame (incremented frame count, encoder value 170000, timing 54321, scale 1 over 150, hardware ID LOOPBACK SIM) to the loopback port on 127.0.0.1.  <br /></td></tr>
 <tr class="separator:ae29b55745d195c6cf4965e3e0db3c6c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d8d182716c17058dc6e57b9dd366bd" id="r_a98d8d182716c17058dc6e57b9dd366bd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a98d8d182716c17058dc6e57b9dd366bd">drainDataFd</a> ()</td></tr>
+<tr class="memdesc:a98d8d182716c17058dc6e57b9dd366bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read and discard every frame waiting on the UDP socket (logging the count); returns the last recvfrom() result.  <br /></td></tr>
 <tr class="separator:a98d8d182716c17058dc6e57b9dd366bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7288b834b158232458891978e25a7db" id="r_ab7288b834b158232458891978e25a7db"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#ab7288b834b158232458891978e25a7db">reset</a> ()</td></tr>
+<tr class="memdesc:ab7288b834b158232458891978e25a7db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1UdpReceiver.html#a98d8d182716c17058dc6e57b9dd366bd" title="Read and discard every frame waiting on the UDP socket (logging the count); returns the last recvfrom...">drainDataFd()</a> if the socket is open and return its result, otherwise return -1.  <br /></td></tr>
 <tr class="separator:ab7288b834b158232458891978e25a7db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4510e9d2514d76fde31899ec8578e6c2" id="r_a4510e9d2514d76fde31899ec8578e6c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSPSCQueue.html">SPSCQueue</a>&lt; <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a4510e9d2514d76fde31899ec8578e6c2">encQueue</a> ()</td></tr>
+<tr class="memdesc:a4510e9d2514d76fde31899ec8578e6c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the queue of received frames (each a Dgram holding one <a class="el" href="structDrp_1_1encoder__frame__t.html">encoder_frame_t</a>).  <br /></td></tr>
 <tr class="separator:a4510e9d2514d76fde31899ec8578e6c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26200b85dfb1fb2dc209f14b1434b84a" id="r_a26200b85dfb1fb2dc209f14b1434b84a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#a26200b85dfb1fb2dc209f14b1434b84a">nUpdates</a> ()</td></tr>
+<tr class="memdesc:a26200b85dfb1fb2dc209f14b1434b84a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of frames processed since the receiver thread started.  <br /></td></tr>
 <tr class="separator:a26200b85dfb1fb2dc209f14b1434b84a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab342e9d9fe2316342fe25f75cb9a25ca" id="r_ab342e9d9fe2316342fe25f75cb9a25ca"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html#ab342e9d9fe2316342fe25f75cb9a25ca">nMissed</a> ()</td></tr>
+<tr class="memdesc:ab342e9d9fe2316342fe25f75cb9a25ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of frames dropped because no buffer was free.  <br /></td></tr>
 <tr class="separator:ab342e9d9fe2316342fe25f75cb9a25ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue, and reports missing and out-of-order frames to the collection server. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aca75820c2099aa4674d2b3d7ea88bf3d" name="aca75820c2099aa4674d2b3d7ea88bf3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aca75820c2099aa4674d2b3d7ea88bf3d">&#9670;&#160;</a></span>UdpReceiver()</h2>
 
@@ -165,6 +188,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Size the frame queue and free list for nBuffers entries, connect the error PUSH socket to the collection server, and create the UDP socket on the loopback port if one is set, else on <a class="el" href="classDrp_1_1UdpEncoder.html#a8f8ebe2f3341ca4e95a73ce18ed2068baa59f42a108a5a1b790b0b9662366639b" title="UDP data port used when no loopback port is set (5006).">UdpEncoder::DefaultDataPort</a>. </p>
+
 </div>
 </div>
 <a id="aee7cb547d2d0dd5ab10aa28a39865158" name="aee7cb547d2d0dd5ab10aa28a39865158"></a>
@@ -181,6 +206,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close the UDP socket if it was opened. </p>
 
 </div>
 </div>
@@ -200,6 +227,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pop the oldest frame from the queue and return its buffer to the free list; returns false if the queue was empty. </p>
+
 </div>
 </div>
 <a id="a08d0bccb4f86ce4a25805057b16fbeb9" name="a08d0bccb4f86ce4a25805057b16fbeb9"></a>
@@ -217,6 +246,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Consume all queued frames, printing a line for each. </p>
+
 </div>
 </div>
 <a id="a98d8d182716c17058dc6e57b9dd366bd" name="a98d8d182716c17058dc6e57b9dd366bd"></a>
@@ -233,6 +264,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read and discard every frame waiting on the UDP socket (logging the count); returns the last recvfrom() result. </p>
 
 </div>
 </div>
@@ -259,6 +292,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the queue of received frames (each a Dgram holding one <a class="el" href="structDrp_1_1encoder__frame__t.html">encoder_frame_t</a>). </p>
+
 </div>
 </div>
 <a id="a33db83063127bb8b24550942d9d3f576" name="a33db83063127bb8b24550942d9d3f576"></a>
@@ -283,6 +318,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the missing-data flag. </p>
 
 </div>
 </div>
@@ -309,6 +346,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the out-of-order flag. </p>
+
 </div>
 </div>
 <a id="ae29b55745d195c6cf4965e3e0db3c6c3" name="ae29b55745d195c6cf4965e3e0db3c6c3"></a>
@@ -325,6 +364,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send one simulated frame (incremented frame count, encoder value 170000, timing 54321, scale 1 over 150, hardware ID LOOPBACK SIM) to the loopback port on 127.0.0.1. </p>
 
 </div>
 </div>
@@ -351,6 +392,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the string encoder (the code marks this FIXME). </p>
+
 </div>
 </div>
 <a id="ab342e9d9fe2316342fe25f75cb9a25ca" name="ab342e9d9fe2316342fe25f75cb9a25ca"></a>
@@ -375,6 +418,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of frames dropped because no buffer was free. </p>
 
 </div>
 </div>
@@ -401,6 +446,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of frames processed since the receiver thread started. </p>
+
 </div>
 </div>
 <a id="a4d3e4bf24918f655431239d6debd211f" name="a4d3e4bf24918f655431239d6debd211f"></a>
@@ -418,6 +465,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read one frame into a free buffer and push it onto the frame queue; if no buffer is free, count it as missed and discard the frame. </p>
+
 </div>
 </div>
 <a id="ab7288b834b158232458891978e25a7db" name="ab7288b834b158232458891978e25a7db"></a>
@@ -434,6 +483,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classDrp_1_1UdpReceiver.html#a98d8d182716c17058dc6e57b9dd366bd" title="Read and discard every frame waiting on the UDP socket (logging the count); returns the last recvfrom...">drainDataFd()</a> if the socket is open and return its result, otherwise return -1. </p>
 
 </div>
 </div>
@@ -453,6 +504,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>On the first call, set the missing-data flag, log errMsg as critical and send it as an asynchronous error message; later calls do nothing. </p>
+
 </div>
 </div>
 <a id="ae4670d402ee96470c6a867ac948c945b" name="ae4670d402ee96470c6a867ac948c945b"></a>
@@ -471,6 +524,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>On the first call, set the out-of-order flag, log errMsg as critical and send it as an asynchronous error message; later calls do nothing. </p>
+
 </div>
 </div>
 <a id="a1db1a72e094a4b4eb1de283e87c8145b" name="a1db1a72e094a4b4eb1de283e87c8145b"></a>
@@ -488,6 +543,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the frame counter, (re)initialize the queue and free list with one buffer per entry (a Dgram plus one frame), start the receiver thread and, when a loopback port is set, open the loopback socket. </p>
+
 </div>
 </div>
 <a id="ab2fef5275c4ee6f4497cb0a4cc9e5ccd" name="ab2fef5275c4ee6f4497cb0a4cc9e5ccd"></a>
@@ -504,6 +561,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Stop and join the receiver thread and shut down the queues. </p>
 
 </div>
 </div>

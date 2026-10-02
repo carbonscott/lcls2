@@ -97,16 +97,24 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1Ptr.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>Pair of pointers of type T, one for the host and one for the device; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> uses it for each ring queue object and its device copy.  
+ <a href="structDrp_1_1Gpu_1_1Ptr.html#details">More...</a></p>
+
 <p><code>#include &lt;MemPool.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a9ded211c89f2dc65af007cc4418a2a82" id="r_a9ded211c89f2dc65af007cc4418a2a82"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1Ptr.html#a9ded211c89f2dc65af007cc4418a2a82">h</a> = nullptr</td></tr>
+<tr class="memdesc:a9ded211c89f2dc65af007cc4418a2a82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host pointer (null by default).  <br /></td></tr>
 <tr class="separator:a9ded211c89f2dc65af007cc4418a2a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51a75e036a2932d6c2584f031550af30" id="r_a51a75e036a2932d6c2584f031550af30"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1Ptr.html#a51a75e036a2932d6c2584f031550af30">d</a> = nullptr</td></tr>
+<tr class="memdesc:a51a75e036a2932d6c2584f031550af30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device pointer (null by default).  <br /></td></tr>
 <tr class="separator:a51a75e036a2932d6c2584f031550af30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
+struct Drp::Gpu::Ptr&lt; T &gt;</div><p>Pair of pointers of type T, one for the host and one for the device; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> uses it for each ring queue object and its device copy. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a51a75e036a2932d6c2584f031550af30" name="a51a75e036a2932d6c2584f031550af30"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a51a75e036a2932d6c2584f031550af30">&#9670;&#160;</a></span>d</h2>
 
@@ -120,6 +128,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Device pointer (null by default). </p>
 
 </div>
 </div>
@@ -136,6 +146,8 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Host pointer (null by default). </p>
 
 </div>
 </div>

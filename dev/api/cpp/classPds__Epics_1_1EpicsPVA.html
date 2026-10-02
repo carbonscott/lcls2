@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1EpicsPVA.html','');
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="structClient.html">Client</a> of one EPICS PV over pvAccess or Channel Access.  
+ <a href="classPds__Epics_1_1EpicsPVA.html#details">More...</a></p>
+
 <p><code>#include &lt;EpicsPVA.hh&gt;</code></p>
 
 <p>Inherits pvac::ClientChannel::ConnectCallback, pvac::ClientChannel::GetCallback, and pvac::ClientChannel::MonitorCallback.</p>
@@ -109,50 +112,69 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1EpicsPVA.html','');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a692e537c01ce53a24deffe9efcc63ee1" id="r_a692e537c01ce53a24deffe9efcc63ee1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a692e537c01ce53a24deffe9efcc63ee1">EpicsPVA</a> (const char *channelName, const int maxElements=0)</td></tr>
+<tr class="memdesc:a692e537c01ce53a24deffe9efcc63ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to channelName through pva without a monitor callback; maxElements is not used.  <br /></td></tr>
 <tr class="separator:a692e537c01ce53a24deffe9efcc63ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07edd3355dcf08da0d96786e8efe971e" id="r_a07edd3355dcf08da0d96786e8efe971e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a07edd3355dcf08da0d96786e8efe971e">EpicsPVA</a> (const char *channelName, <a class="el" href="classPds__Epics_1_1PVMonitorCb.html">PVMonitorCb</a> *, const int maxElements=0)</td></tr>
+<tr class="memdesc:a07edd3355dcf08da0d96786e8efe971e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to channelName through pva; monitor, if not null, receives updated() calls.  <br /></td></tr>
 <tr class="separator:a07edd3355dcf08da0d96786e8efe971e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba4a3683a3e5978f6fa1ad2e998456b7" id="r_aba4a3683a3e5978f6fa1ad2e998456b7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#aba4a3683a3e5978f6fa1ad2e998456b7">EpicsPVA</a> (const char *provider, const char *channelName, <a class="el" href="classPds__Epics_1_1PVMonitorCb.html">PVMonitorCb</a> *, const int maxElements=0, bool nType=false)</td></tr>
+<tr class="memdesc:aba4a3683a3e5978f6fa1ad2e998456b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to channelName through ca if provider is ca, otherwise pva.  <br /></td></tr>
 <tr class="separator:aba4a3683a3e5978f6fa1ad2e998456b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a524d5dd920ef55b714a3762a04b671fa" id="r_a524d5dd920ef55b714a3762a04b671fa"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a524d5dd920ef55b714a3762a04b671fa">~EpicsPVA</a> ()</td></tr>
+<tr class="memdesc:a524d5dd920ef55b714a3762a04b671fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the connect listener and cancel the pending get.  <br /></td></tr>
 <tr class="separator:a524d5dd920ef55b714a3762a04b671fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4eaf0f7932d4f300ad0785b636e3cf5c" id="r_a4eaf0f7932d4f300ad0785b636e3cf5c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a4eaf0f7932d4f300ad0785b636e3cf5c">name</a> () const</td></tr>
+<tr class="memdesc:a4eaf0f7932d4f300ad0785b636e3cf5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the channel name.  <br /></td></tr>
 <tr class="separator:a4eaf0f7932d4f300ad0785b636e3cf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a621f8f8f58151869350a4200c83007" id="r_a0a621f8f8f58151869350a4200c83007"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a0a621f8f8f58151869350a4200c83007">connected</a> () const</td></tr>
+<tr class="memdesc:a0a621f8f8f58151869350a4200c83007"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the state from the last connect event; the flag is not initialized before the first event.  <br /></td></tr>
 <tr class="separator:a0a621f8f8f58151869350a4200c83007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bf4bed754f65593694200462fb147e4" id="r_a4bf4bed754f65593694200462fb147e4"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a4bf4bed754f65593694200462fb147e4">sec</a> ()</td></tr>
+<tr class="memdesc:a4bf4bed754f65593694200462fb147e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return secondsPastEpoch of the PV time stamp, or -1 if no value arrives within 30 s (<a class="el" href="classPds__Epics_1_1EpicsPVA.html#a6cb8d358533d4fc630c9770e27db0485">getComplete()</a>).  <br /></td></tr>
 <tr class="separator:a4bf4bed754f65593694200462fb147e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4641cdcd7abb692f0595c06567f64a2" id="r_ad4641cdcd7abb692f0595c06567f64a2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#ad4641cdcd7abb692f0595c06567f64a2">nsec</a> ()</td></tr>
+<tr class="memdesc:ad4641cdcd7abb692f0595c06567f64a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the nanoseconds of the PV time stamp, or -1 if no value arrives within 30 s.  <br /></td></tr>
 <tr class="separator:ad4641cdcd7abb692f0595c06567f64a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af888eca21ad6ada8c2cf34ae763b9caa" id="r_af888eca21ad6ada8c2cf34ae763b9caa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#af888eca21ad6ada8c2cf34ae763b9caa">nelem</a> ()</td></tr>
+<tr class="memdesc:af888eca21ad6ada8c2cf34ae763b9caa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the length of the value array, or the largest size_t value (from -1) if no value arrives within 30 s.  <br /></td></tr>
 <tr class="separator:af888eca21ad6ada8c2cf34ae763b9caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fdc94e6e25008ac9aaaf1aef627af08" id="r_a6fdc94e6e25008ac9aaaf1aef627af08"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6fdc94e6e25008ac9aaaf1aef627af08"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a6fdc94e6e25008ac9aaaf1aef627af08">getScalarAs</a> (const char *field=&quot;value&quot;) const</td></tr>
+<tr class="memdesc:a6fdc94e6e25008ac9aaaf1aef627af08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return field (default value) of the latest structure converted to T, or 0 if no value has been received.  <br /></td></tr>
 <tr class="separator:a6fdc94e6e25008ac9aaaf1aef627af08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bce5d8b2541a7de110dc54a07249c7a" id="r_a8bce5d8b2541a7de110dc54a07249c7a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a8bce5d8b2541a7de110dc54a07249c7a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a8bce5d8b2541a7de110dc54a07249c7a">getVectorAs</a> (pvd::shared_vector&lt; const T &gt; &amp;vec, const char *field=&quot;value&quot;) const</td></tr>
+<tr class="memdesc:a8bce5d8b2541a7de110dc54a07249c7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy array field (default value) of the latest structure into vec as T; does nothing if no value has been received.  <br /></td></tr>
 <tr class="separator:a8bce5d8b2541a7de110dc54a07249c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2460797817af44dcbcf696b9860e15ad" id="r_a2460797817af44dcbcf696b9860e15ad"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a2460797817af44dcbcf696b9860e15ad"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a2460797817af44dcbcf696b9860e15ad">getVectorElemAt</a> (size_t i, const char *field=&quot;value&quot;) const</td></tr>
+<tr class="memdesc:a2460797817af44dcbcf696b9860e15ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return element i of array field converted to T, converting the whole array first (per the code comment); i is not range-checked.  <br /></td></tr>
 <tr class="separator:a2460797817af44dcbcf696b9860e15ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0176b637cc31e582b85dee94ce775741" id="r_a0176b637cc31e582b85dee94ce775741"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a0176b637cc31e582b85dee94ce775741"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a0176b637cc31e582b85dee94ce775741">putFrom</a> (T val)</td></tr>
+<tr class="memdesc:a0176b637cc31e582b85dee94ce775741"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put val to the value field and wait for the put to end; timeouts and runtime errors are caught and printed.  <br /></td></tr>
 <tr class="separator:a0176b637cc31e582b85dee94ce775741"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a082fea15b47084d430bab04fe770c1f3" id="r_a082fea15b47084d430bab04fe770c1f3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a082fea15b47084d430bab04fe770c1f3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a082fea15b47084d430bab04fe770c1f3">putFromVector</a> (const pvd::shared_vector&lt; const T &gt; &amp;val)</td></tr>
+<tr class="memdesc:a082fea15b47084d430bab04fe770c1f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put array val to the value field and wait for the put to end; timeouts are caught and printed.  <br /></td></tr>
 <tr class="separator:a082fea15b47084d430bab04fe770c1f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20375effdd5f34a298e656c3364417d6" id="r_a20375effdd5f34a298e656c3364417d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a20375effdd5f34a298e656c3364417d6">putFromStructure</a> (const void *val, const unsigned *sizes, bool ldebug=false)</td></tr>
+<tr class="memdesc:a20375effdd5f34a298e656c3364417d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the packed buffer val to the top-level fields of the PV (see <a class="el" href="structPds__Epics_1_1StructurePutTracker.html" title="Put callback that fills the top-level fields of a PV structure from a packed buffer and signals compl...">StructurePutTracker</a>) and wait for the put to end; timeouts are caught and printed.  <br /></td></tr>
 <tr class="separator:a20375effdd5f34a298e656c3364417d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f9b0ff0319fbbc5f5cf8ef1552085d3" id="r_a7f9b0ff0319fbbc5f5cf8ef1552085d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a7f9b0ff0319fbbc5f5cf8ef1552085d3">getDone</a> (const pvac::GetEvent &amp;evt)</td></tr>
+<tr class="memdesc:a7f9b0ff0319fbbc5f5cf8ef1552085d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get callback: on success, fulfil the value promise and, if a monitor callback was given, start monitoring (only timeStamp and value if nType is set).  <br /></td></tr>
 <tr class="separator:a7f9b0ff0319fbbc5f5cf8ef1552085d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc6fcd2e18bf9b52cde7cbeea6da14fa" id="r_abc6fcd2e18bf9b52cde7cbeea6da14fa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#abc6fcd2e18bf9b52cde7cbeea6da14fa">connectEvent</a> (const pvac::ConnectEvent &amp;evt)</td></tr>
+<tr class="memdesc:abc6fcd2e18bf9b52cde7cbeea6da14fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect callback: store the connection state and, if connected, start a get of the PV.  <br /></td></tr>
 <tr class="separator:abc6fcd2e18bf9b52cde7cbeea6da14fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4069c5cbaf5a8e6b0d7fb7a306af4e68" id="r_a4069c5cbaf5a8e6b0d7fb7a306af4e68"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a4069c5cbaf5a8e6b0d7fb7a306af4e68">monitorEvent</a> (const pvac::MonitorEvent &amp;evt)</td></tr>
+<tr class="memdesc:a4069c5cbaf5a8e6b0d7fb7a306af4e68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitor callback: for data, store each queued update as the latest structure and call the monitor callback's updated().  <br /></td></tr>
 <tr class="separator:a4069c5cbaf5a8e6b0d7fb7a306af4e68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a90941e50e6c27b204faa484a0508978b" id="r_a90941e50e6c27b204faa484a0508978b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a90941e50e6c27b204faa484a0508978b">setProvider</a> (const char *)</td></tr>
+<tr class="memdesc:a90941e50e6c27b204faa484a0508978b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in EpicsPVA.cc.  <br /></td></tr>
 <tr class="separator:a90941e50e6c27b204faa484a0508978b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -183,7 +205,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a611bb7094900dc1424a0049a7bf22036" id="r_a611bb7094900dc1424a0049a7bf22036"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html#a611bb7094900dc1424a0049a7bf22036">_connected</a></td></tr>
 <tr class="separator:a611bb7094900dc1424a0049a7bf22036"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="structClient.html">Client</a> of one EPICS PV over pvAccess or Channel Access. </p>
+<p>It connects asynchronously, gets the value once connected and, if a <a class="el" href="classPds__Epics_1_1PVMonitorCb.html" title="Callback interface for PV events.">PVMonitorCb</a> is given, then monitors the PV and calls its updated() for each update. <a class="el" href="classPds__Epics_1_1EpicsPVA.html#a6fdc94e6e25008ac9aaaf1aef627af08" title="Return field (default value) of the latest structure converted to T, or 0 if no value has been receiv...">getScalarAs()</a> and related methods read the latest value; the put methods block until the put ends. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a692e537c01ce53a24deffe9efcc63ee1" name="a692e537c01ce53a24deffe9efcc63ee1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a692e537c01ce53a24deffe9efcc63ee1">&#9670;&#160;</a></span>EpicsPVA() <span class="overload">[1/3]</span></h2>
 
@@ -209,6 +234,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Connect to channelName through pva without a monitor callback; maxElements is not used. </p>
 
 </div>
 </div>
@@ -243,6 +270,9 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Connect to channelName through pva; monitor, if not null, receives updated() calls. </p>
+<p>maxElements is not used. </p>
 
 </div>
 </div>
@@ -290,6 +320,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Connect to channelName through ca if provider is ca, otherwise pva. </p>
+<p>If nType is true, monitoring requests only the timeStamp and value fields; maxElements is not used. </p>
+
 </div>
 </div>
 <a id="a524d5dd920ef55b714a3762a04b671fa" name="a524d5dd920ef55b714a3762a04b671fa"></a>
@@ -314,6 +347,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Remove the connect listener and cancel the pending get. </p>
 
 </div>
 </div>
@@ -341,6 +376,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the state from the last connect event; the flag is not initialized before the first event. </p>
+
 </div>
 </div>
 <a id="abc6fcd2e18bf9b52cde7cbeea6da14fa" name="abc6fcd2e18bf9b52cde7cbeea6da14fa"></a>
@@ -366,6 +403,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Connect callback: store the connection state and, if connected, start a get of the PV. </p>
 
 </div>
 </div>
@@ -444,6 +483,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get callback: on success, fulfil the value promise and, if a monitor callback was given, start monitoring (only timeStamp and value if nType is set). </p>
+<p>Failures and cancellations are printed. </p>
+
 </div>
 </div>
 <a id="a6fdc94e6e25008ac9aaaf1aef627af08" name="a6fdc94e6e25008ac9aaaf1aef627af08"></a>
@@ -471,6 +513,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return field (default value) of the latest structure converted to T, or 0 if no value has been received. </p>
 
 </div>
 </div>
@@ -510,6 +554,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Copy array field (default value) of the latest structure into vec as T; does nothing if no value has been received. </p>
+
 </div>
 </div>
 <a id="a2460797817af44dcbcf696b9860e15ad" name="a2460797817af44dcbcf696b9860e15ad"></a>
@@ -548,6 +594,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return element i of array field converted to T, converting the whole array first (per the code comment); i is not range-checked. </p>
+<p>Returns 0 if no value has been received. </p>
+
 </div>
 </div>
 <a id="a4069c5cbaf5a8e6b0d7fb7a306af4e68" name="a4069c5cbaf5a8e6b0d7fb7a306af4e68"></a>
@@ -574,6 +623,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Monitor callback: for data, store each queued update as the latest structure and call the monitor callback's updated(). </p>
+<p>Failures, cancels and disconnects are only printed. </p>
+
 </div>
 </div>
 <a id="a4eaf0f7932d4f300ad0785b636e3cf5c" name="a4eaf0f7932d4f300ad0785b636e3cf5c"></a>
@@ -599,6 +651,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the channel name. </p>
+
 </div>
 </div>
 <a id="af888eca21ad6ada8c2cf34ae763b9caa" name="af888eca21ad6ada8c2cf34ae763b9caa"></a>
@@ -616,6 +670,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Return the length of the value array, or the largest size_t value (from -1) if no value arrives within 30 s. </p>
+
 </div>
 </div>
 <a id="ad4641cdcd7abb692f0595c06567f64a2" name="ad4641cdcd7abb692f0595c06567f64a2"></a>
@@ -632,6 +688,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the nanoseconds of the PV time stamp, or -1 if no value arrives within 30 s. </p>
 
 </div>
 </div>
@@ -686,6 +744,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Put val to the value field and wait for the put to end; timeouts and runtime errors are caught and printed. </p>
+
 </div>
 </div>
 <a id="a20375effdd5f34a298e656c3364417d6" name="a20375effdd5f34a298e656c3364417d6"></a>
@@ -728,6 +788,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Put the packed buffer val to the top-level fields of the PV (see <a class="el" href="structPds__Epics_1_1StructurePutTracker.html" title="Put callback that fills the top-level fields of a PV structure from a packed buffer and signals compl...">StructurePutTracker</a>) and wait for the put to end; timeouts are caught and printed. </p>
+
 </div>
 </div>
 <a id="a082fea15b47084d430bab04fe770c1f3" name="a082fea15b47084d430bab04fe770c1f3"></a>
@@ -756,6 +818,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Put array val to the value field and wait for the put to end; timeouts are caught and printed. </p>
+
 </div>
 </div>
 <a id="a4bf4bed754f65593694200462fb147e4" name="a4bf4bed754f65593694200462fb147e4"></a>
@@ -772,6 +836,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return secondsPastEpoch of the PV time stamp, or -1 if no value arrives within 30 s (<a class="el" href="classPds__Epics_1_1EpicsPVA.html#a6cb8d358533d4fc630c9770e27db0485">getComplete()</a>). </p>
 
 </div>
 </div>
@@ -798,6 +864,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Declared but not defined in EpicsPVA.cc. </p>
 
 </div>
 </div>

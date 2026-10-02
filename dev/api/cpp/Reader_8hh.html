@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Reader_8hh.html',''); initResizable();
   <div class="headertitle"><div class="title">Reader.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="classDrp_1_1Gpu_1_1Reader.html" title="Receives the FPGA DMA buffers on the GPU.">Drp::Gpu::Reader</a>, which receives the FPGA DMA buffers on the GPU, copies their headers to host memory and calibrates their payloads.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
@@ -112,8 +115,10 @@ $(document).ready(function(){initNavTree('Reader_8hh.html',''); initResizable();
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html">Drp::Gpu::ReaderMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-reader counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac17267a421c451b531838be9c3c5de7e" title="Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics ...">Reader::setupMetrics()</a>; the kernels update them only if DBG is enabled in Reader.cu.  <a href="structDrp_1_1Gpu_1_1ReaderMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html">Drp::Gpu::Reader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives the FPGA DMA buffers on the GPU.  <a href="classDrp_1_1Gpu_1_1Reader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -122,14 +127,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Trg" id="r_namespacePds_1_1Trg"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html">Pds::Trg</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Trg"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp" id="r_namespaceDrp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html">Drp</a></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1Gpu_1_1Reader.html" title="Receives the FPGA DMA buffers on the GPU.">Drp::Gpu::Reader</a>, which receives the FPGA DMA buffers on the GPU, copies their headers to host memory and calibrates their payloads. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

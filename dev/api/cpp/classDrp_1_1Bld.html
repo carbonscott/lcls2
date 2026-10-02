@@ -98,45 +98,65 @@ $(document).ready(function(){initNavTree('classDrp_1_1Bld.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
+<p>Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a header, then entries carrying timestamp and pulse ID offsets); can also simulate packets.  
+ <a href="classDrp_1_1Bld.html#details">More...</a></p>
+
 <p><code>#include &lt;BldDetector.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae645a284384d542665b1c1e1ba1c18d9" id="r_ae645a284384d542665b1c1e1ba1c18d9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ae645a284384d542665b1c1e1ba1c18d9">Bld</a> (unsigned mcaddr, unsigned port, unsigned interface, unsigned timestampPos, unsigned pulseIdPos, unsigned headerSize, unsigned <a class="el" href="classDrp_1_1Bld.html#ad69cbf04954cb66a320e01ac216f2941">payloadSize</a>, bool simulate, uint64_t timestampCorr=0, bool varLenArr=false, std::vector&lt; unsigned &gt; entryByteSizes={}, std::map&lt; unsigned, unsigned &gt; arraySizeMap={})</td></tr>
+<tr class="memdesc:ae645a284384d542665b1c1e1ba1c18d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open a UDP socket with a 16 MiB receive buffer, bind it to mcaddr:port and join that multicast group on interface; throws a std::string on failure.  <br /></td></tr>
 <tr class="separator:ae645a284384d542665b1c1e1ba1c18d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafe79cf388c12e49b746c72d7bd90f29" id="r_aafe79cf388c12e49b746c72d7bd90f29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#aafe79cf388c12e49b746c72d7bd90f29">Bld</a> (const <a class="el" href="classDrp_1_1Bld.html">Bld</a> &amp;)</td></tr>
+<tr class="memdesc:aafe79cf388c12e49b746c72d7bd90f29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy only the layout fields and the socket descriptor (other members are left uninitialized) and log an error.  <br /></td></tr>
 <tr class="separator:aafe79cf388c12e49b746c72d7bd90f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7de92d8ea6ec4aed66746b82da646f16" id="r_a7de92d8ea6ec4aed66746b82da646f16"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a7de92d8ea6ec4aed66746b82da646f16">~Bld</a> ()</td></tr>
+<tr class="memdesc:a7de92d8ea6ec4aed66746b82da646f16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the socket.  <br /></td></tr>
 <tr class="separator:a7de92d8ea6ec4aed66746b82da646f16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a623629724b086bbb9256a13cc1833d7c" id="r_a623629724b086bbb9256a13cc1833d7c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a623629724b086bbb9256a13cc1833d7c">ready</a> () const</td></tr>
+<tr class="memdesc:a623629724b086bbb9256a13cc1833d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the current packet still holds another event (a 4-byte offset word plus payload) after the current position.  <br /></td></tr>
 <tr class="separator:a623629724b086bbb9256a13cc1833d7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad87a938f2d5816eee245c68594f1360c" id="r_ad87a938f2d5816eee245c68594f1360c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ad87a938f2d5816eee245c68594f1360c">clear</a> (uint64_t ts)</td></tr>
+<tr class="memdesc:ad87a938f2d5816eee245c68594f1360c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Skip events, receiving (or simulating) packets as needed, until one with a timestamp at or after ts is current or no more data is available; dropped timestamps and pulse ID jumps are logged.  <br /></td></tr>
 <tr class="separator:ad87a938f2d5816eee245c68594f1360c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d469bcc9440a5892cc8fb6ba7248798" id="r_a0d469bcc9440a5892cc8fb6ba7248798"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a0d469bcc9440a5892cc8fb6ba7248798">next</a> ()</td></tr>
+<tr class="memdesc:a0d469bcc9440a5892cc8fb6ba7248798"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance to the next event and return its timestamp (header timestamp minus the correction, plus the entry offset for packed events), receiving a new packet when the current one is used up.  <br /></td></tr>
 <tr class="separator:a0d469bcc9440a5892cc8fb6ba7248798"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ab544db76bb9a8ef8cd573e85978035" id="r_a5ab544db76bb9a8ef8cd573e85978035"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a5ab544db76bb9a8ef8cd573e85978035">payload</a> () const</td></tr>
+<tr class="memdesc:a5ab544db76bb9a8ef8cd573e85978035"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the payload of the current event.  <br /></td></tr>
 <tr class="separator:a5ab544db76bb9a8ef8cd573e85978035"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad69cbf04954cb66a320e01ac216f2941" id="r_ad69cbf04954cb66a320e01ac216f2941"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ad69cbf04954cb66a320e01ac216f2941">payloadSize</a> () const</td></tr>
+<tr class="memdesc:ad69cbf04954cb66a320e01ac216f2941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the payload size of the current event (recomputed per event for variable-length arrays).  <br /></td></tr>
 <tr class="separator:ad69cbf04954cb66a320e01ac216f2941"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:ab7fe70d918282d9432867001200c9498" id="r_ab7fe70d918282d9432867001200c9498"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ab7fe70d918282d9432867001200c9498">MTU</a> = 9000</td></tr>
+<tr class="memdesc:ab7fe70d918282d9432867001200c9498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive buffer size in bytes (9000).  <br /></td></tr>
 <tr class="separator:ab7fe70d918282d9432867001200c9498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bbf83365815f61c307d367d7a45966c" id="r_a1bbf83365815f61c307d367d7a45966c"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a1bbf83365815f61c307d367d7a45966c">TimestampPos</a> = 0</td></tr>
+<tr class="memdesc:a1bbf83365815f61c307d367d7a45966c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset of the timestamp in an LCLS-II style header (0).  <br /></td></tr>
 <tr class="separator:a1bbf83365815f61c307d367d7a45966c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78da8d02f649386eb58e2ae63825e34a" id="r_a78da8d02f649386eb58e2ae63825e34a"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a78da8d02f649386eb58e2ae63825e34a">PulseIdPos</a> = 8</td></tr>
+<tr class="memdesc:a78da8d02f649386eb58e2ae63825e34a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset of the pulse ID in an LCLS-II style header (8).  <br /></td></tr>
 <tr class="separator:a78da8d02f649386eb58e2ae63825e34a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fc96a254667042113d40e7b340761ad" id="r_a6fc96a254667042113d40e7b340761ad"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#a6fc96a254667042113d40e7b340761ad">HeaderSize</a> = 20</td></tr>
+<tr class="memdesc:a6fc96a254667042113d40e7b340761ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Header size of the LCLS-II style (20 bytes); used for PV-described sources.  <br /></td></tr>
 <tr class="separator:a6fc96a254667042113d40e7b340761ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab91d65e9c011d2dbaa0da39a71e8776c" id="r_ab91d65e9c011d2dbaa0da39a71e8776c"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ab91d65e9c011d2dbaa0da39a71e8776c">DgramTimestampPos</a> = 0</td></tr>
+<tr class="memdesc:ab91d65e9c011d2dbaa0da39a71e8776c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset of the timestamp in an LCLS-I style header (0).  <br /></td></tr>
 <tr class="separator:ab91d65e9c011d2dbaa0da39a71e8776c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac11db7ad6ec0ff82c0db845dbf458498" id="r_ac11db7ad6ec0ff82c0db845dbf458498"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#ac11db7ad6ec0ff82c0db845dbf458498">DgramPulseIdPos</a> = 8</td></tr>
+<tr class="memdesc:ac11db7ad6ec0ff82c0db845dbf458498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset of the pulse ID in an LCLS-I style header (8).  <br /></td></tr>
 <tr class="separator:ac11db7ad6ec0ff82c0db845dbf458498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa398b31175ac01f1b1e467a9af4d3c0e" id="r_aa398b31175ac01f1b1e467a9af4d3c0e"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html#aa398b31175ac01f1b1e467a9af4d3c0e">DgramHeaderSize</a> = 60</td></tr>
+<tr class="memdesc:aa398b31175ac01f1b1e467a9af4d3c0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Header size of the LCLS-I style (60 bytes); used for the built-in sources.  <br /></td></tr>
 <tr class="separator:aa398b31175ac01f1b1e467a9af4d3c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a header, then entries carrying timestamp and pulse ID offsets); can also simulate packets. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae645a284384d542665b1c1e1ba1c18d9" name="ae645a284384d542665b1c1e1ba1c18d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae645a284384d542665b1c1e1ba1c18d9">&#9670;&#160;</a></span>Bld() <span class="overload">[1/2]</span></h2>
 
@@ -223,6 +243,9 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Open a UDP socket with a 16 MiB receive buffer, bind it to mcaddr:port and join that multicast group on interface; throws a std::string on failure. </p>
+<p>The other arguments give the header layout, the fixed payload size, simulation, a timestamp correction and the variable-length-array description. </p>
+
 </div>
 </div>
 <a id="aafe79cf388c12e49b746c72d7bd90f29" name="aafe79cf388c12e49b746c72d7bd90f29"></a>
@@ -241,6 +264,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy only the layout fields and the socket descriptor (other members are left uninitialized) and log an error. </p>
+
 </div>
 </div>
 <a id="a7de92d8ea6ec4aed66746b82da646f16" name="a7de92d8ea6ec4aed66746b82da646f16"></a>
@@ -257,6 +282,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close the socket. </p>
 
 </div>
 </div>
@@ -277,6 +304,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Skip events, receiving (or simulating) packets as needed, until one with a timestamp at or after ts is current or no more data is available; dropped timestamps and pulse ID jumps are logged. </p>
+
 </div>
 </div>
 <a id="a0d469bcc9440a5892cc8fb6ba7248798" name="a0d469bcc9440a5892cc8fb6ba7248798"></a>
@@ -293,6 +322,9 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Advance to the next event and return its timestamp (header timestamp minus the correction, plus the entry offset for packed events), receiving a new packet when the current one is used up. </p>
+<p>Returns 0 when a new packet is needed but none is available, and always in that case when simulating. </p>
 
 </div>
 </div>
@@ -319,6 +351,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the payload of the current event. </p>
+
 </div>
 </div>
 <a id="ad69cbf04954cb66a320e01ac216f2941" name="ad69cbf04954cb66a320e01ac216f2941"></a>
@@ -343,6 +377,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the payload size of the current event (recomputed per event for variable-length arrays). </p>
 
 </div>
 </div>
@@ -369,6 +405,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if the current packet still holds another event (a 4-byte offset word plus payload) after the current position. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -392,6 +430,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Header size of the LCLS-I style (60 bytes); used for the built-in sources. </p>
+
 </div>
 </div>
 <a id="ac11db7ad6ec0ff82c0db845dbf458498" name="ac11db7ad6ec0ff82c0db845dbf458498"></a>
@@ -413,6 +453,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Offset of the pulse ID in an LCLS-I style header (8). </p>
 
 </div>
 </div>
@@ -436,6 +478,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Offset of the timestamp in an LCLS-I style header (0). </p>
+
 </div>
 </div>
 <a id="a6fc96a254667042113d40e7b340761ad" name="a6fc96a254667042113d40e7b340761ad"></a>
@@ -457,6 +501,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Header size of the LCLS-II style (20 bytes); used for PV-described sources. </p>
 
 </div>
 </div>
@@ -480,6 +526,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Receive buffer size in bytes (9000). </p>
+
 </div>
 </div>
 <a id="a78da8d02f649386eb58e2ae63825e34a" name="a78da8d02f649386eb58e2ae63825e34a"></a>
@@ -502,6 +550,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Offset of the pulse ID in an LCLS-II style header (8). </p>
+
 </div>
 </div>
 <a id="a1bbf83365815f61c307d367d7a45966c" name="a1bbf83365815f61c307d367d7a45966c"></a>
@@ -523,6 +573,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Offset of the timestamp in an LCLS-II style header (0). </p>
 
 </div>
 </div>

@@ -97,22 +97,33 @@ $(document).ready(function(){initNavTree('classMPSCQueue.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 
+<p>Ring buffer of uint32_t pointers.  
+ <a href="classMPSCQueue.html#details">More...</a></p>
+
 <p><code>#include &lt;mpscqueue.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5bea6f1a8afbe961ebc830a3130a5177" id="r_a5bea6f1a8afbe961ebc830a3130a5177"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMPSCQueue.html#a5bea6f1a8afbe961ebc830a3130a5177">MPSCQueue</a> (int capacity)</td></tr>
+<tr class="memdesc:a5bea6f1a8afbe961ebc830a3130a5177"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate a ring of capacity pointers; capacity is used through a mask, so it must be a power of 2.  <br /></td></tr>
 <tr class="separator:a5bea6f1a8afbe961ebc830a3130a5177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7741265e087cc781d73e8e304b7e9426" id="r_a7741265e087cc781d73e8e304b7e9426"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMPSCQueue.html#a7741265e087cc781d73e8e304b7e9426">push</a> (uint32_t *value)</td></tr>
+<tr class="memdesc:a7741265e087cc781d73e8e304b7e9426"><td class="mdescLeft">&#160;</td><td class="mdescRight">Claim the next slot, store value in it, wait until earlier pushes have been published, then publish it and wake the consumer if it was waiting on this slot.  <br /></td></tr>
 <tr class="separator:a7741265e087cc781d73e8e304b7e9426"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e7e721120c71d3fee7402885bd1a167" id="r_a5e7e721120c71d3fee7402885bd1a167"><td class="memItemLeft" align="right" valign="top">uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMPSCQueue.html#a5e7e721120c71d3fee7402885bd1a167">pop</a> ()</td></tr>
+<tr class="memdesc:a5e7e721120c71d3fee7402885bd1a167"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the oldest element, blocking while the queue is empty.  <br /></td></tr>
 <tr class="separator:a5e7e721120c71d3fee7402885bd1a167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4db60130994421e5c25be50e3de960cd" id="r_a4db60130994421e5c25be50e3de960cd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMPSCQueue.html#a4db60130994421e5c25be50e3de960cd">is_empty</a> ()</td></tr>
+<tr class="memdesc:a4db60130994421e5c25be50e3de960cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if all published elements have been popped.  <br /></td></tr>
 <tr class="separator:a4db60130994421e5c25be50e3de960cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a393c9fdb9959f163e82593719a5a8a37" id="r_a393c9fdb9959f163e82593719a5a8a37"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMPSCQueue.html#a393c9fdb9959f163e82593719a5a8a37">~MPSCQueue</a> ()</td></tr>
+<tr class="memdesc:a393c9fdb9959f163e82593719a5a8a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the ring.  <br /></td></tr>
 <tr class="separator:a393c9fdb9959f163e82593719a5a8a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Ring buffer of uint32_t pointers. </p>
+<p><a class="el" href="classMPSCQueue.html#a7741265e087cc781d73e8e304b7e9426" title="Claim the next slot, store value in it, wait until earlier pushes have been published,...">push()</a> may be called from several threads; <a class="el" href="classMPSCQueue.html#a5e7e721120c71d3fee7402885bd1a167" title="Return the oldest element, blocking while the queue is empty.">pop()</a> from one thread only and blocks until an element is available (per the header comment). There is no check for a full queue. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5bea6f1a8afbe961ebc830a3130a5177" name="a5bea6f1a8afbe961ebc830a3130a5177"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5bea6f1a8afbe961ebc830a3130a5177">&#9670;&#160;</a></span>MPSCQueue()</h2>
 
@@ -128,6 +139,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Allocate a ring of capacity pointers; capacity is used through a mask, so it must be a power of 2. </p>
 
 </div>
 </div>
@@ -145,6 +158,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the ring. </p>
 
 </div>
 </div>
@@ -164,6 +179,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return true if all published elements have been popped. </p>
+
 </div>
 </div>
 <a id="a5e7e721120c71d3fee7402885bd1a167" name="a5e7e721120c71d3fee7402885bd1a167"></a>
@@ -180,6 +197,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the oldest element, blocking while the queue is empty. </p>
 
 </div>
 </div>
@@ -198,6 +217,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Claim the next slot, store value in it, wait until earlier pushes have been published, then publish it and wake the consumer if it was waiting on this slot. </p>
 
 </div>
 </div>

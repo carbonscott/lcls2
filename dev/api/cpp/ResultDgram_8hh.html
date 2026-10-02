@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('ResultDgram_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">ResultDgram.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>ResultDgram, the trigger result datagram (an EbDgram plus a packed result word and a monitor buffer number word), and the ResultType codes.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="eb_8hh.html">eb.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EbDgram_8hh.html">psdaq/service/EbDgram.hh</a>&quot;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('ResultDgram_8hh.html',''); initResizab
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger result datagram: an <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> followed by a 32-bit result word and a 32-bit monitor buffer number word.  <a href="classPds_1_1Eb_1_1ResultDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -113,13 +117,16 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a78daea710555b2bec6eecbf6c8c66fd1" id="r_a78daea710555b2bec6eecbf6c8c66fd1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ResultDgram_8hh.html#a78daea710555b2bec6eecbf6c8c66fd1">ADDBITS</a>(FLD,  VAL)&#160;&#160;&#160;auxdata((auxdata()&amp;~s_##FLD) | ((VAL&amp;m_##FLD)&lt;&lt;v_##FLD))</td></tr>
+<tr class="memdesc:a78daea710555b2bec6eecbf6c8c66fd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store VAL in field FLD of the auxdata() value, using the enclosing class constants v_FLD, m_FLD and s_FLD.  <br /></td></tr>
 <tr class="separator:a78daea710555b2bec6eecbf6c8c66fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed1ddb5f6fb215eca539002c323befa6" id="r_aed1ddb5f6fb215eca539002c323befa6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ResultDgram_8hh.html#aed1ddb5f6fb215eca539002c323befa6">GETBITS</a>(FLD)&#160;&#160;&#160;(auxdata()&amp;s_##FLD)&gt;&gt;v_##FLD</td></tr>
+<tr class="memdesc:aed1ddb5f6fb215eca539002c323befa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract field FLD from the auxdata() value, using the enclosing class constants s_FLD and v_FLD (the expansion has no outer parentheses).  <br /></td></tr>
 <tr class="separator:aed1ddb5f6fb215eca539002c323befa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -128,9 +135,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21">Pds::Eb::Cube</a> =1
 , <a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6">Pds::Eb::Window</a> =2
  }</td></tr>
+<tr class="memdesc:aaafbfee88c8595a0cfed7435ce8a747c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result type codes, described in the original comment as ConfigDgram specializations; CubeConfigDgram::resultType(char*) maps the strings Cube and Window to these codes.  <a href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747c">More...</a><br /></td></tr>
 <tr class="separator:aaafbfee88c8595a0cfed7435ce8a747c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>ResultDgram, the trigger result datagram (an EbDgram plus a packed result word and a monitor buffer number word), and the ResultType codes. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a78daea710555b2bec6eecbf6c8c66fd1" name="a78daea710555b2bec6eecbf6c8c66fd1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a78daea710555b2bec6eecbf6c8c66fd1">&#9670;&#160;</a></span>ADDBITS</h2>
 
@@ -157,6 +167,9 @@ Enumerations</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store VAL in field FLD of the auxdata() value, using the enclosing class constants v_FLD, m_FLD and s_FLD. </p>
+<p>Used by CubeResultDgram and WindowResultDgram; <a class="el" href="WindowResultDgram_8hh.html" title="WindowResultDgram, a ResultDgram whose auxdata field carries four 6-bit window bin fields.">WindowResultDgram.hh</a> undefines it. </p>
+
 </div>
 </div>
 <a id="aed1ddb5f6fb215eca539002c323befa6" name="aed1ddb5f6fb215eca539002c323befa6"></a>
@@ -174,6 +187,8 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Extract field FLD from the auxdata() value, using the enclosing class constants s_FLD and v_FLD (the expansion has no outer parentheses). </p>
 
 </div>
 </div>

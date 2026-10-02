@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1IndexPoolBase.html',
 </div><!--header-->
 <div class="contents">
 
+<p>Fixed array of a power-of-2 number of equal-size objects, addressed by a key masked to the array size, with a per-slot allocated flag and allocation counters.  
+ <a href="classPds_1_1Eb_1_1IndexPoolBase.html#details">More...</a></p>
+
 <p><code>#include &lt;IndexPool.hh&gt;</code></p>
 
 <p>Inherited by Pds::Eb::IndexPoolBaseW&lt; std::mutex &gt;.</p>
@@ -104,47 +107,70 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1IndexPoolBase.html',
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a99e55c4486eaae403425ea7b6f10b921" id="r_a99e55c4486eaae403425ea7b6f10b921"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a99e55c4486eaae403425ea7b6f10b921">IndexPoolBase</a> (size_t <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a2721fa4db732ab83155c9fbf81524bdf">sizeofObject</a>, unsigned <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9f82ccea429abe6b52ee21d898f32f03">numberofObjects</a>)</td></tr>
+<tr class="memdesc:a99e55c4486eaae403425ea7b6f10b921"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate numberofObjects slots of sizeofObject bytes (16-byte aligned storage), all free.  <br /></td></tr>
 <tr class="separator:a99e55c4486eaae403425ea7b6f10b921"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9856c7977cc13e434a0937c2bf40702e" id="r_a9856c7977cc13e434a0937c2bf40702e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9856c7977cc13e434a0937c2bf40702e">~IndexPoolBase</a> ()</td></tr>
+<tr class="memdesc:a9856c7977cc13e434a0937c2bf40702e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a9856c7977cc13e434a0937c2bf40702e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f19544b9542cd5903cd7b157a64b939" id="r_a6f19544b9542cd5903cd7b157a64b939"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a6f19544b9542cd5903cd7b157a64b939">isAllocated</a> (unsigned key) const</td></tr>
+<tr class="memdesc:a6f19544b9542cd5903cd7b157a64b939"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the slot for key (masked) is allocated.  <br /></td></tr>
 <tr class="separator:a6f19544b9542cd5903cd7b157a64b939"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c633a3d6b31d4a9da256b14826159ab" id="r_a5c633a3d6b31d4a9da256b14826159ab"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a5c633a3d6b31d4a9da256b14826159ab">allocate</a> (unsigned key)</td></tr>
+<tr class="memdesc:a5c633a3d6b31d4a9da256b14826159ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the slot for key (masked) allocated and return its address, or return nullptr if it is already allocated.  <br /></td></tr>
 <tr class="separator:a5c633a3d6b31d4a9da256b14826159ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe6977fd3c2b7885729ca3c85973ef7b" id="r_abe6977fd3c2b7885729ca3c85973ef7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#abe6977fd3c2b7885729ca3c85973ef7b">free</a> (unsigned key)</td></tr>
+<tr class="memdesc:abe6977fd3c2b7885729ca3c85973ef7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the slot for key (masked) free and count a free (also counted if the slot was not allocated).  <br /></td></tr>
 <tr class="separator:abe6977fd3c2b7885729ca3c85973ef7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b77b778c0a9ef5e18336edb2f932f39" id="r_a0b77b778c0a9ef5e18336edb2f932f39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a0b77b778c0a9ef5e18336edb2f932f39">free</a> (const void *buf)</td></tr>
+<tr class="memdesc:a0b77b778c0a9ef5e18336edb2f932f39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the slot that contains buf (found with <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#af73a80a30ad41cf6f4df44a01efef3ea" title="Return the slot index of buf (its byte offset from the storage start divided by the object size).">index()</a>).  <br /></td></tr>
 <tr class="separator:a0b77b778c0a9ef5e18336edb2f932f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3293354f7ac7e51fba4c57444e86c464" id="r_a3293354f7ac7e51fba4c57444e86c464"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a3293354f7ac7e51fba4c57444e86c464">buffer</a> () const</td></tr>
+<tr class="memdesc:a3293354f7ac7e51fba4c57444e86c464"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the object storage.  <br /></td></tr>
 <tr class="separator:a3293354f7ac7e51fba4c57444e86c464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7d105e9cec2d57faa8c2a4591864445" id="r_aa7d105e9cec2d57faa8c2a4591864445"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#aa7d105e9cec2d57faa8c2a4591864445">size</a> () const</td></tr>
+<tr class="memdesc:aa7d105e9cec2d57faa8c2a4591864445"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the storage size in bytes.  <br /></td></tr>
 <tr class="separator:aa7d105e9cec2d57faa8c2a4591864445"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41d13799e96e3cd2843a26a4b4fb5910" id="r_a41d13799e96e3cd2843a26a4b4fb5910"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a41d13799e96e3cd2843a26a4b4fb5910">mask</a> () const</td></tr>
+<tr class="memdesc:a41d13799e96e3cd2843a26a4b4fb5910"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the key mask (number of objects minus 1).  <br /></td></tr>
 <tr class="separator:a41d13799e96e3cd2843a26a4b4fb5910"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0de0f0ad9bf1adb0b0f7ad18586f939f" id="r_a0de0f0ad9bf1adb0b0f7ad18586f939f"><td class="memItemLeft" align="right" valign="top">char &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a0de0f0ad9bf1adb0b0f7ad18586f939f">operator[]</a> (unsigned key)</td></tr>
+<tr class="memdesc:a0de0f0ad9bf1adb0b0f7ad18586f939f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the first byte of the slot for key (masked); the allocated flag is not checked.  <br /></td></tr>
 <tr class="separator:a0de0f0ad9bf1adb0b0f7ad18586f939f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4e73ed2bda56b4f304cf0af99d518bb" id="r_ac4e73ed2bda56b4f304cf0af99d518bb"><td class="memItemLeft" align="right" valign="top">const char &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#ac4e73ed2bda56b4f304cf0af99d518bb">operator[]</a> (unsigned key) const</td></tr>
+<tr class="memdesc:ac4e73ed2bda56b4f304cf0af99d518bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a const reference to the first byte of the slot for key (masked); the allocated flag is not checked.  <br /></td></tr>
 <tr class="separator:ac4e73ed2bda56b4f304cf0af99d518bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af73a80a30ad41cf6f4df44a01efef3ea" id="r_af73a80a30ad41cf6f4df44a01efef3ea"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#af73a80a30ad41cf6f4df44a01efef3ea">index</a> (const void *buf) const</td></tr>
+<tr class="memdesc:af73a80a30ad41cf6f4df44a01efef3ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the slot index of buf (its byte offset from the storage start divided by the object size).  <br /></td></tr>
 <tr class="separator:af73a80a30ad41cf6f4df44a01efef3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2721fa4db732ab83155c9fbf81524bdf" id="r_a2721fa4db732ab83155c9fbf81524bdf"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a2721fa4db732ab83155c9fbf81524bdf">sizeofObject</a> () const</td></tr>
+<tr class="memdesc:a2721fa4db732ab83155c9fbf81524bdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the object size in bytes.  <br /></td></tr>
 <tr class="separator:a2721fa4db732ab83155c9fbf81524bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f82ccea429abe6b52ee21d898f32f03" id="r_a9f82ccea429abe6b52ee21d898f32f03"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9f82ccea429abe6b52ee21d898f32f03">numberofObjects</a> () const</td></tr>
+<tr class="memdesc:a9f82ccea429abe6b52ee21d898f32f03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of slots (mask + 1).  <br /></td></tr>
 <tr class="separator:a9f82ccea429abe6b52ee21d898f32f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ac0a6c538bfc12591c73f1304451b81" id="r_a9ac0a6c538bfc12591c73f1304451b81"><td class="memItemLeft" align="right" valign="top">const uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9ac0a6c538bfc12591c73f1304451b81">numberofAllocs</a> () const</td></tr>
+<tr class="memdesc:a9ac0a6c538bfc12591c73f1304451b81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the allocation counter.  <br /></td></tr>
 <tr class="separator:a9ac0a6c538bfc12591c73f1304451b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a500a14e2ac3573354cbe563721dd76" id="r_a5a500a14e2ac3573354cbe563721dd76"><td class="memItemLeft" align="right" valign="top">const uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a5a500a14e2ac3573354cbe563721dd76">numberofFrees</a> () const</td></tr>
+<tr class="memdesc:a5a500a14e2ac3573354cbe563721dd76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the free counter.  <br /></td></tr>
 <tr class="separator:a5a500a14e2ac3573354cbe563721dd76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a062345e5f041f3f791bc9439df656ce5" id="r_a062345e5f041f3f791bc9439df656ce5"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a062345e5f041f3f791bc9439df656ce5">numberofAllocatedObjects</a> () const</td></tr>
+<tr class="memdesc:a062345e5f041f3f791bc9439df656ce5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of allocations minus the number of frees.  <br /></td></tr>
 <tr class="separator:a062345e5f041f3f791bc9439df656ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9cb846836f8c367cc0578f2b65293d7" id="r_ab9cb846836f8c367cc0578f2b65293d7"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#ab9cb846836f8c367cc0578f2b65293d7">numberofFreeObjects</a> () const</td></tr>
+<tr class="memdesc:ab9cb846836f8c367cc0578f2b65293d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9f82ccea429abe6b52ee21d898f32f03" title="Return the number of slots (mask + 1).">numberofObjects()</a> minus <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a062345e5f041f3f791bc9439df656ce5" title="Return the number of allocations minus the number of frees.">numberofAllocatedObjects()</a>.  <br /></td></tr>
 <tr class="separator:ab9cb846836f8c367cc0578f2b65293d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91d243010583d62d7791311ab963cf14" id="r_a91d243010583d62d7791311ab963cf14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a91d243010583d62d7791311ab963cf14">clear</a> ()</td></tr>
+<tr class="memdesc:a91d243010583d62d7791311ab963cf14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark all slots free and zero both counters.  <br /></td></tr>
 <tr class="separator:a91d243010583d62d7791311ab963cf14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae84e81d42cb50f556b14c9dc2da88064" id="r_ae84e81d42cb50f556b14c9dc2da88064"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#ae84e81d42cb50f556b14c9dc2da88064">dump</a> () const</td></tr>
+<tr class="memdesc:ae84e81d42cb50f556b14c9dc2da88064"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the storage size and address, the mask, the object size, the slot count and the counters to stdout.  <br /></td></tr>
 <tr class="separator:ae84e81d42cb50f556b14c9dc2da88064"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Fixed array of a power-of-2 number of equal-size objects, addressed by a key masked to the array size, with a per-slot allocated flag and allocation counters. </p>
+<p>Not thread-safe; see IndexPoolBaseW. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a99e55c4486eaae403425ea7b6f10b921" name="a99e55c4486eaae403425ea7b6f10b921"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a99e55c4486eaae403425ea7b6f10b921">&#9670;&#160;</a></span>IndexPoolBase()</h2>
 
@@ -179,6 +205,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Allocate numberofObjects slots of sizeofObject bytes (16-byte aligned storage), all free. </p>
+<p>Throws a C string if numberofObjects is not a power of 2. </p>
+
 </div>
 </div>
 <a id="a9856c7977cc13e434a0937c2bf40702e" name="a9856c7977cc13e434a0937c2bf40702e"></a>
@@ -203,6 +232,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -231,6 +262,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Mark the slot for key (masked) allocated and return its address, or return nullptr if it is already allocated. </p>
+
 </div>
 </div>
 <a id="a3293354f7ac7e51fba4c57444e86c464" name="a3293354f7ac7e51fba4c57444e86c464"></a>
@@ -256,6 +289,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the start of the object storage. </p>
+
 </div>
 </div>
 <a id="a91d243010583d62d7791311ab963cf14" name="a91d243010583d62d7791311ab963cf14"></a>
@@ -273,6 +308,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Mark all slots free and zero both counters. </p>
+
 </div>
 </div>
 <a id="ae84e81d42cb50f556b14c9dc2da88064" name="ae84e81d42cb50f556b14c9dc2da88064"></a>
@@ -289,6 +326,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the storage size and address, the mask, the object size, the slot count and the counters to stdout. </p>
 
 </div>
 </div>
@@ -316,6 +355,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Free the slot that contains buf (found with <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#af73a80a30ad41cf6f4df44a01efef3ea" title="Return the slot index of buf (its byte offset from the storage start divided by the object size).">index()</a>). </p>
+
 </div>
 </div>
 <a id="abe6977fd3c2b7885729ca3c85973ef7b" name="abe6977fd3c2b7885729ca3c85973ef7b"></a>
@@ -341,6 +382,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Mark the slot for key (masked) free and count a free (also counted if the slot was not allocated). </p>
 
 </div>
 </div>
@@ -368,6 +411,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the slot index of buf (its byte offset from the storage start divided by the object size). </p>
+<p>Note that the body's assert(key &amp; ~_mask) fails for in-range keys when assertions are enabled. </p>
+
 </div>
 </div>
 <a id="a6f19544b9542cd5903cd7b157a64b939" name="a6f19544b9542cd5903cd7b157a64b939"></a>
@@ -394,6 +440,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if the slot for key (masked) is allocated. </p>
+
 </div>
 </div>
 <a id="a41d13799e96e3cd2843a26a4b4fb5910" name="a41d13799e96e3cd2843a26a4b4fb5910"></a>
@@ -418,6 +466,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the key mask (number of objects minus 1). </p>
 
 </div>
 </div>
@@ -444,6 +494,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of allocations minus the number of frees. </p>
+
 </div>
 </div>
 <a id="a9ac0a6c538bfc12591c73f1304451b81" name="a9ac0a6c538bfc12591c73f1304451b81"></a>
@@ -468,6 +520,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return a reference to the allocation counter. </p>
 
 </div>
 </div>
@@ -494,6 +548,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9f82ccea429abe6b52ee21d898f32f03" title="Return the number of slots (mask + 1).">numberofObjects()</a> minus <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a062345e5f041f3f791bc9439df656ce5" title="Return the number of allocations minus the number of frees.">numberofAllocatedObjects()</a>. </p>
+
 </div>
 </div>
 <a id="a5a500a14e2ac3573354cbe563721dd76" name="a5a500a14e2ac3573354cbe563721dd76"></a>
@@ -519,6 +575,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the free counter. </p>
+
 </div>
 </div>
 <a id="a9f82ccea429abe6b52ee21d898f32f03" name="a9f82ccea429abe6b52ee21d898f32f03"></a>
@@ -543,6 +601,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of slots (mask + 1). </p>
 
 </div>
 </div>
@@ -570,6 +630,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the first byte of the slot for key (masked); the allocated flag is not checked. </p>
+
 </div>
 </div>
 <a id="ac4e73ed2bda56b4f304cf0af99d518bb" name="ac4e73ed2bda56b4f304cf0af99d518bb"></a>
@@ -596,6 +658,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a const reference to the first byte of the slot for key (masked); the allocated flag is not checked. </p>
+
 </div>
 </div>
 <a id="aa7d105e9cec2d57faa8c2a4591864445" name="aa7d105e9cec2d57faa8c2a4591864445"></a>
@@ -621,6 +685,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the storage size in bytes. </p>
+
 </div>
 </div>
 <a id="a2721fa4db732ab83155c9fbf81524bdf" name="a2721fa4db732ab83155c9fbf81524bdf"></a>
@@ -645,6 +711,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the object size in bytes. </p>
 
 </div>
 </div>

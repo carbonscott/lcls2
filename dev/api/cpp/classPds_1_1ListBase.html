@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1ListBase.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>Node of an intrusive doubly linked list; an object can be a list head (label) or an element.  
+ <a href="classPds_1_1ListBase.html#details">More...</a></p>
+
 <p><code>#include &lt;LinkedList.hh&gt;</code></p>
 
 <p>Inherited by Pds::LinkedList&lt; EbEpoch &gt;, Pds::LinkedList&lt; EbEvent &gt;, Pds::LinkedList&lt; Pds::Eb::EbEvent &gt;, Pds::LinkedList&lt; Pds::Eb::EbEpoch &gt;, and <a class="el" href="classPds_1_1LinkedListSL.html">Pds::LinkedListSL&lt; T &gt;</a><code> [private]</code>.</p>
@@ -104,29 +107,43 @@ $(document).ready(function(){initNavTree('classPds_1_1ListBase.html',''); initRe
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a743923070c090beaf2d001447ea05e8e" id="r_a743923070c090beaf2d001447ea05e8e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a743923070c090beaf2d001447ea05e8e">~ListBase</a> ()</td></tr>
+<tr class="memdesc:a743923070c090beaf2d001447ea05e8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a743923070c090beaf2d001447ea05e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13f587d4e186f7d4179cbdb129d5865c" id="r_a13f587d4e186f7d4179cbdb129d5865c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a13f587d4e186f7d4179cbdb129d5865c">ListBase</a> ()</td></tr>
+<tr class="memdesc:a13f587d4e186f7d4179cbdb129d5865c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct as an empty list head: both links point to itself.  <br /></td></tr>
 <tr class="separator:a13f587d4e186f7d4179cbdb129d5865c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e66df29d19195c1929619def52bf149" id="r_a5e66df29d19195c1929619def52bf149"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a5e66df29d19195c1929619def52bf149">ListBase</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *listhead)</td></tr>
+<tr class="memdesc:a5e66df29d19195c1929619def52bf149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append this object at the tail of the list whose head is listhead.  <br /></td></tr>
 <tr class="separator:a5e66df29d19195c1929619def52bf149"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a648f9df9b5f075e7969dbbb199a46a0b" id="r_a648f9df9b5f075e7969dbbb199a46a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a648f9df9b5f075e7969dbbb199a46a0b">connect</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *after)</td></tr>
+<tr class="memdesc:a648f9df9b5f075e7969dbbb199a46a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert this object after after and return after.  <br /></td></tr>
 <tr class="separator:a648f9df9b5f075e7969dbbb199a46a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ccf963d56cc3652c4c34fb140192837" id="r_a9ccf963d56cc3652c4c34fb140192837"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a9ccf963d56cc3652c4c34fb140192837">disconnect</a> ()</td></tr>
+<tr class="memdesc:a9ccf963d56cc3652c4c34fb140192837"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlink this object from its list and return it (its own links are left unchanged).  <br /></td></tr>
 <tr class="separator:a9ccf963d56cc3652c4c34fb140192837"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4e6a98880a7c8eb1a5b78f4ab7f8548" id="r_ad4e6a98880a7c8eb1a5b78f4ab7f8548"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#ad4e6a98880a7c8eb1a5b78f4ab7f8548">insert</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *)</td></tr>
+<tr class="memdesc:ad4e6a98880a7c8eb1a5b78f4ab7f8548"><td class="mdescLeft">&#160;</td><td class="mdescRight">Treating this object as a list head, append entry at the tail; returns the previous tail.  <br /></td></tr>
 <tr class="separator:ad4e6a98880a7c8eb1a5b78f4ab7f8548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24329e9f7e828e5d80063e5396f2adc1" id="r_a24329e9f7e828e5d80063e5396f2adc1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a24329e9f7e828e5d80063e5396f2adc1">insertList</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *)</td></tr>
+<tr class="memdesc:a24329e9f7e828e5d80063e5396f2adc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Treating this object and entry as list heads, move all elements of entry to the tail of this list, leaving entry empty; returns this.  <br /></td></tr>
 <tr class="separator:a24329e9f7e828e5d80063e5396f2adc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a820f6f3c31275c94170f75ab0a9d1579" id="r_a820f6f3c31275c94170f75ab0a9d1579"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a820f6f3c31275c94170f75ab0a9d1579">remove</a> ()</td></tr>
+<tr class="memdesc:a820f6f3c31275c94170f75ab0a9d1579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Treating this object as a list head, unlink and return the head element (the head itself, i.e.  <br /></td></tr>
 <tr class="separator:a820f6f3c31275c94170f75ab0a9d1579"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad28405ee80b6cd75ac235bf70be59497" id="r_ad28405ee80b6cd75ac235bf70be59497"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#ad28405ee80b6cd75ac235bf70be59497">empty</a> () const</td></tr>
+<tr class="memdesc:ad28405ee80b6cd75ac235bf70be59497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address of this object as the list label, which <a class="el" href="classPds_1_1ListBase.html#af312dcb9faf4b8f07df5e2521383140b" title="Return the next node (the head element when this is a list head).">forward()</a> returns when the list is empty.  <br /></td></tr>
 <tr class="separator:ad28405ee80b6cd75ac235bf70be59497"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af312dcb9faf4b8f07df5e2521383140b" id="r_af312dcb9faf4b8f07df5e2521383140b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#af312dcb9faf4b8f07df5e2521383140b">forward</a> () const</td></tr>
+<tr class="memdesc:af312dcb9faf4b8f07df5e2521383140b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next node (the head element when this is a list head).  <br /></td></tr>
 <tr class="separator:af312dcb9faf4b8f07df5e2521383140b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a203e9b0e3e2d887cf26b4589be5c00ea" id="r_a203e9b0e3e2d887cf26b4589be5c00ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1ListBase.html">ListBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1ListBase.html#a203e9b0e3e2d887cf26b4589be5c00ea">reverse</a> () const</td></tr>
+<tr class="memdesc:a203e9b0e3e2d887cf26b4589be5c00ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the previous node (the tail element when this is a list head).  <br /></td></tr>
 <tr class="separator:a203e9b0e3e2d887cf26b4589be5c00ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Node of an intrusive doubly linked list; an object can be a list head (label) or an element. </p>
+<p>No locking (see <a class="el" href="classPds_1_1LinkedListSL.html" title="Typed wrapper over Pds::ListBase (private base) in which every operation holds a per-object Pds::Spin...">LinkedListSL</a> for a locked version). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a743923070c090beaf2d001447ea05e8e" name="a743923070c090beaf2d001447ea05e8e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a743923070c090beaf2d001447ea05e8e">&#9670;&#160;</a></span>~ListBase()</h2>
 
@@ -149,6 +166,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -175,6 +194,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct as an empty list head: both links point to itself. </p>
+
 </div>
 </div>
 <a id="a5e66df29d19195c1929619def52bf149" name="a5e66df29d19195c1929619def52bf149"></a>
@@ -200,6 +221,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Append this object at the tail of the list whose head is listhead. </p>
 
 </div>
 </div>
@@ -228,6 +251,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Insert this object after after and return after. </p>
+
 </div>
 </div>
 <a id="a9ccf963d56cc3652c4c34fb140192837" name="a9ccf963d56cc3652c4c34fb140192837"></a>
@@ -252,6 +277,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Unlink this object from its list and return it (its own links are left unchanged). </p>
 
 </div>
 </div>
@@ -278,6 +305,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the address of this object as the list label, which <a class="el" href="classPds_1_1ListBase.html#af312dcb9faf4b8f07df5e2521383140b" title="Return the next node (the head element when this is a list head).">forward()</a> returns when the list is empty. </p>
+
 </div>
 </div>
 <a id="af312dcb9faf4b8f07df5e2521383140b" name="af312dcb9faf4b8f07df5e2521383140b"></a>
@@ -302,6 +331,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the next node (the head element when this is a list head). </p>
 
 </div>
 </div>
@@ -329,6 +360,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Treating this object as a list head, append entry at the tail; returns the previous tail. </p>
+
 </div>
 </div>
 <a id="a24329e9f7e828e5d80063e5396f2adc1" name="a24329e9f7e828e5d80063e5396f2adc1"></a>
@@ -355,6 +388,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Treating this object and entry as list heads, move all elements of entry to the tail of this list, leaving entry empty; returns this. </p>
+
 </div>
 </div>
 <a id="a820f6f3c31275c94170f75ab0a9d1579" name="a820f6f3c31275c94170f75ab0a9d1579"></a>
@@ -380,6 +415,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Treating this object as a list head, unlink and return the head element (the head itself, i.e. </p>
+<p><a class="el" href="classPds_1_1ListBase.html#ad28405ee80b6cd75ac235bf70be59497" title="Return the address of this object as the list label, which forward() returns when the list is empty.">empty()</a>, if the list is empty). </p>
+
 </div>
 </div>
 <a id="a203e9b0e3e2d887cf26b4589be5c00ea" name="a203e9b0e3e2d887cf26b4589be5c00ea"></a>
@@ -404,6 +442,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the previous node (the tail element when this is a list head). </p>
 
 </div>
 </div>

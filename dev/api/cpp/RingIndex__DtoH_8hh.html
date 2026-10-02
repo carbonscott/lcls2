@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('RingIndex__DtoH_8hh.html',''); initRes
   <div class="headertitle"><div class="title">RingIndex_DtoH.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>RingIndexDtoH, a ring of buffer indices filled by the GPU and drained by the host.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;time.h&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('RingIndex__DtoH_8hh.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html">Drp::Gpu::RingIndexDtoH</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of buffer indices with a device producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a09d480deb5e3551d274e34cf159c3305" title="Move head forward when not full.">push()</a>) and a host consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a4f9074ab7fd5a58322423684a4b5ae97" title="Return current head when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -114,14 +118,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aadcb0ed4c35486231fb206d8ec05f6de" id="r_aadcb0ed4c35486231fb206d8ec05f6de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="RingIndex__DtoH_8hh.html#aadcb0ed4c35486231fb206d8ec05f6de">__nanosleep</a>(x)&#160;&#160;&#160;{}</td></tr>
+<tr class="memdesc:aadcb0ed4c35486231fb206d8ec05f6de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined as a no-op when not compiling with nvcc, so that host-only code can include this header.  <br /></td></tr>
 <tr class="separator:aadcb0ed4c35486231fb206d8ec05f6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>RingIndexDtoH, a ring of buffer indices filled by the GPU and drained by the host. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="aadcb0ed4c35486231fb206d8ec05f6de" name="aadcb0ed4c35486231fb206d8ec05f6de"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aadcb0ed4c35486231fb206d8ec05f6de">&#9670;&#160;</a></span>__nanosleep</h2>
 
@@ -137,6 +145,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Defined as a no-op when not compiling with nvcc, so that host-only code can include this header. </p>
 
 </div>
 </div>

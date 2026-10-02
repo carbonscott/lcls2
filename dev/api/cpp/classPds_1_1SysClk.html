@@ -97,20 +97,30 @@ $(document).ready(function(){initNavTree('classPds_1_1SysClk.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
+<p>Static clock helpers.  
+ <a href="classPds_1_1SysClk.html#details">More...</a></p>
+
 <p><code>#include &lt;SysClk.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a9c69ebe82ed47852547f4bb58c119731" id="r_a9c69ebe82ed47852547f4bb58c119731"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SysClk.html#a9c69ebe82ed47852547f4bb58c119731">sample</a> ()</td></tr>
+<tr class="memdesc:a9c69ebe82ed47852547f4bb58c119731"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current nanosecond field of CLOCK_REALTIME (on VxWorks, the processor time base).  <br /></td></tr>
 <tr class="separator:a9c69ebe82ed47852547f4bb58c119731"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5462a98b7385ee9a349955eaead2224" id="r_ad5462a98b7385ee9a349955eaead2224"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SysClk.html#ad5462a98b7385ee9a349955eaead2224">nsPerTick</a> ()</td></tr>
+<tr class="memdesc:ad5462a98b7385ee9a349955eaead2224"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 1.0 (60.0 on VxWorks), the nanoseconds per sample tick.  <br /></td></tr>
 <tr class="separator:ad5462a98b7385ee9a349955eaead2224"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a163545e590785e887e5b80993f694a2b" id="r_a163545e590785e887e5b80993f694a2b"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SysClk.html#a163545e590785e887e5b80993f694a2b">since</a> (unsigned prev)</td></tr>
+<tr class="memdesc:a163545e590785e887e5b80993f694a2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the ticks elapsed since prev, allowing for one wrap of the nanosecond field at one second.  <br /></td></tr>
 <tr class="separator:a163545e590785e887e5b80993f694a2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6475dd0914553dbc79edeeebcbdca10c" id="r_a6475dd0914553dbc79edeeebcbdca10c"><td class="memItemLeft" align="right" valign="top">static long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SysClk.html#a6475dd0914553dbc79edeeebcbdca10c">diff</a> (const timespec &amp;end, const timespec &amp;start)</td></tr>
+<tr class="memdesc:a6475dd0914553dbc79edeeebcbdca10c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return end minus start in nanoseconds.  <br /></td></tr>
 <tr class="separator:a6475dd0914553dbc79edeeebcbdca10c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Static clock helpers. </p>
+<p>On non-VxWorks builds a sample is the nanosecond field of CLOCK_REALTIME (1 ns per tick). </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6475dd0914553dbc79edeeebcbdca10c" name="a6475dd0914553dbc79edeeebcbdca10c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6475dd0914553dbc79edeeebcbdca10c">&#9670;&#160;</a></span>diff()</h2>
 
@@ -145,6 +155,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return end minus start in nanoseconds. </p>
+
 </div>
 </div>
 <a id="ad5462a98b7385ee9a349955eaead2224" name="ad5462a98b7385ee9a349955eaead2224"></a>
@@ -169,6 +181,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return 1.0 (60.0 on VxWorks), the nanoseconds per sample tick. </p>
 
 </div>
 </div>
@@ -195,6 +209,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the current nanosecond field of CLOCK_REALTIME (on VxWorks, the processor time base). </p>
+
 </div>
 </div>
 <a id="a163545e590785e887e5b80993f694a2b" name="a163545e590785e887e5b80993f694a2b"></a>
@@ -220,6 +236,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the ticks elapsed since prev, allowing for one wrap of the nanosecond field at one second. </p>
 
 </div>
 </div>

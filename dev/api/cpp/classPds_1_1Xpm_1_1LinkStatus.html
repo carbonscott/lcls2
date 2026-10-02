@@ -98,33 +98,47 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1LinkStatus.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Status of one link, as returned by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4" title="Select the link and return its status (see LinkStatus).">Module::linkStatus()</a>.  
+ <a href="classPds_1_1Xpm_1_1LinkStatus.html#details">More...</a></p>
+
 <p><code>#include &lt;Module.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a268b82563e40735f40344b9aa5b0e2c1" id="r_a268b82563e40735f40344b9aa5b0e2c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a268b82563e40735f40344b9aa5b0e2c1">LinkStatus</a> ()</td></tr>
+<tr class="memdesc:a268b82563e40735f40344b9aa5b0e2c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero all flags and counters except remoteLinkId, which is left unset.  <br /></td></tr>
 <tr class="separator:a268b82563e40735f40344b9aa5b0e2c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:afe9294849b3d2d404ee051681bd348ba" id="r_afe9294849b3d2d404ee051681bd348ba"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#afe9294849b3d2d404ee051681bd348ba">txResetDone</a></td></tr>
+<tr class="memdesc:afe9294849b3d2d404ee051681bd348ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bit 16 (transmit reset done, per the header comment).  <br /></td></tr>
 <tr class="separator:afe9294849b3d2d404ee051681bd348ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c98cd1cc0e1b3ea34203f4b8c67a810" id="r_a0c98cd1cc0e1b3ea34203f4b8c67a810"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a0c98cd1cc0e1b3ea34203f4b8c67a810">txReady</a></td></tr>
+<tr class="memdesc:a0c98cd1cc0e1b3ea34203f4b8c67a810"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bit 17 (transmit ready).  <br /></td></tr>
 <tr class="separator:a0c98cd1cc0e1b3ea34203f4b8c67a810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bb8814c77b2d634675ef8129f6ae223" id="r_a9bb8814c77b2d634675ef8129f6ae223"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a9bb8814c77b2d634675ef8129f6ae223">rxResetDone</a></td></tr>
+<tr class="memdesc:a9bb8814c77b2d634675ef8129f6ae223"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bit 18 (receive reset done).  <br /></td></tr>
 <tr class="separator:a9bb8814c77b2d634675ef8129f6ae223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82705b025739f5997e2f02f62462f231" id="r_a82705b025739f5997e2f02f62462f231"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a82705b025739f5997e2f02f62462f231">rxReady</a></td></tr>
+<tr class="memdesc:a82705b025739f5997e2f02f62462f231"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bit 19 (receive ready).  <br /></td></tr>
 <tr class="separator:a82705b025739f5997e2f02f62462f231"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a811b058b5f3a673c8d1a6e5496343e1a" id="r_a811b058b5f3a673c8d1a6e5496343e1a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a811b058b5f3a673c8d1a6e5496343e1a">isXpm</a></td></tr>
+<tr class="memdesc:a811b058b5f3a673c8d1a6e5496343e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bit 20 (remote side is an XPM).  <br /></td></tr>
 <tr class="separator:a811b058b5f3a673c8d1a6e5496343e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace99496beb07a124bf4120e51ed83587" id="r_ace99496beb07a124bf4120e51ed83587"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#ace99496beb07a124bf4120e51ed83587">rxRcvs</a></td></tr>
+<tr class="memdesc:ace99496beb07a124bf4120e51ed83587"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of _dsLinkRcvs; set to all ones for link 16.  <br /></td></tr>
 <tr class="separator:ace99496beb07a124bf4120e51ed83587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88c3e0683adffffbada6efa77e7b6ce4" id="r_a88c3e0683adffffbada6efa77e7b6ce4"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a88c3e0683adffffbada6efa77e7b6ce4">rxErrs</a></td></tr>
+<tr class="memdesc:a88c3e0683adffffbada6efa77e7b6ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status bits 15-0 (receive error count); set to all ones for link 16.  <br /></td></tr>
 <tr class="separator:a88c3e0683adffffbada6efa77e7b6ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a171587bbd5fc6b3f1f28bba5b34eafed" id="r_a171587bbd5fc6b3f1f28bba5b34eafed"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html#a171587bbd5fc6b3f1f28bba5b34eafed">remoteLinkId</a></td></tr>
+<tr class="memdesc:a171587bbd5fc6b3f1f28bba5b34eafed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of _remoteLinkId.  <br /></td></tr>
 <tr class="separator:a171587bbd5fc6b3f1f28bba5b34eafed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Status of one link, as returned by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4" title="Select the link and return its status (see LinkStatus).">Module::linkStatus()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a268b82563e40735f40344b9aa5b0e2c1" name="a268b82563e40735f40344b9aa5b0e2c1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a268b82563e40735f40344b9aa5b0e2c1">&#9670;&#160;</a></span>LinkStatus()</h2>
 
@@ -139,6 +153,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero all flags and counters except remoteLinkId, which is left unset. </p>
 
 </div>
 </div>
@@ -155,6 +171,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Link status bit 20 (remote side is an XPM). </p>
+
 </div>
 </div>
 <a id="a171587bbd5fc6b3f1f28bba5b34eafed" name="a171587bbd5fc6b3f1f28bba5b34eafed"></a>
@@ -168,6 +186,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value of _remoteLinkId. </p>
 
 </div>
 </div>
@@ -183,6 +203,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Link status bits 15-0 (receive error count); set to all ones for link 16. </p>
+
 </div>
 </div>
 <a id="ace99496beb07a124bf4120e51ed83587" name="ace99496beb07a124bf4120e51ed83587"></a>
@@ -196,6 +218,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value of _dsLinkRcvs; set to all ones for link 16. </p>
 
 </div>
 </div>
@@ -211,6 +235,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Link status bit 19 (receive ready). </p>
+
 </div>
 </div>
 <a id="a9bb8814c77b2d634675ef8129f6ae223" name="a9bb8814c77b2d634675ef8129f6ae223"></a>
@@ -224,6 +250,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Link status bit 18 (receive reset done). </p>
 
 </div>
 </div>
@@ -239,6 +267,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Link status bit 17 (transmit ready). </p>
+
 </div>
 </div>
 <a id="afe9294849b3d2d404ee051681bd348ba" name="afe9294849b3d2d404ee051681bd348ba"></a>
@@ -252,6 +282,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Link status bit 16 (transmit reset done, per the header comment). </p>
 
 </div>
 </div>

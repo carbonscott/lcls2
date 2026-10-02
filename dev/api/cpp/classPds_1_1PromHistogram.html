@@ -98,29 +98,41 @@ $(document).ready(function(){initNavTree('classPds_1_1PromHistogram.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Fixed-bin histogram exported as a Prometheus histogram: numBins upper bounds binMin + i * binWidth plus an overflow bucket.  
+ <a href="classPds_1_1PromHistogram.html#details">More...</a></p>
+
 <p><code>#include &lt;MetricExporter.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a89ff3e58803de0b24643351ef54089d9" id="r_a89ff3e58803de0b24643351ef54089d9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a89ff3e58803de0b24643351ef54089d9">BucketBoundaries</a> = std::vector&lt; double &gt;</td></tr>
+<tr class="memdesc:a89ff3e58803de0b24643351ef54089d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper bounds of the buckets.  <br /></td></tr>
 <tr class="separator:a89ff3e58803de0b24643351ef54089d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a62cc9e4b423288d30f001b49762220ce" id="r_a62cc9e4b423288d30f001b49762220ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a62cc9e4b423288d30f001b49762220ce">PromHistogram</a> (unsigned numBins, double binWidth, double binMin)</td></tr>
+<tr class="memdesc:a62cc9e4b423288d30f001b49762220ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set numBins upper bounds starting at binMin with spacing binWidth, and numBins + 1 zeroed counts (the last is the overflow bucket).  <br /></td></tr>
 <tr class="separator:a62cc9e4b423288d30f001b49762220ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a177ab95d72fc9c11fc02ca8f7bcc4d73" id="r_a177ab95d72fc9c11fc02ca8f7bcc4d73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a177ab95d72fc9c11fc02ca8f7bcc4d73">observe</a> (double value)</td></tr>
+<tr class="memdesc:a177ab95d72fc9c11fc02ca8f7bcc4d73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count value in the first bucket whose upper bound is at least value (the overflow bucket if none) and add it to the sum.  <br /></td></tr>
 <tr class="separator:a177ab95d72fc9c11fc02ca8f7bcc4d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a690b2273ccfdb395f61eb1ebc5c9c085" id="r_a690b2273ccfdb395f61eb1ebc5c9c085"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a690b2273ccfdb395f61eb1ebc5c9c085">collect</a> (prometheus::MetricFamily &amp;family)</td></tr>
+<tr class="memdesc:a690b2273ccfdb395f61eb1ebc5c9c085"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the histogram buckets (cumulative counts, upper bounds with infinity for the last), sample count and sum of the first metric in family.  <br /></td></tr>
 <tr class="separator:a690b2273ccfdb395f61eb1ebc5c9c085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4701ad2e0386aa5b83120d9d89b03ccc" id="r_a4701ad2e0386aa5b83120d9d89b03ccc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a4701ad2e0386aa5b83120d9d89b03ccc">clear</a> ()</td></tr>
+<tr class="memdesc:a4701ad2e0386aa5b83120d9d89b03ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero all counts and the sum.  <br /></td></tr>
 <tr class="separator:a4701ad2e0386aa5b83120d9d89b03ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9494c174412cfc66dd7294486775fe50" id="r_a9494c174412cfc66dd7294486775fe50"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#a9494c174412cfc66dd7294486775fe50">counts</a> (unsigned idx) const</td></tr>
+<tr class="memdesc:a9494c174412cfc66dd7294486775fe50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the count of bucket idx.  <br /></td></tr>
 <tr class="separator:a9494c174412cfc66dd7294486775fe50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3d2c4eed87bf2377265dd9bdd2baee3" id="r_ae3d2c4eed87bf2377265dd9bdd2baee3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html#ae3d2c4eed87bf2377265dd9bdd2baee3">dump</a> () const</td></tr>
+<tr class="memdesc:ae3d2c4eed87bf2377265dd9bdd2baee3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the count of every bucket to stdout.  <br /></td></tr>
 <tr class="separator:ae3d2c4eed87bf2377265dd9bdd2baee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Fixed-bin histogram exported as a Prometheus histogram: numBins upper bounds binMin + i * binWidth plus an overflow bucket. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a89ff3e58803de0b24643351ef54089d9" name="a89ff3e58803de0b24643351ef54089d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a89ff3e58803de0b24643351ef54089d9">&#9670;&#160;</a></span>BucketBoundaries</h2>
 
@@ -132,6 +144,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Upper bounds of the buckets. </p>
 
 </div>
 </div>
@@ -168,6 +182,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set numBins upper bounds starting at binMin with spacing binWidth, and numBins + 1 zeroed counts (the last is the overflow bucket). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -186,6 +202,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Zero all counts and the sum. </p>
+
 </div>
 </div>
 <a id="a690b2273ccfdb395f61eb1ebc5c9c085" name="a690b2273ccfdb395f61eb1ebc5c9c085"></a>
@@ -203,6 +221,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fill the histogram buckets (cumulative counts, upper bounds with infinity for the last), sample count and sum of the first metric in family. </p>
 
 </div>
 </div>
@@ -230,6 +250,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the count of bucket idx. </p>
+
 </div>
 </div>
 <a id="ae3d2c4eed87bf2377265dd9bdd2baee3" name="ae3d2c4eed87bf2377265dd9bdd2baee3"></a>
@@ -246,6 +268,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the count of every bucket to stdout. </p>
 
 </div>
 </div>
@@ -264,6 +288,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Count value in the first bucket whose upper bound is at least value (the overflow bucket if none) and add it to the sum. </p>
 
 </div>
 </div>

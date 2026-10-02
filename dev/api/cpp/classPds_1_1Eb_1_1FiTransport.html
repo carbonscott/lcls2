@@ -98,39 +98,57 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1FiTransport.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Point-to-point libfabric transport for DGRAM, RDM or MSG endpoints, adapted from the libfabric pingpong example per the file comment.  
+ <a href="classPds_1_1Eb_1_1FiTransport.html#details">More...</a></p>
+
 <p><code>#include &lt;fiTransport.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4adf1d4c60cb34f7fba00d5dff5e5a66" id="r_a4adf1d4c60cb34f7fba00d5dff5e5a66"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a4adf1d4c60cb34f7fba00d5dff5e5a66">FiTransport</a> (uint16_t srcPort, uint16_t dstPort, char *dstAddr, enum fi_ep_type epType, uint64_t caps, uint64_t mode, uint64_t mr_mode, char *domain, char *provider)</td></tr>
+<tr class="memdesc:a4adf1d4c60cb34f7fba00d5dff5e5a66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the ports and destination address and allocate libfabric hints filled from epType, caps, mode, mr_mode, domain and provider.  <br /></td></tr>
 <tr class="separator:a4adf1d4c60cb34f7fba00d5dff5e5a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16401ffa4c9a4221f700ef3ef0c59621" id="r_a16401ffa4c9a4221f700ef3ef0c59621"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a16401ffa4c9a4221f700ef3ef0c59621">~FiTransport</a> ()</td></tr>
+<tr class="memdesc:a16401ffa4c9a4221f700ef3ef0c59621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down the endpoint if one is open and free all libfabric resources.  <br /></td></tr>
 <tr class="separator:a16401ffa4c9a4221f700ef3ef0c59621"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3411c2b9d7b2e5e8c69df951542ba30" id="r_aa3411c2b9d7b2e5e8c69df951542ba30"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#aa3411c2b9d7b2e5e8c69df951542ba30">start</a> (int maxMsgSize, void *buffer, size_t size)</td></tr>
+<tr class="memdesc:aa3411c2b9d7b2e5e8c69df951542ba30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set up the transport for the endpoint type given in the hints: DGRAM (applying maxMsgSize if non-zero and posting one extra receive into buffer), RDM, or MSG (control connection, server or client connect, then a sync).  <br /></td></tr>
 <tr class="separator:aa3411c2b9d7b2e5e8c69df951542ba30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0d8cb38f3bb3f2d9bc054fecf58b9a8" id="r_ad0d8cb38f3bb3f2d9bc054fecf58b9a8"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#ad0d8cb38f3bb3f2d9bc054fecf58b9a8">postTransmit</a> (void *buf, size_t size)</td></tr>
+<tr class="memdesc:ad0d8cb38f3bb3f2d9bc054fecf58b9a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send size bytes from buf with fi_inject() if size is below the provider's inject size, otherwise with fi_send() followed by a wait for its transmit completion.  <br /></td></tr>
 <tr class="separator:ad0d8cb38f3bb3f2d9bc054fecf58b9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a553684ca04918b4699c240f43de289" id="r_a6a553684ca04918b4699c240f43de289"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a6a553684ca04918b4699c240f43de289">postReceive</a> (void *buf, size_t size)</td></tr>
+<tr class="memdesc:a6a553684ca04918b4699c240f43de289"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the completion of the previously posted receive, then post the next receive into buf (length is the larger of size and 64) and count it as an acknowledged message.  <br /></td></tr>
 <tr class="separator:a6a553684ca04918b4699c240f43de289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a706d762d0ac437d1392d378815aed872" id="r_a706d762d0ac437d1392d378815aed872"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a706d762d0ac437d1392d378815aed872">finalize</a> (void *buf, size_t size)</td></tr>
+<tr class="memdesc:a706d762d0ac437d1392d378815aed872"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the string fin into buf and send it with fi_sendmsg(FI_INJECT | FI_TRANSMIT_COMPLETE), wait for its transmit completion and for one receive completion, then close the control connection.  <br /></td></tr>
 <tr class="separator:a706d762d0ac437d1392d378815aed872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afca31dceeadfa8ca40e670eba16f51c9" id="r_afca31dceeadfa8ca40e670eba16f51c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#afca31dceeadfa8ca40e670eba16f51c9">clearCounters</a> ()</td></tr>
+<tr class="memdesc:afca31dceeadfa8ca40e670eba16f51c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the acknowledged-message counter.  <br /></td></tr>
 <tr class="separator:afca31dceeadfa8ca40e670eba16f51c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94059c87bbf81ca54ca6c7ceb6ac2800" id="r_a94059c87bbf81ca54ca6c7ceb6ac2800"><td class="memItemLeft" align="right" valign="top">const struct fi_info *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a94059c87bbf81ca54ca6c7ceb6ac2800">fi</a> () const</td></tr>
+<tr class="memdesc:a94059c87bbf81ca54ca6c7ceb6ac2800"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fi_info selected for the connection.  <br /></td></tr>
 <tr class="separator:a94059c87bbf81ca54ca6c7ceb6ac2800"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dfb14140fad0a060a16d9ff1faefff" id="r_ab3dfb14140fad0a060a16d9ff1faefff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#ab3dfb14140fad0a060a16d9ff1faefff">dumpFabricInfo</a> ()</td></tr>
+<tr class="memdesc:ab3dfb14140fad0a060a16d9ff1faefff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print fabric, domain and endpoint attributes of the selected fi_info with FT_DEBUG (printed only when debug output is enabled).  <br /></td></tr>
 <tr class="separator:ab3dfb14140fad0a060a16d9ff1faefff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2aea2771927b3a6daa3510553af9f00b" id="r_a2aea2771927b3a6daa3510553af9f00b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a2aea2771927b3a6daa3510553af9f00b">ctrlSync</a> ()</td></tr>
+<tr class="memdesc:a2aea2771927b3a6daa3510553af9f00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exchange the sync question and answer strings over the control connection (the client sends and waits for the answer, the server waits and answers).  <br /></td></tr>
 <tr class="separator:a2aea2771927b3a6daa3510553af9f00b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc0c2523fe6bcd127d7dae309e63f398" id="r_adc0c2523fe6bcd127d7dae309e63f398"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#adc0c2523fe6bcd127d7dae309e63f398">ctrl_txrx_msg_count</a> ()</td></tr>
+<tr class="memdesc:adc0c2523fe6bcd127d7dae309e63f398"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exchange the acknowledged-message count over the control connection: the client sends its count and expects an ok reply; the server receives and stores the count and replies.  <br /></td></tr>
 <tr class="separator:adc0c2523fe6bcd127d7dae309e63f398"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a82261bc5e9ef87d1f58ea35ea323ee1b" id="r_a82261bc5e9ef87d1f58ea35ea323ee1b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html#a82261bc5e9ef87d1f58ea35ea323ee1b">debug</a> (int enable)</td></tr>
+<tr class="memdesc:a82261bc5e9ef87d1f58ea35ea323ee1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable (non-zero) or disable the FT_DEBUG messages; the flag is file-static, so it affects all instances.  <br /></td></tr>
 <tr class="separator:a82261bc5e9ef87d1f58ea35ea323ee1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Point-to-point libfabric transport for DGRAM, RDM or MSG endpoints, adapted from the libfabric pingpong example per the file comment. </p>
+<p>In MSG mode a separate socket control connection is used to exchange synchronization messages. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4adf1d4c60cb34f7fba00d5dff5e5a66" name="a4adf1d4c60cb34f7fba00d5dff5e5a66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4adf1d4c60cb34f7fba00d5dff5e5a66">&#9670;&#160;</a></span>FiTransport()</h2>
 
@@ -199,6 +217,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the ports and destination address and allocate libfabric hints filled from epType, caps, mode, mr_mode, domain and provider. </p>
+<p>If the allocation fails, <a class="el" href="classPds_1_1Eb_1_1FiTransport.html#aa3411c2b9d7b2e5e8c69df951542ba30" title="Set up the transport for the endpoint type given in the hints: DGRAM (applying maxMsgSize if non-zero...">start()</a> returns EXIT_FAILURE. </p>
+
 </div>
 </div>
 <a id="a16401ffa4c9a4221f700ef3ef0c59621" name="a16401ffa4c9a4221f700ef3ef0c59621"></a>
@@ -215,6 +236,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Shut down the endpoint if one is open and free all libfabric resources. </p>
 
 </div>
 </div>
@@ -234,6 +257,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the acknowledged-message counter. </p>
+
 </div>
 </div>
 <a id="adc0c2523fe6bcd127d7dae309e63f398" name="adc0c2523fe6bcd127d7dae309e63f398"></a>
@@ -251,6 +276,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Exchange the acknowledged-message count over the control connection: the client sends its count and expects an ok reply; the server receives and stores the count and replies. </p>
+<p>Returns 0, a negative error, or in some mismatch cases the received length. </p>
+
 </div>
 </div>
 <a id="a2aea2771927b3a6daa3510553af9f00b" name="a2aea2771927b3a6daa3510553af9f00b"></a>
@@ -267,6 +295,9 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Exchange the sync question and answer strings over the control connection (the client sends and waits for the answer, the server waits and answers). </p>
+<p>Returns 0, a negative errno, or -EBADMSG. </p>
 
 </div>
 </div>
@@ -294,6 +325,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Enable (non-zero) or disable the FT_DEBUG messages; the flag is file-static, so it affects all instances. </p>
+
 </div>
 </div>
 <a id="ab3dfb14140fad0a060a16d9ff1faefff" name="ab3dfb14140fad0a060a16d9ff1faefff"></a>
@@ -311,6 +344,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print fabric, domain and endpoint attributes of the selected fi_info with FT_DEBUG (printed only when debug output is enabled). </p>
+
 </div>
 </div>
 <a id="a94059c87bbf81ca54ca6c7ceb6ac2800" name="a94059c87bbf81ca54ca6c7ceb6ac2800"></a>
@@ -327,6 +362,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the fi_info selected for the connection. </p>
 
 </div>
 </div>
@@ -356,6 +393,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy the string fin into buf and send it with fi_sendmsg(FI_INJECT | FI_TRANSMIT_COMPLETE), wait for its transmit completion and for one receive completion, then close the control connection. </p>
+<p>Returns 0 or an error. </p>
+
 </div>
 </div>
 <a id="a6a553684ca04918b4699c240f43de289" name="a6a553684ca04918b4699c240f43de289"></a>
@@ -384,6 +424,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wait for the completion of the previously posted receive, then post the next receive into buf (length is the larger of size and 64) and count it as an acknowledged message. </p>
+<p>Returns 0 or an error. </p>
+
 </div>
 </div>
 <a id="ad0d8cb38f3bb3f2d9bc054fecf58b9a8" name="ad0d8cb38f3bb3f2d9bc054fecf58b9a8"></a>
@@ -411,6 +454,9 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send size bytes from buf with fi_inject() if size is below the provider's inject size, otherwise with fi_send() followed by a wait for its transmit completion. </p>
+<p>Posts that return -FI_EAGAIN are retried. Returns 0 or an error. </p>
 
 </div>
 </div>
@@ -445,6 +491,9 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set up the transport for the endpoint type given in the hints: DGRAM (applying maxMsgSize if non-zero and posting one extra receive into buffer), RDM, or MSG (control connection, server or client connect, then a sync). </p>
+<p>Returns 0 or an error code (EXIT_FAILURE for an unsupported type or a failed constructor). </p>
 
 </div>
 </div>

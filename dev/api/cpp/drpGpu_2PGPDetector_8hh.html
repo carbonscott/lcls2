@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('drpGpu_2PGPDetector_8hh.html',''); ini
   <div class="headertitle"><div class="title">PGPDetector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The GPU DRP: PGPDrp, which connects Reader, TrgInpGen and Reducer, and its TebReceiver, which records the reduced events.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
@@ -113,10 +116,13 @@ $(document).ready(function(){initNavTree('drpGpu_2PGPDetector_8hh.html',''); ini
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html">Drp::Gpu::TebReceiverMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counters of the GPU <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#af1d8971cfcb4d270cea82b46a1b82659">TebReceiver::setupMetrics()</a>.  <a href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html">Drp::Gpu::TebReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a> of the GPU DRP.  <a href="classDrp_1_1Gpu_1_1TebReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html">Drp::Gpu::PGPDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">DRP for the GPU detectors (<a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">Drp::Gpu::PGPDrp</a>).  <a href="classDrp_1_1Gpu_1_1PGPDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -128,19 +134,24 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp" id="r_namespaceDrp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html">Drp</a></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:aed1e35712c6e0f4e0017ae8d3668249c" id="r_aed1e35712c6e0f4e0017ae8d3668249c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#aed1e35712c6e0f4e0017ae8d3668249c">Drp::Gpu::ResultTuple</a> = std::tuple&lt; unsigned, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> * &gt;</td></tr>
+<tr class="memdesc:aed1e35712c6e0f4e0017ae8d3668249c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer index and TEB result, queued by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#a8e624d2627363ccef41c78596eebff36">TebReceiver::complete()</a> for the recorder thread.  <br /></td></tr>
 <tr class="separator:aed1e35712c6e0f4e0017ae8d3668249c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The GPU DRP: PGPDrp, which connects Reader, TrgInpGen and Reducer, and its TebReceiver, which records the reduced events. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

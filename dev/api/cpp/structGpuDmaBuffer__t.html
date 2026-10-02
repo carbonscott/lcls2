@@ -105,8 +105,10 @@ $(document).ready(function(){initNavTree('structGpuDmaBuffer__t.html',''); initR
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a85090c5131c287ff68293ce58397f403" id="r_a85090c5131c287ff68293ce58397f403"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuDmaBuffer__t.html#a85090c5131c287ff68293ce58397f403">fd</a></td></tr>
+<tr class="memdesc:a85090c5131c287ff68293ce58397f403"><td class="mdescLeft">&#160;</td><td class="mdescRight">File descriptor of the FPGA device.  <br /></td></tr>
 <tr class="separator:a85090c5131c287ff68293ce58397f403"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca52c3cfed4f930f778ed3e7757966a4" id="r_aca52c3cfed4f930f778ed3e7757966a4"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuDmaBuffer__t.html#aca52c3cfed4f930f778ed3e7757966a4">ptr</a></td></tr>
+<tr class="memdesc:aca52c3cfed4f930f778ed3e7757966a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host-accessible address of the memory; set by <a class="el" href="GpuAsyncLib_8hh.html#a05e2afb4bd2d9d15b8bd8461eb8a9f74" title="Maps FPGA memory to the host and allows GPU access to it This is the &quot;standard&quot; way of doing DMA with...">gpuMapHostFpgaMem()</a> and left null by <a class="el" href="GpuAsyncLib_8hh.html#a407cc8e6fe6128d8505fbe48272ceffd" title="Maps GPU memory to the FPGA using RDMA This function uses gpuAddNvidiaMemory to give the FPGA access ...">gpuMapFpgaMem()</a>.  <br /></td></tr>
 <tr class="separator:aca52c3cfed4f930f778ed3e7757966a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c419b8529db9553060ab876d9b03944" id="r_a8c419b8529db9553060ab876d9b03944"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuDmaBuffer__t.html#a8c419b8529db9553060ab876d9b03944">size</a></td></tr>
 <tr class="memdesc:a8c419b8529db9553060ab876d9b03944"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host accessible pointer.  <br /></td></tr>
@@ -150,6 +152,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>File descriptor of the FPGA device. </p>
+
 </div>
 </div>
 <a id="ad442d3501c742e0d9da789dcef33fd09" name="ad442d3501c742e0d9da789dcef33fd09"></a>
@@ -179,6 +183,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Host-accessible address of the memory; set by <a class="el" href="GpuAsyncLib_8hh.html#a05e2afb4bd2d9d15b8bd8461eb8a9f74" title="Maps FPGA memory to the host and allows GPU access to it This is the &quot;standard&quot; way of doing DMA with...">gpuMapHostFpgaMem()</a> and left null by <a class="el" href="GpuAsyncLib_8hh.html#a407cc8e6fe6128d8505fbe48272ceffd" title="Maps GPU memory to the FPGA using RDMA This function uses gpuAddNvidiaMemory to give the FPGA access ...">gpuMapFpgaMem()</a>. </p>
 
 </div>
 </div>

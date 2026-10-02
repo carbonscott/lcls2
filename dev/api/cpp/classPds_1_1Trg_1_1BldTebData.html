@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1BldTebData.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>TEB input record for BLD: a 64-bit mask of sources present, followed by the record of each present source in BldSource order.  
+ <a href="classPds_1_1Trg_1_1BldTebData.html#details">More...</a></p>
+
 <p><code>#include &lt;BldTebData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -116,28 +119,37 @@ Public Types</h2></td></tr>
 , <a class="el" href="classPds_1_1Trg_1_1BldTebData.html#ab0a00a13e6d33e585cf52940e221ce45a14739cd8ff6f675dbb2e5577b739d92a">NSOURCES</a>
 <br />
  }</td></tr>
+<tr class="memdesc:ab0a00a13e6d33e585cf52940e221ce45"><td class="mdescLeft">&#160;</td><td class="mdescRight">BLD sources, in the order of their bits in sources and of their records after the header.  <a href="classPds_1_1Trg_1_1BldTebData.html#ab0a00a13e6d33e585cf52940e221ce45">More...</a><br /></td></tr>
 <tr class="separator:ab0a00a13e6d33e585cf52940e221ce45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3b6a513e938d2b5ef829844258336b17" id="r_a3b6a513e938d2b5ef829844258336b17"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html#a3b6a513e938d2b5ef829844258336b17">BldTebData</a> (uint64_t sources_)</td></tr>
+<tr class="memdesc:a3b6a513e938d2b5ef829844258336b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the mask of sources present.  <br /></td></tr>
 <tr class="separator:a3b6a513e938d2b5ef829844258336b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0a80f267693a46e97112cee066e34c7" id="r_af0a80f267693a46e97112cee066e34c7"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html#af0a80f267693a46e97112cee066e34c7">offset_</a> (unsigned)</td></tr>
+<tr class="memdesc:af0a80f267693a46e97112cee066e34c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the byte offset of the record of source src: the header size plus the sizes of the present sources before it.  <br /></td></tr>
 <tr class="separator:af0a80f267693a46e97112cee066e34c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a6bcb7787347da31b6edd84cd12181cd8" id="r_a6bcb7787347da31b6edd84cd12181cd8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPds_1_1Trg_1_1BldTebData.html#ab0a00a13e6d33e585cf52940e221ce45">BldSource</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html#a6bcb7787347da31b6edd84cd12181cd8">lookup</a> (const std::string &amp;detName)</td></tr>
+<tr class="memdesc:a6bcb7787347da31b6edd84cd12181cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the source whose name (gmd, xgmd, pcav, pcavs, gasdet, ebeam, ebeams) equals detName, or NSOURCES if none does.  <br /></td></tr>
 <tr class="separator:a6bcb7787347da31b6edd84cd12181cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd47c7127923b5635f198774d1030e47" id="r_afd47c7127923b5635f198774d1030e47"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html#afd47c7127923b5635f198774d1030e47">sizeof_</a> ()</td></tr>
+<tr class="memdesc:afd47c7127923b5635f198774d1030e47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the largest record size: the header plus the records of all sources.  <br /></td></tr>
 <tr class="separator:afd47c7127923b5635f198774d1030e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3b0785485a5bbf704ea153b0c23de00c" id="r_a3b0785485a5bbf704ea153b0c23de00c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html#a3b0785485a5bbf704ea153b0c23de00c">sources</a></td></tr>
+<tr class="memdesc:a3b0785485a5bbf704ea153b0c23de00c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit mask of the sources whose records follow (bit numbers from BldSource).  <br /></td></tr>
 <tr class="separator:a3b0785485a5bbf704ea153b0c23de00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TEB input record for BLD: a 64-bit mask of sources present, followed by the record of each present source in BldSource order. </p>
+<p>The accessor functions generated by DATADEF return a pointer to a source record, or null if that source is absent. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ab0a00a13e6d33e585cf52940e221ce45" name="ab0a00a13e6d33e585cf52940e221ce45"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0a00a13e6d33e585cf52940e221ce45">&#9670;&#160;</a></span>BldSource</h2>
 
@@ -149,15 +161,25 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>BLD sources, in the order of their bits in sources and of their records after the header. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a496da9cf3580d432c4ccfb78d73e3703" name="ab0a00a13e6d33e585cf52940e221ce45a496da9cf3580d432c4ccfb78d73e3703"></a>gmd_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45ac728ac5bdeeb92207b490a9cb65b3b4b" name="ab0a00a13e6d33e585cf52940e221ce45ac728ac5bdeeb92207b490a9cb65b3b4b"></a>xgmd_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a2e59151e02a58bbfc68472de79bc4f80" name="ab0a00a13e6d33e585cf52940e221ce45a2e59151e02a58bbfc68472de79bc4f80"></a>pcav_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a253c4c538b8398cecdd2a44316671e80" name="ab0a00a13e6d33e585cf52940e221ce45a253c4c538b8398cecdd2a44316671e80"></a>pcavs_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45af009291ddd67644350b2d4012e452371" name="ab0a00a13e6d33e585cf52940e221ce45af009291ddd67644350b2d4012e452371"></a>gasdet_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45ad35195e29431343fe34d332d7a9411a1" name="ab0a00a13e6d33e585cf52940e221ce45ad35195e29431343fe34d332d7a9411a1"></a>ebeam_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45af37d9f38a7f9de636b5a1eb75dc77b61" name="ab0a00a13e6d33e585cf52940e221ce45af37d9f38a7f9de636b5a1eb75dc77b61"></a>ebeams_&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a14739cd8ff6f675dbb2e5577b739d92a" name="ab0a00a13e6d33e585cf52940e221ce45a14739cd8ff6f675dbb2e5577b739d92a"></a>NSOURCES&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a496da9cf3580d432c4ccfb78d73e3703" name="ab0a00a13e6d33e585cf52940e221ce45a496da9cf3580d432c4ccfb78d73e3703"></a>gmd_&#160;</td><td class="fielddoc"><p>Bit 0: gmd (<a class="el" href="structPds_1_1Trg_1_1GmdTebData.html" title="TEB input record for GMD BLD data, filled by bldTebPrimitive.cc.">GmdTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45ac728ac5bdeeb92207b490a9cb65b3b4b" name="ab0a00a13e6d33e585cf52940e221ce45ac728ac5bdeeb92207b490a9cb65b3b4b"></a>xgmd_&#160;</td><td class="fielddoc"><p>Bit 1: xgmd (<a class="el" href="structPds_1_1Trg_1_1XGmdTebData.html" title="TEB input record for XGMD BLD data (pulse energy, vertical position and severity).">XGmdTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a2e59151e02a58bbfc68472de79bc4f80" name="ab0a00a13e6d33e585cf52940e221ce45a2e59151e02a58bbfc68472de79bc4f80"></a>pcav_&#160;</td><td class="fielddoc"><p>Bit 2: pcav (<a class="el" href="structPds_1_1Trg_1_1PhaseCavityTebData.html" title="TEB input record holding the phase cavity values named as in BldNames::PCav, plus a severity word.">PhaseCavityTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a253c4c538b8398cecdd2a44316671e80" name="ab0a00a13e6d33e585cf52940e221ce45a253c4c538b8398cecdd2a44316671e80"></a>pcavs_&#160;</td><td class="fielddoc"><p>Bit 3: pcavs (<a class="el" href="structPds_1_1Trg_1_1PhaseCavityTebData.html" title="TEB input record holding the phase cavity values named as in BldNames::PCav, plus a severity word.">PhaseCavityTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45af009291ddd67644350b2d4012e452371" name="ab0a00a13e6d33e585cf52940e221ce45af009291ddd67644350b2d4012e452371"></a>gasdet_&#160;</td><td class="fielddoc"><p>Bit 4: gasdet (<a class="el" href="structPds_1_1Trg_1_1GasDetTebData.html" title="TEB input record holding the six gas detector values named as in BldNames::GasDet.">GasDetTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45ad35195e29431343fe34d332d7a9411a1" name="ab0a00a13e6d33e585cf52940e221ce45ad35195e29431343fe34d332d7a9411a1"></a>ebeam_&#160;</td><td class="fielddoc"><p>Bit 5: ebeam (<a class="el" href="structPds_1_1Trg_1_1EBeamTebData.html" title="TEB input record for EBeam BLD data, filled by bldTebPrimitive.cc from ebeamL3Energy.">EBeamTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45af37d9f38a7f9de636b5a1eb75dc77b61" name="ab0a00a13e6d33e585cf52940e221ce45af37d9f38a7f9de636b5a1eb75dc77b61"></a>ebeams_&#160;</td><td class="fielddoc"><p>Bit 6: ebeams (<a class="el" href="structPds_1_1Trg_1_1EBeamTebData.html" title="TEB input record for EBeam BLD data, filled by bldTebPrimitive.cc from ebeamL3Energy.">EBeamTebData</a>). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab0a00a13e6d33e585cf52940e221ce45a14739cd8ff6f675dbb2e5577b739d92a" name="ab0a00a13e6d33e585cf52940e221ce45a14739cd8ff6f675dbb2e5577b739d92a"></a>NSOURCES&#160;</td><td class="fielddoc"><p>Number of sources (7); also returned by <a class="el" href="classPds_1_1Trg_1_1BldTebData.html#a6bcb7787347da31b6edd84cd12181cd8" title="Return the source whose name (gmd, xgmd, pcav, pcavs, gasdet, ebeam, ebeams) equals detName,...">lookup()</a> for an unknown name. </p>
+</td></tr>
 </table>
 
 </div>
@@ -187,6 +209,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Store the mask of sources present. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -214,6 +238,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the source whose name (gmd, xgmd, pcav, pcavs, gasdet, ebeam, ebeams) equals detName, or NSOURCES if none does. </p>
+
 </div>
 </div>
 <a id="af0a80f267693a46e97112cee066e34c7" name="af0a80f267693a46e97112cee066e34c7"></a>
@@ -231,6 +257,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the byte offset of the record of source src: the header size plus the sizes of the present sources before it. </p>
 
 </div>
 </div>
@@ -257,6 +285,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the largest record size: the header plus the records of all sources. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -271,6 +301,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bit mask of the sources whose records follow (bit numbers from BldSource). </p>
 
 </div>
 </div>

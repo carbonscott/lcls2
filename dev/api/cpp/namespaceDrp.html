@@ -111,55 +111,79 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceDrp_1_1EpicsXtcSettings" id="r_namespaceDrp_1_1EpicsXtcSettings"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1EpicsXtcSettings.html">EpicsXtcSettings</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1JungfrauData" id="r_namespaceDrp_1_1JungfrauData"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html">JungfrauData</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1JungfrauData"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frame constants and packed UDP packet layout for <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> data. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Piranha" id="r_namespaceDrp_1_1Piranha"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Piranha.html">Piranha</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Piranha"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timetool helper classes for <a class="el" href="classDrp_1_1Piranha4.html" title="BEBDetector for the Piranha4 camera: records a one-dimensional UINT16 image of m_pixels values,...">Piranha4</a> (TT, TTSim, TTSimL1, TTSimL2), defined in Piranha4.cc and only forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1AreaDetector.html">AreaDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that records the payloads of the active PGP lanes as a raw UINT16 image (with a UINT32 value), adds a fixed 3x3 FEX array, and can bin the raw image into a cube with placeholder pedestals and gains.  <a href="classDrp_1_1AreaDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Batch.html">Batch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A run of consecutive events (by event counter) handed to one worker.  <a href="structDrp_1_1Batch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html">BEBDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware (per the header comment).  <a href="classDrp_1_1BEBDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html">Bld</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a header, then entries carrying timestamp and pulse ID offsets); can also simulate packets.  <a href="classDrp_1_1Bld.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldApp.html">BldApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the BLD DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, a BLD detector and the <a class="el" href="classDrp_1_1BldDrp.html" title="DrpBase of the BLD process; runs the BLD Pgp worker thread.">BldDrp</a>.  <a href="classDrp_1_1BldApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldDescriptor.html">BldDescriptor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">PVA channel whose structure describes the payload of a BLD source; used by <a class="el" href="classDrp_1_1BldPVA.html" title="Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BL...">BldPVA</a>.  <a href="classDrp_1_1BldDescriptor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldDrp.html">BldDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> of the BLD process; runs the BLD <a class="el" href="classDrp_1_1Pgp.html" title="PgpReader for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to it...">Pgp</a> worker thread.  <a href="classDrp_1_1BldDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldFactory.html">BldFactory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the <a class="el" href="classDrp_1_1Bld.html" title="Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a...">Bld</a> receiver and the XTC names of one BLD source, either from a built-in table or from EPICS PVs (<a class="el" href="classDrp_1_1BldPVA.html" title="Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BL...">BldPVA</a>).  <a href="classDrp_1_1BldFactory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldPVA.html">BldPVA</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BLD1_MULT_ADDR and ID:BLD1_MULT_PORT (ca) and ID:BLD_PAYLOAD (pva).  <a href="classDrp_1_1BldPVA.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html">BufferedFileWriter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-threaded file writer that collects events in one memory buffer and writes the buffer when the next event does not fit or the batch is more than 2 s old (by timestamp seconds).  <a href="classDrp_1_1BufferedFileWriter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html">BufferedFileWriterMT</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">File writer with a pool of page-aligned buffers and a writer thread: <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> fills buffers and queues full ones, and the thread writes them to the file.  <a href="classDrp_1_1BufferedFileWriterMT.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html">BufferedMultiFileWriterMT</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes events round-robin to several <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> files.  <a href="classDrp_1_1BufferedMultiFileWriterMT.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1ChunkInfo.html">ChunkInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name and ID of the next data file chunk, filled by <a class="el" href="classDrp_1_1DrpBase.html#a14d6dd76ae17ff6b5b4bce825afd8188" title="If writing and the current chunk exceeds half of DefaultChunkThresh, advance the chunk ID; if that su...">DrpBase::enable()</a>.  <a href="structDrp_1_1ChunkInfo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1ChunkInfoDef.html">ChunkInfoDef</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">VarDef of the chunkinfo record written by <a class="el" href="classDrp_1_1DrpBase.html#a683fcb82561d43ff821d77b15d8eb6db" title="Add the file name and chunk ID of chunkInfo as chunkinfo data.">DrpBase::chunkInfoData()</a>: file name and chunk ID.  <a href="classDrp_1_1ChunkInfoDef.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html">CubeData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into nbins bins.  <a href="classDrp_1_1CubeData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html">CubeResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes the binning fields of a ResultDgram, reading it as a CubeResultDgram when the result type is Cube and as a WindowResultDgram otherwise.  <a href="classDrp_1_1CubeResult.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeTebReceiver.html">CubeTebReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1TebReceiver.html" title="TebReceiverBase that writes recorded events with a BufferedFileWriterMT and a small-data SmdWriter,...">TebReceiver</a> that accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into bins chosen by the Cube trigger results, using nCubeWorkers worker threads; the full cube is recorded at EndRun and single bins are recorded or monitored as the results request (per the file comment).  <a href="classDrp_1_1CubeTebReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html">Detector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and returning 0), event handlers, cube binning hooks and a buffer for building transition XTC.  <a href="classDrp_1_1Detector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Digitizer.html">Digitizer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> for the high-speed digitizer (detType hsd per drp.cc), configured through the Python module psdaq.configdb.hsd_config with the EPICS prefix from the hsd_epics_prefix kwarg.  <a href="classDrp_1_1Digitizer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1DmaBuffer.html">DmaBuffer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size and driver index of one DMA buffer of an event.  <a href="structDrp_1_1DmaBuffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1DrpBase.html">DrpBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver, the trigger primitive, Prometheus metrics, and the handling of the connect, configure, run and chunking transitions.  <a href="classDrp_1_1DrpBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EaDetector.html">EaDetector</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -180,133 +204,195 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpicsMonitorPv.html">EpicsMonitorPv</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Epix100.html">Epix100</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the epix100.  <a href="classDrp_1_1Epix100.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html">EpixHR2x2</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePixHR 2x2.  <a href="classDrp_1_1EpixHR2x2.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHRemu.html">EpixHRemu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that emulates an ePixHR: the constructor loads one raw frame per active lane from the XTC file given by the xtcfile kwarg, and each event records those frames as a UINT16 raw array.  <a href="classDrp_1_1EpixHRemu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixM320.html">EpixM320</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePixM320.  <a href="classDrp_1_1EpixM320.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixQuad.html">EpixQuad</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePix quad.  <a href="classDrp_1_1EpixQuad.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixUHR.html">EpixUHR</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePixUHR.  <a href="classDrp_1_1EpixUHR.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixUHR3x2.html">EpixUHR3x2</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the 3x2-ASIC ePixUHR.  <a href="classDrp_1_1EpixUHR3x2.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html">EventInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timing information of one event, decoded from the timing data (the code comment calls it the l2si-core EventTimingMessage auxiliary data): pulse ID, fixed-rate and AC-rate bits, beam present and destination, and the sequencer words.  <a href="classDrp_1_1EventInfo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html">EventSelect</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event filter on event codes and beam destinations: an event is selected if it matches an include condition and no exclude condition; a value of 0 is never matched.  <a href="classDrp_1_1EventSelect.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html">EvtBatcherHeader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed header at the start of an AxiStream batcher event: two 4-bit fields (version, width code) and an 8-bit sequence count.  <a href="classDrp_1_1EvtBatcherHeader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherIterator.html">EvtBatcherIterator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterates backwards over the subframe tails of a batcher event, from the end of the buffer to the first line after the header.  <a href="classDrp_1_1EvtBatcherIterator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html">EvtBatcherSubFrameTail</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed tail that follows each subframe: payload size, tdest, first and last tuser bytes and a width code.  <a href="classDrp_1_1EvtBatcherSubFrameTail.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Factory.html">Factory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates objects derived from T by detector type name (<a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a>).  <a href="classDrp_1_1Factory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html">FileParameters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Values needed to build data file names for a run: output directory, instrument, run number, experiment name, host name, node ID and chunk ID.  <a href="classDrp_1_1FileParameters.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html">FileWriterBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementations in FileWriter.cc raise while a write() call is in progress.  <a href="classDrp_1_1FileWriterBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1HREncoder.html">HREncoder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the high-rate encoder (detType hrencoder in <a class="el" href="classDrp_1_1PGPDetectorApp.html" title="CollectionApp of the PGP-card DRP: creates the detector chosen by detType and the PGPDrp,...">PGPDetectorApp</a>).  <a href="classDrp_1_1HREncoder.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html">Interpolator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Least-squares polynomial fit (Eigen QR) over the last n (time, value) points, used to estimate encoder values at event times.  <a href="classDrp_1_1Interpolator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html">Jungfrau</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for one or more <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> modules (one per PGP lane), controlled through sls::Detector and assembled from per-packet UDP data.  <a href="classDrp_1_1Jungfrau.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauEmulator.html">JungfrauEmulator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that emulates <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> panels, one per active PGP lane (detType jungfrauemu in <a class="el" href="classDrp_1_1PGPDetectorApp.html" title="CollectionApp of the PGP-card DRP: creates the detector chosen by detType and the PGPDrp,...">PGPDetectorApp</a>), optionally replaying image data from a file.  <a href="classDrp_1_1JungfrauEmulator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauId.html">JungfrauId</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> ID: a board value in the upper bits and a 16-bit module number in the low 16 bits.  <a href="classDrp_1_1JungfrauId.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html">JungfrauIdLookup</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet and reading the eth0 HWaddr from its ifconfig output.  <a href="classDrp_1_1JungfrauIdLookup.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html">MemPool</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here), the pebble buffers and the transition buffers.  <a href="classDrp_1_1MemPool.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html">MemPoolCpu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1MemPool.html" title="Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here...">MemPool</a> for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.  <a href="classDrp_1_1MemPoolCpu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Opal.html">Opal</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the <a class="el" href="classDrp_1_1Opal.html" title="BEBDetector for the Opal camera: records an m_rows x m_columns UINT16 image, with optional timetool p...">Opal</a> camera: records an m_rows x m_columns UINT16 image, with optional timetool processing (OpalTT) and simulation from XTC files.  <a href="classDrp_1_1Opal.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1OpalTTFex.html">OpalTTFex</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timetool feature extraction for <a class="el" href="classDrp_1_1Opal.html" title="BEBDetector for the Opal camera: records an m_rows x m_columns UINT16 image, with optional timetool p...">Opal</a> camera images: projects the signal (and optional reference and sideband) regions of interest, divides the averaged signal by a rolling reference, filters it and fits the edge.  <a href="classDrp_1_1OpalTTFex.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html">Parameters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executables) and from the connect information.  <a href="structDrp_1_1Parameters.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html">Pebble</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buffer ends with a sentinel word used to detect overruns.  <a href="classDrp_1_1Pebble.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html">Pgp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>.  <a href="classDrp_1_1Pgp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PGPDetectorApp.html">PGPDetectorApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the PGP-card DRP: creates the detector chosen by detType and the <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>, optionally starts the Python DRP worker processes, and handles the collection transitions.  <a href="classDrp_1_1PGPDetectorApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PGPDrp.html">PGPDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> for PGP-card detectors: <a class="el" href="classDrp_1_1PGPDrp.html#aae75c775748845dbb5006c2744e2751a" title="Reader thread body: read DMA buffers, assemble events and cut batches at batch-size pulse ID boundari...">reader()</a> groups DMA events into batches that are processed by nworkers worker threads (optionally through a Python DRP over message queues and shared memory), and <a class="el" href="classDrp_1_1PGPDrp.html#ac2349d26d157f96b092dffad3e6c4b29" title="Collector thread body: take batches from the worker output queues in turn, free the DMA buffers of ea...">collector()</a> frees the DMA buffers and passes each event to the TEB contributor.  <a href="classDrp_1_1PGPDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One event being assembled from up to PGP_MAX_LANES lanes: a <a class="el" href="structDrp_1_1DmaBuffer.html" title="Size and driver index of one DMA buffer of an event.">DmaBuffer</a> per lane, the mask of lanes received and the pebble buffer index assigned when the event is complete.  <a href="structDrp_1_1PGPEvent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html">PgpReader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane).  <a href="classDrp_1_1PgpReader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Piranha4.html">Piranha4</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the <a class="el" href="classDrp_1_1Piranha4.html" title="BEBDetector for the Piranha4 camera: records a one-dimensional UINT16 image of m_pixels values,...">Piranha4</a> camera: records a one-dimensional UINT16 image of m_pixels values, with optional timetool processing (Piranha::TT) and simulation from XTC files.  <a href="classDrp_1_1Piranha4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Piranha4TTFex.html">Piranha4TTFex</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timetool feature extraction for <a class="el" href="classDrp_1_1Piranha4.html" title="BEBDetector for the Piranha4 camera: records a one-dimensional UINT16 image of m_pixels values,...">Piranha4</a> line data: extracts the signal region of interest, divides the averaged signal by a rolling reference, filters it and fits the edge.  <a href="classDrp_1_1Piranha4TTFex.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvApp.html">PvApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the PV DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, the <a class="el" href="classDrp_1_1PvDetector.html" title="XpmDetector that records one or more EPICS PVs (Parameters pvSpecs) through PvMonitor objects,...">PvDetector</a> and the <a class="el" href="classDrp_1_1PvDrp.html" title="DrpBase of the PV DRP: a reader thread hands L1Accepts to the PV monitors and a collector thread send...">PvDrp</a>.  <a href="classDrp_1_1PvApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvConfigFile.html">PvConfigFile</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html">PvDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that records one or more EPICS PVs (<a class="el" href="structDrp_1_1Parameters.html" title="Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executab...">Parameters</a> pvSpecs) through <a class="el" href="classDrp_1_1PvMonitor.html" title="Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of ...">PvMonitor</a> objects, with optional configuration from the Python module psdaq.configdb.pvadetector_config.  <a href="classDrp_1_1PvDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDrp.html">PvDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> of the PV DRP: a reader thread hands L1Accepts to the PV monitors and a collector thread sends the results to the TEB.  <a href="classDrp_1_1PvDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvMonitor.html">PvMonitor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of the PV update.  <a href="classDrp_1_1PvMonitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PythonConfigScanner.html">PythonConfigScanner</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scan support for Python-configured detectors: calls the functions <code>&lt;detType&gt;_scan_keys</code> and <code>&lt;detType&gt;_update</code> of the given module (per the header comment) and translates their JSON into XTC.  <a href="classDrp_1_1PythonConfigScanner.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html">Roi</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rectangular region of interest with inclusive corners; OpalTTFex.cc reads it from the configuration entries name.x0, name.y0, name.x1 and name.y1 and uses it for projections.  <a href="classDrp_1_1Roi.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1RunInfo.html">RunInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Experiment name and run number of the current run, filled by <a class="el" href="classDrp_1_1DrpBase.html#a9d32f20b7f6eb0c69fd138811992b654" title="Fill runInfo from run_info in phase1Info (run number forced to 0 if monitor_info marks this detector ...">DrpBase::beginrun()</a>.  <a href="structDrp_1_1RunInfo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1RunInfoDef.html">RunInfoDef</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">VarDef of the runinfo record written by <a class="el" href="classDrp_1_1DrpBase.html#a68d5a407bf1051e918628ff9c1c205ca" title="Add the experiment name and run number of runInfo as runinfo data.">DrpBase::runInfoData()</a>: experiment name and run number.  <a href="classDrp_1_1RunInfoDef.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html">Si570</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Si570.html" title="Si570 device accessed as an array of 256 Pds::Mmhw::Reg registers.">Si570</a> device accessed as an array of 256 <a class="el" href="classPds_1_1Mmhw_1_1Reg.html">Pds::Mmhw::Reg</a> registers.  <a href="classDrp_1_1Si570.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdDef.html">SmdDef</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">VarDef of the small-data offset record: two UINT64 fields, intOffset and intDgramSize.  <a href="classDrp_1_1SmdDef.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriter.html">SmdWriter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Small-data writer that forwards open, close and writeEvent to an internal <a class="el" href="classDrp_1_1BufferedFileWriter.html" title="Single-threaded file writer that collects events in one memory buffer and writes the buffer when the ...">BufferedFileWriter</a>.  <a href="classDrp_1_1SmdWriter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html">SmdWriterBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1FileWriterBase.html" title="Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementati...">FileWriterBase</a> for small-data files, with a scratch buffer of transition size and a NamesLookup.  <a href="classDrp_1_1SmdWriterBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiver.html">TebReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1TebReceiverBase.html" title="Base of the DRP trigger result receivers.">TebReceiverBase</a> that writes recorded events with a <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> and a small-data <a class="el" href="classDrp_1_1SmdWriter.html" title="Small-data writer that forwards open, close and writeEvent to an internal BufferedFileWriter.">SmdWriter</a>, and sends events to the MEBs through the MEB contributor.  <a href="classDrp_1_1TebReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html">TebReceiverBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the DRP trigger result receivers.  <a href="classDrp_1_1TebReceiverBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimeTool.html">TimeTool</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for timetool data (detType tt in <a class="el" href="classDrp_1_1PGPDetectorApp.html" title="CollectionApp of the PGP-card DRP: creates the detector chosen by detType and the PGPDrp,...">PGPDetectorApp</a>).  <a href="classDrp_1_1TimeTool.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingBEB.html">TimingBEB</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> whose L1Accept data is <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a> data written by <a class="el" href="classDrp_1_1TimingDef.html#ae1c782a95ab21c04cc4f9c11182d71a2" title="Append CreateData values taken from a header (pulse ID and timestamp; fifth argument) and an ETM reco...">TimingDef::createDataETM()</a> from the first subframe (header) and the last subframe (ETM record) of each event.  <a href="classDrp_1_1TimingBEB.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html">TimingData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed (1-byte aligned) 153-byte timing record whose fields follow the order of the <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a> name list.  <a href="classDrp_1_1TimingData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingDef.html">TimingDef</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classXtcData_1_1VarDef.html" title="Holder for a list of Name definitions; Names::add() appends a copy of each entry in NameVec to a Name...">XtcData::VarDef</a> with the names and types of the 16 timing fields, in the order of the index enum, plus static helpers that write timing data into an Xtc.  <a href="classDrp_1_1TimingDef.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingSystem.html">TimingSystem</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> for timing-system data.  <a href="classDrp_1_1TimingSystem.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TprApp.html">TprApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> (role tpr) that, after connect, programs the TPR channel and outputs given in its parameters to trigger on the partition readout group, and keeps a worker thread until disconnect.  <a href="classDrp_1_1TprApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpApp.html">UdpApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the UDP encoder DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a> and handles the collection transitions.  <a href="classDrp_1_1UdpApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpDrp.html">UdpDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionally interpolating) and sends the results to the TEB.  <a href="classDrp_1_1UdpDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpEncoder.html">UdpEncoder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> for a UDP encoder: owns the <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> and records each frame as raw and, when interpolating, interpolated encoder data.  <a href="classDrp_1_1UdpEncoder.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html">UdpReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue, and reports missing and out-of-order frames to the collection server.  <a href="classDrp_1_1UdpReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Wave8.html">Wave8</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the <a class="el" href="classDrp_1_1Wave8.html" title="BEBDetector for the Wave8 (detType wave8 in PGPDetectorApp), recording raw and FEX data and supportin...">Wave8</a> (detType wave8 in <a class="el" href="classDrp_1_1PGPDetectorApp.html" title="CollectionApp of the PGP-card DRP: creates the detector chosen by detType and the PGPDrp,...">PGPDetectorApp</a>), recording raw and FEX data and supporting cube binning.  <a href="classDrp_1_1Wave8.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html">XpmDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> base for devices read through the PGP card with XPM timing.  <a href="classDrp_1_1XpmDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a96bd38c3de2a46d672461aa3af474a93" id="r_a96bd38c3de2a46d672461aa3af474a93"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#a96bd38c3de2a46d672461aa3af474a93">ArpCache</a></td></tr>
+<tr class="memdesc:a96bd38c3de2a46d672461aa3af474a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from IP address string to MAC address string, filled by <a class="el" href="classDrp_1_1JungfrauIdLookup.html" title="Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet...">JungfrauIdLookup</a> from /proc/net/arp or from the device.  <br /></td></tr>
 <tr class="separator:a96bd38c3de2a46d672461aa3af474a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4a699b7335f7256ea831dcec1458e0e" id="r_aa4a699b7335f7256ea831dcec1458e0e"><td class="memItemLeft" align="right" valign="top">typedef ArpCache::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#aa4a699b7335f7256ea831dcec1458e0e">ArpCacheIter</a></td></tr>
+<tr class="memdesc:aa4a699b7335f7256ea831dcec1458e0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const iterator over an ArpCache.  <br /></td></tr>
 <tr class="separator:aa4a699b7335f7256ea831dcec1458e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e66afbb2ce0476852ec964ad0a63b20" id="r_a7e66afbb2ce0476852ec964ad0a63b20"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::shared_ptr&lt; <a class="el" href="classDrp_1_1EpicsMonitorPv.html">EpicsMonitorPv</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#a7e66afbb2ce0476852ec964ad0a63b20">TEpicsMonitorPvList</a></td></tr>
 <tr class="separator:a7e66afbb2ce0476852ec964ad0a63b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -315,11 +401,13 @@ Typedefs</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:a59e414f27ba6fba67912175de7c813ba" id="r_a59e414f27ba6fba67912175de7c813ba"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp.html#a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd">MaxSegsPerNode</a> = 10
  }</td></tr>
+<tr class="memdesc:a59e414f27ba6fba67912175de7c813ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Segment limit used to space the names indices below.  <a href="namespaceDrp.html#a59e414f27ba6fba67912175de7c813ba">More...</a><br /></td></tr>
 <tr class="separator:a59e414f27ba6fba67912175de7c813ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01c50f3b47a3d48b9d4b7e6e43c7ff46" id="r_a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af">ConfigNamesIndex</a> = NamesIndex::BASE
 , <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646">EventNamesIndex</a> = unsigned(ConfigNamesIndex) + unsigned(MaxSegsPerNode)
 , <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce">UpdateNamesIndex</a> = unsigned(EventNamesIndex) + unsigned(MaxSegsPerNode)
  }</td></tr>
+<tr class="memdesc:a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="mdescLeft">&#160;</td><td class="mdescRight">NamesId index bases of BEB detectors, one block of MaxSegsPerNode indices each (the code comment says index for xtc NamesId).  <a href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46">More...</a><br /></td></tr>
 <tr class="separator:a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a262f7e15eae88ef18ce209ebf55519b1" id="r_a262f7e15eae88ef18ce209ebf55519b1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1">NamesIndex</a> { <br />
 &#160;&#160;<a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176">BASE</a> = 0
@@ -330,24 +418,30 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd">RUNINFO</a> = 255
 <br />
  }</td></tr>
+<tr class="memdesc:a262f7e15eae88ef18ce209ebf55519b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed NamesId index values used by the DRP.  <a href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1">More...</a><br /></td></tr>
 <tr class="separator:a262f7e15eae88ef18ce209ebf55519b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a204040747bcfc0588b851c51eb8f881d" id="r_a204040747bcfc0588b851c51eb8f881d"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#a204040747bcfc0588b851c51eb8f881d">createPulseIdMsg</a> (uint64_t pulseId)</td></tr>
+<tr class="memdesc:a204040747bcfc0588b851c51eb8f881d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a JSON message whose key is pulseId and whose body holds pulseId.  <br /></td></tr>
 <tr class="separator:a204040747bcfc0588b851c51eb8f881d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af68622b768b5d438c95ce139a0ca6723" id="r_af68622b768b5d438c95ce139a0ca6723"><td class="memItemLeft" align="right" valign="top">static nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#af68622b768b5d438c95ce139a0ca6723">xpmInfo</a> (unsigned paddr)</td></tr>
+<tr class="memdesc:af68622b768b5d438c95ce139a0ca6723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return JSON with xpm_id set to bits 23-16 of paddr and xpm_port set to bits 7-0.  <br /></td></tr>
 <tr class="separator:af68622b768b5d438c95ce139a0ca6723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ac486d8a3c4030fa3679de0863f519552" id="r_ac486d8a3c4030fa3679de0863f519552"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#ac486d8a3c4030fa3679de0863f519552">RED_ON</a> = &quot;\033[0;31m&quot;</td></tr>
+<tr class="memdesc:ac486d8a3c4030fa3679de0863f519552"><td class="mdescLeft">&#160;</td><td class="mdescRight">ANSI escape sequence that turns terminal text red; used in a few error messages.  <br /></td></tr>
 <tr class="separator:ac486d8a3c4030fa3679de0863f519552"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af043adba770a695011c96dca9510d49f" id="r_af043adba770a695011c96dca9510d49f"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#af043adba770a695011c96dca9510d49f">RED_OFF</a> = &quot;\033[0m&quot;</td></tr>
+<tr class="memdesc:af043adba770a695011c96dca9510d49f"><td class="mdescLeft">&#160;</td><td class="mdescRight">ANSI escape sequence that resets terminal text attributes.  <br /></td></tr>
 <tr class="separator:af043adba770a695011c96dca9510d49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. </p>
+<p>Namespace of the psdaq data reduction pipeline (drp) code.</p>
 <p>Other entries allowed. &lt;detType&gt;_config (handle,...) - returns a json string containing configuration information to be stored in xtc. &lt;detType&gt;_unconfig(handle) - return ignored </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a96bd38c3de2a46d672461aa3af474a93" name="a96bd38c3de2a46d672461aa3af474a93"></a>
@@ -362,6 +456,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Map from IP address string to MAC address string, filled by <a class="el" href="classDrp_1_1JungfrauIdLookup.html" title="Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet...">JungfrauIdLookup</a> from /proc/net/arp or from the device. </p>
+
 </div>
 </div>
 <a id="aa4a699b7335f7256ea831dcec1458e0e" name="aa4a699b7335f7256ea831dcec1458e0e"></a>
@@ -375,6 +471,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Const iterator over an ArpCache. </p>
 
 </div>
 </div>
@@ -404,8 +502,11 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Segment limit used to space the names indices below. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd" name="a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd"></a>MaxSegsPerNode&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd" name="a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd"></a>MaxSegsPerNode&#160;</td><td class="fielddoc"><p>Maximum number of detector segments per node (10). </p>
+</td></tr>
 </table>
 
 </div>
@@ -421,10 +522,15 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>NamesId index bases of BEB detectors, one block of MaxSegsPerNode indices each (the code comment says index for xtc NamesId). </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646"></a>EventNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce"></a>UpdateNamesIndex&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"><p><a class="el" href="classConfiguration.html">Configuration</a> names, starting at <a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176" title="Value 0; BldDetector.cc uses it as its base names index.">NamesIndex::BASE</a> (0); <a class="el" href="classDrp_1_1BEBDetector.html#ab60d4ad48384604d1d35feca64b62bf7" title="Call &lt;detType&gt;_config in Python (with segment and serial numbers in multi-segment mode),...">BEBDetector::configure()</a> uses ConfigNamesIndex + segment. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646"></a>EventNamesIndex&#160;</td><td class="fielddoc"><p>Event names, starting at 10. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce" name="a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce"></a>UpdateNamesIndex&#160;</td><td class="fielddoc"><p>Scan update names, starting at 20; used by configureScan() and stepScan(). </p>
+</td></tr>
 </table>
 
 </div>
@@ -440,12 +546,19 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fixed NamesId index values used by the DRP. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176" name="a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176"></a>BASE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a83e775f4b57bc0c98e1f8ae30c5e5e5b" name="a262f7e15eae88ef18ce209ebf55519b1a83e775f4b57bc0c98e1f8ae30c5e5e5b"></a>CHUNKINFO&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a05f95e77aecc8efafaa0e097befe76d6" name="a262f7e15eae88ef18ce209ebf55519b1a05f95e77aecc8efafaa0e097befe76d6"></a>STEPINFO&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a299f54e06a3e72e9c49c8587d09e63d2" name="a262f7e15eae88ef18ce209ebf55519b1a299f54e06a3e72e9c49c8587d09e63d2"></a>OFFSETINFO&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd" name="a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd"></a>RUNINFO&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176" name="a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176"></a>BASE&#160;</td><td class="fielddoc"><p>Value 0; BldDetector.cc uses it as its base names index. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a83e775f4b57bc0c98e1f8ae30c5e5e5b" name="a262f7e15eae88ef18ce209ebf55519b1a83e775f4b57bc0c98e1f8ae30c5e5e5b"></a>CHUNKINFO&#160;</td><td class="fielddoc"><p>Value 252; NamesId index of the chunk information written by DrpBase.cc. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a05f95e77aecc8efafaa0e097befe76d6" name="a262f7e15eae88ef18ce209ebf55519b1a05f95e77aecc8efafaa0e097befe76d6"></a>STEPINFO&#160;</td><td class="fielddoc"><p>Value 253; named for step information (no use found in psdaq/drp). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1a299f54e06a3e72e9c49c8587d09e63d2" name="a262f7e15eae88ef18ce209ebf55519b1a299f54e06a3e72e9c49c8587d09e63d2"></a>OFFSETINFO&#160;</td><td class="fielddoc"><p>Value 254; NamesId index of the offset information written by TebReceiver.cc. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd" name="a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd"></a>RUNINFO&#160;</td><td class="fielddoc"><p>Value 255; NamesId index of the run information written by DrpBase.cc. </p>
+</td></tr>
 </table>
 
 </div>
@@ -466,6 +579,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return a JSON message whose key is pulseId and whose body holds pulseId. </p>
 
 </div>
 </div>
@@ -493,6 +608,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return JSON with xpm_id set to bits 23-16 of paddr and xpm_port set to bits 7-0. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -516,6 +633,8 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>ANSI escape sequence that resets terminal text attributes. </p>
+
 </div>
 </div>
 <a id="ac486d8a3c4030fa3679de0863f519552" name="ac486d8a3c4030fa3679de0863f519552"></a>
@@ -537,6 +656,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>ANSI escape sequence that turns terminal text red; used in a few error messages. </p>
 
 </div>
 </div>

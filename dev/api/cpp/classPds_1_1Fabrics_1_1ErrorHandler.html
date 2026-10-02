@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1ErrorHandler.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Base class that keeps the last error number and a formatted error message (256-byte buffer).  
+ <a href="classPds_1_1Fabrics_1_1ErrorHandler.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html">Pds::Fabrics::CompletionPoller</a>, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">Pds::Fabrics::CompletionQueue</a>, <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a>, <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">Pds::Fabrics::EventQueue</a>, <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Pds::Fabrics::Fabric</a>, and <a class="el" href="classPds_1_1Fabrics_1_1Info.html">Pds::Fabrics::Info</a>.</p>
@@ -106,14 +109,19 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1ErrorHandler.ht
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -130,7 +138,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base class that keeps the last error number and a formatted error message (256-byte buffer). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6a7afdd386a7a371b730bdf9c6746ffb" name="a6a7afdd386a7a371b730bdf9c6746ffb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6a7afdd386a7a371b730bdf9c6746ffb">&#9670;&#160;</a></span>ErrorHandler()</h2>
 
@@ -145,6 +155,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None). </p>
 
 </div>
 </div>
@@ -171,6 +183,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Free the message buffer. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -189,6 +203,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the error number to FI_SUCCESS and the message to the no-error text. </p>
+
 </div>
 </div>
 <a id="ac6aff3e9a161c02c6ecdad15defe6225" name="ac6aff3e9a161c02c6ecdad15defe6225"></a>
@@ -206,6 +222,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the last recorded error message. </p>
+
 </div>
 </div>
 <a id="aaf47dcf49038363f38a61d5759ac3128" name="aaf47dcf49038363f38a61d5759ac3128"></a>
@@ -222,6 +240,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the last recorded error number (FI_SUCCESS if none). </p>
 
 </div>
 </div>

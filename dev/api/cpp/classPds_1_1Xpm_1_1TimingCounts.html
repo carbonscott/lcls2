@@ -98,47 +98,68 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1TimingCounts.html',
 </div><!--header-->
 <div class="contents">
 
+<p>Snapshot of the counters of one timing receiver (<a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a>), as built by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a>.  
+ <a href="classPds_1_1Xpm_1_1TimingCounts.html#details">More...</a></p>
+
 <p><code>#include &lt;Module.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a407afca3562cc821bf8e90a3095f1db1" id="r_a407afca3562cc821bf8e90a3095f1db1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a407afca3562cc821bf8e90a3095f1db1">TimingCounts</a> ()</td></tr>
+<tr class="memdesc:a407afca3562cc821bf8e90a3095f1db1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct without initializing the counters.  <br /></td></tr>
 <tr class="separator:a407afca3562cc821bf8e90a3095f1db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47009166fd235389526ef50d7aa46e1b" id="r_a47009166fd235389526ef50d7aa46e1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a47009166fd235389526ef50d7aa46e1b">TimingCounts</a> (const <a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a> &amp;, const <a class="el" href="classPds_1_1Cphw_1_1GthRxAlign.html">Cphw::GthRxAlign</a> &amp;)</td></tr>
+<tr class="memdesc:a47009166fd235389526ef50d7aa46e1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the counters from the timing receiver (RxRecClks, TxRefClks, RxRstDone, CRCerrors, RxDecErrs, RxDspErrs, the two halves of BuffByCnts, bit 1 of CSR, Msgcounts, SOFcounts, EOFcounts); rxAlign is set to 0 and the alignment block is not read.  <br /></td></tr>
 <tr class="separator:a47009166fd235389526ef50d7aa46e1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b811f5709a77d7a072b0a821dc38206" id="r_a5b811f5709a77d7a072b0a821dc38206"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a5b811f5709a77d7a072b0a821dc38206">dump</a> () const</td></tr>
+<tr class="memdesc:a5b811f5709a77d7a072b0a821dc38206"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the counters (except rxAlign) in hex to stdout.  <br /></td></tr>
 <tr class="separator:a5b811f5709a77d7a072b0a821dc38206"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1a456194f0a0662534ba4d00b0e61330" id="r_a1a456194f0a0662534ba4d00b0e61330"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a1a456194f0a0662534ba4d00b0e61330">rxClkCount</a></td></tr>
+<tr class="memdesc:a1a456194f0a0662534ba4d00b0e61330"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx RxRecClks.  <br /></td></tr>
 <tr class="separator:a1a456194f0a0662534ba4d00b0e61330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a266804b70f066f5b00566ce20629f00b" id="r_a266804b70f066f5b00566ce20629f00b"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a266804b70f066f5b00566ce20629f00b">txClkCount</a></td></tr>
+<tr class="memdesc:a266804b70f066f5b00566ce20629f00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx TxRefClks.  <br /></td></tr>
 <tr class="separator:a266804b70f066f5b00566ce20629f00b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16b099b571cb48225e5b8604b12edae3" id="r_a16b099b571cb48225e5b8604b12edae3"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a16b099b571cb48225e5b8604b12edae3">rxRstCount</a></td></tr>
+<tr class="memdesc:a16b099b571cb48225e5b8604b12edae3"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx RxRstDone.  <br /></td></tr>
 <tr class="separator:a16b099b571cb48225e5b8604b12edae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac20b93096ef8054a4ee4c17eafc7dabb" id="r_ac20b93096ef8054a4ee4c17eafc7dabb"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#ac20b93096ef8054a4ee4c17eafc7dabb">crcErrCount</a></td></tr>
+<tr class="memdesc:ac20b93096ef8054a4ee4c17eafc7dabb"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx CRCerrors.  <br /></td></tr>
 <tr class="separator:ac20b93096ef8054a4ee4c17eafc7dabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c545d943deb37bb361cbc46e7f5aada" id="r_a2c545d943deb37bb361cbc46e7f5aada"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a2c545d943deb37bb361cbc46e7f5aada">rxDecErrCount</a></td></tr>
+<tr class="memdesc:a2c545d943deb37bb361cbc46e7f5aada"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx RxDecErrs.  <br /></td></tr>
 <tr class="separator:a2c545d943deb37bb361cbc46e7f5aada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80481109f66d70272972527c191092a4" id="r_a80481109f66d70272972527c191092a4"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a80481109f66d70272972527c191092a4">rxDspErrCount</a></td></tr>
+<tr class="memdesc:a80481109f66d70272972527c191092a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx RxDspErrs.  <br /></td></tr>
 <tr class="separator:a80481109f66d70272972527c191092a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac845366b67997017875d7c41e11bc418" id="r_ac845366b67997017875d7c41e11bc418"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#ac845366b67997017875d7c41e11bc418">bypassResetCount</a></td></tr>
+<tr class="memdesc:ac845366b67997017875d7c41e11bc418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upper 16 bits of TimingRx BuffByCnts.  <br /></td></tr>
 <tr class="separator:ac845366b67997017875d7c41e11bc418"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7a761873370ff48441aac7dbf42497f" id="r_ad7a761873370ff48441aac7dbf42497f"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#ad7a761873370ff48441aac7dbf42497f">bypassDoneCount</a></td></tr>
+<tr class="memdesc:ad7a761873370ff48441aac7dbf42497f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower 16 bits of TimingRx BuffByCnts.  <br /></td></tr>
 <tr class="separator:ad7a761873370ff48441aac7dbf42497f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac729e4eb80040927405772a5c7087dcc" id="r_ac729e4eb80040927405772a5c7087dcc"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#ac729e4eb80040927405772a5c7087dcc">rxLinkUp</a></td></tr>
+<tr class="memdesc:ac729e4eb80040927405772a5c7087dcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit 1 of TimingRx CSR.  <br /></td></tr>
 <tr class="separator:ac729e4eb80040927405772a5c7087dcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55dbfaec29325b4b1689c01ceeaee8b1" id="r_a55dbfaec29325b4b1689c01ceeaee8b1"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a55dbfaec29325b4b1689c01ceeaee8b1">fidCount</a></td></tr>
+<tr class="memdesc:a55dbfaec29325b4b1689c01ceeaee8b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx Msgcounts.  <br /></td></tr>
 <tr class="separator:a55dbfaec29325b4b1689c01ceeaee8b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e5639c746e743d7b75d5e5ec05d8554" id="r_a5e5639c746e743d7b75d5e5ec05d8554"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a5e5639c746e743d7b75d5e5ec05d8554">sofCount</a></td></tr>
+<tr class="memdesc:a5e5639c746e743d7b75d5e5ec05d8554"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx SOFcounts.  <br /></td></tr>
 <tr class="separator:a5e5639c746e743d7b75d5e5ec05d8554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e131b83346030075602066e38c6610a" id="r_a4e131b83346030075602066e38c6610a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a4e131b83346030075602066e38c6610a">eofCount</a></td></tr>
+<tr class="memdesc:a4e131b83346030075602066e38c6610a"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx EOFcounts.  <br /></td></tr>
 <tr class="separator:a4e131b83346030075602066e38c6610a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08d8e06a0f680dd619f79f62e9ebf19a" id="r_a08d8e06a0f680dd619f79f62e9ebf19a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html#a08d8e06a0f680dd619f79f62e9ebf19a">rxAlign</a></td></tr>
+<tr class="memdesc:a08d8e06a0f680dd619f79f62e9ebf19a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Always 0 (the alignment read is commented out).  <br /></td></tr>
 <tr class="separator:a08d8e06a0f680dd619f79f62e9ebf19a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Snapshot of the counters of one timing receiver (<a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a>), as built by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a407afca3562cc821bf8e90a3095f1db1" name="a407afca3562cc821bf8e90a3095f1db1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a407afca3562cc821bf8e90a3095f1db1">&#9670;&#160;</a></span>TimingCounts() <span class="overload">[1/2]</span></h2>
 
@@ -161,6 +182,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct without initializing the counters. </p>
 
 </div>
 </div>
@@ -190,6 +213,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy the counters from the timing receiver (RxRecClks, TxRefClks, RxRstDone, CRCerrors, RxDecErrs, RxDspErrs, the two halves of BuffByCnts, bit 1 of CSR, Msgcounts, SOFcounts, EOFcounts); rxAlign is set to 0 and the alignment block is not read. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -208,6 +233,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print the counters (except rxAlign) in hex to stdout. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -223,6 +250,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Lower 16 bits of TimingRx BuffByCnts. </p>
+
 </div>
 </div>
 <a id="ac845366b67997017875d7c41e11bc418" name="ac845366b67997017875d7c41e11bc418"></a>
@@ -236,6 +265,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Upper 16 bits of TimingRx BuffByCnts. </p>
 
 </div>
 </div>
@@ -251,6 +282,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx CRCerrors. </p>
+
 </div>
 </div>
 <a id="a4e131b83346030075602066e38c6610a" name="a4e131b83346030075602066e38c6610a"></a>
@@ -264,6 +297,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>TimingRx EOFcounts. </p>
 
 </div>
 </div>
@@ -279,6 +314,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx Msgcounts. </p>
+
 </div>
 </div>
 <a id="a08d8e06a0f680dd619f79f62e9ebf19a" name="a08d8e06a0f680dd619f79f62e9ebf19a"></a>
@@ -292,6 +329,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Always 0 (the alignment read is commented out). </p>
 
 </div>
 </div>
@@ -307,6 +346,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx RxRecClks. </p>
+
 </div>
 </div>
 <a id="a2c545d943deb37bb361cbc46e7f5aada" name="a2c545d943deb37bb361cbc46e7f5aada"></a>
@@ -320,6 +361,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>TimingRx RxDecErrs. </p>
 
 </div>
 </div>
@@ -335,6 +378,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx RxDspErrs. </p>
+
 </div>
 </div>
 <a id="ac729e4eb80040927405772a5c7087dcc" name="ac729e4eb80040927405772a5c7087dcc"></a>
@@ -348,6 +393,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bit 1 of TimingRx CSR. </p>
 
 </div>
 </div>
@@ -363,6 +410,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx RxRstDone. </p>
+
 </div>
 </div>
 <a id="a5e5639c746e743d7b75d5e5ec05d8554" name="a5e5639c746e743d7b75d5e5ec05d8554"></a>
@@ -377,6 +426,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx SOFcounts. </p>
+
 </div>
 </div>
 <a id="a266804b70f066f5b00566ce20629f00b" name="a266804b70f066f5b00566ce20629f00b"></a>
@@ -390,6 +441,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>TimingRx TxRefClks. </p>
 
 </div>
 </div>

@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('eb_2src_2utilities_8hh.html',''); init
   <div class="headertitle"><div class="title">utilities.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Event-builder helpers (page rounding, page-aligned allocation, thread pinning) and the ImmData packing of the 32-bit RDMA immediate data word.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('eb_2src_2utilities_8hh.html',''); init
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html">Pds::Eb::ImmData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30), a 6-bit source field (bits 29-24) and a 24-bit index field (bits 23-0).  <a href="classPds_1_1Eb_1_1ImmData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -114,23 +118,30 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a369266c24eacffb87046522897a570d5" id="r_a369266c24eacffb87046522897a570d5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="eb_2src_2utilities_8hh.html#a369266c24eacffb87046522897a570d5">_GNU_SOURCE</a></td></tr>
+<tr class="memdesc:a369266c24eacffb87046522897a570d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defined here, if not already defined, before <code>&lt;pthread.h&gt;</code> is included; pinThread() uses the GNU extension pthread_setaffinity_np().  <br /></td></tr>
 <tr class="separator:a369266c24eacffb87046522897a570d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a501b39526427ce550401960b52b816b4" id="r_a501b39526427ce550401960b52b816b4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a501b39526427ce550401960b52b816b4">Pds::Eb::roundUpSize</a> (size_t size)</td></tr>
+<tr class="memdesc:a501b39526427ce550401960b52b816b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return size rounded up to a whole number of system pages (sysconf(_SC_PAGESIZE)).  <br /></td></tr>
 <tr class="separator:a501b39526427ce550401960b52b816b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a467639a05b50eda36133bc11ec5c8287" id="r_a467639a05b50eda36133bc11ec5c8287"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a467639a05b50eda36133bc11ec5c8287">Pds::Eb::allocRegion</a> (size_t size)</td></tr>
+<tr class="memdesc:a467639a05b50eda36133bc11ec5c8287"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate a page-aligned block of roundUpSize(size) bytes with posix_memalign().  <br /></td></tr>
 <tr class="separator:a467639a05b50eda36133bc11ec5c8287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f44719cc8353d9a3a3c0ef45f448c5c" id="r_a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a8f44719cc8353d9a3a3c0ef45f448c5c">Pds::Eb::pinThread</a> (const pthread_t &amp;th, int cpu)</td></tr>
+<tr class="memdesc:a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin thread th to the single CPU cpu with pthread_setaffinity_np() and return its result.  <br /></td></tr>
 <tr class="separator:a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Event-builder helpers (page rounding, page-aligned allocation, thread pinning) and the ImmData packing of the 32-bit RDMA immediate data word. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a369266c24eacffb87046522897a570d5" name="a369266c24eacffb87046522897a570d5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a369266c24eacffb87046522897a570d5">&#9670;&#160;</a></span>_GNU_SOURCE</h2>
 
@@ -142,6 +153,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Defined here, if not already defined, before <code>&lt;pthread.h&gt;</code> is included; pinThread() uses the GNU extension pthread_setaffinity_np(). </p>
 
 </div>
 </div>

@@ -98,31 +98,44 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1Trigger.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Interface of the trigger decision code loaded by the TEB: <a class="el" href="classPds_1_1Trg_1_1Trigger.html#ac5f97513af472e82df0afc07e2a14ca4" title="Pure virtual: set the trigger decision in result from the contributions in [start,...">event()</a> fills the result datagram of each built event from its contributions.  
+ <a href="classPds_1_1Trg_1_1Trigger.html#details">More...</a></p>
+
 <p><code>#include &lt;Trigger.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:afaebc92ed7b157d0ab4f4a4461fafc9d" id="r_afaebc92ed7b157d0ab4f4a4461fafc9d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#afaebc92ed7b157d0ab4f4a4461fafc9d">~Trigger</a> ()</td></tr>
+<tr class="memdesc:afaebc92ed7b157d0ab4f4a4461fafc9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:afaebc92ed7b157d0ab4f4a4461fafc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2692773d55cbef153694e7d9388c513c" id="r_a2692773d55cbef153694e7d9388c513c"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a2692773d55cbef153694e7d9388c513c">rogReserve</a> (unsigned rog, unsigned meb, size_t nBufs) const</td></tr>
+<tr class="memdesc:a2692773d55cbef153694e7d9388c513c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of monitor buffers of MEB meb (out of nBufs) to reserve for events containing readout group rog; the TEB sums this over the non-common groups.  <br /></td></tr>
 <tr class="separator:a2692773d55cbef153694e7d9388c513c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70bab4e7ae0410f37765e268961c81d1" id="r_a70bab4e7ae0410f37765e268961c81d1"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a70bab4e7ae0410f37765e268961c81d1">configure</a> (const nlohmann::json &amp;connectMsg, const nlohmann::json &amp;configureMsg, const <a class="el" href="structPds_1_1Eb_1_1EbParams.html">Pds::Eb::EbParams</a> &amp;prms)=0</td></tr>
+<tr class="memdesc:a70bab4e7ae0410f37765e268961c81d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: configure from the connect and configure messages and the TEB parameters; implementations return 0 on success.  <br /></td></tr>
 <tr class="separator:a70bab4e7ae0410f37765e268961c81d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00c8613ff3bdad2c740ef229dfa2fb97" id="r_a00c8613ff3bdad2c740ef229dfa2fb97"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a00c8613ff3bdad2c740ef229dfa2fb97">initialize</a> (const std::vector&lt; size_t &gt; &amp;inputsRegSizes, size_t resultsRegSize)</td></tr>
+<tr class="memdesc:a00c8613ff3bdad2c740ef229dfa2fb97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook given the input region sizes and the result region size after configuration; returns 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a00c8613ff3bdad2c740ef229dfa2fb97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5f97513af472e82df0afc07e2a14ca4" id="r_ac5f97513af472e82df0afc07e2a14ca4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#ac5f97513af472e82df0afc07e2a14ca4">event</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *const *start, const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> **end, <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;result)=0</td></tr>
+<tr class="memdesc:ac5f97513af472e82df0afc07e2a14ca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: set the trigger decision in result from the contributions in [start, end).  <br /></td></tr>
 <tr class="separator:ac5f97513af472e82df0afc07e2a14ca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a440a65565113956b8dd9eff6a6d15c9e" id="r_a440a65565113956b8dd9eff6a6d15c9e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a440a65565113956b8dd9eff6a6d15c9e">transition</a> (<a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;result)</td></tr>
+<tr class="memdesc:a440a65565113956b8dd9eff6a6d15c9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook for transitions; does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a440a65565113956b8dd9eff6a6d15c9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17cf2e1dafd5b6dc05b11ae8a44c9352" id="r_a17cf2e1dafd5b6dc05b11ae8a44c9352"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a17cf2e1dafd5b6dc05b11ae8a44c9352">shutdown</a> ()</td></tr>
+<tr class="memdesc:a17cf2e1dafd5b6dc05b11ae8a44c9352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook for shutdown; does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a17cf2e1dafd5b6dc05b11ae8a44c9352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a43d488cd9345da75fcfc8475cae54790" id="r_a43d488cd9345da75fcfc8475cae54790"><td class="memItemLeft" align="right" valign="top">static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html#a43d488cd9345da75fcfc8475cae54790">size</a> ()</td></tr>
+<tr class="memdesc:a43d488cd9345da75fcfc8475cae54790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of a <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html" title="Trigger result datagram: an EbDgram followed by a 32-bit result word and a 32-bit monitor buffer numb...">Pds::Eb::ResultDgram</a>, the result size used by the TEB.  <br /></td></tr>
 <tr class="separator:a43d488cd9345da75fcfc8475cae54790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Interface of the trigger decision code loaded by the TEB: <a class="el" href="classPds_1_1Trg_1_1Trigger.html#ac5f97513af472e82df0afc07e2a14ca4" title="Pure virtual: set the trigger decision in result from the contributions in [start,...">event()</a> fills the result datagram of each built event from its contributions. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afaebc92ed7b157d0ab4f4a4461fafc9d" name="afaebc92ed7b157d0ab4f4a4461fafc9d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afaebc92ed7b157d0ab4f4a4461fafc9d">&#9670;&#160;</a></span>~Trigger()</h2>
 
@@ -145,6 +158,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -189,6 +204,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: configure from the connect and configure messages and the TEB parameters; implementations return 0 on success. </p>
+
 </div>
 </div>
 <a id="ac5f97513af472e82df0afc07e2a14ca4" name="ac5f97513af472e82df0afc07e2a14ca4"></a>
@@ -231,6 +248,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: set the trigger decision in result from the contributions in [start, end). </p>
+<p>The TEB calls it for events and transitions. </p>
+
 </div>
 </div>
 <a id="a00c8613ff3bdad2c740ef229dfa2fb97" name="a00c8613ff3bdad2c740ef229dfa2fb97"></a>
@@ -266,6 +286,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook given the input region sizes and the result region size after configuration; returns 0 unless overridden. </p>
 
 </div>
 </div>
@@ -309,6 +331,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of monitor buffers of MEB meb (out of nBufs) to reserve for events containing readout group rog; the TEB sums this over the non-common groups. </p>
+<p>Returns 0 unless overridden. </p>
+
 </div>
 </div>
 <a id="a17cf2e1dafd5b6dc05b11ae8a44c9352" name="a17cf2e1dafd5b6dc05b11ae8a44c9352"></a>
@@ -333,6 +358,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook for shutdown; does nothing unless overridden. </p>
 
 </div>
 </div>
@@ -359,6 +386,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the size of a <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html" title="Trigger result datagram: an EbDgram followed by a 32-bit result word and a 32-bit monitor buffer numb...">Pds::Eb::ResultDgram</a>, the result size used by the TEB. </p>
+
 </div>
 </div>
 <a id="a440a65565113956b8dd9eff6a6d15c9e" name="a440a65565113956b8dd9eff6a6d15c9e"></a>
@@ -384,6 +413,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook for transitions; does nothing unless overridden. </p>
 
 </div>
 </div>

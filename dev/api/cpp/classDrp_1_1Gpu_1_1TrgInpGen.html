@@ -97,30 +97,45 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1TrgInpGen.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph, taking buffers from the reader queues in turn and passing them to the host through a ring queue.  
+ <a href="classDrp_1_1Gpu_1_1TrgInpGen.html#details">More...</a></p>
+
 <p><code>#include &lt;TrgInpGen.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af341809bc89d6750d61c05d88c39d435" id="r_af341809bc89d6750d61c05d88c39d435"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#af341809bc89d6750d61c05d88c39d435">TrgInpGen</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;, const std::shared_ptr&lt; <a class="el" href="classDrp_1_1Gpu_1_1Reader.html">Reader</a> &gt; &amp;, <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html">Pds::Trg::TriggerPrimitive</a> *, cudaExecutionContext_t, const std::atomic&lt; bool &gt; &amp;terminate, const cuda::std::atomic&lt; unsigned &gt; &amp;terminate_d)</td></tr>
+<tr class="memdesc:af341809bc89d6750d61c05d88c39d435"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the reader queue pointers to the device and create the device-to-host queue, a stream in green_ctx, the device state, index and return-code words and the pinned metric counters.  <br /></td></tr>
 <tr class="separator:af341809bc89d6750d61c05d88c39d435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a114cc771118b3a88f93dc0da6ad80e1a" id="r_a114cc771118b3a88f93dc0da6ad80e1a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a114cc771118b3a88f93dc0da6ad80e1a">~TrgInpGen</a> ()</td></tr>
+<tr class="memdesc:a114cc771118b3a88f93dc0da6ad80e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the graph and free what the constructor allocated.  <br /></td></tr>
 <tr class="separator:a114cc771118b3a88f93dc0da6ad80e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d8882887e2bd782ac415d784c00a9a8" id="r_a1d8882887e2bd782ac415d784c00a9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a1d8882887e2bd782ac415d784c00a9a8">setupMetrics</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt;, std::map&lt; std::string, std::string &gt; &amp;labels)</td></tr>
+<tr class="memdesc:a1d8882887e2bd782ac415d784c00a9a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the counters and add the DRP_tigState, DRP_tigRcv, DRP_tigFwd, DRP_colRcv, DRP_pidWtCtr, DRP_colQueOcc, DRP_evtCtr and drp_* metrics to exporter; returns 0.  <br /></td></tr>
 <tr class="separator:a1d8882887e2bd782ac415d784c00a9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54e26044c108e22030b00a0025c100ee" id="r_a54e26044c108e22030b00a0025c100ee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a54e26044c108e22030b00a0025c100ee">setup</a> ()</td></tr>
+<tr class="memdesc:a54e26044c108e22030b00a0025c100ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record, instantiate and upload the graph.  <br /></td></tr>
 <tr class="separator:a54e26044c108e22030b00a0025c100ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a9feaa71f21204cf524f59b3931af53" id="r_a2a9feaa71f21204cf524f59b3931af53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a2a9feaa71f21204cf524f59b3931af53">startup</a> ()</td></tr>
+<tr class="memdesc:a2a9feaa71f21204cf524f59b3931af53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the event counter check and launch the graph.  <br /></td></tr>
 <tr class="separator:a2a9feaa71f21204cf524f59b3931af53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d964aa41410ba3f9a3be6d7d3783c74" id="r_a6d964aa41410ba3f9a3be6d7d3783c74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a6d964aa41410ba3f9a3be6d7d3783c74">start</a> (<a class="el" href="classSPSCQueue.html">SPSCQueue</a>&lt; unsigned &gt; &amp;collectorQueue)</td></tr>
+<tr class="memdesc:a6d964aa41410ba3f9a3be6d7d3783c74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the receiver thread, which pushes the number of ready buffers to collectorQueue after each pass and shuts the queue down when it exits.  <br /></td></tr>
 <tr class="separator:a6d964aa41410ba3f9a3be6d7d3783c74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5892c74321a804f5a67a19f49837f13" id="r_ad5892c74321a804f5a67a19f49837f13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#ad5892c74321a804f5a67a19f49837f13">shutdown</a> ()</td></tr>
+<tr class="memdesc:ad5892c74321a804f5a67a19f49837f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Join the receiver thread, which exits once the terminate flag is set.  <br /></td></tr>
 <tr class="separator:ad5892c74321a804f5a67a19f49837f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60f93422034b23c2b9457123aa993d67" id="r_a60f93422034b23c2b9457123aa993d67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a60f93422034b23c2b9457123aa993d67">handleBrokenEvent</a> (const <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &amp;)</td></tr>
+<tr class="memdesc:a60f93422034b23c2b9457123aa993d67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a60f93422034b23c2b9457123aa993d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29e37eba448fe1c91c55b3cefa26f3ba" id="r_a29e37eba448fe1c91c55b3cefa26f3ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a29e37eba448fe1c91c55b3cefa26f3ba">resetEventCounter</a> ()</td></tr>
+<tr class="memdesc:a29e37eba448fe1c91c55b3cefa26f3ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the last event counter used by the jump check to 0 (per the code comment, an EvtCounter reset); called by <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a2a9feaa71f21204cf524f59b3931af53" title="Reset the event counter check and launch the graph.">startup()</a> and on BeginRun.  <br /></td></tr>
 <tr class="separator:a29e37eba448fe1c91c55b3cefa26f3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph, taking buffers from the reader queues in turn and passing them to the host through a ring queue. </p>
+<p>A receiver thread then checks each buffer's DMA descriptor and TimingHeader, fills in its <a class="el" href="structDrp_1_1PGPEvent.html" title="One event being assembled from up to PGP_MAX_LANES lanes: a DmaBuffer per lane, the mask of lanes rec...">PGPEvent</a> and tells the collector how many buffers are ready. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af341809bc89d6750d61c05d88c39d435" name="af341809bc89d6750d61c05d88c39d435"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af341809bc89d6750d61c05d88c39d435">&#9670;&#160;</a></span>TrgInpGen()</h2>
 
@@ -177,6 +192,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy the reader queue pointers to the device and create the device-to-host queue, a stream in green_ctx, the device state, index and return-code words and the pinned metric counters. </p>
+
 </div>
 </div>
 <a id="a114cc771118b3a88f93dc0da6ad80e1a" name="a114cc771118b3a88f93dc0da6ad80e1a"></a>
@@ -193,6 +210,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Destroy the graph and free what the constructor allocated. </p>
 
 </div>
 </div>
@@ -221,6 +240,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <a id="a29e37eba448fe1c91c55b3cefa26f3ba" name="a29e37eba448fe1c91c55b3cefa26f3ba"></a>
@@ -246,6 +267,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Reset the last event counter used by the jump check to 0 (per the code comment, an EvtCounter reset); called by <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a2a9feaa71f21204cf524f59b3931af53" title="Reset the event counter check and launch the graph.">startup()</a> and on BeginRun. </p>
+
 </div>
 </div>
 <a id="a54e26044c108e22030b00a0025c100ee" name="a54e26044c108e22030b00a0025c100ee"></a>
@@ -262,6 +285,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Record, instantiate and upload the graph. </p>
+<p>Returns true on failure, else false. </p>
 
 </div>
 </div>
@@ -291,6 +317,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the counters and add the DRP_tigState, DRP_tigRcv, DRP_tigFwd, DRP_colRcv, DRP_pidWtCtr, DRP_colQueOcc, DRP_evtCtr and drp_* metrics to exporter; returns 0. </p>
+
 </div>
 </div>
 <a id="ad5892c74321a804f5a67a19f49837f13" name="ad5892c74321a804f5a67a19f49837f13"></a>
@@ -307,6 +335,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Join the receiver thread, which exits once the terminate flag is set. </p>
 
 </div>
 </div>
@@ -326,6 +356,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start the receiver thread, which pushes the number of ready buffers to collectorQueue after each pass and shuts the queue down when it exits. </p>
+
 </div>
 </div>
 <a id="a2a9feaa71f21204cf524f59b3931af53" name="a2a9feaa71f21204cf524f59b3931af53"></a>
@@ -342,6 +374,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Reset the event counter check and launch the graph. </p>
+<p>Returns false. </p>
 
 </div>
 </div>

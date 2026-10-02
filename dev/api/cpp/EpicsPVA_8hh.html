@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('EpicsPVA_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">EpicsPVA.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>EpicsPVA, the psdaq client of one EPICS PV over pvAccess or Channel Access, and the put callbacks it uses.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;future&gt;</code><br />
@@ -112,20 +115,27 @@ $(document).ready(function(){initNavTree('EpicsPVA_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html">Pds_Epics::PutTracker&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that writes one scalar to the value field of a PV and signals completionEvent when the put ends (copied from the EPICS V4 example code, per the code comment).  <a href="structPds__Epics_1_1PutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1VectorPutTracker.html">Pds_Epics::VectorPutTracker&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that writes an array to the value field of a PV and signals completionEvent when the put ends.  <a href="structPds__Epics_1_1VectorPutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html">Pds_Epics::StructurePutTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that fills the top-level fields of a PV structure from a packed buffer and signals completionEvent when the put ends.  <a href="structPds__Epics_1_1StructurePutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html">Pds_Epics::EpicsPVA</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structClient.html">Client</a> of one EPICS PV over pvAccess or Channel Access.  <a href="classPds__Epics_1_1EpicsPVA.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacePds__Epics" id="r_namespacePds__Epics"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds__Epics.html">Pds_Epics</a></td></tr>
+<tr class="memdesc:namespacePds__Epics"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq EPICS client helpers (pvAccess and Channel Access). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EpicsPVA, the psdaq client of one EPICS PV over pvAccess or Channel Access, and the put callbacks it uses. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

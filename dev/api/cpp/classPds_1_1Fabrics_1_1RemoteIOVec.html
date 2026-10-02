@@ -97,34 +97,50 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1RemoteIOVec.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.  
+ <a href="classPds_1_1Fabrics_1_1RemoteIOVec.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac5458a38b5b42f2feeabc2cf3d38a2a8" id="r_ac5458a38b5b42f2feeabc2cf3d38a2a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#ac5458a38b5b42f2feeabc2cf3d38a2a8">RemoteIOVec</a> (size_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a">count</a>=1)</td></tr>
+<tr class="memdesc:ac5458a38b5b42f2feeabc2cf3d38a2a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an empty vector (<a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> is 0) with capacity for count entries.  <br /></td></tr>
 <tr class="separator:ac5458a38b5b42f2feeabc2cf3d38a2a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b668c0642daa9e5427f6a4c93eda0fa" id="r_a0b668c0642daa9e5427f6a4c93eda0fa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a0b668c0642daa9e5427f6a4c93eda0fa">RemoteIOVec</a> (<a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *remote_addrs, size_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a">count</a>)</td></tr>
+<tr class="memdesc:a0b668c0642daa9e5427f6a4c93eda0fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from an array of count <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> objects; if remote_addrs is NULL, <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> is still count but the entries are not filled.  <br /></td></tr>
 <tr class="separator:a0b668c0642daa9e5427f6a4c93eda0fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79b1df94f77e585a0e4c572df194fbeb" id="r_a79b1df94f77e585a0e4c572df194fbeb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a79b1df94f77e585a0e4c572df194fbeb">RemoteIOVec</a> (const std::vector&lt; <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> * &gt; &amp;remote_addrs)</td></tr>
+<tr class="memdesc:a79b1df94f77e585a0e4c572df194fbeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a vector of <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> pointers.  <br /></td></tr>
 <tr class="separator:a79b1df94f77e585a0e4c572df194fbeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1762dbdcac4aa05bcf0a852662478f5f" id="r_a1762dbdcac4aa05bcf0a852662478f5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a1762dbdcac4aa05bcf0a852662478f5f">~RemoteIOVec</a> ()</td></tr>
+<tr class="memdesc:a1762dbdcac4aa05bcf0a852662478f5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the fi_rma_iov array.  <br /></td></tr>
 <tr class="separator:a1762dbdcac4aa05bcf0a852662478f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a313bab7a65a403453a0545a8882ce22a" id="r_a313bab7a65a403453a0545a8882ce22a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a">count</a> () const</td></tr>
+<tr class="memdesc:a313bab7a65a403453a0545a8882ce22a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of entries in use.  <br /></td></tr>
 <tr class="separator:a313bab7a65a403453a0545a8882ce22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb089148966d32fa5cd83810317eaa64" id="r_abb089148966d32fa5cd83810317eaa64"><td class="memItemLeft" align="right" valign="top">const struct fi_rma_iov *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#abb089148966d32fa5cd83810317eaa64">iovecs</a> () const</td></tr>
+<tr class="memdesc:abb089148966d32fa5cd83810317eaa64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fi_rma_iov array.  <br /></td></tr>
 <tr class="separator:abb089148966d32fa5cd83810317eaa64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2422c0cf93a10c994951da64d1e64580" id="r_a2422c0cf93a10c994951da64d1e64580"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a2422c0cf93a10c994951da64d1e64580">add_iovec</a> (<a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *remote_addr, size_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a">count</a>=1)</td></tr>
+<tr class="memdesc:a2422c0cf93a10c994951da64d1e64580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append count entries from the <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> array remote_addr.  <br /></td></tr>
 <tr class="separator:a2422c0cf93a10c994951da64d1e64580"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0c5ba946ea54d46451acdd3c205639b" id="r_ae0c5ba946ea54d46451acdd3c205639b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#ae0c5ba946ea54d46451acdd3c205639b">add_iovec</a> (std::vector&lt; <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> * &gt; &amp;remote_addr)</td></tr>
+<tr class="memdesc:ae0c5ba946ea54d46451acdd3c205639b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append one entry per <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> in the vector; always returns true.  <br /></td></tr>
 <tr class="separator:ae0c5ba946ea54d46451acdd3c205639b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa4cd09a46e508ee3f0697adebd6e4ea" id="r_aaa4cd09a46e508ee3f0697adebd6e4ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#aaa4cd09a46e508ee3f0697adebd6e4ea">add_iovec</a> (unsigned index, uint64_t rkey, uint64_t addr, size_t extent)</td></tr>
+<tr class="memdesc:aaa4cd09a46e508ee3f0697adebd6e4ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append one entry built from rkey, addr and extent; always returns true.  <br /></td></tr>
 <tr class="separator:aaa4cd09a46e508ee3f0697adebd6e4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9630f5303b441fdeb58a798d2bccc61" id="r_ac9630f5303b441fdeb58a798d2bccc61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#ac9630f5303b441fdeb58a798d2bccc61">set_iovec</a> (unsigned index, <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *remote_addr)</td></tr>
+<tr class="memdesc:ac9630f5303b441fdeb58a798d2bccc61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overwrite entry index from remote_addr; returns false if index is not less than <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> or remote_addr is NULL.  <br /></td></tr>
 <tr class="separator:ac9630f5303b441fdeb58a798d2bccc61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac72450999e90d69d07c321dfe5fa908c" id="r_ac72450999e90d69d07c321dfe5fa908c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#ac72450999e90d69d07c321dfe5fa908c">set_iovec</a> (unsigned index, uint64_t rkey, uint64_t addr, size_t extent)</td></tr>
+<tr class="memdesc:ac72450999e90d69d07c321dfe5fa908c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overwrite entry index with rkey, addr and extent; returns false if index is not less than <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a>.  <br /></td></tr>
 <tr class="separator:ac72450999e90d69d07c321dfe5fa908c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac5458a38b5b42f2feeabc2cf3d38a2a8" name="ac5458a38b5b42f2feeabc2cf3d38a2a8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac5458a38b5b42f2feeabc2cf3d38a2a8">&#9670;&#160;</a></span>RemoteIOVec() <span class="overload">[1/3]</span></h2>
 
@@ -140,6 +156,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct an empty vector (<a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> is 0) with capacity for count entries. </p>
 
 </div>
 </div>
@@ -169,6 +187,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from an array of count <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> objects; if remote_addrs is NULL, <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> is still count but the entries are not filled. </p>
+
 </div>
 </div>
 <a id="a79b1df94f77e585a0e4c572df194fbeb" name="a79b1df94f77e585a0e4c572df194fbeb"></a>
@@ -187,6 +207,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from a vector of <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> pointers. </p>
+
 </div>
 </div>
 <a id="a1762dbdcac4aa05bcf0a852662478f5f" name="a1762dbdcac4aa05bcf0a852662478f5f"></a>
@@ -203,6 +225,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the fi_rma_iov array. </p>
 
 </div>
 </div>
@@ -233,6 +257,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Append count entries from the <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> array remote_addr. </p>
+<p>Returns false if remote_addr is NULL (the capacity may still have grown), otherwise true. </p>
+
 </div>
 </div>
 <a id="ae0c5ba946ea54d46451acdd3c205639b" name="ae0c5ba946ea54d46451acdd3c205639b"></a>
@@ -250,6 +277,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Append one entry per <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html" title="Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a stru...">RemoteAddress</a> in the vector; always returns true. </p>
 
 </div>
 </div>
@@ -291,6 +320,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Append one entry built from rkey, addr and extent; always returns true. </p>
+<p>The index argument is not used. </p>
+
 </div>
 </div>
 <a id="a313bab7a65a403453a0545a8882ce22a" name="a313bab7a65a403453a0545a8882ce22a"></a>
@@ -308,6 +340,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the number of entries in use. </p>
+
 </div>
 </div>
 <a id="abb089148966d32fa5cd83810317eaa64" name="abb089148966d32fa5cd83810317eaa64"></a>
@@ -324,6 +358,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the fi_rma_iov array. </p>
 
 </div>
 </div>
@@ -352,6 +388,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Overwrite entry index from remote_addr; returns false if index is not less than <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a> or remote_addr is NULL. </p>
 
 </div>
 </div>
@@ -392,6 +430,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Overwrite entry index with rkey, addr and extent; returns false if index is not less than <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html#a313bab7a65a403453a0545a8882ce22a" title="Return the number of entries in use.">count()</a>. </p>
 
 </div>
 </div>

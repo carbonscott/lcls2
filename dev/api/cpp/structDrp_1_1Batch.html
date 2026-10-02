@@ -97,18 +97,26 @@ $(document).ready(function(){initNavTree('structDrp_1_1Batch.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
+<p>A run of consecutive events (by event counter) handed to one worker.  
+ <a href="structDrp_1_1Batch.html#details">More...</a></p>
+
 <p><code>#include &lt;PGPDetector.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af35617e9745e36d1683ad8ce0d09bb5b" id="r_af35617e9745e36d1683ad8ce0d09bb5b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Batch.html#af35617e9745e36d1683ad8ce0d09bb5b">start</a></td></tr>
+<tr class="memdesc:af35617e9745e36d1683ad8ce0d09bb5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event counter of the first event in the batch.  <br /></td></tr>
 <tr class="separator:af35617e9745e36d1683ad8ce0d09bb5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a707533af7901889b2464336b44eca67b" id="r_a707533af7901889b2464336b44eca67b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Batch.html#a707533af7901889b2464336b44eca67b">size</a></td></tr>
+<tr class="memdesc:a707533af7901889b2464336b44eca67b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of events in the batch, including broken events (see <a class="el" href="classDrp_1_1PGPDrp.html#aaa436efc8d7e5f04bffebacc7d570b7d" title="Count a broken event in the current batch, since the firmware advanced the event counter (per the cod...">PGPDrp::handleBrokenEvent()</a>).  <br /></td></tr>
 <tr class="separator:a707533af7901889b2464336b44eca67b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1427cb6d3e4c027277cef829f06fb7ec" id="r_a1427cb6d3e4c027277cef829f06fb7ec"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Batch.html#a1427cb6d3e4c027277cef829f06fb7ec">l1count</a></td></tr>
+<tr class="memdesc:a1427cb6d3e4c027277cef829f06fb7ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of L1Accepts counted up to the start of this batch.  <br /></td></tr>
 <tr class="separator:a1427cb6d3e4c027277cef829f06fb7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A run of consecutive events (by event counter) handed to one worker. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a1427cb6d3e4c027277cef829f06fb7ec" name="a1427cb6d3e4c027277cef829f06fb7ec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1427cb6d3e4c027277cef829f06fb7ec">&#9670;&#160;</a></span>l1count</h2>
 
@@ -120,6 +128,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of L1Accepts counted up to the start of this batch. </p>
 
 </div>
 </div>
@@ -135,6 +145,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Number of events in the batch, including broken events (see <a class="el" href="classDrp_1_1PGPDrp.html#aaa436efc8d7e5f04bffebacc7d570b7d" title="Count a broken event in the current batch, since the firmware advanced the event counter (per the cod...">PGPDrp::handleBrokenEvent()</a>). </p>
+
 </div>
 </div>
 <a id="af35617e9745e36d1683ad8ce0d09bb5b" name="af35617e9745e36d1683ad8ce0d09bb5b"></a>
@@ -148,6 +160,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Event counter of the first event in the batch. </p>
 
 </div>
 </div>

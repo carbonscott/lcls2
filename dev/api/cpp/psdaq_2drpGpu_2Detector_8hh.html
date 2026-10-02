@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('psdaq_2drpGpu_2Detector_8hh.html','');
   <div class="headertitle"><div class="title">Detector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Drp::Gpu::Detector</a>, the base of the GPU DRP detectors, the NamesId indices they use, and the <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a> factory declaration.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="psdaq_2drp_2Detector_8hh.html">drp/Detector.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MemPool_8hh.html">MemPool.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="range_8hh.html">psdaq/service/range.hh</a>&quot;</code><br />
@@ -108,6 +111,7 @@ $(document).ready(function(){initNavTree('psdaq_2drpGpu_2Detector_8hh.html','');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the GPU DRP detectors (<a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Drp::Gpu::Detector</a>).  <a href="classDrp_1_1Gpu_1_1Detector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -116,31 +120,38 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a38ab8fab03831efd4743afe8b14be49d" id="r_a38ab8fab03831efd4743afe8b14be49d"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#a38ab8fab03831efd4743afe8b14be49d">DetectorFactoryFn_t</a>(<a class="el" href="structDrp_1_1Parameters.html">Drp::Parameters</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">Drp::Gpu::MemPoolGpu</a> &amp;)</td></tr>
+<tr class="memdesc:a38ab8fab03831efd4743afe8b14be49d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a>.  <br /></td></tr>
 <tr class="separator:a38ab8fab03831efd4743afe8b14be49d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a52dd1ec19594691efb39c273f96465f0" id="r_a52dd1ec19594691efb39c273f96465f0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp_1_1Gpu.html#a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616">Drp::Gpu::MaxPnlsPerNode</a> = 10
  }</td></tr>
+<tr class="memdesc:a52dd1ec19594691efb39c273f96465f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Panel limit used to space the NamesId indices below.  <a href="namespaceDrp_1_1Gpu.html#a52dd1ec19594691efb39c273f96465f0">More...</a><br /></td></tr>
 <tr class="separator:a52dd1ec19594691efb39c273f96465f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bcabdde436cc05876dffa8c681dfd5c" id="r_a5bcabdde436cc05876dffa8c681dfd5c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b">Drp::Gpu::ConfigNamesIndex</a> = Drp::NamesIndex::BASE
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef">Drp::Gpu::EventNamesIndex</a> = unsigned(ConfigNamesIndex) + unsigned(MaxPnlsPerNode)
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7">Drp::Gpu::FexNamesIndex</a> = unsigned(EventNamesIndex) + unsigned(MaxPnlsPerNode)
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795">Drp::Gpu::ReducerNamesIndex</a>
  }</td></tr>
+<tr class="memdesc:a5bcabdde436cc05876dffa8c681dfd5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">NamesId indices for the xtc names of the GPU DRP (per the code comment).  <a href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5c">More...</a><br /></td></tr>
 <tr class="separator:a5bcabdde436cc05876dffa8c681dfd5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aa70ac15fef9407a411418ee15982de21" id="r_aa70ac15fef9407a411418ee15982de21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21">createDetector</a> (<a class="el" href="structDrp_1_1Parameters.html">Drp::Parameters</a> &amp;para, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">Drp::Gpu::MemPoolGpu</a> &amp;pool)</td></tr>
+<tr class="memdesc:aa70ac15fef9407a411418ee15982de21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return a new detector.  <br /></td></tr>
 <tr class="separator:aa70ac15fef9407a411418ee15982de21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Drp::Gpu::Detector</a>, the base of the GPU DRP detectors, the NamesId indices they use, and the <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a> factory declaration. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a38ab8fab03831efd4743afe8b14be49d" name="a38ab8fab03831efd4743afe8b14be49d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a38ab8fab03831efd4743afe8b14be49d">&#9670;&#160;</a></span>DetectorFactoryFn_t</h2>
 
@@ -152,6 +163,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Type of <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a>. </p>
 
 </div>
 </div>
@@ -181,6 +194,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return a new detector. </p>
+<p>PGPDetectorApp's DetectorFactory loads it from the library named for the detector type. </p>
 
 </div>
 </div>

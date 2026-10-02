@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('GpuAsyncLib_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">GpuAsyncLib.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>CUDA and GPU Async helpers (error checks, <a class="el" href="classDataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>, <a class="el" href="classCudaContext.html" title="Wraps a cuda context and handles some initialization for you.">CudaContext</a>, FPGA and GPU memory mapping, DMA target selection, <a class="el" href="structGPUTimer.html" title="Class for timing various things.">GPUTimer</a>) from axi-pcie-devel.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Utils_8h.html">Utils.h</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="GpuAsync_8h.html">psdaq/aes-stream-drivers/GpuAsync.h</a>&quot;</code><br />
@@ -118,6 +121,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describes FPGA memory that's mapped via RDMA to the GPU.  <a href="structGpuDmaBuffer__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuBufferState__t.html">GpuBufferState_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A read buffer and a write buffer on the GPU, mapped to the FPGA by <a class="el" href="GpuAsyncLib_8hh.html#a651b5a35e8a7f1cc233b61644221bbba" title="Allocates and inits buffer pairs on the GPU for RDMA operation.">gpuInitBufferState()</a>.  <a href="structGpuBufferState__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html">GPUTimer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for timing various things.  <a href="structGPUTimer.html#details">More...</a><br /></td></tr>
@@ -128,14 +132,19 @@ Macros</h2></td></tr>
 <tr class="memitem:addf539da272aa0e45377fae54625a60e" id="r_addf539da272aa0e45377fae54625a60e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#addf539da272aa0e45377fae54625a60e">deviceFunc</a></td></tr>
 <tr class="separator:addf539da272aa0e45377fae54625a60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a239504d9111793ef8148656729755676" id="r_a239504d9111793ef8148656729755676"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a239504d9111793ef8148656729755676">globalFunc</a></td></tr>
+<tr class="memdesc:a239504d9111793ef8148656729755676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty when not compiling with nvcc; <b>global</b> under nvcc.  <br /></td></tr>
 <tr class="separator:a239504d9111793ef8148656729755676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b795f8564ee4dee1bad64f7ec0179e2" id="r_a2b795f8564ee4dee1bad64f7ec0179e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a2b795f8564ee4dee1bad64f7ec0179e2">hostFunc</a></td></tr>
+<tr class="memdesc:a2b795f8564ee4dee1bad64f7ec0179e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty when not compiling with nvcc; <b>host</b> under nvcc.  <br /></td></tr>
 <tr class="separator:a2b795f8564ee4dee1bad64f7ec0179e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f56a19551635652d0dfee2b2859279" id="r_a74f56a19551635652d0dfee2b2859279"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="memdesc:a74f56a19551635652d0dfee2b2859279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty string literal put in front of the optional message, so that the message argument is never empty (per the code comment).  <br /></td></tr>
 <tr class="separator:a74f56a19551635652d0dfee2b2859279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af43fc3d14d042887ad53e70de2f9ce9e" id="r_af43fc3d14d042887ad53e70de2f9ce9e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#af43fc3d14d042887ad53e70de2f9ce9e">chkFatal</a>(rc, ...)&#160;&#160;&#160;<a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6">checkError</a>((rc), #rc, __FILE__, __LINE__, true,  <a class="el" href="GpuAsyncLib_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a> __VA_ARGS__)</td></tr>
+<tr class="memdesc:af43fc3d14d042887ad53e70de2f9ce9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message and aborting.  <br /></td></tr>
 <tr class="separator:af43fc3d14d042887ad53e70de2f9ce9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e58fad7e84cf631dfa9f97d4a08c890" id="r_a2e58fad7e84cf631dfa9f97d4a08c890"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a2e58fad7e84cf631dfa9f97d4a08c890">chkError</a>(rc, ...)&#160;&#160;&#160;<a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6">checkError</a>((rc), #rc, __FILE__, __LINE__, false, <a class="el" href="GpuAsyncLib_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a> __VA_ARGS__)</td></tr>
+<tr class="memdesc:a2e58fad7e84cf631dfa9f97d4a08c890"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message without aborting; evaluates to true on failure.  <br /></td></tr>
 <tr class="separator:a2e58fad7e84cf631dfa9f97d4a08c890"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -150,8 +159,10 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a5a6a4feb5027e5db9883bcee5dae44a6" id="r_a5a6a4feb5027e5db9883bcee5dae44a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6">checkError</a> (CUresult status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:a5a6a4feb5027e5db9883bcee5dae44a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:a5a6a4feb5027e5db9883bcee5dae44a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a001f08230b2302baa7e5c30aba1b43ae" id="r_a001f08230b2302baa7e5c30aba1b43ae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a001f08230b2302baa7e5c30aba1b43ae">checkError</a> (cudaError status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:a001f08230b2302baa7e5c30aba1b43ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:a001f08230b2302baa7e5c30aba1b43ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7777160e89cc8bd10380ac50a43e175" id="r_ae7777160e89cc8bd10380ac50a43e175"><td class="memTemplParams" colspan="2">template&lt;typename T , int COLS = 16&gt; </td></tr>
 <tr class="memitem:ae7777160e89cc8bd10380ac50a43e175"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#ae7777160e89cc8bd10380ac50a43e175">dumpGpuMem</a> (CUdeviceptr devicePtr, size_t sizeInBytes, void *buf=nullptr, FILE *stream=stdout)</td></tr>
@@ -173,21 +184,28 @@ Functions</h2></td></tr>
 <tr class="memdesc:a651b5a35e8a7f1cc233b61644221bbba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates and inits buffer pairs on the GPU for RDMA operation.  <br /></td></tr>
 <tr class="separator:a651b5a35e8a7f1cc233b61644221bbba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab633773a45a1556575a49678717687ec" id="r_ab633773a45a1556575a49678717687ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#ab633773a45a1556575a49678717687ec">gpuDestroyBufferState</a> (<a class="el" href="structGpuBufferState__t.html">GpuBufferState_t</a> *b)</td></tr>
+<tr class="memdesc:ab633773a45a1556575a49678717687ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmap and free both buffers of b with <a class="el" href="GpuAsyncLib_8hh.html#a24d76a99f2fc023697281514727169db" title="Unmaps memory, clears out the pointer and size.">gpuUnmapFpgaMem()</a>.  <br /></td></tr>
 <tr class="separator:ab633773a45a1556575a49678717687ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25ba4ae61e098239ede3b9731c54991a" id="r_a25ba4ae61e098239ede3b9731c54991a"><td class="memItemLeft" align="right" valign="top">struct&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a25ba4ae61e098239ede3b9731c54991a">__attribute__</a> ((packed)) AxiWrDesc64_t</td></tr>
 <tr class="memdesc:a25ba4ae61e098239ede3b9731c54991a"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit write AXI descriptor data  <br /></td></tr>
 <tr class="separator:a25ba4ae61e098239ede3b9731c54991a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99b2a1e164758a093efa66424addf491" id="r_a99b2a1e164758a093efa66424addf491"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GpuAsyncLib_8hh.html#addf539da272aa0e45377fae54625a60e">deviceFunc</a> AxiWrDesc64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a99b2a1e164758a093efa66424addf491">UnpackAxiWriteDescriptor</a> (const void *data)</td></tr>
+<tr class="memdesc:a99b2a1e164758a093efa66424addf491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the 8 bytes at data as an AxiWrDesc64_t.  <br /></td></tr>
 <tr class="separator:a99b2a1e164758a093efa66424addf491"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c0a51430f27fefd8fb1cd83c8b80204" id="r_a3c0a51430f27fefd8fb1cd83c8b80204"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GpuAsyncLib_8hh.html#a725005b56a3871a29e7d7e9467af067b">DmaTgt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a3c0a51430f27fefd8fb1cd83c8b80204">dmaTgtGet</a> (const <a class="el" href="classDataDev.html">DataDev</a> &amp;)</td></tr>
+<tr class="memdesc:a3c0a51430f27fefd8fb1cd83c8b80204"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the AXI stream demux select register of the GPU Async core and return TGT_CPU or TGT_GPU for its value, or TGT_ERR for any other value.  <br /></td></tr>
 <tr class="separator:a3c0a51430f27fefd8fb1cd83c8b80204"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57bf42e48306287a9a7303d99ff4cd10" id="r_a57bf42e48306287a9a7303d99ff4cd10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a57bf42e48306287a9a7303d99ff4cd10">dmaTgtSet</a> (const <a class="el" href="classDataDev.html">DataDev</a> &amp;, <a class="el" href="GpuAsyncLib_8hh.html#a725005b56a3871a29e7d7e9467af067b">DmaTgt_t</a>)</td></tr>
+<tr class="memdesc:a57bf42e48306287a9a7303d99ff4cd10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write tgt to the AXI stream demux select register of the GPU Async core; a write error is only reported with perror().  <br /></td></tr>
 <tr class="separator:a57bf42e48306287a9a7303d99ff4cd10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a174882a5197600a690fc265936d5d299" id="r_a174882a5197600a690fc265936d5d299"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncLib_8hh.html#a174882a5197600a690fc265936d5d299">dmaIdxReset</a> (const <a class="el" href="classDataDev.html">DataDev</a> &amp;)</td></tr>
 <tr class="memdesc:a174882a5197600a690fc265936d5d299"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to reset the DMA buffer round-robin index.  <br /></td></tr>
 <tr class="separator:a174882a5197600a690fc265936d5d299"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>CUDA and GPU Async helpers (error checks, <a class="el" href="classDataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>, <a class="el" href="classCudaContext.html" title="Wraps a cuda context and handles some initialization for you.">CudaContext</a>, FPGA and GPU memory mapping, DMA target selection, <a class="el" href="structGPUTimer.html" title="Class for timing various things.">GPUTimer</a>) from axi-pcie-devel. </p>
+<p>In psdaq they are built only into the pgpread_gpu tool. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a2e58fad7e84cf631dfa9f97d4a08c890" name="a2e58fad7e84cf631dfa9f97d4a08c890"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2e58fad7e84cf631dfa9f97d4a08c890">&#9670;&#160;</a></span>chkError</h2>
 
@@ -213,6 +231,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message without aborting; evaluates to true on failure. </p>
 
 </div>
 </div>
@@ -241,6 +261,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message and aborting. </p>
 
 </div>
 </div>
@@ -278,6 +300,8 @@ the LICENSE.txt file.</h2>
       </table>
 </div><div class="memdoc">
 
+<p>Empty when not compiling with nvcc; <b>global</b> under nvcc. </p>
+
 </div>
 </div>
 <a id="a2b795f8564ee4dee1bad64f7ec0179e2" name="a2b795f8564ee4dee1bad64f7ec0179e2"></a>
@@ -292,6 +316,8 @@ the LICENSE.txt file.</h2>
       </table>
 </div><div class="memdoc">
 
+<p>Empty when not compiling with nvcc; <b>host</b> under nvcc. </p>
+
 </div>
 </div>
 <a id="a74f56a19551635652d0dfee2b2859279" name="a74f56a19551635652d0dfee2b2859279"></a>
@@ -305,6 +331,8 @@ the LICENSE.txt file.</h2>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Empty string literal put in front of the optional message, so that the message argument is never empty (per the code comment). </p>
 
 </div>
 </div>
@@ -330,9 +358,12 @@ the LICENSE.txt file.</h2>
   </dd>
 </dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba5dc67ab0787813480cd4e4694ac6bff9" name="a725005b56a3871a29e7d7e9467af067ba5dc67ab0787813480cd4e4694ac6bff9"></a>TGT_CPU&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba13c332c1e3a62383854f2da2128fae66" name="a725005b56a3871a29e7d7e9467af067ba13c332c1e3a62383854f2da2128fae66"></a>TGT_GPU&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba54d6691564765e46c3355fe290bac042" name="a725005b56a3871a29e7d7e9467af067ba54d6691564765e46c3355fe290bac042"></a>TGT_ERR&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba5dc67ab0787813480cd4e4694ac6bff9" name="a725005b56a3871a29e7d7e9467af067ba5dc67ab0787813480cd4e4694ac6bff9"></a>TGT_CPU&#160;</td><td class="fielddoc"><p>Value 0: destination CPU. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba13c332c1e3a62383854f2da2128fae66" name="a725005b56a3871a29e7d7e9467af067ba13c332c1e3a62383854f2da2128fae66"></a>TGT_GPU&#160;</td><td class="fielddoc"><p>Value 1: destination GPU. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a725005b56a3871a29e7d7e9467af067ba54d6691564765e46c3355fe290bac042" name="a725005b56a3871a29e7d7e9467af067ba54d6691564765e46c3355fe290bac042"></a>TGT_ERR&#160;</td><td class="fielddoc"><p>Returned by <a class="el" href="GpuAsyncLib_8hh.html#a3c0a51430f27fefd8fb1cd83c8b80204" title="Read the AXI stream demux select register of the GPU Async core and return TGT_CPU or TGT_GPU for its...">dmaTgtGet()</a> for any other register value. </p>
+</td></tr>
 </table>
 
 </div>
@@ -410,6 +441,9 @@ the LICENSE.txt file.</h2>
       </table>
 </div><div class="memdoc">
 
+<p>If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true. </p>
+<p>Returns true on failure, else false; func is not used. </p>
+
 </div>
 </div>
 <a id="a5a6a4feb5027e5db9883bcee5dae44a6" name="a5a6a4feb5027e5db9883bcee5dae44a6"></a>
@@ -462,6 +496,9 @@ the LICENSE.txt file.</h2>
       </table>
 </div><div class="memdoc">
 
+<p>If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true. </p>
+<p>Returns true on failure, else false; func is not used. </p>
+
 </div>
 </div>
 <a id="a174882a5197600a690fc265936d5d299" name="a174882a5197600a690fc265936d5d299"></a>
@@ -506,6 +543,9 @@ the LICENSE.txt file.</h2>
       </table>
 </div><div class="memdoc">
 
+<p>Read the AXI stream demux select register of the GPU Async core and return TGT_CPU or TGT_GPU for its value, or TGT_ERR for any other value. </p>
+<p>A read error is only reported with perror(). </p>
+
 </div>
 </div>
 <a id="a57bf42e48306287a9a7303d99ff4cd10" name="a57bf42e48306287a9a7303d99ff4cd10"></a>
@@ -533,6 +573,8 @@ the LICENSE.txt file.</h2>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write tgt to the AXI stream demux select register of the GPU Async core; a write error is only reported with perror(). </p>
 
 </div>
 </div>
@@ -612,6 +654,8 @@ template&lt;typename T , int COLS = 16&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Unmap and free both buffers of b with <a class="el" href="GpuAsyncLib_8hh.html#a24d76a99f2fc023697281514727169db" title="Unmaps memory, clears out the pointer and size.">gpuUnmapFpgaMem()</a>. </p>
 
 </div>
 </div>
@@ -857,6 +901,8 @@ template&lt;typename T , int COLS = 16&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the 8 bytes at data as an AxiWrDesc64_t. </p>
 
 </div>
 </div>

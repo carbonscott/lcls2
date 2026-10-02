@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('XpmInfo_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">XpmInfo.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>xpmInfo(), which turns an XPM link address word into connection-info JSON.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;rapidjson/document.h&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -107,9 +110,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af68622b768b5d438c95ce139a0ca6723" id="r_af68622b768b5d438c95ce139a0ca6723"><td class="memItemLeft" align="right" valign="top">static nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#af68622b768b5d438c95ce139a0ca6723">Drp::xpmInfo</a> (unsigned paddr)</td></tr>
+<tr class="memdesc:af68622b768b5d438c95ce139a0ca6723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return JSON with xpm_id set to bits 23-16 of paddr and xpm_port set to bits 7-0.  <br /></td></tr>
 <tr class="separator:af68622b768b5d438c95ce139a0ca6723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>xpmInfo(), which turns an XPM link address word into connection-info JSON. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

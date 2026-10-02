@@ -97,18 +97,27 @@ $(document).ready(function(){initNavTree('classPds_1_1SemLock.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classPds_1_1Lock.html" title="Abstract lock on a binary Semaphore (the VxWorks variant is not supported).">Lock</a> built on a <a class="el" href="classPds_1_1Semaphore.html" title="Unnamed POSIX semaphore (sem_t) shared between threads of one process.">Semaphore</a>.  
+ <a href="classPds_1_1SemLock.html#details">More...</a></p>
+
 <p><code>#include &lt;SemLock.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a880d17270309e7cf6d3a8890d5f863e3" id="r_a880d17270309e7cf6d3a8890d5f863e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SemLock.html#a880d17270309e7cf6d3a8890d5f863e3">SemLock</a> ()</td></tr>
+<tr class="memdesc:a880d17270309e7cf6d3a8890d5f863e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the semaphore empty (count 0).  <br /></td></tr>
 <tr class="separator:a880d17270309e7cf6d3a8890d5f863e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57fbfa51925dee4eb3af74abcaf00e49" id="r_a57fbfa51925dee4eb3af74abcaf00e49"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SemLock.html#a57fbfa51925dee4eb3af74abcaf00e49">lock</a> ()</td></tr>
+<tr class="memdesc:a57fbfa51925dee4eb3af74abcaf00e49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take the semaphore, blocking while it is 0.  <br /></td></tr>
 <tr class="separator:a57fbfa51925dee4eb3af74abcaf00e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a127728d28bedf9dc39cff500795ce546" id="r_a127728d28bedf9dc39cff500795ce546"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SemLock.html#a127728d28bedf9dc39cff500795ce546">release</a> ()</td></tr>
+<tr class="memdesc:a127728d28bedf9dc39cff500795ce546"><td class="mdescLeft">&#160;</td><td class="mdescRight">Give the semaphore.  <br /></td></tr>
 <tr class="separator:a127728d28bedf9dc39cff500795ce546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classPds_1_1Lock.html" title="Abstract lock on a binary Semaphore (the VxWorks variant is not supported).">Lock</a> built on a <a class="el" href="classPds_1_1Semaphore.html" title="Unnamed POSIX semaphore (sem_t) shared between threads of one process.">Semaphore</a>. </p>
+<p>The semaphore starts EMPTY, so <a class="el" href="classPds_1_1SemLock.html#a57fbfa51925dee4eb3af74abcaf00e49" title="Take the semaphore, blocking while it is 0.">lock()</a> blocks until <a class="el" href="classPds_1_1SemLock.html#a127728d28bedf9dc39cff500795ce546" title="Give the semaphore.">release()</a> has been called once. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a880d17270309e7cf6d3a8890d5f863e3" name="a880d17270309e7cf6d3a8890d5f863e3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a880d17270309e7cf6d3a8890d5f863e3">&#9670;&#160;</a></span>SemLock()</h2>
 
@@ -123,6 +132,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Create the semaphore empty (count 0). </p>
 
 </div>
 </div>
@@ -150,6 +161,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Take the semaphore, blocking while it is 0. </p>
+
 </div>
 </div>
 <a id="a127728d28bedf9dc39cff500795ce546" name="a127728d28bedf9dc39cff500795ce546"></a>
@@ -174,6 +187,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Give the semaphore. </p>
 
 </div>
 </div>

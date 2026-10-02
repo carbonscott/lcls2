@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('Endpoint_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">Endpoint.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>C++ wrappers around libfabric (OFI) objects: fabric and domain, memory regions, IO vectors, messages, event and completion queues, active and passive endpoints, and a completion poller.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;rdma/fabric.h&gt;</code><br />
 <code>#include &lt;rdma/fi_endpoint.h&gt;</code><br />
 <code>#include &lt;rdma/fi_errno.h&gt;</code><br />
@@ -113,36 +116,52 @@ $(document).ready(function(){initNavTree('Endpoint_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">Pds::Fabrics::RemoteAddress</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a struct fi_rma_iov by <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a16c6b3e643253dd5a5a5de88c3ac4b31" title="Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr,...">rma_iov()</a>.  <a href="classPds_1_1Fabrics_1_1RemoteAddress.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">Pds::Fabrics::MemoryRegion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a registered libfabric memory region (fid_mr) together with its start address and length.  <a href="classPds_1_1Fabrics_1_1MemoryRegion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">Pds::Fabrics::LocalAddress</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local buffer (pointer and length) with an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>; its first two fields are reinterpreted as a struct iovec by <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a68dc3613fec6929dd34921ed8c8c4009" title="Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the f...">iovec()</a>.  <a href="classPds_1_1Fabrics_1_1LocalAddress.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">Pds::Fabrics::LocalIOVec</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growable array of struct iovec entries plus one memory-region descriptor per entry, for vectored libfabric calls.  <a href="classPds_1_1Fabrics_1_1LocalIOVec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html">Pds::Fabrics::RemoteIOVec</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.  <a href="classPds_1_1Fabrics_1_1RemoteIOVec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">Pds::Fabrics::RmaMessage</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a struct fi_msg_rma built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a> and a <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html" title="Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.">RemoteIOVec</a>, for fi_readmsg() and fi_writemsg().  <a href="classPds_1_1Fabrics_1_1RmaMessage.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Message.html">Pds::Fabrics::Message</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a struct fi_msg built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a>, for fi_sendmsg() and fi_recvmsg().  <a href="classPds_1_1Fabrics_1_1Message.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class that keeps the last error number and a formatted error message (256-byte buffer).  <a href="classPds_1_1Fabrics_1_1ErrorHandler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Info.html">Pds::Fabrics::Info</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a libfabric fi_info hints structure, preset by initialize() for FI_EP_MSG endpoints with FI_MSG and FI_RMA capabilities, FI_SOCKADDR_IN addresses and FI_RX_CQ_DATA mode.  <a href="classPds_1_1Fabrics_1_1Info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Pds::Fabrics::Fabric</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions registered in that domain.  <a href="classPds_1_1Fabrics_1_1Fabric.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common base of active and passive endpoints: holds the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, the event queue and the transmit and receive completion queues, creating any that are not supplied.  <a href="classPds_1_1Fabrics_1_1EndpointBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Pds::Fabrics::Endpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking _sync variants.  <a href="classPds_1_1Fabrics_1_1Endpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html">Pds::Fabrics::PassiveEndpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listening libfabric endpoint that accepts or rejects connection requests and keeps the Endpoints it accepted.  <a href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html">Pds::Fabrics::CompletionPoller</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits on the wait file descriptors of several completion queues with <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a>.  <a href="classPds_1_1Fabrics_1_1CompletionPoller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">Pds::Fabrics::CompletionQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a libfabric completion queue (fid_cq).  <a href="classPds_1_1Fabrics_1_1CompletionQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">Pds::Fabrics::EventQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a libfabric event queue (fid_eq).  <a href="classPds_1_1Fabrics_1_1EventQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -151,6 +170,7 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Fabrics" id="r_namespacePds_1_1Fabrics"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Fabrics.html">Pds::Fabrics</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Fabrics"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thin C++ wrappers around the libfabric API. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -165,9 +185,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912">Pds::Fabrics::EP_CONNECTED</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a2c5db474aba427c5ad48573c3f093203"><td class="mdescLeft">&#160;</td><td class="mdescRight">Life-cycle state of an EndpointBase, as assigned by the methods in Endpoint.cc.  <a href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203">More...</a><br /></td></tr>
 <tr class="separator:a2c5db474aba427c5ad48573c3f093203"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>C++ wrappers around libfabric (OFI) objects: fabric and domain, memory regions, IO vectors, messages, event and completion queues, active and passive endpoints, and a completion poller. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

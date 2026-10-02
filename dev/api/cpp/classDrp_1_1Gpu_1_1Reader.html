@@ -97,32 +97,48 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1Reader.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Receives the FPGA DMA buffers on the GPU.  
+ <a href="classDrp_1_1Gpu_1_1Reader.html#details">More...</a></p>
+
 <p><code>#include &lt;Reader.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae582ccf23257e9e60505862bd020fac7" id="r_ae582ccf23257e9e60505862bd020fac7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ae582ccf23257e9e60505862bd020fac7">Reader</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;, size_t trgPrimitiveSize, const cudaExecutionContext_t &amp;, const cuda::std::atomic&lt; unsigned &gt; &amp;terminate_d)</td></tr>
+<tr class="memdesc:ae582ccf23257e9e60505862bd020fac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the nReaders kwarg (default 1; aborts unless it is a power of 2 that divides the DMA buffer count).  <br /></td></tr>
 <tr class="separator:ae582ccf23257e9e60505862bd020fac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7e6bd1a8af7edab5c78d3c681064a38" id="r_ab7e6bd1a8af7edab5c78d3c681064a38"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ab7e6bd1a8af7edab5c78d3c681064a38">~Reader</a> ()</td></tr>
+<tr class="memdesc:ab7e6bd1a8af7edab5c78d3c681064a38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the reader graphs and free what the constructor allocated, including the host write buffers.  <br /></td></tr>
 <tr class="separator:ab7e6bd1a8af7edab5c78d3c681064a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac17267a421c451b531838be9c3c5de7e" id="r_ac17267a421c451b531838be9c3c5de7e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac17267a421c451b531838be9c3c5de7e">setupMetrics</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt;, std::map&lt; std::string, std::string &gt; &amp;labels)</td></tr>
+<tr class="memdesc:ac17267a421c451b531838be9c3c5de7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics and DRP_pblQueOcc to exporter; returns 0.  <br /></td></tr>
 <tr class="separator:ac17267a421c451b531838be9c3c5de7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af248e92d575332b17bcecf95dec0c486" id="r_af248e92d575332b17bcecf95dec0c486"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#af248e92d575332b17bcecf95dec0c486">setup</a> ()</td></tr>
+<tr class="memdesc:af248e92d575332b17bcecf95dec0c486"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record, instantiate and upload one graph per reader.  <br /></td></tr>
 <tr class="separator:af248e92d575332b17bcecf95dec0c486"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b12fa66e561a31ad145b49648d8d8ad" id="r_a8b12fa66e561a31ad145b49648d8d8ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#a8b12fa66e561a31ad145b49648d8d8ad">startup</a> ()</td></tr>
+<tr class="memdesc:a8b12fa66e561a31ad145b49648d8d8ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the handshake word of every DMA buffer and give it to the FPGA (with <a class="el" href="GpuAsync_8h.html#af0252dcedddfd20e367b614c672820e9" title="gpuSetWriteEn - Set write enable for buffer @dev: pointer to the DMA device structure">gpuSetWriteEn()</a> first in HOST_REARMS_DMA builds), reset the DMA buffer index and launch the reader graphs.  <br /></td></tr>
 <tr class="separator:a8b12fa66e561a31ad145b49648d8d8ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c62129e06939b9509f1e367a136778f" id="r_a9c62129e06939b9509f1e367a136778f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#a9c62129e06939b9509f1e367a136778f">freeDma</a> (<a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *)</td></tr>
+<tr class="memdesc:a9c62129e06939b9509f1e367a136778f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the event mask and advance the pebble queue head so that the readers can reuse a pebble buffer; <a class="el" href="classDrp_1_1Gpu_1_1RingIndexHtoD.html#a09df05e8b1eb0d15b2efdcecc53e115d" title="Move head forward when not full.">RingIndexHtoD::push()</a> ignores the buffer index passed to it.  <br /></td></tr>
 <tr class="separator:a9c62129e06939b9509f1e367a136778f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0730e340c6c24623175c884693ee2f72" id="r_a0730e340c6c24623175c884693ee2f72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#a0730e340c6c24623175c884693ee2f72">flush</a> ()</td></tr>
+<tr class="memdesc:a0730e340c6c24623175c884693ee2f72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the DMA buffers of all events whose mask is still set, then flush the pebble pool.  <br /></td></tr>
 <tr class="separator:a0730e340c6c24623175c884693ee2f72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51842934e6c84e878fbea87ea725720e" id="r_a51842934e6c84e878fbea87ea725720e"><td class="memItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#a51842934e6c84e878fbea87ea725720e">pool</a> () const</td></tr>
+<tr class="memdesc:a51842934e6c84e878fbea87ea725720e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the memory pool.  <br /></td></tr>
 <tr class="separator:a51842934e6c84e878fbea87ea725720e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbc17c647fc5d88c26ca0e9ebf9aaed5" id="r_adbc17c647fc5d88c26ca0e9ebf9aaed5"><td class="memItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#adbc17c647fc5d88c26ca0e9ebf9aaed5">readerQueues</a> () const</td></tr>
+<tr class="memdesc:adbc17c647fc5d88c26ca0e9ebf9aaed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the per-reader queues (host and device pointers).  <br /></td></tr>
 <tr class="separator:adbc17c647fc5d88c26ca0e9ebf9aaed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac810c1bfffbaa8d44bd4a02d6825436e" id="r_ac810c1bfffbaa8d44bd4a02d6825436e"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac810c1bfffbaa8d44bd4a02d6825436e">nReaders</a> () const</td></tr>
+<tr class="memdesc:ac810c1bfffbaa8d44bd4a02d6825436e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of reader streams.  <br /></td></tr>
 <tr class="separator:ac810c1bfffbaa8d44bd4a02d6825436e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Receives the FPGA DMA buffers on the GPU. </p>
+<p>Each of nReaders streams runs a self-relaunching CUDA graph that, in turn with the other streams, waits for a DMA, takes the next pebble index, copies the DMA descriptor and TimingHeader to the pinned host write buffer and calibrates the payload into the calibration buffer. It then passes the buffer on through its reader queue and gives the DMA buffer back to the FPGA. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae582ccf23257e9e60505862bd020fac7" name="ae582ccf23257e9e60505862bd020fac7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae582ccf23257e9e60505862bd020fac7">&#9670;&#160;</a></span>Reader()</h2>
 
@@ -173,6 +189,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read the nReaders kwarg (default 1; aborts unless it is a power of 2 that divides the DMA buffer count). </p>
+<p>Create the per-reader indices, queues, streams (in green_ctx, lowest priority), states and metric counters, the pebble queue (starting full) and the host write buffers (DMA descriptor, TimingHeader and trgPrimitiveSize bytes each). </p>
+
 </div>
 </div>
 <a id="ab7e6bd1a8af7edab5c78d3c681064a38" name="ab7e6bd1a8af7edab5c78d3c681064a38"></a>
@@ -189,6 +208,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Destroy the reader graphs and free what the constructor allocated, including the host write buffers. </p>
 
 </div>
 </div>
@@ -208,6 +229,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Free the DMA buffers of all events whose mask is still set, then flush the pebble pool. </p>
+
 </div>
 </div>
 <a id="a9c62129e06939b9509f1e367a136778f" name="a9c62129e06939b9509f1e367a136778f"></a>
@@ -225,6 +248,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Clear the event mask and advance the pebble queue head so that the readers can reuse a pebble buffer; <a class="el" href="classDrp_1_1Gpu_1_1RingIndexHtoD.html#a09df05e8b1eb0d15b2efdcecc53e115d" title="Move head forward when not full.">RingIndexHtoD::push()</a> ignores the buffer index passed to it. </p>
 
 </div>
 </div>
@@ -251,6 +276,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of reader streams. </p>
+
 </div>
 </div>
 <a id="a51842934e6c84e878fbea87ea725720e" name="a51842934e6c84e878fbea87ea725720e"></a>
@@ -275,6 +302,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the memory pool. </p>
 
 </div>
 </div>
@@ -301,6 +330,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the per-reader queues (host and device pointers). </p>
+
 </div>
 </div>
 <a id="af248e92d575332b17bcecf95dec0c486" name="af248e92d575332b17bcecf95dec0c486"></a>
@@ -317,6 +348,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Record, instantiate and upload one graph per reader. </p>
+<p>Returns true on failure, else false. </p>
 
 </div>
 </div>
@@ -346,6 +380,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics and DRP_pblQueOcc to exporter; returns 0. </p>
+
 </div>
 </div>
 <a id="a8b12fa66e561a31ad145b49648d8d8ad" name="a8b12fa66e561a31ad145b49648d8d8ad"></a>
@@ -362,6 +398,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Clear the handshake word of every DMA buffer and give it to the FPGA (with <a class="el" href="GpuAsync_8h.html#af0252dcedddfd20e367b614c672820e9" title="gpuSetWriteEn - Set write enable for buffer @dev: pointer to the DMA device structure">gpuSetWriteEn()</a> first in HOST_REARMS_DMA builds), reset the DMA buffer index and launch the reader graphs. </p>
+<p>Returns true only if <a class="el" href="GpuAsync_8h.html#af0252dcedddfd20e367b614c672820e9" title="gpuSetWriteEn - Set write enable for buffer @dev: pointer to the DMA device structure">gpuSetWriteEn()</a> fails, else false. </p>
 
 </div>
 </div>

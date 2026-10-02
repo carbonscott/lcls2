@@ -96,15 +96,21 @@ $(document).ready(function(){initNavTree('EbDgram_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">EbDgram.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>PulseId, TimingHeader (the memory-mapped timing header at the start of DMA data) and EbDgram (a Dgram prefixed by the pulse ID word), all packed to 4-byte alignment.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Dgram_8hh.html">xtcdata/xtc/Dgram.hh</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html">Pds::PulseId</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit word whose low 56 bits are the pulse ID and whose upper 8 bits carry control bits from the timing system (per the code comment).  <a href="classPds_1_1PulseId.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timing header at the start of the DMA data: the pulse ID word, the transition fields (time, env), an event counter and two opaque words.  <a href="classPds_1_1TimingHeader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.  <a href="classPds_1_1EbDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -113,7 +119,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>PulseId, TimingHeader (the memory-mapped timing header at the start of DMA data) and EbDgram (a Dgram prefixed by the pulse ID word), all packed to 4-byte alignment. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

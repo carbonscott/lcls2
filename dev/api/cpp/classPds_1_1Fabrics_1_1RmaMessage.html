@@ -97,46 +97,68 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1RmaMessage.html
 </div><!--header-->
 <div class="contents">
 
+<p>Owns a struct fi_msg_rma built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a> and a <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html" title="Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.">RemoteIOVec</a>, for fi_readmsg() and fi_writemsg().  
+ <a href="classPds_1_1Fabrics_1_1RmaMessage.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a96af0b253cfe1948792b34d1c0e9fd16" id="r_a96af0b253cfe1948792b34d1c0e9fd16"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a96af0b253cfe1948792b34d1c0e9fd16">RmaMessage</a> ()</td></tr>
+<tr class="memdesc:a96af0b253cfe1948792b34d1c0e9fd16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with no IO vectors; the fi_msg_rma is allocated but its fields are not initialized.  <br /></td></tr>
 <tr class="separator:a96af0b253cfe1948792b34d1c0e9fd16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1c3c090ed0b2cf6e39a6754b1b2a180" id="r_ac1c3c090ed0b2cf6e39a6754b1b2a180"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#ac1c3c090ed0b2cf6e39a6754b1b2a180">RmaMessage</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a8f769d1ec7f3538b46ba1f66f466925e">loc_iov</a>, <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html">RemoteIOVec</a> *<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#ab68fcd995bfcafff7eb074bfc9fc5784">rem_iov</a>, void *<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a5fb050d108d8489aa7ff69c973b0693d">context</a>, uint64_t <a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#afd17ba3fdc54bed0bcf8523e42d5bf26">data</a>=0)</td></tr>
+<tr class="memdesc:ac1c3c090ed0b2cf6e39a6754b1b2a180"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from the given IO vectors (each copied into the fi_msg_rma only if non-null), a context pointer and an immediate data value.  <br /></td></tr>
 <tr class="separator:ac1c3c090ed0b2cf6e39a6754b1b2a180"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fab8a7b9c295cff4aeb799d04e67296" id="r_a1fab8a7b9c295cff4aeb799d04e67296"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a1fab8a7b9c295cff4aeb799d04e67296">~RmaMessage</a> ()</td></tr>
+<tr class="memdesc:a1fab8a7b9c295cff4aeb799d04e67296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the owned fi_msg_rma; the IO vectors are not deleted.  <br /></td></tr>
 <tr class="separator:a1fab8a7b9c295cff4aeb799d04e67296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f769d1ec7f3538b46ba1f66f466925e" id="r_a8f769d1ec7f3538b46ba1f66f466925e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a8f769d1ec7f3538b46ba1f66f466925e">loc_iov</a> () const</td></tr>
+<tr class="memdesc:a8f769d1ec7f3538b46ba1f66f466925e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the local IO vector.  <br /></td></tr>
 <tr class="separator:a8f769d1ec7f3538b46ba1f66f466925e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab68fcd995bfcafff7eb074bfc9fc5784" id="r_ab68fcd995bfcafff7eb074bfc9fc5784"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html">RemoteIOVec</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#ab68fcd995bfcafff7eb074bfc9fc5784">rem_iov</a> () const</td></tr>
+<tr class="memdesc:ab68fcd995bfcafff7eb074bfc9fc5784"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remote IO vector.  <br /></td></tr>
 <tr class="separator:ab68fcd995bfcafff7eb074bfc9fc5784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5bc2787ae230a46cf67c21832702441" id="r_ab5bc2787ae230a46cf67c21832702441"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#ab5bc2787ae230a46cf67c21832702441">loc_iov</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *loc_iov)</td></tr>
+<tr class="memdesc:ab5bc2787ae230a46cf67c21832702441"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the local IO vector and copy its iovec array, descriptors and current count into the message; does nothing if loc_iov is NULL.  <br /></td></tr>
 <tr class="separator:ab5bc2787ae230a46cf67c21832702441"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a592728537725b04034ffb8a079ed27d9" id="r_a592728537725b04034ffb8a079ed27d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a592728537725b04034ffb8a079ed27d9">rem_iov</a> (<a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html">RemoteIOVec</a> *rem_iov)</td></tr>
+<tr class="memdesc:a592728537725b04034ffb8a079ed27d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the remote IO vector and copy its entry array and current count into the message; does nothing if rem_iov is NULL.  <br /></td></tr>
 <tr class="separator:a592728537725b04034ffb8a079ed27d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f245a25f262a93434a9ae20753d9777" id="r_a4f245a25f262a93434a9ae20753d9777"><td class="memItemLeft" align="right" valign="top">const struct iovec *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a4f245a25f262a93434a9ae20753d9777">msg_iov</a> () const</td></tr>
+<tr class="memdesc:a4f245a25f262a93434a9ae20753d9777"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the iovec array pointer stored in the message.  <br /></td></tr>
 <tr class="separator:a4f245a25f262a93434a9ae20753d9777"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa03a29d6e3a9aba0a3044836a5c75d48" id="r_aa03a29d6e3a9aba0a3044836a5c75d48"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#aa03a29d6e3a9aba0a3044836a5c75d48">iov_count</a> () const</td></tr>
+<tr class="memdesc:aa03a29d6e3a9aba0a3044836a5c75d48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the iovec count stored in the message.  <br /></td></tr>
 <tr class="separator:aa03a29d6e3a9aba0a3044836a5c75d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e3498b1fb429925ec892c81d3e237f5" id="r_a6e3498b1fb429925ec892c81d3e237f5"><td class="memItemLeft" align="right" valign="top">void **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a6e3498b1fb429925ec892c81d3e237f5">desc</a> () const</td></tr>
+<tr class="memdesc:a6e3498b1fb429925ec892c81d3e237f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the descriptor array pointer stored in the message.  <br /></td></tr>
 <tr class="separator:a6e3498b1fb429925ec892c81d3e237f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3637a7b652792ccd34160de9ae2a7739" id="r_a3637a7b652792ccd34160de9ae2a7739"><td class="memItemLeft" align="right" valign="top">const struct fi_rma_iov *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a3637a7b652792ccd34160de9ae2a7739">rma_iov</a> () const</td></tr>
+<tr class="memdesc:a3637a7b652792ccd34160de9ae2a7739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fi_rma_iov array pointer stored in the message.  <br /></td></tr>
 <tr class="separator:a3637a7b652792ccd34160de9ae2a7739"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88f4522514bfa4ad52bf64d5bf4b706d" id="r_a88f4522514bfa4ad52bf64d5bf4b706d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a88f4522514bfa4ad52bf64d5bf4b706d">rma_iov_count</a> () const</td></tr>
+<tr class="memdesc:a88f4522514bfa4ad52bf64d5bf4b706d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remote entry count stored in the message.  <br /></td></tr>
 <tr class="separator:a88f4522514bfa4ad52bf64d5bf4b706d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fb050d108d8489aa7ff69c973b0693d" id="r_a5fb050d108d8489aa7ff69c973b0693d"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a5fb050d108d8489aa7ff69c973b0693d">context</a> () const</td></tr>
+<tr class="memdesc:a5fb050d108d8489aa7ff69c973b0693d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the context pointer stored in the message.  <br /></td></tr>
 <tr class="separator:a5fb050d108d8489aa7ff69c973b0693d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa21b29293959398ab5494ccefbea9586" id="r_aa21b29293959398ab5494ccefbea9586"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#aa21b29293959398ab5494ccefbea9586">context</a> (void *context)</td></tr>
+<tr class="memdesc:aa21b29293959398ab5494ccefbea9586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the context pointer stored in the message.  <br /></td></tr>
 <tr class="separator:aa21b29293959398ab5494ccefbea9586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd17ba3fdc54bed0bcf8523e42d5bf26" id="r_afd17ba3fdc54bed0bcf8523e42d5bf26"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#afd17ba3fdc54bed0bcf8523e42d5bf26">data</a> () const</td></tr>
+<tr class="memdesc:afd17ba3fdc54bed0bcf8523e42d5bf26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the immediate data value stored in the message.  <br /></td></tr>
 <tr class="separator:afd17ba3fdc54bed0bcf8523e42d5bf26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b250661fb785bf188416d85d6da736f" id="r_a4b250661fb785bf188416d85d6da736f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a4b250661fb785bf188416d85d6da736f">data</a> (uint64_t data)</td></tr>
+<tr class="memdesc:a4b250661fb785bf188416d85d6da736f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the immediate data value stored in the message.  <br /></td></tr>
 <tr class="separator:a4b250661fb785bf188416d85d6da736f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6012de8ad363c30bda9439030417bb17" id="r_a6012de8ad363c30bda9439030417bb17"><td class="memItemLeft" align="right" valign="top">const struct fi_msg_rma *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html#a6012de8ad363c30bda9439030417bb17">msg</a> () const</td></tr>
+<tr class="memdesc:a6012de8ad363c30bda9439030417bb17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the underlying struct fi_msg_rma.  <br /></td></tr>
 <tr class="separator:a6012de8ad363c30bda9439030417bb17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Owns a struct fi_msg_rma built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a> and a <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html" title="Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.">RemoteIOVec</a>, for fi_readmsg() and fi_writemsg(). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a96af0b253cfe1948792b34d1c0e9fd16" name="a96af0b253cfe1948792b34d1c0e9fd16"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a96af0b253cfe1948792b34d1c0e9fd16">&#9670;&#160;</a></span>RmaMessage() <span class="overload">[1/2]</span></h2>
 
@@ -151,6 +173,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with no IO vectors; the fi_msg_rma is allocated but its fields are not initialized. </p>
 
 </div>
 </div>
@@ -192,6 +216,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from the given IO vectors (each copied into the fi_msg_rma only if non-null), a context pointer and an immediate data value. </p>
+
 </div>
 </div>
 <a id="a1fab8a7b9c295cff4aeb799d04e67296" name="a1fab8a7b9c295cff4aeb799d04e67296"></a>
@@ -208,6 +234,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delete the owned fi_msg_rma; the IO vectors are not deleted. </p>
 
 </div>
 </div>
@@ -227,6 +255,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the context pointer stored in the message. </p>
+
 </div>
 </div>
 <a id="aa21b29293959398ab5494ccefbea9586" name="aa21b29293959398ab5494ccefbea9586"></a>
@@ -245,6 +275,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the context pointer stored in the message. </p>
+
 </div>
 </div>
 <a id="afd17ba3fdc54bed0bcf8523e42d5bf26" name="afd17ba3fdc54bed0bcf8523e42d5bf26"></a>
@@ -261,6 +293,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the immediate data value stored in the message. </p>
 
 </div>
 </div>
@@ -280,6 +314,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the immediate data value stored in the message. </p>
+
 </div>
 </div>
 <a id="a6e3498b1fb429925ec892c81d3e237f5" name="a6e3498b1fb429925ec892c81d3e237f5"></a>
@@ -296,6 +332,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the descriptor array pointer stored in the message. </p>
 
 </div>
 </div>
@@ -314,6 +352,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the iovec count stored in the message. </p>
+
 </div>
 </div>
 <a id="a8f769d1ec7f3538b46ba1f66f466925e" name="a8f769d1ec7f3538b46ba1f66f466925e"></a>
@@ -330,6 +370,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the local IO vector. </p>
 
 </div>
 </div>
@@ -349,6 +391,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the local IO vector and copy its iovec array, descriptors and current count into the message; does nothing if loc_iov is NULL. </p>
+
 </div>
 </div>
 <a id="a6012de8ad363c30bda9439030417bb17" name="a6012de8ad363c30bda9439030417bb17"></a>
@@ -365,6 +409,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the underlying struct fi_msg_rma. </p>
 
 </div>
 </div>
@@ -383,6 +429,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the iovec array pointer stored in the message. </p>
+
 </div>
 </div>
 <a id="ab68fcd995bfcafff7eb074bfc9fc5784" name="ab68fcd995bfcafff7eb074bfc9fc5784"></a>
@@ -399,6 +447,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the remote IO vector. </p>
 
 </div>
 </div>
@@ -418,6 +468,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the remote IO vector and copy its entry array and current count into the message; does nothing if rem_iov is NULL. </p>
+
 </div>
 </div>
 <a id="a3637a7b652792ccd34160de9ae2a7739" name="a3637a7b652792ccd34160de9ae2a7739"></a>
@@ -435,6 +487,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the fi_rma_iov array pointer stored in the message. </p>
+
 </div>
 </div>
 <a id="a88f4522514bfa4ad52bf64d5bf4b706d" name="a88f4522514bfa4ad52bf64d5bf4b706d"></a>
@@ -451,6 +505,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the remote entry count stored in the message. </p>
 
 </div>
 </div>

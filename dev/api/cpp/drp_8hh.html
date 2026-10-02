@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('drp_8hh.html',''); initResizable(); })
   <div class="headertitle"><div class="title">drp.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Core DRP types: command-line Parameters, PGP event and DMA buffer records, the Pebble buffer allocation and the MemPool buffer pools.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
@@ -111,16 +114,22 @@ $(document).ready(function(){initNavTree('drp_8hh.html',''); initResizable(); })
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html">Drp::Parameters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executables) and from the connect information.  <a href="structDrp_1_1Parameters.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1DmaBuffer.html">Drp::DmaBuffer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size and driver index of one DMA buffer of an event.  <a href="structDrp_1_1DmaBuffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1PGPEvent.html">Drp::PGPEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One event being assembled from up to PGP_MAX_LANES lanes: a <a class="el" href="structDrp_1_1DmaBuffer.html" title="Size and driver index of one DMA buffer of an event.">DmaBuffer</a> per lane, the mask of lanes received and the pebble buffer index assigned when the event is complete.  <a href="structDrp_1_1PGPEvent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html">Drp::Pebble</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buffer ends with a sentinel word used to detect overruns.  <a href="classDrp_1_1Pebble.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here), the pebble buffers and the transition buffers.  <a href="classDrp_1_1MemPool.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html">Drp::MemPoolCpu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1MemPool.html" title="Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here...">MemPool</a> for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.  <a href="classDrp_1_1MemPoolCpu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -135,6 +144,7 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a45f83cf140f03f814a587e2b75d743ac" id="r_a45f83cf140f03f814a587e2b75d743ac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="drp_8hh.html#a45f83cf140f03f814a587e2b75d743ac">PGP_MAX_LANES</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a45f83cf140f03f814a587e2b75d743ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of PGP lanes per event (8); size of PGPEvent::buffers.  <br /></td></tr>
 <tr class="separator:a45f83cf140f03f814a587e2b75d743ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -148,9 +158,12 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1af5b0c336c106f7d3bbff6b83de4971bd">Drp::RUNINFO</a> = 255
 <br />
  }</td></tr>
+<tr class="memdesc:a262f7e15eae88ef18ce209ebf55519b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed NamesId index values used by the DRP.  <a href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1">More...</a><br /></td></tr>
 <tr class="separator:a262f7e15eae88ef18ce209ebf55519b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Core DRP types: command-line Parameters, PGP event and DMA buffer records, the Pebble buffer allocation and the MemPool buffer pools. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a45f83cf140f03f814a587e2b75d743ac" name="a45f83cf140f03f814a587e2b75d743ac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a45f83cf140f03f814a587e2b75d743ac">&#9670;&#160;</a></span>PGP_MAX_LANES</h2>
 
@@ -162,6 +175,8 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Maximum number of PGP lanes per event (8); size of PGPEvent::buffers. </p>
 
 </div>
 </div>

@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1MemPoolGpu.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Memory pool of the GPU DRP.  
+ <a href="classDrp_1_1Gpu_1_1MemPoolGpu.html#details">More...</a></p>
+
 <p><code>#include &lt;MemPool.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a>.</p>
@@ -105,113 +108,163 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1MemPoolGpu.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a63d7cc355fb7589068d8fa3d75ff152c" id="r_a63d7cc355fb7589068d8fa3d75ff152c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a63d7cc355fb7589068d8fa3d75ff152c">vecpu32_t</a> = std::vector&lt; uint32_t * &gt;</td></tr>
+<tr class="memdesc:a63d7cc355fb7589068d8fa3d75ff152c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of uint32_t pointers; not used in drpGpu.  <br /></td></tr>
 <tr class="separator:a63d7cc355fb7589068d8fa3d75ff152c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a81426708a334500aff3fac02d9e1d3b5" id="r_a81426708a334500aff3fac02d9e1d3b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a81426708a334500aff3fac02d9e1d3b5">MemPoolGpu</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para)</td></tr>
+<tr class="memdesc:a81426708a334500aff3fac02d9e1d3b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the dmaBufSize (rounded up to a multiple of 64 kB, default 64 kB), dmaBufCount (power of 2, default 4) and gpuId kwargs, set up the CUDA context and check the required device attributes.  <br /></td></tr>
 <tr class="separator:a81426708a334500aff3fac02d9e1d3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a654fe04405c5899d98f5886b66ca33e8" id="r_a654fe04405c5899d98f5886b66ca33e8"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a654fe04405c5899d98f5886b66ca33e8">~MemPoolGpu</a> ()</td></tr>
+<tr class="memdesc:a654fe04405c5899d98f5886b66ca33e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release the driver's GPU memory registration, then free the DMA buffers and the host write, calibration and reduce buffers.  <br /></td></tr>
 <tr class="separator:a654fe04405c5899d98f5886b66ca33e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a60bcf0c932b49e85dbe38b2de0715b" id="r_a1a60bcf0c932b49e85dbe38b2de0715b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a1a60bcf0c932b49e85dbe38b2de0715b">initialize</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para)</td></tr>
+<tr class="memdesc:a1a60bcf0c932b49e85dbe38b2de0715b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in MemPool.cc.  <br /></td></tr>
 <tr class="separator:a1a60bcf0c932b49e85dbe38b2de0715b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c65229af40e27249f8e3a94d6849a4a" id="r_a5c65229af40e27249f8e3a94d6849a4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a5c65229af40e27249f8e3a94d6849a4a">fd</a> () const override</td></tr>
+<tr class="memdesc:a5c65229af40e27249f8e3a94d6849a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the device file descriptor.  <br /></td></tr>
 <tr class="separator:a5c65229af40e27249f8e3a94d6849a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d9e658a2362095331e97997eeda0aa4" id="r_a3d9e658a2362095331e97997eeda0aa4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a3d9e658a2362095331e97997eeda0aa4">setMaskBytes</a> (uint8_t laneMask, unsigned virtChan) override</td></tr>
+<tr class="memdesc:a3d9e658a2362095331e97997eeda0aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: configure the driver to deliver the lanes in laneMask on virtual channel virtChan.  <br /></td></tr>
 <tr class="separator:a3d9e658a2362095331e97997eeda0aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef47b8cb875bf6a0a979e09dc2b48e67" id="r_aef47b8cb875bf6a0a979e09dc2b48e67"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classDrp_1_1Gpu_1_1CudaContext.html">CudaContext</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#aef47b8cb875bf6a0a979e09dc2b48e67">context</a> () const</td></tr>
+<tr class="memdesc:aef47b8cb875bf6a0a979e09dc2b48e67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the CUDA context.  <br /></td></tr>
 <tr class="separator:aef47b8cb875bf6a0a979e09dc2b48e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a415306a3042c8e400b65d56d00e5f8b3" id="r_a415306a3042c8e400b65d56d00e5f8b3"><td class="memItemLeft" align="right" valign="top">const std::shared_ptr&lt; <a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html">DetPanel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a415306a3042c8e400b65d56d00e5f8b3">panel</a> () const</td></tr>
+<tr class="memdesc:a415306a3042c8e400b65d56d00e5f8b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device panel.  <br /></td></tr>
 <tr class="separator:a415306a3042c8e400b65d56d00e5f8b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2596be0c46a671821925d4786b476a98" id="r_a2596be0c46a671821925d4786b476a98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a2596be0c46a671821925d4786b476a98">createHostBuffers</a> (size_t size)</td></tr>
+<tr class="memdesc:a2596be0c46a671821925d4786b476a98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed pinned host buffers of size bytes each, for the DMA descriptors, TimingHeaders and TEB input data (per the code comment).  <br /></td></tr>
 <tr class="separator:a2596be0c46a671821925d4786b476a98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e7bea5e26f27f9dc840a3f6d7d7ae45" id="r_a0e7bea5e26f27f9dc840a3f6d7d7ae45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a0e7bea5e26f27f9dc840a3f6d7d7ae45">destroyHostBuffers</a> ()</td></tr>
+<tr class="memdesc:a0e7bea5e26f27f9dc840a3f6d7d7ae45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the host write buffers if they exist.  <br /></td></tr>
 <tr class="separator:a0e7bea5e26f27f9dc840a3f6d7d7ae45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af01f9bcb8537bb32efa67e82412b683a" id="r_af01f9bcb8537bb32efa67e82412b683a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#af01f9bcb8537bb32efa67e82412b683a">createCalibBuffers</a> (unsigned nElements)</td></tr>
+<tr class="memdesc:af01f9bcb8537bb32efa67e82412b683a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed device buffers of nElements floats each for calibrated data.  <br /></td></tr>
 <tr class="separator:af01f9bcb8537bb32efa67e82412b683a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e47de21014d3bc1af77e52639995915" id="r_a0e47de21014d3bc1af77e52639995915"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a0e47de21014d3bc1af77e52639995915">destroyCalibBuffers</a> ()</td></tr>
+<tr class="memdesc:a0e47de21014d3bc1af77e52639995915"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the calibration buffers if they exist.  <br /></td></tr>
 <tr class="separator:a0e47de21014d3bc1af77e52639995915"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35d4bd640e7cdfc812c42dfdd8e1a535" id="r_a35d4bd640e7cdfc812c42dfdd8e1a535"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a35d4bd640e7cdfc812c42dfdd8e1a535">createReduceBuffers</a> (size_t nBytes, size_t reserved)</td></tr>
+<tr class="memdesc:a35d4bd640e7cdfc812c42dfdd8e1a535"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed device buffers of reserved plus nBytes bytes each (both rounded up to multiples of 8); the reserved part at the front of each is for the datagram header.  <br /></td></tr>
 <tr class="separator:a35d4bd640e7cdfc812c42dfdd8e1a535"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2837991c76959c10e3b1764659b1864a" id="r_a2837991c76959c10e3b1764659b1864a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a2837991c76959c10e3b1764659b1864a">destroyReduceBuffers</a> ()</td></tr>
+<tr class="memdesc:a2837991c76959c10e3b1764659b1864a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the reduce buffers if they exist.  <br /></td></tr>
 <tr class="separator:a2837991c76959c10e3b1764659b1864a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2833b7ecc16737395f900bb5317157c" id="r_ae2833b7ecc16737395f900bb5317157c"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#ae2833b7ecc16737395f900bb5317157c">hostWrtBufs</a> () const</td></tr>
+<tr class="memdesc:ae2833b7ecc16737395f900bb5317157c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pinned host write buffers: <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> contiguous buffers of <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a6c41b567fb456e9d524043e7c3d436cb" title="Return the size in bytes of one host write buffer (0 if none).">hostWrtBufsSize()</a> bytes.  <br /></td></tr>
 <tr class="separator:ae2833b7ecc16737395f900bb5317157c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed281356b8de38ee49087a1b492c4744" id="r_aed281356b8de38ee49087a1b492c4744"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#aed281356b8de38ee49087a1b492c4744">calibBuffers_d</a> () const</td></tr>
+<tr class="memdesc:aed281356b8de38ee49087a1b492c4744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device calibration buffers: <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> contiguous buffers of <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a7c7a682e8908d03e79e3c0dbcc8ec2a2" title="Return the size in bytes of one calibration buffer (0 if none).">calibBufsSize()</a> bytes.  <br /></td></tr>
 <tr class="separator:aed281356b8de38ee49087a1b492c4744"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a227d4860b3c018d9deb8b7d7a27e5f0e" id="r_a227d4860b3c018d9deb8b7d7a27e5f0e"><td class="memItemLeft" align="right" valign="top">const auto &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a227d4860b3c018d9deb8b7d7a27e5f0e">reduceBuffers_d</a> () const</td></tr>
+<tr class="memdesc:a227d4860b3c018d9deb8b7d7a27e5f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device address of the data part of reduce buffer 0; each further buffer starts <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a25eaa828b28109bba8725a0b2fa3389e" title="Return the size in bytes of the reserved header part at the front of each reduce buffer.">reduceBufsReserved()</a> plus <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a3d80cda5415734a13e4064badcd35120" title="Return the size in bytes of the data part of one reduce buffer, without the reserved part (0 if none)...">reduceBufsSize()</a> bytes later.  <br /></td></tr>
 <tr class="separator:a227d4860b3c018d9deb8b7d7a27e5f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c41b567fb456e9d524043e7c3d436cb" id="r_a6c41b567fb456e9d524043e7c3d436cb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a6c41b567fb456e9d524043e7c3d436cb">hostWrtBufsSize</a> () const</td></tr>
+<tr class="memdesc:a6c41b567fb456e9d524043e7c3d436cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size in bytes of one host write buffer (0 if none).  <br /></td></tr>
 <tr class="separator:a6c41b567fb456e9d524043e7c3d436cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c7a682e8908d03e79e3c0dbcc8ec2a2" id="r_a7c7a682e8908d03e79e3c0dbcc8ec2a2"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a7c7a682e8908d03e79e3c0dbcc8ec2a2">calibBufsSize</a> () const</td></tr>
+<tr class="memdesc:a7c7a682e8908d03e79e3c0dbcc8ec2a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size in bytes of one calibration buffer (0 if none).  <br /></td></tr>
 <tr class="separator:a7c7a682e8908d03e79e3c0dbcc8ec2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d80cda5415734a13e4064badcd35120" id="r_a3d80cda5415734a13e4064badcd35120"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a3d80cda5415734a13e4064badcd35120">reduceBufsSize</a> () const</td></tr>
+<tr class="memdesc:a3d80cda5415734a13e4064badcd35120"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size in bytes of the data part of one reduce buffer, without the reserved part (0 if none).  <br /></td></tr>
 <tr class="separator:a3d80cda5415734a13e4064badcd35120"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25eaa828b28109bba8725a0b2fa3389e" id="r_a25eaa828b28109bba8725a0b2fa3389e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a25eaa828b28109bba8725a0b2fa3389e">reduceBufsReserved</a> () const</td></tr>
+<tr class="memdesc:a25eaa828b28109bba8725a0b2fa3389e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size in bytes of the reserved header part at the front of each reduce buffer.  <br /></td></tr>
 <tr class="separator:a25eaa828b28109bba8725a0b2fa3389e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af549b5e51ddda4fa11f8209101206dd6" id="r_af549b5e51ddda4fa11f8209101206dd6"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#af549b5e51ddda4fa11f8209101206dd6">nPgpInUser</a> () const</td></tr>
+<tr class="memdesc:af549b5e51ddda4fa11f8209101206dd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the driver's count of receive buffers held by the user (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a87d5a0c2f03b0bf0322adad500371164" title="Get the receive buffer count in user.">dmaGetRxBuffinUserCount()</a>).  <br /></td></tr>
 <tr class="separator:af549b5e51ddda4fa11f8209101206dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4dc830c09e77c454adae9cad5865f6f" id="r_aa4dc830c09e77c454adae9cad5865f6f"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#aa4dc830c09e77c454adae9cad5865f6f">nPgpInHw</a> () const</td></tr>
+<tr class="memdesc:aa4dc830c09e77c454adae9cad5865f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the driver's count of receive buffers in hardware (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a2f0d00e0a6ac3d2d28ac40d1cc825a04" title="Get the receive buffer count in hardware.">dmaGetRxBuffinHwCount()</a>).  <br /></td></tr>
 <tr class="separator:aa4dc830c09e77c454adae9cad5865f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a609bc4217dd1d390df7afa9168d7d5d1" id="r_a609bc4217dd1d390df7afa9168d7d5d1"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a609bc4217dd1d390df7afa9168d7d5d1">nPgpInPreHw</a> () const</td></tr>
+<tr class="memdesc:a609bc4217dd1d390df7afa9168d7d5d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the driver's count of receive buffers in the pre-hardware queue (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#aa4e1a166277b389fb2fa075259427bc4" title="Get the receive buffer count in pre-hardware queue.">dmaGetRxBuffinPreHwQCount()</a>).  <br /></td></tr>
 <tr class="separator:a609bc4217dd1d390df7afa9168d7d5d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bc74baeb37e52b1dfa0e16a67742b40" id="r_a5bc74baeb37e52b1dfa0e16a67742b40"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a5bc74baeb37e52b1dfa0e16a67742b40">nPgpInRx</a> () const</td></tr>
+<tr class="memdesc:a5bc74baeb37e52b1dfa0e16a67742b40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the driver's count of receive buffers in the software queue (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a9b518eceb82550599d35eeead411740e" title="Get the receive buffer count in software queue.">dmaGetRxBuffinSwQCount()</a>).  <br /></td></tr>
 <tr class="separator:a5bc74baeb37e52b1dfa0e16a67742b40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool" id="r_a2f41d243f4314be495d5c667bfd363ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2f41d243f4314be495d5c667bfd363ec">MemPool</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para)</td></tr>
+<tr class="memdesc:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the transition buffer queue (TEB_TR_BUFFERS rounded up to a power of 2) and zero the counters.  <br /></td></tr>
 <tr class="separator:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool" id="r_aa0840f960066ce9a4815ce1865eb3d60"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aa0840f960066ce9a4815ce1865eb3d60">~MemPool</a> ()</td></tr>
+<tr class="memdesc:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool" id="r_aba9470190ab79f0ea46823e6e4e66677"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aba9470190ab79f0ea46823e6e4e66677">dmaCount</a> () const</td></tr>
+<tr class="memdesc:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers reported by the driver.  <br /></td></tr>
 <tr class="separator:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool" id="r_ab6d8c76c73d22c7492edd711bcb2b4f5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ab6d8c76c73d22c7492edd711bcb2b4f5">nDmaBuffers</a> () const</td></tr>
+<tr class="memdesc:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1MemPool.html#aba9470190ab79f0ea46823e6e4e66677" title="Return the number of DMA buffers reported by the driver.">dmaCount()</a> rounded up to a power of 2.  <br /></td></tr>
 <tr class="separator:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool" id="r_aebdf2fa6e38bb76d5ee857566018616a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aebdf2fa6e38bb76d5ee857566018616a">dmaSize</a> () const</td></tr>
+<tr class="memdesc:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one DMA buffer.  <br /></td></tr>
 <tr class="separator:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool" id="r_aa5b0c1bee40dbb578e403006e2194b1d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d">nbuffers</a> () const</td></tr>
+<tr class="memdesc:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of pebble (L1Accept) buffers.  <br /></td></tr>
 <tr class="separator:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool" id="r_a807f83bfe1192ad4bb6416b88fd6e956"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a807f83bfe1192ad4bb6416b88fd6e956">bufferSize</a> () const</td></tr>
+<tr class="memdesc:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one pebble L1Accept buffer.  <br /></td></tr>
 <tr class="separator:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool" id="r_a9609722533c5bd0c5858b92f5b8f9233"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a9609722533c5bd0c5858b92f5b8f9233">shutdown</a> ()</td></tr>
+<tr class="memdesc:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down the transition buffer queue and log how often DMA reads and returns failed.  <br /></td></tr>
 <tr class="separator:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool" id="r_a3896afb91edbbad82aba8b69983d9c22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a3896afb91edbbad82aba8b69983d9c22">allocateTr</a> ()</td></tr>
+<tr class="memdesc:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a free transition buffer as an EbDgram pointer, or return nullptr if none is available.  <br /></td></tr>
 <tr class="separator:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool" id="r_a4fea80068dea6f5f64ea0fe15590b7f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a4fea80068dea6f5f64ea0fe15590b7f6">freeTr</a> (<a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dgram)</td></tr>
+<tr class="memdesc:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the overrun sentinels of transition buffer dgram (logging the first overrun), then push it back onto the free queue.  <br /></td></tr>
 <tr class="separator:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool" id="r_a246b4b94bd8ef8ba640f5730b0e4afc1"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a246b4b94bd8ef8ba640f5730b0e4afc1">allocateDma</a> ()</td></tr>
+<tr class="memdesc:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count one DMA buffer allocation (the firmware does the actual allocation) and return the count before the increment.  <br /></td></tr>
 <tr class="separator:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool" id="r_a8c1da83c14ec24341b48372f6163f7d2"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a8c1da83c14ec24341b48372f6163f7d2">readDma</a> (uint32_t count, int32_t *ret, uint32_t *index, uint32_t *flags, uint32_t *errors, uint32_t *dest)</td></tr>
+<tr class="memdesc:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read up to count DMA buffers with <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a73a6e25f2c2c92a173d6cdc8fb1a8889" title="Receive frame and access memory-mapped buffer.">dmaReadBulkIndex()</a> on <a class="el" href="classDrp_1_1MemPool.html#a9e3116fcdfba1136b3efef1eef152be6" title="Pure virtual: return the device file descriptor.">fd()</a>, filling the per-buffer return sizes, indices, flags, errors and destinations.  <br /></td></tr>
 <tr class="separator:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool" id="r_ac13e8e07818fbfc1e6df9fb73bfd016e"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ac13e8e07818fbfc1e6df9fb73bfd016e">freeDma</a> (unsigned count, uint32_t *indices)</td></tr>
+<tr class="memdesc:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return count DMA buffers (by index) to the driver through the subclass and log errors; on success the frees are counted.  <br /></td></tr>
 <tr class="separator:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool" id="r_a2bdb18b289966a449d1f9a575b73b98b"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2bdb18b289966a449d1f9a575b73b98b">allocate</a> ()</td></tr>
+<tr class="memdesc:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the next pebble buffer index in order, blocking while all buffers are in use.  <br /></td></tr>
 <tr class="separator:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool" id="r_abb92de0cfbd16f37c006b56231857f70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#abb92de0cfbd16f37c006b56231857f70">freePebble</a> (unsigned)</td></tr>
+<tr class="memdesc:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the oldest pebble buffer (logging if the index is not the expected one), wake a blocked <a class="el" href="classDrp_1_1MemPool.html#a2bdb18b289966a449d1f9a575b73b98b" title="Allocate the next pebble buffer index in order, blocking while all buffers are in use.">allocate()</a> if the pool was full, and check that buffer's overrun sentinels.  <br /></td></tr>
 <tr class="separator:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool" id="r_a16069db630bfd282647cb3689053a1ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a16069db630bfd282647cb3689053a1ef">flushPebble</a> ()</td></tr>
+<tr class="memdesc:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free pebble buffers in order until none is in use.  <br /></td></tr>
 <tr class="separator:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool" id="r_a2b1d09c5a6118389c01bf4e9e4b714f1"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2b1d09c5a6118389c01bf4e9e4b714f1">dmaInUse</a> () const</td></tr>
+<tr class="memdesc:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA allocations minus frees.  <br /></td></tr>
 <tr class="separator:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool" id="r_a94b5d5e62a4b3e409e1e8d6d0fe031fe"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a94b5d5e62a4b3e409e1e8d6d0fe031fe">inUse</a> () const</td></tr>
+<tr class="memdesc:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of pebble allocations minus frees.  <br /></td></tr>
 <tr class="separator:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool" id="r_a722f3472c220547baaf4bbb013ea573d"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a722f3472c220547baaf4bbb013ea573d">trInUse</a> () const</td></tr>
+<tr class="memdesc:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return guess_size() of the transition buffer queue.  <br /></td></tr>
 <tr class="separator:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool" id="r_acc765905f72d7069c2d92e1ce8eed2a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#acc765905f72d7069c2d92e1ce8eed2a4">resetCounters</a> ()</td></tr>
+<tr class="memdesc:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the DMA counters (only if no DMA buffer is in use, otherwise warn), the pebble counters (with a warning if buffers are still in use), the overrun flags and the error counts.  <br /></td></tr>
 <tr class="separator:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool" id="r_ab3e88effdbdf7b61b3246bbde0c88c30"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ab3e88effdbdf7b61b3246bbde0c88c30">getAs</a> ()</td></tr>
+<tr class="memdesc:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return this pool cast with static_cast to T*.  <br /></td></tr>
 <tr class="separator:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool" id="r_a636daf2c09990965bcfb85b6d957efab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Pebble.html">Pebble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a636daf2c09990965bcfb85b6d957efab">pebble</a></td></tr>
+<tr class="memdesc:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Pebble.html" title="One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buf...">Pebble</a> holding the L1Accept and transition buffers.  <br /></td></tr>
 <tr class="separator:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool" id="r_a04c91ddcabddaf943f4e309b202277a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a04c91ddcabddaf943f4e309b202277a5">pgpEvents</a></td></tr>
+<tr class="memdesc:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Events being assembled, indexed by event counter modulo <a class="el" href="classDrp_1_1MemPool.html#ab6d8c76c73d22c7492edd711bcb2b4f5" title="Return dmaCount() rounded up to a power of 2.">nDmaBuffers()</a>.  <br /></td></tr>
 <tr class="separator:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool" id="r_a8c4bfde01afc5eb4cd5e478644c64186"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a8c4bfde01afc5eb4cd5e478644c64186">transitionDgrams</a></td></tr>
+<tr class="memdesc:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition datagram assigned to each pebble buffer index (set for non-L1Accept events).  <br /></td></tr>
 <tr class="separator:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool" id="r_ae2b6805f0a3f7cf62ec83468dd542606"><td class="memItemLeft" align="right" valign="top">void **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ae2b6805f0a3f7cf62ec83468dd542606">dmaBuffers</a></td></tr>
+<tr class="memdesc:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMA buffer addresses mapped from the driver.  <br /></td></tr>
 <tr class="separator:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:ae64a1d95bd21c16c681e35caedd46407 inherit pro_methods_classDrp_1_1MemPool" id="r_ae64a1d95bd21c16c681e35caedd46407"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ae64a1d95bd21c16c681e35caedd46407">_initialize</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;)</td></tr>
@@ -252,7 +305,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ad4184a98ab086520fa2b5c586023822f inherit pro_attribs_classDrp_1_1MemPool" id="r_ad4184a98ab086520fa2b5c586023822f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ad4184a98ab086520fa2b5c586023822f">m_nDmaRetErr</a></td></tr>
 <tr class="separator:ad4184a98ab086520fa2b5c586023822f inherit pro_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Memory pool of the GPU DRP. </p>
+<p>It opens the PGP device, or runs in simulator mode if the device is /dev/null, allocates the DMA buffers on the GPU and gives them to the FPGA. It also manages the pinned host write buffers and the calibration and reduce buffers on the GPU. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a63d7cc355fb7589068d8fa3d75ff152c" name="a63d7cc355fb7589068d8fa3d75ff152c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a63d7cc355fb7589068d8fa3d75ff152c">&#9670;&#160;</a></span>vecpu32_t</h2>
 
@@ -264,6 +320,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Vector of uint32_t pointers; not used in drpGpu. </p>
 
 </div>
 </div>
@@ -283,6 +341,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read the dmaBufSize (rounded up to a multiple of 64 kB, default 64 kB), dmaBufCount (power of 2, default 4) and gpuId kwargs, set up the CUDA context and check the required device attributes. </p>
+<p>Then set up the device registers (or simulated ones) and the DMA buffers, stop FPGA writes, set the write count and DMA target, and initialize the base pool. Aborts on errors. </p>
 
 </div>
 </div>
@@ -308,6 +369,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Release the driver's GPU memory registration, then free the DMA buffers and the host write, calibration and reduce buffers. </p>
 
 </div>
 </div>
@@ -335,6 +398,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the device calibration buffers: <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> contiguous buffers of <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a7c7a682e8908d03e79e3c0dbcc8ec2a2" title="Return the size in bytes of one calibration buffer (0 if none).">calibBufsSize()</a> bytes. </p>
+
 </div>
 </div>
 <a id="a7c7a682e8908d03e79e3c0dbcc8ec2a2" name="a7c7a682e8908d03e79e3c0dbcc8ec2a2"></a>
@@ -359,6 +424,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the size in bytes of one calibration buffer (0 if none). </p>
 
 </div>
 </div>
@@ -385,6 +452,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the CUDA context. </p>
+
 </div>
 </div>
 <a id="af01f9bcb8537bb32efa67e82412b683a" name="af01f9bcb8537bb32efa67e82412b683a"></a>
@@ -403,6 +472,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed device buffers of nElements floats each for calibrated data. </p>
+<p>Logs an error and does nothing if they already exist. </p>
+
 </div>
 </div>
 <a id="a2596be0c46a671821925d4786b476a98" name="a2596be0c46a671821925d4786b476a98"></a>
@@ -420,6 +492,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed pinned host buffers of size bytes each, for the DMA descriptors, TimingHeaders and TEB input data (per the code comment). </p>
+<p>Logs an error and does nothing if they already exist. </p>
 
 </div>
 </div>
@@ -449,6 +524,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> zeroed device buffers of reserved plus nBytes bytes each (both rounded up to multiples of 8); the reserved part at the front of each is for the datagram header. </p>
+<p>Logs an error and does nothing if they already exist. </p>
+
 </div>
 </div>
 <a id="a0e47de21014d3bc1af77e52639995915" name="a0e47de21014d3bc1af77e52639995915"></a>
@@ -465,6 +543,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the calibration buffers if they exist. </p>
 
 </div>
 </div>
@@ -483,6 +563,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Free the host write buffers if they exist. </p>
+
 </div>
 </div>
 <a id="a2837991c76959c10e3b1764659b1864a" name="a2837991c76959c10e3b1764659b1864a"></a>
@@ -499,6 +581,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the reduce buffers if they exist. </p>
 
 </div>
 </div>
@@ -524,6 +608,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the device file descriptor. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a9e3116fcdfba1136b3efef1eef152be6">Drp::MemPool</a>.</p>
 
@@ -552,6 +638,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the pinned host write buffers: <a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d" title="Return the number of pebble (L1Accept) buffers.">nbuffers()</a> contiguous buffers of <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a6c41b567fb456e9d524043e7c3d436cb" title="Return the size in bytes of one host write buffer (0 if none).">hostWrtBufsSize()</a> bytes. </p>
+
 </div>
 </div>
 <a id="a6c41b567fb456e9d524043e7c3d436cb" name="a6c41b567fb456e9d524043e7c3d436cb"></a>
@@ -577,6 +665,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the size in bytes of one host write buffer (0 if none). </p>
+
 </div>
 </div>
 <a id="a1a60bcf0c932b49e85dbe38b2de0715b" name="a1a60bcf0c932b49e85dbe38b2de0715b"></a>
@@ -594,6 +684,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared but not defined in MemPool.cc. </p>
 
 </div>
 </div>
@@ -620,6 +712,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the driver's count of receive buffers in hardware (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a2f0d00e0a6ac3d2d28ac40d1cc825a04" title="Get the receive buffer count in hardware.">dmaGetRxBuffinHwCount()</a>). </p>
+
 </div>
 </div>
 <a id="a609bc4217dd1d390df7afa9168d7d5d1" name="a609bc4217dd1d390df7afa9168d7d5d1"></a>
@@ -644,6 +738,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the driver's count of receive buffers in the pre-hardware queue (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#aa4e1a166277b389fb2fa075259427bc4" title="Get the receive buffer count in pre-hardware queue.">dmaGetRxBuffinPreHwQCount()</a>). </p>
 
 </div>
 </div>
@@ -670,6 +766,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the driver's count of receive buffers in the software queue (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a9b518eceb82550599d35eeead411740e" title="Get the receive buffer count in software queue.">dmaGetRxBuffinSwQCount()</a>). </p>
+
 </div>
 </div>
 <a id="af549b5e51ddda4fa11f8209101206dd6" name="af549b5e51ddda4fa11f8209101206dd6"></a>
@@ -694,6 +792,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the driver's count of receive buffers held by the user (<a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a87d5a0c2f03b0bf0322adad500371164" title="Get the receive buffer count in user.">dmaGetRxBuffinUserCount()</a>). </p>
 
 </div>
 </div>
@@ -720,6 +820,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the device panel. </p>
+
 </div>
 </div>
 <a id="a227d4860b3c018d9deb8b7d7a27e5f0e" name="a227d4860b3c018d9deb8b7d7a27e5f0e"></a>
@@ -744,6 +846,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the device address of the data part of reduce buffer 0; each further buffer starts <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a25eaa828b28109bba8725a0b2fa3389e" title="Return the size in bytes of the reserved header part at the front of each reduce buffer.">reduceBufsReserved()</a> plus <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html#a3d80cda5415734a13e4064badcd35120" title="Return the size in bytes of the data part of one reduce buffer, without the reserved part (0 if none)...">reduceBufsSize()</a> bytes later. </p>
 
 </div>
 </div>
@@ -770,6 +874,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the size in bytes of the reserved header part at the front of each reduce buffer. </p>
+
 </div>
 </div>
 <a id="a3d80cda5415734a13e4064badcd35120" name="a3d80cda5415734a13e4064badcd35120"></a>
@@ -794,6 +900,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the size in bytes of the data part of one reduce buffer, without the reserved part (0 if none). </p>
 
 </div>
 </div>
@@ -830,6 +938,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: configure the driver to deliver the lanes in laneMask on virtual channel virtChan. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a1f712019bababb4c32758b38a46a0f78">Drp::MemPool</a>.</p>
 

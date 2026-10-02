@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('FileWriterBase_8hh.html',''); initResi
   <div class="headertitle"><div class="title">FileWriterBase.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>FileWriterBase, the abstract file writer interface, plus SmdDef and SmdWriterBase for small-data (offset) files.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="VarDef_8hh.html">xtcdata/xtc/VarDef.hh</a>&quot;</code><br />
@@ -105,10 +108,13 @@ $(document).ready(function(){initNavTree('FileWriterBase_8hh.html',''); initResi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementations in FileWriter.cc raise while a write() call is in progress.  <a href="classDrp_1_1FileWriterBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdDef.html">Drp::SmdDef</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">VarDef of the small-data offset record: two UINT64 fields, intOffset and intDgramSize.  <a href="classDrp_1_1SmdDef.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html">Drp::SmdWriterBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1FileWriterBase.html" title="Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementati...">FileWriterBase</a> for small-data files, with a scratch buffer of transition size and a NamesLookup.  <a href="classDrp_1_1SmdWriterBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -117,7 +123,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>FileWriterBase, the abstract file writer interface, plus SmdDef and SmdWriterBase for small-data (offset) files. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

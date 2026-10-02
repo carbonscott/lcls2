@@ -98,43 +98,62 @@ $(document).ready(function(){initNavTree('classDrp_1_1EventInfo.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p>Timing information of one event, decoded from the timing data (the code comment calls it the l2si-core EventTimingMessage auxiliary data): pulse ID, fixed-rate and AC-rate bits, beam present and destination, and the sequencer words.  
+ <a href="classDrp_1_1EventInfo.html#details">More...</a></p>
+
 <p><code>#include &lt;TTFex.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1e55876adcad1a6d8fe76c335e1b1b58" id="r_a1e55876adcad1a6d8fe76c335e1b1b58"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a1e55876adcad1a6d8fe76c335e1b1b58">EventInfo</a> ()</td></tr>
+<tr class="memdesc:a1e55876adcad1a6d8fe76c335e1b1b58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct without initializing any field.  <br /></td></tr>
 <tr class="separator:a1e55876adcad1a6d8fe76c335e1b1b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7edcd37cd902f3126b06aa935ead7137" id="r_a7edcd37cd902f3126b06aa935ead7137"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a7edcd37cd902f3126b06aa935ead7137">EventInfo</a> (<a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;)</td></tr>
+<tr class="memdesc:a7edcd37cd902f3126b06aa935ead7137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the fields from the timing data in descdata: pulseId, the fixedRates (10) and acRates (6) flag arrays packed into bit masks, ebeamPresent, the low 4 bits of ebeamDestn and the 18 sequenceValues words.  <br /></td></tr>
 <tr class="separator:a7edcd37cd902f3126b06aa935ead7137"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af80c153fcff304c910a8e703fd1209b4" id="r_af80c153fcff304c910a8e703fd1209b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#af80c153fcff304c910a8e703fd1209b4">fixedRate</a> (unsigned rate) const</td></tr>
+<tr class="memdesc:af80c153fcff304c910a8e703fd1209b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit rate of the fixed-rate mask is set.  <br /></td></tr>
 <tr class="separator:af80c153fcff304c910a8e703fd1209b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3422a93568e0793d1d84d76ca93f8a3c" id="r_a3422a93568e0793d1d84d76ca93f8a3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a3422a93568e0793d1d84d76ca93f8a3c">acRate</a> (unsigned rate, unsigned tslots) const</td></tr>
+<tr class="memdesc:a3422a93568e0793d1d84d76ca93f8a3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit rate of the AC-rate mask is set and the time-slot mask shares a bit with tslots.  <br /></td></tr>
 <tr class="separator:a3422a93568e0793d1d84d76ca93f8a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dc55b5ff765f54c0d78d5d9e4d07c5a" id="r_a0dc55b5ff765f54c0d78d5d9e4d07c5a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a0dc55b5ff765f54c0d78d5d9e4d07c5a">eventCode</a> (unsigned ec) const</td></tr>
+<tr class="memdesc:a0dc55b5ff765f54c0d78d5d9e4d07c5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit (ec &amp; 0xf) of sequencer word ec &gt;&gt; 4 is set; ec 0 returns false (the code comment calls it do-not-care).  <br /></td></tr>
 <tr class="separator:a0dc55b5ff765f54c0d78d5d9e4d07c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7841eb46572730dade29d59af5676e61" id="r_a7841eb46572730dade29d59af5676e61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a7841eb46572730dade29d59af5676e61">sequencer</a> (unsigned word, unsigned bit) const</td></tr>
+<tr class="memdesc:a7841eb46572730dade29d59af5676e61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit bit of sequencer word word is set.  <br /></td></tr>
 <tr class="separator:a7841eb46572730dade29d59af5676e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbfca2a4344c4aecc8547cb7366587f4" id="r_acbfca2a4344c4aecc8547cb7366587f4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#acbfca2a4344c4aecc8547cb7366587f4">destination</a> (unsigned dest) const</td></tr>
+<tr class="memdesc:acbfca2a4344c4aecc8547cb7366587f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the beam is present and the beam destination equals dest; dest 0 returns false (do-not-care).  <br /></td></tr>
 <tr class="separator:acbfca2a4344c4aecc8547cb7366587f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a907eee2b952f85c1aa08104173362f4c" id="r_a907eee2b952f85c1aa08104173362f4c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a907eee2b952f85c1aa08104173362f4c">_pulseId</a></td></tr>
+<tr class="memdesc:a907eee2b952f85c1aa08104173362f4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulse ID, from the pulseId value.  <br /></td></tr>
 <tr class="separator:a907eee2b952f85c1aa08104173362f4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e01842b447b49270bfdcfaf0b0a383c" id="r_a3e01842b447b49270bfdcfaf0b0a383c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a3e01842b447b49270bfdcfaf0b0a383c">_fixedRates</a>: 10</td></tr>
+<tr class="memdesc:a3e01842b447b49270bfdcfaf0b0a383c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed-rate flags as a 10-bit mask (bit i set when fixedRates[i] is non-zero).  <br /></td></tr>
 <tr class="separator:a3e01842b447b49270bfdcfaf0b0a383c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20dc584b353dd72c6dbbb4ff8eb54780" id="r_a20dc584b353dd72c6dbbb4ff8eb54780"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a20dc584b353dd72c6dbbb4ff8eb54780">_acRates</a>: 6</td></tr>
+<tr class="memdesc:a20dc584b353dd72c6dbbb4ff8eb54780"><td class="mdescLeft">&#160;</td><td class="mdescRight">AC-rate flags as a 6-bit mask (bit i set when acRates[i] is non-zero).  <br /></td></tr>
 <tr class="separator:a20dc584b353dd72c6dbbb4ff8eb54780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a392a94a2053b421cf44f9368bfadc627" id="r_a392a94a2053b421cf44f9368bfadc627"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a392a94a2053b421cf44f9368bfadc627">_timeSlots</a>: 8</td></tr>
+<tr class="memdesc:a392a94a2053b421cf44f9368bfadc627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time-slot mask (8 bits) tested by <a class="el" href="classDrp_1_1EventInfo.html#a3422a93568e0793d1d84d76ca93f8a3c" title="Return true if bit rate of the AC-rate mask is set and the time-slot mask shares a bit with tslots.">acRate()</a>; the DescData constructor does not set it.  <br /></td></tr>
 <tr class="separator:a392a94a2053b421cf44f9368bfadc627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af369d1bd91628b89c34013a0b14399f6" id="r_af369d1bd91628b89c34013a0b14399f6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#af369d1bd91628b89c34013a0b14399f6">_beamPresent</a>: 1</td></tr>
+<tr class="memdesc:af369d1bd91628b89c34013a0b14399f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">1 if ebeamPresent was non-zero (one bit; the 3 unnamed bits after it are padding).  <br /></td></tr>
 <tr class="separator:af369d1bd91628b89c34013a0b14399f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79677b840a348538f66ec4410c2be24e" id="r_a79677b840a348538f66ec4410c2be24e"><td class="memItemLeft" align="right" valign="top">unsigned unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a79677b840a348538f66ec4410c2be24e">_beamDestn</a>: 3: 4</td></tr>
+<tr class="memdesc:a79677b840a348538f66ec4410c2be24e"><td class="mdescLeft">&#160;</td><td class="mdescRight">1 if ebeamPresent was non-zero; followed by 3 unnamed padding bits.  <br /></td></tr>
 <tr class="separator:a79677b840a348538f66ec4410c2be24e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60f7ef98c9cbb2cfca768358b5a45d39" id="r_a60f7ef98c9cbb2cfca768358b5a45d39"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html#a60f7ef98c9cbb2cfca768358b5a45d39">_seqInfo</a> [18]</td></tr>
+<tr class="memdesc:a60f7ef98c9cbb2cfca768358b5a45d39"><td class="mdescLeft">&#160;</td><td class="mdescRight">The 18 16-bit sequencer words (sequenceValues) used by <a class="el" href="classDrp_1_1EventInfo.html#a0dc55b5ff765f54c0d78d5d9e4d07c5a" title="Return true if bit (ec &amp; 0xf) of sequencer word ec &gt;&gt; 4 is set; ec 0 returns false (the code comment ...">eventCode()</a> and <a class="el" href="classDrp_1_1EventInfo.html#a7841eb46572730dade29d59af5676e61" title="Return true if bit bit of sequencer word word is set.">sequencer()</a>.  <br /></td></tr>
 <tr class="separator:a60f7ef98c9cbb2cfca768358b5a45d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Timing information of one event, decoded from the timing data (the code comment calls it the l2si-core EventTimingMessage auxiliary data): pulse ID, fixed-rate and AC-rate bits, beam present and destination, and the sequencer words. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1e55876adcad1a6d8fe76c335e1b1b58" name="a1e55876adcad1a6d8fe76c335e1b1b58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e55876adcad1a6d8fe76c335e1b1b58">&#9670;&#160;</a></span>EventInfo() <span class="overload">[1/2]</span></h2>
 
@@ -158,6 +177,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct without initializing any field. </p>
+
 </div>
 </div>
 <a id="a7edcd37cd902f3126b06aa935ead7137" name="a7edcd37cd902f3126b06aa935ead7137"></a>
@@ -175,6 +196,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fill the fields from the timing data in descdata: pulseId, the fixedRates (10) and acRates (6) flag arrays packed into bit masks, ebeamPresent, the low 4 bits of ebeamDestn and the 18 sequenceValues words. </p>
+<p>_timeSlots is not set. </p>
 
 </div>
 </div>
@@ -213,6 +237,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if bit rate of the AC-rate mask is set and the time-slot mask shares a bit with tslots. </p>
+
 </div>
 </div>
 <a id="acbfca2a4344c4aecc8547cb7366587f4" name="acbfca2a4344c4aecc8547cb7366587f4"></a>
@@ -238,6 +264,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if the beam is present and the beam destination equals dest; dest 0 returns false (do-not-care). </p>
 
 </div>
 </div>
@@ -265,6 +293,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if bit (ec &amp; 0xf) of sequencer word ec &gt;&gt; 4 is set; ec 0 returns false (the code comment calls it do-not-care). </p>
+
 </div>
 </div>
 <a id="af80c153fcff304c910a8e703fd1209b4" name="af80c153fcff304c910a8e703fd1209b4"></a>
@@ -290,6 +320,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if bit rate of the fixed-rate mask is set. </p>
 
 </div>
 </div>
@@ -327,6 +359,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if bit bit of sequencer word word is set. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -342,6 +376,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>AC-rate flags as a 6-bit mask (bit i set when acRates[i] is non-zero). </p>
+
 </div>
 </div>
 <a id="a79677b840a348538f66ec4410c2be24e" name="a79677b840a348538f66ec4410c2be24e"></a>
@@ -355,6 +391,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>1 if ebeamPresent was non-zero; followed by 3 unnamed padding bits. </p>
+<p>Beam destination (low 4 bits of ebeamDestn). </p>
 
 </div>
 </div>
@@ -370,6 +409,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>1 if ebeamPresent was non-zero (one bit; the 3 unnamed bits after it are padding). </p>
+
 </div>
 </div>
 <a id="a3e01842b447b49270bfdcfaf0b0a383c" name="a3e01842b447b49270bfdcfaf0b0a383c"></a>
@@ -383,6 +424,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fixed-rate flags as a 10-bit mask (bit i set when fixedRates[i] is non-zero). </p>
 
 </div>
 </div>
@@ -398,6 +441,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pulse ID, from the pulseId value. </p>
+
 </div>
 </div>
 <a id="a60f7ef98c9cbb2cfca768358b5a45d39" name="a60f7ef98c9cbb2cfca768358b5a45d39"></a>
@@ -412,6 +457,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The 18 16-bit sequencer words (sequenceValues) used by <a class="el" href="classDrp_1_1EventInfo.html#a0dc55b5ff765f54c0d78d5d9e4d07c5a" title="Return true if bit (ec &amp; 0xf) of sequencer word ec &gt;&gt; 4 is set; ec 0 returns false (the code comment ...">eventCode()</a> and <a class="el" href="classDrp_1_1EventInfo.html#a7841eb46572730dade29d59af5676e61" title="Return true if bit bit of sequencer word word is set.">sequencer()</a>. </p>
+
 </div>
 </div>
 <a id="a392a94a2053b421cf44f9368bfadc627" name="a392a94a2053b421cf44f9368bfadc627"></a>
@@ -425,6 +472,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time-slot mask (8 bits) tested by <a class="el" href="classDrp_1_1EventInfo.html#a3422a93568e0793d1d84d76ca93f8a3c" title="Return true if bit rate of the AC-rate mask is set and the time-slot mask shares a bit with tslots.">acRate()</a>; the DescData constructor does not set it. </p>
 
 </div>
 </div>

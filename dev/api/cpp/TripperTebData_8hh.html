@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('TripperTebData_8hh.html',''); initResi
   <div class="headertitle"><div class="title">TripperTebData.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>TripperTebData, the packed TEB input record of the MFX tripper trigger (Jungfrau hot-pixel counts or timing sequence words, tagged by detector type).  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
@@ -103,8 +106,10 @@ $(document).ready(function(){initNavTree('TripperTebData_8hh.html',''); initResi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html">Pds::Trg::TripperTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed TEB input record for the MFX tripper trigger: either hot-pixel information (Jungfrau and dummy contributions) or the timing sequence words, with detType acting as the tag.  <a href="structPds_1_1Trg_1_1TripperTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionPds_1_1Trg_1_1TripperTebData_1_1SmallData.html">Pds::Trg::TripperTebData::SmallData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Union of the hot-pixel fields and the 18 timing sequence words.  <a href="unionPds_1_1Trg_1_1TripperTebData_1_1SmallData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -113,9 +118,12 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Trg" id="r_namespacePds_1_1Trg"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html">Pds::Trg</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Trg"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TripperTebData, the packed TEB input record of the MFX tripper trigger (Jungfrau hot-pixel counts or timing sequence words, tagged by detector type). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -95,6 +95,9 @@ $(document).ready(function(){initNavTree('GpuAsyncOffsets_8h.html',''); initResi
   <div class="headertitle"><div class="title">GpuAsyncOffsets.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Register offsets and field extractors for the AxiGpuAsyncCore and PcieAxiVersion firmware blocks.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -102,37 +105,52 @@ Macros</h2></td></tr>
 <tr class="memdesc:a1c0b0d069312aa7d42b1af0877f9e92c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common registers.  <br /></td></tr>
 <tr class="separator:a1c0b0d069312aa7d42b1af0877f9e92c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5286c15a0caeedcfd51ac1fedaf77e7e" id="r_a5286c15a0caeedcfd51ac1fedaf77e7e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a5286c15a0caeedcfd51ac1fedaf77e7e">GPU_ASYNC_INFO1_ARCACHE</a>(_val)&#160;&#160;&#160;((_val) &amp; 0xFF)</td></tr>
+<tr class="memdesc:a5286c15a0caeedcfd51ac1fedaf77e7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 7-0 of an INFO1 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a5286c15a0caeedcfd51ac1fedaf77e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ae44ad70054298eac6235603e2af19" id="r_ae2ae44ad70054298eac6235603e2af19"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#ae2ae44ad70054298eac6235603e2af19">GPU_ASYNC_INFO1_AWCACHE</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 8) &amp; 0xFF)</td></tr>
+<tr class="memdesc:ae2ae44ad70054298eac6235603e2af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 15-8 of an INFO1 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:ae2ae44ad70054298eac6235603e2af19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b43f16960d7a8f1e82d799a443514c" id="r_a07b43f16960d7a8f1e82d799a443514c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a07b43f16960d7a8f1e82d799a443514c">GPU_ASYNC_INFO1_BYTES</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 16) &amp; 0xFF)</td></tr>
+<tr class="memdesc:a07b43f16960d7a8f1e82d799a443514c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 23-16 of an INFO1 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a07b43f16960d7a8f1e82d799a443514c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bb22d8e96d74fd8d6cdcf2e50945ada" id="r_a7bb22d8e96d74fd8d6cdcf2e50945ada"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a7bb22d8e96d74fd8d6cdcf2e50945ada">GPU_ASYNC_INFO1_MAX_BUFFERS</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 24) &amp; 0x1F)	/* 5 bits */</td></tr>
+<tr class="memdesc:a7bb22d8e96d74fd8d6cdcf2e50945ada"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 28-24 (5 bits) of an INFO1 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a7bb22d8e96d74fd8d6cdcf2e50945ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a78bb96bd3675312ecd3beb84e42acf" id="r_a6a78bb96bd3675312ecd3beb84e42acf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a6a78bb96bd3675312ecd3beb84e42acf">GPU_ASYNC_INFO2_REG</a>&#160;&#160;&#160;0x8</td></tr>
+<tr class="memdesc:a6a78bb96bd3675312ecd3beb84e42acf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x8 of the INFO2 register in the AxiGpuAsyncCore block (per the section comment).  <br /></td></tr>
 <tr class="separator:a6a78bb96bd3675312ecd3beb84e42acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b821efb0a438c3ec72da15b223367bd" id="r_a9b821efb0a438c3ec72da15b223367bd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a9b821efb0a438c3ec72da15b223367bd">GPU_ASYNC_INFO2_WR_CNT</a>(_val)&#160;&#160;&#160;((_val) &amp; 0xFF)</td></tr>
+<tr class="memdesc:a9b821efb0a438c3ec72da15b223367bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 7-0 of an INFO2 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a9b821efb0a438c3ec72da15b223367bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe649b21f9407235931feae19c9f87db" id="r_abe649b21f9407235931feae19c9f87db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#abe649b21f9407235931feae19c9f87db">GPU_ASYNC_INFO2_WR_EN</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 8) &amp; 0xFF)</td></tr>
+<tr class="memdesc:abe649b21f9407235931feae19c9f87db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 15-8 of an INFO2 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:abe649b21f9407235931feae19c9f87db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad08381333dda9dee733dbce62794672e" id="r_ad08381333dda9dee733dbce62794672e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#ad08381333dda9dee733dbce62794672e">GPU_ASYNC_INFO2_RD_CNT</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 16) &amp; 0xFF)</td></tr>
+<tr class="memdesc:ad08381333dda9dee733dbce62794672e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 23-16 of an INFO2 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:ad08381333dda9dee733dbce62794672e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25945a064d6ac35dfd71f4569d0ce462" id="r_a25945a064d6ac35dfd71f4569d0ce462"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a25945a064d6ac35dfd71f4569d0ce462">GPU_ASYNC_INFO2_RD_EN</a>(_val)&#160;&#160;&#160;(((_val) &gt;&gt; 24) &amp; 0xFF)</td></tr>
+<tr class="memdesc:a25945a064d6ac35dfd71f4569d0ce462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract bits 31-24 of an INFO2 register value; meaning inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a25945a064d6ac35dfd71f4569d0ce462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7af360ba006792d2535dbade8e4da112" id="r_a7af360ba006792d2535dbade8e4da112"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a7af360ba006792d2535dbade8e4da112">GPU_ASYNC_RX_FRAME_CNT</a>&#160;&#160;&#160;0x10</td></tr>
+<tr class="memdesc:a7af360ba006792d2535dbade8e4da112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register offset 0x10; a receive frame counter, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a7af360ba006792d2535dbade8e4da112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15bd0efe18179aa7c50055048723b66f" id="r_a15bd0efe18179aa7c50055048723b66f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a15bd0efe18179aa7c50055048723b66f">GPU_ASYNC_TX_FRAME_CNT</a>&#160;&#160;&#160;0x14</td></tr>
+<tr class="memdesc:a15bd0efe18179aa7c50055048723b66f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register offset 0x14; a transmit frame counter, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a15bd0efe18179aa7c50055048723b66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37ecf9569130f4e0f89d09d640408868" id="r_a37ecf9569130f4e0f89d09d640408868"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a37ecf9569130f4e0f89d09d640408868">GPU_ASYNC_WR_ERR_CNT</a>&#160;&#160;&#160;0x18</td></tr>
+<tr class="memdesc:a37ecf9569130f4e0f89d09d640408868"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register offset 0x18; a write error counter, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a37ecf9569130f4e0f89d09d640408868"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae691d926fa9d30fdbd5e33d5ad5d3ec" id="r_aae691d926fa9d30fdbd5e33d5ad5d3ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#aae691d926fa9d30fdbd5e33d5ad5d3ec">GPU_ASYNC_RD_ERR_CNT</a>&#160;&#160;&#160;0x1C</td></tr>
+<tr class="memdesc:aae691d926fa9d30fdbd5e33d5ad5d3ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register offset 0x1C; a read error counter, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:aae691d926fa9d30fdbd5e33d5ad5d3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ccff8e24e4a84f87200bcb335ab1e3e" id="r_a7ccff8e24e4a84f87200bcb335ab1e3e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a7ccff8e24e4a84f87200bcb335ab1e3e">GPU_ASYNC_CNT_RST</a>&#160;&#160;&#160;0x20</td></tr>
+<tr class="memdesc:a7ccff8e24e4a84f87200bcb335ab1e3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register offset 0x20; a counter reset, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a7ccff8e24e4a84f87200bcb335ab1e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81bf3fb5ff8c9a4c24fd070db167bf24" id="r_a81bf3fb5ff8c9a4c24fd070db167bf24"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a81bf3fb5ff8c9a4c24fd070db167bf24">GPU_ASYNC_WR_ADDR</a>(_n)&#160;&#160;&#160;(0x100 | ((_n) &lt;&lt; 4))</td></tr>
 <tr class="memdesc:a81bf3fb5ff8c9a4c24fd070db167bf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write addresses and sizes [Starts at 0x100].  <br /></td></tr>
 <tr class="separator:a81bf3fb5ff8c9a4c24fd070db167bf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef539e3fabdfb47d0534f06a145e6d77" id="r_aef539e3fabdfb47d0534f06a145e6d77"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#aef539e3fabdfb47d0534f06a145e6d77">GPU_ASYNC_WR_SIZE</a>(_n)&#160;&#160;&#160;(0x108 | ((_n) &lt;&lt; 4))</td></tr>
+<tr class="memdesc:aef539e3fabdfb47d0534f06a145e6d77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset of the write size register of buffer _n: 0x108 plus 16 per buffer (per the section comment on write addresses and sizes).  <br /></td></tr>
 <tr class="separator:aef539e3fabdfb47d0534f06a145e6d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0801f613257f10e8be7cee2854e29ccd" id="r_a0801f613257f10e8be7cee2854e29ccd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a0801f613257f10e8be7cee2854e29ccd">GPU_ASYNC_RD_ADDR</a>(_n)&#160;&#160;&#160;(0x200 | ((_n) &lt;&lt; 4))</td></tr>
 <tr class="memdesc:a0801f613257f10e8be7cee2854e29ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read addresses [Starts at 0x200].  <br /></td></tr>
@@ -144,27 +162,37 @@ Macros</h2></td></tr>
 <tr class="memdesc:a33366b260f751b0f2d2a3de14bf2d961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read enable bit [Starts at 0x400].  <br /></td></tr>
 <tr class="separator:a33366b260f751b0f2d2a3de14bf2d961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab38aca5f9a0372156318ff77ae8c17b0" id="r_ab38aca5f9a0372156318ff77ae8c17b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#ab38aca5f9a0372156318ff77ae8c17b0">GPU_ASYNC_RD_SIZE</a>(_n)&#160;&#160;&#160;(0x400 | ((_n) * 4))</td></tr>
+<tr class="memdesc:ab38aca5f9a0372156318ff77ae8c17b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x400 plus 4 per buffer _n; the same value as <a class="el" href="GpuAsyncOffsets_8h.html#a33366b260f751b0f2d2a3de14bf2d961" title="Read enable bit [Starts at 0x400].">GPU_ASYNC_RD_ENABLE(_n)</a>.  <br /></td></tr>
 <tr class="separator:ab38aca5f9a0372156318ff77ae8c17b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a434e99bca9f156c98212d0fc7427a880" id="r_a434e99bca9f156c98212d0fc7427a880"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a434e99bca9f156c98212d0fc7427a880">GPU_ASYNC_TOTAL_LATENCY</a>(_n)&#160;&#160;&#160;(0x500 + (_n*16))</td></tr>
 <tr class="memdesc:a434e99bca9f156c98212d0fc7427a880"><td class="mdescLeft">&#160;</td><td class="mdescRight">I/O Stats [Starts at 0x500].  <br /></td></tr>
 <tr class="separator:a434e99bca9f156c98212d0fc7427a880"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6196b1013c982951296a4a216b49b722" id="r_a6196b1013c982951296a4a216b49b722"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a6196b1013c982951296a4a216b49b722">GPU_ASYNC_GPU_LATENCY</a>(_n)&#160;&#160;&#160;(0x504 + (_n*16))</td></tr>
+<tr class="memdesc:a6196b1013c982951296a4a216b49b722"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x504 plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion.  <br /></td></tr>
 <tr class="separator:a6196b1013c982951296a4a216b49b722"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50d8ae8b8b51877f6a234ecc3f77104f" id="r_a50d8ae8b8b51877f6a234ecc3f77104f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a50d8ae8b8b51877f6a234ecc3f77104f">GPU_ASYNC_WR_LATENCY</a>(_n)&#160;&#160;&#160;(0x508 + (_n*16))</td></tr>
+<tr class="memdesc:a50d8ae8b8b51877f6a234ecc3f77104f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x508 plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion.  <br /></td></tr>
 <tr class="separator:a50d8ae8b8b51877f6a234ecc3f77104f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acabee31bcbafcdf8bbf3170d02e81937" id="r_acabee31bcbafcdf8bbf3170d02e81937"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#acabee31bcbafcdf8bbf3170d02e81937">GPU_ASYNC_RD_LATENCY</a>(_n)&#160;&#160;&#160;(0x50C + (_n*16))</td></tr>
+<tr class="memdesc:acabee31bcbafcdf8bbf3170d02e81937"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x50C plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion.  <br /></td></tr>
 <tr class="separator:acabee31bcbafcdf8bbf3170d02e81937"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7781bc9613ec655352585fb1bac2595d" id="r_a7781bc9613ec655352585fb1bac2595d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a7781bc9613ec655352585fb1bac2595d">MAX_BUFFERS</a>&#160;&#160;&#160;8</td></tr>
 <tr class="memdesc:a7781bc9613ec655352585fb1bac2595d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max buffers, must match firmware value.  <br /></td></tr>
 <tr class="separator:a7781bc9613ec655352585fb1bac2595d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a135745ed500e01ace9386340367b87c8" id="r_a135745ed500e01ace9386340367b87c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a135745ed500e01ace9386340367b87c8">PCIE_AXI_VERSION_OFFSET</a>&#160;&#160;&#160;0x20000</td></tr>
+<tr class="memdesc:a135745ed500e01ace9386340367b87c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x20000 of the AxiPcieCore version block (per the section comments).  <br /></td></tr>
 <tr class="separator:a135745ed500e01ace9386340367b87c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8ca241c6b032c3ce29d6435cf31fd5c" id="r_ac8ca241c6b032c3ce29d6435cf31fd5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#ac8ca241c6b032c3ce29d6435cf31fd5c">PCIE_AXI_VERSION_SCRATCHPAD</a>&#160;&#160;&#160;0x4</td></tr>
+<tr class="memdesc:ac8ca241c6b032c3ce29d6435cf31fd5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x4 in the PcieAxiVersion block; a scratchpad register, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:ac8ca241c6b032c3ce29d6435cf31fd5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b848249893d0264dc78b8b046967408" id="r_a4b848249893d0264dc78b8b046967408"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GpuAsyncOffsets_8h.html#a4b848249893d0264dc78b8b046967408">PCIE_AXI_VERSION_CLK_FREQ</a>&#160;&#160;&#160;(0x400+(4*8))</td></tr>
+<tr class="memdesc:a4b848249893d0264dc78b8b046967408"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset 0x420 in the PcieAxiVersion block; a clock frequency register, inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a4b848249893d0264dc78b8b046967408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Register offsets and field extractors for the AxiGpuAsyncCore and PcieAxiVersion firmware blocks. </p>
+<p>None of these macros is used in psdaq code (pgpread.cc uses one only in a commented-out line). </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a7ccff8e24e4a84f87200bcb335ab1e3e" name="a7ccff8e24e4a84f87200bcb335ab1e3e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ccff8e24e4a84f87200bcb335ab1e3e">&#9670;&#160;</a></span>GPU_ASYNC_CNT_RST</h2>
 
@@ -176,6 +204,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register offset 0x20; a counter reset, inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -195,6 +225,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Offset 0x504 plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion. </p>
+
 </div>
 </div>
 <a id="a5286c15a0caeedcfd51ac1fedaf77e7e" name="a5286c15a0caeedcfd51ac1fedaf77e7e"></a>
@@ -212,6 +244,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Extract bits 7-0 of an INFO1 register value; meaning inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -231,6 +265,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Extract bits 15-8 of an INFO1 register value; meaning inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a07b43f16960d7a8f1e82d799a443514c" name="a07b43f16960d7a8f1e82d799a443514c"></a>
@@ -249,6 +285,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Extract bits 23-16 of an INFO1 register value; meaning inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a7bb22d8e96d74fd8d6cdcf2e50945ada" name="a7bb22d8e96d74fd8d6cdcf2e50945ada"></a>
@@ -266,6 +304,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Extract bits 28-24 (5 bits) of an INFO1 register value; meaning inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -301,6 +341,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Extract bits 23-16 of an INFO2 register value; meaning inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a25945a064d6ac35dfd71f4569d0ce462" name="a25945a064d6ac35dfd71f4569d0ce462"></a>
@@ -319,6 +361,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Extract bits 31-24 of an INFO2 register value; meaning inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a6a78bb96bd3675312ecd3beb84e42acf" name="a6a78bb96bd3675312ecd3beb84e42acf"></a>
@@ -332,6 +376,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Offset 0x8 of the INFO2 register in the AxiGpuAsyncCore block (per the section comment). </p>
 
 </div>
 </div>
@@ -351,6 +397,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Extract bits 7-0 of an INFO2 register value; meaning inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="abe649b21f9407235931feae19c9f87db" name="abe649b21f9407235931feae19c9f87db"></a>
@@ -368,6 +416,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Extract bits 15-8 of an INFO2 register value; meaning inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -423,6 +473,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register offset 0x1C; a read error counter, inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="acabee31bcbafcdf8bbf3170d02e81937" name="acabee31bcbafcdf8bbf3170d02e81937"></a>
@@ -440,6 +492,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Offset 0x50C plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion. </p>
 
 </div>
 </div>
@@ -459,6 +513,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Offset 0x400 plus 4 per buffer _n; the same value as <a class="el" href="GpuAsyncOffsets_8h.html#a33366b260f751b0f2d2a3de14bf2d961" title="Read enable bit [Starts at 0x400].">GPU_ASYNC_RD_ENABLE(_n)</a>. </p>
+
 </div>
 </div>
 <a id="a7af360ba006792d2535dbade8e4da112" name="a7af360ba006792d2535dbade8e4da112"></a>
@@ -472,6 +528,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register offset 0x10; a receive frame counter, inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -506,6 +564,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register offset 0x14; a transmit frame counter, inferred from the name; not verified. </p>
 
 </div>
 </div>
@@ -561,6 +621,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register offset 0x18; a write error counter, inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a50d8ae8b8b51877f6a234ecc3f77104f" name="a50d8ae8b8b51877f6a234ecc3f77104f"></a>
@@ -579,6 +641,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Offset 0x508 plus 16 per index _n in the I/O statistics area (per the section comment); _n is not parenthesized in the expansion. </p>
+
 </div>
 </div>
 <a id="aef539e3fabdfb47d0534f06a145e6d77" name="aef539e3fabdfb47d0534f06a145e6d77"></a>
@@ -596,6 +660,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Offset of the write size register of buffer _n: 0x108 plus 16 per buffer (per the section comment on write addresses and sizes). </p>
 
 </div>
 </div>
@@ -627,6 +693,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Offset 0x420 in the PcieAxiVersion block; a clock frequency register, inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a135745ed500e01ace9386340367b87c8" name="a135745ed500e01ace9386340367b87c8"></a>
@@ -641,6 +709,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Offset 0x20000 of the AxiPcieCore version block (per the section comments). </p>
+
 </div>
 </div>
 <a id="ac8ca241c6b032c3ce29d6435cf31fd5c" name="ac8ca241c6b032c3ce29d6435cf31fd5c"></a>
@@ -654,6 +724,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Offset 0x4 in the PcieAxiVersion block; a scratchpad register, inferred from the name; not verified. </p>
 
 </div>
 </div>

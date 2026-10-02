@@ -97,22 +97,32 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1TebReceiverMetrics
 </div><!--header-->
 <div class="contents">
 
+<p>Counters of the GPU <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#af1d8971cfcb4d270cea82b46a1b82659">TebReceiver::setupMetrics()</a>.  
+ <a href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#details">More...</a></p>
+
 <p><code>#include &lt;PGPDetector.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a624d386b2d738049382341fff536b5ab" id="r_a624d386b2d738049382341fff536b5ab"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#a624d386b2d738049382341fff536b5ab">cmpCtr</a> {0}</td></tr>
+<tr class="memdesc:a624d386b2d738049382341fff536b5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Results passed to complete() (DRP_cmpCtr).  <br /></td></tr>
 <tr class="separator:a624d386b2d738049382341fff536b5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ee7b14c56e41e1f1fccc4d35a64b73c" id="r_a7ee7b14c56e41e1f1fccc4d35a64b73c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#a7ee7b14c56e41e1f1fccc4d35a64b73c">recCtr</a> {0}</td></tr>
+<tr class="memdesc:a7ee7b14c56e41e1f1fccc4d35a64b73c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Results taken by the recorder thread (DRP_recCtr).  <br /></td></tr>
 <tr class="separator:a7ee7b14c56e41e1f1fccc4d35a64b73c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe69302ca9bf9acc5309e35e4582f9ba" id="r_abe69302ca9bf9acc5309e35e4582f9ba"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#abe69302ca9bf9acc5309e35e4582f9ba">reducerStarts</a> {0}</td></tr>
+<tr class="memdesc:abe69302ca9bf9acc5309e35e4582f9ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Events handed to a reducer (DRP_redStarts).  <br /></td></tr>
 <tr class="separator:abe69302ca9bf9acc5309e35e4582f9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac097e588c66f25529f7a0fdf47092e4a" id="r_ac097e588c66f25529f7a0fdf47092e4a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#ac097e588c66f25529f7a0fdf47092e4a">reducerReceives</a> {0}</td></tr>
+<tr class="memdesc:ac097e588c66f25529f7a0fdf47092e4a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> results received by the recorder (DRP_redRcvs).  <br /></td></tr>
 <tr class="separator:ac097e588c66f25529f7a0fdf47092e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65733b13507c50263f9831ee3fb37544" id="r_a65733b13507c50263f9831ee3fb37544"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#a65733b13507c50263f9831ee3fb37544">freeCtr</a> {0}</td></tr>
+<tr class="memdesc:a65733b13507c50263f9831ee3fb37544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pebbles released by the recorder (DRP_evFrCtr).  <br /></td></tr>
 <tr class="separator:a65733b13507c50263f9831ee3fb37544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Counters of the GPU <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#af1d8971cfcb4d270cea82b46a1b82659">TebReceiver::setupMetrics()</a>. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a624d386b2d738049382341fff536b5ab" name="a624d386b2d738049382341fff536b5ab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a624d386b2d738049382341fff536b5ab">&#9670;&#160;</a></span>cmpCtr</h2>
 
@@ -124,6 +134,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Results passed to complete() (DRP_cmpCtr). </p>
 
 </div>
 </div>
@@ -139,6 +151,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pebbles released by the recorder (DRP_evFrCtr). </p>
+
 </div>
 </div>
 <a id="a7ee7b14c56e41e1f1fccc4d35a64b73c" name="a7ee7b14c56e41e1f1fccc4d35a64b73c"></a>
@@ -152,6 +166,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Results taken by the recorder thread (DRP_recCtr). </p>
 
 </div>
 </div>
@@ -167,6 +183,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> results received by the recorder (DRP_redRcvs). </p>
+
 </div>
 </div>
 <a id="abe69302ca9bf9acc5309e35e4582f9ba" name="abe69302ca9bf9acc5309e35e4582f9ba"></a>
@@ -180,6 +198,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Events handed to a reducer (DRP_redStarts). </p>
 
 </div>
 </div>

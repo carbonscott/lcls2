@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1TebReceiverBase.html','');
 </div><!--header-->
 <div class="contents">
 
+<p>Base of the DRP trigger result receivers.  
+ <a href="classDrp_1_1TebReceiverBase.html#details">More...</a></p>
+
 <p><code>#include &lt;DrpBase.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html">Pds::Eb::EbCtrbInBase</a>.</p>
@@ -109,71 +112,101 @@ $(document).ready(function(){initNavTree('classDrp_1_1TebReceiverBase.html','');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1d41b8f6c2cdce869489206d8e13ff73" id="r_a1d41b8f6c2cdce869489206d8e13ff73"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a1d41b8f6c2cdce869489206d8e13ff73">TebReceiverBase</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, <a class="el" href="classDrp_1_1DrpBase.html">DrpBase</a> &amp;)</td></tr>
+<tr class="memdesc:a1d41b8f6c2cdce869489206d8e13ff73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the EbCtrbInBase from the TEB parameters of the DRP, keep references to the DRP and its pool, and allocate a buffer of para.maxTrSize bytes for the Configure datagram.  <br /></td></tr>
 <tr class="separator:a1d41b8f6c2cdce869489206d8e13ff73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a617752a5a6a7a5a78836159891f76f62" id="r_a617752a5a6a7a5a78836159891f76f62"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a617752a5a6a7a5a78836159891f76f62">~TebReceiverBase</a> ()</td></tr>
+<tr class="memdesc:a617752a5a6a7a5a78836159891f76f62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a617752a5a6a7a5a78836159891f76f62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87ce62eec12a3fe3a46f8a287ea36dd0" id="r_a87ce62eec12a3fe3a46f8a287ea36dd0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a87ce62eec12a3fe3a46f8a287ea36dd0">resetCounters</a> (bool all)</td></tr>
+<tr class="memdesc:a87ce62eec12a3fe3a46f8a287ea36dd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the EbCtrbInBase counters, the damage count and histogram and the latency; with all true, also reset the expected next buffer index so that index 0 is expected.  <br /></td></tr>
 <tr class="separator:a87ce62eec12a3fe3a46f8a287ea36dd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36d21f1feabd05c13f701540b9f2d2b8" id="r_a36d21f1feabd05c13f701540b9f2d2b8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a36d21f1feabd05c13f701540b9f2d2b8">connect</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt;)</td></tr>
+<tr class="memdesc:a36d21f1feabd05c13f701540b9f2d2b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metrics (if the exporter is non-null), remember the node ID on the timing-system DRP (detType ts), and connect to the TEBs with EbCtrbInBase::connect().  <br /></td></tr>
 <tr class="separator:a36d21f1feabd05c13f701540b9f2d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f9085011f5daf10f15957ebbd77b89f" id="r_a7f9085011f5daf10f15957ebbd77b89f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a7f9085011f5daf10f15957ebbd77b89f">unconfigure</a> ()</td></tr>
+<tr class="memdesc:a7f9085011f5daf10f15957ebbd77b89f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the files (in case BeginRun failed), then call EbCtrbInBase::unconfigure().  <br /></td></tr>
 <tr class="separator:a7f9085011f5daf10f15957ebbd77b89f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c0fc47313b24981fee7fce506739548" id="r_a1c0fc47313b24981fee7fce506739548"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548">openFiles</a> (const <a class="el" href="structDrp_1_1RunInfo.html">RunInfo</a> &amp;runInfo)</td></tr>
+<tr class="memdesc:a1c0fc47313b24981fee7fce506739548"><td class="mdescLeft">&#160;</td><td class="mdescRight">If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/experiment/xtc/RUN.xtc2 and the small-data file RUN.smd.xtc2 in its smalldata subdirectory (RUN is experiment-rNNNN-sNNN-c000), sending a file report message for each.  <br /></td></tr>
 <tr class="separator:a1c0fc47313b24981fee7fce506739548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a914338748f4cea925df1aaaec9d858cd" id="r_a914338748f4cea925df1aaaec9d858cd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a914338748f4cea925df1aaaec9d858cd">advanceChunkId</a> ()</td></tr>
+<tr class="memdesc:a914338748f4cea925df1aaaec9d858cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">If no chunk change is pending, increment the chunk ID in the file parameters, mark a change pending and return true; otherwise return false.  <br /></td></tr>
 <tr class="separator:a914338748f4cea925df1aaaec9d858cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee09313ba100daf80fde6a7aa24389ee" id="r_aee09313ba100daf80fde6a7aa24389ee"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#aee09313ba100daf80fde6a7aa24389ee">reopenFiles</a> ()</td></tr>
+<tr class="memdesc:aee09313ba100daf80fde6a7aa24389ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the current data file and open the data file for the new chunk (name from <a class="el" href="classDrp_1_1FileParameters.html#af6af2ea6cfbc63ca862b49f4a9952d9b" title="Return the run name experiment-rNNNN-sNNN-cNNN, built from the experiment name, run number (4 digits)...">FileParameters::runName()</a>), sending a file report message and clearing the pending flag on success.  <br /></td></tr>
 <tr class="separator:aee09313ba100daf80fde6a7aa24389ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94804987dd07213c42e9c4474af65efd" id="r_a94804987dd07213c42e9c4474af65efd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a94804987dd07213c42e9c4474af65efd">closeFiles</a> ()</td></tr>
+<tr class="memdesc:a94804987dd07213c42e9c4474af65efd"><td class="mdescLeft">&#160;</td><td class="mdescRight">If writing, clear the writing flag and close the small-data and data files.  <br /></td></tr>
 <tr class="separator:a94804987dd07213c42e9c4474af65efd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2779049e8437c71d9a27f0df88a7d90" id="r_af2779049e8437c71d9a27f0df88a7d90"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#af2779049e8437c71d9a27f0df88a7d90">chunkSize</a> () const</td></tr>
+<tr class="memdesc:af2779049e8437c71d9a27f0df88a7d90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of bytes recorded since the current chunk started.  <br /></td></tr>
 <tr class="separator:af2779049e8437c71d9a27f0df88a7d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43d8c1a2d9476f1083aa03fff0a0f256" id="r_a43d8c1a2d9476f1083aa03fff0a0f256"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a43d8c1a2d9476f1083aa03fff0a0f256">chunkRequestSet</a> ()</td></tr>
+<tr class="memdesc:a43d8c1a2d9476f1083aa03fff0a0f256"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the chunk-request flag.  <br /></td></tr>
 <tr class="separator:a43d8c1a2d9476f1083aa03fff0a0f256"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d6eb923e1a93072bf39bc236551b8b5" id="r_a9d6eb923e1a93072bf39bc236551b8b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a9d6eb923e1a93072bf39bc236551b8b5">chunkReset</a> ()</td></tr>
+<tr class="memdesc:a9d6eb923e1a93072bf39bc236551b8b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the chunk offset, the chunk-request flag and the pending flag left from a previous run.  <br /></td></tr>
 <tr class="separator:a9d6eb923e1a93072bf39bc236551b8b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad75d423869d745aeffd8d450e3be6948" id="r_ad75d423869d745aeffd8d450e3be6948"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#ad75d423869d745aeffd8d450e3be6948">offsetReset</a> ()</td></tr>
+<tr class="memdesc:ad75d423869d745aeffd8d450e3be6948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the recorded byte offset to 0.  <br /></td></tr>
 <tr class="separator:ad75d423869d745aeffd8d450e3be6948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4665be6e4786612dd2d38fbbd22a13e" id="r_ad4665be6e4786612dd2d38fbbd22a13e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#ad4665be6e4786612dd2d38fbbd22a13e">offsetAppend</a> (size_t size)</td></tr>
+<tr class="memdesc:ad4665be6e4786612dd2d38fbbd22a13e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add size to the recorded byte offset.  <br /></td></tr>
 <tr class="separator:ad4665be6e4786612dd2d38fbbd22a13e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bb83ebe9fb501f0ad70abb6192bbc9c" id="r_a0bb83ebe9fb501f0ad70abb6192bbc9c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a0bb83ebe9fb501f0ad70abb6192bbc9c">writing</a> () const</td></tr>
+<tr class="memdesc:a0bb83ebe9fb501f0ad70abb6192bbc9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true while files are open for recording (from a successful <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a> until <a class="el" href="classDrp_1_1TebReceiverBase.html#a94804987dd07213c42e9c4474af65efd" title="If writing, clear the writing flag and close the small-data and data files.">closeFiles()</a>).  <br /></td></tr>
 <tr class="separator:a0bb83ebe9fb501f0ad70abb6192bbc9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab45bd2243d0b2898c8524ccfbab238ac" id="r_ab45bd2243d0b2898c8524ccfbab238ac"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classDrp_1_1FileParameters.html">FileParameters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#ab45bd2243d0b2898c8524ccfbab238ac">fileParameters</a> () const</td></tr>
+<tr class="memdesc:ab45bd2243d0b2898c8524ccfbab238ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the file parameters cached by <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a>; valid only after a successful <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a>.  <br /></td></tr>
 <tr class="separator:ab45bd2243d0b2898c8524ccfbab238ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaba35bbca8b2c038920e85e4308ede1b" id="r_aaba35bbca8b2c038920e85e4308ede1b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1FileWriterBase.html">FileWriterBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#aaba35bbca8b2c038920e85e4308ede1b">fileWriter</a> ()=0</td></tr>
+<tr class="memdesc:aaba35bbca8b2c038920e85e4308ede1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the writer used for the data file.  <br /></td></tr>
 <tr class="separator:aaba35bbca8b2c038920e85e4308ede1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8c189c8be1b55eb9a75e6cbbd65f1ee" id="r_af8c189c8be1b55eb9a75e6cbbd65f1ee"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1SmdWriterBase.html">SmdWriterBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#af8c189c8be1b55eb9a75e6cbbd65f1ee">smdWriter</a> ()=0</td></tr>
+<tr class="memdesc:af8c189c8be1b55eb9a75e6cbbd65f1ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the writer used for the small-data file.  <br /></td></tr>
 <tr class="separator:af8c189c8be1b55eb9a75e6cbbd65f1ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Eb_1_1EbCtrbInBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html">Pds::Eb::EbCtrbInBase</a></td></tr>
 <tr class="memitem:a6c537019c489b8e9e96802f7482cfbd3 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a6c537019c489b8e9e96802f7482cfbd3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a6c537019c489b8e9e96802f7482cfbd3">EbCtrbInBase</a> (const <a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html">TebCtrbParams</a> &amp;)</td></tr>
+<tr class="memdesc:a6c537019c489b8e9e96802f7482cfbd3 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep a reference to the parameters and create the server transport from prms.verbose and prms.kwargs.  <br /></td></tr>
 <tr class="separator:a6c537019c489b8e9e96802f7482cfbd3 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cf819eaa1a7fc84896538dbf6773bea inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a3cf819eaa1a7fc84896538dbf6773bea"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a3cf819eaa1a7fc84896538dbf6773bea">~EbCtrbInBase</a> ()</td></tr>
+<tr class="memdesc:a3cf819eaa1a7fc84896538dbf6773bea inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the result region.  <br /></td></tr>
 <tr class="separator:a3cf819eaa1a7fc84896538dbf6773bea inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8272cf3c8731fb339be78a747840bfba inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a8272cf3c8731fb339be78a747840bfba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a8272cf3c8731fb339be78a747840bfba">resetCounters</a> ()</td></tr>
+<tr class="memdesc:a8272cf3c8731fb339be78a747840bfba inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the batch, event, missing, bypass and no-progress counters; returns 0.  <br /></td></tr>
 <tr class="separator:a8272cf3c8731fb339be78a747840bfba inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dc766c1fd80498e0ad65d039736f88b inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a9dc766c1fd80498e0ad65d039736f88b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a9dc766c1fd80498e0ad65d039736f88b">startConnection</a> (std::string &amp;port)</td></tr>
+<tr class="memdesc:a9dc766c1fd80498e0ad65d039736f88b inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listen on prms.ifAddr:port for up to MAX_TEBS TEB connections with <a class="el" href="classPds_1_1Eb_1_1EbLfServer.html#a943f4fc9a53d16c42839af4448acdd63" title="Create a passive endpoint on addr:port and start listening with a backlog of nLinks.">EbLfServer::listen()</a>; an empty port is replaced by the bound ephemeral port.  <br /></td></tr>
 <tr class="separator:a9dc766c1fd80498e0ad65d039736f88b inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71df9ea2d0051eb8ab0f5c6b9ef39291 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a71df9ea2d0051eb8ab0f5c6b9ef39291"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a71df9ea2d0051eb8ab0f5c6b9ef39291">connect</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">MetricExporter</a> &gt;)</td></tr>
+<tr class="memdesc:a71df9ea2d0051eb8ab0f5c6b9ef39291 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metrics with the exporter (if non-null) and accept one link per builder in prms.builders with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>.  <br /></td></tr>
 <tr class="separator:a71df9ea2d0051eb8ab0f5c6b9ef39291 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cdc59b41af5621f80bb3e79e9afdb3e inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a8cdc59b41af5621f80bb3e79e9afdb3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a8cdc59b41af5621f80bb3e79e9afdb3e">configure</a> (unsigned numBuffers)</td></tr>
+<tr class="memdesc:a8cdc59b41af5621f80bb3e79e9afdb3e inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forget left-over inputs and deferred results, then for each TEB link receive the result region size, (re)allocate the shared result region if the size changed, and register it and send its description with <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html#a35f7c2b9516bb15591f74eaeb2f15474" title="Register (or reuse) a memory region for size bytes at region, send its description to the client with...">EbLfSvrLink::setupMr()</a>.  <br /></td></tr>
 <tr class="separator:a8cdc59b41af5621f80bb3e79e9afdb3e inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac98bf6b876f81e386a8912b5c1392fcc inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_ac98bf6b876f81e386a8912b5c1392fcc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac98bf6b876f81e386a8912b5c1392fcc">unconfigure</a> ()</td></tr>
+<tr class="memdesc:ac98bf6b876f81e386a8912b5c1392fcc inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac98bf6b876f81e386a8912b5c1392fcc inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac016aec51167879444c0e499a8963e50 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_ac016aec51167879444c0e499a8963e50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac016aec51167879444c0e499a8963e50">disconnect</a> ()</td></tr>
+<tr class="memdesc:ac016aec51167879444c0e499a8963e50 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac98bf6b876f81e386a8912b5c1392fcc" title="Does nothing; empty body.">unconfigure()</a>, then disconnect and drop all links.  <br /></td></tr>
 <tr class="separator:ac016aec51167879444c0e499a8963e50 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec5efc523ca340931390697198f11322 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_aec5efc523ca340931390697198f11322"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#aec5efc523ca340931390697198f11322">shutdown</a> ()</td></tr>
+<tr class="memdesc:aec5efc523ca340931390697198f11322 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac016aec51167879444c0e499a8963e50" title="Call unconfigure(), then disconnect and drop all links.">disconnect()</a>, then shut down the transport.  <br /></td></tr>
 <tr class="separator:aec5efc523ca340931390697198f11322 inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12809db77f8efdd73ece1342d93327ad inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase" id="r_a12809db77f8efdd73ece1342d93327ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a12809db77f8efdd73ece1342d93327ad">receiver</a> (<a class="el" href="classPds_1_1Eb_1_1TebContributor.html">TebContributor</a> &amp;, std::atomic&lt; bool &gt; &amp;running)</td></tr>
+<tr class="memdesc:a12809db77f8efdd73ece1342d93327ad inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body: pin to prms.core[1], name the thread drp/TEBreceiver and repeatedly wait (100 ms each) for result batches and match them with the pending inputs of ctrb, until running becomes false.  <br /></td></tr>
 <tr class="separator:a12809db77f8efdd73ece1342d93327ad inherit pub_methods_classPds_1_1Eb_1_1EbCtrbInBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a0dcfa3f55d7f9509787ba26f0ae587c3" id="r_a0dcfa3f55d7f9509787ba26f0ae587c3"><td class="memItemLeft" align="right" valign="top">static const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a0dcfa3f55d7f9509787ba26f0ae587c3">DefaultChunkThresh</a> = 500ull * 1024ull * 1024ull * 1024ull</td></tr>
+<tr class="memdesc:a0dcfa3f55d7f9509787ba26f0ae587c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chunk threshold of 500 * 1024^3 bytes (500 GB per the comment): <a class="el" href="classDrp_1_1TebReceiverBase.html#ad81d73953381aff434f185f9949eaa52" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> requests a new chunk when <a class="el" href="classDrp_1_1TebReceiverBase.html#af2779049e8437c71d9a27f0df88a7d90" title="Return the number of bytes recorded since the current chunk started.">chunkSize()</a> exceeds it, and <a class="el" href="classDrp_1_1DrpBase.html#a14d6dd76ae17ff6b5b4bce825afd8188" title="If writing and the current chunk exceeds half of DefaultChunkThresh, advance the chunk ID; if that su...">DrpBase::enable()</a> advances the chunk once <a class="el" href="classDrp_1_1TebReceiverBase.html#af2779049e8437c71d9a27f0df88a7d90" title="Return the number of bytes recorded since the current chunk started.">chunkSize()</a> exceeds half of it.  <br /></td></tr>
 <tr class="separator:a0dcfa3f55d7f9509787ba26f0ae587c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ad81d73953381aff434f185f9949eaa52" id="r_ad81d73953381aff434f185f9949eaa52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#ad81d73953381aff434f185f9949eaa52">process</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;, unsigned index) override</td></tr>
+<tr class="memdesc:ad81d73953381aff434f185f9949eaa52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: handle the result of one event; index is the buffer index of the matching input datagram.  <br /></td></tr>
 <tr class="separator:ad81d73953381aff434f185f9949eaa52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a684454faf959f9e5c8475066f19c5598" id="r_a684454faf959f9e5c8475066f19c5598"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a684454faf959f9e5c8475066f19c5598">setupMetrics</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt;, std::map&lt; std::string, std::string &gt; &amp;labels)=0</td></tr>
 <tr class="separator:a684454faf959f9e5c8475066f19c5598"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,7 +236,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a9bf363219151a981799e76fcf40c643e" id="r_a9bf363219151a981799e76fcf40c643e"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TebReceiverBase.html#a9bf363219151a981799e76fcf40c643e">m_latency</a></td></tr>
 <tr class="separator:a9bf363219151a981799e76fcf40c643e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base of the DRP trigger result receivers. </p>
+<p><a class="el" href="classDrp_1_1TebReceiverBase.html#ad81d73953381aff434f185f9949eaa52" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> checks each result against the pebble datagram, transfers the result damage, requests file chunking and calls <a class="el" href="classDrp_1_1TebReceiverBase.html#a3cbb50299149b7e271c1a6bf3d9c57e6">complete()</a>; the class also opens and closes the data and small-data files. Subclasses provide the writers, metrics and <a class="el" href="classDrp_1_1TebReceiverBase.html#a3cbb50299149b7e271c1a6bf3d9c57e6">complete()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1d41b8f6c2cdce869489206d8e13ff73" name="a1d41b8f6c2cdce869489206d8e13ff73"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d41b8f6c2cdce869489206d8e13ff73">&#9670;&#160;</a></span>TebReceiverBase()</h2>
 
@@ -230,6 +266,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the EbCtrbInBase from the TEB parameters of the DRP, keep references to the DRP and its pool, and allocate a buffer of para.maxTrSize bytes for the Configure datagram. </p>
+
 </div>
 </div>
 <a id="a617752a5a6a7a5a78836159891f76f62" name="a617752a5a6a7a5a78836159891f76f62"></a>
@@ -255,6 +293,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -273,6 +313,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If no chunk change is pending, increment the chunk ID in the file parameters, mark a change pending and return true; otherwise return false. </p>
+
 </div>
 </div>
 <a id="a43d8c1a2d9476f1083aa03fff0a0f256" name="a43d8c1a2d9476f1083aa03fff0a0f256"></a>
@@ -290,6 +332,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the chunk-request flag. </p>
+
 </div>
 </div>
 <a id="a9d6eb923e1a93072bf39bc236551b8b5" name="a9d6eb923e1a93072bf39bc236551b8b5"></a>
@@ -306,6 +350,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Clear the chunk offset, the chunk-request flag and the pending flag left from a previous run. </p>
 
 </div>
 </div>
@@ -332,6 +378,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of bytes recorded since the current chunk started. </p>
+
 </div>
 </div>
 <a id="a94804987dd07213c42e9c4474af65efd" name="a94804987dd07213c42e9c4474af65efd"></a>
@@ -348,6 +396,9 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>If writing, clear the writing flag and close the small-data and data files. </p>
+<p>Always returns an empty string. </p>
 
 </div>
 </div>
@@ -405,6 +456,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register metrics (if the exporter is non-null), remember the node ID on the timing-system DRP (detType ts), and connect to the TEBs with EbCtrbInBase::connect(). </p>
+<p>Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="ab45bd2243d0b2898c8524ccfbab238ac" name="ab45bd2243d0b2898c8524ccfbab238ac"></a>
@@ -430,6 +484,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the file parameters cached by <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a>; valid only after a successful <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a>. </p>
+
 </div>
 </div>
 <a id="aaba35bbca8b2c038920e85e4308ede1b" name="aaba35bbca8b2c038920e85e4308ede1b"></a>
@@ -454,6 +510,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the writer used for the data file. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1TebReceiver.html#abfba72d19302b808b6af80b43a1c208a">Drp::TebReceiver</a>, and <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#ad2ea38fa0744fdb6dc1c13304196549b">Drp::Gpu::TebReceiver</a>.</p>
 
@@ -483,6 +541,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Add size to the recorded byte offset. </p>
+
 </div>
 </div>
 <a id="ad75d423869d745aeffd8d450e3be6948" name="ad75d423869d745aeffd8d450e3be6948"></a>
@@ -508,6 +568,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the recorded byte offset to 0. </p>
+
 </div>
 </div>
 <a id="a1c0fc47313b24981fee7fce506739548" name="a1c0fc47313b24981fee7fce506739548"></a>
@@ -526,6 +588,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/experiment/xtc/RUN.xtc2 and the small-data file RUN.smd.xtc2 in its smalldata subdirectory (RUN is experiment-rNNNN-sNNN-c000), sending a file report message for each. </p>
+<p>Returns an empty string on success, after which <a class="el" href="classDrp_1_1TebReceiverBase.html#a0bb83ebe9fb501f0ad70abb6192bbc9c" title="Return true while files are open for recording (from a successful openFiles() until closeFiles()).">writing()</a> is true, or a message naming the file that failed. </p>
+
 </div>
 </div>
 <a id="ad81d73953381aff434f185f9949eaa52" name="ad81d73953381aff434f185f9949eaa52"></a>
@@ -541,7 +606,7 @@ Protected Attributes</h2></td></tr>
           <td class="memname">void Drp::TebReceiverBase::process </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"><em>result</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -562,6 +627,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: handle the result of one event; index is the buffer index of the matching input datagram. </p>
+<p>Called from the receiver thread for each input matched with a result, and with a locally built persist result for inputs that bypassed the TEBs. </p>
+
 <p>Implements <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b">Pds::Eb::EbCtrbInBase</a>.</p>
 
 </div>
@@ -581,6 +649,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Close the current data file and open the data file for the new chunk (name from <a class="el" href="classDrp_1_1FileParameters.html#af6af2ea6cfbc63ca862b49f4a9952d9b" title="Return the run name experiment-rNNNN-sNNN-cNNN, built from the experiment name, run number (4 digits)...">FileParameters::runName()</a>), sending a file report message and clearing the pending flag on success. </p>
+<p>Returns an empty string on success or an error message (also when not writing). </p>
+
 </div>
 </div>
 <a id="a87ce62eec12a3fe3a46f8a287ea36dd0" name="a87ce62eec12a3fe3a46f8a287ea36dd0"></a>
@@ -598,6 +669,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Reset the EbCtrbInBase counters, the damage count and histogram and the latency; with all true, also reset the expected next buffer index so that index 0 is expected. </p>
 
 </div>
 </div>
@@ -662,6 +735,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: return the writer used for the small-data file. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1TebReceiver.html#a2b23552329c99951c77c7621a26e822e">Drp::TebReceiver</a>, and <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#af3c08ac8b8fe23fd1033f29b4ff1daca">Drp::Gpu::TebReceiver</a>.</p>
 
 </div>
@@ -680,6 +755,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close the files (in case BeginRun failed), then call EbCtrbInBase::unconfigure(). </p>
 
 </div>
 </div>
@@ -706,6 +783,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true while files are open for recording (from a successful <a class="el" href="classDrp_1_1TebReceiverBase.html#a1c0fc47313b24981fee7fce506739548" title="If runInfo.runNumber is non-zero, create the directories and open the data file outputDir/instrument/...">openFiles()</a> until <a class="el" href="classDrp_1_1TebReceiverBase.html#a94804987dd07213c42e9c4474af65efd" title="If writing, clear the writing flag and close the small-data and data files.">closeFiles()</a>). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -728,6 +807,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Chunk threshold of 500 * 1024^3 bytes (500 GB per the comment): <a class="el" href="classDrp_1_1TebReceiverBase.html#ad81d73953381aff434f185f9949eaa52" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> requests a new chunk when <a class="el" href="classDrp_1_1TebReceiverBase.html#af2779049e8437c71d9a27f0df88a7d90" title="Return the number of bytes recorded since the current chunk started.">chunkSize()</a> exceeds it, and <a class="el" href="classDrp_1_1DrpBase.html#a14d6dd76ae17ff6b5b4bce825afd8188" title="If writing and the current chunk exceeds half of DefaultChunkThresh, advance the chunk ID; if that su...">DrpBase::enable()</a> advances the chunk once <a class="el" href="classDrp_1_1TebReceiverBase.html#af2779049e8437c71d9a27f0df88a7d90" title="Return the number of bytes recorded since the current chunk started.">chunkSize()</a> exceeds half of it. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1Fabric.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions registered in that domain.  
+ <a href="classPds_1_1Fabrics_1_1Fabric.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a>.</p>
@@ -104,53 +107,77 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1Fabric.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0365d8788d7e9f016d703fe3f188318e" id="r_a0365d8788d7e9f016d703fe3f188318e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a0365d8788d7e9f016d703fe3f188318e">Fabric</a> (const char *node, const char *service, uint64_t flags=0, <a class="el" href="classPds_1_1Fabrics_1_1Info.html">Info</a> *hints=0)</td></tr>
+<tr class="memdesc:a0365d8788d7e9f016d703fe3f188318e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve node and service with getaddrinfo() and fi_getinfo(), then open the fabric and domain; <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1de128a7d2b16ee136ccc4e019443789" title="Return true if initialization succeeded and shutdown has not run.">up()</a> reports success.  <br /></td></tr>
 <tr class="separator:a0365d8788d7e9f016d703fe3f188318e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a745744cc6b3a528b39c77f02de46395f" id="r_a745744cc6b3a528b39c77f02de46395f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a745744cc6b3a528b39c77f02de46395f">~Fabric</a> ()</td></tr>
+<tr class="memdesc:a745744cc6b3a528b39c77f02de46395f"><td class="mdescLeft">&#160;</td><td class="mdescRight">If <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1de128a7d2b16ee136ccc4e019443789" title="Return true if initialization succeeded and shutdown has not run.">up()</a>, delete all registered memory regions, close the domain and fabric, and free the fi_info (and the hints if owned).  <br /></td></tr>
 <tr class="separator:a745744cc6b3a528b39c77f02de46395f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1372fc49962c72141bf6d4639f74bcc" id="r_ac1372fc49962c72141bf6d4639f74bcc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#ac1372fc49962c72141bf6d4639f74bcc">register_memory</a> (void *start, size_t len)</td></tr>
+<tr class="memdesc:ac1372fc49962c72141bf6d4639f74bcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register len bytes at start for remote read/write, send and receive, then record and return the new <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>.  <br /></td></tr>
 <tr class="separator:ac1372fc49962c72141bf6d4639f74bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa635717d8839f75a04088093c590de1e" id="r_aa635717d8839f75a04088093c590de1e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#aa635717d8839f75a04088093c590de1e">register_memory</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr)</td></tr>
+<tr class="memdesc:aa635717d8839f75a04088093c590de1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register the buffer of laddr like <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#ac1372fc49962c72141bf6d4639f74bcc" title="Register len bytes at start for remote read/write, send and receive, then record and return the new M...">register_memory(void*, size_t)</a> and also store the new <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> in laddr; returns NULL on failure.  <br /></td></tr>
 <tr class="separator:aa635717d8839f75a04088093c590de1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83460f2e96b14e16e4d5d80ee548c5ad" id="r_a83460f2e96b14e16e4d5d80ee548c5ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a83460f2e96b14e16e4d5d80ee548c5ad">deregister_memory</a> (<a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr)</td></tr>
+<tr class="memdesc:a83460f2e96b14e16e4d5d80ee548c5ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove mr from the list of registered regions and delete it (which closes it); returns false if mr is not in the list.  <br /></td></tr>
 <tr class="separator:a83460f2e96b14e16e4d5d80ee548c5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36d2a869628261268e970c573c8333b7" id="r_a36d2a869628261268e970c573c8333b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a36d2a869628261268e970c573c8333b7">list_memory</a> () const</td></tr>
+<tr class="memdesc:a36d2a869628261268e970c573c8333b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the registered memory regions (pointer, start, length) to stderr.  <br /></td></tr>
 <tr class="separator:a36d2a869628261268e970c573c8333b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6514d7199fa4c6bfe720620335678f45" id="r_a6514d7199fa4c6bfe720620335678f45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a6514d7199fa4c6bfe720620335678f45">lookup_memory</a> (const void *start, size_t len) const</td></tr>
+<tr class="memdesc:a6514d7199fa4c6bfe720620335678f45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the first registered region that contains [start, start + len), or NULL.  <br /></td></tr>
 <tr class="separator:a6514d7199fa4c6bfe720620335678f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a393bdff466cc8714838d6d8ab46de2" id="r_a7a393bdff466cc8714838d6d8ab46de2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a7a393bdff466cc8714838d6d8ab46de2">lookup_memory</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr) const</td></tr>
+<tr class="memdesc:a7a393bdff466cc8714838d6d8ab46de2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the first registered region that contains the buffer of laddr, or NULL (also when laddr is NULL).  <br /></td></tr>
 <tr class="separator:a7a393bdff466cc8714838d6d8ab46de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac4c8db3d1f3a63eee19909531a0c1a4" id="r_aac4c8db3d1f3a63eee19909531a0c1a4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#aac4c8db3d1f3a63eee19909531a0c1a4">lookup_memory_iovec</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov) const</td></tr>
+<tr class="memdesc:aac4c8db3d1f3a63eee19909531a0c1a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each entry of iov that has no descriptor, set one from a registered region containing it; return iov-&gt;check_mr().  <br /></td></tr>
 <tr class="separator:aac4c8db3d1f3a63eee19909531a0c1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1de128a7d2b16ee136ccc4e019443789" id="r_a1de128a7d2b16ee136ccc4e019443789"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1de128a7d2b16ee136ccc4e019443789">up</a> () const</td></tr>
+<tr class="memdesc:a1de128a7d2b16ee136ccc4e019443789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if initialization succeeded and shutdown has not run.  <br /></td></tr>
 <tr class="separator:a1de128a7d2b16ee136ccc4e019443789"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14f3b8c304d4412a21147dbcdc9ce580" id="r_a14f3b8c304d4412a21147dbcdc9ce580"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a14f3b8c304d4412a21147dbcdc9ce580">has_rma_event_support</a> () const</td></tr>
+<tr class="memdesc:a14f3b8c304d4412a21147dbcdc9ce580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the selected fi_info has the FI_RMA_EVENT capability.  <br /></td></tr>
 <tr class="separator:a14f3b8c304d4412a21147dbcdc9ce580"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbc3382d559051327cb4874e09f27d63" id="r_acbc3382d559051327cb4874e09f27d63"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#acbc3382d559051327cb4874e09f27d63">domain_name</a> () const</td></tr>
+<tr class="memdesc:acbc3382d559051327cb4874e09f27d63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the domain name from the selected fi_info, or NULL if there is none.  <br /></td></tr>
 <tr class="separator:acbc3382d559051327cb4874e09f27d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9ade87bde7abcc3a3352b4669b12e02" id="r_af9ade87bde7abcc3a3352b4669b12e02"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#af9ade87bde7abcc3a3352b4669b12e02">fabric_name</a> () const</td></tr>
+<tr class="memdesc:af9ade87bde7abcc3a3352b4669b12e02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fabric name from the selected fi_info, or NULL if there is none.  <br /></td></tr>
 <tr class="separator:af9ade87bde7abcc3a3352b4669b12e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0aa758403f7c651797092494ef4b34aa" id="r_a0aa758403f7c651797092494ef4b34aa"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a0aa758403f7c651797092494ef4b34aa">provider</a> () const</td></tr>
+<tr class="memdesc:a0aa758403f7c651797092494ef4b34aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the provider name from the selected fi_info, or NULL if there is none.  <br /></td></tr>
 <tr class="separator:a0aa758403f7c651797092494ef4b34aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d9261a30d58b8bb8d3fb59c7500a7dd" id="r_a1d9261a30d58b8bb8d3fb59c7500a7dd"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1d9261a30d58b8bb8d3fb59c7500a7dd">version</a> () const</td></tr>
+<tr class="memdesc:a1d9261a30d58b8bb8d3fb59c7500a7dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the provider version from the selected fi_info, or 0 if there is none.  <br /></td></tr>
 <tr class="separator:a1d9261a30d58b8bb8d3fb59c7500a7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0443c35ca368274be7dee086d22e6ed" id="r_aa0443c35ca368274be7dee086d22e6ed"><td class="memItemLeft" align="right" valign="top">struct addrinfo *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#aa0443c35ca368274be7dee086d22e6ed">addrInfo</a> () const</td></tr>
+<tr class="memdesc:aa0443c35ca368274be7dee086d22e6ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the addrinfo list produced by getaddrinfo() during initialization.  <br /></td></tr>
 <tr class="separator:aa0443c35ca368274be7dee086d22e6ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d10eb79729e26288e0846a0143e1f5d" id="r_a3d10eb79729e26288e0846a0143e1f5d"><td class="memItemLeft" align="right" valign="top">struct fi_info *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a3d10eb79729e26288e0846a0143e1f5d">info</a> () const</td></tr>
+<tr class="memdesc:a3d10eb79729e26288e0846a0143e1f5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the fi_info selected by fi_getinfo().  <br /></td></tr>
 <tr class="separator:a3d10eb79729e26288e0846a0143e1f5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc48291d032c27c0c6daba017db90514" id="r_acc48291d032c27c0c6daba017db90514"><td class="memItemLeft" align="right" valign="top">struct fid_fabric *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#acc48291d032c27c0c6daba017db90514">fabric</a> () const</td></tr>
+<tr class="memdesc:acc48291d032c27c0c6daba017db90514"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the opened fid_fabric.  <br /></td></tr>
 <tr class="separator:acc48291d032c27c0c6daba017db90514"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7e4487684bb4efeeeed2b2c29ed3685" id="r_ab7e4487684bb4efeeeed2b2c29ed3685"><td class="memItemLeft" align="right" valign="top">struct fid_domain *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#ab7e4487684bb4efeeeed2b2c29ed3685">domain</a> () const</td></tr>
+<tr class="memdesc:ab7e4487684bb4efeeeed2b2c29ed3685"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the opened fid_domain.  <br /></td></tr>
 <tr class="separator:ab7e4487684bb4efeeeed2b2c29ed3685"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -166,7 +193,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions registered in that domain. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0365d8788d7e9f016d703fe3f188318e" name="a0365d8788d7e9f016d703fe3f188318e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0365d8788d7e9f016d703fe3f188318e">&#9670;&#160;</a></span>Fabric()</h2>
 
@@ -205,6 +234,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Resolve node and service with getaddrinfo() and fi_getinfo(), then open the fabric and domain; <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1de128a7d2b16ee136ccc4e019443789" title="Return true if initialization succeeded and shutdown has not run.">up()</a> reports success. </p>
+<p>If hints is null, a default <a class="el" href="classPds_1_1Fabrics_1_1Info.html" title="Owns a libfabric fi_info hints structure, preset by initialize() for FI_EP_MSG endpoints with FI_MSG ...">Info</a> is created and its hints are owned (and later freed) by this object. </p>
+
 </div>
 </div>
 <a id="a745744cc6b3a528b39c77f02de46395f" name="a745744cc6b3a528b39c77f02de46395f"></a>
@@ -221,6 +253,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>If <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#a1de128a7d2b16ee136ccc4e019443789" title="Return true if initialization succeeded and shutdown has not run.">up()</a>, delete all registered memory regions, close the domain and fabric, and free the fi_info (and the hints if owned). </p>
 
 </div>
 </div>
@@ -240,6 +274,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the addrinfo list produced by getaddrinfo() during initialization. </p>
+
 </div>
 </div>
 <a id="a83460f2e96b14e16e4d5d80ee548c5ad" name="a83460f2e96b14e16e4d5d80ee548c5ad"></a>
@@ -258,6 +294,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Remove mr from the list of registered regions and delete it (which closes it); returns false if mr is not in the list. </p>
+
 </div>
 </div>
 <a id="ab7e4487684bb4efeeeed2b2c29ed3685" name="ab7e4487684bb4efeeeed2b2c29ed3685"></a>
@@ -274,6 +312,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the opened fid_domain. </p>
 
 </div>
 </div>
@@ -292,6 +332,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the domain name from the selected fi_info, or NULL if there is none. </p>
+
 </div>
 </div>
 <a id="acc48291d032c27c0c6daba017db90514" name="acc48291d032c27c0c6daba017db90514"></a>
@@ -308,6 +350,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the opened fid_fabric. </p>
 
 </div>
 </div>
@@ -326,6 +370,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the fabric name from the selected fi_info, or NULL if there is none. </p>
+
 </div>
 </div>
 <a id="a14f3b8c304d4412a21147dbcdc9ce580" name="a14f3b8c304d4412a21147dbcdc9ce580"></a>
@@ -342,6 +388,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return true if the selected fi_info has the FI_RMA_EVENT capability. </p>
 
 </div>
 </div>
@@ -360,6 +408,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the fi_info selected by fi_getinfo(). </p>
+
 </div>
 </div>
 <a id="a36d2a869628261268e970c573c8333b7" name="a36d2a869628261268e970c573c8333b7"></a>
@@ -376,6 +426,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the registered memory regions (pointer, start, length) to stderr. </p>
 
 </div>
 </div>
@@ -405,6 +457,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the first registered region that contains [start, start + len), or NULL. </p>
+
 </div>
 </div>
 <a id="a7a393bdff466cc8714838d6d8ab46de2" name="a7a393bdff466cc8714838d6d8ab46de2"></a>
@@ -422,6 +476,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the first registered region that contains the buffer of laddr, or NULL (also when laddr is NULL). </p>
 
 </div>
 </div>
@@ -441,6 +497,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>For each entry of iov that has no descriptor, set one from a registered region containing it; return iov-&gt;check_mr(). </p>
+
 </div>
 </div>
 <a id="a0aa758403f7c651797092494ef4b34aa" name="a0aa758403f7c651797092494ef4b34aa"></a>
@@ -457,6 +515,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the provider name from the selected fi_info, or NULL if there is none. </p>
 
 </div>
 </div>
@@ -475,6 +535,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register the buffer of laddr like <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#ac1372fc49962c72141bf6d4639f74bcc" title="Register len bytes at start for remote read/write, send and receive, then record and return the new M...">register_memory(void*, size_t)</a> and also store the new <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> in laddr; returns NULL on failure. </p>
 
 </div>
 </div>
@@ -504,6 +566,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register len bytes at start for remote read/write, send and receive, then record and return the new <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>. </p>
+<p>Returns NULL if the fabric is not up or fi_mr_reg() fails (error recorded). </p>
+
 </div>
 </div>
 <a id="a1de128a7d2b16ee136ccc4e019443789" name="a1de128a7d2b16ee136ccc4e019443789"></a>
@@ -521,6 +586,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return true if initialization succeeded and shutdown has not run. </p>
+
 </div>
 </div>
 <a id="a1d9261a30d58b8bb8d3fb59c7500a7dd" name="a1d9261a30d58b8bb8d3fb59c7500a7dd"></a>
@@ -537,6 +604,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the provider version from the selected fi_info, or 0 if there is none. </p>
 
 </div>
 </div>

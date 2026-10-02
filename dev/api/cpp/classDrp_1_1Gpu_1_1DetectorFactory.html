@@ -97,16 +97,23 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1DetectorFactory.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Creates GPU detectors from shared libraries: each detector type name is mapped to a library that defines <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a>.  
+ <a href="classDrp_1_1Gpu_1_1DetectorFactory.html#details">More...</a></p>
+
 <p><code>#include &lt;PGPDetectorApp.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a76a6085d98f5dc205de68df35135fb2f" id="r_a76a6085d98f5dc205de68df35135fb2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1DetectorFactory.html#a76a6085d98f5dc205de68df35135fb2f">register_type</a> (const std::string &amp;name, const std::string &amp;solib)</td></tr>
+<tr class="memdesc:a76a6085d98f5dc205de68df35135fb2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map detector type name to library solib (both copied).  <br /></td></tr>
 <tr class="separator:a76a6085d98f5dc205de68df35135fb2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4d590bf2f2b1ffd6bb5d6073b97f489" id="r_ab4d590bf2f2b1ffd6bb5d6073b97f489"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1DetectorFactory.html#ab4d590bf2f2b1ffd6bb5d6073b97f489">create</a> (const std::string &amp;name, <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;pool)</td></tr>
+<tr class="memdesc:ab4d590bf2f2b1ffd6bb5d6073b97f489"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the library registered for name and call its <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a> with para and pool.  <br /></td></tr>
 <tr class="separator:ab4d590bf2f2b1ffd6bb5d6073b97f489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Creates GPU detectors from shared libraries: each detector type name is mapped to a library that defines <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab4d590bf2f2b1ffd6bb5d6073b97f489" name="ab4d590bf2f2b1ffd6bb5d6073b97f489"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab4d590bf2f2b1ffd6bb5d6073b97f489">&#9670;&#160;</a></span>create()</h2>
 
@@ -139,6 +146,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Load the library registered for name and call its <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a> with para and pool. </p>
+<p>Returns null if name is not registered or loading fails. </p>
+
 </div>
 </div>
 <a id="a76a6085d98f5dc205de68df35135fb2f" name="a76a6085d98f5dc205de68df35135fb2f"></a>
@@ -166,6 +176,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Map detector type name to library solib (both copied). </p>
 
 </div>
 </div>

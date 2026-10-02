@@ -97,34 +97,51 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1Reducer.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Runs the data reduction on the GPU for <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">PGPDrp</a>: loads the reducer library named by the reducer kwarg, creates one <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html" title="Base of the GPU data reduction algorithms.">ReducerAlgo</a> per worker, and passes buffer indices in and <a class="el" href="structDrp_1_1Gpu_1_1ReducerTuple.html" title="Result of reducing one buffer, passed from the reducer back to the recorder.">ReducerTuple</a> results out through per-worker queues.  
+ <a href="classDrp_1_1Gpu_1_1Reducer.html#details">More...</a></p>
+
 <p><code>#include &lt;Reducer.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a855e66ac561f19064c01c4affa8c30fd" id="r_a855e66ac561f19064c01c4affa8c30fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a855e66ac561f19064c01c4affa8c30fd">Reducer</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;, <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;, cudaExecutionContext_t green_ctx, const std::atomic&lt; bool &gt; &amp;terminate_h, const cuda::std::atomic&lt; unsigned &gt; &amp;terminate_d)</td></tr>
+<tr class="memdesc:a855e66ac561f19064c01c4affa8c30fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create one stream per worker in green_ctx and load the algorithms (aborting on failure).  <br /></td></tr>
 <tr class="separator:a855e66ac561f19064c01c4affa8c30fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfb7a5e2b55b7915faad9722ac43f427" id="r_acfb7a5e2b55b7915faad9722ac43f427"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#acfb7a5e2b55b7915faad9722ac43f427">~Reducer</a> ()</td></tr>
+<tr class="memdesc:acfb7a5e2b55b7915faad9722ac43f427"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the per-worker device and pinned memory, stop the host queues and threads, destroy the graphs and algorithms, close the library, and destroy the reduce buffers and streams.  <br /></td></tr>
 <tr class="separator:acfb7a5e2b55b7915faad9722ac43f427"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a882d68dd7d04b6a533411665af3fa18c" id="r_a882d68dd7d04b6a533411665af3fa18c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a882d68dd7d04b6a533411665af3fa18c">setupMetrics</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt;, std::map&lt; std::string, std::string &gt; &amp;labels)</td></tr>
+<tr class="memdesc:a882d68dd7d04b6a533411665af3fa18c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the per-worker DRP_redState, DRP_inpWtCtr, DRP_outWtCtr, DRP_inputQueue and DRP_outputQueue metrics and DRP_reduceTime to exporter; returns 0.  <br /></td></tr>
 <tr class="separator:a882d68dd7d04b6a533411665af3fa18c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7239320475d900a8b7a207b29f4f93c" id="r_af7239320475d900a8b7a207b29f4f93c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#af7239320475d900a8b7a207b29f4f93c">configure</a> (const nlohmann::json &amp;configureMsg, const nlohmann::json &amp;connectMsg, size_t collectionId)</td></tr>
+<tr class="memdesc:af7239320475d900a8b7a207b29f4f93c"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the algorithms use graphs, call <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#acfaaa9aa231f188a850814adad0f2943" title="Pure virtual: configure the algorithm from the Configure and Connect messages (per the code comment,...">ReducerAlgo::configure()</a> with the Configure and Connect messages on every instance.  <br /></td></tr>
 <tr class="separator:af7239320475d900a8b7a207b29f4f93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae356614e1868203795996aca825809d1" id="r_ae356614e1868203795996aca825809d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#ae356614e1868203795996aca825809d1">setup</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *be)</td></tr>
+<tr class="memdesc:ae356614e1868203795996aca825809d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the algorithms use graphs, call ReducerAlgo::configure(xtc, be) on every instance and record, instantiate and upload one graph per worker.  <br /></td></tr>
 <tr class="separator:ae356614e1868203795996aca825809d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dcf49ebf4a6c5096d9b3702d3df3e75" id="r_a9dcf49ebf4a6c5096d9b3702d3df3e75"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a9dcf49ebf4a6c5096d9b3702d3df3e75">startup</a> ()</td></tr>
+<tr class="memdesc:a9dcf49ebf4a6c5096d9b3702d3df3e75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch the worker graphs if the algorithms use them; in builds with HOST_LAUNCHED_REDUCERS, start one host worker thread per worker instead.  <br /></td></tr>
 <tr class="separator:a9dcf49ebf4a6c5096d9b3702d3df3e75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fd36d3f9baa61de50752623a4b0d778" id="r_a0fd36d3f9baa61de50752623a4b0d778"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a0fd36d3f9baa61de50752623a4b0d778">shutdown</a> ()</td></tr>
+<tr class="memdesc:a0fd36d3f9baa61de50752623a4b0d778"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down the host input and output queues if the algorithms do not use graphs; otherwise does nothing.  <br /></td></tr>
 <tr class="separator:a0fd36d3f9baa61de50752623a4b0d778"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a515d3808adf31e13fce2d01679c22733" id="r_a515d3808adf31e13fce2d01679c22733"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a515d3808adf31e13fce2d01679c22733">dump</a> () const</td></tr>
+<tr class="memdesc:a515d3808adf31e13fce2d01679c22733"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the head and tail of each worker's input and output ring queues if the algorithms use graphs.  <br /></td></tr>
 <tr class="separator:a515d3808adf31e13fce2d01679c22733"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbf866cd3ca249e40c9d0ed275a94c0c" id="r_afbf866cd3ca249e40c9d0ed275a94c0c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#afbf866cd3ca249e40c9d0ed275a94c0c">start</a> (unsigned worker, unsigned index)</td></tr>
+<tr class="memdesc:afbf866cd3ca249e40c9d0ed275a94c0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue buffer index for worker.  <br /></td></tr>
 <tr class="separator:afbf866cd3ca249e40c9d0ed275a94c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0890a647800adc55a19f36aeb34be53" id="r_ab0890a647800adc55a19f36aeb34be53"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#ab0890a647800adc55a19f36aeb34be53">receive</a> (unsigned worker, <a class="el" href="structDrp_1_1Gpu_1_1ReducerTuple.html">ReducerTuple</a> *items)</td></tr>
+<tr class="memdesc:ab0890a647800adc55a19f36aeb34be53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop the next result of worker into items.  <br /></td></tr>
 <tr class="separator:ab0890a647800adc55a19f36aeb34be53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ced34cd7fcea4521bf8b67544baf833" id="r_a3ced34cd7fcea4521bf8b67544baf833"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a3ced34cd7fcea4521bf8b67544baf833">event</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, size_t dataSize)</td></tr>
+<tr class="memdesc:a3ced34cd7fcea4521bf8b67544baf833"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the first algorithm instance describe dataSize of reduced data in xtc (<a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a05b8c1973253a77855d43ad9ccdebfcb" title="Describe dataSize of reduced data in the event xtc (per the code comment, fill the xtc data descripti...">ReducerAlgo::event()</a>); does nothing if no algorithm is loaded.  <br /></td></tr>
 <tr class="separator:a3ced34cd7fcea4521bf8b67544baf833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Runs the data reduction on the GPU for <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">PGPDrp</a>: loads the reducer library named by the reducer kwarg, creates one <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html" title="Base of the GPU data reduction algorithms.">ReducerAlgo</a> per worker, and passes buffer indices in and <a class="el" href="structDrp_1_1Gpu_1_1ReducerTuple.html" title="Result of reducing one buffer, passed from the reducer back to the recorder.">ReducerTuple</a> results out through per-worker queues. </p>
+<p>With graph algorithms, and without HOST_LAUNCHED_REDUCERS, each worker is a self-relaunching CUDA graph fed by device ring queues. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a855e66ac561f19064c01c4affa8c30fd" name="a855e66ac561f19064c01c4affa8c30fd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a855e66ac561f19064c01c4affa8c30fd">&#9670;&#160;</a></span>Reducer()</h2>
 
@@ -175,6 +192,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create one stream per worker in green_ctx and load the algorithms (aborting on failure). </p>
+<p>Then create the reduce buffers (header space plus the larger of payloadSize() and maxTrSize less the header) and the per-worker queues, state and return-code words and metric counters. </p>
+
 </div>
 </div>
 <a id="acfb7a5e2b55b7915faad9722ac43f427" name="acfb7a5e2b55b7915faad9722ac43f427"></a>
@@ -191,6 +211,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the per-worker device and pinned memory, stop the host queues and threads, destroy the graphs and algorithms, close the library, and destroy the reduce buffers and streams. </p>
 
 </div>
 </div>
@@ -227,6 +249,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If the algorithms use graphs, call <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#acfaaa9aa231f188a850814adad0f2943" title="Pure virtual: configure the algorithm from the Configure and Connect messages (per the code comment,...">ReducerAlgo::configure()</a> with the Configure and Connect messages on every instance. </p>
+<p>Returns -1 if one fails, else 0. </p>
+
 </div>
 </div>
 <a id="a515d3808adf31e13fce2d01679c22733" name="a515d3808adf31e13fce2d01679c22733"></a>
@@ -243,6 +268,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the head and tail of each worker's input and output ring queues if the algorithms use graphs. </p>
 
 </div>
 </div>
@@ -286,6 +313,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Let the first algorithm instance describe dataSize of reduced data in xtc (<a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a05b8c1973253a77855d43ad9ccdebfcb" title="Describe dataSize of reduced data in the event xtc (per the code comment, fill the xtc data descripti...">ReducerAlgo::event()</a>); does nothing if no algorithm is loaded. </p>
+
 </div>
 </div>
 <a id="ab0890a647800adc55a19f36aeb34be53" name="ab0890a647800adc55a19f36aeb34be53"></a>
@@ -322,6 +351,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pop the next result of worker into items. </p>
+<p>With the device ring queue, returns false if none is ready; with a host queue, blocks until one arrives and returns false after shutdown. </p>
+
 </div>
 </div>
 <a id="ae356614e1868203795996aca825809d1" name="ae356614e1868203795996aca825809d1"></a>
@@ -349,6 +381,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>If the algorithms use graphs, call ReducerAlgo::configure(xtc, be) on every instance and record, instantiate and upload one graph per worker. </p>
+<p>Returns true on failure, else false. </p>
 
 </div>
 </div>
@@ -378,6 +413,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Add the per-worker DRP_redState, DRP_inpWtCtr, DRP_outWtCtr, DRP_inputQueue and DRP_outputQueue metrics and DRP_reduceTime to exporter; returns 0. </p>
+
 </div>
 </div>
 <a id="a0fd36d3f9baa61de50752623a4b0d778" name="a0fd36d3f9baa61de50752623a4b0d778"></a>
@@ -394,6 +431,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Shut down the host input and output queues if the algorithms do not use graphs; otherwise does nothing. </p>
 
 </div>
 </div>
@@ -431,6 +470,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Queue buffer index for worker. </p>
+<p>Returns false only when the device input ring queue is full (graph algorithms without HOST_LAUNCHED_REDUCERS); host queue pushes return true. </p>
+
 </div>
 </div>
 <a id="a9dcf49ebf4a6c5096d9b3702d3df3e75" name="a9dcf49ebf4a6c5096d9b3702d3df3e75"></a>
@@ -447,6 +489,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Launch the worker graphs if the algorithms use them; in builds with HOST_LAUNCHED_REDUCERS, start one host worker thread per worker instead. </p>
+<p>Returns false. </p>
 
 </div>
 </div>

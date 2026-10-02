@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1CompletionPolle
 </div><!--header-->
 <div class="contents">
 
+<p>Waits on the wait file descriptors of several completion queues with <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a>.  
+ <a href="classPds_1_1Fabrics_1_1CompletionPoller.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a>.</p>
@@ -104,29 +107,41 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1CompletionPolle
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3b37c9fb26f12847ba5419210741d160" id="r_a3b37c9fb26f12847ba5419210741d160"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a3b37c9fb26f12847ba5419210741d160">CompletionPoller</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *fabric, nfds_t size_hint=1)</td></tr>
+<tr class="memdesc:a3b37c9fb26f12847ba5419210741d160"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate arrays for size_hint entries; <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a698e93198f317fd6f710523fce9a6b01" title="Return true if initialization succeeded and shutdown() has not been called.">up()</a> is false if the fabric is not up.  <br /></td></tr>
 <tr class="separator:a3b37c9fb26f12847ba5419210741d160"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a970b41ba5d4080cf0b60e4dbb702b419" id="r_a970b41ba5d4080cf0b60e4dbb702b419"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a970b41ba5d4080cf0b60e4dbb702b419">~CompletionPoller</a> ()</td></tr>
+<tr class="memdesc:a970b41ba5d4080cf0b60e4dbb702b419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a543f8b8964a5a1ad87fdd45a1ac0a8c9" title="Free the arrays if up() and mark the poller down.">shutdown()</a> to free the arrays.  <br /></td></tr>
 <tr class="separator:a970b41ba5d4080cf0b60e4dbb702b419"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a698e93198f317fd6f710523fce9a6b01" id="r_a698e93198f317fd6f710523fce9a6b01"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a698e93198f317fd6f710523fce9a6b01">up</a> () const</td></tr>
+<tr class="memdesc:a698e93198f317fd6f710523fce9a6b01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if initialization succeeded and <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a543f8b8964a5a1ad87fdd45a1ac0a8c9" title="Free the arrays if up() and mark the poller down.">shutdown()</a> has not been called.  <br /></td></tr>
 <tr class="separator:a698e93198f317fd6f710523fce9a6b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a52e15a82e3dad32483a626e11a43c9" id="r_a2a52e15a82e3dad32483a626e11a43c9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a2a52e15a82e3dad32483a626e11a43c9">add</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a> *endp, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *cq)</td></tr>
+<tr class="memdesc:a2a52e15a82e3dad32483a626e11a43c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the wait fd of cq (from fi_control FI_GETWAIT) for endp, growing the arrays if needed; returns false if endp is already present or fi_control() fails.  <br /></td></tr>
 <tr class="separator:a2a52e15a82e3dad32483a626e11a43c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad507cfa4f421b33be5c89abdd775ee82" id="r_ad507cfa4f421b33be5c89abdd775ee82"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#ad507cfa4f421b33be5c89abdd775ee82">del</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a> *endp)</td></tr>
+<tr class="memdesc:ad507cfa4f421b33be5c89abdd775ee82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the entry for endp; returns false if it is not present.  <br /></td></tr>
 <tr class="separator:ad507cfa4f421b33be5c89abdd775ee82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a264e87a549cfd383d98ebc97eac62eda" id="r_a264e87a549cfd383d98ebc97eac62eda"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda">poll</a> (int timeout=-1)</td></tr>
+<tr class="memdesc:a264e87a549cfd383d98ebc97eac62eda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call fi_trywait() on all queues and, if it succeeds, <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a> their fds with timeout.  <br /></td></tr>
 <tr class="separator:a264e87a549cfd383d98ebc97eac62eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a543f8b8964a5a1ad87fdd45a1ac0a8c9" id="r_a543f8b8964a5a1ad87fdd45a1ac0a8c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a543f8b8964a5a1ad87fdd45a1ac0a8c9">shutdown</a> ()</td></tr>
+<tr class="memdesc:a543f8b8964a5a1ad87fdd45a1ac0a8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the arrays if <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a698e93198f317fd6f710523fce9a6b01" title="Return true if initialization succeeded and shutdown() has not been called.">up()</a> and mark the poller down.  <br /></td></tr>
 <tr class="separator:a543f8b8964a5a1ad87fdd45a1ac0a8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -142,7 +157,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Waits on the wait file descriptors of several completion queues with <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3b37c9fb26f12847ba5419210741d160" name="a3b37c9fb26f12847ba5419210741d160"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3b37c9fb26f12847ba5419210741d160">&#9670;&#160;</a></span>CompletionPoller()</h2>
 
@@ -169,6 +186,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate arrays for size_hint entries; <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a698e93198f317fd6f710523fce9a6b01" title="Return true if initialization succeeded and shutdown() has not been called.">up()</a> is false if the fabric is not up. </p>
+
 </div>
 </div>
 <a id="a970b41ba5d4080cf0b60e4dbb702b419" name="a970b41ba5d4080cf0b60e4dbb702b419"></a>
@@ -185,6 +204,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a543f8b8964a5a1ad87fdd45a1ac0a8c9" title="Free the arrays if up() and mark the poller down.">shutdown()</a> to free the arrays. </p>
 
 </div>
 </div>
@@ -215,6 +236,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Add the wait fd of cq (from fi_control FI_GETWAIT) for endp, growing the arrays if needed; returns false if endp is already present or fi_control() fails. </p>
+
 </div>
 </div>
 <a id="ad507cfa4f421b33be5c89abdd775ee82" name="ad507cfa4f421b33be5c89abdd775ee82"></a>
@@ -232,6 +255,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Remove the entry for endp; returns false if it is not present. </p>
 
 </div>
 </div>
@@ -251,6 +276,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call fi_trywait() on all queues and, if it succeeds, <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a> their fds with timeout. </p>
+<p>Returns -FI_EAGAIN if fi_trywait() returns it, otherwise the <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a> result or the fi_trywait() error. </p>
+
 </div>
 </div>
 <a id="a543f8b8964a5a1ad87fdd45a1ac0a8c9" name="a543f8b8964a5a1ad87fdd45a1ac0a8c9"></a>
@@ -268,6 +296,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Free the arrays if <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a698e93198f317fd6f710523fce9a6b01" title="Return true if initialization succeeded and shutdown() has not been called.">up()</a> and mark the poller down. </p>
+
 </div>
 </div>
 <a id="a698e93198f317fd6f710523fce9a6b01" name="a698e93198f317fd6f710523fce9a6b01"></a>
@@ -284,6 +314,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return true if initialization succeeded and <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a543f8b8964a5a1ad87fdd45a1ac0a8c9" title="Free the arrays if up() and mark the poller down.">shutdown()</a> has not been called. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1TriggerPrimitive.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Interface of the DRP plugins that produce the TEB input data (<a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd" title="Pure virtual: return the size in bytes of the TEB input data.">size()</a> bytes) for each event, either on the CPU or in a CUDA stream.  
+ <a href="classPds_1_1Trg_1_1TriggerPrimitive.html#details">More...</a></p>
+
 <p><code>#include &lt;TriggerPrimitive.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html">Pds::Trg::TmoTebPrimitive</a>.</p>
@@ -104,19 +107,27 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1TriggerPrimitive.ht
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aaed64bba4945fcf7d4e467512c988afd" id="r_aaed64bba4945fcf7d4e467512c988afd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#aaed64bba4945fcf7d4e467512c988afd">~TriggerPrimitive</a> ()</td></tr>
+<tr class="memdesc:aaed64bba4945fcf7d4e467512c988afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:aaed64bba4945fcf7d4e467512c988afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50d638573c454aa22a7336aedc21d0ac" id="r_a50d638573c454aa22a7336aedc21d0ac"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a50d638573c454aa22a7336aedc21d0ac">configure</a> (const nlohmann::json &amp;configureMsg, const nlohmann::json &amp;connectMsg, size_t collectionId)=0</td></tr>
+<tr class="memdesc:a50d638573c454aa22a7336aedc21d0ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: configure from the configure and connect messages; implementations return 0 on success.  <br /></td></tr>
 <tr class="separator:a50d638573c454aa22a7336aedc21d0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08d27fc5594ef28ee5c4dc824d389864" id="r_a08d27fc5594ef28ee5c4dc824d389864"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a08d27fc5594ef28ee5c4dc824d389864">configure</a> (const <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:a08d27fc5594ef28ee5c4dc824d389864"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook to add to the Configure data in xtc; does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a08d27fc5594ef28ee5c4dc824d389864"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1564af1ccecb44be00029dc479e0d0a5" id="r_a1564af1ccecb44be00029dc479e0d0a5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a1564af1ccecb44be00029dc479e0d0a5">event</a> (const <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a> &amp;pool, uint32_t index, const <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;contribution, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)=0</td></tr>
+<tr class="memdesc:a1564af1ccecb44be00029dc479e0d0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: append the TEB input data for the event contribution (pebble buffer index of pool) to xtc.  <br /></td></tr>
 <tr class="separator:a1564af1ccecb44be00029dc479e0d0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cc059f0d466abedfd536d2bba70488e" id="r_a4cc059f0d466abedfd536d2bba70488e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a4cc059f0d466abedfd536d2bba70488e">event</a> (<a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a> stream, unsigned *const state, float const *const calibBuffers, size_t const calibBufsCnt, uint32_t *const outBuffers, size_t const outBufsCnt, unsigned const *const index, unsigned *const retCode_d)</td></tr>
+<tr class="memdesc:a4cc059f0d466abedfd536d2bba70488e"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU hook: enqueue on stream the work that writes the TEB input data; does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a4cc059f0d466abedfd536d2bba70488e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a300c1813efbe545978e11121be17b7dd" id="r_a300c1813efbe545978e11121be17b7dd"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd">size</a> () const =0</td></tr>
+<tr class="memdesc:a300c1813efbe545978e11121be17b7dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the size in bytes of the TEB input data.  <br /></td></tr>
 <tr class="separator:a300c1813efbe545978e11121be17b7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Interface of the DRP plugins that produce the TEB input data (<a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd" title="Pure virtual: return the size in bytes of the TEB input data.">size()</a> bytes) for each event, either on the CPU or in a CUDA stream. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aaed64bba4945fcf7d4e467512c988afd" name="aaed64bba4945fcf7d4e467512c988afd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaed64bba4945fcf7d4e467512c988afd">&#9670;&#160;</a></span>~TriggerPrimitive()</h2>
 
@@ -139,6 +150,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -183,6 +196,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: configure from the configure and connect messages; implementations return 0 on success. </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a19bcb528a52481c433da2aa221934828">Pds::Trg::TmoTebPrimitive</a>.</p>
 
 </div>
@@ -220,6 +235,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook to add to the Configure data in xtc; does nothing unless overridden. </p>
 
 <p>Reimplemented in <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a4ffb45fb93792d63f53aba8759b39d0b">Pds::Trg::TmoTebPrimitive</a>.</p>
 
@@ -276,6 +293,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: append the TEB input data for the event contribution (pebble buffer index of pool) to xtc. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a27a19c36b3b153ae28e61f87b568a989">Pds::Trg::TmoTebPrimitive</a>.</p>
 
@@ -351,6 +370,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>GPU hook: enqueue on stream the work that writes the TEB input data; does nothing unless overridden. </p>
+
 <p>Reimplemented in <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a282b47265781156491d2a5d6a9310789">Pds::Trg::TmoTebPrimitive</a>.</p>
 
 </div>
@@ -377,6 +398,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the size in bytes of the TEB input data. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#acc37510d1d2dc15882b85bd4ba6abcdc">Pds::Trg::TmoTebPrimitive</a>.</p>
 

@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1EventQueue.html
 </div><!--header-->
 <div class="contents">
 
+<p>Wraps a libfabric event queue (fid_eq).  
+ <a href="classPds_1_1Fabrics_1_1EventQueue.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a>.</p>
@@ -106,35 +109,50 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1EventQueue.html
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa9592bb55c8ff2777a25cceaa3d51bb1" id="r_aa9592bb55c8ff2777a25cceaa3d51bb1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aa9592bb55c8ff2777a25cceaa3d51bb1">EventQueue</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *fabric, size_t size=0)</td></tr>
+<tr class="memdesc:aa9592bb55c8ff2777a25cceaa3d51bb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open an event queue of the given size with an unspecified wait object; <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a6ae2f42a1b8568e6fb767332378bc7ad" title="Return true if the queue was opened and not shut down.">up()</a> reports success.  <br /></td></tr>
 <tr class="separator:aa9592bb55c8ff2777a25cceaa3d51bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad41b4d722044341e6e99dae1c8640049" id="r_ad41b4d722044341e6e99dae1c8640049"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad41b4d722044341e6e99dae1c8640049">EventQueue</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *fabric, struct fi_eq_attr *eq_attr, void *context)</td></tr>
+<tr class="memdesc:ad41b4d722044341e6e99dae1c8640049"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open an event queue with caller-supplied attributes and context; <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a6ae2f42a1b8568e6fb767332378bc7ad" title="Return true if the queue was opened and not shut down.">up()</a> reports success.  <br /></td></tr>
 <tr class="separator:ad41b4d722044341e6e99dae1c8640049"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e0fc9e6b7a2d5ce049c5bae291b8149" id="r_a9e0fc9e6b7a2d5ce049c5bae291b8149"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a9e0fc9e6b7a2d5ce049c5bae291b8149">~EventQueue</a> ()</td></tr>
+<tr class="memdesc:a9e0fc9e6b7a2d5ce049c5bae291b8149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the queue if it is up.  <br /></td></tr>
 <tr class="separator:a9e0fc9e6b7a2d5ce049c5bae291b8149"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc44b8d756c9fa1fe25be981f45d622b" id="r_adc44b8d756c9fa1fe25be981f45d622b"><td class="memItemLeft" align="right" valign="top">struct fid_eq *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#adc44b8d756c9fa1fe25be981f45d622b">eq</a> () const</td></tr>
+<tr class="memdesc:adc44b8d756c9fa1fe25be981f45d622b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the underlying fid_eq.  <br /></td></tr>
 <tr class="separator:adc44b8d756c9fa1fe25be981f45d622b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad620866c3b14b1768fae8981e34bd143" id="r_ad620866c3b14b1768fae8981e34bd143"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143">event</a> (uint32_t *event, void *entry, bool *cm_entry)</td></tr>
+<tr class="memdesc:ad620866c3b14b1768fae8981e34bd143"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_eq_cm_entry sized event and false for an fi_eq_entry sized one.  <br /></td></tr>
 <tr class="separator:ad620866c3b14b1768fae8981e34bd143"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad94455f3736be581bbf97a37ca851c4" id="r_aad94455f3736be581bbf97a37ca851c4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aad94455f3736be581bbf97a37ca851c4">event_wait</a> (uint32_t *<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143">event</a>, void *entry, bool *cm_entry, int timeout=-1)</td></tr>
+<tr class="memdesc:aad94455f3736be581bbf97a37ca851c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">event()</a>, but blocks in fi_eq_sread() with the given timeout.  <br /></td></tr>
 <tr class="separator:aad94455f3736be581bbf97a37ca851c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5363350fa835e5009fc45fb9e9fa6af9" id="r_a5363350fa835e5009fc45fb9e9fa6af9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a5363350fa835e5009fc45fb9e9fa6af9">event_error</a> (struct fi_eq_err_entry *entry)</td></tr>
+<tr class="memdesc:a5363350fa835e5009fc45fb9e9fa6af9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero entry and read one error entry into it (fi_eq_readerr()); returns true only if a full fi_eq_err_entry was read.  <br /></td></tr>
 <tr class="separator:a5363350fa835e5009fc45fb9e9fa6af9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ae2f42a1b8568e6fb767332378bc7ad" id="r_a6ae2f42a1b8568e6fb767332378bc7ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a6ae2f42a1b8568e6fb767332378bc7ad">up</a> () const</td></tr>
+<tr class="memdesc:a6ae2f42a1b8568e6fb767332378bc7ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the queue was opened and not shut down.  <br /></td></tr>
 <tr class="separator:a6ae2f42a1b8568e6fb767332378bc7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28a2af39a28ef571749541482b30467e" id="r_a28a2af39a28ef571749541482b30467e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a28a2af39a28ef571749541482b30467e">bind</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a> *ep)</td></tr>
+<tr class="memdesc:a28a2af39a28ef571749541482b30467e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind this event queue to the fid_ep of ep; returns false on failure.  <br /></td></tr>
 <tr class="separator:a28a2af39a28ef571749541482b30467e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f1319186ea131a1a8437ef08d7d8dfc" id="r_a4f1319186ea131a1a8437ef08d7d8dfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a4f1319186ea131a1a8437ef08d7d8dfc">shutdown</a> ()</td></tr>
+<tr class="memdesc:a4f1319186ea131a1a8437ef08d7d8dfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the queue if it is up and mark it down.  <br /></td></tr>
 <tr class="separator:a4f1319186ea131a1a8437ef08d7d8dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -161,7 +179,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Wraps a libfabric event queue (fid_eq). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa9592bb55c8ff2777a25cceaa3d51bb1" name="aa9592bb55c8ff2777a25cceaa3d51bb1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9592bb55c8ff2777a25cceaa3d51bb1">&#9670;&#160;</a></span>EventQueue() <span class="overload">[1/2]</span></h2>
 
@@ -187,6 +207,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Open an event queue of the given size with an unspecified wait object; <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a6ae2f42a1b8568e6fb767332378bc7ad" title="Return true if the queue was opened and not shut down.">up()</a> reports success. </p>
 
 </div>
 </div>
@@ -222,6 +244,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Open an event queue with caller-supplied attributes and context; <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#a6ae2f42a1b8568e6fb767332378bc7ad" title="Return true if the queue was opened and not shut down.">up()</a> reports success. </p>
+
 </div>
 </div>
 <a id="a9e0fc9e6b7a2d5ce049c5bae291b8149" name="a9e0fc9e6b7a2d5ce049c5bae291b8149"></a>
@@ -238,6 +262,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close the queue if it is up. </p>
 
 </div>
 </div>
@@ -258,6 +284,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Bind this event queue to the fid_ep of ep; returns false on failure. </p>
+
 </div>
 </div>
 <a id="adc44b8d756c9fa1fe25be981f45d622b" name="adc44b8d756c9fa1fe25be981f45d622b"></a>
@@ -274,6 +302,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the underlying fid_eq. </p>
 
 </div>
 </div>
@@ -309,6 +339,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_eq_cm_entry sized event and false for an fi_eq_entry sized one. </p>
+<p>Returns false if nothing was read or on error (for -FI_EAVAIL the error number comes from the queued error entry). </p>
+
 </div>
 </div>
 <a id="a5363350fa835e5009fc45fb9e9fa6af9" name="a5363350fa835e5009fc45fb9e9fa6af9"></a>
@@ -326,6 +359,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero entry and read one error entry into it (fi_eq_readerr()); returns true only if a full fi_eq_err_entry was read. </p>
 
 </div>
 </div>
@@ -366,6 +401,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Like <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">event()</a>, but blocks in fi_eq_sread() with the given timeout. </p>
 
 </div>
 </div>
@@ -462,6 +499,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Close the queue if it is up and mark it down. </p>
+
 </div>
 </div>
 <a id="a6ae2f42a1b8568e6fb767332378bc7ad" name="a6ae2f42a1b8568e6fb767332378bc7ad"></a>
@@ -478,6 +517,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return true if the queue was opened and not shut down. </p>
 
 </div>
 </div>

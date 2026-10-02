@@ -96,12 +96,16 @@ $(document).ready(function(){initNavTree('QueueSlowSafeUx_8hh.html',''); initRes
   <div class="headertitle"><div class="title">QueueSlowSafeUx.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>QueueSS, a List-based queue whose operations hold a pthread mutex (the UNIX version of QueueSlowSafe).  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Queue_8hh.html">Queue.hh</a>&quot;</code><br />
 <code>#include &lt;pthread.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html">Pds::QueueSS&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue of T over <a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> (private base) whose insert, remove, atHead and atTail hold a pthread mutex (per the header comment, re-entrant but slow).  <a href="classPds_1_1QueueSS.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -110,7 +114,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>QueueSS, a List-based queue whose operations hold a pthread mutex (the UNIX version of QueueSlowSafe). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

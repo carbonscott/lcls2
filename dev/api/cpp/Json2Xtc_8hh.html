@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('Json2Xtc_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">Json2Xtc.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Translation of configuration JSON (with :types: and :enum: descriptions) into XTC Names and data.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;rapidjson/document.h&quot;</code><br />
 <code>#include &quot;rapidjson/error/en.h&quot;</code><br />
 <code>#include &quot;rapidjson/filereadstream.h&quot;</code><br />
@@ -112,6 +115,7 @@ $(document).ready(function(){initNavTree('Json2Xtc_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html">Pds::JsonIterator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Walks a JSON value depth-first (object members in sorted order) and calls <a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138" title="Hook called for each leaf; the default does nothing.">process()</a> for each leaf, keeping the dotted name path; a parallel types value describes the leaves.  <a href="classPds_1_1JsonIterator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -123,17 +127,24 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:adc43cc99d5067525f898c51575db8c4a" id="r_adc43cc99d5067525f898c51575db8c4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#adc43cc99d5067525f898c51575db8c4a">Pds::translateJson2Xtc</a> (char *in, char *out, const void *bufEnd, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> namesID, const char *detname=0, unsigned segment=0)</td></tr>
+<tr class="memdesc:adc43cc99d5067525f898c51575db8c4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse the JSON text in, create a Parent Xtc at out (bounded by bufEnd) and add the Names and data for it with namesID, detname (if non-null) and segment.  <br /></td></tr>
 <tr class="separator:adc43cc99d5067525f898c51575db8c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a398939553e5e804881d8224eb8a5aa20" id="r_a398939553e5e804881d8224eb8a5aa20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a398939553e5e804881d8224eb8a5aa20">Pds::translateJson2Xtc</a> (PyObject *item, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> namesID)</td></tr>
+<tr class="memdesc:a398939553e5e804881d8224eb8a5aa20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate the JSON string object item into Names and data appended to xtc, taking the detector name and segment from the detName:RO entry (name_N).  <br /></td></tr>
 <tr class="separator:a398939553e5e804881d8224eb8a5aa20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af32611c8e76595a8765b74bc7dff984b" id="r_af32611c8e76595a8765b74bc7dff984b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#af32611c8e76595a8765b74bc7dff984b">Pds::translateJson2Xtc</a> (PyObject *item, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> namesID, unsigned segment, std::string serNo=std::string(&quot;&quot;))</td></tr>
+<tr class="memdesc:af32611c8e76595a8765b74bc7dff984b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like translateJson2Xtc(item, xtc, bufEnd, namesID), but uses serNo as detector ID when it is non-empty.  <br /></td></tr>
 <tr class="separator:af32611c8e76595a8765b74bc7dff984b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bd70bdd2cd0ecc68b1a24f4a263c246" id="r_a7bd70bdd2cd0ecc68b1a24f4a263c246"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a7bd70bdd2cd0ecc68b1a24f4a263c246">Pds::translateJson2XtcNames</a> (rapidjson::Document *d, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> *xtc, const void *bufEnd, <a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;nl, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> namesID, rapidjson::Value &amp;json, const char *detname, unsigned segment, std::string const &amp;serNo=std::string(&quot;&quot;))</td></tr>
+<tr class="memdesc:a7bd70bdd2cd0ecc68b1a24f4a263c246"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that the document has alg:RO, detName:RO, detType:RO, detId:RO and doc:RO, add Names (detector name, algorithm, type, serNo or detId:RO, namesID, segment) with one entry per leaf typed from :types: (plus ENUMDICT entries for :enum:) to xtc, register them in nl, and move :types: into json.  <br /></td></tr>
 <tr class="separator:a7bd70bdd2cd0ecc68b1a24f4a263c246"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55d665cfad984cf4bc4a56cecbc8da4d" id="r_a55d665cfad984cf4bc4a56cecbc8da4d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a55d665cfad984cf4bc4a56cecbc8da4d">Pds::translateJson2XtcData</a> (rapidjson::Document *d, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> *xtc, const void *bufEnd, <a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;nl, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> namesID, rapidjson::Value &amp;json)</td></tr>
+<tr class="memdesc:a55d665cfad984cf4bc4a56cecbc8da4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the values of the remaining document members (and the :enum: dictionary values first) into xtc as data for namesID, typed from json; returns 0.  <br /></td></tr>
 <tr class="separator:a55d665cfad984cf4bc4a56cecbc8da4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Translation of configuration JSON (with :types: and :enum: descriptions) into XTC Names and data. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

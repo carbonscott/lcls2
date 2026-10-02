@@ -98,37 +98,54 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1MebContributor.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Sends L1Accepts to one chosen MEB buffer and transitions to every MEB, over libfabric client links.  
+ <a href="classPds_1_1Eb_1_1MebContributor.html#details">More...</a></p>
+
 <p><code>#include &lt;MebContributor.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a6aace0d197f612225c00ea18f9186ede" id="r_a6aace0d197f612225c00ea18f9186ede"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a6aace0d197f612225c00ea18f9186ede">listU32_t</a> = std::list&lt; uint32_t &gt;</td></tr>
+<tr class="memdesc:a6aace0d197f612225c00ea18f9186ede"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> of free transition buffer indices (one list per MEB link).  <br /></td></tr>
 <tr class="separator:a6aace0d197f612225c00ea18f9186ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aabc1b8f6dbcbd91723a806bb0fc498dc" id="r_aabc1b8f6dbcbd91723a806bb0fc498dc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#aabc1b8f6dbcbd91723a806bb0fc498dc">MebContributor</a> (const <a class="el" href="structPds_1_1Eb_1_1MebCtrbParams.html">MebCtrbParams</a> &amp;)</td></tr>
+<tr class="memdesc:aabc1b8f6dbcbd91723a806bb0fc498dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep a reference to the parameters; the event buffer size is prms.maxEvSize rounded up to whole pages.  <br /></td></tr>
 <tr class="separator:aabc1b8f6dbcbd91723a806bb0fc498dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3475dcd2eee76c020f128381ea83f348" id="r_a3475dcd2eee76c020f128381ea83f348"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a3475dcd2eee76c020f128381ea83f348">resetCounters</a> ()</td></tr>
+<tr class="memdesc:a3475dcd2eee76c020f128381ea83f348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the event and transition counters; returns 0.  <br /></td></tr>
 <tr class="separator:a3475dcd2eee76c020f128381ea83f348"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b63fe987ccc3d9e13ff89d848f8db49" id="r_a4b63fe987ccc3d9e13ff89d848f8db49"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a4b63fe987ccc3d9e13ff89d848f8db49">connect</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">MetricExporter</a> &gt;)</td></tr>
+<tr class="memdesc:a4b63fe987ccc3d9e13ff89d848f8db49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metrics with the exporter (if non-null), size the per-link vectors from prms.addrs and connect to all MEBs with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>.  <br /></td></tr>
 <tr class="separator:a4b63fe987ccc3d9e13ff89d848f8db49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a301fd26f4bcd4d7bd62c5ba6fb88553e" id="r_a301fd26f4bcd4d7bd62c5ba6fb88553e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a301fd26f4bcd4d7bd62c5ba6fb88553e">configure</a> ()</td></tr>
+<tr class="memdesc:a301fd26f4bcd4d7bd62c5ba6fb88553e"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each link, (re)allocate the local region if its size changed (maxEvents of that MEB times the event buffer size, plus the transition buffers), exchange region information with <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#aca4200f87d32ae09ce7c5ed074896b47" title="Synchronize with the server.">EbLfCltLink::prepare()</a> and refill the list of MEB_TR_BUFFERS transition buffer indices.  <br /></td></tr>
 <tr class="separator:a301fd26f4bcd4d7bd62c5ba6fb88553e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4c76c0fde81466689f72e14ecb7d6bf" id="r_ae4c76c0fde81466689f72e14ecb7d6bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae4c76c0fde81466689f72e14ecb7d6bf">unconfigure</a> ()</td></tr>
+<tr class="memdesc:ae4c76c0fde81466689f72e14ecb7d6bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#afa6e9285edb5ca92b1bd808260031125" title="Return true between a successful configure() and unconfigure().">enabled()</a> to false.  <br /></td></tr>
 <tr class="separator:ae4c76c0fde81466689f72e14ecb7d6bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6e890efd2491298b4188e6000636849" id="r_ae6e890efd2491298b4188e6000636849"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae6e890efd2491298b4188e6000636849">disconnect</a> ()</td></tr>
+<tr class="memdesc:ae6e890efd2491298b4188e6000636849"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae4c76c0fde81466689f72e14ecb7d6bf" title="Set enabled() to false.">unconfigure()</a>, disconnect and drop all links, and set the ID to -1.  <br /></td></tr>
 <tr class="separator:ae6e890efd2491298b4188e6000636849"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16d08d8772937187b8f157af6f3f4c02" id="r_a16d08d8772937187b8f157af6f3f4c02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a16d08d8772937187b8f157af6f3f4c02">shutdown</a> ()</td></tr>
+<tr class="memdesc:a16d08d8772937187b8f157af6f3f4c02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae6e890efd2491298b4188e6000636849" title="Call unconfigure(), disconnect and drop all links, and set the ID to -1.">disconnect()</a> (harmless if already done).  <br /></td></tr>
 <tr class="separator:a16d08d8772937187b8f157af6f3f4c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa6e9285edb5ca92b1bd808260031125" id="r_afa6e9285edb5ca92b1bd808260031125"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#afa6e9285edb5ca92b1bd808260031125">enabled</a> () const</td></tr>
+<tr class="memdesc:afa6e9285edb5ca92b1bd808260031125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true between a successful <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a301fd26f4bcd4d7bd62c5ba6fb88553e" title="For each link, (re)allocate the local region if its size changed (maxEvents of that MEB times the eve...">configure()</a> and <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae4c76c0fde81466689f72e14ecb7d6bf" title="Set enabled() to false.">unconfigure()</a>.  <br /></td></tr>
 <tr class="separator:afa6e9285edb5ca92b1bd808260031125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9218d34f787227a475bb90cbaa3e4bcb" id="r_a9218d34f787227a475bb90cbaa3e4bcb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a9218d34f787227a475bb90cbaa3e4bcb">post</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dataDatagram)</td></tr>
+<tr class="memdesc:a9218d34f787227a475bb90cbaa3e4bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a transition to every MEB: for each link take a free transition buffer index (polling the link, waiting up to 5 s if none is cached), copy the datagram into that local buffer and RDMA-write it.  <br /></td></tr>
 <tr class="separator:a9218d34f787227a475bb90cbaa3e4bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfc92ed5c5515896430a3db9defffc56" id="r_acfc92ed5c5515896430a3db9defffc56"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html#acfc92ed5c5515896430a3db9defffc56">post</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dataDatagram, uint32_t destination)</td></tr>
+<tr class="memdesc:acfc92ed5c5515896430a3db9defffc56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an L1Accept to the MEB and buffer index encoded (<a class="el" href="classPds_1_1Eb_1_1ImmData.html" title="Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30),...">ImmData</a> src and idx) in destination: copy it into the matching local buffer and RDMA-write it.  <br /></td></tr>
 <tr class="separator:acfc92ed5c5515896430a3db9defffc56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Sends L1Accepts to one chosen MEB buffer and transitions to every MEB, over libfabric client links. </p>
+<p>Each link gets a local region of event buffers followed by MEB_TR_BUFFERS transition buffers. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a6aace0d197f612225c00ea18f9186ede" name="a6aace0d197f612225c00ea18f9186ede"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6aace0d197f612225c00ea18f9186ede">&#9670;&#160;</a></span>listU32_t</h2>
 
@@ -140,6 +157,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> of free transition buffer indices (one list per MEB link). </p>
 
 </div>
 </div>
@@ -160,6 +179,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Keep a reference to the parameters; the event buffer size is prms.maxEvSize rounded up to whole pages. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -177,6 +198,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>For each link, (re)allocate the local region if its size changed (maxEvents of that MEB times the event buffer size, plus the transition buffers), exchange region information with <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html#aca4200f87d32ae09ce7c5ed074896b47" title="Synchronize with the server.">EbLfCltLink::prepare()</a> and refill the list of MEB_TR_BUFFERS transition buffer indices. </p>
+<p>Sets <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#afa6e9285edb5ca92b1bd808260031125" title="Return true between a successful configure() and unconfigure().">enabled()</a> true and returns 0, or returns the first error (ENOMEM if allocation fails). </p>
 
 </div>
 </div>
@@ -196,6 +220,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register metrics with the exporter (if non-null), size the per-link vectors from prms.addrs and connect to all MEBs with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>. </p>
+<p>Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="ae6e890efd2491298b4188e6000636849" name="ae6e890efd2491298b4188e6000636849"></a>
@@ -212,6 +239,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae4c76c0fde81466689f72e14ecb7d6bf" title="Set enabled() to false.">unconfigure()</a>, disconnect and drop all links, and set the ID to -1. </p>
 
 </div>
 </div>
@@ -238,6 +267,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true between a successful <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#a301fd26f4bcd4d7bd62c5ba6fb88553e" title="For each link, (re)allocate the local region if its size changed (maxEvents of that MEB times the eve...">configure()</a> and <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae4c76c0fde81466689f72e14ecb7d6bf" title="Set enabled() to false.">unconfigure()</a>. </p>
+
 </div>
 </div>
 <a id="a9218d34f787227a475bb90cbaa3e4bcb" name="a9218d34f787227a475bb90cbaa3e4bcb"></a>
@@ -255,6 +286,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send a transition to every MEB: for each link take a free transition buffer index (polling the link, waiting up to 5 s if none is cached), copy the datagram into that local buffer and RDMA-write it. </p>
+<p>Aborts if the datagram is larger than maxTrSize, its source is not this contributor's ID, or no buffer index arrives; a failed write is only logged. Returns 0. </p>
 
 </div>
 </div>
@@ -284,6 +318,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Send an L1Accept to the MEB and buffer index encoded (<a class="el" href="classPds_1_1Eb_1_1ImmData.html" title="Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30),...">ImmData</a> src and idx) in destination: copy it into the matching local buffer and RDMA-write it. </p>
+<p>Aborts on an invalid MEB or index, an oversize datagram (checked after the copy), a source ID mismatch, an out-of-range buffer, a non-advancing pulse ID, or a failed write. Returns 0. </p>
+
 </div>
 </div>
 <a id="a3475dcd2eee76c020f128381ea83f348" name="a3475dcd2eee76c020f128381ea83f348"></a>
@@ -300,6 +337,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Reset the event and transition counters; returns 0. </p>
 
 </div>
 </div>
@@ -318,6 +357,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#ae6e890efd2491298b4188e6000636849" title="Call unconfigure(), disconnect and drop all links, and set the ID to -1.">disconnect()</a> (harmless if already done). </p>
+
 </div>
 </div>
 <a id="ae4c76c0fde81466689f72e14ecb7d6bf" name="ae4c76c0fde81466689f72e14ecb7d6bf"></a>
@@ -334,6 +375,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set <a class="el" href="classPds_1_1Eb_1_1MebContributor.html#afa6e9285edb5ca92b1bd808260031125" title="Return true between a successful configure() and unconfigure().">enabled()</a> to false. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1SleekReducer.html',
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with SLEEK::SingleCompressorLossy, recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph.  
+ <a href="classDrp_1_1Gpu_1_1SleekReducer.html#details">More...</a></p>
+
 <p><code>#include &lt;SleekReducer.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html">Drp::Gpu::ReducerAlgo</a>.</p>
@@ -104,27 +107,38 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1SleekReducer.html',
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a26343fc647012676ab61edb3e381a896" id="r_a26343fc647012676ab61edb3e381a896"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a26343fc647012676ab61edb3e381a896">SleekReducer</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, const <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;pool, <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;det)</td></tr>
+<tr class="memdesc:a26343fc647012676ab61edb3e381a896"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the compressor with the calibrated buffer size and the value 3.0; print its banner if verbose is set.  <br /></td></tr>
 <tr class="separator:a26343fc647012676ab61edb3e381a896"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7b0e8af333e7cff957e2dbfc622eece" id="r_af7b0e8af333e7cff957e2dbfc622eece"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#af7b0e8af333e7cff957e2dbfc622eece">~SleekReducer</a> ()</td></tr>
+<tr class="memdesc:af7b0e8af333e7cff957e2dbfc622eece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:af7b0e8af333e7cff957e2dbfc622eece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52a91c76d9099ade68691ff806a71192" id="r_a52a91c76d9099ade68691ff806a71192"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a52a91c76d9099ade68691ff806a71192">hasGraph</a> () const override</td></tr>
+<tr class="memdesc:a52a91c76d9099ade68691ff806a71192"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true: the compressor is recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph.  <br /></td></tr>
 <tr class="separator:a52a91c76d9099ade68691ff806a71192"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2893d79778a1773c341dca432d21ef4b" id="r_a2893d79778a1773c341dca432d21ef4b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a2893d79778a1773c341dca432d21ef4b">payloadSize</a> () const override</td></tr>
+<tr class="memdesc:a2893d79778a1773c341dca432d21ef4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the maximum compressed size reported by the compressor (maxSize()).  <br /></td></tr>
 <tr class="separator:a2893d79778a1773c341dca432d21ef4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77c15f08fd48d13afce26dbe826f485e" id="r_a77c15f08fd48d13afce26dbe826f485e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a77c15f08fd48d13afce26dbe826f485e">recordGraph</a> (<a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a> stream, unsigned *const state, unsigned *const index, float const *const calibBuffers, size_t const calibBufsCnt, uint8_t *const dataBuffers, size_t const dataBufsCnt) override</td></tr>
+<tr class="memdesc:a77c15f08fd48d13afce26dbe826f485e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Let the compressor record its kernels into the captured stream (SLEEK::SingleCompressorLossy::updateGraph()) for the state, index, calibrated and data buffers, with buffer sizes given in bytes.  <br /></td></tr>
 <tr class="separator:a77c15f08fd48d13afce26dbe826f485e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3712eab54f770d1b564b85b5a367c43" id="r_ac3712eab54f770d1b564b85b5a367c43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#ac3712eab54f770d1b564b85b5a367c43">reduce</a> (cudaGraphExec_t, <a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a>, unsigned index, size_t *dataSize, unsigned *retCode) override</td></tr>
+<tr class="memdesc:ac3712eab54f770d1b564b85b5a367c43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Launch graph on stream and queue an asynchronous copy of the reduced size, stored just before data buffer index, to *dataSize; *retCode is set to 0.  <br /></td></tr>
 <tr class="separator:ac3712eab54f770d1b564b85b5a367c43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afee4c06b97944218624b51a50621cfb7" id="r_afee4c06b97944218624b51a50621cfb7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#afee4c06b97944218624b51a50621cfb7">configure</a> (const nlohmann::json &amp;configureMsg, const nlohmann::json &amp;connectMsg, size_t collectionId) override</td></tr>
+<tr class="memdesc:afee4c06b97944218624b51a50621cfb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0; nothing is configured.  <br /></td></tr>
 <tr class="separator:afee4c06b97944218624b51a50621cfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49a70f7546c24bda1bee5abcff5d087e" id="r_a49a70f7546c24bda1bee5abcff5d087e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a49a70f7546c24bda1bee5abcff5d087e">configure</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a49a70f7546c24bda1bee5abcff5d087e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the names of the reduced data (algorithm sleek, one UINT8 array named sleek) under ReducerNamesIndex and register them in the detector's names lookup; returns 0.  <br /></td></tr>
 <tr class="separator:a49a70f7546c24bda1bee5abcff5d087e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adca6ee310bb2ff53306aa1cc43753b1c" id="r_adca6ee310bb2ff53306aa1cc43753b1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#adca6ee310bb2ff53306aa1cc43753b1c">event</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd, unsigned dataSize) override</td></tr>
+<tr class="memdesc:adca6ee310bb2ff53306aa1cc43753b1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the shape of the sleek array to dataSize elements in the data description; the data itself stays on the GPU.  <br /></td></tr>
 <tr class="separator:adca6ee310bb2ff53306aa1cc43753b1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html">Drp::Gpu::ReducerAlgo</a></td></tr>
 <tr class="memitem:a470a3fa6ed196498ea7f4134623241a3 inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo" id="r_a470a3fa6ed196498ea7f4134623241a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a470a3fa6ed196498ea7f4134623241a3">ReducerAlgo</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, const <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;pool, <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;det)</td></tr>
+<tr class="memdesc:a470a3fa6ed196498ea7f4134623241a3 inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep references to the parameters, the memory pool and the detector.  <br /></td></tr>
 <tr class="separator:a470a3fa6ed196498ea7f4134623241a3 inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f5484dcf1977a04426adb530b4b411c inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo" id="r_a2f5484dcf1977a04426adb530b4b411c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a2f5484dcf1977a04426adb530b4b411c">~ReducerAlgo</a> ()</td></tr>
+<tr class="memdesc:a2f5484dcf1977a04426adb530b4b411c inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a2f5484dcf1977a04426adb530b4b411c inherit pub_methods_classDrp_1_1Gpu_1_1ReducerAlgo"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -137,7 +151,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a900178b00767a5a21fcd9ba39fdf74a7 inherit pro_attribs_classDrp_1_1Gpu_1_1ReducerAlgo" id="r_a900178b00767a5a21fcd9ba39fdf74a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a900178b00767a5a21fcd9ba39fdf74a7">m_det</a></td></tr>
 <tr class="separator:a900178b00767a5a21fcd9ba39fdf74a7 inherit pro_attribs_classDrp_1_1Gpu_1_1ReducerAlgo"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with SLEEK::SingleCompressorLossy, recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a26343fc647012676ab61edb3e381a896" name="a26343fc647012676ab61edb3e381a896"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26343fc647012676ab61edb3e381a896">&#9670;&#160;</a></span>SleekReducer()</h2>
 
@@ -170,6 +186,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the compressor with the calibrated buffer size and the value 3.0; print its banner if verbose is set. </p>
+
 </div>
 </div>
 <a id="af7b0e8af333e7cff957e2dbfc622eece" name="af7b0e8af333e7cff957e2dbfc622eece"></a>
@@ -194,6 +212,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -238,6 +258,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return 0; nothing is configured. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#acfaaa9aa231f188a850814adad0f2943">Drp::Gpu::ReducerAlgo</a>.</p>
 
 </div>
@@ -275,6 +297,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Add the names of the reduced data (algorithm sleek, one UINT8 array named sleek) under ReducerNamesIndex and register them in the detector's names lookup; returns 0. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#af305b443434b0c6fe473bdbf0132bd98">Drp::Gpu::ReducerAlgo</a>.</p>
 
@@ -320,6 +344,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the shape of the sleek array to dataSize elements in the data description; the data itself stays on the GPU. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a05b8c1973253a77855d43ad9ccdebfcb">Drp::Gpu::ReducerAlgo</a>.</p>
 
 </div>
@@ -347,6 +373,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true: the compressor is recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#af54145ef79213a95e53eb10329f027e4">Drp::Gpu::ReducerAlgo</a>.</p>
 
 </div>
@@ -373,6 +401,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the maximum compressed size reported by the compressor (maxSize()). </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a88db9923203486be3ac4e9593f84b902">Drp::Gpu::ReducerAlgo</a>.</p>
 
@@ -442,6 +472,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Let the compressor record its kernels into the captured stream (SLEEK::SingleCompressorLossy::updateGraph()) for the state, index, calibrated and data buffers, with buffer sizes given in bytes. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a6289ef91164e03f890ec65dc5c8c1bbf">Drp::Gpu::ReducerAlgo</a>.</p>
 
 </div>
@@ -497,6 +529,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Launch graph on stream and queue an asynchronous copy of the reduced size, stored just before data buffer index, to *dataSize; *retCode is set to 0. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a649daaa3475aef673c1f1752f32dc6fe">Drp::Gpu::ReducerAlgo</a>.</p>
 

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('EbLfLink_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">EbLfLink.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>EbLfLink and its server and client variants: one libfabric connection used by the event builder, with credit-managed receives, immediate-data exchanges and RDMA posting.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Endpoint_8hh.html">Endpoint.hh</a>&quot;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
@@ -105,10 +108,13 @@ $(document).ready(function(){initNavTree('EbLfLink_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">Pds::Eb::EbLfLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One libfabric connection between an event-builder client and server.  <a href="classPds_1_1Eb_1_1EbLfLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">Pds::Eb::EbLfSvrLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Server side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; synchronizes with the client before and after each exchange.  <a href="classPds_1_1Eb_1_1EbLfSvrLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">Pds::Eb::EbLfCltLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structClient.html">Client</a> side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; writes data into the server's registered memory with RDMA.  <a href="classPds_1_1Eb_1_1EbLfCltLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -117,14 +123,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a06a77c3e603fac8b907385085c9e9b6e" id="r_a06a77c3e603fac8b907385085c9e9b6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a06a77c3e603fac8b907385085c9e9b6e">Pds::Eb::setupMr</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabrics::Fabric</a> *fabric, void *region, size_t size, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">Fabrics::MemoryRegion</a> **mr, const unsigned &amp;verbose)</td></tr>
+<tr class="memdesc:a06a77c3e603fac8b907385085c9e9b6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make *mr a memory region on fabric that covers size bytes at region.  <br /></td></tr>
 <tr class="separator:a06a77c3e603fac8b907385085c9e9b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EbLfLink and its server and client variants: one libfabric connection used by the event builder, with credit-managed receives, immediate-data exchanges and RDMA posting. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

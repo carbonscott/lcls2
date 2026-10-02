@@ -99,22 +99,30 @@ $(document).ready(function(){initNavTree('classPds_1_1JsonIterator.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>Walks a JSON value depth-first (object members in sorted order) and calls <a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138" title="Hook called for each leaf; the default does nothing.">process()</a> for each leaf, keeping the dotted name path; a parallel types value describes the leaves.  
+ <a href="classPds_1_1JsonIterator.html#details">More...</a></p>
+
 <p><code>#include &lt;Json2Xtc.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa18c18d06cc5f1713a966d48a4a77116" id="r_aa18c18d06cc5f1713a966d48a4a77116"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#aa18c18d06cc5f1713a966d48a4a77116">JsonIterator</a> (rapidjson::Value &amp;root, rapidjson::Value &amp;types)</td></tr>
+<tr class="memdesc:aa18c18d06cc5f1713a966d48a4a77116"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep references to the value root to walk and to the matching types description.  <br /></td></tr>
 <tr class="separator:aa18c18d06cc5f1713a966d48a4a77116"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c4e37d16b7d0979fa83b5ab5940b048" id="r_a1c4e37d16b7d0979fa83b5ab5940b048"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#a1c4e37d16b7d0979fa83b5ab5940b048">iterate</a> ()</td></tr>
+<tr class="memdesc:a1c4e37d16b7d0979fa83b5ab5940b048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Walk the root value, calling <a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138" title="Hook called for each leaf; the default does nothing.">process()</a> for every scalar and every array that contains no objects or arrays.  <br /></td></tr>
 <tr class="separator:a1c4e37d16b7d0979fa83b5ab5940b048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a950c0cbdb537294205dd78612f5e8f10" id="r_a950c0cbdb537294205dd78612f5e8f10"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#a950c0cbdb537294205dd78612f5e8f10">curname</a> ()</td></tr>
+<tr class="memdesc:a950c0cbdb537294205dd78612f5e8f10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current path: names joined with dots, and array indices appended with underscores.  <br /></td></tr>
 <tr class="separator:a950c0cbdb537294205dd78612f5e8f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa765613fed32b2c79a257ccb3233138" id="r_afa765613fed32b2c79a257ccb3233138"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138">process</a> (rapidjson::Value &amp;val)</td></tr>
+<tr class="memdesc:afa765613fed32b2c79a257ccb3233138"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook called for each leaf; the default does nothing.  <br /></td></tr>
 <tr class="separator:afa765613fed32b2c79a257ccb3233138"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a4fb8e6eb9deb9f4748a4c15a160d25ea" id="r_a4fb8e6eb9deb9f4748a4c15a160d25ea"><td class="memItemLeft" align="right" valign="top">static std::map&lt; std::string, enum <a class="el" href="classXtcData_1_1Name.html#a446bf7779a07597f800b41d21a273484">XtcData::Name::DataType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#a4fb8e6eb9deb9f4748a4c15a160d25ea">typeMap</a></td></tr>
+<tr class="memdesc:a4fb8e6eb9deb9f4748a4c15a160d25ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from type name strings (UINT8, ..., DOUBLE, CHARSTR, ENUMVAL, ENUMDICT) to <a class="el" href="classXtcData_1_1Name.html" title="Description of one data field: an Alg, a name (char[MaxNameSize]), a DataType and a rank.">XtcData::Name</a> data types.  <br /></td></tr>
 <tr class="separator:a4fb8e6eb9deb9f4748a4c15a160d25ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -124,7 +132,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a5195e9a68965993d2e6640de92e65c21" id="r_a5195e9a68965993d2e6640de92e65c21"><td class="memItemLeft" align="right" valign="top">rapidjson::Value *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1JsonIterator.html#a5195e9a68965993d2e6640de92e65c21">findJsonType</a> ()</td></tr>
 <tr class="separator:a5195e9a68965993d2e6640de92e65c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Walks a JSON value depth-first (object members in sorted order) and calls <a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138" title="Hook called for each leaf; the default does nothing.">process()</a> for each leaf, keeping the dotted name path; a parallel types value describes the leaves. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa18c18d06cc5f1713a966d48a4a77116" name="aa18c18d06cc5f1713a966d48a4a77116"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa18c18d06cc5f1713a966d48a4a77116">&#9670;&#160;</a></span>JsonIterator()</h2>
 
@@ -159,6 +169,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Keep references to the value root to walk and to the matching types description. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -176,6 +188,8 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the current path: names joined with dots, and array indices appended with underscores. </p>
 
 </div>
 </div>
@@ -226,6 +240,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Walk the root value, calling <a class="el" href="classPds_1_1JsonIterator.html#afa765613fed32b2c79a257ccb3233138" title="Hook called for each leaf; the default does nothing.">process()</a> for every scalar and every array that contains no objects or arrays. </p>
 
 </div>
 </div>
@@ -279,6 +295,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Hook called for each leaf; the default does nothing. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -301,6 +319,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Map from type name strings (UINT8, ..., DOUBLE, CHARSTR, ENUMVAL, ENUMDICT) to <a class="el" href="classXtcData_1_1Name.html" title="Description of one data field: an Alg, a name (char[MaxNameSize]), a DataType and a rank.">XtcData::Name</a> data types. </p>
 
 </div>
 </div>

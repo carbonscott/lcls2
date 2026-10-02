@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('TprTrigger_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">TprTrigger.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>TprApp, a collection application that programs TPR trigger outputs for a readout group.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
 <code>#include &quot;<a class="el" href="Collection_8hh.html">psdaq/service/Collection.hh</a>&quot;</code><br />
@@ -104,6 +107,7 @@ $(document).ready(function(){initNavTree('TprTrigger_8hh.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TprApp.html">Drp::TprApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> (role tpr) that, after connect, programs the TPR channel and outputs given in its parameters to trigger on the partition readout group, and keeps a worker thread until disconnect.  <a href="classDrp_1_1TprApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -112,7 +116,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TprApp, a collection application that programs TPR trigger outputs for a readout group. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

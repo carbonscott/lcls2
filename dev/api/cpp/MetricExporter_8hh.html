@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('MetricExporter_8hh.html',''); initResi
   <div class="headertitle"><div class="title">MetricExporter.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Prometheus monitoring helpers: exposer creation, a histogram type, and MetricExporter, a collectable that reads application counters on each scrape.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;chrono&gt;</code><br />
@@ -109,10 +112,13 @@ $(document).ready(function(){initNavTree('MetricExporter_8hh.html',''); initResi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Previous.html">Pds::Previous</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last sample of a Rate metric (value and time), used to compute the rate at the next scrape.  <a href="structPds_1_1Previous.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PromHistogram.html">Pds::PromHistogram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed-bin histogram exported as a Prometheus histogram: numBins upper bounds binMin + i * binWidth plus an overflow bucket.  <a href="classPds_1_1PromHistogram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prometheus collectable holding named metrics whose values come from callbacks evaluated at each scrape (<a class="el" href="classPds_1_1MetricExporter.html#a54ae847c833b2471ec331927129939cc" title="Update every metric (rates, histograms, valid floats and callback values; constants unchanged) and re...">Collect()</a>).  <a href="classPds_1_1MetricExporter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -133,19 +139,25 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacePds.html#a692df52a8d90772d504534a72a47b3a7a22ae0e2b89e5e3d477f988cc36d3272b">Pds::Float</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a692df52a8d90772d504534a72a47b3a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kind of a metric registered with MetricExporter.  <a href="namespacePds.html#a692df52a8d90772d504534a72a47b3a7">More...</a><br /></td></tr>
 <tr class="separator:a692df52a8d90772d504534a72a47b3a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a49f662318e22db5d26ddae3e2615fa9f" id="r_a49f662318e22db5d26ddae3e2615fa9f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; prometheus::Exposer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a49f662318e22db5d26ddae3e2615fa9f">Pds::createExposer</a> (const std::string &amp;prometheusDir, const std::string &amp;hostname)</td></tr>
+<tr class="memdesc:a49f662318e22db5d26ddae3e2615fa9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as createExposer(prometheusDir, hostname, 0).  <br /></td></tr>
 <tr class="separator:a49f662318e22db5d26ddae3e2615fa9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2df950dba2552aab96a152b4f1fad262" id="r_a2df950dba2552aab96a152b4f1fad262"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; prometheus::Exposer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a2df950dba2552aab96a152b4f1fad262">Pds::createExposer</a> (const std::string &amp;prometheusDir, const std::string &amp;hostname, unsigned portOffset)</td></tr>
+<tr class="memdesc:a2df950dba2552aab96a152b4f1fad262"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start a Prometheus exposer on the first usable port from 9200 + portOffset (wrapping within 9200 to 9299) and write the scrape target file prometheusDir/drpmon_HOST_N.yaml for it.  <br /></td></tr>
 <tr class="separator:a2df950dba2552aab96a152b4f1fad262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e289381cfbcf90941e9f48546e7a48" id="r_a85e289381cfbcf90941e9f48546e7a48"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a85e289381cfbcf90941e9f48546e7a48"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacePds.html#a85e289381cfbcf90941e9f48546e7a48">Pds::setValue</a> (prometheus::MetricFamily &amp;family, const T &amp;value)</td></tr>
+<tr class="memdesc:a85e289381cfbcf90941e9f48546e7a48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the counter or gauge value of the first metric of family to value; prints wrong type for other metric types.  <br /></td></tr>
 <tr class="separator:a85e289381cfbcf90941e9f48546e7a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Prometheus monitoring helpers: exposer creation, a histogram type, and MetricExporter, a collectable that reads application counters on each scrape. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

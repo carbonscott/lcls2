@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1MmcmPhaseLock.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from their names and their use in PVCtrls.cc.  
+ <a href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#details">More...</a></p>
+
 <p><code>#include &lt;MmcmPhaseLock.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a136880b7025f7c94b88e2253933e493e" id="r_a136880b7025f7c94b88e2253933e493e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#a136880b7025f7c94b88e2253933e493e">ready</a> () const</td></tr>
+<tr class="memdesc:a136880b7025f7c94b88e2253933e493e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit 30 of delayValue is clear.  <br /></td></tr>
 <tr class="separator:a136880b7025f7c94b88e2253933e493e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7a728ccd8e88de7ddb792690a437dc" id="r_ade7a728ccd8e88de7ddb792690a437dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#ade7a728ccd8e88de7ddb792690a437dc">reset</a> ()</td></tr>
+<tr class="memdesc:ade7a728ccd8e88de7ddb792690a437dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write 1 to the reset register.  <br /></td></tr>
 <tr class="separator:ade7a728ccd8e88de7ddb792690a437dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ace2a6d4cd4d5e8f4cdde0b973ce30501" id="r_ace2a6d4cd4d5e8f4cdde0b973ce30501"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#ace2a6d4cd4d5e8f4cdde0b973ce30501">delaySet</a></td></tr>
+<tr class="memdesc:ace2a6d4cd4d5e8f4cdde0b973ce30501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register named delaySet; not used by the C++ code in psdaq (psdaq/psdaq/pyxpm writes a register of the same name in its own Python device model). Inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:ace2a6d4cd4d5e8f4cdde0b973ce30501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae18e7ea298eb42a1514cae269197fe29" id="r_ae18e7ea298eb42a1514cae269197fe29"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#ae18e7ea298eb42a1514cae269197fe29">delayValue</a></td></tr>
+<tr class="memdesc:ae18e7ea298eb42a1514cae269197fe29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register named delayValue; <a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#a136880b7025f7c94b88e2253933e493e" title="Return true if bit 30 of delayValue is clear.">ready()</a> tests its bit 30 and PVCtrls.cc reads it.  <br /></td></tr>
 <tr class="separator:ae18e7ea298eb42a1514cae269197fe29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a134a5a4b7d957f296c32c1fa43f9f5ab" id="r_a134a5a4b7d957f296c32c1fa43f9f5ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#a134a5a4b7d957f296c32c1fa43f9f5ab">ramAddr</a></td></tr>
+<tr class="memdesc:a134a5a4b7d957f296c32c1fa43f9f5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register named ramAddr; PVCtrls.cc writes an index to it before reading ramData.  <br /></td></tr>
 <tr class="separator:a134a5a4b7d957f296c32c1fa43f9f5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfd70951ecc45bc0aeaf86ed29172624" id="r_abfd70951ecc45bc0aeaf86ed29172624"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#abfd70951ecc45bc0aeaf86ed29172624">ramData</a></td></tr>
+<tr class="memdesc:abfd70951ecc45bc0aeaf86ed29172624"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register named ramData; PVCtrls.cc reads it after setting ramAddr.  <br /></td></tr>
 <tr class="separator:abfd70951ecc45bc0aeaf86ed29172624"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from their names and their use in PVCtrls.cc. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a136880b7025f7c94b88e2253933e493e" name="a136880b7025f7c94b88e2253933e493e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a136880b7025f7c94b88e2253933e493e">&#9670;&#160;</a></span>ready()</h2>
 
@@ -141,6 +152,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if bit 30 of delayValue is clear. </p>
 
 </div>
 </div>
@@ -167,6 +180,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Write 1 to the reset register. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -182,6 +197,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register named delaySet; not used by the C++ code in psdaq (psdaq/psdaq/pyxpm writes a register of the same name in its own Python device model). Inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="ae18e7ea298eb42a1514cae269197fe29" name="ae18e7ea298eb42a1514cae269197fe29"></a>
@@ -195,6 +212,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register named delayValue; <a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html#a136880b7025f7c94b88e2253933e493e" title="Return true if bit 30 of delayValue is clear.">ready()</a> tests its bit 30 and PVCtrls.cc reads it. </p>
 
 </div>
 </div>
@@ -210,6 +229,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register named ramAddr; PVCtrls.cc writes an index to it before reading ramData. </p>
+
 </div>
 </div>
 <a id="abfd70951ecc45bc0aeaf86ed29172624" name="abfd70951ecc45bc0aeaf86ed29172624"></a>
@@ -223,6 +244,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register named ramData; PVCtrls.cc reads it after setting ramAddr. </p>
 
 </div>
 </div>

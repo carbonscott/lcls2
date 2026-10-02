@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1TmoTebPrimitive.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Example trigger primitive writing a <a class="el" href="structPds_1_1Trg_1_1TmoTebData.html" title="TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed examp...">TmoTebData</a> record with fixed values.  
+ <a href="classPds_1_1Trg_1_1TmoTebPrimitive.html#details">More...</a></p>
+
 <p><code>#include &lt;tmoTebPrimitive.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html">Pds::Trg::TriggerPrimitive</a>.</p>
@@ -104,20 +107,28 @@ $(document).ready(function(){initNavTree('classPds_1_1Trg_1_1TmoTebPrimitive.htm
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a19bcb528a52481c433da2aa221934828" id="r_a19bcb528a52481c433da2aa221934828"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a19bcb528a52481c433da2aa221934828">configure</a> (const nlohmann::json &amp;configureMsg, const nlohmann::json &amp;connectMsg, size_t collectionId) override</td></tr>
+<tr class="memdesc:a19bcb528a52481c433da2aa221934828"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; returns 0.  <br /></td></tr>
 <tr class="separator:a19bcb528a52481c433da2aa221934828"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ffb45fb93792d63f53aba8759b39d0b" id="r_a4ffb45fb93792d63f53aba8759b39d0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a4ffb45fb93792d63f53aba8759b39d0b">configure</a> (const <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a4ffb45fb93792d63f53aba8759b39d0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call TriggerPrimitive::configure(xtc, bufEnd), which does nothing.  <br /></td></tr>
 <tr class="separator:a4ffb45fb93792d63f53aba8759b39d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27a19c36b3b153ae28e61f87b568a989" id="r_a27a19c36b3b153ae28e61f87b568a989"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a27a19c36b3b153ae28e61f87b568a989">event</a> (const <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a> &amp;pool, uint32_t idx, const <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;ctrb, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a27a19c36b3b153ae28e61f87b568a989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a <a class="el" href="structPds_1_1Trg_1_1TmoTebData.html" title="TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed examp...">TmoTebData</a> with the fixed example values write 0xdeadbeef and monitor 0x12345678 to xtc; the contribution is not inspected.  <br /></td></tr>
 <tr class="separator:a27a19c36b3b153ae28e61f87b568a989"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a282b47265781156491d2a5d6a9310789" id="r_a282b47265781156491d2a5d6a9310789"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#a282b47265781156491d2a5d6a9310789">event</a> (<a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a> stream, unsigned *const state, float const *const calibBuffers, size_t const calibBufsCnt, uint32_t *const outBuffers, size_t const outBufsCnt, unsigned const *const index, unsigned *const retCode_d) override</td></tr>
+<tr class="memdesc:a282b47265781156491d2a5d6a9310789"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU build (tmoTebPrimitive_gpu.cu): launch a kernel that, in state 1, writes the same fixed values into the TEB input part of the output buffer and moves to state 2.  <br /></td></tr>
 <tr class="separator:a282b47265781156491d2a5d6a9310789"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc37510d1d2dc15882b85bd4ba6abcdc" id="r_acc37510d1d2dc15882b85bd4ba6abcdc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html#acc37510d1d2dc15882b85bd4ba6abcdc">size</a> () const override</td></tr>
+<tr class="memdesc:acc37510d1d2dc15882b85bd4ba6abcdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return sizeof(TmoTebData).  <br /></td></tr>
 <tr class="separator:acc37510d1d2dc15882b85bd4ba6abcdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Trg_1_1TriggerPrimitive"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Trg_1_1TriggerPrimitive')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html">Pds::Trg::TriggerPrimitive</a></td></tr>
 <tr class="memitem:aaed64bba4945fcf7d4e467512c988afd inherit pub_methods_classPds_1_1Trg_1_1TriggerPrimitive" id="r_aaed64bba4945fcf7d4e467512c988afd"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#aaed64bba4945fcf7d4e467512c988afd">~TriggerPrimitive</a> ()</td></tr>
+<tr class="memdesc:aaed64bba4945fcf7d4e467512c988afd inherit pub_methods_classPds_1_1Trg_1_1TriggerPrimitive"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:aaed64bba4945fcf7d4e467512c988afd inherit pub_methods_classPds_1_1Trg_1_1TriggerPrimitive"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Example trigger primitive writing a <a class="el" href="structPds_1_1Trg_1_1TmoTebData.html" title="TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed examp...">TmoTebData</a> record with fixed values. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a19bcb528a52481c433da2aa221934828" name="a19bcb528a52481c433da2aa221934828"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a19bcb528a52481c433da2aa221934828">&#9670;&#160;</a></span>configure() <span class="overload">[1/2]</span></h2>
 
@@ -158,6 +169,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; returns 0. </p>
+
 <p>Implements <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a50d638573c454aa22a7336aedc21d0ac">Pds::Trg::TriggerPrimitive</a>.</p>
 
 </div>
@@ -195,6 +208,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Call TriggerPrimitive::configure(xtc, bufEnd), which does nothing. </p>
 
 <p>Reimplemented from <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a08d27fc5594ef28ee5c4dc824d389864">Pds::Trg::TriggerPrimitive</a>.</p>
 
@@ -251,6 +266,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Append a <a class="el" href="structPds_1_1Trg_1_1TmoTebData.html" title="TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed examp...">TmoTebData</a> with the fixed example values write 0xdeadbeef and monitor 0x12345678 to xtc; the contribution is not inspected. </p>
 
 <p>Implements <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a1564af1ccecb44be00029dc479e0d0a5">Pds::Trg::TriggerPrimitive</a>.</p>
 
@@ -326,6 +343,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>GPU build (tmoTebPrimitive_gpu.cu): launch a kernel that, in state 1, writes the same fixed values into the TEB input part of the output buffer and moves to state 2. </p>
+<p>The CPU build (tmoTebPrimitive_cpu.cc) logs a critical error and aborts. </p>
+
 <p>Reimplemented from <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a4cc059f0d466abedfd536d2bba70488e">Pds::Trg::TriggerPrimitive</a>.</p>
 
 </div>
@@ -352,6 +372,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return sizeof(TmoTebData). </p>
 
 <p>Implements <a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd">Pds::Trg::TriggerPrimitive</a>.</p>
 

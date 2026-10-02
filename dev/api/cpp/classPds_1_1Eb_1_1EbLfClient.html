@@ -97,24 +97,35 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbLfClient.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Creates and tears down client-side <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html" title="Client side of an EbLfLink; writes data into the server&#39;s registered memory with RDMA.">EbLfCltLink</a> connections; all its links share one pending word and one posting word.  
+ <a href="classPds_1_1Eb_1_1EbLfClient.html#details">More...</a></p>
+
 <p><code>#include &lt;EbLfClient.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6df9f92166379c1ec0b66a32deadd8ec" id="r_a6df9f92166379c1ec0b66a32deadd8ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#a6df9f92166379c1ec0b66a32deadd8ec">EbLfClient</a> (const unsigned &amp;verbose)</td></tr>
+<tr class="memdesc:a6df9f92166379c1ec0b66a32deadd8ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with default libfabric hints (Info) and zeroed pending and posting words; verbose is kept by reference.  <br /></td></tr>
 <tr class="separator:a6df9f92166379c1ec0b66a32deadd8ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d88bc30af75233ba4b51e57db5c9f8d" id="r_a1d88bc30af75233ba4b51e57db5c9f8d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#a1d88bc30af75233ba4b51e57db5c9f8d">EbLfClient</a> (const unsigned &amp;verbose, const std::map&lt; std::string, std::string &gt; &amp;kwargs)</td></tr>
+<tr class="memdesc:a1d88bc30af75233ba4b51e57db5c9f8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with libfabric hints built from kwargs (ep_fabric, ep_domain, ep_provider are used by Info) and zeroed pending and posting words.  <br /></td></tr>
 <tr class="separator:a1d88bc30af75233ba4b51e57db5c9f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23b988029cd0a44d0784df0267b6def1" id="r_a23b988029cd0a44d0784df0267b6def1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#a23b988029cd0a44d0784df0267b6def1">connect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> **link, const char *peer, const char *port, unsigned tmo)</td></tr>
+<tr class="memdesc:a23b988029cd0a44d0784df0267b6def1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Fabric, a transmit completion queue and an Endpoint for peer:port and try to connect, retrying refused connections every 1 ms until tmo milliseconds have passed (tmo 0 means no limit).  <br /></td></tr>
 <tr class="separator:a23b988029cd0a44d0784df0267b6def1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af83f5b94a6989b49805a157995fd5e53" id="r_af83f5b94a6989b49805a157995fd5e53"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#af83f5b94a6989b49805a157995fd5e53">disconnect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> *)</td></tr>
+<tr class="memdesc:af83f5b94a6989b49805a157995fd5e53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete link and its endpoint, the endpoint's transmit completion queue and its fabric; does nothing for a null link.  <br /></td></tr>
 <tr class="separator:af83f5b94a6989b49805a157995fd5e53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a189162e1bda613e018680859dbcb3925" id="r_a189162e1bda613e018680859dbcb3925"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#a189162e1bda613e018680859dbcb3925">pending</a> () const</td></tr>
+<tr class="memdesc:a189162e1bda613e018680859dbcb3925"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shared pending word, which EbLfLink::poll(data, msTmo) increments while it waits.  <br /></td></tr>
 <tr class="separator:a189162e1bda613e018680859dbcb3925"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a5ac3f0472788040e0e6bd1f2011e52" id="r_a4a5ac3f0472788040e0e6bd1f2011e52"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html#a4a5ac3f0472788040e0e6bd1f2011e52">posting</a> () const</td></tr>
+<tr class="memdesc:a4a5ac3f0472788040e0e6bd1f2011e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shared posting word, a bit list of the peer IDs whose links are currently posting.  <br /></td></tr>
 <tr class="separator:a4a5ac3f0472788040e0e6bd1f2011e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Creates and tears down client-side <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html" title="Client side of an EbLfLink; writes data into the server&#39;s registered memory with RDMA.">EbLfCltLink</a> connections; all its links share one pending word and one posting word. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6df9f92166379c1ec0b66a32deadd8ec" name="a6df9f92166379c1ec0b66a32deadd8ec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6df9f92166379c1ec0b66a32deadd8ec">&#9670;&#160;</a></span>EbLfClient() <span class="overload">[1/2]</span></h2>
 
@@ -130,6 +141,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with default libfabric hints (Info) and zeroed pending and posting words; verbose is kept by reference. </p>
 
 </div>
 </div>
@@ -158,6 +171,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with libfabric hints built from kwargs (ep_fabric, ep_domain, ep_provider are used by Info) and zeroed pending and posting words. </p>
 
 </div>
 </div>
@@ -200,6 +215,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create a Fabric, a transmit completion queue and an Endpoint for peer:port and try to connect, retrying refused connections every 1 ms until tmo milliseconds have passed (tmo 0 means no limit). </p>
+<p>On success store a new <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html" title="Client side of an EbLfLink; writes data into the server&#39;s registered memory with RDMA.">EbLfCltLink</a> in link and return 0; otherwise return a negative error (-FI_EAGAIN on timeout). </p>
+
 </div>
 </div>
 <a id="af83f5b94a6989b49805a157995fd5e53" name="af83f5b94a6989b49805a157995fd5e53"></a>
@@ -217,6 +235,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delete link and its endpoint, the endpoint's transmit completion queue and its fabric; does nothing for a null link. </p>
+<p>Always returns FI_SUCCESS. </p>
 
 </div>
 </div>
@@ -243,6 +264,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the shared pending word, which EbLfLink::poll(data, msTmo) increments while it waits. </p>
+
 </div>
 </div>
 <a id="a4a5ac3f0472788040e0e6bd1f2011e52" name="a4a5ac3f0472788040e0e6bd1f2011e52"></a>
@@ -267,6 +290,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the shared posting word, a bit list of the peer IDs whose links are currently posting. </p>
 
 </div>
 </div>

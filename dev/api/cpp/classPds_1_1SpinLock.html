@@ -97,24 +97,36 @@ $(document).ready(function(){initNavTree('classPds_1_1SpinLock.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>Busy-waiting lock on an atomic flag; satisfies the <a class="el" href="classPds_1_1SpinLock.html#a8ff40156953248cd4c969578e8c55ac6" title="Spin until the flag is acquired, executing a pause instruction and yielding the thread between attemp...">lock()</a> and <a class="el" href="classPds_1_1SpinLock.html#a2b878cbae2923876412571b0ee61a710" title="Clear the flag.">unlock()</a> interface of std::lock_guard.  
+ <a href="classPds_1_1SpinLock.html#details">More...</a></p>
+
 <p><code>#include &lt;SpinLock.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:addc0aba50a953039d11143d343935df3" id="r_addc0aba50a953039d11143d343935df3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#addc0aba50a953039d11143d343935df3">SpinLock</a> ()</td></tr>
+<tr class="memdesc:addc0aba50a953039d11143d343935df3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct unlocked.  <br /></td></tr>
 <tr class="separator:addc0aba50a953039d11143d343935df3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1370a4c74fb8e49c2b1cb03470d241d" id="r_af1370a4c74fb8e49c2b1cb03470d241d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#af1370a4c74fb8e49c2b1cb03470d241d">~SpinLock</a> ()=default</td></tr>
+<tr class="memdesc:af1370a4c74fb8e49c2b1cb03470d241d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defaulted destructor.  <br /></td></tr>
 <tr class="separator:af1370a4c74fb8e49c2b1cb03470d241d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf6a0685f028d52183ef45a663bb5fd8" id="r_abf6a0685f028d52183ef45a663bb5fd8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#abf6a0685f028d52183ef45a663bb5fd8">SpinLock</a> (const <a class="el" href="classPds_1_1SpinLock.html">SpinLock</a> &amp;)=delete</td></tr>
+<tr class="memdesc:abf6a0685f028d52183ef45a663bb5fd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: a lock cannot be copied.  <br /></td></tr>
 <tr class="separator:abf6a0685f028d52183ef45a663bb5fd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ecb2c65506e35f8137a146edebac6" id="r_acc5ecb2c65506e35f8137a146edebac6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1SpinLock.html">SpinLock</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#acc5ecb2c65506e35f8137a146edebac6">operator=</a> (const <a class="el" href="classPds_1_1SpinLock.html">SpinLock</a> &amp;)=delete</td></tr>
+<tr class="memdesc:acc5ecb2c65506e35f8137a146edebac6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: a lock cannot be copy-assigned.  <br /></td></tr>
 <tr class="separator:acc5ecb2c65506e35f8137a146edebac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ff40156953248cd4c969578e8c55ac6" id="r_a8ff40156953248cd4c969578e8c55ac6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#a8ff40156953248cd4c969578e8c55ac6">lock</a> ()</td></tr>
+<tr class="memdesc:a8ff40156953248cd4c969578e8c55ac6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spin until the flag is acquired, executing a pause instruction and yielding the thread between attempts.  <br /></td></tr>
 <tr class="separator:a8ff40156953248cd4c969578e8c55ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b878cbae2923876412571b0ee61a710" id="r_a2b878cbae2923876412571b0ee61a710"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1SpinLock.html#a2b878cbae2923876412571b0ee61a710">unlock</a> ()</td></tr>
+<tr class="memdesc:a2b878cbae2923876412571b0ee61a710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the flag.  <br /></td></tr>
 <tr class="separator:a2b878cbae2923876412571b0ee61a710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Busy-waiting lock on an atomic flag; satisfies the <a class="el" href="classPds_1_1SpinLock.html#a8ff40156953248cd4c969578e8c55ac6" title="Spin until the flag is acquired, executing a pause instruction and yielding the thread between attemp...">lock()</a> and <a class="el" href="classPds_1_1SpinLock.html#a2b878cbae2923876412571b0ee61a710" title="Clear the flag.">unlock()</a> interface of std::lock_guard. </p>
+<p>Not copyable. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="addc0aba50a953039d11143d343935df3" name="addc0aba50a953039d11143d343935df3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#addc0aba50a953039d11143d343935df3">&#9670;&#160;</a></span>SpinLock() <span class="overload">[1/2]</span></h2>
 
@@ -137,6 +149,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct unlocked. </p>
 
 </div>
 </div>
@@ -162,6 +176,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Defaulted destructor. </p>
 
 </div>
 </div>
@@ -189,6 +205,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Deleted: a lock cannot be copied. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -214,6 +232,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Spin until the flag is acquired, executing a pause instruction and yielding the thread between attempts. </p>
 
 </div>
 </div>
@@ -241,6 +261,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Deleted: a lock cannot be copy-assigned. </p>
+
 </div>
 </div>
 <a id="a2b878cbae2923876412571b0ee61a710" name="a2b878cbae2923876412571b0ee61a710"></a>
@@ -265,6 +287,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Clear the flag. </p>
 
 </div>
 </div>

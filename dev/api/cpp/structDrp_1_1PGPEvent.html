@@ -97,18 +97,26 @@ $(document).ready(function(){initNavTree('structDrp_1_1PGPEvent.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p>One event being assembled from up to PGP_MAX_LANES lanes: a <a class="el" href="structDrp_1_1DmaBuffer.html" title="Size and driver index of one DMA buffer of an event.">DmaBuffer</a> per lane, the mask of lanes received and the pebble buffer index assigned when the event is complete.  
+ <a href="structDrp_1_1PGPEvent.html#details">More...</a></p>
+
 <p><code>#include &lt;drp.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1093833fb61bb2c745d1d83504ea02be" id="r_a1093833fb61bb2c745d1d83504ea02be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDrp_1_1DmaBuffer.html">DmaBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1PGPEvent.html#a1093833fb61bb2c745d1d83504ea02be">buffers</a> [<a class="el" href="drp_8hh.html#a45f83cf140f03f814a587e2b75d743ac">PGP_MAX_LANES</a>]</td></tr>
+<tr class="memdesc:a1093833fb61bb2c745d1d83504ea02be"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMA buffer of each lane.  <br /></td></tr>
 <tr class="separator:a1093833fb61bb2c745d1d83504ea02be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae64494b2a9d2f91d6310e1c860aca125" id="r_ae64494b2a9d2f91d6310e1c860aca125"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1PGPEvent.html#ae64494b2a9d2f91d6310e1c860aca125">mask</a> = 0</td></tr>
+<tr class="memdesc:ae64494b2a9d2f91d6310e1c860aca125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit mask of the lanes received so far (0 when the entry is free).  <br /></td></tr>
 <tr class="separator:ae64494b2a9d2f91d6310e1c860aca125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf43402040e57a468370fd5366611760" id="r_abf43402040e57a468370fd5366611760"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1PGPEvent.html#abf43402040e57a468370fd5366611760">pebbleIndex</a></td></tr>
+<tr class="memdesc:abf43402040e57a468370fd5366611760"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Pebble.html" title="One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buf...">Pebble</a> buffer index, allocated once all lanes in <a class="el" href="structDrp_1_1Parameters.html#a01525899cf413a0b116ad2075877b154" title="Bit mask of the PGP lanes in use (-l option in drp.cc, hexadecimal; default 0x1).">Parameters::laneMask</a> have arrived.  <br /></td></tr>
 <tr class="separator:abf43402040e57a468370fd5366611760"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>One event being assembled from up to PGP_MAX_LANES lanes: a <a class="el" href="structDrp_1_1DmaBuffer.html" title="Size and driver index of one DMA buffer of an event.">DmaBuffer</a> per lane, the mask of lanes received and the pebble buffer index assigned when the event is complete. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a1093833fb61bb2c745d1d83504ea02be" name="a1093833fb61bb2c745d1d83504ea02be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1093833fb61bb2c745d1d83504ea02be">&#9670;&#160;</a></span>buffers</h2>
 
@@ -120,6 +128,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>DMA buffer of each lane. </p>
 
 </div>
 </div>
@@ -135,6 +145,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Bit mask of the lanes received so far (0 when the entry is free). </p>
+
 </div>
 </div>
 <a id="abf43402040e57a468370fd5366611760" name="abf43402040e57a468370fd5366611760"></a>
@@ -148,6 +160,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classDrp_1_1Pebble.html" title="One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buf...">Pebble</a> buffer index, allocated once all lanes in <a class="el" href="structDrp_1_1Parameters.html#a01525899cf413a0b116ad2075877b154" title="Bit mask of the PGP lanes in use (-l option in drp.cc, hexadecimal; default 0x1).">Parameters::laneMask</a> have arrived. </p>
 
 </div>
 </div>

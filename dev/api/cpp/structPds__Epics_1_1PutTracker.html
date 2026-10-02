@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1PutTracker.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Put callback that writes one scalar to the value field of a PV and signals completionEvent when the put ends (copied from the EPICS V4 example code, per the code comment).  
+ <a href="structPds__Epics_1_1PutTracker.html#details">More...</a></p>
+
 <p><code>#include &lt;EpicsPVA.hh&gt;</code></p>
 
 <p>Inherits pvac::ClientChannel::PutCallback.</p>
@@ -105,24 +108,34 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1PutTracker.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a524c5f9de707686649db827a6c937b" id="r_a7a524c5f9de707686649db827a6c937b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a7a524c5f9de707686649db827a6c937b">POINTER_DEFINITIONS</a> (<a class="el" href="structPds__Epics_1_1PutTracker.html">PutTracker</a>)</td></tr>
+<tr class="memdesc:a7a524c5f9de707686649db827a6c937b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands the pvData POINTER_DEFINITIONS macro for this type; doxygen lists it as a function.  <br /></td></tr>
 <tr class="separator:a7a524c5f9de707686649db827a6c937b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4452a83d97435c6cf33fecbafefb7ea2" id="r_a4452a83d97435c6cf33fecbafefb7ea2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a4452a83d97435c6cf33fecbafefb7ea2">PutTracker</a> (const T &amp;val)</td></tr>
+<tr class="memdesc:a4452a83d97435c6cf33fecbafefb7ea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep a copy of val.  <br /></td></tr>
 <tr class="separator:a4452a83d97435c6cf33fecbafefb7ea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87d310c7106de1dce439113cb84e82a1" id="r_a87d310c7106de1dce439113cb84e82a1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a87d310c7106de1dce439113cb84e82a1">~PutTracker</a> ()</td></tr>
+<tr class="memdesc:a87d310c7106de1dce439113cb84e82a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a87d310c7106de1dce439113cb84e82a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06d36f2fc23b9fd6871f53047d92d5e5" id="r_a06d36f2fc23b9fd6871f53047d92d5e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a06d36f2fc23b9fd6871f53047d92d5e5">putBuild</a> (const epics::pvData::StructureConstPtr &amp;build, pvac::ClientChannel::PutCallback::Args &amp;args)</td></tr>
+<tr class="memdesc:a06d36f2fc23b9fd6871f53047d92d5e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the put structure from build, set its value field from value and mark only that field to be sent.  <br /></td></tr>
 <tr class="separator:a06d36f2fc23b9fd6871f53047d92d5e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac90e1d5483038168e6bfa372a9519450" id="r_ac90e1d5483038168e6bfa372a9519450"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#ac90e1d5483038168e6bfa372a9519450">putDone</a> (const pvac::PutEvent &amp;evt) OVERRIDE FINAL</td></tr>
+<tr class="memdesc:ac90e1d5483038168e6bfa372a9519450"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a message for a failed or cancelled put, then signal completionEvent.  <br /></td></tr>
 <tr class="separator:ac90e1d5483038168e6bfa372a9519450"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8af98655a19583fdb75e5bb3d69d6e6a" id="r_a8af98655a19583fdb75e5bb3d69d6e6a"><td class="memItemLeft" align="right" valign="top">epicsEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a8af98655a19583fdb75e5bb3d69d6e6a">completionEvent</a></td></tr>
+<tr class="memdesc:a8af98655a19583fdb75e5bb3d69d6e6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signalled by <a class="el" href="structPds__Epics_1_1PutTracker.html#ac90e1d5483038168e6bfa372a9519450" title="Print a message for a failed or cancelled put, then signal completionEvent.">putDone()</a>.  <br /></td></tr>
 <tr class="separator:a8af98655a19583fdb75e5bb3d69d6e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20a91e11983b7394d568ed5f7bd97737" id="r_a20a91e11983b7394d568ed5f7bd97737"><td class="memItemLeft" align="right" valign="top">const T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html#a20a91e11983b7394d568ed5f7bd97737">value</a></td></tr>
+<tr class="memdesc:a20a91e11983b7394d568ed5f7bd97737"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value to put.  <br /></td></tr>
 <tr class="separator:a20a91e11983b7394d568ed5f7bd97737"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+struct Pds_Epics::PutTracker&lt; T &gt;</div><p>Put callback that writes one scalar to the value field of a PV and signals completionEvent when the put ends (copied from the EPICS V4 example code, per the code comment). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4452a83d97435c6cf33fecbafefb7ea2" name="a4452a83d97435c6cf33fecbafefb7ea2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4452a83d97435c6cf33fecbafefb7ea2">&#9670;&#160;</a></span>PutTracker()</h2>
 
@@ -148,6 +161,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Keep a copy of val. </p>
 
 </div>
 </div>
@@ -176,6 +191,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty virtual destructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -196,6 +213,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Expands the pvData POINTER_DEFINITIONS macro for this type; doxygen lists it as a function. </p>
 
 </div>
 </div>
@@ -235,6 +254,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Create the put structure from build, set its value field from value and mark only that field to be sent. </p>
+
 </div>
 </div>
 <a id="ac90e1d5483038168e6bfa372a9519450" name="ac90e1d5483038168e6bfa372a9519450"></a>
@@ -263,6 +284,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Print a message for a failed or cancelled put, then signal completionEvent. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -280,6 +303,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Signalled by <a class="el" href="structPds__Epics_1_1PutTracker.html#ac90e1d5483038168e6bfa372a9519450" title="Print a message for a failed or cancelled put, then signal completionEvent.">putDone()</a>. </p>
+
 </div>
 </div>
 <a id="a20a91e11983b7394d568ed5f7bd97737" name="a20a91e11983b7394d568ed5f7bd97737"></a>
@@ -295,6 +320,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value to put. </p>
 
 </div>
 </div>

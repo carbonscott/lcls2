@@ -106,19 +106,25 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1GPUTimer.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a22d51dc75f64e701698fbe9d6e2c1323" id="r_a22d51dc75f64e701698fbe9d6e2c1323"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a22d51dc75f64e701698fbe9d6e2c1323">GPUTimer</a> ()</td></tr>
+<tr class="memdesc:a22d51dc75f64e701698fbe9d6e2c1323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the start and stop events (return codes not checked).  <br /></td></tr>
 <tr class="separator:a22d51dc75f64e701698fbe9d6e2c1323"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4f8f562d22ade580dcd362af6dd913e" id="r_ae4f8f562d22ade580dcd362af6dd913e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#ae4f8f562d22ade580dcd362af6dd913e">~GPUTimer</a> ()</td></tr>
+<tr class="memdesc:ae4f8f562d22ade580dcd362af6dd913e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the two events.  <br /></td></tr>
 <tr class="separator:ae4f8f562d22ade580dcd362af6dd913e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ed628158e4316e8ad7a0cb4299c9c7a" id="r_a6ed628158e4316e8ad7a0cb4299c9c7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a6ed628158e4316e8ad7a0cb4299c9c7a">start</a> ()</td></tr>
+<tr class="memdesc:a6ed628158e4316e8ad7a0cb4299c9c7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the start event on the default stream.  <br /></td></tr>
 <tr class="separator:a6ed628158e4316e8ad7a0cb4299c9c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c7dc3889011d06722aa81e46161d4b2" id="r_a9c7dc3889011d06722aa81e46161d4b2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a9c7dc3889011d06722aa81e46161d4b2">stop</a> ()</td></tr>
+<tr class="memdesc:a9c7dc3889011d06722aa81e46161d4b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the stop event on the default stream, wait for it and return the time since the start event in milliseconds.  <br /></td></tr>
 <tr class="separator:a9c7dc3889011d06722aa81e46161d4b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a799165cc1e386cc173920f023320a424" id="r_a799165cc1e386cc173920f023320a424"><td class="memItemLeft" align="right" valign="top">cudaEvent_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a799165cc1e386cc173920f023320a424">beg</a></td></tr>
+<tr class="memdesc:a799165cc1e386cc173920f023320a424"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start event, recorded by <a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a6ed628158e4316e8ad7a0cb4299c9c7a" title="Record the start event on the default stream.">start()</a>.  <br /></td></tr>
 <tr class="separator:a799165cc1e386cc173920f023320a424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7081dce2e0a8e9abadaf13e3fb107408" id="r_a7081dce2e0a8e9abadaf13e3fb107408"><td class="memItemLeft" align="right" valign="top">cudaEvent_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a7081dce2e0a8e9abadaf13e3fb107408">end</a></td></tr>
+<tr class="memdesc:a7081dce2e0a8e9abadaf13e3fb107408"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop event, recorded by <a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a9c7dc3889011d06722aa81e46161d4b2" title="Record the stop event on the default stream, wait for it and return the time since the start event in...">stop()</a>.  <br /></td></tr>
 <tr class="separator:a7081dce2e0a8e9abadaf13e3fb107408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -147,6 +153,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Create the start and stop events (return codes not checked). </p>
+
 </div>
 </div>
 <a id="ae4f8f562d22ade580dcd362af6dd913e" name="ae4f8f562d22ade580dcd362af6dd913e"></a>
@@ -171,6 +179,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Destroy the two events. </p>
 
 </div>
 </div>
@@ -198,6 +208,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Record the start event on the default stream. </p>
+
 </div>
 </div>
 <a id="a9c7dc3889011d06722aa81e46161d4b2" name="a9c7dc3889011d06722aa81e46161d4b2"></a>
@@ -223,6 +235,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Record the stop event on the default stream, wait for it and return the time since the start event in milliseconds. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -238,6 +252,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start event, recorded by <a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a6ed628158e4316e8ad7a0cb4299c9c7a" title="Record the start event on the default stream.">start()</a>. </p>
+
 </div>
 </div>
 <a id="a7081dce2e0a8e9abadaf13e3fb107408" name="a7081dce2e0a8e9abadaf13e3fb107408"></a>
@@ -251,6 +267,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Stop event, recorded by <a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html#a9c7dc3889011d06722aa81e46161d4b2" title="Record the stop event on the default stream, wait for it and return the time since the start event in...">stop()</a>. </p>
 
 </div>
 </div>

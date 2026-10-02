@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('LinkedListSL_8hh.html',''); initResiza
   <div class="headertitle"><div class="title">LinkedListSL.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>LinkedListSL, a doubly linked list element whose operations are guarded by a spin lock.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="LinkedList_8hh.html">LinkedList.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpinLock_8hh.html">SpinLock.hh</a>&quot;</code><br />
 <code>#include &lt;mutex&gt;</code><br />
@@ -104,6 +107,7 @@ $(document).ready(function(){initNavTree('LinkedListSL_8hh.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html">Pds::LinkedListSL&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Typed wrapper over <a class="el" href="classPds_1_1ListBase.html" title="Node of an intrusive doubly linked list; an object can be a list head (label) or an element.">Pds::ListBase</a> (private base) in which every operation holds a per-object <a class="el" href="classPds_1_1SpinLock.html" title="Busy-waiting lock on an atomic flag; satisfies the lock() and unlock() interface of std::lock_guard.">Pds::SpinLock</a>.  <a href="classPds_1_1LinkedListSL.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -115,9 +119,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aec766efa10b40740d9d9b7989cfe9bb7" id="r_aec766efa10b40740d9d9b7989cfe9bb7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LinkedListSL_8hh.html#aec766efa10b40740d9d9b7989cfe9bb7">SL</a>()&#160;&#160;&#160;std::lock_guard&lt;<a class="el" href="classPds_1_1SpinLock.html">Pds::SpinLock</a>&gt; lk(_lock)</td></tr>
+<tr class="memdesc:aec766efa10b40740d9d9b7989cfe9bb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declares a std::lock_guard on the member spin lock _lock for the rest of the enclosing scope; undefined at the end of this header.  <br /></td></tr>
 <tr class="separator:aec766efa10b40740d9d9b7989cfe9bb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>LinkedListSL, a doubly linked list element whose operations are guarded by a spin lock. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="aec766efa10b40740d9d9b7989cfe9bb7" name="aec766efa10b40740d9d9b7989cfe9bb7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec766efa10b40740d9d9b7989cfe9bb7">&#9670;&#160;</a></span>SL</h2>
 
@@ -132,6 +139,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declares a std::lock_guard on the member spin lock _lock for the rest of the enclosing scope; undefined at the end of this header. </p>
 
 </div>
 </div>

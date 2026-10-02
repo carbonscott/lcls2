@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('Fifo_8hh.html',''); initResizable(); }
   <div class="headertitle"><div class="title">Fifo.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Fifo, a fixed-size ring buffer, with a lock-guarded variant (FifoMT) and a variant whose readers can wait (FifoW).  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;mutex&gt;</code><br />
@@ -107,6 +110,7 @@ $(document).ready(function(){initNavTree('Fifo_8hh.html',''); initResizable(); }
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fifo.html">Pds::Fifo&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed-size ring buffer of T, not thread-safe.  <a href="classPds_1_1Fifo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -118,9 +122,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a58255ee88a5df065b2cf4e1c91a81fb2" id="r_a58255ee88a5df065b2cf4e1c91a81fb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Fifo_8hh.html#a58255ee88a5df065b2cf4e1c91a81fb2">LCK</a>&#160;&#160;&#160;std::lock_guard&lt;L&gt; lk(_lock)</td></tr>
+<tr class="memdesc:a58255ee88a5df065b2cf4e1c91a81fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declares a std::lock_guard on the member lock for the rest of the enclosing body; undefined after the member functions.  <br /></td></tr>
 <tr class="separator:a58255ee88a5df065b2cf4e1c91a81fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Fifo, a fixed-size ring buffer, with a lock-guarded variant (FifoMT) and a variant whose readers can wait (FifoW). </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a58255ee88a5df065b2cf4e1c91a81fb2" name="a58255ee88a5df065b2cf4e1c91a81fb2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a58255ee88a5df065b2cf4e1c91a81fb2">&#9670;&#160;</a></span>LCK</h2>
 
@@ -132,6 +139,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declares a std::lock_guard on the member lock for the rest of the enclosing body; undefined after the member functions. </p>
 
 </div>
 </div>

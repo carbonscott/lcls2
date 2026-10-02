@@ -95,15 +95,21 @@ $(document).ready(function(){initNavTree('kwargs_8hh.html',''); initResizable();
   <div class="headertitle"><div class="title">kwargs.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="kwargs_8hh.html#a5646a1fe879baf74adac95b287877861" title="Split kwargs_str at commas and store each key=value pair (key and value trimmed of surrounding white ...">get_kwargs()</a>, which parses a comma-separated key=value string into a map.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a5646a1fe879baf74adac95b287877861" id="r_a5646a1fe879baf74adac95b287877861"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kwargs_8hh.html#a5646a1fe879baf74adac95b287877861">get_kwargs</a> (const std::string &amp;kwargs_str, std::map&lt; std::string, std::string &gt; &amp;kwargs)</td></tr>
+<tr class="memdesc:a5646a1fe879baf74adac95b287877861"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split kwargs_str at commas and store each key=value pair (key and value trimmed of surrounding white space) in kwargs, overwriting existing keys.  <br /></td></tr>
 <tr class="separator:a5646a1fe879baf74adac95b287877861"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="kwargs_8hh.html#a5646a1fe879baf74adac95b287877861" title="Split kwargs_str at commas and store each key=value pair (key and value trimmed of surrounding white ...">get_kwargs()</a>, which parses a comma-separated key=value string into a map. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a5646a1fe879baf74adac95b287877861" name="a5646a1fe879baf74adac95b287877861"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5646a1fe879baf74adac95b287877861">&#9670;&#160;</a></span>get_kwargs()</h2>
 
@@ -129,6 +135,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Split kwargs_str at commas and store each key=value pair (key and value trimmed of surrounding white space) in kwargs, overwriting existing keys. </p>
+<p>Logs and throws a std::string if an item has no equal sign. </p>
 
 </div>
 </div>

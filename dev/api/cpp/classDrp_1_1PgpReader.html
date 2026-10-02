@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1PgpReader.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p>Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane).  
+ <a href="classDrp_1_1PgpReader.html#details">More...</a></p>
+
 <p><code>#include &lt;DrpBase.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a>, <a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a>, <a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a>, <a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a>, and <a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a>.</p>
@@ -105,48 +108,70 @@ $(document).ready(function(){initNavTree('classDrp_1_1PgpReader.html',''); initR
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae1075391ed599da67d6573a916c08af5" id="r_ae1075391ed599da67d6573a916c08af5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ae1075391ed599da67d6573a916c08af5">PgpReader</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, unsigned maxRetCnt, unsigned dmaFreeCnt)</td></tr>
+<tr class="memdesc:ae1075391ed599da67d6573a916c08af5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size the bulk-read arrays for maxRetCnt buffers and the free-index batch for dmaFreeCnt buffers (aborting if the pool has fewer DMA buffers than dmaFreeCnt), set up poll() on the device file descriptor and reset the pool counters.  <br /></td></tr>
 <tr class="separator:ae1075391ed599da67d6573a916c08af5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20f2207c71c15dcdaf5d4e8c1981cd87" id="r_a20f2207c71c15dcdaf5d4e8c1981cd87"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a20f2207c71c15dcdaf5d4e8c1981cd87">~PgpReader</a> ()</td></tr>
+<tr class="memdesc:a20f2207c71c15dcdaf5d4e8c1981cd87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1PgpReader.html#a425dcfcafad4b79d6b5cbcfff1535e03" title="Return the DMA indices queued for freeing, return every DMA buffer that can still be read without cou...">flush()</a>.  <br /></td></tr>
 <tr class="separator:a20f2207c71c15dcdaf5d4e8c1981cd87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa55362384db524eb4492c7d535fd7cd5" id="r_aa55362384db524eb4492c7d535fd7cd5"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aa55362384db524eb4492c7d535fd7cd5">read</a> ()</td></tr>
+<tr class="memdesc:aa55362384db524eb4492c7d535fd7cd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read up to maxRetCnt DMA buffers.  <br /></td></tr>
 <tr class="separator:aa55362384db524eb4492c7d535fd7cd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a425dcfcafad4b79d6b5cbcfff1535e03" id="r_a425dcfcafad4b79d6b5cbcfff1535e03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a425dcfcafad4b79d6b5cbcfff1535e03">flush</a> ()</td></tr>
+<tr class="memdesc:a425dcfcafad4b79d6b5cbcfff1535e03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the DMA indices queued for freeing, return every DMA buffer that can still be read without counting it, and free all pebble buffers in use.  <br /></td></tr>
 <tr class="separator:a425dcfcafad4b79d6b5cbcfff1535e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82f1ec9339ab470ba490f57bfa192824" id="r_a82f1ec9339ab470ba490f57bfa192824"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824">handle</a> (<a class="el" href="classDrp_1_1Detector.html">Detector</a> *det, unsigned current)</td></tr>
+<tr class="memdesc:a82f1ec9339ab470ba490f57bfa192824"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process DMA buffer current of the last <a class="el" href="classDrp_1_1PgpReader.html#aa55362384db524eb4492c7d535fd7cd5" title="Read up to maxRetCnt DMA buffers.">read()</a> for detector det: record it in the <a class="el" href="structDrp_1_1PGPEvent.html" title="One event being assembled from up to PGP_MAX_LANES lanes: a DmaBuffer per lane, the mask of lanes rec...">PGPEvent</a> chosen by its event counter and, once all lanes have arrived, check the event (counter jumps, common readout group, readout groups of SlowUpdates) and allocate a transition buffer (non-L1Accept) and a pebble buffer index.  <br /></td></tr>
 <tr class="separator:a82f1ec9339ab470ba490f57bfa192824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a410449af45e9d34813f30694f8b729bc" id="r_a410449af45e9d34813f30694f8b729bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a410449af45e9d34813f30694f8b729bc">freeDma</a> (<a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *event)</td></tr>
+<tr class="memdesc:a410449af45e9d34813f30694f8b729bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue the DMA buffers of all lanes of event for return to the driver (returned in batches of dmaFreeCnt) and clear the lane mask of the event.  <br /></td></tr>
 <tr class="separator:a410449af45e9d34813f30694f8b729bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c24ee97c7443e4ab6b02c9259aa3aa4" id="r_a3c24ee97c7443e4ab6b02c9259aa3aa4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a3c24ee97c7443e4ab6b02c9259aa3aa4">handleBrokenEvent</a> (const <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &amp;event)</td></tr>
+<tr class="memdesc:a3c24ee97c7443e4ab6b02c9259aa3aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook called for events that are dropped; the default does nothing.  <br /></td></tr>
 <tr class="separator:a3c24ee97c7443e4ab6b02c9259aa3aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a1339089040f15b1c2418a31dc8b9b1" id="r_a6a1339089040f15b1c2418a31dc8b9b1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a6a1339089040f15b1c2418a31dc8b9b1">resetEventCounter</a> ()</td></tr>
+<tr class="memdesc:a6a1339089040f15b1c2418a31dc8b9b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun.  <br /></td></tr>
 <tr class="separator:a6a1339089040f15b1c2418a31dc8b9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5008a56a16bff789f5a6f43edac0bd37" id="r_a5008a56a16bff789f5a6f43edac0bd37"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a5008a56a16bff789f5a6f43edac0bd37">dmaBytes</a> () const</td></tr>
+<tr class="memdesc:a5008a56a16bff789f5a6f43edac0bd37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the total number of DMA bytes handled.  <br /></td></tr>
 <tr class="separator:a5008a56a16bff789f5a6f43edac0bd37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebfcf88c98b831c7fc0d5dc56226425d" id="r_aebfcf88c98b831c7fc0d5dc56226425d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aebfcf88c98b831c7fc0d5dc56226425d">dmaSize</a> () const</td></tr>
+<tr class="memdesc:aebfcf88c98b831c7fc0d5dc56226425d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of the last DMA buffer handled.  <br /></td></tr>
 <tr class="separator:aebfcf88c98b831c7fc0d5dc56226425d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6face5e567abf60f118b065857025552" id="r_a6face5e567abf60f118b065857025552"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a6face5e567abf60f118b065857025552">latency</a> () const</td></tr>
+<tr class="memdesc:a6face5e567abf60f118b065857025552"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last measured TimingHeader latency in microseconds, updated about every 92857 pulse IDs (10 Hz per the code comment).  <br /></td></tr>
 <tr class="separator:a6face5e567abf60f118b065857025552"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f950f2247776cad55ff22af415aefdf" id="r_a3f950f2247776cad55ff22af415aefdf"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a3f950f2247776cad55ff22af415aefdf">nDmaErrors</a> () const</td></tr>
+<tr class="memdesc:a3f950f2247776cad55ff22af415aefdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers that reported an error.  <br /></td></tr>
 <tr class="separator:a3f950f2247776cad55ff22af415aefdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66ed48e9cbb995c10d1f993fd473985" id="r_ae66ed48e9cbb995c10d1f993fd473985"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ae66ed48e9cbb995c10d1f993fd473985">nNoComRoG</a> () const</td></tr>
+<tr class="memdesc:ae66ed48e9cbb995c10d1f993fd473985"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of events dropped because the common readout group was missing.  <br /></td></tr>
 <tr class="separator:ae66ed48e9cbb995c10d1f993fd473985"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4865af2823bdf823cbe67a6929fa8588" id="r_a4865af2823bdf823cbe67a6929fa8588"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a4865af2823bdf823cbe67a6929fa8588">nMissingRoGs</a> () const</td></tr>
+<tr class="memdesc:a4865af2823bdf823cbe67a6929fa8588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of SlowUpdates dropped because readout groups in <a class="el" href="structDrp_1_1Parameters.html#afc2f97e23e010c17faaed0c9b8caa62e" title="Readout group mask built by DrpBase.cc from the connect information (0x00ff0000 plus one bit per read...">Parameters::rogMask</a> were missing.  <br /></td></tr>
 <tr class="separator:a4865af2823bdf823cbe67a6929fa8588"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76e1260ad53aac215054cb8f29476c90" id="r_a76e1260ad53aac215054cb8f29476c90"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a76e1260ad53aac215054cb8f29476c90">nTmgHdrError</a> () const</td></tr>
+<tr class="memdesc:a76e1260ad53aac215054cb8f29476c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of timing headers with the error bit set.  <br /></td></tr>
 <tr class="separator:a76e1260ad53aac215054cb8f29476c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad078b58d844547dc91170f1388aa18db" id="r_ad078b58d844547dc91170f1388aa18db"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ad078b58d844547dc91170f1388aa18db">nPgpJumps</a> () const</td></tr>
+<tr class="memdesc:ad078b58d844547dc91170f1388aa18db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of event counter jumps detected.  <br /></td></tr>
 <tr class="separator:ad078b58d844547dc91170f1388aa18db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f9d607bbda25899e9636465c8049cd3" id="r_a3f9d607bbda25899e9636465c8049cd3"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a3f9d607bbda25899e9636465c8049cd3">nNoTrDgrams</a> () const</td></tr>
+<tr class="memdesc:a3f9d607bbda25899e9636465c8049cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of events dropped because no transition buffer was available.  <br /></td></tr>
 <tr class="separator:a3f9d607bbda25899e9636465c8049cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4893e95a2f60fd4b1946f52154352f" id="r_aca4893e95a2f60fd4b1946f52154352f"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aca4893e95a2f60fd4b1946f52154352f">nPgpInUser</a> () const</td></tr>
+<tr class="memdesc:aca4893e95a2f60fd4b1946f52154352f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a87d5a0c2f03b0bf0322adad500371164" title="Get the receive buffer count in user.">dmaGetRxBuffinUserCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:aca4893e95a2f60fd4b1946f52154352f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5444c2a7b19f92b808bb7163a689be06" id="r_a5444c2a7b19f92b808bb7163a689be06"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a5444c2a7b19f92b808bb7163a689be06">nPgpInHw</a> () const</td></tr>
+<tr class="memdesc:a5444c2a7b19f92b808bb7163a689be06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a2f0d00e0a6ac3d2d28ac40d1cc825a04" title="Get the receive buffer count in hardware.">dmaGetRxBuffinHwCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:a5444c2a7b19f92b808bb7163a689be06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa86af8037c608a477ed8858ba344cf3a" id="r_aa86af8037c608a477ed8858ba344cf3a"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aa86af8037c608a477ed8858ba344cf3a">nPgpInPreHw</a> () const</td></tr>
+<tr class="memdesc:aa86af8037c608a477ed8858ba344cf3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#aa4e1a166277b389fb2fa075259427bc4" title="Get the receive buffer count in pre-hardware queue.">dmaGetRxBuffinPreHwQCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:aa86af8037c608a477ed8858ba344cf3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a301e295133c7764471cbdf1a22659e52" id="r_a301e295133c7764471cbdf1a22659e52"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a301e295133c7764471cbdf1a22659e52">nPgpInRx</a> () const</td></tr>
+<tr class="memdesc:a301e295133c7764471cbdf1a22659e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a9b518eceb82550599d35eeead411740e" title="Get the receive buffer count in software queue.">dmaGetRxBuffinSwQCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:a301e295133c7764471cbdf1a22659e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d68cae431a6827b5e79a516f4b16432" id="r_a0d68cae431a6827b5e79a516f4b16432"><td class="memItemLeft" align="right" valign="top">std::chrono::nanoseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a0d68cae431a6827b5e79a516f4b16432">age</a> (const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> &amp;time) const</td></tr>
+<tr class="memdesc:a0d68cae431a6827b5e79a516f4b16432"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the latency of timestamp time (<a class="el" href="namespacePds_1_1Eb.html#a1511334769de9ec9a170963d154cfa6a" title="Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T.">Pds::Eb::latency()</a>) in nanoseconds.  <br /></td></tr>
 <tr class="separator:a0d68cae431a6827b5e79a516f4b16432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -208,7 +233,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a715e1157b8cad69c1903c51f080d2c97" id="r_a715e1157b8cad69c1903c51f080d2c97"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a715e1157b8cad69c1903c51f080d2c97">m_dmaOverrun</a></td></tr>
 <tr class="separator:a715e1157b8cad69c1903c51f080d2c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane). </p>
+<p>It checks event counters, readout groups and buffer sanity, and allocates pebble and transition buffers for complete events. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae1075391ed599da67d6573a916c08af5" name="ae1075391ed599da67d6573a916c08af5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae1075391ed599da67d6573a916c08af5">&#9670;&#160;</a></span>PgpReader()</h2>
 
@@ -247,6 +275,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Size the bulk-read arrays for maxRetCnt buffers and the free-index batch for dmaFreeCnt buffers (aborting if the pool has fewer DMA buffers than dmaFreeCnt), set up poll() on the device file descriptor and reset the pool counters. </p>
+
 </div>
 </div>
 <a id="a20f2207c71c15dcdaf5d4e8c1981cd87" name="a20f2207c71c15dcdaf5d4e8c1981cd87"></a>
@@ -272,6 +302,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1PgpReader.html#a425dcfcafad4b79d6b5cbcfff1535e03" title="Return the DMA indices queued for freeing, return every DMA buffer that can still be read without cou...">flush()</a>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -290,6 +322,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the latency of timestamp time (<a class="el" href="namespacePds_1_1Eb.html#a1511334769de9ec9a170963d154cfa6a" title="Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T.">Pds::Eb::latency()</a>) in nanoseconds. </p>
 
 </div>
 </div>
@@ -316,6 +350,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the total number of DMA bytes handled. </p>
+
 </div>
 </div>
 <a id="aebfcf88c98b831c7fc0d5dc56226425d" name="aebfcf88c98b831c7fc0d5dc56226425d"></a>
@@ -341,6 +377,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the size of the last DMA buffer handled. </p>
+
 </div>
 </div>
 <a id="a425dcfcafad4b79d6b5cbcfff1535e03" name="a425dcfcafad4b79d6b5cbcfff1535e03"></a>
@@ -357,6 +395,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the DMA indices queued for freeing, return every DMA buffer that can still be read without counting it, and free all pebble buffers in use. </p>
 
 </div>
 </div>
@@ -375,6 +415,9 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Queue the DMA buffers of all lanes of event for return to the driver (returned in batches of dmaFreeCnt) and clear the lane mask of the event. </p>
+<p>Thread-safe. </p>
 
 </div>
 </div>
@@ -404,6 +447,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Process DMA buffer current of the last <a class="el" href="classDrp_1_1PgpReader.html#aa55362384db524eb4492c7d535fd7cd5" title="Read up to maxRetCnt DMA buffers.">read()</a> for detector det: record it in the <a class="el" href="structDrp_1_1PGPEvent.html" title="One event being assembled from up to PGP_MAX_LANES lanes: a DmaBuffer per lane, the mask of lanes rec...">PGPEvent</a> chosen by its event counter and, once all lanes have arrived, check the event (counter jumps, common readout group, readout groups of SlowUpdates) and allocate a transition buffer (non-L1Accept) and a pebble buffer index. </p>
+<p>Returns the TimingHeader of a complete, accepted event, otherwise nullptr; aborts on a DMA overflow or a header with zero pulse ID, timestamp or env. </p>
+
 </div>
 </div>
 <a id="a3c24ee97c7443e4ab6b02c9259aa3aa4" name="a3c24ee97c7443e4ab6b02c9259aa3aa4"></a>
@@ -429,6 +475,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook called for events that are dropped; the default does nothing. </p>
 
 <p>Reimplemented in <a class="el" href="classDrp_1_1Pgp.html#a8041cc3f473440bfabdbeb2d24340bca">Drp::Pgp</a>.</p>
 
@@ -457,6 +505,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the last measured TimingHeader latency in microseconds, updated about every 92857 pulse IDs (10 Hz per the code comment). </p>
+
 </div>
 </div>
 <a id="a3f950f2247776cad55ff22af415aefdf" name="a3f950f2247776cad55ff22af415aefdf"></a>
@@ -481,6 +531,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of DMA buffers that reported an error. </p>
 
 </div>
 </div>
@@ -507,6 +559,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of SlowUpdates dropped because readout groups in <a class="el" href="structDrp_1_1Parameters.html#afc2f97e23e010c17faaed0c9b8caa62e" title="Readout group mask built by DrpBase.cc from the connect information (0x00ff0000 plus one bit per read...">Parameters::rogMask</a> were missing. </p>
+
 </div>
 </div>
 <a id="ae66ed48e9cbb995c10d1f993fd473985" name="ae66ed48e9cbb995c10d1f993fd473985"></a>
@@ -531,6 +585,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of events dropped because the common readout group was missing. </p>
 
 </div>
 </div>
@@ -557,6 +613,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of events dropped because no transition buffer was available. </p>
+
 </div>
 </div>
 <a id="a5444c2a7b19f92b808bb7163a689be06" name="a5444c2a7b19f92b808bb7163a689be06"></a>
@@ -581,6 +639,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a2f0d00e0a6ac3d2d28ac40d1cc825a04" title="Get the receive buffer count in hardware.">dmaGetRxBuffinHwCount()</a> for the device of the pool. </p>
 
 </div>
 </div>
@@ -607,6 +667,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#aa4e1a166277b389fb2fa075259427bc4" title="Get the receive buffer count in pre-hardware queue.">dmaGetRxBuffinPreHwQCount()</a> for the device of the pool. </p>
+
 </div>
 </div>
 <a id="a301e295133c7764471cbdf1a22659e52" name="a301e295133c7764471cbdf1a22659e52"></a>
@@ -631,6 +693,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a9b518eceb82550599d35eeead411740e" title="Get the receive buffer count in software queue.">dmaGetRxBuffinSwQCount()</a> for the device of the pool. </p>
 
 </div>
 </div>
@@ -657,6 +721,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a87d5a0c2f03b0bf0322adad500371164" title="Get the receive buffer count in user.">dmaGetRxBuffinUserCount()</a> for the device of the pool. </p>
+
 </div>
 </div>
 <a id="ad078b58d844547dc91170f1388aa18db" name="ad078b58d844547dc91170f1388aa18db"></a>
@@ -681,6 +747,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of event counter jumps detected. </p>
 
 </div>
 </div>
@@ -707,6 +775,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of timing headers with the error bit set. </p>
+
 </div>
 </div>
 <a id="aa55362384db524eb4492c7d535fd7cd5" name="aa55362384db524eb4492c7d535fd7cd5"></a>
@@ -723,6 +793,9 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read up to maxRetCnt DMA buffers. </p>
+<p>If the poll timeout is non-zero (100 ms initially, later 1 ms), first wait in poll(); after a successful read the timeout becomes 0 (pure polling) when buffers arrive faster than one per millisecond, else 1 ms. After an empty read, sleep with exponential back-off up to 1024 us. Returns the readDma() result. </p>
 
 </div>
 </div>
@@ -748,6 +821,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun. </p>
 
 <p>Reimplemented in <a class="el" href="classDrp_1_1Pgp.html#ab6b31df226b7bc171c2c86a1d4029cef">Drp::Pgp</a>.</p>
 

@@ -97,14 +97,19 @@ $(document).ready(function(){initNavTree('JungfrauData_8hh.html',''); initResiza
   <div class="headertitle"><div class="title">JungfrauData.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Frame constants and the packed UDP packet layout for Jungfrau data, used by Jungfrau.cc to assemble frames.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html">Drp::JungfrauData::Header</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet.  <a href="structDrp_1_1JungfrauData_1_1Header.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1JungfrauPacket.html">Drp::JungfrauData::JungfrauPacket</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One UDP packet: a <a class="el" href="structDrp_1_1JungfrauData_1_1Header.html" title="Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet.">Header</a> followed by PixelPerPacket 16-bit pixel values.  <a href="structDrp_1_1JungfrauData_1_1JungfrauPacket.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -113,28 +118,39 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1JungfrauData" id="r_namespaceDrp_1_1JungfrauData"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html">Drp::JungfrauData</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1JungfrauData"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frame constants and packed UDP packet layout for <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> data. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a3a748e286abf9b6185814a3b3afdf970" id="r_a3a748e286abf9b6185814a3b3afdf970"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a3a748e286abf9b6185814a3b3afdf970">Drp::JungfrauData::Rows</a> { 512 }</td></tr>
+<tr class="memdesc:a3a748e286abf9b6185814a3b3afdf970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rows in one frame (512); used for the raw image shape in Jungfrau.cc.  <br /></td></tr>
 <tr class="separator:a3a748e286abf9b6185814a3b3afdf970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a839650686cf2bbf88a4c817f64d1a785" id="r_a839650686cf2bbf88a4c817f64d1a785"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a839650686cf2bbf88a4c817f64d1a785">Drp::JungfrauData::Cols</a> { 1024 }</td></tr>
+<tr class="memdesc:a839650686cf2bbf88a4c817f64d1a785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Columns in one frame (1024).  <br /></td></tr>
 <tr class="separator:a839650686cf2bbf88a4c817f64d1a785"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaf65e9582780b9cdad971f6e12eee6f" id="r_afaf65e9582780b9cdad971f6e12eee6f"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#afaf65e9582780b9cdad971f6e12eee6f">Drp::JungfrauData::PacketNum</a> { 128 }</td></tr>
+<tr class="memdesc:afaf65e9582780b9cdad971f6e12eee6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of UDP packets per frame (128).  <br /></td></tr>
 <tr class="separator:afaf65e9582780b9cdad971f6e12eee6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7019959d8ab7da3c798a54145844661e" id="r_a7019959d8ab7da3c798a54145844661e"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a7019959d8ab7da3c798a54145844661e">Drp::JungfrauData::PixelNum</a> { <a class="el" href="namespaceDrp_1_1JungfrauData.html#a3a748e286abf9b6185814a3b3afdf970">Rows</a> * <a class="el" href="namespaceDrp_1_1JungfrauData.html#a839650686cf2bbf88a4c817f64d1a785">Cols</a> }</td></tr>
+<tr class="memdesc:a7019959d8ab7da3c798a54145844661e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixels per frame (Rows * Cols).  <br /></td></tr>
 <tr class="separator:a7019959d8ab7da3c798a54145844661e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97fec87536ab0add7a8de64d7833119c" id="r_a97fec87536ab0add7a8de64d7833119c"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a97fec87536ab0add7a8de64d7833119c">Drp::JungfrauData::PixelPerPacket</a> { <a class="el" href="namespaceDrp_1_1JungfrauData.html#a7019959d8ab7da3c798a54145844661e">PixelNum</a> / <a class="el" href="namespaceDrp_1_1JungfrauData.html#afaf65e9582780b9cdad971f6e12eee6f">PacketNum</a> }</td></tr>
+<tr class="memdesc:a97fec87536ab0add7a8de64d7833119c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pixels carried by one packet (PixelNum / PacketNum).  <br /></td></tr>
 <tr class="separator:a97fec87536ab0add7a8de64d7833119c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11ad1172b68e1d2d48a454ad8cd020cc" id="r_a11ad1172b68e1d2d48a454ad8cd020cc"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a11ad1172b68e1d2d48a454ad8cd020cc">Drp::JungfrauData::PayloadSize</a> { <a class="el" href="namespaceDrp_1_1JungfrauData.html#a97fec87536ab0add7a8de64d7833119c">PixelPerPacket</a> * sizeof(uint16_t) }</td></tr>
+<tr class="memdesc:a11ad1172b68e1d2d48a454ad8cd020cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Payload bytes per packet (PixelPerPacket 16-bit pixels).  <br /></td></tr>
 <tr class="separator:a11ad1172b68e1d2d48a454ad8cd020cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef75994010cd64db862a99d123ad52d7" id="r_aef75994010cd64db862a99d123ad52d7"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#aef75994010cd64db862a99d123ad52d7">Drp::JungfrauData::FrameSize</a> { <a class="el" href="namespaceDrp_1_1JungfrauData.html#a7019959d8ab7da3c798a54145844661e">PixelNum</a> * sizeof(uint16_t) }</td></tr>
+<tr class="memdesc:aef75994010cd64db862a99d123ad52d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bytes per frame (PixelNum 16-bit pixels).  <br /></td></tr>
 <tr class="separator:aef75994010cd64db862a99d123ad52d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fe1c32bdfbe888f45ed4075386bc712" id="r_a5fe1c32bdfbe888f45ed4075386bc712"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1JungfrauData.html#a5fe1c32bdfbe888f45ed4075386bc712">Drp::JungfrauData::PacketSize</a> = sizeof(<a class="el" href="structDrp_1_1JungfrauData_1_1JungfrauPacket.html">JungfrauPacket</a>)</td></tr>
+<tr class="memdesc:a5fe1c32bdfbe888f45ed4075386bc712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size in bytes of one <a class="el" href="structDrp_1_1JungfrauData_1_1JungfrauPacket.html" title="One UDP packet: a Header followed by PixelPerPacket 16-bit pixel values.">JungfrauPacket</a>; Jungfrau.cc rejects packets of any other size.  <br /></td></tr>
 <tr class="separator:a5fe1c32bdfbe888f45ed4075386bc712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Frame constants and the packed UDP packet layout for Jungfrau data, used by Jungfrau.cc to assemble frames. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

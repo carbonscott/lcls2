@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('EbLfServer_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">EbLfServer.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>EbLfServer, which accepts libfabric client links (EbLfSvrLink) and receives their RDMA-write notifications, and helpers that start and connect a set of such links.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="EbLfLink_8hh.html">EbLfLink.hh</a>&quot;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
@@ -108,6 +111,7 @@ $(document).ready(function(){initNavTree('EbLfServer_8hh.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">Pds::Eb::EbLfServer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepts client connections on a passive endpoint and receives their notifications.  <a href="classPds_1_1Eb_1_1EbLfServer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -116,23 +120,30 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Fabrics" id="r_namespacePds_1_1Fabrics"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Fabrics.html">Pds::Fabrics</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Fabrics"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thin C++ wrappers around the libfabric API. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ab635cf54f6f468d3d5c6425d1fffa2b7" id="r_ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#ab635cf54f6f468d3d5c6425d1fffa2b7">Pds::Eb::LinkMap</a> = std::unordered_map&lt; fid_ep *, <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">EbLfSvrLink</a> * &gt;</td></tr>
+<tr class="memdesc:ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from a raw libfabric endpoint to its server link.  <br /></td></tr>
 <tr class="separator:ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a0ddb2b32ab8e73a04bed86d408fdf214" id="r_a0ddb2b32ab8e73a04bed86d408fdf214"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0ddb2b32ab8e73a04bed86d408fdf214">Pds::Eb::linksStart</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">EbLfServer</a> &amp;transport, const std::string &amp;ifAddr, std::string &amp;port, unsigned nLinks, const char *name)</td></tr>
+<tr class="memdesc:a0ddb2b32ab8e73a04bed86d408fdf214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call transport.listen(ifAddr, port, nLinks) and log an error naming name on failure; returns 0 or the error.  <br /></td></tr>
 <tr class="separator:a0ddb2b32ab8e73a04bed86d408fdf214"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aada37b0d35517bbb9732338a8dbe01f4" id="r_aada37b0d35517bbb9732338a8dbe01f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#aada37b0d35517bbb9732338a8dbe01f4">Pds::Eb::linksConnect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">EbLfServer</a> &amp;transport, std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">EbLfSvrLink</a> * &gt; &amp;links, unsigned id, const char *name)</td></tr>
+<tr class="memdesc:aada37b0d35517bbb9732338a8dbe01f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept links.size() connections (14750 ms timeout each), then exchange IDs on each and store each link at the index of its remote ID.  <br /></td></tr>
 <tr class="separator:aada37b0d35517bbb9732338a8dbe01f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EbLfServer, which accepts libfabric client links (EbLfSvrLink) and receives their RDMA-write notifications, and helpers that start and connect a set of such links. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

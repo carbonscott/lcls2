@@ -100,346 +100,512 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1Module.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Register map of an XPM, laid out so that member addresses equal register offsets (see <a class="el" href="classPds_1_1Xpm_1_1Module.html#ab108f11faea94cb49f39e2f641d2961e" title="Construct a Module with placement new at address 0 and return it, so that member addresses are regist...">locate()</a>), with functions that select a partition, link or AMC through the _index register and read or write fields of the selected registers.  
+ <a href="classPds_1_1Xpm_1_1Module.html#details">More...</a></p>
+
 <p><code>#include &lt;Module.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a9510e515521eb7c0897f89e554785d0d" id="r_a9510e515521eb7c0897f89e554785d0d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Xpm_1_1Module.html#a9510e515521eb7c0897f89e554785d0da32ee6f0aa056cc88c2748d7c5cd10f3f">NAmcs</a> =2
  }</td></tr>
+<tr class="memdesc:a9510e515521eb7c0897f89e554785d0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of AMCs.  <a href="classPds_1_1Xpm_1_1Module.html#a9510e515521eb7c0897f89e554785d0d">More...</a><br /></td></tr>
 <tr class="separator:a9510e515521eb7c0897f89e554785d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ed9e357a746576625f2386d24840567" id="r_a5ed9e357a746576625f2386d24840567"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Xpm_1_1Module.html#a5ed9e357a746576625f2386d24840567a0e2c3253790647be4b4d38493350a060">NDSLinks</a> =14
  }</td></tr>
+<tr class="memdesc:a5ed9e357a746576625f2386d24840567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of downstream links.  <a href="classPds_1_1Xpm_1_1Module.html#a5ed9e357a746576625f2386d24840567">More...</a><br /></td></tr>
 <tr class="separator:a5ed9e357a746576625f2386d24840567"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d87bd4fefd972b52ddfc5c29061de3b" id="r_a1d87bd4fefd972b52ddfc5c29061de3b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Xpm_1_1Module.html#a1d87bd4fefd972b52ddfc5c29061de3babefb4097d18351f5182783974db756bd">NPartitions</a> =8
  }</td></tr>
+<tr class="memdesc:a1d87bd4fefd972b52ddfc5c29061de3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of partitions.  <a href="classPds_1_1Xpm_1_1Module.html#a1d87bd4fefd972b52ddfc5c29061de3b">More...</a><br /></td></tr>
 <tr class="separator:a1d87bd4fefd972b52ddfc5c29061de3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac4434480c58f4d4521a6fac7ef5ae111" id="r_ac4434480c58f4d4521a6fac7ef5ae111"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac4434480c58f4d4521a6fac7ef5ae111">Module</a> ()</td></tr>
+<tr class="memdesc:ac4434480c58f4d4521a6fac7ef5ae111"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing (the call to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> is commented out).  <br /></td></tr>
 <tr class="separator:ac4434480c58f4d4521a6fac7ef5ae111"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a412f4ed031b816ed7888d702a80cc16e" id="r_a412f4ed031b816ed7888d702a80cc16e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e">init</a> ()</td></tr>
+<tr class="memdesc:a412f4ed031b816ed7888d702a80cc16e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the feature revision from the build stamp, print the index register and the configuration and status of every link, route the crossbar outputs BP, RTM0 and RTM1 to FPGA and initialize HsRepeaters 0, 1, 3 and 4.  <br /></td></tr>
 <tr class="separator:a412f4ed031b816ed7888d702a80cc16e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade1b585fe6e02ecf401d5e94fd8b9245" id="r_ade1b585fe6e02ecf401d5e94fd8b9245"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1CoreCounts.html">CoreCounts</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245">counts</a> () const</td></tr>
+<tr class="memdesc:ade1b585fe6e02ecf401d5e94fd8b9245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the counters of the us and cu timing receivers.  <br /></td></tr>
 <tr class="separator:ade1b585fe6e02ecf401d5e94fd8b9245"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2872cad126a738e162184927b6f92bf" id="r_ad2872cad126a738e162184927b6f92bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad2872cad126a738e162184927b6f92bf">l0Enabled</a> () const</td></tr>
+<tr class="memdesc:ad2872cad126a738e162184927b6f92bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 16 (enable) of the _l0Control register of the selected partition.  <br /></td></tr>
 <tr class="separator:ad2872cad126a738e162184927b6f92bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65a7382ac7b61f4113adf362df1161bd" id="r_a65a7382ac7b61f4113adf362df1161bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html">L0Stats</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd">l0Stats</a> (bool) const</td></tr>
+<tr class="memdesc:a65a7382ac7b61f4113adf362df1161bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-link event inhibit counts only when the argument is true, the per-link inhibit time counts always) and the link 0 error count, then unfreeze.  <br /></td></tr>
 <tr class="separator:a65a7382ac7b61f4113adf362df1161bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a4459ac9a5d76b13c53eafcf2be05e3" id="r_a2a4459ac9a5d76b13c53eafcf2be05e3"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2a4459ac9a5d76b13c53eafcf2be05e3">txLinkStat</a> () const</td></tr>
+<tr class="memdesc:a2a4459ac9a5d76b13c53eafcf2be05e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a bit mask of the links (0 to NDSLinks-1) whose transmit-ready bit is set.  <br /></td></tr>
 <tr class="separator:a2a4459ac9a5d76b13c53eafcf2be05e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85c086729476ddfa2ad1e8095c21e7f1" id="r_a85c086729476ddfa2ad1e8095c21e7f1"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a85c086729476ddfa2ad1e8095c21e7f1">rxLinkStat</a> () const</td></tr>
+<tr class="memdesc:a85c086729476ddfa2ad1e8095c21e7f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a bit mask of the links (0 to NDSLinks-1) whose receive-ready bit is set.  <br /></td></tr>
 <tr class="separator:a85c086729476ddfa2ad1e8095c21e7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9ed5721239b77ff87861e293e66dc7d" id="r_aa9ed5721239b77ff87861e293e66dc7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa9ed5721239b77ff87861e293e66dc7d">clearLinks</a> ()</td></tr>
+<tr class="memdesc:aa9ed5721239b77ff87861e293e66dc7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the enable bit (31) of the configuration of links 0 to NDSLinks-1.  <br /></td></tr>
 <tr class="separator:aa9ed5721239b77ff87861e293e66dc7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23026ae7d61471ce51ca4685f0f0dcb4" id="r_a23026ae7d61471ce51ca4685f0f0dcb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html">LinkStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4">linkStatus</a> (unsigned) const</td></tr>
+<tr class="memdesc:a23026ae7d61471ce51ca4685f0f0dcb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its status (see <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html" title="Status of one link, as returned by Module::linkStatus().">LinkStatus</a>).  <br /></td></tr>
 <tr class="separator:a23026ae7d61471ce51ca4685f0f0dcb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2da0b9f31ed120a12824b74236e0127a" id="r_a2da0b9f31ed120a12824b74236e0127a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2da0b9f31ed120a12824b74236e0127a">linkStatus</a> (<a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html">LinkStatus</a> *) const</td></tr>
+<tr class="memdesc:a2da0b9f31ed120a12824b74236e0127a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the array with the status of links 0 to 31.  <br /></td></tr>
 <tr class="separator:a2da0b9f31ed120a12824b74236e0127a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a581f1b015c722690ad79199b18730950" id="r_a581f1b015c722690ad79199b18730950"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a581f1b015c722690ad79199b18730950">rxLinkErrs</a> (unsigned) const</td></tr>
+<tr class="memdesc:a581f1b015c722690ad79199b18730950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its receive error count (status bits 15-0).  <br /></td></tr>
 <tr class="separator:a581f1b015c722690ad79199b18730950"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a820490a725cdcfeae9edd602256d24" id="r_a5a820490a725cdcfeae9edd602256d24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a5a820490a725cdcfeae9edd602256d24">resetL0</a> (bool)</td></tr>
+<tr class="memdesc:a5a820490a725cdcfeae9edd602256d24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set (true) or clear the reset bit (0) of _l0Control of the selected partition.  <br /></td></tr>
 <tr class="separator:a5a820490a725cdcfeae9edd602256d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa60403eb0000c14d1e3841174d0ccf93" id="r_aa60403eb0000c14d1e3841174d0ccf93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa60403eb0000c14d1e3841174d0ccf93">resetL0</a> ()</td></tr>
+<tr class="memdesc:aa60403eb0000c14d1e3841174d0ccf93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulse the reset bit of _l0Control: set it, wait 1 us, clear it.  <br /></td></tr>
 <tr class="separator:aa60403eb0000c14d1e3841174d0ccf93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a135edb0c2600a758291bb6f00b4d5e2b" id="r_a135edb0c2600a758291bb6f00b4d5e2b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a135edb0c2600a758291bb6f00b4d5e2b">l0Reset</a> () const</td></tr>
+<tr class="memdesc:a135edb0c2600a758291bb6f00b4d5e2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the reset bit (0) of _l0Control.  <br /></td></tr>
 <tr class="separator:a135edb0c2600a758291bb6f00b4d5e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65c50340a73bf085328c5ee1b0eda1dc" id="r_a65c50340a73bf085328c5ee1b0eda1dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a65c50340a73bf085328c5ee1b0eda1dc">master</a> (bool)</td></tr>
+<tr class="memdesc:a65c50340a73bf085328c5ee1b0eda1dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set or clear the master bit (30) of _l0Control.  <br /></td></tr>
 <tr class="separator:a65c50340a73bf085328c5ee1b0eda1dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60f0ac0b63740daf611b0c7783ac1b37" id="r_a60f0ac0b63740daf611b0c7783ac1b37"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a60f0ac0b63740daf611b0c7783ac1b37">master</a> () const</td></tr>
+<tr class="memdesc:a60f0ac0b63740daf611b0c7783ac1b37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the master bit (30) of _l0Control.  <br /></td></tr>
 <tr class="separator:a60f0ac0b63740daf611b0c7783ac1b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a154481a532eeded6280e4cd6594ee7dc" id="r_a154481a532eeded6280e4cd6594ee7dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a154481a532eeded6280e4cd6594ee7dc">setL0Enabled</a> (bool)</td></tr>
+<tr class="memdesc:a154481a532eeded6280e4cd6594ee7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set or clear the enable bit (16) of _l0Control.  <br /></td></tr>
 <tr class="separator:a154481a532eeded6280e4cd6594ee7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09420c9365b77a3f53d923523c882b20" id="r_a09420c9365b77a3f53d923523c882b20"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a09420c9365b77a3f53d923523c882b20">getL0Enabled</a> () const</td></tr>
+<tr class="memdesc:a09420c9365b77a3f53d923523c882b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the enable bit (16) of _l0Control.  <br /></td></tr>
 <tr class="separator:a09420c9365b77a3f53d923523c882b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acff7ef6d5807018d0c7e197039059d54" id="r_acff7ef6d5807018d0c7e197039059d54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#acff7ef6d5807018d0c7e197039059d54">setL0Select_FixedRate</a> (unsigned rate)</td></tr>
+<tr class="memdesc:acff7ef6d5807018d0c7e197039059d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rate selection of _l0Select to fixed-rate mode with marker rate (low 4 bits), keeping the destination selection.  <br /></td></tr>
 <tr class="separator:acff7ef6d5807018d0c7e197039059d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43334667cc847f569d688f60a2a6f4ad" id="r_a43334667cc847f569d688f60a2a6f4ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad">setL0Select_ACRate</a> (unsigned rate, unsigned tsmask)</td></tr>
+<tr class="memdesc:a43334667cc847f569d688f60a2a6f4ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rate (3 bits), keeping the destination selection.  <br /></td></tr>
 <tr class="separator:a43334667cc847f569d688f60a2a6f4ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f0c59d4e4c715bd8afb04a3b9683cc" id="r_ac3f0c59d4e4c715bd8afb04a3b9683cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc">setL0Select_Sequence</a> (unsigned seq, unsigned bit)</td></tr>
+<tr class="memdesc:ac3f0c59d4e4c715bd8afb04a3b9683cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits), keeping the destination selection.  <br /></td></tr>
 <tr class="separator:ac3f0c59d4e4c715bd8afb04a3b9683cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad635cfafdb463915e17308c37b0c29" id="r_a3ad635cfafdb463915e17308c37b0c29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3ad635cfafdb463915e17308c37b0c29">setL0Select_Destn</a> (unsigned mode, unsigned mask)</td></tr>
+<tr class="memdesc:a3ad635cfafdb463915e17308c37b0c29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask, keeping the rate selection.  <br /></td></tr>
 <tr class="separator:a3ad635cfafdb463915e17308c37b0c29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2a4a69aa15103510dc6614ab1bc1cb4" id="r_ac2a4a69aa15103510dc6614ab1bc1cb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac2a4a69aa15103510dc6614ab1bc1cb4">lockL0Stats</a> (bool)</td></tr>
+<tr class="memdesc:ac2a4a69aa15103510dc6614ab1bc1cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Freeze (true) or resume the counter updates by clearing or setting bit 31 of _l0Control.  <br /></td></tr>
 <tr class="separator:ac2a4a69aa15103510dc6614ab1bc1cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb04f51aa2087e10ad3e6bb1812c7574" id="r_abb04f51aa2087e10ad3e6bb1812c7574"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#abb04f51aa2087e10ad3e6bb1812c7574">groupL0Reset</a> (unsigned)</td></tr>
+<tr class="memdesc:abb04f51aa2087e10ad3e6bb1812c7574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Reset.  <br /></td></tr>
 <tr class="separator:abb04f51aa2087e10ad3e6bb1812c7574"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada60d2a92cc5037f252d4bf5cee27100" id="r_ada60d2a92cc5037f252d4bf5cee27100"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ada60d2a92cc5037f252d4bf5cee27100">groupL0Enable</a> (unsigned)</td></tr>
+<tr class="memdesc:ada60d2a92cc5037f252d4bf5cee27100"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Enable.  <br /></td></tr>
 <tr class="separator:ada60d2a92cc5037f252d4bf5cee27100"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac269e0dd4bdcacfba5a101cca734d533" id="r_ac269e0dd4bdcacfba5a101cca734d533"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac269e0dd4bdcacfba5a101cca734d533">groupL0Disable</a> (unsigned)</td></tr>
+<tr class="memdesc:ac269e0dd4bdcacfba5a101cca734d533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Disable.  <br /></td></tr>
 <tr class="separator:ac269e0dd4bdcacfba5a101cca734d533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac77be17364df0849d79f52709a56f0f0" id="r_ac77be17364df0849d79f52709a56f0f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac77be17364df0849d79f52709a56f0f0">groupMsgInsert</a> (unsigned)</td></tr>
+<tr class="memdesc:ac77be17364df0849d79f52709a56f0f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the partition of the lowest set bit of the mask, then write the mask to _groupMsgInsert.  <br /></td></tr>
 <tr class="separator:ac77be17364df0849d79f52709a56f0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c4784b49b14375e19e33cdd688b4695" id="r_a6c4784b49b14375e19e33cdd688b4695"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a6c4784b49b14375e19e33cdd688b4695">setRingBChan</a> (unsigned)</td></tr>
+<tr class="memdesc:a6c4784b49b14375e19e33cdd688b4695"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the ring buffer link field (bits 13-10) of _index.  <br /></td></tr>
 <tr class="separator:a6c4784b49b14375e19e33cdd688b4695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07e8ffdb98452fefac3aa7242cadbccd" id="r_a07e8ffdb98452fefac3aa7242cadbccd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a07e8ffdb98452fefac3aa7242cadbccd">dumpPll</a> (unsigned) const</td></tr>
+<tr class="memdesc:a07e8ffdb98452fefac3aa7242cadbccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the AMC and print its PLL configuration register and AmcPLL::dump().  <br /></td></tr>
 <tr class="separator:a07e8ffdb98452fefac3aa7242cadbccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a846f5283e24a0290c08ad9fd631438" id="r_a9a846f5283e24a0290c08ad9fd631438"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a9a846f5283e24a0290c08ad9fd631438">dumpTiming</a> (unsigned) const</td></tr>
+<tr class="memdesc:a9a846f5283e24a0290c08ad9fd631438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print that it is deprecated; does nothing else.  <br /></td></tr>
 <tr class="separator:a9a846f5283e24a0290c08ad9fd631438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa874febd7f49b43a41f7ec4c79737e74" id="r_aa874febd7f49b43a41f7ec4c79737e74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa874febd7f49b43a41f7ec4c79737e74">setVerbose</a> (unsigned)</td></tr>
+<tr class="memdesc:aa874febd7f49b43a41f7ec4c79737e74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the file-static verbosity used by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a154481a532eeded6280e4cd6594ee7dc" title="Set or clear the enable bit (16) of _l0Control.">setL0Enabled()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a>.  <br /></td></tr>
 <tr class="separator:aa874febd7f49b43a41f7ec4c79737e74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeceae2b20fabf0f2275e72833160e965" id="r_aeceae2b20fabf0f2275e72833160e965"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aeceae2b20fabf0f2275e72833160e965">setTimeStamp</a> ()</td></tr>
+<tr class="memdesc:aeceae2b20fabf0f2275e72833160e965"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the current time to _timestamp: seconds since a reference from mktime() in the upper 32 bits and nanoseconds in the lower 32 bits.  <br /></td></tr>
 <tr class="separator:aeceae2b20fabf0f2275e72833160e965"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee7324967fbffe1f30169f78698758af" id="r_aee7324967fbffe1f30169f78698758af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aee7324967fbffe1f30169f78698758af">setCuInput</a> (unsigned)</td></tr>
+<tr class="memdesc:aee7324967fbffe1f30169f78698758af"><td class="mdescLeft">&#160;</td><td class="mdescRight">With feature revision 1 or more, route the crossbar outputs FPGA, RTM0 and RTM1 to input v (and print it); otherwise does nothing.  <br /></td></tr>
 <tr class="separator:aee7324967fbffe1f30169f78698758af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef9d3d79a7bd6bb4406e6633c6ca0af7" id="r_aef9d3d79a7bd6bb4406e6633c6ca0af7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aef9d3d79a7bd6bb4406e6633c6ca0af7">setCuDelay</a> (unsigned)</td></tr>
+<tr class="memdesc:aef9d3d79a7bd6bb4406e6633c6ca0af7"><td class="mdescLeft">&#160;</td><td class="mdescRight">With feature revision 1 or more, write v to _cuDelay.  <br /></td></tr>
 <tr class="separator:aef9d3d79a7bd6bb4406e6633c6ca0af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5e5f7bb98f42fb870590d12957865ea" id="r_ae5e5f7bb98f42fb870590d12957865ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ae5e5f7bb98f42fb870590d12957865ea">setCuBeamCode</a> (unsigned)</td></tr>
+<tr class="memdesc:ae5e5f7bb98f42fb870590d12957865ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">With feature revision 1 or more, write v to _cuBeamCode.  <br /></td></tr>
 <tr class="separator:ae5e5f7bb98f42fb870590d12957865ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a094803e8f9bacd6d7a3744ed06d1f539" id="r_a094803e8f9bacd6d7a3744ed06d1f539"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a094803e8f9bacd6d7a3744ed06d1f539">clearCuFiducialErr</a> (unsigned)</td></tr>
+<tr class="memdesc:a094803e8f9bacd6d7a3744ed06d1f539"><td class="mdescLeft">&#160;</td><td class="mdescRight">With feature revision 1 or more and v non-zero, write v to _cuFiducialIntv.  <br /></td></tr>
 <tr class="separator:a094803e8f9bacd6d7a3744ed06d1f539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d3d4e373a5216e6ceed0c30289bf8c9" id="r_a0d3d4e373a5216e6ceed0c30289bf8c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0d3d4e373a5216e6ceed0c30289bf8c9">pllBwSel</a> (unsigned, int)</td></tr>
+<tr class="memdesc:a0d3d4e373a5216e6ceed0c30289bf8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::BwSel(val).  <br /></td></tr>
 <tr class="separator:a0d3d4e373a5216e6ceed0c30289bf8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3d5551b06b30c70afbba59a0f9e0c36" id="r_ab3d5551b06b30c70afbba59a0f9e0c36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ab3d5551b06b30c70afbba59a0f9e0c36">pllFrqTbl</a> (unsigned, int)</td></tr>
+<tr class="memdesc:ab3d5551b06b30c70afbba59a0f9e0c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::FrqTbl(val).  <br /></td></tr>
 <tr class="separator:ab3d5551b06b30c70afbba59a0f9e0c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6ff63fa63b929893dc1eb022e08c2a2" id="r_aa6ff63fa63b929893dc1eb022e08c2a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa6ff63fa63b929893dc1eb022e08c2a2">pllFrqSel</a> (unsigned, int)</td></tr>
+<tr class="memdesc:aa6ff63fa63b929893dc1eb022e08c2a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::FrqSel(val).  <br /></td></tr>
 <tr class="separator:aa6ff63fa63b929893dc1eb022e08c2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac260a6a6be9f0263746432ef2c4cff65" id="r_ac260a6a6be9f0263746432ef2c4cff65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac260a6a6be9f0263746432ef2c4cff65">pllRateSel</a> (unsigned, int)</td></tr>
+<tr class="memdesc:ac260a6a6be9f0263746432ef2c4cff65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::RateSel(val).  <br /></td></tr>
 <tr class="separator:ac260a6a6be9f0263746432ef2c4cff65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed5c2943d02ff659455ab2781ba82874" id="r_aed5c2943d02ff659455ab2781ba82874"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aed5c2943d02ff659455ab2781ba82874">pllPhsInc</a> (unsigned)</td></tr>
+<tr class="memdesc:aed5c2943d02ff659455ab2781ba82874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::PhsInc().  <br /></td></tr>
 <tr class="separator:aed5c2943d02ff659455ab2781ba82874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb2b573168f5312c5e0b26c3180750a9" id="r_aeb2b573168f5312c5e0b26c3180750a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aeb2b573168f5312c5e0b26c3180750a9">pllPhsDec</a> (unsigned)</td></tr>
+<tr class="memdesc:aeb2b573168f5312c5e0b26c3180750a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::PhsDec().  <br /></td></tr>
 <tr class="separator:aeb2b573168f5312c5e0b26c3180750a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf0855fa268273218050f1f06cd399b9" id="r_adf0855fa268273218050f1f06cd399b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#adf0855fa268273218050f1f06cd399b9">pllBypass</a> (unsigned, bool)</td></tr>
+<tr class="memdesc:adf0855fa268273218050f1f06cd399b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::Bypass(v).  <br /></td></tr>
 <tr class="separator:adf0855fa268273218050f1f06cd399b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab343aefd00cd8929f73e6a42082604c2" id="r_ab343aefd00cd8929f73e6a42082604c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ab343aefd00cd8929f73e6a42082604c2">pllReset</a> (unsigned)</td></tr>
+<tr class="memdesc:ab343aefd00cd8929f73e6a42082604c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::Reset().  <br /></td></tr>
 <tr class="separator:ab343aefd00cd8929f73e6a42082604c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50d97c877a6b7a3ead594249f6076bf9" id="r_a50d97c877a6b7a3ead594249f6076bf9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a50d97c877a6b7a3ead594249f6076bf9">pllBwSel</a> (unsigned) const</td></tr>
+<tr class="memdesc:a50d97c877a6b7a3ead594249f6076bf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::BwSel().  <br /></td></tr>
 <tr class="separator:a50d97c877a6b7a3ead594249f6076bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a077ba578bd1c835b0df745e4f70f861b" id="r_a077ba578bd1c835b0df745e4f70f861b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a077ba578bd1c835b0df745e4f70f861b">pllFrqTbl</a> (unsigned) const</td></tr>
+<tr class="memdesc:a077ba578bd1c835b0df745e4f70f861b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::FrqTbl().  <br /></td></tr>
 <tr class="separator:a077ba578bd1c835b0df745e4f70f861b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e1fdfb1e0bc4a46de2488fe967839d2" id="r_a8e1fdfb1e0bc4a46de2488fe967839d2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a8e1fdfb1e0bc4a46de2488fe967839d2">pllFrqSel</a> (unsigned) const</td></tr>
+<tr class="memdesc:a8e1fdfb1e0bc4a46de2488fe967839d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::FrqSel().  <br /></td></tr>
 <tr class="separator:a8e1fdfb1e0bc4a46de2488fe967839d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae689d100b4b3e83feab48c8fdc9a0bbb" id="r_ae689d100b4b3e83feab48c8fdc9a0bbb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ae689d100b4b3e83feab48c8fdc9a0bbb">pllRateSel</a> (unsigned) const</td></tr>
+<tr class="memdesc:ae689d100b4b3e83feab48c8fdc9a0bbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::RateSel().  <br /></td></tr>
 <tr class="separator:ae689d100b4b3e83feab48c8fdc9a0bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a959271d6eb0ce85c49b50f80b047b5a7" id="r_a959271d6eb0ce85c49b50f80b047b5a7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a959271d6eb0ce85c49b50f80b047b5a7">pllBypass</a> (unsigned) const</td></tr>
+<tr class="memdesc:a959271d6eb0ce85c49b50f80b047b5a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::Bypass().  <br /></td></tr>
 <tr class="separator:a959271d6eb0ce85c49b50f80b047b5a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cb1bd8ed2a3aa5bc8ebd85f5324438d" id="r_a5cb1bd8ed2a3aa5bc8ebd85f5324438d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a5cb1bd8ed2a3aa5bc8ebd85f5324438d">pllStatus0</a> (unsigned) const</td></tr>
+<tr class="memdesc:a5cb1bd8ed2a3aa5bc8ebd85f5324438d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::Status0().  <br /></td></tr>
 <tr class="separator:a5cb1bd8ed2a3aa5bc8ebd85f5324438d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f7e60402e39aefcc7c3f60bce9257e1" id="r_a3f7e60402e39aefcc7c3f60bce9257e1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3f7e60402e39aefcc7c3f60bce9257e1">pllCount0</a> (unsigned) const</td></tr>
+<tr class="memdesc:a3f7e60402e39aefcc7c3f60bce9257e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::Count0().  <br /></td></tr>
 <tr class="separator:a3f7e60402e39aefcc7c3f60bce9257e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba99931e5cbae96eb03410801badb835" id="r_aba99931e5cbae96eb03410801badb835"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aba99931e5cbae96eb03410801badb835">pllStatus1</a> (unsigned) const</td></tr>
+<tr class="memdesc:aba99931e5cbae96eb03410801badb835"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::Status1().  <br /></td></tr>
 <tr class="separator:aba99931e5cbae96eb03410801badb835"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad657323a8540acc52b0751d1a7ca52f1" id="r_ad657323a8540acc52b0751d1a7ca52f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad657323a8540acc52b0751d1a7ca52f1">pllCount1</a> (unsigned) const</td></tr>
+<tr class="memdesc:ad657323a8540acc52b0751d1a7ca52f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return AmcPLL::Count1().  <br /></td></tr>
 <tr class="separator:ad657323a8540acc52b0751d1a7ca52f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8cb7f68b683abcc55c1bd236bae5bad" id="r_ad8cb7f68b683abcc55c1bd236bae5bad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad8cb7f68b683abcc55c1bd236bae5bad">pllSkew</a> (unsigned, int)</td></tr>
+<tr class="memdesc:ad8cb7f68b683abcc55c1bd236bae5bad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and call AmcPLL::Skew(val).  <br /></td></tr>
 <tr class="separator:ad8cb7f68b683abcc55c1bd236bae5bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0344adec34fe95b2f598a6d47c37bab" id="r_ac0344adec34fe95b2f598a6d47c37bab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1PllStats.html">PllStats</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac0344adec34fe95b2f598a6d47c37bab">pllStat</a> (unsigned) const</td></tr>
+<tr class="memdesc:ac0344adec34fe95b2f598a6d47c37bab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select AMC idx and return its PLL status (Status0, Status1, Count0, Count1).  <br /></td></tr>
 <tr class="separator:ac0344adec34fe95b2f598a6d47c37bab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cec47b7894f5be537a3d8d50a10a269" id="r_a3cec47b7894f5be537a3d8d50a10a269"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3cec47b7894f5be537a3d8d50a10a269">setPartition</a> (unsigned) const</td></tr>
+<tr class="memdesc:a3cec47b7894f5be537a3d8d50a10a269"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the partition field (bits 3-0) of _index; const although it writes the register.  <br /></td></tr>
 <tr class="separator:a3cec47b7894f5be537a3d8d50a10a269"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae21f740dd0c7756e7fa9357e65b0043b" id="r_ae21f740dd0c7756e7fa9357e65b0043b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ae21f740dd0c7756e7fa9357e65b0043b">setLink</a> (unsigned) const</td></tr>
+<tr class="memdesc:ae21f740dd0c7756e7fa9357e65b0043b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the link field (bits 9-4) of _index; const although it writes the register.  <br /></td></tr>
 <tr class="separator:ae21f740dd0c7756e7fa9357e65b0043b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa87fe64f0cd02b35b576638ee0ca1a83" id="r_aa87fe64f0cd02b35b576638ee0ca1a83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa87fe64f0cd02b35b576638ee0ca1a83">setAmc</a> (unsigned) const</td></tr>
+<tr class="memdesc:aa87fe64f0cd02b35b576638ee0ca1a83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the AMC bit (16) of _index; const although it writes the register.  <br /></td></tr>
 <tr class="separator:aa87fe64f0cd02b35b576638ee0ca1a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1311a0f5699003f23cb15b54429f250" id="r_ac1311a0f5699003f23cb15b54429f250"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac1311a0f5699003f23cb15b54429f250">setInhibit</a> (unsigned)</td></tr>
+<tr class="memdesc:ac1311a0f5699003f23cb15b54429f250"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the inhibit field (bits 21-20) of _index.  <br /></td></tr>
 <tr class="separator:ac1311a0f5699003f23cb15b54429f250"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa13d81077799a4769ce10153ccf1f071" id="r_aa13d81077799a4769ce10153ccf1f071"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa13d81077799a4769ce10153ccf1f071">setTagStream</a> (unsigned)</td></tr>
+<tr class="memdesc:aa13d81077799a4769ce10153ccf1f071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the tag stream bit (24) of _index.  <br /></td></tr>
 <tr class="separator:aa13d81077799a4769ce10153ccf1f071"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b0fa146a282bec9ae62a1597ce86176" id="r_a0b0fa146a282bec9ae62a1597ce86176"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0b0fa146a282bec9ae62a1597ce86176">getPartition</a> () const</td></tr>
+<tr class="memdesc:a0b0fa146a282bec9ae62a1597ce86176"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the partition field (bits 3-0) of _index.  <br /></td></tr>
 <tr class="separator:a0b0fa146a282bec9ae62a1597ce86176"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11769bcc18f114633189587d673b9a9d" id="r_a11769bcc18f114633189587d673b9a9d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a11769bcc18f114633189587d673b9a9d">getLink</a> () const</td></tr>
+<tr class="memdesc:a11769bcc18f114633189587d673b9a9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the link field (bits 9-4) of _index.  <br /></td></tr>
 <tr class="separator:a11769bcc18f114633189587d673b9a9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541b2ebb10235e2931d0f92ad4d1aca0" id="r_a541b2ebb10235e2931d0f92ad4d1aca0"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a541b2ebb10235e2931d0f92ad4d1aca0">getAmc</a> () const</td></tr>
+<tr class="memdesc:a541b2ebb10235e2931d0f92ad4d1aca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the AMC bit (16) of _index.  <br /></td></tr>
 <tr class="separator:a541b2ebb10235e2931d0f92ad4d1aca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae58fb0d52e1d5a0b19cad2a7a25ebbad" id="r_ae58fb0d52e1d5a0b19cad2a7a25ebbad"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ae58fb0d52e1d5a0b19cad2a7a25ebbad">getInhibit</a> () const</td></tr>
+<tr class="memdesc:ae58fb0d52e1d5a0b19cad2a7a25ebbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the inhibit field (bits 21-20) of _index.  <br /></td></tr>
 <tr class="separator:ae58fb0d52e1d5a0b19cad2a7a25ebbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34a9eeebb4b7ef76045b149502c6f7b5" id="r_a34a9eeebb4b7ef76045b149502c6f7b5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a34a9eeebb4b7ef76045b149502c6f7b5">getTagStream</a> () const</td></tr>
+<tr class="memdesc:a34a9eeebb4b7ef76045b149502c6f7b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tag stream bit (24) of _index.  <br /></td></tr>
 <tr class="separator:a34a9eeebb4b7ef76045b149502c6f7b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a410bbb5ae4437388c723f4a94dfc6e37" id="r_a410bbb5ae4437388c723f4a94dfc6e37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a410bbb5ae4437388c723f4a94dfc6e37">linkRxTimeOut</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:a410bbb5ae4437388c723f4a94dfc6e37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and set its receive timeout field (bits 17-9 of _dsLinkConfig).  <br /></td></tr>
 <tr class="separator:a410bbb5ae4437388c723f4a94dfc6e37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2c4375be0c1631d74303552a655dd3f" id="r_ab2c4375be0c1631d74303552a655dd3f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ab2c4375be0c1631d74303552a655dd3f">linkRxTimeOut</a> (unsigned) const</td></tr>
+<tr class="memdesc:ab2c4375be0c1631d74303552a655dd3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its receive timeout field (bits 17-9).  <br /></td></tr>
 <tr class="separator:ab2c4375be0c1631d74303552a655dd3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa23bf988dbf3ebef2cc4a229269e923a" id="r_aa23bf988dbf3ebef2cc4a229269e923a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa23bf988dbf3ebef2cc4a229269e923a">linkGroupMask</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:aa23bf988dbf3ebef2cc4a229269e923a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and set its group mask (bits 7-0 of _dsLinkConfig).  <br /></td></tr>
 <tr class="separator:aa23bf988dbf3ebef2cc4a229269e923a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2475dd041938a3b76d4b395bf97e572" id="r_af2475dd041938a3b76d4b395bf97e572"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af2475dd041938a3b76d4b395bf97e572">linkGroupMask</a> (unsigned) const</td></tr>
+<tr class="memdesc:af2475dd041938a3b76d4b395bf97e572"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its group mask (bits 7-0).  <br /></td></tr>
 <tr class="separator:af2475dd041938a3b76d4b395bf97e572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace8678083d7817af85fa3593c60bcd3a" id="r_ace8678083d7817af85fa3593c60bcd3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ace8678083d7817af85fa3593c60bcd3a">linkTrgSrc</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:ace8678083d7817af85fa3593c60bcd3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and set its trigger source field (bits 27-24 of _dsLinkConfig).  <br /></td></tr>
 <tr class="separator:ace8678083d7817af85fa3593c60bcd3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdab315f58265664a90853ba798e8eff" id="r_abdab315f58265664a90853ba798e8eff"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#abdab315f58265664a90853ba798e8eff">linkTrgSrc</a> (unsigned) const</td></tr>
+<tr class="memdesc:abdab315f58265664a90853ba798e8eff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its trigger source field (bits 27-24).  <br /></td></tr>
 <tr class="separator:abdab315f58265664a90853ba798e8eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a029de753c410cd4d79302754c22c443b" id="r_a029de753c410cd4d79302754c22c443b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a029de753c410cd4d79302754c22c443b">linkLoopback</a> (unsigned, bool)</td></tr>
+<tr class="memdesc:a029de753c410cd4d79302754c22c443b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and set or clear its loopback bit (28 of _dsLinkConfig).  <br /></td></tr>
 <tr class="separator:a029de753c410cd4d79302754c22c443b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b539529083b20d78825132b7c047281" id="r_a4b539529083b20d78825132b7c047281"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a4b539529083b20d78825132b7c047281">linkLoopback</a> (unsigned) const</td></tr>
+<tr class="memdesc:a4b539529083b20d78825132b7c047281"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its loopback bit (28).  <br /></td></tr>
 <tr class="separator:a4b539529083b20d78825132b7c047281"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af93423b5ef3136edbeb310a932df2673" id="r_af93423b5ef3136edbeb310a932df2673"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af93423b5ef3136edbeb310a932df2673">txLinkReset</a> (unsigned)</td></tr>
+<tr class="memdesc:af93423b5ef3136edbeb310a932df2673"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and pulse its transmit reset bit (29 of _dsLinkConfig) for 10 us.  <br /></td></tr>
 <tr class="separator:af93423b5ef3136edbeb310a932df2673"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa82fcd3918ffaa62461288ea9a85456d" id="r_aa82fcd3918ffaa62461288ea9a85456d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa82fcd3918ffaa62461288ea9a85456d">rxLinkReset</a> (unsigned)</td></tr>
+<tr class="memdesc:aa82fcd3918ffaa62461288ea9a85456d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and pulse its receive reset bit (30 of _dsLinkConfig) for 10 us.  <br /></td></tr>
 <tr class="separator:aa82fcd3918ffaa62461288ea9a85456d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85bfbc84dedb5d2b28e091c1cdbc4a15" id="r_a85bfbc84dedb5d2b28e091c1cdbc4a15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a85bfbc84dedb5d2b28e091c1cdbc4a15">txLinkPllReset</a> (unsigned)</td></tr>
+<tr class="memdesc:a85bfbc84dedb5d2b28e091c1cdbc4a15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and pulse its transmit PLL reset bit (18 of _dsLinkConfig) for 10 us.  <br /></td></tr>
 <tr class="separator:a85bfbc84dedb5d2b28e091c1cdbc4a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6773648c2fee1a15cf3deccd94b6d25" id="r_af6773648c2fee1a15cf3deccd94b6d25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af6773648c2fee1a15cf3deccd94b6d25">rxLinkPllReset</a> (unsigned)</td></tr>
+<tr class="memdesc:af6773648c2fee1a15cf3deccd94b6d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and pulse its receive PLL reset bit (19 of _dsLinkConfig) for 10 us.  <br /></td></tr>
 <tr class="separator:af6773648c2fee1a15cf3deccd94b6d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0aa6b777650d41c0cd8e0732a2b62bd" id="r_ad0aa6b777650d41c0cd8e0732a2b62bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad0aa6b777650d41c0cd8e0732a2b62bd">rxLinkDump</a> (unsigned) const</td></tr>
+<tr class="memdesc:ad0aa6b777650d41c0cd8e0732a2b62bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Point the receive ring buffer at the link, clear it, capture for 100 us and print the captured words masked to 20 bits (Cphw::RingBuffer::dump(20)).  <br /></td></tr>
 <tr class="separator:ad0aa6b777650d41c0cd8e0732a2b62bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d03771bf96ef749ca4f660daefe6f2b" id="r_a0d03771bf96ef749ca4f660daefe6f2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0d03771bf96ef749ca4f660daefe6f2b">linkEnable</a> (unsigned, bool)</td></tr>
+<tr class="memdesc:a0d03771bf96ef749ca4f660daefe6f2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and set or clear its enable bit (31 of _dsLinkConfig).  <br /></td></tr>
 <tr class="separator:a0d03771bf96ef749ca4f660daefe6f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d666bc92f50d4352d981634ed51cb3e" id="r_a3d666bc92f50d4352d981634ed51cb3e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3d666bc92f50d4352d981634ed51cb3e">linkEnable</a> (unsigned) const</td></tr>
+<tr class="memdesc:a3d666bc92f50d4352d981634ed51cb3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its enable bit (31).  <br /></td></tr>
 <tr class="separator:a3d666bc92f50d4352d981634ed51cb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d70d243a4e751231dd37f5b858849f7" id="r_a0d70d243a4e751231dd37f5b858849f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0d70d243a4e751231dd37f5b858849f7">linkRxReady</a> (unsigned) const</td></tr>
+<tr class="memdesc:a0d70d243a4e751231dd37f5b858849f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its receive-ready status bit (19 of _dsLinkStatus).  <br /></td></tr>
 <tr class="separator:a0d70d243a4e751231dd37f5b858849f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e1e1d5cd3b9d2f1472ab0c0928fd103" id="r_a6e1e1d5cd3b9d2f1472ab0c0928fd103"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a6e1e1d5cd3b9d2f1472ab0c0928fd103">linkTxReady</a> (unsigned) const</td></tr>
+<tr class="memdesc:a6e1e1d5cd3b9d2f1472ab0c0928fd103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its transmit-ready status bit (17).  <br /></td></tr>
 <tr class="separator:a6e1e1d5cd3b9d2f1472ab0c0928fd103"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addd5bcebadcc3d1383780e15e22c4811" id="r_addd5bcebadcc3d1383780e15e22c4811"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#addd5bcebadcc3d1383780e15e22c4811">linkIsXpm</a> (unsigned) const</td></tr>
+<tr class="memdesc:addd5bcebadcc3d1383780e15e22c4811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return its remote-is-XPM status bit (20).  <br /></td></tr>
 <tr class="separator:addd5bcebadcc3d1383780e15e22c4811"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80a17ad098db82c7026bdf7335b805e5" id="r_a80a17ad098db82c7026bdf7335b805e5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a80a17ad098db82c7026bdf7335b805e5">linkRxErr</a> (unsigned) const</td></tr>
+<tr class="memdesc:a80a17ad098db82c7026bdf7335b805e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the link and return true if its receive error count (status bits 15-0) is non-zero.  <br /></td></tr>
 <tr class="separator:a80a17ad098db82c7026bdf7335b805e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2124bedc5e3a37df360df5335a2e73da" id="r_a2124bedc5e3a37df360df5335a2e73da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2124bedc5e3a37df360df5335a2e73da">setL0Delay</a> (unsigned)</td></tr>
+<tr class="memdesc:a2124bedc5e3a37df360df5335a2e73da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the delay v to the upper 16 bits of _pipelineDepth and the low 16 bits of v*200 to its lower half.  <br /></td></tr>
 <tr class="separator:a2124bedc5e3a37df360df5335a2e73da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74034971419aaaeb5884e15392dbba0d" id="r_a74034971419aaaeb5884e15392dbba0d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a74034971419aaaeb5884e15392dbba0d">getL0Delay</a> () const</td></tr>
+<tr class="memdesc:a74034971419aaaeb5884e15392dbba0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the upper 16 bits of _pipelineDepth.  <br /></td></tr>
 <tr class="separator:a74034971419aaaeb5884e15392dbba0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0fc9e222f2926f1b6d47f5384192986" id="r_ae0fc9e222f2926f1b6d47f5384192986"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ae0fc9e222f2926f1b6d47f5384192986">setL1TrgClr</a> (unsigned)</td></tr>
+<tr class="memdesc:ae0fc9e222f2926f1b6d47f5384192986"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bit 0 of _l1config0 to v.  <br /></td></tr>
 <tr class="separator:ae0fc9e222f2926f1b6d47f5384192986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5dfddba6732594c15a5a0b6b9212a75" id="r_aa5dfddba6732594c15a5a0b6b9212a75"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa5dfddba6732594c15a5a0b6b9212a75">getL1TrgClr</a> () const</td></tr>
+<tr class="memdesc:aa5dfddba6732594c15a5a0b6b9212a75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 0 of _l1config0.  <br /></td></tr>
 <tr class="separator:aa5dfddba6732594c15a5a0b6b9212a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d9b13218ed7fe358fe5c88628cb8758" id="r_a0d9b13218ed7fe358fe5c88628cb8758"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0d9b13218ed7fe358fe5c88628cb8758">setL1TrgEnb</a> (unsigned)</td></tr>
+<tr class="memdesc:a0d9b13218ed7fe358fe5c88628cb8758"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bit 16 of _l1config0 to v.  <br /></td></tr>
 <tr class="separator:a0d9b13218ed7fe358fe5c88628cb8758"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1397528da9857c619c3cec0c62e77411" id="r_a1397528da9857c619c3cec0c62e77411"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a1397528da9857c619c3cec0c62e77411">getL1TrgEnb</a> () const</td></tr>
+<tr class="memdesc:a1397528da9857c619c3cec0c62e77411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 16 of _l1config0.  <br /></td></tr>
 <tr class="separator:a1397528da9857c619c3cec0c62e77411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a3e6508fff328c714be231ca37e437e" id="r_a9a3e6508fff328c714be231ca37e437e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a9a3e6508fff328c714be231ca37e437e">setL1TrgSrc</a> (unsigned)</td></tr>
+<tr class="memdesc:a9a3e6508fff328c714be231ca37e437e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bits 3-0 of _l1config1 (L1 trigger source link, per the header comment).  <br /></td></tr>
 <tr class="separator:a9a3e6508fff328c714be231ca37e437e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bf945ed062ed5ac3d0e8bb05457d011" id="r_a3bf945ed062ed5ac3d0e8bb05457d011"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3bf945ed062ed5ac3d0e8bb05457d011">getL1TrgSrc</a> () const</td></tr>
+<tr class="memdesc:a3bf945ed062ed5ac3d0e8bb05457d011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bits 3-0 of _l1config1.  <br /></td></tr>
 <tr class="separator:a3bf945ed062ed5ac3d0e8bb05457d011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af833c5102c702a26661670e80bb0990e" id="r_af833c5102c702a26661670e80bb0990e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af833c5102c702a26661670e80bb0990e">setL1TrgWord</a> (unsigned)</td></tr>
+<tr class="memdesc:af833c5102c702a26661670e80bb0990e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bits 12-4 of _l1config1 (L1 trigger word).  <br /></td></tr>
 <tr class="separator:af833c5102c702a26661670e80bb0990e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8a394fce6cee6f430e7a70be4c79e91" id="r_ab8a394fce6cee6f430e7a70be4c79e91"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ab8a394fce6cee6f430e7a70be4c79e91">getL1TrgWord</a> () const</td></tr>
+<tr class="memdesc:ab8a394fce6cee6f430e7a70be4c79e91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bits 12-4 of _l1config1.  <br /></td></tr>
 <tr class="separator:ab8a394fce6cee6f430e7a70be4c79e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9c8d5ba2975d2ab6e889aed2bd53f5f" id="r_af9c8d5ba2975d2ab6e889aed2bd53f5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af9c8d5ba2975d2ab6e889aed2bd53f5f">setL1TrgWrite</a> (unsigned)</td></tr>
+<tr class="memdesc:af9c8d5ba2975d2ab6e889aed2bd53f5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bit 16 of _l1config1 (L1 trigger write mask).  <br /></td></tr>
 <tr class="separator:af9c8d5ba2975d2ab6e889aed2bd53f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a1945dbbd513e1450bc8676b3450c71" id="r_a6a1945dbbd513e1450bc8676b3450c71"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a6a1945dbbd513e1450bc8676b3450c71">getL1TrgWrite</a> () const</td></tr>
+<tr class="memdesc:a6a1945dbbd513e1450bc8676b3450c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 16 of _l1config1.  <br /></td></tr>
 <tr class="separator:a6a1945dbbd513e1450bc8676b3450c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56d4fb2ab75e14c68f82f7a329b44ecd" id="r_a56d4fb2ab75e14c68f82f7a329b44ecd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a56d4fb2ab75e14c68f82f7a329b44ecd">messagePayload</a> (unsigned)</td></tr>
+<tr class="memdesc:a56d4fb2ab75e14c68f82f7a329b44ecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write v to _messagePayload of the selected partition.  <br /></td></tr>
 <tr class="separator:a56d4fb2ab75e14c68f82f7a329b44ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a2f13cd011c30b43dc1a8aaf8f2ccba" id="r_a1a2f13cd011c30b43dc1a8aaf8f2ccba"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a1a2f13cd011c30b43dc1a8aaf8f2ccba">messagePayload</a> () const</td></tr>
+<tr class="memdesc:a1a2f13cd011c30b43dc1a8aaf8f2ccba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return _messagePayload of the selected partition.  <br /></td></tr>
 <tr class="separator:a1a2f13cd011c30b43dc1a8aaf8f2ccba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9d5871904511332dd06ae3faf0623e7" id="r_af9d5871904511332dd06ae3faf0623e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af9d5871904511332dd06ae3faf0623e7">messageHdr</a> (unsigned)</td></tr>
+<tr class="memdesc:af9d5871904511332dd06ae3faf0623e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bits 7-0 of _message to v (the header comment gives the header as bits 14-0).  <br /></td></tr>
 <tr class="separator:af9d5871904511332dd06ae3faf0623e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e760e942ac89a1cae9b655ebf439351" id="r_a1e760e942ac89a1cae9b655ebf439351"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a1e760e942ac89a1cae9b655ebf439351">messageHdr</a> () const</td></tr>
+<tr class="memdesc:a1e760e942ac89a1cae9b655ebf439351"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bits 15-0 of _message.  <br /></td></tr>
 <tr class="separator:a1e760e942ac89a1cae9b655ebf439351"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f81e5ca29e7ae171e380430ebd9a658" id="r_a3f81e5ca29e7ae171e380430ebd9a658"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3f81e5ca29e7ae171e380430ebd9a658">messageInsert</a> ()</td></tr>
+<tr class="memdesc:a3f81e5ca29e7ae171e380430ebd9a658"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the insert bit (15) of _message.  <br /></td></tr>
 <tr class="separator:a3f81e5ca29e7ae171e380430ebd9a658"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e26e5b0483e94c7132ed4fd635f38f5" id="r_a0e26e5b0483e94c7132ed4fd635f38f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0e26e5b0483e94c7132ed4fd635f38f5">inhibitInt</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:a0e26e5b0483e94c7132ed4fd635f38f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the interval field of inhibit configuration inh (bits 11-0 of _inhibitConfig) to v - 1.  <br /></td></tr>
 <tr class="separator:a0e26e5b0483e94c7132ed4fd635f38f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f92c2192dde2bd5c7ff91decf47bf73" id="r_a2f92c2192dde2bd5c7ff91decf47bf73"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2f92c2192dde2bd5c7ff91decf47bf73">inhibitInt</a> (unsigned) const</td></tr>
+<tr class="memdesc:a2f92c2192dde2bd5c7ff91decf47bf73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the interval field of inhibit configuration inh plus 1.  <br /></td></tr>
 <tr class="separator:a2f92c2192dde2bd5c7ff91decf47bf73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2caea83e5635cb0a0f7e682f3f6fe438" id="r_a2caea83e5635cb0a0f7e682f3f6fe438"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2caea83e5635cb0a0f7e682f3f6fe438">inhibitLim</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:a2caea83e5635cb0a0f7e682f3f6fe438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the limit field of inhibit configuration inh (bits 15-12) to v - 1.  <br /></td></tr>
 <tr class="separator:a2caea83e5635cb0a0f7e682f3f6fe438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa14b44fe983c606e80fcc853481c85e0" id="r_aa14b44fe983c606e80fcc853481c85e0"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa14b44fe983c606e80fcc853481c85e0">inhibitLim</a> (unsigned) const</td></tr>
+<tr class="memdesc:aa14b44fe983c606e80fcc853481c85e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the limit field of inhibit configuration inh plus 1.  <br /></td></tr>
 <tr class="separator:aa14b44fe983c606e80fcc853481c85e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ecdbbc0435f557dbdd5c8ba3017cd2f" id="r_a0ecdbbc0435f557dbdd5c8ba3017cd2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0ecdbbc0435f557dbdd5c8ba3017cd2f">inhibitEnb</a> (unsigned, unsigned)</td></tr>
+<tr class="memdesc:a0ecdbbc0435f557dbdd5c8ba3017cd2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the enable bit (31) of inhibit configuration inh to v.  <br /></td></tr>
 <tr class="separator:a0ecdbbc0435f557dbdd5c8ba3017cd2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a595160979348757aff5fc58d961c8d05" id="r_a595160979348757aff5fc58d961c8d05"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a595160979348757aff5fc58d961c8d05">inhibitEnb</a> (unsigned) const</td></tr>
+<tr class="memdesc:a595160979348757aff5fc58d961c8d05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the enable bit (31) of inhibit configuration inh.  <br /></td></tr>
 <tr class="separator:a595160979348757aff5fc58d961c8d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad221c05d9878bc4e5a857c5a2ceac0" id="r_a0ad221c05d9878bc4e5a857c5a2ceac0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html">XpmSequenceEngine</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0ad221c05d9878bc4e5a857c5a2ceac0">sequenceEngine</a> ()</td></tr>
+<tr class="memdesc:a0ad221c05d9878bc4e5a857c5a2ceac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a new <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html" title="SequenceEngine for one XPM sequence engine: encodes instructions into its sequence RAM and controls i...">XpmSequenceEngine</a> for the register space after the receive ring buffer; a new object is allocated on every call and not freed here.  <br /></td></tr>
 <tr class="separator:a0ad221c05d9878bc4e5a857c5a2ceac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab108f11faea94cb49f39e2f641d2961e" id="r_ab108f11faea94cb49f39e2f641d2961e"><td class="memItemLeft" align="right" valign="top">static class <a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ab108f11faea94cb49f39e2f641d2961e">locate</a> ()</td></tr>
+<tr class="memdesc:ab108f11faea94cb49f39e2f641d2961e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> with placement new at address 0 and return it, so that member addresses are register offsets for <a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a> accesses.  <br /></td></tr>
 <tr class="separator:ab108f11faea94cb49f39e2f641d2961e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97b3795e5ff42a1052dffb395164299a" id="r_a97b3795e5ff42a1052dffb395164299a"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a97b3795e5ff42a1052dffb395164299a">feature_rev</a> ()</td></tr>
+<tr class="memdesc:a97b3795e5ff42a1052dffb395164299a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the feature revision found by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a>: 1 if the build stamp contains xtpg, else 0.  <br /></td></tr>
 <tr class="separator:a97b3795e5ff42a1052dffb395164299a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a31463c5b02bca6d537db89be3d62c378" id="r_a31463c5b02bca6d537db89be3d62c378"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1AxiVersion.html">Cphw::AxiVersion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a31463c5b02bca6d537db89be3d62c378">_version</a></td></tr>
+<tr class="memdesc:a31463c5b02bca6d537db89be3d62c378"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structAxiVersion.html" title="struct AxiVersion - Represents AXI version data.">AxiVersion</a> block at offset 0 (per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> reads its build stamp.  <br /></td></tr>
 <tr class="separator:a31463c5b02bca6d537db89be3d62c378"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98841c59351e12dcc939185bc6c58360" id="r_a98841c59351e12dcc939185bc6c58360"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1XBar.html">Cphw::XBar</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a98841c59351e12dcc939185bc6c58360">_xbar</a></td></tr>
+<tr class="memdesc:a98841c59351e12dcc939185bc6c58360"><td class="mdescLeft">&#160;</td><td class="mdescRight">Crossbar (AxiSy56040 at 0x03000000, per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#aee7324967fbffe1f30169f78698758af" title="With feature revision 1 or more, route the crossbar outputs FPGA, RTM0 and RTM1 to input v (and print...">setCuInput()</a> set its outputs.  <br /></td></tr>
 <tr class="separator:a98841c59351e12dcc939185bc6c58360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa62f10169b56d659f1710642484a4345" id="r_aa62f10169b56d659f1710642484a4345"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aa62f10169b56d659f1710642484a4345">_usTiming</a></td></tr>
+<tr class="memdesc:aa62f10169b56d659f1710642484a4345"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx block at 0x08000000 (per the comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">counts()</a> as the us counters.  <br /></td></tr>
 <tr class="separator:aa62f10169b56d659f1710642484a4345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ee60b1875959a7674edd5c958afa353" id="r_a2ee60b1875959a7674edd5c958afa353"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2ee60b1875959a7674edd5c958afa353">_cuTiming</a></td></tr>
+<tr class="memdesc:a2ee60b1875959a7674edd5c958afa353"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingRx block at 0x08400000 (per the comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">counts()</a> as the cu counters.  <br /></td></tr>
 <tr class="separator:a2ee60b1875959a7674edd5c958afa353"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac019b8dc6a801da73be71b5482cfe4c1" id="r_ac019b8dc6a801da73be71b5482cfe4c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac019b8dc6a801da73be71b5482cfe4c1">_timestamp</a></td></tr>
+<tr class="memdesc:ac019b8dc6a801da73be71b5482cfe4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit timestamp register of the generator block at 0x08800000 (per the comment); written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#aeceae2b20fabf0f2275e72833160e965" title="Write the current time to _timestamp: seconds since a reference from mktime() in the upper 32 bits an...">setTimeStamp()</a>.  <br /></td></tr>
 <tr class="separator:ac019b8dc6a801da73be71b5482cfe4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1116799aca746ee757de402111cd847b" id="r_a1116799aca746ee757de402111cd847b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a1116799aca746ee757de402111cd847b">_pulseId</a></td></tr>
+<tr class="memdesc:a1116799aca746ee757de402111cd847b"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit pulse ID register of the generator block.  <br /></td></tr>
 <tr class="separator:a1116799aca746ee757de402111cd847b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34b8077c8509d8556c7dafcea0a6bb92" id="r_a34b8077c8509d8556c7dafcea0a6bb92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a34b8077c8509d8556c7dafcea0a6bb92">_cuDelay</a></td></tr>
+<tr class="memdesc:a34b8077c8509d8556c7dafcea0a6bb92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delay register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#aef9d3d79a7bd6bb4406e6633c6ca0af7" title="With feature revision 1 or more, write v to _cuDelay.">setCuDelay()</a>; the comment gives 185.7 MHz units and a default of 800*200 clocks.  <br /></td></tr>
 <tr class="separator:a34b8077c8509d8556c7dafcea0a6bb92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2441bd7ee793a860d00b339b5a81be4f" id="r_a2441bd7ee793a860d00b339b5a81be4f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2441bd7ee793a860d00b339b5a81be4f">_cuBeamCode</a></td></tr>
+<tr class="memdesc:a2441bd7ee793a860d00b339b5a81be4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ae5e5f7bb98f42fb870590d12957865ea" title="With feature revision 1 or more, write v to _cuBeamCode.">setCuBeamCode()</a>; the comment calls it the beam-present event code (default 140).  <br /></td></tr>
 <tr class="separator:a2441bd7ee793a860d00b339b5a81be4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7501920662a55323d08ed8097f0de55" id="r_ad7501920662a55323d08ed8097f0de55"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad7501920662a55323d08ed8097f0de55">_cuFiducialIntv</a></td></tr>
+<tr class="memdesc:ad7501920662a55323d08ed8097f0de55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a094803e8f9bacd6d7a3744ed06d1f539" title="With feature revision 1 or more and v non-zero, write v to _cuFiducialIntv.">clearCuFiducialErr()</a>.  <br /></td></tr>
 <tr class="separator:ad7501920662a55323d08ed8097f0de55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5b96921e087dc2323fd4312dba11ca0" id="r_ad5b96921e087dc2323fd4312dba11ca0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html">MmcmPhaseLock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad5b96921e087dc2323fd4312dba11ca0">_mmcm</a> [3]</td></tr>
+<tr class="memdesc:ad5b96921e087dc2323fd4312dba11ca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Three <a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html" title="Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from...">MmcmPhaseLock</a> blocks at 0x08900000, 0x08a00000 and 0x08b00000 (per the comment).  <br /></td></tr>
 <tr class="separator:ad5b96921e087dc2323fd4312dba11ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80cb6c37a1f2afb8a41b2f3a606d2c65" id="r_a80cb6c37a1f2afb8a41b2f3a606d2c65"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1HsRepeater.html">Cphw::HsRepeater</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a80cb6c37a1f2afb8a41b2f3a606d2c65">_hsRepeater</a> [6]</td></tr>
+<tr class="memdesc:a80cb6c37a1f2afb8a41b2f3a606d2c65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Six HsRepeater blocks from 0x09000000 (per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> initializes numbers 0, 1, 3 and 4.  <br /></td></tr>
 <tr class="separator:a80cb6c37a1f2afb8a41b2f3a606d2c65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a399253841fba4290e01d2839a70996ef" id="r_a399253841fba4290e01d2839a70996ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1GthRxAlign.html">Cphw::GthRxAlign</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a399253841fba4290e01d2839a70996ef">_usGthAlign</a></td></tr>
+<tr class="memdesc:a399253841fba4290e01d2839a70996ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">GthRxAlign block at 0x0B000000 (per the comment); passed to <a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html" title="Snapshot of the counters of one timing receiver (Cphw::TimingRx), as built by Module::counts().">TimingCounts</a> but not read.  <br /></td></tr>
 <tr class="separator:a399253841fba4290e01d2839a70996ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a781b128b57929929b95cec1d378ed06b" id="r_a781b128b57929929b95cec1d378ed06b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1GthRxAlign.html">Cphw::GthRxAlign</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a781b128b57929929b95cec1d378ed06b">_cuGthAlign</a></td></tr>
+<tr class="memdesc:a781b128b57929929b95cec1d378ed06b"><td class="mdescLeft">&#160;</td><td class="mdescRight">GthRxAlign block at 0x0C000000 (per the comment); passed to <a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html" title="Snapshot of the counters of one timing receiver (Cphw::TimingRx), as built by Module::counts().">TimingCounts</a> but not read.  <br /></td></tr>
 <tr class="separator:a781b128b57929929b95cec1d378ed06b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12dd0c230bcd4ef50db7bc610348d6a6" id="r_a12dd0c230bcd4ef50db7bc610348d6a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a12dd0c230bcd4ef50db7bc610348d6a6">_paddr</a></td></tr>
+<tr class="memdesc:a12dd0c230bcd4ef50db7bc610348d6a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0000: physical link address (read: received address, write: transmit address), per the header comment.  <br /></td></tr>
 <tr class="separator:a12dd0c230bcd4ef50db7bc610348d6a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c5929278c61920529b92a58f69b5161" id="r_a4c5929278c61920529b92a58f69b5161"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a4c5929278c61920529b92a58f69b5161">_index</a></td></tr>
+<tr class="memdesc:a4c5929278c61920529b92a58f69b5161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0004: programming index selecting the partition [3:0], link [9:4], ring buffer link [14:10], AMC [16], inhibit [21:20], tag streaming [24] and the us/cu receive enables [25]/[26] (header comment).  <br /></td></tr>
 <tr class="separator:a4c5929278c61920529b92a58f69b5161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23525470ec1028760eda49bff2764a7f" id="r_a23525470ec1028760eda49bff2764a7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a23525470ec1028760eda49bff2764a7f">_dsLinkConfig</a></td></tr>
+<tr class="memdesc:a23525470ec1028760eda49bff2764a7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0008: configuration of the selected link: group mask [7:0], receive timeout [17:9], PLL resets [18]/[19], trigger source [27:24], loopback [28], resets [29]/[30], enable [31] (header comment).  <br /></td></tr>
 <tr class="separator:a23525470ec1028760eda49bff2764a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b3fcb8f7ccecd1d63866ae49d023260" id="r_a8b3fcb8f7ccecd1d63866ae49d023260"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a8b3fcb8f7ccecd1d63866ae49d023260">_dsLinkStatus</a></td></tr>
+<tr class="memdesc:a8b3fcb8f7ccecd1d63866ae49d023260"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x000C (read-only): status of the selected link: receive error count [15:0], reset-done and ready bits [16]-[19], remote-is-XPM [20] (header comment).  <br /></td></tr>
 <tr class="separator:a8b3fcb8f7ccecd1d63866ae49d023260"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad402aafd3e071b041a8dc8f1f83e3313" id="r_ad402aafd3e071b041a8dc8f1f83e3313"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad402aafd3e071b041a8dc8f1f83e3313">_dsLinkRcvs</a></td></tr>
+<tr class="memdesc:ad402aafd3e071b041a8dc8f1f83e3313"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive count register of the selected link (bits 31-0, per the header comment).  <br /></td></tr>
 <tr class="separator:ad402aafd3e071b041a8dc8f1f83e3313"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96950e4ef55dd75cd8c80838783ef207" id="r_a96950e4ef55dd75cd8c80838783ef207"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1AmcPLL.html">Cphw::AmcPLL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a96950e4ef55dd75cd8c80838783ef207">_amcPll</a></td></tr>
+<tr class="memdesc:a96950e4ef55dd75cd8c80838783ef207"><td class="mdescLeft">&#160;</td><td class="mdescRight">AMC PLL control block at 0x0014; the AMC is selected by _index.  <br /></td></tr>
 <tr class="separator:a96950e4ef55dd75cd8c80838783ef207"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec913bdc1e0a5d498387b7ae82caafd8" id="r_aec913bdc1e0a5d498387b7ae82caafd8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aec913bdc1e0a5d498387b7ae82caafd8">_l0Control</a></td></tr>
+<tr class="memdesc:aec913bdc1e0a5d498387b7ae82caafd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0018: L0 control of the selected partition: reset [0], enable [16], master [30], enable counter update [31] (header comment).  <br /></td></tr>
 <tr class="separator:aec913bdc1e0a5d498387b7ae82caafd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a930ff97f8ffe671d612b522f51a12315" id="r_a930ff97f8ffe671d612b522f51a12315"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a930ff97f8ffe671d612b522f51a12315">_l0Select</a></td></tr>
+<tr class="memdesc:a930ff97f8ffe671d612b522f51a12315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x001c: L0 selection of the selected partition: rate selection [15:0] and destination selection [31:16]; the rate modes are given by bits [15:14] (header comment).  <br /></td></tr>
 <tr class="separator:a930ff97f8ffe671d612b522f51a12315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af67e296972c5cd5ad431a43d5f373960" id="r_af67e296972c5cd5ad431a43d5f373960"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af67e296972c5cd5ad431a43d5f373960">_l0Enabled</a></td></tr>
+<tr class="memdesc:af67e296972c5cd5ad431a43d5f373960"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0020 (read-only, 64-bit): clocks enabled for the selected partition (header comment).  <br /></td></tr>
 <tr class="separator:af67e296972c5cd5ad431a43d5f373960"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d7127cbe703b8630cde92134d5be7ed" id="r_a5d7127cbe703b8630cde92134d5be7ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a5d7127cbe703b8630cde92134d5be7ed">_l0Inhibited</a></td></tr>
+<tr class="memdesc:a5d7127cbe703b8630cde92134d5be7ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0028 (read-only, 64-bit): clocks inhibited for the selected partition.  <br /></td></tr>
 <tr class="separator:a5d7127cbe703b8630cde92134d5be7ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac58c4b3fdccc7b320f75b430c6cebfb2" id="r_ac58c4b3fdccc7b320f75b430c6cebfb2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ac58c4b3fdccc7b320f75b430c6cebfb2">_numl0</a></td></tr>
+<tr class="memdesc:ac58c4b3fdccc7b320f75b430c6cebfb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0030 (read-only, 64-bit): number of L0s input for the selected partition.  <br /></td></tr>
 <tr class="separator:ac58c4b3fdccc7b320f75b430c6cebfb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb4520de8b5b7ef568ec2ae155c3ab17" id="r_acb4520de8b5b7ef568ec2ae155c3ab17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#acb4520de8b5b7ef568ec2ae155c3ab17">_numl0Inh</a></td></tr>
+<tr class="memdesc:acb4520de8b5b7ef568ec2ae155c3ab17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0038 (read-only, 64-bit): number of L0s inhibited.  <br /></td></tr>
 <tr class="separator:acb4520de8b5b7ef568ec2ae155c3ab17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85ff675ef896bc330dd63eb3f799961e" id="r_a85ff675ef896bc330dd63eb3f799961e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a85ff675ef896bc330dd63eb3f799961e">_numl0Acc</a></td></tr>
+<tr class="memdesc:a85ff675ef896bc330dd63eb3f799961e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0040 (read-only, 64-bit): number of L0s accepted.  <br /></td></tr>
 <tr class="separator:a85ff675ef896bc330dd63eb3f799961e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22f694e4690df5ea84acfc5529c01102" id="r_a22f694e4690df5ea84acfc5529c01102"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg64.html">Cphw::Reg64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a22f694e4690df5ea84acfc5529c01102">_numl1Acc</a></td></tr>
+<tr class="memdesc:a22f694e4690df5ea84acfc5529c01102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0048 (read-only, 64-bit): number of L1s accepted.  <br /></td></tr>
 <tr class="separator:a22f694e4690df5ea84acfc5529c01102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad76d11b01ef7265e950a21faea89d91b" id="r_ad76d11b01ef7265e950a21faea89d91b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad76d11b01ef7265e950a21faea89d91b">_l1config0</a></td></tr>
+<tr class="memdesc:ad76d11b01ef7265e950a21faea89d91b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0050: L1 select configuration: trigger clear mask [0], trigger enable mask [16] (header comment).  <br /></td></tr>
 <tr class="separator:ad76d11b01ef7265e950a21faea89d91b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29beba1014ff9b36778b15992e0fe30e" id="r_a29beba1014ff9b36778b15992e0fe30e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a29beba1014ff9b36778b15992e0fe30e">_l1config1</a></td></tr>
+<tr class="memdesc:a29beba1014ff9b36778b15992e0fe30e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0054: L1 trigger source link [3:0], trigger word [12:4], write mask [16] (header comment).  <br /></td></tr>
 <tr class="separator:a29beba1014ff9b36778b15992e0fe30e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3890b87c929d945f1be737e0926db09d" id="r_a3890b87c929d945f1be737e0926db09d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a3890b87c929d945f1be737e0926db09d">_analysisRst</a></td></tr>
+<tr class="memdesc:a3890b87c929d945f1be737e0926db09d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0058: analysis tag reset [3:0] for the selected partition (header comment).  <br /></td></tr>
 <tr class="separator:a3890b87c929d945f1be737e0926db09d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95a849067c8087e9d6af3b6bc67f3995" id="r_a95a849067c8087e9d6af3b6bc67f3995"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a95a849067c8087e9d6af3b6bc67f3995">_analysisTag</a></td></tr>
+<tr class="memdesc:a95a849067c8087e9d6af3b6bc67f3995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x005c: analysis tag for the selected partition (header comment).  <br /></td></tr>
 <tr class="separator:a95a849067c8087e9d6af3b6bc67f3995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a570c1b76fed13907545d9c7669ec85ca" id="r_a570c1b76fed13907545d9c7669ec85ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a570c1b76fed13907545d9c7669ec85ca">_analysisPush</a></td></tr>
+<tr class="memdesc:a570c1b76fed13907545d9c7669ec85ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0060: analysis push [3:0] for the selected partition (header comment).  <br /></td></tr>
 <tr class="separator:a570c1b76fed13907545d9c7669ec85ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada0b8b5b01c7f659119f34d3cfd5c65d" id="r_ada0b8b5b01c7f659119f34d3cfd5c65d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ada0b8b5b01c7f659119f34d3cfd5c65d">_analysisTagWr</a></td></tr>
+<tr class="memdesc:ada0b8b5b01c7f659119f34d3cfd5c65d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0064 (read-only): analysis tag push counts (header comment).  <br /></td></tr>
 <tr class="separator:ada0b8b5b01c7f659119f34d3cfd5c65d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12913f0ba358c4af026f6f51f3eadef3" id="r_a12913f0ba358c4af026f6f51f3eadef3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a12913f0ba358c4af026f6f51f3eadef3">_analysisTagRd</a></td></tr>
+<tr class="memdesc:a12913f0ba358c4af026f6f51f3eadef3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0068 (read-only): analysis tag pull counts (header comment).  <br /></td></tr>
 <tr class="separator:a12913f0ba358c4af026f6f51f3eadef3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9023cb6506b2d43d57267ef2da434f8" id="r_ad9023cb6506b2d43d57267ef2da434f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad9023cb6506b2d43d57267ef2da434f8">_pipelineDepth</a></td></tr>
+<tr class="memdesc:ad9023cb6506b2d43d57267ef2da434f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x006c: pipeline depth for the selected partition; written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a2124bedc5e3a37df360df5335a2e73da" title="Write the delay v to the upper 16 bits of _pipelineDepth and the low 16 bits of v*200 to its lower ha...">setL0Delay()</a>.  <br /></td></tr>
 <tr class="separator:ad9023cb6506b2d43d57267ef2da434f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cbacfbe2fa01136cde92dcbcc722b9e" id="r_a0cbacfbe2fa01136cde92dcbcc722b9e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a0cbacfbe2fa01136cde92dcbcc722b9e">_message</a></td></tr>
+<tr class="memdesc:a0cbacfbe2fa01136cde92dcbcc722b9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0070: message setup: header [14:0], insert [15] (header comment).  <br /></td></tr>
 <tr class="separator:a0cbacfbe2fa01136cde92dcbcc722b9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8424984babdc4dfe06d65e45f9515855" id="r_a8424984babdc4dfe06d65e45f9515855"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a8424984babdc4dfe06d65e45f9515855">_messagePayload</a></td></tr>
+<tr class="memdesc:a8424984babdc4dfe06d65e45f9515855"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0074: message payload for the selected partition.  <br /></td></tr>
 <tr class="separator:a8424984babdc4dfe06d65e45f9515855"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af84b8e7597c8583f095970540b50024e" id="r_af84b8e7597c8583f095970540b50024e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#af84b8e7597c8583f095970540b50024e">_remoteLinkId</a></td></tr>
+<tr class="memdesc:af84b8e7597c8583f095970540b50024e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0078 (read-only): remote link ID, copied into <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html" title="Status of one link, as returned by Module::linkStatus().">LinkStatus</a>.  <br /></td></tr>
 <tr class="separator:af84b8e7597c8583f095970540b50024e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee52d6b0b1f84a2147d46d919d34c92c" id="r_aee52d6b0b1f84a2147d46d919d34c92c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aee52d6b0b1f84a2147d46d919d34c92c">_inhibitConfig</a> [4]</td></tr>
+<tr class="memdesc:aee52d6b0b1f84a2147d46d919d34c92c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers 0x0080: four inhibit configurations: interval [11:0], limit [15:12], enable [31] (header comment).  <br /></td></tr>
 <tr class="separator:aee52d6b0b1f84a2147d46d919d34c92c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27783fbdef4a596956090ac06be4cc67" id="r_a27783fbdef4a596956090ac06be4cc67"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a27783fbdef4a596956090ac06be4cc67">_inhibitEvCounts</a> [32]</td></tr>
+<tr class="memdesc:a27783fbdef4a596956090ac06be4cc67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers 0x0090 (read-only): inhibit assertions by downstream link (header comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a>.  <br /></td></tr>
 <tr class="separator:a27783fbdef4a596956090ac06be4cc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93895daa6471fc36abe8a0bd3f404804" id="r_a93895daa6471fc36abe8a0bd3f404804"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a93895daa6471fc36abe8a0bd3f404804">_monClk</a> [4]</td></tr>
+<tr class="memdesc:a93895daa6471fc36abe8a0bd3f404804"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers 0x0110 (read-only): four monitor clocks: rate [28:0], slow [29], fast [30], lock [31] (header comment).  <br /></td></tr>
 <tr class="separator:a93895daa6471fc36abe8a0bd3f404804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ac74a3e0dfc77d9144cd26a017cf334" id="r_a1ac74a3e0dfc77d9144cd26a017cf334"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a1ac74a3e0dfc77d9144cd26a017cf334">_inhibitTmCounts</a> [32]</td></tr>
+<tr class="memdesc:a1ac74a3e0dfc77d9144cd26a017cf334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-link counters following _monClk, read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a> into linkInhTm; not described in the header.  <br /></td></tr>
 <tr class="separator:a1ac74a3e0dfc77d9144cd26a017cf334"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb9159ec70d6f08f21274e8ae281a02e" id="r_aeb9159ec70d6f08f21274e8ae281a02e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#aeb9159ec70d6f08f21274e8ae281a02e">_reserved_416</a> [24]</td></tr>
+<tr class="memdesc:aeb9159ec70d6f08f21274e8ae281a02e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unused padding (24 words) up to register 0x0200.  <br /></td></tr>
 <tr class="separator:aeb9159ec70d6f08f21274e8ae281a02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad11ac42e86303d5a580fb93d67e2e96f" id="r_ad11ac42e86303d5a580fb93d67e2e96f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#ad11ac42e86303d5a580fb93d67e2e96f">_groupL0Reset</a></td></tr>
+<tr class="memdesc:ad11ac42e86303d5a580fb93d67e2e96f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0200 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#abb04f51aa2087e10ad3e6bb1812c7574" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Reset.">groupL0Reset()</a>.  <br /></td></tr>
 <tr class="separator:ad11ac42e86303d5a580fb93d67e2e96f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a475e7ae9188ee49ac92717eeee1341ae" id="r_a475e7ae9188ee49ac92717eeee1341ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a475e7ae9188ee49ac92717eeee1341ae">_groupL0Enable</a></td></tr>
+<tr class="memdesc:a475e7ae9188ee49ac92717eeee1341ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0204 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ada60d2a92cc5037f252d4bf5cee27100" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Enable.">groupL0Enable()</a>.  <br /></td></tr>
 <tr class="separator:a475e7ae9188ee49ac92717eeee1341ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4473432c0428a30c0425ab6134b395d1" id="r_a4473432c0428a30c0425ab6134b395d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a4473432c0428a30c0425ab6134b395d1">_groupL0Disable</a></td></tr>
+<tr class="memdesc:a4473432c0428a30c0425ab6134b395d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x0208 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac269e0dd4bdcacfba5a101cca734d533" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Disable.">groupL0Disable()</a>.  <br /></td></tr>
 <tr class="separator:a4473432c0428a30c0425ab6134b395d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f5d2882fa864bf577f4e99eda04f389" id="r_a2f5d2882fa864bf577f4e99eda04f389"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a2f5d2882fa864bf577f4e99eda04f389">_groupMsgInsert</a></td></tr>
+<tr class="memdesc:a2f5d2882fa864bf577f4e99eda04f389"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register 0x020c (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac77be17364df0849d79f52709a56f0f0" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupMsgInsert.">groupMsgInsert()</a>.  <br /></td></tr>
 <tr class="separator:a2f5d2882fa864bf577f4e99eda04f389"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15b7c48ddd8a5368402919f415804ae1" id="r_a15b7c48ddd8a5368402919f415804ae1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html">MmcmPhaseLock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html#a15b7c48ddd8a5368402919f415804ae1">_mmcm_amc</a></td></tr>
+<tr class="memdesc:a15b7c48ddd8a5368402919f415804ae1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html" title="Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from...">MmcmPhaseLock</a> block placed after the sequence engine and gthTSim reserved spaces.  <br /></td></tr>
 <tr class="separator:a15b7c48ddd8a5368402919f415804ae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Register map of an XPM, laid out so that member addresses equal register offsets (see <a class="el" href="classPds_1_1Xpm_1_1Module.html#ab108f11faea94cb49f39e2f641d2961e" title="Construct a Module with placement new at address 0 and return it, so that member addresses are regist...">locate()</a>), with functions that select a partition, link or AMC through the _index register and read or write fields of the selected registers. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a9510e515521eb7c0897f89e554785d0d" name="a9510e515521eb7c0897f89e554785d0d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9510e515521eb7c0897f89e554785d0d">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -451,8 +617,13 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of AMCs. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9510e515521eb7c0897f89e554785d0da32ee6f0aa056cc88c2748d7c5cd10f3f" name="a9510e515521eb7c0897f89e554785d0da32ee6f0aa056cc88c2748d7c5cd10f3f"></a>NAmcs&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9510e515521eb7c0897f89e554785d0da32ee6f0aa056cc88c2748d7c5cd10f3f" name="a9510e515521eb7c0897f89e554785d0da32ee6f0aa056cc88c2748d7c5cd10f3f"></a>NAmcs&#160;</td><td class="fielddoc"><ol type="1">
+<li></li>
+</ol>
+</td></tr>
 </table>
 
 </div>
@@ -468,8 +639,11 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of downstream links. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5ed9e357a746576625f2386d24840567a0e2c3253790647be4b4d38493350a060" name="a5ed9e357a746576625f2386d24840567a0e2c3253790647be4b4d38493350a060"></a>NDSLinks&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5ed9e357a746576625f2386d24840567a0e2c3253790647be4b4d38493350a060" name="a5ed9e357a746576625f2386d24840567a0e2c3253790647be4b4d38493350a060"></a>NDSLinks&#160;</td><td class="fielddoc"><p>14; <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a>, <a class="el" href="classPds_1_1Xpm_1_1Module.html#aa9ed5721239b77ff87861e293e66dc7d" title="Clear the enable bit (31) of the configuration of links 0 to NDSLinks-1.">clearLinks()</a>, <a class="el" href="classPds_1_1Xpm_1_1Module.html#a2a4459ac9a5d76b13c53eafcf2be05e3" title="Return a bit mask of the links (0 to NDSLinks-1) whose transmit-ready bit is set.">txLinkStat()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#a85c086729476ddfa2ad1e8095c21e7f1" title="Return a bit mask of the links (0 to NDSLinks-1) whose receive-ready bit is set.">rxLinkStat()</a> loop over this many links. </p>
+</td></tr>
 </table>
 
 </div>
@@ -485,8 +659,13 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of partitions. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1d87bd4fefd972b52ddfc5c29061de3babefb4097d18351f5182783974db756bd" name="a1d87bd4fefd972b52ddfc5c29061de3babefb4097d18351f5182783974db756bd"></a>NPartitions&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1d87bd4fefd972b52ddfc5c29061de3babefb4097d18351f5182783974db756bd" name="a1d87bd4fefd972b52ddfc5c29061de3babefb4097d18351f5182783974db756bd"></a>NPartitions&#160;</td><td class="fielddoc"><ol type="1">
+<li></li>
+</ol>
+</td></tr>
 </table>
 
 </div>
@@ -507,6 +686,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Does nothing (the call to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> is commented out). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -526,6 +707,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>With feature revision 1 or more and v non-zero, write v to _cuFiducialIntv. </p>
+
 </div>
 </div>
 <a id="aa9ed5721239b77ff87861e293e66dc7d" name="aa9ed5721239b77ff87861e293e66dc7d"></a>
@@ -543,6 +726,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Clear the enable bit (31) of the configuration of links 0 to NDSLinks-1. </p>
+
 </div>
 </div>
 <a id="ade1b585fe6e02ecf401d5e94fd8b9245" name="ade1b585fe6e02ecf401d5e94fd8b9245"></a>
@@ -559,6 +744,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the counters of the us and cu timing receivers. </p>
 
 </div>
 </div>
@@ -578,6 +765,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the AMC and print its PLL configuration register and AmcPLL::dump(). </p>
+
 </div>
 </div>
 <a id="a9a846f5283e24a0290c08ad9fd631438" name="a9a846f5283e24a0290c08ad9fd631438"></a>
@@ -595,6 +784,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print that it is deprecated; does nothing else. </p>
 
 </div>
 </div>
@@ -621,6 +812,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the feature revision found by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a>: 1 if the build stamp contains xtpg, else 0. </p>
+
 </div>
 </div>
 <a id="a541b2ebb10235e2931d0f92ad4d1aca0" name="a541b2ebb10235e2931d0f92ad4d1aca0"></a>
@@ -637,6 +830,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the AMC bit (16) of _index. </p>
 
 </div>
 </div>
@@ -655,6 +850,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the inhibit field (bits 21-20) of _index. </p>
+
 </div>
 </div>
 <a id="a74034971419aaaeb5884e15392dbba0d" name="a74034971419aaaeb5884e15392dbba0d"></a>
@@ -671,6 +868,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the upper 16 bits of _pipelineDepth. </p>
 
 </div>
 </div>
@@ -689,6 +888,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the enable bit (16) of _l0Control. </p>
+
 </div>
 </div>
 <a id="aa5dfddba6732594c15a5a0b6b9212a75" name="aa5dfddba6732594c15a5a0b6b9212a75"></a>
@@ -705,6 +906,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return bit 0 of _l1config0. </p>
 
 </div>
 </div>
@@ -723,6 +926,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return bit 16 of _l1config0. </p>
+
 </div>
 </div>
 <a id="a3bf945ed062ed5ac3d0e8bb05457d011" name="a3bf945ed062ed5ac3d0e8bb05457d011"></a>
@@ -739,6 +944,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return bits 3-0 of _l1config1. </p>
 
 </div>
 </div>
@@ -757,6 +964,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return bits 12-4 of _l1config1. </p>
+
 </div>
 </div>
 <a id="a6a1945dbbd513e1450bc8676b3450c71" name="a6a1945dbbd513e1450bc8676b3450c71"></a>
@@ -773,6 +982,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return bit 16 of _l1config1. </p>
 
 </div>
 </div>
@@ -791,6 +1002,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the link field (bits 9-4) of _index. </p>
+
 </div>
 </div>
 <a id="a0b0fa146a282bec9ae62a1597ce86176" name="a0b0fa146a282bec9ae62a1597ce86176"></a>
@@ -808,6 +1021,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the partition field (bits 3-0) of _index. </p>
+
 </div>
 </div>
 <a id="a34a9eeebb4b7ef76045b149502c6f7b5" name="a34a9eeebb4b7ef76045b149502c6f7b5"></a>
@@ -824,6 +1039,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the tag stream bit (24) of _index. </p>
 
 </div>
 </div>
@@ -843,6 +1060,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Disable. </p>
+
 </div>
 </div>
 <a id="ada60d2a92cc5037f252d4bf5cee27100" name="ada60d2a92cc5037f252d4bf5cee27100"></a>
@@ -860,6 +1079,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Enable. </p>
 
 </div>
 </div>
@@ -879,6 +1100,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Reset. </p>
+
 </div>
 </div>
 <a id="ac77be17364df0849d79f52709a56f0f0" name="ac77be17364df0849d79f52709a56f0f0"></a>
@@ -897,6 +1120,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the partition of the lowest set bit of the mask, then write the mask to _groupMsgInsert. </p>
+
 </div>
 </div>
 <a id="a595160979348757aff5fc58d961c8d05" name="a595160979348757aff5fc58d961c8d05"></a>
@@ -914,6 +1139,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the enable bit (31) of inhibit configuration inh. </p>
 
 </div>
 </div>
@@ -943,6 +1170,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the enable bit (31) of inhibit configuration inh to v. </p>
+
 </div>
 </div>
 <a id="a2f92c2192dde2bd5c7ff91decf47bf73" name="a2f92c2192dde2bd5c7ff91decf47bf73"></a>
@@ -960,6 +1189,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the interval field of inhibit configuration inh plus 1. </p>
 
 </div>
 </div>
@@ -989,6 +1220,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the interval field of inhibit configuration inh (bits 11-0 of _inhibitConfig) to v - 1. </p>
+
 </div>
 </div>
 <a id="aa14b44fe983c606e80fcc853481c85e0" name="aa14b44fe983c606e80fcc853481c85e0"></a>
@@ -1006,6 +1239,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the limit field of inhibit configuration inh plus 1. </p>
 
 </div>
 </div>
@@ -1035,6 +1270,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the limit field of inhibit configuration inh (bits 15-12) to v - 1. </p>
+
 </div>
 </div>
 <a id="a412f4ed031b816ed7888d702a80cc16e" name="a412f4ed031b816ed7888d702a80cc16e"></a>
@@ -1051,6 +1288,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the feature revision from the build stamp, print the index register and the configuration and status of every link, route the crossbar outputs BP, RTM0 and RTM1 to FPGA and initialize HsRepeaters 0, 1, 3 and 4. </p>
 
 </div>
 </div>
@@ -1069,6 +1308,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return bit 16 (enable) of the _l0Control register of the selected partition. </p>
+
 </div>
 </div>
 <a id="a135edb0c2600a758291bb6f00b4d5e2b" name="a135edb0c2600a758291bb6f00b4d5e2b"></a>
@@ -1085,6 +1326,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the reset bit (0) of _l0Control. </p>
 
 </div>
 </div>
@@ -1104,6 +1347,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-link event inhibit counts only when the argument is true, the per-link inhibit time counts always) and the link 0 error count, then unfreeze. </p>
+<p>Note that the link index is changed while sampling. </p>
+
 </div>
 </div>
 <a id="a3d666bc92f50d4352d981634ed51cb3e" name="a3d666bc92f50d4352d981634ed51cb3e"></a>
@@ -1121,6 +1367,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its enable bit (31). </p>
 
 </div>
 </div>
@@ -1150,6 +1398,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and set or clear its enable bit (31 of _dsLinkConfig). </p>
+
 </div>
 </div>
 <a id="af2475dd041938a3b76d4b395bf97e572" name="af2475dd041938a3b76d4b395bf97e572"></a>
@@ -1167,6 +1417,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its group mask (bits 7-0). </p>
 
 </div>
 </div>
@@ -1196,6 +1448,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and set its group mask (bits 7-0 of _dsLinkConfig). </p>
+
 </div>
 </div>
 <a id="addd5bcebadcc3d1383780e15e22c4811" name="addd5bcebadcc3d1383780e15e22c4811"></a>
@@ -1214,6 +1468,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and return its remote-is-XPM status bit (20). </p>
+
 </div>
 </div>
 <a id="a4b539529083b20d78825132b7c047281" name="a4b539529083b20d78825132b7c047281"></a>
@@ -1231,6 +1487,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its loopback bit (28). </p>
 
 </div>
 </div>
@@ -1260,6 +1518,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and set or clear its loopback bit (28 of _dsLinkConfig). </p>
+
 </div>
 </div>
 <a id="a80a17ad098db82c7026bdf7335b805e5" name="a80a17ad098db82c7026bdf7335b805e5"></a>
@@ -1277,6 +1537,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return true if its receive error count (status bits 15-0) is non-zero. </p>
 
 </div>
 </div>
@@ -1296,6 +1558,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and return its receive-ready status bit (19 of _dsLinkStatus). </p>
+
 </div>
 </div>
 <a id="ab2c4375be0c1631d74303552a655dd3f" name="ab2c4375be0c1631d74303552a655dd3f"></a>
@@ -1313,6 +1577,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its receive timeout field (bits 17-9). </p>
 
 </div>
 </div>
@@ -1342,6 +1608,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and set its receive timeout field (bits 17-9 of _dsLinkConfig). </p>
+
 </div>
 </div>
 <a id="a2da0b9f31ed120a12824b74236e0127a" name="a2da0b9f31ed120a12824b74236e0127a"></a>
@@ -1359,6 +1627,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fill the array with the status of links 0 to 31. </p>
 
 </div>
 </div>
@@ -1378,6 +1648,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and return its status (see <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html" title="Status of one link, as returned by Module::linkStatus().">LinkStatus</a>). </p>
+
 </div>
 </div>
 <a id="abdab315f58265664a90853ba798e8eff" name="abdab315f58265664a90853ba798e8eff"></a>
@@ -1395,6 +1667,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its trigger source field (bits 27-24). </p>
 
 </div>
 </div>
@@ -1424,6 +1698,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and set its trigger source field (bits 27-24 of _dsLinkConfig). </p>
+
 </div>
 </div>
 <a id="a6e1e1d5cd3b9d2f1472ab0c0928fd103" name="a6e1e1d5cd3b9d2f1472ab0c0928fd103"></a>
@@ -1441,6 +1717,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and return its transmit-ready status bit (17). </p>
 
 </div>
 </div>
@@ -1467,6 +1745,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct a <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> with placement new at address 0 and return it, so that member addresses are register offsets for <a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a> accesses. </p>
+
 </div>
 </div>
 <a id="ac2a4a69aa15103510dc6614ab1bc1cb4" name="ac2a4a69aa15103510dc6614ab1bc1cb4"></a>
@@ -1485,6 +1765,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Freeze (true) or resume the counter updates by clearing or setting bit 31 of _l0Control. </p>
+
 </div>
 </div>
 <a id="a60f0ac0b63740daf611b0c7783ac1b37" name="a60f0ac0b63740daf611b0c7783ac1b37"></a>
@@ -1501,6 +1783,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the master bit (30) of _l0Control. </p>
 
 </div>
 </div>
@@ -1520,6 +1804,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set or clear the master bit (30) of _l0Control. </p>
+
 </div>
 </div>
 <a id="a1e760e942ac89a1cae9b655ebf439351" name="a1e760e942ac89a1cae9b655ebf439351"></a>
@@ -1536,6 +1822,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return bits 15-0 of _message. </p>
 
 </div>
 </div>
@@ -1555,6 +1843,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set bits 7-0 of _message to v (the header comment gives the header as bits 14-0). </p>
+
 </div>
 </div>
 <a id="a3f81e5ca29e7ae171e380430ebd9a658" name="a3f81e5ca29e7ae171e380430ebd9a658"></a>
@@ -1572,6 +1862,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the insert bit (15) of _message. </p>
+
 </div>
 </div>
 <a id="a1a2f13cd011c30b43dc1a8aaf8f2ccba" name="a1a2f13cd011c30b43dc1a8aaf8f2ccba"></a>
@@ -1588,6 +1880,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return _messagePayload of the selected partition. </p>
 
 </div>
 </div>
@@ -1607,6 +1901,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Write v to _messagePayload of the selected partition. </p>
+
 </div>
 </div>
 <a id="a50d97c877a6b7a3ead594249f6076bf9" name="a50d97c877a6b7a3ead594249f6076bf9"></a>
@@ -1624,6 +1920,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::BwSel(). </p>
 
 </div>
 </div>
@@ -1653,6 +1951,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::BwSel(val). </p>
+
 </div>
 </div>
 <a id="a959271d6eb0ce85c49b50f80b047b5a7" name="a959271d6eb0ce85c49b50f80b047b5a7"></a>
@@ -1670,6 +1970,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::Bypass(). </p>
 
 </div>
 </div>
@@ -1699,6 +2001,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::Bypass(v). </p>
+
 </div>
 </div>
 <a id="a3f7e60402e39aefcc7c3f60bce9257e1" name="a3f7e60402e39aefcc7c3f60bce9257e1"></a>
@@ -1716,6 +2020,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::Count0(). </p>
 
 </div>
 </div>
@@ -1735,6 +2041,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and return AmcPLL::Count1(). </p>
+
 </div>
 </div>
 <a id="a8e1fdfb1e0bc4a46de2488fe967839d2" name="a8e1fdfb1e0bc4a46de2488fe967839d2"></a>
@@ -1752,6 +2060,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::FrqSel(). </p>
 
 </div>
 </div>
@@ -1781,6 +2091,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::FrqSel(val). </p>
+
 </div>
 </div>
 <a id="a077ba578bd1c835b0df745e4f70f861b" name="a077ba578bd1c835b0df745e4f70f861b"></a>
@@ -1798,6 +2110,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::FrqTbl(). </p>
 
 </div>
 </div>
@@ -1827,6 +2141,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::FrqTbl(val). </p>
+
 </div>
 </div>
 <a id="aeb2b573168f5312c5e0b26c3180750a9" name="aeb2b573168f5312c5e0b26c3180750a9"></a>
@@ -1844,6 +2160,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and call AmcPLL::PhsDec(). </p>
 
 </div>
 </div>
@@ -1863,6 +2181,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::PhsInc(). </p>
+
 </div>
 </div>
 <a id="ae689d100b4b3e83feab48c8fdc9a0bbb" name="ae689d100b4b3e83feab48c8fdc9a0bbb"></a>
@@ -1880,6 +2200,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return AmcPLL::RateSel(). </p>
 
 </div>
 </div>
@@ -1909,6 +2231,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::RateSel(val). </p>
+
 </div>
 </div>
 <a id="ab343aefd00cd8929f73e6a42082604c2" name="ab343aefd00cd8929f73e6a42082604c2"></a>
@@ -1926,6 +2250,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and call AmcPLL::Reset(). </p>
 
 </div>
 </div>
@@ -1955,6 +2281,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and call AmcPLL::Skew(val). </p>
+
 </div>
 </div>
 <a id="ac0344adec34fe95b2f598a6d47c37bab" name="ac0344adec34fe95b2f598a6d47c37bab"></a>
@@ -1972,6 +2300,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select AMC idx and return its PLL status (Status0, Status1, Count0, Count1). </p>
 
 </div>
 </div>
@@ -1991,6 +2321,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and return AmcPLL::Status0(). </p>
+
 </div>
 </div>
 <a id="aba99931e5cbae96eb03410801badb835" name="aba99931e5cbae96eb03410801badb835"></a>
@@ -2009,6 +2341,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select AMC idx and return AmcPLL::Status1(). </p>
+
 </div>
 </div>
 <a id="aa60403eb0000c14d1e3841174d0ccf93" name="aa60403eb0000c14d1e3841174d0ccf93"></a>
@@ -2025,6 +2359,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pulse the reset bit of _l0Control: set it, wait 1 us, clear it. </p>
 
 </div>
 </div>
@@ -2044,6 +2380,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set (true) or clear the reset bit (0) of _l0Control of the selected partition. </p>
+
 </div>
 </div>
 <a id="ad0aa6b777650d41c0cd8e0732a2b62bd" name="ad0aa6b777650d41c0cd8e0732a2b62bd"></a>
@@ -2061,6 +2399,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Point the receive ring buffer at the link, clear it, capture for 100 us and print the captured words masked to 20 bits (Cphw::RingBuffer::dump(20)). </p>
 
 </div>
 </div>
@@ -2080,6 +2420,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and return its receive error count (status bits 15-0). </p>
+
 </div>
 </div>
 <a id="af6773648c2fee1a15cf3deccd94b6d25" name="af6773648c2fee1a15cf3deccd94b6d25"></a>
@@ -2097,6 +2439,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and pulse its receive PLL reset bit (19 of _dsLinkConfig) for 10 us. </p>
 
 </div>
 </div>
@@ -2116,6 +2460,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and pulse its receive reset bit (30 of _dsLinkConfig) for 10 us. </p>
+
 </div>
 </div>
 <a id="a85c086729476ddfa2ad1e8095c21e7f1" name="a85c086729476ddfa2ad1e8095c21e7f1"></a>
@@ -2133,6 +2479,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return a bit mask of the links (0 to NDSLinks-1) whose receive-ready bit is set. </p>
+
 </div>
 </div>
 <a id="a0ad221c05d9878bc4e5a857c5a2ceac0" name="a0ad221c05d9878bc4e5a857c5a2ceac0"></a>
@@ -2149,6 +2497,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return a new <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html" title="SequenceEngine for one XPM sequence engine: encodes instructions into its sequence RAM and controls i...">XpmSequenceEngine</a> for the register space after the receive ring buffer; a new object is allocated on every call and not freed here. </p>
 
 </div>
 </div>
@@ -2168,6 +2518,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the AMC bit (16) of _index; const although it writes the register. </p>
+
 </div>
 </div>
 <a id="ae5e5f7bb98f42fb870590d12957865ea" name="ae5e5f7bb98f42fb870590d12957865ea"></a>
@@ -2185,6 +2537,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>With feature revision 1 or more, write v to _cuBeamCode. </p>
 
 </div>
 </div>
@@ -2204,6 +2558,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>With feature revision 1 or more, write v to _cuDelay. </p>
+
 </div>
 </div>
 <a id="aee7324967fbffe1f30169f78698758af" name="aee7324967fbffe1f30169f78698758af"></a>
@@ -2221,6 +2577,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>With feature revision 1 or more, route the crossbar outputs FPGA, RTM0 and RTM1 to input v (and print it); otherwise does nothing. </p>
 
 </div>
 </div>
@@ -2240,6 +2598,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the inhibit field (bits 21-20) of _index. </p>
+
 </div>
 </div>
 <a id="a2124bedc5e3a37df360df5335a2e73da" name="a2124bedc5e3a37df360df5335a2e73da"></a>
@@ -2258,6 +2618,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Write the delay v to the upper 16 bits of _pipelineDepth and the low 16 bits of v*200 to its lower half. </p>
+
 </div>
 </div>
 <a id="a154481a532eeded6280e4cd6594ee7dc" name="a154481a532eeded6280e4cd6594ee7dc"></a>
@@ -2275,6 +2637,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set or clear the enable bit (16) of _l0Control. </p>
 
 </div>
 </div>
@@ -2304,6 +2668,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rate (3 bits), keeping the destination selection. </p>
+
 </div>
 </div>
 <a id="a3ad635cfafdb463915e17308c37b0c29" name="a3ad635cfafdb463915e17308c37b0c29"></a>
@@ -2332,6 +2698,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask, keeping the rate selection. </p>
+<p>The header comment describes a 15-bit destination mask, but only 4 bits are kept. </p>
+
 </div>
 </div>
 <a id="acff7ef6d5807018d0c7e197039059d54" name="acff7ef6d5807018d0c7e197039059d54"></a>
@@ -2349,6 +2718,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the rate selection of _l0Select to fixed-rate mode with marker rate (low 4 bits), keeping the destination selection. </p>
 
 </div>
 </div>
@@ -2378,6 +2749,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits), keeping the destination selection. </p>
+
 </div>
 </div>
 <a id="ae0fc9e222f2926f1b6d47f5384192986" name="ae0fc9e222f2926f1b6d47f5384192986"></a>
@@ -2395,6 +2768,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set bit 0 of _l1config0 to v. </p>
 
 </div>
 </div>
@@ -2414,6 +2789,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set bit 16 of _l1config0 to v. </p>
+
 </div>
 </div>
 <a id="a9a3e6508fff328c714be231ca37e437e" name="a9a3e6508fff328c714be231ca37e437e"></a>
@@ -2431,6 +2808,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set bits 3-0 of _l1config1 (L1 trigger source link, per the header comment). </p>
 
 </div>
 </div>
@@ -2450,6 +2829,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set bits 12-4 of _l1config1 (L1 trigger word). </p>
+
 </div>
 </div>
 <a id="af9c8d5ba2975d2ab6e889aed2bd53f5f" name="af9c8d5ba2975d2ab6e889aed2bd53f5f"></a>
@@ -2467,6 +2848,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set bit 16 of _l1config1 (L1 trigger write mask). </p>
 
 </div>
 </div>
@@ -2486,6 +2869,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the link field (bits 9-4) of _index; const although it writes the register. </p>
+
 </div>
 </div>
 <a id="a3cec47b7894f5be537a3d8d50a10a269" name="a3cec47b7894f5be537a3d8d50a10a269"></a>
@@ -2503,6 +2888,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the partition field (bits 3-0) of _index; const although it writes the register. </p>
 
 </div>
 </div>
@@ -2522,6 +2909,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the ring buffer link field (bits 13-10) of _index. </p>
+
 </div>
 </div>
 <a id="aa13d81077799a4769ce10153ccf1f071" name="aa13d81077799a4769ce10153ccf1f071"></a>
@@ -2540,6 +2929,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the tag stream bit (24) of _index. </p>
+
 </div>
 </div>
 <a id="aeceae2b20fabf0f2275e72833160e965" name="aeceae2b20fabf0f2275e72833160e965"></a>
@@ -2556,6 +2947,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write the current time to _timestamp: seconds since a reference from mktime() in the upper 32 bits and nanoseconds in the lower 32 bits. </p>
+<p>The reference struct tm has only tm_year (1995) set; its other fields are uninitialized. </p>
 
 </div>
 </div>
@@ -2575,6 +2969,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the file-static verbosity used by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a154481a532eeded6280e4cd6594ee7dc" title="Set or clear the enable bit (16) of _l0Control.">setL0Enabled()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a>. </p>
+
 </div>
 </div>
 <a id="a85bfbc84dedb5d2b28e091c1cdbc4a15" name="a85bfbc84dedb5d2b28e091c1cdbc4a15"></a>
@@ -2592,6 +2988,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the link and pulse its transmit PLL reset bit (18 of _dsLinkConfig) for 10 us. </p>
 
 </div>
 </div>
@@ -2611,6 +3009,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select the link and pulse its transmit reset bit (29 of _dsLinkConfig) for 10 us. </p>
+
 </div>
 </div>
 <a id="a2a4459ac9a5d76b13c53eafcf2be05e3" name="a2a4459ac9a5d76b13c53eafcf2be05e3"></a>
@@ -2628,6 +3028,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return a bit mask of the links (0 to NDSLinks-1) whose transmit-ready bit is set. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -2643,6 +3045,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>AMC PLL control block at 0x0014; the AMC is selected by _index. </p>
+
 </div>
 </div>
 <a id="a570c1b76fed13907545d9c7669ec85ca" name="a570c1b76fed13907545d9c7669ec85ca"></a>
@@ -2656,6 +3060,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0060: analysis push [3:0] for the selected partition (header comment). </p>
 
 </div>
 </div>
@@ -2671,6 +3077,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0058: analysis tag reset [3:0] for the selected partition (header comment). </p>
+
 </div>
 </div>
 <a id="a95a849067c8087e9d6af3b6bc67f3995" name="a95a849067c8087e9d6af3b6bc67f3995"></a>
@@ -2684,6 +3092,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x005c: analysis tag for the selected partition (header comment). </p>
 
 </div>
 </div>
@@ -2699,6 +3109,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0068 (read-only): analysis tag pull counts (header comment). </p>
+
 </div>
 </div>
 <a id="ada0b8b5b01c7f659119f34d3cfd5c65d" name="ada0b8b5b01c7f659119f34d3cfd5c65d"></a>
@@ -2712,6 +3124,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0064 (read-only): analysis tag push counts (header comment). </p>
 
 </div>
 </div>
@@ -2727,6 +3141,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ae5e5f7bb98f42fb870590d12957865ea" title="With feature revision 1 or more, write v to _cuBeamCode.">setCuBeamCode()</a>; the comment calls it the beam-present event code (default 140). </p>
+
 </div>
 </div>
 <a id="a34b8077c8509d8556c7dafcea0a6bb92" name="a34b8077c8509d8556c7dafcea0a6bb92"></a>
@@ -2740,6 +3156,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delay register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#aef9d3d79a7bd6bb4406e6633c6ca0af7" title="With feature revision 1 or more, write v to _cuDelay.">setCuDelay()</a>; the comment gives 185.7 MHz units and a default of 800*200 clocks. </p>
 
 </div>
 </div>
@@ -2755,6 +3173,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a094803e8f9bacd6d7a3744ed06d1f539" title="With feature revision 1 or more and v non-zero, write v to _cuFiducialIntv.">clearCuFiducialErr()</a>. </p>
+
 </div>
 </div>
 <a id="a781b128b57929929b95cec1d378ed06b" name="a781b128b57929929b95cec1d378ed06b"></a>
@@ -2768,6 +3188,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>GthRxAlign block at 0x0C000000 (per the comment); passed to <a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html" title="Snapshot of the counters of one timing receiver (Cphw::TimingRx), as built by Module::counts().">TimingCounts</a> but not read. </p>
 
 </div>
 </div>
@@ -2783,6 +3205,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingRx block at 0x08400000 (per the comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">counts()</a> as the cu counters. </p>
+
 </div>
 </div>
 <a id="a23525470ec1028760eda49bff2764a7f" name="a23525470ec1028760eda49bff2764a7f"></a>
@@ -2796,6 +3220,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0008: configuration of the selected link: group mask [7:0], receive timeout [17:9], PLL resets [18]/[19], trigger source [27:24], loopback [28], resets [29]/[30], enable [31] (header comment). </p>
 
 </div>
 </div>
@@ -2811,6 +3237,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Receive count register of the selected link (bits 31-0, per the header comment). </p>
+
 </div>
 </div>
 <a id="a8b3fcb8f7ccecd1d63866ae49d023260" name="a8b3fcb8f7ccecd1d63866ae49d023260"></a>
@@ -2824,6 +3252,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x000C (read-only): status of the selected link: receive error count [15:0], reset-done and ready bits [16]-[19], remote-is-XPM [20] (header comment). </p>
 
 </div>
 </div>
@@ -2839,6 +3269,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0208 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac269e0dd4bdcacfba5a101cca734d533" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Disable.">groupL0Disable()</a>. </p>
+
 </div>
 </div>
 <a id="a475e7ae9188ee49ac92717eeee1341ae" name="a475e7ae9188ee49ac92717eeee1341ae"></a>
@@ -2852,6 +3284,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0204 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ada60d2a92cc5037f252d4bf5cee27100" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Enable.">groupL0Enable()</a>. </p>
 
 </div>
 </div>
@@ -2867,6 +3301,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0200 (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#abb04f51aa2087e10ad3e6bb1812c7574" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupL0Reset.">groupL0Reset()</a>. </p>
+
 </div>
 </div>
 <a id="a2f5d2882fa864bf577f4e99eda04f389" name="a2f5d2882fa864bf577f4e99eda04f389"></a>
@@ -2880,6 +3316,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x020c (write-only): written with a group mask by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac77be17364df0849d79f52709a56f0f0" title="Select the partition of the lowest set bit of the mask, then write the mask to _groupMsgInsert.">groupMsgInsert()</a>. </p>
 
 </div>
 </div>
@@ -2895,6 +3333,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Six HsRepeater blocks from 0x09000000 (per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> initializes numbers 0, 1, 3 and 4. </p>
+
 </div>
 </div>
 <a id="a4c5929278c61920529b92a58f69b5161" name="a4c5929278c61920529b92a58f69b5161"></a>
@@ -2908,6 +3348,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0004: programming index selecting the partition [3:0], link [9:4], ring buffer link [14:10], AMC [16], inhibit [21:20], tag streaming [24] and the us/cu receive enables [25]/[26] (header comment). </p>
 
 </div>
 </div>
@@ -2923,6 +3365,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Registers 0x0080: four inhibit configurations: interval [11:0], limit [15:12], enable [31] (header comment). </p>
+
 </div>
 </div>
 <a id="a27783fbdef4a596956090ac06be4cc67" name="a27783fbdef4a596956090ac06be4cc67"></a>
@@ -2936,6 +3380,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Registers 0x0090 (read-only): inhibit assertions by downstream link (header comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a>. </p>
 
 </div>
 </div>
@@ -2951,6 +3397,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Per-link counters following _monClk, read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">l0Stats()</a> into linkInhTm; not described in the header. </p>
+
 </div>
 </div>
 <a id="aec913bdc1e0a5d498387b7ae82caafd8" name="aec913bdc1e0a5d498387b7ae82caafd8"></a>
@@ -2964,6 +3412,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0018: L0 control of the selected partition: reset [0], enable [16], master [30], enable counter update [31] (header comment). </p>
 
 </div>
 </div>
@@ -2979,6 +3429,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0020 (read-only, 64-bit): clocks enabled for the selected partition (header comment). </p>
+
 </div>
 </div>
 <a id="a5d7127cbe703b8630cde92134d5be7ed" name="a5d7127cbe703b8630cde92134d5be7ed"></a>
@@ -2992,6 +3444,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0028 (read-only, 64-bit): clocks inhibited for the selected partition. </p>
 
 </div>
 </div>
@@ -3007,6 +3461,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x001c: L0 selection of the selected partition: rate selection [15:0] and destination selection [31:16]; the rate modes are given by bits [15:14] (header comment). </p>
+
 </div>
 </div>
 <a id="ad76d11b01ef7265e950a21faea89d91b" name="ad76d11b01ef7265e950a21faea89d91b"></a>
@@ -3020,6 +3476,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0050: L1 select configuration: trigger clear mask [0], trigger enable mask [16] (header comment). </p>
 
 </div>
 </div>
@@ -3035,6 +3493,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0054: L1 trigger source link [3:0], trigger word [12:4], write mask [16] (header comment). </p>
+
 </div>
 </div>
 <a id="a0cbacfbe2fa01136cde92dcbcc722b9e" name="a0cbacfbe2fa01136cde92dcbcc722b9e"></a>
@@ -3048,6 +3508,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0070: message setup: header [14:0], insert [15] (header comment). </p>
 
 </div>
 </div>
@@ -3063,6 +3525,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0074: message payload for the selected partition. </p>
+
 </div>
 </div>
 <a id="ad5b96921e087dc2323fd4312dba11ca0" name="ad5b96921e087dc2323fd4312dba11ca0"></a>
@@ -3076,6 +3540,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Three <a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html" title="Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from...">MmcmPhaseLock</a> blocks at 0x08900000, 0x08a00000 and 0x08b00000 (per the comment). </p>
 
 </div>
 </div>
@@ -3091,6 +3557,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classPds_1_1Xpm_1_1MmcmPhaseLock.html" title="Register block (1 MiB of address space) of an MMCM phase-lock unit; register meanings below come from...">MmcmPhaseLock</a> block placed after the sequence engine and gthTSim reserved spaces. </p>
+
 </div>
 </div>
 <a id="a93895daa6471fc36abe8a0bd3f404804" name="a93895daa6471fc36abe8a0bd3f404804"></a>
@@ -3104,6 +3572,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Registers 0x0110 (read-only): four monitor clocks: rate [28:0], slow [29], fast [30], lock [31] (header comment). </p>
 
 </div>
 </div>
@@ -3119,6 +3589,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0030 (read-only, 64-bit): number of L0s input for the selected partition. </p>
+
 </div>
 </div>
 <a id="a85ff675ef896bc330dd63eb3f799961e" name="a85ff675ef896bc330dd63eb3f799961e"></a>
@@ -3132,6 +3604,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0040 (read-only, 64-bit): number of L0s accepted. </p>
 
 </div>
 </div>
@@ -3147,6 +3621,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0038 (read-only, 64-bit): number of L0s inhibited. </p>
+
 </div>
 </div>
 <a id="a22f694e4690df5ea84acfc5529c01102" name="a22f694e4690df5ea84acfc5529c01102"></a>
@@ -3160,6 +3636,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0048 (read-only, 64-bit): number of L1s accepted. </p>
 
 </div>
 </div>
@@ -3175,6 +3653,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register 0x0000: physical link address (read: received address, write: transmit address), per the header comment. </p>
+
 </div>
 </div>
 <a id="ad9023cb6506b2d43d57267ef2da434f8" name="ad9023cb6506b2d43d57267ef2da434f8"></a>
@@ -3188,6 +3668,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x006c: pipeline depth for the selected partition; written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a2124bedc5e3a37df360df5335a2e73da" title="Write the delay v to the upper 16 bits of _pipelineDepth and the low 16 bits of v*200 to its lower ha...">setL0Delay()</a>. </p>
 
 </div>
 </div>
@@ -3203,6 +3685,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>64-bit pulse ID register of the generator block. </p>
+
 </div>
 </div>
 <a id="af84b8e7597c8583f095970540b50024e" name="af84b8e7597c8583f095970540b50024e"></a>
@@ -3216,6 +3700,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register 0x0078 (read-only): remote link ID, copied into <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html" title="Status of one link, as returned by Module::linkStatus().">LinkStatus</a>. </p>
 
 </div>
 </div>
@@ -3231,6 +3717,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Unused padding (24 words) up to register 0x0200. </p>
+
 </div>
 </div>
 <a id="ac019b8dc6a801da73be71b5482cfe4c1" name="ac019b8dc6a801da73be71b5482cfe4c1"></a>
@@ -3244,6 +3732,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>64-bit timestamp register of the generator block at 0x08800000 (per the comment); written by <a class="el" href="classPds_1_1Xpm_1_1Module.html#aeceae2b20fabf0f2275e72833160e965" title="Write the current time to _timestamp: seconds since a reference from mktime() in the upper 32 bits an...">setTimeStamp()</a>. </p>
 
 </div>
 </div>
@@ -3259,6 +3749,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>GthRxAlign block at 0x0B000000 (per the comment); passed to <a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html" title="Snapshot of the counters of one timing receiver (Cphw::TimingRx), as built by Module::counts().">TimingCounts</a> but not read. </p>
+
 </div>
 </div>
 <a id="aa62f10169b56d659f1710642484a4345" name="aa62f10169b56d659f1710642484a4345"></a>
@@ -3272,6 +3764,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>TimingRx block at 0x08000000 (per the comment); read by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">counts()</a> as the us counters. </p>
 
 </div>
 </div>
@@ -3287,6 +3781,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="structAxiVersion.html" title="struct AxiVersion - Represents AXI version data.">AxiVersion</a> block at offset 0 (per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> reads its build stamp. </p>
+
 </div>
 </div>
 <a id="a98841c59351e12dcc939185bc6c58360" name="a98841c59351e12dcc939185bc6c58360"></a>
@@ -3300,6 +3796,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Crossbar (AxiSy56040 at 0x03000000, per the comment); <a class="el" href="classPds_1_1Xpm_1_1Module.html#a412f4ed031b816ed7888d702a80cc16e" title="Set the feature revision from the build stamp, print the index register and the configuration and sta...">init()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#aee7324967fbffe1f30169f78698758af" title="With feature revision 1 or more, route the crossbar outputs FPGA, RTM0 and RTM1 to input v (and print...">setCuInput()</a> set its outputs. </p>
 
 </div>
 </div>

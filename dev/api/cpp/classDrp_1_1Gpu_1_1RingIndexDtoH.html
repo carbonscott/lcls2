@@ -97,13 +97,18 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1RingIndexDtoH.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Lock-free ring of buffer indices with a device producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a09d480deb5e3551d274e34cf159c3305" title="Move head forward when not full.">push()</a>) and a host consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a4f9074ab7fd5a58322423684a4b5ae97" title="Return current head when not empty.">pop()</a>).  
+ <a href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#details">More...</a></p>
+
 <p><code>#include &lt;RingIndex_DtoH.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a50693f14d6394131d21218f2847894f7" id="r_a50693f14d6394131d21218f2847894f7"><td class="memItemLeft" align="right" valign="top">__host__&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a50693f14d6394131d21218f2847894f7">RingIndexDtoH</a> (const unsigned capacity)</td></tr>
+<tr class="memdesc:a50693f14d6394131d21218f2847894f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the pinned head and tail words and start empty; asserts that capacity is a power of 2.  <br /></td></tr>
 <tr class="separator:a50693f14d6394131d21218f2847894f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af76c58cf39ef19880edff08759ee51e8" id="r_af76c58cf39ef19880edff08759ee51e8"><td class="memItemLeft" align="right" valign="top">__host__&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#af76c58cf39ef19880edff08759ee51e8">~RingIndexDtoH</a> ()</td></tr>
+<tr class="memdesc:af76c58cf39ef19880edff08759ee51e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the pinned head and tail words.  <br /></td></tr>
 <tr class="separator:af76c58cf39ef19880edff08759ee51e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09d480deb5e3551d274e34cf159c3305" id="r_a09d480deb5e3551d274e34cf159c3305"><td class="memItemLeft" align="right" valign="top">__device__ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a09d480deb5e3551d274e34cf159c3305">push</a> (unsigned index) const</td></tr>
 <tr class="memdesc:a09d480deb5e3551d274e34cf159c3305"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move head forward when not full.  <br /></td></tr>
@@ -112,17 +117,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a4f9074ab7fd5a58322423684a4b5ae97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current head when not empty.  <br /></td></tr>
 <tr class="separator:a4f9074ab7fd5a58322423684a4b5ae97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a987b4475840f9095cd5cbee55a68ea60" id="r_a987b4475840f9095cd5cbee55a68ea60"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a987b4475840f9095cd5cbee55a68ea60">head</a> () const</td></tr>
+<tr class="memdesc:a987b4475840f9095cd5cbee55a68ea60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the head, the next position to be pushed.  <br /></td></tr>
 <tr class="separator:a987b4475840f9095cd5cbee55a68ea60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaadbc3e7093727afe0f0a4d0e92733d8" id="r_aaadbc3e7093727afe0f0a4d0e92733d8"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#aaadbc3e7093727afe0f0a4d0e92733d8">tail</a> () const</td></tr>
+<tr class="memdesc:aaadbc3e7093727afe0f0a4d0e92733d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tail, the next position to be popped.  <br /></td></tr>
 <tr class="separator:aaadbc3e7093727afe0f0a4d0e92733d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b6309c254b368f1b10c4fc74c010f9a" id="r_a2b6309c254b368f1b10c4fc74c010f9a"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a2b6309c254b368f1b10c4fc74c010f9a">occupancy</a> () const</td></tr>
+<tr class="memdesc:a2b6309c254b368f1b10c4fc74c010f9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of entries (head minus tail, modulo the capacity).  <br /></td></tr>
 <tr class="separator:a2b6309c254b368f1b10c4fc74c010f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af64ae2d494161ffc09b85e624deddad8" id="r_af64ae2d494161ffc09b85e624deddad8"><td class="memItemLeft" align="right" valign="top">__host__ __device__ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#af64ae2d494161ffc09b85e624deddad8">size</a> () const</td></tr>
+<tr class="memdesc:af64ae2d494161ffc09b85e624deddad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the capacity.  <br /></td></tr>
 <tr class="separator:af64ae2d494161ffc09b85e624deddad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad652b91ba9ae4485bb143aa92591fd31" id="r_ad652b91ba9ae4485bb143aa92591fd31"><td class="memItemLeft" align="right" valign="top">__host__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#ad652b91ba9ae4485bb143aa92591fd31">reset</a> ()</td></tr>
+<tr class="memdesc:ad652b91ba9ae4485bb143aa92591fd31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the head and tail to 0 (empty); not synchronized with the device.  <br /></td></tr>
 <tr class="separator:ad652b91ba9ae4485bb143aa92591fd31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Lock-free ring of buffer indices with a device producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a09d480deb5e3551d274e34cf159c3305" title="Move head forward when not full.">push()</a>) and a host consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a4f9074ab7fd5a58322423684a4b5ae97" title="Return current head when not empty.">pop()</a>). </p>
+<p>Head and tail are stored in pinned host memory; one slot always stays empty. Used for the <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html" title="Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph,...">TrgInpGen</a> queue. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a50693f14d6394131d21218f2847894f7" name="a50693f14d6394131d21218f2847894f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a50693f14d6394131d21218f2847894f7">&#9670;&#160;</a></span>RingIndexDtoH()</h2>
 
@@ -146,6 +159,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Allocate the pinned head and tail words and start empty; asserts that capacity is a power of 2. </p>
 
 </div>
 </div>
@@ -171,6 +186,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Free the pinned head and tail words. </p>
 
 </div>
 </div>
@@ -198,6 +215,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the head, the next position to be pushed. </p>
+
 </div>
 </div>
 <a id="a2b6309c254b368f1b10c4fc74c010f9a" name="a2b6309c254b368f1b10c4fc74c010f9a"></a>
@@ -222,6 +241,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of entries (head minus tail, modulo the capacity). </p>
 
 </div>
 </div>
@@ -304,6 +325,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the head and tail to 0 (empty); not synchronized with the device. </p>
+
 </div>
 </div>
 <a id="af64ae2d494161ffc09b85e624deddad8" name="af64ae2d494161ffc09b85e624deddad8"></a>
@@ -329,6 +352,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the capacity. </p>
+
 </div>
 </div>
 <a id="aaadbc3e7093727afe0f0a4d0e92733d8" name="aaadbc3e7093727afe0f0a4d0e92733d8"></a>
@@ -353,6 +378,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the tail, the next position to be popped. </p>
 
 </div>
 </div>

@@ -98,37 +98,53 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1L0Stats.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>L0 trigger statistics of the selected partition, as sampled by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a>.  
+ <a href="classPds_1_1Xpm_1_1L0Stats.html#details">More...</a></p>
+
 <p><code>#include &lt;Module.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7b78e7e1d310e057e0a9ef035ced1c9" id="r_ac7b78e7e1d310e057e0a9ef035ced1c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#ac7b78e7e1d310e057e0a9ef035ced1c9">L0Stats</a> ()</td></tr>
+<tr class="memdesc:ac7b78e7e1d310e057e0a9ef035ced1c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero all counters and arrays (time is left unset).  <br /></td></tr>
 <tr class="separator:ac7b78e7e1d310e057e0a9ef035ced1c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e4b59323ff060c4ac3933125dd79431" id="r_a5e4b59323ff060c4ac3933125dd79431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a5e4b59323ff060c4ac3933125dd79431">dump</a> () const</td></tr>
+<tr class="memdesc:a5e4b59323ff060c4ac3933125dd79431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the counters, the per-link inhibit time counts and rx0Errs to stdout.  <br /></td></tr>
 <tr class="separator:a5e4b59323ff060c4ac3933125dd79431"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a70e06f205ba2fb84316e48d949063200" id="r_a70e06f205ba2fb84316e48d949063200"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a70e06f205ba2fb84316e48d949063200">l0Enabled</a></td></tr>
+<tr class="memdesc:a70e06f205ba2fb84316e48d949063200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the _l0Enabled register (clocks enabled, per the header comment); master only.  <br /></td></tr>
 <tr class="separator:a70e06f205ba2fb84316e48d949063200"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7802c52c5e08463a48606bca46b33f35" id="r_a7802c52c5e08463a48606bca46b33f35"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a7802c52c5e08463a48606bca46b33f35">l0Inhibited</a></td></tr>
+<tr class="memdesc:a7802c52c5e08463a48606bca46b33f35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the _l0Inhibited register (clocks inhibited); master only.  <br /></td></tr>
 <tr class="separator:a7802c52c5e08463a48606bca46b33f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a178b27e4b17544ae143a9c44365c81b5" id="r_a178b27e4b17544ae143a9c44365c81b5"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a178b27e4b17544ae143a9c44365c81b5">numl0</a></td></tr>
+<tr class="memdesc:a178b27e4b17544ae143a9c44365c81b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the _numl0 register (L0s input); master only.  <br /></td></tr>
 <tr class="separator:a178b27e4b17544ae143a9c44365c81b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0543dcb9bd867f09dad60d6196f43bcb" id="r_a0543dcb9bd867f09dad60d6196f43bcb"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a0543dcb9bd867f09dad60d6196f43bcb">numl0Inh</a></td></tr>
+<tr class="memdesc:a0543dcb9bd867f09dad60d6196f43bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the _numl0Inh register (L0s inhibited); master only.  <br /></td></tr>
 <tr class="separator:a0543dcb9bd867f09dad60d6196f43bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac6642cb8b91483373b3faaba35700d5" id="r_aac6642cb8b91483373b3faaba35700d5"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#aac6642cb8b91483373b3faaba35700d5">numl0Acc</a></td></tr>
+<tr class="memdesc:aac6642cb8b91483373b3faaba35700d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the _numl0Acc register (L0s accepted); master only.  <br /></td></tr>
 <tr class="separator:aac6642cb8b91483373b3faaba35700d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59d58973f6fee56a941f1a5dad33e728" id="r_a59d58973f6fee56a941f1a5dad33e728"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a59d58973f6fee56a941f1a5dad33e728">linkInhEv</a> [32]</td></tr>
+<tr class="memdesc:a59d58973f6fee56a941f1a5dad33e728"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-link _inhibitEvCounts values (inhibit assertions by link, per the header comment); master only.  <br /></td></tr>
 <tr class="separator:a59d58973f6fee56a941f1a5dad33e728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4ee4fb72cada8cfb2383aa92d73be9c" id="r_ae4ee4fb72cada8cfb2383aa92d73be9c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#ae4ee4fb72cada8cfb2383aa92d73be9c">linkInhTm</a> [32]</td></tr>
+<tr class="memdesc:ae4ee4fb72cada8cfb2383aa92d73be9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-link _inhibitTmCounts values.  <br /></td></tr>
 <tr class="separator:ae4ee4fb72cada8cfb2383aa92d73be9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15375d3ee5f29f3b53aeeed74dcb1258" id="r_a15375d3ee5f29f3b53aeeed74dcb1258"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a15375d3ee5f29f3b53aeeed74dcb1258">rx0Errs</a></td></tr>
+<tr class="memdesc:a15375d3ee5f29f3b53aeeed74dcb1258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive error count of link 0.  <br /></td></tr>
 <tr class="separator:a15375d3ee5f29f3b53aeeed74dcb1258"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27bcacc4ab662240aedb3806e0f1e975" id="r_a27bcacc4ab662240aedb3806e0f1e975"><td class="memItemLeft" align="right" valign="top">struct timespec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html#a27bcacc4ab662240aedb3806e0f1e975">time</a></td></tr>
+<tr class="memdesc:a27bcacc4ab662240aedb3806e0f1e975"><td class="mdescLeft">&#160;</td><td class="mdescRight">CLOCK_REALTIME time at which the counters were sampled.  <br /></td></tr>
 <tr class="separator:a27bcacc4ab662240aedb3806e0f1e975"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>L0 trigger statistics of the selected partition, as sampled by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac7b78e7e1d310e057e0a9ef035ced1c9" name="ac7b78e7e1d310e057e0a9ef035ced1c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac7b78e7e1d310e057e0a9ef035ced1c9">&#9670;&#160;</a></span>L0Stats()</h2>
 
@@ -143,6 +159,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero all counters and arrays (time is left unset). </p>
 
 </div>
 </div>
@@ -162,6 +180,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print the counters, the per-link inhibit time counts and rx0Errs to stdout. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -177,6 +197,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value of the _l0Enabled register (clocks enabled, per the header comment); master only. </p>
+
 </div>
 </div>
 <a id="a7802c52c5e08463a48606bca46b33f35" name="a7802c52c5e08463a48606bca46b33f35"></a>
@@ -190,6 +212,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value of the _l0Inhibited register (clocks inhibited); master only. </p>
 
 </div>
 </div>
@@ -205,6 +229,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Per-link _inhibitEvCounts values (inhibit assertions by link, per the header comment); master only. </p>
+
 </div>
 </div>
 <a id="ae4ee4fb72cada8cfb2383aa92d73be9c" name="ae4ee4fb72cada8cfb2383aa92d73be9c"></a>
@@ -218,6 +244,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Per-link _inhibitTmCounts values. </p>
 
 </div>
 </div>
@@ -233,6 +261,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value of the _numl0 register (L0s input); master only. </p>
+
 </div>
 </div>
 <a id="aac6642cb8b91483373b3faaba35700d5" name="aac6642cb8b91483373b3faaba35700d5"></a>
@@ -246,6 +276,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Value of the _numl0Acc register (L0s accepted); master only. </p>
 
 </div>
 </div>
@@ -261,6 +293,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Value of the _numl0Inh register (L0s inhibited); master only. </p>
+
 </div>
 </div>
 <a id="a15375d3ee5f29f3b53aeeed74dcb1258" name="a15375d3ee5f29f3b53aeeed74dcb1258"></a>
@@ -275,6 +309,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Receive error count of link 0. </p>
+
 </div>
 </div>
 <a id="a27bcacc4ab662240aedb3806e0f1e975" name="a27bcacc4ab662240aedb3806e0f1e975"></a>
@@ -288,6 +324,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>CLOCK_REALTIME time at which the counters were sampled. </p>
 
 </div>
 </div>

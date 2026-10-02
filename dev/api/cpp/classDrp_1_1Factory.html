@@ -97,17 +97,25 @@ $(document).ready(function(){initNavTree('classDrp_1_1Factory.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p>Creates objects derived from T by detector type name (<a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a>).  
+ <a href="classDrp_1_1Factory.html#details">More...</a></p>
+
 <p><code>#include &lt;Detector.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2b7d64b26f9b5a928b44c87bd3109ee6" id="r_a2b7d64b26f9b5a928b44c87bd3109ee6"><td class="memTemplParams" colspan="2">template&lt;typename TDerived &gt; </td></tr>
 <tr class="memitem:a2b7d64b26f9b5a928b44c87bd3109ee6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDrp_1_1Factory.html#a2b7d64b26f9b5a928b44c87bd3109ee6">register_type</a> (const std::string &amp;name)</td></tr>
+<tr class="memdesc:a2b7d64b26f9b5a928b44c87bd3109ee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register TDerived (which must derive from T, checked by a static_assert) under name.  <br /></td></tr>
 <tr class="separator:a2b7d64b26f9b5a928b44c87bd3109ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28150c4da3bc36186ca2d65c88d88cfc" id="r_a28150c4da3bc36186ca2d65c88d88cfc"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Factory.html#a28150c4da3bc36186ca2d65c88d88cfc">create</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:a28150c4da3bc36186ca2d65c88d88cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new object of the type registered for para-&gt;detType with (para, pool), or return nullptr if none is registered.  <br /></td></tr>
 <tr class="separator:a28150c4da3bc36186ca2d65c88d88cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class Drp::Factory&lt; T &gt;</div><p>Creates objects derived from T by detector type name (<a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a>). </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a28150c4da3bc36186ca2d65c88d88cfc" name="a28150c4da3bc36186ca2d65c88d88cfc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a28150c4da3bc36186ca2d65c88d88cfc">&#9670;&#160;</a></span>create()</h2>
 
@@ -144,6 +152,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Create a new object of the type registered for para-&gt;detType with (para, pool), or return nullptr if none is registered. </p>
+
 </div>
 </div>
 <a id="a2b7d64b26f9b5a928b44c87bd3109ee6" name="a2b7d64b26f9b5a928b44c87bd3109ee6"></a>
@@ -173,6 +183,8 @@ template&lt;typename TDerived &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Register TDerived (which must derive from T, checked by a static_assert) under name. </p>
 
 </div>
 </div>

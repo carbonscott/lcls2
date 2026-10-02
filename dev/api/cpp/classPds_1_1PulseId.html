@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classPds_1_1PulseId.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p>64-bit word whose low 56 bits are the pulse ID and whose upper 8 bits carry control bits from the timing system (per the code comment).  
+ <a href="classPds_1_1PulseId.html#details">More...</a></p>
+
 <p><code>#include &lt;EbDgram.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a>, and <a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a>.</p>
@@ -105,8 +108,10 @@ $(document).ready(function(){initNavTree('classPds_1_1PulseId.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1df914e45bd85fe08d91efedda68cc8" id="r_aa1df914e45bd85fe08d91efedda68cc8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#aa1df914e45bd85fe08d91efedda68cc8">PulseId</a> (uint64_t value)</td></tr>
+<tr class="memdesc:aa1df914e45bd85fe08d91efedda68cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store value as the whole 64-bit word, control bits included.  <br /></td></tr>
 <tr class="separator:aa1df914e45bd85fe08d91efedda68cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acea7efb7104dd4753e4ed3da4b6026e7" id="r_acea7efb7104dd4753e4ed3da4b6026e7"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#acea7efb7104dd4753e4ed3da4b6026e7">pulseId</a> () const</td></tr>
+<tr class="memdesc:acea7efb7104dd4753e4ed3da4b6026e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the low 56 bits of the word (the pulse ID without the control bits).  <br /></td></tr>
 <tr class="separator:acea7efb7104dd4753e4ed3da4b6026e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -114,7 +119,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a6814b0b8dcbce0fe76bb267596e0af68" id="r_a6814b0b8dcbce0fe76bb267596e0af68"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#a6814b0b8dcbce0fe76bb267596e0af68">_pulseIdAndControl</a></td></tr>
 <tr class="separator:a6814b0b8dcbce0fe76bb267596e0af68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>64-bit word whose low 56 bits are the pulse ID and whose upper 8 bits carry control bits from the timing system (per the code comment). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa1df914e45bd85fe08d91efedda68cc8" name="aa1df914e45bd85fe08d91efedda68cc8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa1df914e45bd85fe08d91efedda68cc8">&#9670;&#160;</a></span>PulseId()</h2>
 
@@ -138,6 +145,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Store value as the whole 64-bit word, control bits included. </p>
 
 </div>
 </div>
@@ -164,6 +173,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the low 56 bits of the word (the pulse ID without the control bits). </p>
 
 </div>
 </div>

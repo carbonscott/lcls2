@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('trigger_2src_2utilities_8hh.html','');
   <div class="headertitle"><div class="title">utilities.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Trigger helpers: fetchDocument() to read a configuration from the config database, and Factory to load a plugin from a shared library.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Dl_8hh.html">psdaq/service/Dl.hh</a>&quot;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="SysLog_8hh.html">psalg/utils/SysLog.hh</a>&quot;</code><br />
@@ -107,6 +110,7 @@ $(document).ready(function(){initNavTree('trigger_2src_2utilities_8hh.html','');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Factory.html">Pds::Trg::Factory&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a shared library and creates one object of type T with a C function exported by it; the object is deleted when the factory is destroyed or reused.  <a href="classPds_1_1Trg_1_1Factory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -115,14 +119,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Trg" id="r_namespacePds_1_1Trg"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html">Pds::Trg</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Trg"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4854e5a3cc11e326d694496c75095e62" id="r_a4854e5a3cc11e326d694496c75095e62"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html#a4854e5a3cc11e326d694496c75095e62">Pds::Trg::fetchDocument</a> (const std::string &amp;connectMsg, const std::string &amp;configAlias, const std::string &amp;section, rapidjson::Document &amp;top)</td></tr>
+<tr class="memdesc:a4854e5a3cc11e326d694496c75095e62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call get_config_json of the Python module psdaq.configdb.get_config with connectMsg, configAlias and section (and 0), and parse the returned JSON into top.  <br /></td></tr>
 <tr class="separator:a4854e5a3cc11e326d694496c75095e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Trigger helpers: fetchDocument() to read a configuration from the config database, and Factory to load a plugin from a shared library. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

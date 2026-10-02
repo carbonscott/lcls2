@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Routine.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p>Job that can be queued to a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> with <a class="el" href="classPds_1_1Task.html#ab1adcbfb20264a839917064e478f7284" title="Insert routine at the tail of the job queue and give the pending semaphore if the queue was empty.">Task::call()</a> (a queue <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a>); the task thread calls <a class="el" href="classPds_1_1Routine.html#a5cab18b495ad8ab7f331b9245cb41373" title="Pure virtual: the work to run on the task thread.">routine()</a>.  
+ <a href="classPds_1_1Routine.html#details">More...</a></p>
+
 <p><code>#include &lt;Routine.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Entry.html">Pds::Entry</a>.</p>
@@ -106,24 +109,34 @@ $(document).ready(function(){initNavTree('classPds_1_1Routine.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9c4246e6e1fec168d68f26f5d38d6cbe" id="r_a9c4246e6e1fec168d68f26f5d38d6cbe"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Routine.html#a9c4246e6e1fec168d68f26f5d38d6cbe">~Routine</a> ()</td></tr>
+<tr class="memdesc:a9c4246e6e1fec168d68f26f5d38d6cbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a9c4246e6e1fec168d68f26f5d38d6cbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cab18b495ad8ab7f331b9245cb41373" id="r_a5cab18b495ad8ab7f331b9245cb41373"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Routine.html#a5cab18b495ad8ab7f331b9245cb41373">routine</a> (void)=0</td></tr>
+<tr class="memdesc:a5cab18b495ad8ab7f331b9245cb41373"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: the work to run on the task thread.  <br /></td></tr>
 <tr class="separator:a5cab18b495ad8ab7f331b9245cb41373"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Entry"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Entry')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Entry.html">Pds::Entry</a></td></tr>
 <tr class="memitem:a10919ff645f48c2fc5223d5f1f97480e inherit pub_methods_classPds_1_1Entry" id="r_a10919ff645f48c2fc5223d5f1f97480e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a10919ff645f48c2fc5223d5f1f97480e">Entry</a> ()</td></tr>
+<tr class="memdesc:a10919ff645f48c2fc5223d5f1f97480e inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an entry whose links point to itself.  <br /></td></tr>
 <tr class="separator:a10919ff645f48c2fc5223d5f1f97480e inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f0d798d48b8d76965a26b83d21dc3b inherit pub_methods_classPds_1_1Entry" id="r_a74f0d798d48b8d76965a26b83d21dc3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a74f0d798d48b8d76965a26b83d21dc3b">insert</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *after)</td></tr>
+<tr class="memdesc:a74f0d798d48b8d76965a26b83d21dc3b inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert this entry after after and return after.  <br /></td></tr>
 <tr class="separator:a74f0d798d48b8d76965a26b83d21dc3b inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ef34de864aa2945d68b29be6a527df inherit pub_methods_classPds_1_1Entry" id="r_a49ef34de864aa2945d68b29be6a527df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a49ef34de864aa2945d68b29be6a527df">insertList</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *after)</td></tr>
+<tr class="memdesc:a49ef34de864aa2945d68b29be6a527df inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splice the list that this entry belongs to (from this entry to its predecessor) in after after; returns after.  <br /></td></tr>
 <tr class="separator:a49ef34de864aa2945d68b29be6a527df inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bbb85eb27813bb863ca4aeadf666598 inherit pub_methods_classPds_1_1Entry" id="r_a6bbb85eb27813bb863ca4aeadf666598"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a6bbb85eb27813bb863ca4aeadf666598">remove</a> ()</td></tr>
+<tr class="memdesc:a6bbb85eb27813bb863ca4aeadf666598 inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlink this entry from its list, relink it to itself and return it.  <br /></td></tr>
 <tr class="separator:a6bbb85eb27813bb863ca4aeadf666598 inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad756f8f0355699322d851fe3e34cfeda inherit pub_methods_classPds_1_1Entry" id="r_ad756f8f0355699322d851fe3e34cfeda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#ad756f8f0355699322d851fe3e34cfeda">next</a> () const</td></tr>
+<tr class="memdesc:ad756f8f0355699322d851fe3e34cfeda inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next entry.  <br /></td></tr>
 <tr class="separator:ad756f8f0355699322d851fe3e34cfeda inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaeacd59634674b756dca32343eab8cca inherit pub_methods_classPds_1_1Entry" id="r_aaeacd59634674b756dca32343eab8cca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#aaeacd59634674b756dca32343eab8cca">previous</a> () const</td></tr>
+<tr class="memdesc:aaeacd59634674b756dca32343eab8cca inherit pub_methods_classPds_1_1Entry"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the previous entry.  <br /></td></tr>
 <tr class="separator:aaeacd59634674b756dca32343eab8cca inherit pub_methods_classPds_1_1Entry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Job that can be queued to a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> with <a class="el" href="classPds_1_1Task.html#ab1adcbfb20264a839917064e478f7284" title="Insert routine at the tail of the job queue and give the pending semaphore if the queue was empty.">Task::call()</a> (a queue <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a>); the task thread calls <a class="el" href="classPds_1_1Routine.html#a5cab18b495ad8ab7f331b9245cb41373" title="Pure virtual: the work to run on the task thread.">routine()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9c4246e6e1fec168d68f26f5d38d6cbe" name="a9c4246e6e1fec168d68f26f5d38d6cbe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9c4246e6e1fec168d68f26f5d38d6cbe">&#9670;&#160;</a></span>~Routine()</h2>
 
@@ -146,6 +159,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -173,6 +188,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: the work to run on the task thread. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1TaskDelete.html#abefb7e7a2ae2f09cb8d5b6b82bcc14e8">Pds::TaskDelete</a>.</p>
 

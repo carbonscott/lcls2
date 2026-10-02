@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('drp_2PGPDetector_8hh.html',''); initRe
   <div class="headertitle"><div class="title">PGPDetector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>PGPDrp, the DRP for PGP-card detectors: a reader thread groups DMA events into batches for worker threads, and a collector passes the results to the TEB contributor.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
@@ -106,10 +109,13 @@ $(document).ready(function(){initNavTree('drp_2PGPDetector_8hh.html',''); initRe
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Batch.html">Drp::Batch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A run of consecutive events (by event counter) handed to one worker.  <a href="structDrp_1_1Batch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>.  <a href="classDrp_1_1Pgp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PGPDrp.html">Drp::PGPDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> for PGP-card detectors: <a class="el" href="classDrp_1_1PGPDrp.html#aae75c775748845dbb5006c2744e2751a" title="Reader thread body: read DMA buffers, assemble events and cut batches at batch-size pulse ID boundari...">reader()</a> groups DMA events into batches that are processed by nworkers worker threads (optionally through a Python DRP over message queues and shared memory), and <a class="el" href="classDrp_1_1PGPDrp.html#ac2349d26d157f96b092dffad3e6c4b29" title="Collector thread body: take batches from the worker output queues in turn, free the DMA buffers of ea...">collector()</a> frees the DMA buffers and passes each event to the TEB contributor.  <a href="classDrp_1_1PGPDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -118,12 +124,15 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp" id="r_namespaceDrp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html">Drp</a></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>PGPDrp, the DRP for PGP-card detectors: a reader thread groups DMA events into batches for worker threads, and a collector passes the results to the TEB contributor. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

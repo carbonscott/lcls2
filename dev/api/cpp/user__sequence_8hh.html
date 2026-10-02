@@ -97,30 +97,42 @@ $(document).ready(function(){initNavTree('user__sequence_8hh.html',''); initResi
   <div class="headertitle"><div class="title">user_sequence.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Instruction classes of the timing sequence engine (<a class="el" href="namespaceTPGen.html" title="Namespace of the timing pattern sequence engine interface and its instruction classes.">TPGen</a>): fixed-rate and AC-rate syncs, branches, checkpoints and control requests.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html">TPGen::Instruction</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the sequence engine instructions (per the code comment); <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a> identifies the concrete type.  <a href="classTPGen_1_1Instruction.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Checkpoint.html">TPGen::Checkpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classTPGen_1_1Instruction.html" title="Base of the sequence engine instructions (per the code comment); instr() identifies the concrete type...">Instruction</a> to notify software through a callback (per the code comment); compiled unless EXCLUDE_CHECKPOINT is defined.  <a href="classTPGen_1_1Checkpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1FixedRateSync.html">TPGen::FixedRateSync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the occurrence-th fixed-rate marker marker_id (per the code comment).  <a href="classTPGen_1_1FixedRateSync.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ACRateSync.html">TPGen::ACRateSync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the occurrence-th powerline-synchronized marker marker_id in the timeslots of timeslot_mask (per the code comment).  <a href="classTPGen_1_1ACRateSync.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Branch.html">TPGen::Branch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jump to another instruction, unconditionally or, per the constructor comment, while a counter is less than a test value.  <a href="classTPGen_1_1Branch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html">TPGen::ControlRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the request instructions; <a class="el" href="classTPGen_1_1ControlRequest.html#a063e8cbdee159a1d4a3a5e813d696632" title="Pure virtual: return the request word.">value()</a> is the request word.  <a href="classTPGen_1_1ControlRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1BeamRequest.html">TPGen::BeamRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request beam with the selected charge (per the code comment).  <a href="classTPGen_1_1BeamRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ExptRequest.html">TPGen::ExptRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request an experiment control word (per the code comment).  <a href="classTPGen_1_1ExptRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceTPGen" id="r_namespaceTPGen"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceTPGen.html">TPGen</a></td></tr>
+<tr class="memdesc:namespaceTPGen"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the timing pattern sequence engine interface and its instruction classes. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -130,9 +142,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4">TPGen::ctrC</a>
 , <a class="el" href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228">TPGen::ctrD</a>
  }</td></tr>
+<tr class="memdesc:afcf5d9f7a933861b642319cf98e451f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional counter used by Branch (per the code comment).  <a href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0">More...</a><br /></td></tr>
 <tr class="separator:afcf5d9f7a933861b642319cf98e451f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Instruction classes of the timing sequence engine (<a class="el" href="namespaceTPGen.html" title="Namespace of the timing pattern sequence engine interface and its instruction classes.">TPGen</a>): fixed-rate and AC-rate syncs, branches, checkpoints and control requests. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

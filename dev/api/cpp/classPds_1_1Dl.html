@@ -97,22 +97,32 @@ $(document).ready(function(){initNavTree('classPds_1_1Dl.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 
+<p>Owns one dynamic library handle opened with dlopen().  
+ <a href="classPds_1_1Dl.html#details">More...</a></p>
+
 <p><code>#include &lt;Dl.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aede64483e9627dcb739e3b6c08ad2dda" id="r_aede64483e9627dcb739e3b6c08ad2dda"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Dl.html#aede64483e9627dcb739e3b6c08ad2dda">Dl</a> ()</td></tr>
+<tr class="memdesc:aede64483e9627dcb739e3b6c08ad2dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with no library open.  <br /></td></tr>
 <tr class="separator:aede64483e9627dcb739e3b6c08ad2dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a618fa5f8153c4fb9979d7b8e258d2972" id="r_a618fa5f8153c4fb9979d7b8e258d2972"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Dl.html#a618fa5f8153c4fb9979d7b8e258d2972">~Dl</a> ()</td></tr>
+<tr class="memdesc:a618fa5f8153c4fb9979d7b8e258d2972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Dl.html#ad60f02c76a916b914e9bb7381b5897a1" title="Close the library with dlclose() if one is open.">close()</a>.  <br /></td></tr>
 <tr class="separator:a618fa5f8153c4fb9979d7b8e258d2972"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f11b9879136a6e18532920df4da839a" id="r_a6f11b9879136a6e18532920df4da839a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Dl.html#a6f11b9879136a6e18532920df4da839a">open</a> (const std::string &amp;filename, int flag)</td></tr>
+<tr class="memdesc:a6f11b9879136a6e18532920df4da839a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open filename with dlopen() and flag; returns 0, or -1 (logged at debug level) if a library is already open or dlopen() fails.  <br /></td></tr>
 <tr class="separator:a6f11b9879136a6e18532920df4da839a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad60f02c76a916b914e9bb7381b5897a1" id="r_ad60f02c76a916b914e9bb7381b5897a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Dl.html#ad60f02c76a916b914e9bb7381b5897a1">close</a> ()</td></tr>
+<tr class="memdesc:ad60f02c76a916b914e9bb7381b5897a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the library with dlclose() if one is open.  <br /></td></tr>
 <tr class="separator:ad60f02c76a916b914e9bb7381b5897a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0ad461c06df71903264aec60e3831b4" id="r_ac0ad461c06df71903264aec60e3831b4"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Dl.html#ac0ad461c06df71903264aec60e3831b4">loadSymbol</a> (const std::string &amp;name) const</td></tr>
+<tr class="memdesc:ac0ad461c06df71903264aec60e3831b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address of symbol name from the open library, or nullptr (logged at debug level) if dlsym() reports an error.  <br /></td></tr>
 <tr class="separator:ac0ad461c06df71903264aec60e3831b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Owns one dynamic library handle opened with dlopen(). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aede64483e9627dcb739e3b6c08ad2dda" name="aede64483e9627dcb739e3b6c08ad2dda"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aede64483e9627dcb739e3b6c08ad2dda">&#9670;&#160;</a></span>Dl()</h2>
 
@@ -135,6 +145,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct with no library open. </p>
 
 </div>
 </div>
@@ -161,6 +173,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classPds_1_1Dl.html#ad60f02c76a916b914e9bb7381b5897a1" title="Close the library with dlclose() if one is open.">close()</a>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -179,6 +193,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Close the library with dlclose() if one is open. </p>
+
 </div>
 </div>
 <a id="ac0ad461c06df71903264aec60e3831b4" name="ac0ad461c06df71903264aec60e3831b4"></a>
@@ -196,6 +212,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the address of symbol name from the open library, or nullptr (logged at debug level) if dlsym() reports an error. </p>
 
 </div>
 </div>
@@ -224,6 +242,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Open filename with dlopen() and flag; returns 0, or -1 (logged at debug level) if a library is already open or dlopen() fails. </p>
 
 </div>
 </div>

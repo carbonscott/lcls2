@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1RemoteAddress.h
 </div><!--header-->
 <div class="contents">
 
+<p>Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a struct fi_rma_iov by <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a16c6b3e643253dd5a5a5de88c3ac4b31" title="Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr,...">rma_iov()</a>.  
+ <a href="classPds_1_1Fabrics_1_1RemoteAddress.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa37d1a6c6c2675e198e9a8a074047eea" id="r_aa37d1a6c6c2675e198e9a8a074047eea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#aa37d1a6c6c2675e198e9a8a074047eea">RemoteAddress</a> ()</td></tr>
+<tr class="memdesc:aa37d1a6c6c2675e198e9a8a074047eea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with addr, extent and rkey all zero.  <br /></td></tr>
 <tr class="separator:aa37d1a6c6c2675e198e9a8a074047eea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c0c8b671f0c742cfc80edd708d70a46" id="r_a6c0c8b671f0c742cfc80edd708d70a46"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a6c0c8b671f0c742cfc80edd708d70a46">RemoteAddress</a> (uint64_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#ab278ba25f5aa2ef87e32264053badcc6">rkey</a>, uint64_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#af2d040b81948e0c554b913faa2950b48">addr</a>, size_t <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a13ef73480b165889841a33681ded66e4">extent</a>)</td></tr>
+<tr class="memdesc:a6c0c8b671f0c742cfc80edd708d70a46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a remote key, a remote address and the extent (length) of the remote region.  <br /></td></tr>
 <tr class="separator:a6c0c8b671f0c742cfc80edd708d70a46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16c6b3e643253dd5a5a5de88c3ac4b31" id="r_a16c6b3e643253dd5a5a5de88c3ac4b31"><td class="memItemLeft" align="right" valign="top">const struct fi_rma_iov *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a16c6b3e643253dd5a5a5de88c3ac4b31">rma_iov</a> () const</td></tr>
+<tr class="memdesc:a16c6b3e643253dd5a5a5de88c3ac4b31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr, extent, rkey member order).  <br /></td></tr>
 <tr class="separator:a16c6b3e643253dd5a5a5de88c3ac4b31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af2d040b81948e0c554b913faa2950b48" id="r_af2d040b81948e0c554b913faa2950b48"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#af2d040b81948e0c554b913faa2950b48">addr</a></td></tr>
+<tr class="memdesc:af2d040b81948e0c554b913faa2950b48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote address (the fi_rma_iov addr field).  <br /></td></tr>
 <tr class="separator:af2d040b81948e0c554b913faa2950b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13ef73480b165889841a33681ded66e4" id="r_a13ef73480b165889841a33681ded66e4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a13ef73480b165889841a33681ded66e4">extent</a></td></tr>
+<tr class="memdesc:a13ef73480b165889841a33681ded66e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the remote region (the fi_rma_iov len field).  <br /></td></tr>
 <tr class="separator:a13ef73480b165889841a33681ded66e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab278ba25f5aa2ef87e32264053badcc6" id="r_ab278ba25f5aa2ef87e32264053badcc6"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#ab278ba25f5aa2ef87e32264053badcc6">rkey</a></td></tr>
+<tr class="memdesc:ab278ba25f5aa2ef87e32264053badcc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote protection key (the fi_rma_iov key field).  <br /></td></tr>
 <tr class="separator:ab278ba25f5aa2ef87e32264053badcc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a struct fi_rma_iov by <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a16c6b3e643253dd5a5a5de88c3ac4b31" title="Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr,...">rma_iov()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa37d1a6c6c2675e198e9a8a074047eea" name="aa37d1a6c6c2675e198e9a8a074047eea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa37d1a6c6c2675e198e9a8a074047eea">&#9670;&#160;</a></span>RemoteAddress() <span class="overload">[1/2]</span></h2>
 
@@ -133,6 +144,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with addr, extent and rkey all zero. </p>
 
 </div>
 </div>
@@ -168,6 +181,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from a remote key, a remote address and the extent (length) of the remote region. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -186,6 +201,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr, extent, rkey member order). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -201,6 +218,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Remote address (the fi_rma_iov addr field). </p>
+
 </div>
 </div>
 <a id="a13ef73480b165889841a33681ded66e4" name="a13ef73480b165889841a33681ded66e4"></a>
@@ -215,6 +234,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Length of the remote region (the fi_rma_iov len field). </p>
+
 </div>
 </div>
 <a id="ab278ba25f5aa2ef87e32264053badcc6" name="ab278ba25f5aa2ef87e32264053badcc6"></a>
@@ -228,6 +249,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Remote protection key (the fi_rma_iov key field). </p>
 
 </div>
 </div>

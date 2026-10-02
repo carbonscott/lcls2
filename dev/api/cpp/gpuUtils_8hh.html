@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('gpuUtils_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">gpuUtils.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>GPU DRP utilities: CUDA error checks, <a class="el" href="classCudaContext.html" title="Wraps a cuda context and handles some initialization for you.">CudaContext</a>, CoreRegisters (GpuAsyncCore registers, real or simulated), DMA target selection and <a class="el" href="structGPUTimer.html" title="Class for timing various things.">GPUTimer</a>.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="GpuAsync_8h.html">psdaq/aes-stream-drivers/GpuAsync.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GpuAsyncUser_8h.html">psdaq/aes-stream-drivers/GpuAsyncUser.h</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -114,6 +117,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a cuda context and handles some initialization for you.  <a href="classDrp_1_1Gpu_1_1CudaContext.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">Drp::Gpu::CoreRegisters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access to the GpuAsyncCore registers, either through a GpuAsyncCoreRegs object on the mapped firmware registers or, in simulator mode, through a plain memory block laid out like them.  <a href="classDrp_1_1Gpu_1_1CoreRegisters.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html">Drp::Gpu::GPUTimer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for timing various things.  <a href="structDrp_1_1Gpu_1_1GPUTimer.html#details">More...</a><br /></td></tr>
@@ -125,21 +129,28 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:addf539da272aa0e45377fae54625a60e" id="r_addf539da272aa0e45377fae54625a60e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#addf539da272aa0e45377fae54625a60e">deviceFunc</a></td></tr>
+<tr class="memdesc:addf539da272aa0e45377fae54625a60e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty when not compiling with nvcc; <b>device</b> under nvcc.  <br /></td></tr>
 <tr class="separator:addf539da272aa0e45377fae54625a60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a239504d9111793ef8148656729755676" id="r_a239504d9111793ef8148656729755676"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#a239504d9111793ef8148656729755676">globalFunc</a></td></tr>
+<tr class="memdesc:a239504d9111793ef8148656729755676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty when not compiling with nvcc; <b>global</b> under nvcc.  <br /></td></tr>
 <tr class="separator:a239504d9111793ef8148656729755676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b795f8564ee4dee1bad64f7ec0179e2" id="r_a2b795f8564ee4dee1bad64f7ec0179e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#a2b795f8564ee4dee1bad64f7ec0179e2">hostFunc</a></td></tr>
+<tr class="memdesc:a2b795f8564ee4dee1bad64f7ec0179e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty when not compiling with nvcc; <b>host</b> under nvcc.  <br /></td></tr>
 <tr class="separator:a2b795f8564ee4dee1bad64f7ec0179e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f56a19551635652d0dfee2b2859279" id="r_a74f56a19551635652d0dfee2b2859279"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="memdesc:a74f56a19551635652d0dfee2b2859279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty string literal put in front of the optional message, so that the message argument is never empty (per the code comment).  <br /></td></tr>
 <tr class="separator:a74f56a19551635652d0dfee2b2859279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af43fc3d14d042887ad53e70de2f9ce9e" id="r_af43fc3d14d042887ad53e70de2f9ce9e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#af43fc3d14d042887ad53e70de2f9ce9e">chkFatal</a>(rc, ...)&#160;&#160;&#160;<a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6">checkError</a>((rc), #rc, __FILE__, __LINE__, true,  <a class="el" href="GpuAsyncLib_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a> __VA_ARGS__)</td></tr>
+<tr class="memdesc:af43fc3d14d042887ad53e70de2f9ce9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message and aborting.  <br /></td></tr>
 <tr class="separator:af43fc3d14d042887ad53e70de2f9ce9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e58fad7e84cf631dfa9f97d4a08c890" id="r_a2e58fad7e84cf631dfa9f97d4a08c890"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpuUtils_8hh.html#a2e58fad7e84cf631dfa9f97d4a08c890">chkError</a>(rc, ...)&#160;&#160;&#160;<a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6">checkError</a>((rc), #rc, __FILE__, __LINE__, false, <a class="el" href="GpuAsyncLib_8hh.html#a74f56a19551635652d0dfee2b2859279">NOARG</a> __VA_ARGS__)</td></tr>
+<tr class="memdesc:a2e58fad7e84cf631dfa9f97d4a08c890"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message without aborting; evaluates to true on failure.  <br /></td></tr>
 <tr class="separator:a2e58fad7e84cf631dfa9f97d4a08c890"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -154,18 +165,24 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a6f703c7021f52e9974139b3f48d2f7ef" id="r_a6f703c7021f52e9974139b3f48d2f7ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a6f703c7021f52e9974139b3f48d2f7ef">Drp::Gpu::checkError</a> (CUresult status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:a6f703c7021f52e9974139b3f48d2f7ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:a6f703c7021f52e9974139b3f48d2f7ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9631d0842c6cf64b203c9cefcb45ac7" id="r_ab9631d0842c6cf64b203c9cefcb45ac7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#ab9631d0842c6cf64b203c9cefcb45ac7">Drp::Gpu::checkError</a> (cudaError status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:ab9631d0842c6cf64b203c9cefcb45ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:ab9631d0842c6cf64b203c9cefcb45ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a404249e7866106f82d07e9bcfccbeeec" id="r_a404249e7866106f82d07e9bcfccbeeec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527">DmaTgt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a404249e7866106f82d07e9bcfccbeeec">Drp::Gpu::dmaTgtGet</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;)</td></tr>
+<tr class="memdesc:a404249e7866106f82d07e9bcfccbeeec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other value.  <br /></td></tr>
 <tr class="separator:a404249e7866106f82d07e9bcfccbeeec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bcf091c900efc4eb97537d27e02f909" id="r_a1bcf091c900efc4eb97537d27e02f909"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a1bcf091c900efc4eb97537d27e02f909">Drp::Gpu::dmaTgtSet</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;, <a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527">DmaTgt_t</a>)</td></tr>
+<tr class="memdesc:a1bcf091c900efc4eb97537d27e02f909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write tgt to the AXI stream demux select field of coreRegs.  <br /></td></tr>
 <tr class="separator:a1bcf091c900efc4eb97537d27e02f909"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d" id="r_ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#ad3ffb2af69dbd7ab73b5ee5a1fca8b7d">Drp::Gpu::dmaIdxReset</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;)</td></tr>
 <tr class="memdesc:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to reset the DMA buffer round-robin index.  <br /></td></tr>
 <tr class="separator:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>GPU DRP utilities: CUDA error checks, <a class="el" href="classCudaContext.html" title="Wraps a cuda context and handles some initialization for you.">CudaContext</a>, CoreRegisters (GpuAsyncCore registers, real or simulated), DMA target selection and <a class="el" href="structGPUTimer.html" title="Class for timing various things.">GPUTimer</a>. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a2e58fad7e84cf631dfa9f97d4a08c890" name="a2e58fad7e84cf631dfa9f97d4a08c890"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2e58fad7e84cf631dfa9f97d4a08c890">&#9670;&#160;</a></span>chkError</h2>
 
@@ -191,6 +208,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message without aborting; evaluates to true on failure. </p>
 
 </div>
 </div>
@@ -220,6 +239,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Check a CUDA driver or runtime result rc with <a class="el" href="GpuAsyncLib_8hh.html#a5a6a4feb5027e5db9883bcee5dae44a6" title="If status is not CUDA_SUCCESS, log file, line, the error name and description and msg,...">checkError()</a>, logging any failure with the optional message and aborting. </p>
+
 </div>
 </div>
 <a id="addf539da272aa0e45377fae54625a60e" name="addf539da272aa0e45377fae54625a60e"></a>
@@ -233,6 +254,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Empty when not compiling with nvcc; <b>device</b> under nvcc. </p>
 
 </div>
 </div>
@@ -248,6 +271,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Empty when not compiling with nvcc; <b>global</b> under nvcc. </p>
+
 </div>
 </div>
 <a id="a2b795f8564ee4dee1bad64f7ec0179e2" name="a2b795f8564ee4dee1bad64f7ec0179e2"></a>
@@ -262,6 +287,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Empty when not compiling with nvcc; <b>host</b> under nvcc. </p>
+
 </div>
 </div>
 <a id="a74f56a19551635652d0dfee2b2859279" name="a74f56a19551635652d0dfee2b2859279"></a>
@@ -275,6 +302,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Empty string literal put in front of the optional message, so that the message argument is never empty (per the code comment). </p>
 
 </div>
 </div>

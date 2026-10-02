@@ -96,13 +96,18 @@ $(document).ready(function(){initNavTree('AlignmentAllocator_8hh.html',''); init
   <div class="headertitle"><div class="title">AlignmentAllocator.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>AlignmentAllocator, a standard-library allocator that returns N-byte aligned storage (adapted from a <a class="el" href="classStack.html" title="Bump allocator over a 1 MiB member buffer: malloc() returns the current position and advances it by s...">Stack</a> Overflow answer, per the file comment).  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html">Pds::AlignmentAllocator&lt; T, N &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stateless allocator for standard containers that allocates with posix_memalign() at N-byte alignment (default 16).  <a href="classPds_1_1AlignmentAllocator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1AlignmentAllocator_1_1rebind.html">Pds::AlignmentAllocator&lt; T, N &gt;::rebind&lt; T2 &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gives the same allocator for element type T2 (as other).  <a href="structPds_1_1AlignmentAllocator_1_1rebind.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -111,7 +116,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>AlignmentAllocator, a standard-library allocator that returns N-byte aligned storage (adapted from a <a class="el" href="classStack.html" title="Bump allocator over a 1 MiB member buffer: malloc() returns the current position and advances it by s...">Stack</a> Overflow answer, per the file comment). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

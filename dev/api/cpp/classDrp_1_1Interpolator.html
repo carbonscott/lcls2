@@ -97,22 +97,32 @@ $(document).ready(function(){initNavTree('classDrp_1_1Interpolator.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>Least-squares polynomial fit (Eigen QR) over the last n (time, value) points, used to estimate encoder values at event times.  
+ <a href="classDrp_1_1Interpolator.html#details">More...</a></p>
+
 <p><code>#include &lt;UdpEncoder.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1921ee95bfb67be9f7d8d25a02b99518" id="r_a1921ee95bfb67be9f7d8d25a02b99518"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html#a1921ee95bfb67be9f7d8d25a02b99518">Interpolator</a> (unsigned n, unsigned o)</td></tr>
+<tr class="memdesc:a1921ee95bfb67be9f7d8d25a02b99518"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep n points and fit a polynomial of order o; asserts that n is at least o + 1.  <br /></td></tr>
 <tr class="separator:a1921ee95bfb67be9f7d8d25a02b99518"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fdcf7db4747cd1e87852b09248bdda6" id="r_a0fdcf7db4747cd1e87852b09248bdda6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html#a0fdcf7db4747cd1e87852b09248bdda6">~Interpolator</a> ()</td></tr>
+<tr class="memdesc:a0fdcf7db4747cd1e87852b09248bdda6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a0fdcf7db4747cd1e87852b09248bdda6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18cd09ac311d0dd802494cdc34bb23ca" id="r_a18cd09ac311d0dd802494cdc34bb23ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html#a18cd09ac311d0dd802494cdc34bb23ca">reset</a> ()</td></tr>
+<tr class="memdesc:a18cd09ac311d0dd802494cdc34bb23ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the write index to 0 and zero the stored times; the stored values are kept.  <br /></td></tr>
 <tr class="separator:a18cd09ac311d0dd802494cdc34bb23ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0285327efde3f9dddd5bd4b380907f13" id="r_a0285327efde3f9dddd5bd4b380907f13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html#a0285327efde3f9dddd5bd4b380907f13">update</a> (<a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> t, unsigned v)</td></tr>
+<tr class="memdesc:a0285327efde3f9dddd5bd4b380907f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store (t, v) in the circular buffer and, once all n slots hold a time, refit the polynomial with times taken relative to the oldest point.  <br /></td></tr>
 <tr class="separator:a0285327efde3f9dddd5bd4b380907f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b6dc56fcc74fb6b2ce15134f97f1b41" id="r_a4b6dc56fcc74fb6b2ce15134f97f1b41"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html#a4b6dc56fcc74fb6b2ce15134f97f1b41">calculate</a> (<a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> t, <a class="el" href="classXtcData_1_1Damage.html">XtcData::Damage</a> &amp;damage) const</td></tr>
+<tr class="memdesc:a4b6dc56fcc74fb6b2ce15134f97f1b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate the fitted polynomial at ts once all slots are filled; otherwise return the most recently stored value and add MissingData to damage.  <br /></td></tr>
 <tr class="separator:a4b6dc56fcc74fb6b2ce15134f97f1b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Least-squares polynomial fit (Eigen QR) over the last n (time, value) points, used to estimate encoder values at event times. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1921ee95bfb67be9f7d8d25a02b99518" name="a1921ee95bfb67be9f7d8d25a02b99518"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1921ee95bfb67be9f7d8d25a02b99518">&#9670;&#160;</a></span>Interpolator()</h2>
 
@@ -147,6 +157,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Keep n points and fit a polynomial of order o; asserts that n is at least o + 1. </p>
+
 </div>
 </div>
 <a id="a0fdcf7db4747cd1e87852b09248bdda6" name="a0fdcf7db4747cd1e87852b09248bdda6"></a>
@@ -171,6 +183,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -201,6 +215,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Evaluate the fitted polynomial at ts once all slots are filled; otherwise return the most recently stored value and add MissingData to damage. </p>
+
 </div>
 </div>
 <a id="a18cd09ac311d0dd802494cdc34bb23ca" name="a18cd09ac311d0dd802494cdc34bb23ca"></a>
@@ -225,6 +241,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the write index to 0 and zero the stored times; the stored values are kept. </p>
 
 </div>
 </div>
@@ -253,6 +271,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Store (t, v) in the circular buffer and, once all n slots hold a time, refit the polynomial with times taken relative to the oldest point. </p>
 
 </div>
 </div>

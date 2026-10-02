@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1MemPoolCpu.html',''); init
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1MemPool.html" title="Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here...">MemPool</a> for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.  
+ <a href="classDrp_1_1MemPoolCpu.html#details">More...</a></p>
+
 <p><code>#include &lt;drp.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a>.</p>
@@ -104,68 +107,97 @@ $(document).ready(function(){initNavTree('classDrp_1_1MemPoolCpu.html',''); init
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8edfec5f2400c71c271a21145fb5eabd" id="r_a8edfec5f2400c71c271a21145fb5eabd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html#a8edfec5f2400c71c271a21145fb5eabd">MemPoolCpu</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;)</td></tr>
+<tr class="memdesc:a8edfec5f2400c71c271a21145fb5eabd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open para.device and map its DMA buffers (aborting on failure), write the 0xabababab sentinel at the end of each DMA buffer and initialize the base pool.  <br /></td></tr>
 <tr class="separator:a8edfec5f2400c71c271a21145fb5eabd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d301e90178a0ffcb2ca3ff37a073570" id="r_a8d301e90178a0ffcb2ca3ff37a073570"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html#a8d301e90178a0ffcb2ca3ff37a073570">~MemPoolCpu</a> ()</td></tr>
+<tr class="memdesc:a8d301e90178a0ffcb2ca3ff37a073570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmap the DMA buffers and close the device.  <br /></td></tr>
 <tr class="separator:a8d301e90178a0ffcb2ca3ff37a073570"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31d34505f2d54772f0023bbc11762924" id="r_a31d34505f2d54772f0023bbc11762924"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html#a31d34505f2d54772f0023bbc11762924">fd</a> () const override</td></tr>
+<tr class="memdesc:a31d34505f2d54772f0023bbc11762924"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device file descriptor.  <br /></td></tr>
 <tr class="separator:a31d34505f2d54772f0023bbc11762924"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cddb349a667b1afa47190e11c7db091" id="r_a1cddb349a667b1afa47190e11c7db091"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPoolCpu.html#a1cddb349a667b1afa47190e11c7db091">setMaskBytes</a> (uint8_t laneMask, unsigned virtChan) override</td></tr>
+<tr class="memdesc:a1cddb349a667b1afa47190e11c7db091"><td class="mdescLeft">&#160;</td><td class="mdescRight">On the first successful call, set the driver mask to deliver each lane in laneMask on virtual channel virtChan; later calls do nothing.  <br /></td></tr>
 <tr class="separator:a1cddb349a667b1afa47190e11c7db091"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool" id="r_a2f41d243f4314be495d5c667bfd363ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2f41d243f4314be495d5c667bfd363ec">MemPool</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para)</td></tr>
+<tr class="memdesc:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the transition buffer queue (TEB_TR_BUFFERS rounded up to a power of 2) and zero the counters.  <br /></td></tr>
 <tr class="separator:a2f41d243f4314be495d5c667bfd363ec inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool" id="r_aa0840f960066ce9a4815ce1865eb3d60"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aa0840f960066ce9a4815ce1865eb3d60">~MemPool</a> ()</td></tr>
+<tr class="memdesc:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:aa0840f960066ce9a4815ce1865eb3d60 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool" id="r_aba9470190ab79f0ea46823e6e4e66677"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aba9470190ab79f0ea46823e6e4e66677">dmaCount</a> () const</td></tr>
+<tr class="memdesc:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers reported by the driver.  <br /></td></tr>
 <tr class="separator:aba9470190ab79f0ea46823e6e4e66677 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool" id="r_ab6d8c76c73d22c7492edd711bcb2b4f5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ab6d8c76c73d22c7492edd711bcb2b4f5">nDmaBuffers</a> () const</td></tr>
+<tr class="memdesc:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1MemPool.html#aba9470190ab79f0ea46823e6e4e66677" title="Return the number of DMA buffers reported by the driver.">dmaCount()</a> rounded up to a power of 2.  <br /></td></tr>
 <tr class="separator:ab6d8c76c73d22c7492edd711bcb2b4f5 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool" id="r_aebdf2fa6e38bb76d5ee857566018616a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aebdf2fa6e38bb76d5ee857566018616a">dmaSize</a> () const</td></tr>
+<tr class="memdesc:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one DMA buffer.  <br /></td></tr>
 <tr class="separator:aebdf2fa6e38bb76d5ee857566018616a inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool" id="r_aa5b0c1bee40dbb578e403006e2194b1d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#aa5b0c1bee40dbb578e403006e2194b1d">nbuffers</a> () const</td></tr>
+<tr class="memdesc:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of pebble (L1Accept) buffers.  <br /></td></tr>
 <tr class="separator:aa5b0c1bee40dbb578e403006e2194b1d inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool" id="r_a807f83bfe1192ad4bb6416b88fd6e956"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a807f83bfe1192ad4bb6416b88fd6e956">bufferSize</a> () const</td></tr>
+<tr class="memdesc:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one pebble L1Accept buffer.  <br /></td></tr>
 <tr class="separator:a807f83bfe1192ad4bb6416b88fd6e956 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool" id="r_a9609722533c5bd0c5858b92f5b8f9233"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a9609722533c5bd0c5858b92f5b8f9233">shutdown</a> ()</td></tr>
+<tr class="memdesc:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down the transition buffer queue and log how often DMA reads and returns failed.  <br /></td></tr>
 <tr class="separator:a9609722533c5bd0c5858b92f5b8f9233 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool" id="r_a3896afb91edbbad82aba8b69983d9c22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a3896afb91edbbad82aba8b69983d9c22">allocateTr</a> ()</td></tr>
+<tr class="memdesc:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a free transition buffer as an EbDgram pointer, or return nullptr if none is available.  <br /></td></tr>
 <tr class="separator:a3896afb91edbbad82aba8b69983d9c22 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool" id="r_a4fea80068dea6f5f64ea0fe15590b7f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a4fea80068dea6f5f64ea0fe15590b7f6">freeTr</a> (<a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dgram)</td></tr>
+<tr class="memdesc:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the overrun sentinels of transition buffer dgram (logging the first overrun), then push it back onto the free queue.  <br /></td></tr>
 <tr class="separator:a4fea80068dea6f5f64ea0fe15590b7f6 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool" id="r_a246b4b94bd8ef8ba640f5730b0e4afc1"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a246b4b94bd8ef8ba640f5730b0e4afc1">allocateDma</a> ()</td></tr>
+<tr class="memdesc:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count one DMA buffer allocation (the firmware does the actual allocation) and return the count before the increment.  <br /></td></tr>
 <tr class="separator:a246b4b94bd8ef8ba640f5730b0e4afc1 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool" id="r_a8c1da83c14ec24341b48372f6163f7d2"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a8c1da83c14ec24341b48372f6163f7d2">readDma</a> (uint32_t count, int32_t *ret, uint32_t *index, uint32_t *flags, uint32_t *errors, uint32_t *dest)</td></tr>
+<tr class="memdesc:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read up to count DMA buffers with <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a73a6e25f2c2c92a173d6cdc8fb1a8889" title="Receive frame and access memory-mapped buffer.">dmaReadBulkIndex()</a> on <a class="el" href="classDrp_1_1MemPool.html#a9e3116fcdfba1136b3efef1eef152be6" title="Pure virtual: return the device file descriptor.">fd()</a>, filling the per-buffer return sizes, indices, flags, errors and destinations.  <br /></td></tr>
 <tr class="separator:a8c1da83c14ec24341b48372f6163f7d2 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool" id="r_ac13e8e07818fbfc1e6df9fb73bfd016e"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ac13e8e07818fbfc1e6df9fb73bfd016e">freeDma</a> (unsigned count, uint32_t *indices)</td></tr>
+<tr class="memdesc:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return count DMA buffers (by index) to the driver through the subclass and log errors; on success the frees are counted.  <br /></td></tr>
 <tr class="separator:ac13e8e07818fbfc1e6df9fb73bfd016e inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool" id="r_a2bdb18b289966a449d1f9a575b73b98b"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2bdb18b289966a449d1f9a575b73b98b">allocate</a> ()</td></tr>
+<tr class="memdesc:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the next pebble buffer index in order, blocking while all buffers are in use.  <br /></td></tr>
 <tr class="separator:a2bdb18b289966a449d1f9a575b73b98b inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool" id="r_abb92de0cfbd16f37c006b56231857f70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#abb92de0cfbd16f37c006b56231857f70">freePebble</a> (unsigned)</td></tr>
+<tr class="memdesc:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the oldest pebble buffer (logging if the index is not the expected one), wake a blocked <a class="el" href="classDrp_1_1MemPool.html#a2bdb18b289966a449d1f9a575b73b98b" title="Allocate the next pebble buffer index in order, blocking while all buffers are in use.">allocate()</a> if the pool was full, and check that buffer's overrun sentinels.  <br /></td></tr>
 <tr class="separator:abb92de0cfbd16f37c006b56231857f70 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool" id="r_a16069db630bfd282647cb3689053a1ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a16069db630bfd282647cb3689053a1ef">flushPebble</a> ()</td></tr>
+<tr class="memdesc:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free pebble buffers in order until none is in use.  <br /></td></tr>
 <tr class="separator:a16069db630bfd282647cb3689053a1ef inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool" id="r_a2b1d09c5a6118389c01bf4e9e4b714f1"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a2b1d09c5a6118389c01bf4e9e4b714f1">dmaInUse</a> () const</td></tr>
+<tr class="memdesc:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA allocations minus frees.  <br /></td></tr>
 <tr class="separator:a2b1d09c5a6118389c01bf4e9e4b714f1 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool" id="r_a94b5d5e62a4b3e409e1e8d6d0fe031fe"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a94b5d5e62a4b3e409e1e8d6d0fe031fe">inUse</a> () const</td></tr>
+<tr class="memdesc:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of pebble allocations minus frees.  <br /></td></tr>
 <tr class="separator:a94b5d5e62a4b3e409e1e8d6d0fe031fe inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool" id="r_a722f3472c220547baaf4bbb013ea573d"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a722f3472c220547baaf4bbb013ea573d">trInUse</a> () const</td></tr>
+<tr class="memdesc:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return guess_size() of the transition buffer queue.  <br /></td></tr>
 <tr class="separator:a722f3472c220547baaf4bbb013ea573d inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool" id="r_acc765905f72d7069c2d92e1ce8eed2a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#acc765905f72d7069c2d92e1ce8eed2a4">resetCounters</a> ()</td></tr>
+<tr class="memdesc:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the DMA counters (only if no DMA buffer is in use, otherwise warn), the pebble counters (with a warning if buffers are still in use), the overrun flags and the error counts.  <br /></td></tr>
 <tr class="separator:acc765905f72d7069c2d92e1ce8eed2a4 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool" id="r_ab3e88effdbdf7b61b3246bbde0c88c30"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ab3e88effdbdf7b61b3246bbde0c88c30">getAs</a> ()</td></tr>
+<tr class="memdesc:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return this pool cast with static_cast to T*.  <br /></td></tr>
 <tr class="separator:ab3e88effdbdf7b61b3246bbde0c88c30 inherit pub_methods_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool" id="r_a636daf2c09990965bcfb85b6d957efab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Pebble.html">Pebble</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a636daf2c09990965bcfb85b6d957efab">pebble</a></td></tr>
+<tr class="memdesc:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Pebble.html" title="One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buf...">Pebble</a> holding the L1Accept and transition buffers.  <br /></td></tr>
 <tr class="separator:a636daf2c09990965bcfb85b6d957efab inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool" id="r_a04c91ddcabddaf943f4e309b202277a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a04c91ddcabddaf943f4e309b202277a5">pgpEvents</a></td></tr>
+<tr class="memdesc:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Events being assembled, indexed by event counter modulo <a class="el" href="classDrp_1_1MemPool.html#ab6d8c76c73d22c7492edd711bcb2b4f5" title="Return dmaCount() rounded up to a power of 2.">nDmaBuffers()</a>.  <br /></td></tr>
 <tr class="separator:a04c91ddcabddaf943f4e309b202277a5 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool" id="r_a8c4bfde01afc5eb4cd5e478644c64186"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#a8c4bfde01afc5eb4cd5e478644c64186">transitionDgrams</a></td></tr>
+<tr class="memdesc:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transition datagram assigned to each pebble buffer index (set for non-L1Accept events).  <br /></td></tr>
 <tr class="separator:a8c4bfde01afc5eb4cd5e478644c64186 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool" id="r_ae2b6805f0a3f7cf62ec83468dd542606"><td class="memItemLeft" align="right" valign="top">void **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ae2b6805f0a3f7cf62ec83468dd542606">dmaBuffers</a></td></tr>
+<tr class="memdesc:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMA buffer addresses mapped from the driver.  <br /></td></tr>
 <tr class="separator:ae2b6805f0a3f7cf62ec83468dd542606 inherit pub_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classDrp_1_1MemPool"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classDrp_1_1MemPool')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classDrp_1_1MemPool.html">Drp::MemPool</a></td></tr>
 <tr class="memitem:ae64a1d95bd21c16c681e35caedd46407 inherit pro_methods_classDrp_1_1MemPool" id="r_ae64a1d95bd21c16c681e35caedd46407"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ae64a1d95bd21c16c681e35caedd46407">_initialize</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;)</td></tr>
@@ -206,7 +238,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ad4184a98ab086520fa2b5c586023822f inherit pro_attribs_classDrp_1_1MemPool" id="r_ad4184a98ab086520fa2b5c586023822f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1MemPool.html#ad4184a98ab086520fa2b5c586023822f">m_nDmaRetErr</a></td></tr>
 <tr class="separator:ad4184a98ab086520fa2b5c586023822f inherit pro_attribs_classDrp_1_1MemPool"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1MemPool.html" title="Abstract set of buffer pools for one DRP: the DMA buffers (allocated by the driver; only counted here...">MemPool</a> for a PGP card accessed from the CPU: opens the device and maps its DMA buffers. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8edfec5f2400c71c271a21145fb5eabd" name="a8edfec5f2400c71c271a21145fb5eabd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8edfec5f2400c71c271a21145fb5eabd">&#9670;&#160;</a></span>MemPoolCpu()</h2>
 
@@ -222,6 +256,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Open para.device and map its DMA buffers (aborting on failure), write the 0xabababab sentinel at the end of each DMA buffer and initialize the base pool. </p>
 
 </div>
 </div>
@@ -248,6 +284,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Unmap the DMA buffers and close the device. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -273,6 +311,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the device file descriptor. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a9e3116fcdfba1136b3efef1eef152be6">Drp::MemPool</a>.</p>
 
@@ -311,6 +351,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>On the first successful call, set the driver mask to deliver each lane in laneMask on virtual channel virtChan; later calls do nothing. </p>
+<p>Returns 0, or 1 if <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a7d2f1097e838652d7a6a50435706fb80" title="Set mask byte array to the driver.">dmaSetMaskBytes()</a> failed. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1MemPool.html#a1f712019bababb4c32758b38a46a0f78">Drp::MemPool</a>.</p>
 

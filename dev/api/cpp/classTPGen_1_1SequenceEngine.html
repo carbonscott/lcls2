@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classTPGen_1_1SequenceEngine.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Interface of a timing sequence engine: store instruction sequences in sequence RAM and choose where the engine starts or jumps.  
+ <a href="classTPGen_1_1SequenceEngine.html#details">More...</a></p>
+
 <p><code>#include &lt;sequence_engine.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html">Pds::Xpm::XpmSequenceEngine</a>.</p>
@@ -104,31 +107,45 @@ $(document).ready(function(){initNavTree('classTPGen_1_1SequenceEngine.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac028fab4d95580edd9a6da39d4c314b2" id="r_ac028fab4d95580edd9a6da39d4c314b2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#ac028fab4d95580edd9a6da39d4c314b2">~SequenceEngine</a> ()</td></tr>
+<tr class="memdesc:ac028fab4d95580edd9a6da39d4c314b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:ac028fab4d95580edd9a6da39d4c314b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2334dae9492b4f35c1b9a5265795a732" id="r_a2334dae9492b4f35c1b9a5265795a732"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a2334dae9492b4f35c1b9a5265795a732">insertSequence</a> (std::vector&lt; <a class="el" href="classTPGen_1_1Instruction.html">Instruction</a> * &gt; &amp;seq)=0</td></tr>
+<tr class="memdesc:a2334dae9492b4f35c1b9a5265795a732"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: encode seq into sequence RAM and return its sequence number for the calls below, or a negative value on error (per the interface comment).  <br /></td></tr>
 <tr class="separator:a2334dae9492b4f35c1b9a5265795a732"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a117e8fc6f2f21d21a886edd58b1f7fc4" id="r_a117e8fc6f2f21d21a886edd58b1f7fc4"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a117e8fc6f2f21d21a886edd58b1f7fc4">removeSequence</a> (int seq)=0</td></tr>
+<tr class="memdesc:a117e8fc6f2f21d21a886edd58b1f7fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: remove sequence seq from RAM, freeing its space; must not be used on a running sequence.  <br /></td></tr>
 <tr class="separator:a117e8fc6f2f21d21a886edd58b1f7fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a641f6eed7a0c8ed5d68748161b47cdc6" id="r_a641f6eed7a0c8ed5d68748161b47cdc6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a641f6eed7a0c8ed5d68748161b47cdc6">setAddress</a> (int seq, unsigned start=0, unsigned sync=1)=0</td></tr>
+<tr class="memdesc:a641f6eed7a0c8ed5d68748161b47cdc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: set the start address for the next reset to instruction start of sequence seq (per the interface comment).  <br /></td></tr>
 <tr class="separator:a641f6eed7a0c8ed5d68748161b47cdc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50e9b93ccf10a343d7e5dc8ead418f37" id="r_a50e9b93ccf10a343d7e5dc8ead418f37"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a50e9b93ccf10a343d7e5dc8ead418f37">reset</a> ()=0</td></tr>
+<tr class="memdesc:a50e9b93ccf10a343d7e5dc8ead418f37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: reset the engine.  <br /></td></tr>
 <tr class="separator:a50e9b93ccf10a343d7e5dc8ead418f37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f7675032c9a4b7233caa81d024bb4c1" id="r_a8f7675032c9a4b7233caa81d024bb4c1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a8f7675032c9a4b7233caa81d024bb4c1">setMPSJump</a> (int mps, int seq, unsigned pclass, unsigned start=0)=0</td></tr>
+<tr class="memdesc:a8f7675032c9a4b7233caa81d024bb4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: set the jump address used when MPS requests power class mps, as instruction start of sequence seq with power class pclass (per the interface comment).  <br /></td></tr>
 <tr class="separator:a8f7675032c9a4b7233caa81d024bb4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17c7911963af31fac30c21be33971049" id="r_a17c7911963af31fac30c21be33971049"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a17c7911963af31fac30c21be33971049">setBCSJump</a> (int seq, unsigned pclass, unsigned start=0)=0</td></tr>
+<tr class="memdesc:a17c7911963af31fac30c21be33971049"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: set the jump address used on a BCS fault, as instruction start of sequence seq with power class pclass (per the interface comment).  <br /></td></tr>
 <tr class="separator:a17c7911963af31fac30c21be33971049"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a892c35e7f4d2e245ababb555c291a646" id="r_a892c35e7f4d2e245ababb555c291a646"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a892c35e7f4d2e245ababb555c291a646">setMPSState</a> (int mps, unsigned sync=1)=0</td></tr>
+<tr class="memdesc:a892c35e7f4d2e245ababb555c291a646"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: jump to the sequence registered for power class mps with <a class="el" href="classTPGen_1_1SequenceEngine.html#a8f7675032c9a4b7233caa81d024bb4c1" title="Pure virtual: set the jump address used when MPS requests power class mps, as instruction start of se...">setMPSJump()</a> (per the interface comment).  <br /></td></tr>
 <tr class="separator:a892c35e7f4d2e245ababb555c291a646"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43d9156d73f7dd0101f6b3ac25d260b7" id="r_a43d9156d73f7dd0101f6b3ac25d260b7"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classTPGen_1_1InstructionCache.html">InstructionCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a43d9156d73f7dd0101f6b3ac25d260b7">cache</a> (unsigned index) const =0</td></tr>
+<tr class="memdesc:a43d9156d73f7dd0101f6b3ac25d260b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the RAM description of sequence index.  <br /></td></tr>
 <tr class="separator:a43d9156d73f7dd0101f6b3ac25d260b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07d0b60a0b5d95c18804096ce6dc3011" id="r_a07d0b60a0b5d95c18804096ce6dc3011"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classTPGen_1_1InstructionCache.html">InstructionCache</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a07d0b60a0b5d95c18804096ce6dc3011">cache</a> () const =0</td></tr>
+<tr class="memdesc:a07d0b60a0b5d95c18804096ce6dc3011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the RAM descriptions of all sequences.  <br /></td></tr>
 <tr class="separator:a07d0b60a0b5d95c18804096ce6dc3011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f80b31ff7366889a88a319926142ee2" id="r_a0f80b31ff7366889a88a319926142ee2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#a0f80b31ff7366889a88a319926142ee2">dumpSequence</a> (int seq) const =0</td></tr>
+<tr class="memdesc:a0f80b31ff7366889a88a319926142ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: print sequence seq.  <br /></td></tr>
 <tr class="separator:a0f80b31ff7366889a88a319926142ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0aed91548eae2658622901f84cc4630" id="r_ae0aed91548eae2658622901f84cc4630"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html#ae0aed91548eae2658622901f84cc4630">dump</a> () const =0</td></tr>
+<tr class="memdesc:ae0aed91548eae2658622901f84cc4630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: print the engine state.  <br /></td></tr>
 <tr class="separator:ae0aed91548eae2658622901f84cc4630"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Interface of a timing sequence engine: store instruction sequences in sequence RAM and choose where the engine starts or jumps. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac028fab4d95580edd9a6da39d4c314b2" name="ac028fab4d95580edd9a6da39d4c314b2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac028fab4d95580edd9a6da39d4c314b2">&#9670;&#160;</a></span>~SequenceEngine()</h2>
 
@@ -151,6 +168,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -177,6 +196,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the RAM descriptions of all sequences. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a8e2b85215ee3dcdb52766a474102143b">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
@@ -206,6 +227,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: return the RAM description of sequence index. </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a2a61dec705eea863033855b81dcff371">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
 </div>
@@ -232,6 +255,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: print the engine state. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
@@ -261,6 +286,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: print sequence seq. </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a0d1fcb1fa920b47a65f345717773a337">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
 </div>
@@ -288,6 +315,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: encode seq into sequence RAM and return its sequence number for the calls below, or a negative value on error (per the interface comment). </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a2c1313c08235de35b4e5c012dbf2d887">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
@@ -317,6 +346,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: remove sequence seq from RAM, freeing its space; must not be used on a running sequence. </p>
+<p>Returns a negative value on error (per the interface comment). </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a1694141e68e5f737c900bd36498bf79c">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
 </div>
@@ -343,6 +375,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: reset the engine. </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a04a25c34ff84d0fc55ee77d977e87d90">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
@@ -388,6 +422,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: set the start address for the next reset to instruction start of sequence seq (per the interface comment). </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#add1f658c9942674fff5023aa431fcd6f">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
 </div>
@@ -431,6 +467,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: set the jump address used on a BCS fault, as instruction start of sequence seq with power class pclass (per the interface comment). </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#afbb8d22272c1cea036f5f160e2cca6b7">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
@@ -482,6 +520,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: set the jump address used when MPS requests power class mps, as instruction start of sequence seq with power class pclass (per the interface comment). </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#ab5e4d38b73bd53ed748cb44ee9551d93">Pds::Xpm::XpmSequenceEngine</a>.</p>
 
 </div>
@@ -519,6 +559,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: jump to the sequence registered for power class mps with <a class="el" href="classTPGen_1_1SequenceEngine.html#a8f7675032c9a4b7233caa81d024bb4c1" title="Pure virtual: set the jump address used when MPS requests power class mps, as instruction start of se...">setMPSJump()</a> (per the interface comment). </p>
 
 <p>Implemented in <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a810d519c4fca7b2fc3a12e546280f1c2">Pds::Xpm::XpmSequenceEngine</a>.</p>
 

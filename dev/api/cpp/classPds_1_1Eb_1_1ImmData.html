@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1ImmData.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30), a 6-bit source field (bits 29-24) and a 24-bit index field (bits 23-0).  
+ <a href="classPds_1_1Eb_1_1ImmData.html#details">More...</a></p>
+
 <p><code>#include &lt;utilities.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -106,57 +109,75 @@ Public Types</h2></td></tr>
 <tr class="memitem:acb528d6f4a213d33cd82d4d17b9a8857" id="r_acb528d6f4a213d33cd82d4d17b9a8857"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Eb_1_1ImmData.html#acb528d6f4a213d33cd82d4d17b9a8857a0bf6387d2da9da41da9a538671e4f71b">m_rsp</a> = ((1 &lt;&lt; k_rsp) - 1)
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#acb528d6f4a213d33cd82d4d17b9a8857ad9a5b2519b7ae6fc091d31632c4b55c5">s_rsp</a> = (m_rsp &lt;&lt; v_rsp)
  }</td></tr>
+<tr class="memdesc:acb528d6f4a213d33cd82d4d17b9a8857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask and shifted mask of the response bit (bit 1) within the flags field.  <a href="classPds_1_1Eb_1_1ImmData.html#acb528d6f4a213d33cd82d4d17b9a8857">More...</a><br /></td></tr>
 <tr class="separator:acb528d6f4a213d33cd82d4d17b9a8857"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a336999fbd32e81ed0dfebcda4eab675c" id="r_a336999fbd32e81ed0dfebcda4eab675c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Eb_1_1ImmData.html#a336999fbd32e81ed0dfebcda4eab675ca343d23f89704f164ca33140de168978d">m_buf</a> = ((1 &lt;&lt; k_buf) - 1)
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#a336999fbd32e81ed0dfebcda4eab675ca68098380658feca3563891fbf234f90f">s_buf</a> = (m_buf &lt;&lt; v_buf)
  }</td></tr>
+<tr class="memdesc:a336999fbd32e81ed0dfebcda4eab675c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mask and shifted mask of the buffer bit (bit 0) within the flags field.  <a href="classPds_1_1Eb_1_1ImmData.html#a336999fbd32e81ed0dfebcda4eab675c">More...</a><br /></td></tr>
 <tr class="separator:a336999fbd32e81ed0dfebcda4eab675c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab67494aab5310044554564ba7a9ce123" id="r_ab67494aab5310044554564ba7a9ce123"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123">Flags</a> { <a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123a9fa346af5415b8c1d46c3247f72ad9b8">Transition</a> = 0 &lt;&lt; 0
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123a5fa29bf270c3e38428dbffd243e7b665">Buffer</a> = 1 &lt;&lt; 0
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123a10b4471b36e98368fc44faed500a22ee">Response</a> = 0 &lt;&lt; 1
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123af13c5940ef4a38d885da3537de1038bf">NoResponse</a> = 1 &lt;&lt; 1
  }</td></tr>
+<tr class="memdesc:ab67494aab5310044554564ba7a9ce123"><td class="mdescLeft">&#160;</td><td class="mdescRight">Values for the flags field.  <a href="classPds_1_1Eb_1_1ImmData.html#ab67494aab5310044554564ba7a9ce123">More...</a><br /></td></tr>
 <tr class="separator:ab67494aab5310044554564ba7a9ce123"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9ac12cfbf079d7067cca8339735186a" id="r_aa9ac12cfbf079d7067cca8339735186a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Eb_1_1ImmData.html#aa9ac12cfbf079d7067cca8339735186aa7ef12c62088af0ab4b10c104f454f327">Response_Transition</a> = Response | Transition
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#aa9ac12cfbf079d7067cca8339735186aa7ccc25d40a33f5eaba2ea7a8cc22af29">Response_Buffer</a> = Response | Buffer
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#aa9ac12cfbf079d7067cca8339735186aac8c72b120eb1d515e69c8866cf2f1693">NoResponse_Transition</a> = NoResponse | Transition
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#aa9ac12cfbf079d7067cca8339735186aaa2c014c07b5a12034996179d537cab37">NoResponse_Buffer</a> = NoResponse | Buffer
  }</td></tr>
+<tr class="memdesc:aa9ac12cfbf079d7067cca8339735186a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The four combinations of the Flags bits.  <a href="classPds_1_1Eb_1_1ImmData.html#aa9ac12cfbf079d7067cca8339735186a">More...</a><br /></td></tr>
 <tr class="separator:aa9ac12cfbf079d7067cca8339735186a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a09ed7adfd216089506917b3637816c" id="r_a1a09ed7adfd216089506917b3637816c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Eb_1_1ImmData.html#a1a09ed7adfd216089506917b3637816ca207741a38fd67476d8d0c37297d1c14f">MaxSrc</a> = m_src
 , <a class="el" href="classPds_1_1Eb_1_1ImmData.html#a1a09ed7adfd216089506917b3637816ca75a7a6082adf97e54509bbb098747c71">MaxIdx</a> = m_idx
  }</td></tr>
+<tr class="memdesc:a1a09ed7adfd216089506917b3637816c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Largest values that fit in the source and index fields.  <a href="classPds_1_1Eb_1_1ImmData.html#a1a09ed7adfd216089506917b3637816c">More...</a><br /></td></tr>
 <tr class="separator:a1a09ed7adfd216089506917b3637816c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2990b4bfaa81e01f4a450e887af2f495" id="r_a2990b4bfaa81e01f4a450e887af2f495"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a2990b4bfaa81e01f4a450e887af2f495">ImmData</a> ()</td></tr>
+<tr class="memdesc:a2990b4bfaa81e01f4a450e887af2f495"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a2990b4bfaa81e01f4a450e887af2f495"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae2ac09edd30e94136a43ff1182fa0c1" id="r_aae2ac09edd30e94136a43ff1182fa0c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#aae2ac09edd30e94136a43ff1182fa0c1">~ImmData</a> ()</td></tr>
+<tr class="memdesc:aae2ac09edd30e94136a43ff1182fa0c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:aae2ac09edd30e94136a43ff1182fa0c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d80d7b22fd834927ecc52b7968f5d27" id="r_a0d80d7b22fd834927ecc52b7968f5d27"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a0d80d7b22fd834927ecc52b7968f5d27">flg</a> (uint32_t data)</td></tr>
+<tr class="memdesc:a0d80d7b22fd834927ecc52b7968f5d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the 2-bit flags field (bits 31-30) of data.  <br /></td></tr>
 <tr class="separator:a0d80d7b22fd834927ecc52b7968f5d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae68eabd1b88cc0b167f5406555381605" id="r_ae68eabd1b88cc0b167f5406555381605"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#ae68eabd1b88cc0b167f5406555381605">src</a> (uint32_t data)</td></tr>
+<tr class="memdesc:ae68eabd1b88cc0b167f5406555381605"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the 6-bit source field (bits 29-24) of data.  <br /></td></tr>
 <tr class="separator:ae68eabd1b88cc0b167f5406555381605"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a278f58ba5d00bd04fabaec64b9209299" id="r_a278f58ba5d00bd04fabaec64b9209299"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a278f58ba5d00bd04fabaec64b9209299">idx</a> (uint32_t data)</td></tr>
+<tr class="memdesc:a278f58ba5d00bd04fabaec64b9209299"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the 24-bit index field (bits 23-0) of data.  <br /></td></tr>
 <tr class="separator:a278f58ba5d00bd04fabaec64b9209299"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a832e80436d2ff9864badfad95a7a2baa" id="r_a832e80436d2ff9864badfad95a7a2baa"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a832e80436d2ff9864badfad95a7a2baa">flg</a> (uint32_t data, unsigned v)</td></tr>
+<tr class="memdesc:a832e80436d2ff9864badfad95a7a2baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return data with its flags field replaced by v (v is masked to the field width).  <br /></td></tr>
 <tr class="separator:a832e80436d2ff9864badfad95a7a2baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1e77db89baa2820688d6451a632d482" id="r_ab1e77db89baa2820688d6451a632d482"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#ab1e77db89baa2820688d6451a632d482">src</a> (uint32_t data, unsigned v)</td></tr>
+<tr class="memdesc:ab1e77db89baa2820688d6451a632d482"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return data with its source field replaced by v (v is masked to the field width).  <br /></td></tr>
 <tr class="separator:ab1e77db89baa2820688d6451a632d482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f78083af37bbc366cebd4e70c19a5ab" id="r_a1f78083af37bbc366cebd4e70c19a5ab"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a1f78083af37bbc366cebd4e70c19a5ab">idx</a> (uint32_t data, unsigned v)</td></tr>
+<tr class="memdesc:a1f78083af37bbc366cebd4e70c19a5ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return data with its index field replaced by v (v is masked to the field width).  <br /></td></tr>
 <tr class="separator:a1f78083af37bbc366cebd4e70c19a5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a527f952e4ce8f4e40dec25f476871031" id="r_a527f952e4ce8f4e40dec25f476871031"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#a527f952e4ce8f4e40dec25f476871031">value</a> (unsigned f, unsigned s, unsigned i)</td></tr>
+<tr class="memdesc:a527f952e4ce8f4e40dec25f476871031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build an immediate data word from flags f, source s and index i, each masked to its field width.  <br /></td></tr>
 <tr class="separator:a527f952e4ce8f4e40dec25f476871031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf3cc499e2074eed896cb7e992d11f6d" id="r_acf3cc499e2074eed896cb7e992d11f6d"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#acf3cc499e2074eed896cb7e992d11f6d">rsp</a> (unsigned f)</td></tr>
+<tr class="memdesc:acf3cc499e2074eed896cb7e992d11f6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the NoResponse bit of flags f (2 if set, else 0).  <br /></td></tr>
 <tr class="separator:acf3cc499e2074eed896cb7e992d11f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad21bfd373aeb5d93a9ebed31e358efec" id="r_ad21bfd373aeb5d93a9ebed31e358efec"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html#ad21bfd373aeb5d93a9ebed31e358efec">buf</a> (unsigned f)</td></tr>
+<tr class="memdesc:ad21bfd373aeb5d93a9ebed31e358efec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the Buffer bit of flags f (1 if set, else 0).  <br /></td></tr>
 <tr class="separator:ad21bfd373aeb5d93a9ebed31e358efec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30), a 6-bit source field (bits 29-24) and a 24-bit index field (bits 23-0). </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="acb528d6f4a213d33cd82d4d17b9a8857" name="acb528d6f4a213d33cd82d4d17b9a8857"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb528d6f4a213d33cd82d4d17b9a8857">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -168,9 +189,13 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Mask and shifted mask of the response bit (bit 1) within the flags field. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acb528d6f4a213d33cd82d4d17b9a8857a0bf6387d2da9da41da9a538671e4f71b" name="acb528d6f4a213d33cd82d4d17b9a8857a0bf6387d2da9da41da9a538671e4f71b"></a>m_rsp&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="acb528d6f4a213d33cd82d4d17b9a8857ad9a5b2519b7ae6fc091d31632c4b55c5" name="acb528d6f4a213d33cd82d4d17b9a8857ad9a5b2519b7ae6fc091d31632c4b55c5"></a>s_rsp&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acb528d6f4a213d33cd82d4d17b9a8857a0bf6387d2da9da41da9a538671e4f71b" name="acb528d6f4a213d33cd82d4d17b9a8857a0bf6387d2da9da41da9a538671e4f71b"></a>m_rsp&#160;</td><td class="fielddoc"><p>Mask of the response bit before shifting (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="acb528d6f4a213d33cd82d4d17b9a8857ad9a5b2519b7ae6fc091d31632c4b55c5" name="acb528d6f4a213d33cd82d4d17b9a8857ad9a5b2519b7ae6fc091d31632c4b55c5"></a>s_rsp&#160;</td><td class="fielddoc"><p>Response bit in place (value 2); used by <a class="el" href="classPds_1_1Eb_1_1ImmData.html#acf3cc499e2074eed896cb7e992d11f6d" title="Return the NoResponse bit of flags f (2 if set, else 0).">rsp()</a>. </p>
+</td></tr>
 </table>
 
 </div>
@@ -186,9 +211,13 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Mask and shifted mask of the buffer bit (bit 0) within the flags field. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a336999fbd32e81ed0dfebcda4eab675ca343d23f89704f164ca33140de168978d" name="a336999fbd32e81ed0dfebcda4eab675ca343d23f89704f164ca33140de168978d"></a>m_buf&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a336999fbd32e81ed0dfebcda4eab675ca68098380658feca3563891fbf234f90f" name="a336999fbd32e81ed0dfebcda4eab675ca68098380658feca3563891fbf234f90f"></a>s_buf&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a336999fbd32e81ed0dfebcda4eab675ca343d23f89704f164ca33140de168978d" name="a336999fbd32e81ed0dfebcda4eab675ca343d23f89704f164ca33140de168978d"></a>m_buf&#160;</td><td class="fielddoc"><p>Mask of the buffer bit before shifting (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a336999fbd32e81ed0dfebcda4eab675ca68098380658feca3563891fbf234f90f" name="a336999fbd32e81ed0dfebcda4eab675ca68098380658feca3563891fbf234f90f"></a>s_buf&#160;</td><td class="fielddoc"><p>Buffer bit in place (value 1); used by <a class="el" href="classPds_1_1Eb_1_1ImmData.html#ad21bfd373aeb5d93a9ebed31e358efec" title="Return the Buffer bit of flags f (1 if set, else 0).">buf()</a>. </p>
+</td></tr>
 </table>
 
 </div>
@@ -204,11 +233,17 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The four combinations of the Flags bits. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aa7ef12c62088af0ab4b10c104f454f327" name="aa9ac12cfbf079d7067cca8339735186aa7ef12c62088af0ab4b10c104f454f327"></a>Response_Transition&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aa7ccc25d40a33f5eaba2ea7a8cc22af29" name="aa9ac12cfbf079d7067cca8339735186aa7ccc25d40a33f5eaba2ea7a8cc22af29"></a>Response_Buffer&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aac8c72b120eb1d515e69c8866cf2f1693" name="aa9ac12cfbf079d7067cca8339735186aac8c72b120eb1d515e69c8866cf2f1693"></a>NoResponse_Transition&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aaa2c014c07b5a12034996179d537cab37" name="aa9ac12cfbf079d7067cca8339735186aaa2c014c07b5a12034996179d537cab37"></a>NoResponse_Buffer&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aa7ef12c62088af0ab4b10c104f454f327" name="aa9ac12cfbf079d7067cca8339735186aa7ef12c62088af0ab4b10c104f454f327"></a>Response_Transition&#160;</td><td class="fielddoc"><p>Response | Transition (0). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aa7ccc25d40a33f5eaba2ea7a8cc22af29" name="aa9ac12cfbf079d7067cca8339735186aa7ccc25d40a33f5eaba2ea7a8cc22af29"></a>Response_Buffer&#160;</td><td class="fielddoc"><p>Response | Buffer (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aac8c72b120eb1d515e69c8866cf2f1693" name="aa9ac12cfbf079d7067cca8339735186aac8c72b120eb1d515e69c8866cf2f1693"></a>NoResponse_Transition&#160;</td><td class="fielddoc"><p>NoResponse | Transition (2). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aa9ac12cfbf079d7067cca8339735186aaa2c014c07b5a12034996179d537cab37" name="aa9ac12cfbf079d7067cca8339735186aaa2c014c07b5a12034996179d537cab37"></a>NoResponse_Buffer&#160;</td><td class="fielddoc"><p>NoResponse | Buffer (3). </p>
+</td></tr>
 </table>
 
 </div>
@@ -224,9 +259,13 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Largest values that fit in the source and index fields. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1a09ed7adfd216089506917b3637816ca207741a38fd67476d8d0c37297d1c14f" name="a1a09ed7adfd216089506917b3637816ca207741a38fd67476d8d0c37297d1c14f"></a>MaxSrc&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1a09ed7adfd216089506917b3637816ca75a7a6082adf97e54509bbb098747c71" name="a1a09ed7adfd216089506917b3637816ca75a7a6082adf97e54509bbb098747c71"></a>MaxIdx&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1a09ed7adfd216089506917b3637816ca207741a38fd67476d8d0c37297d1c14f" name="a1a09ed7adfd216089506917b3637816ca207741a38fd67476d8d0c37297d1c14f"></a>MaxSrc&#160;</td><td class="fielddoc"><p>Largest source value, 63 (6-bit mask). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1a09ed7adfd216089506917b3637816ca75a7a6082adf97e54509bbb098747c71" name="a1a09ed7adfd216089506917b3637816ca75a7a6082adf97e54509bbb098747c71"></a>MaxIdx&#160;</td><td class="fielddoc"><p>Largest index value, 0xffffff (24-bit mask). </p>
+</td></tr>
 </table>
 
 </div>
@@ -242,11 +281,18 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Values for the flags field. </p>
+<p>Bit 0 selects Transition or Buffer, bit 1 selects Response or NoResponse. The original comment notes that the word must not become zero for non-L1Accepts because the monitor request protocol depends on it. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a9fa346af5415b8c1d46c3247f72ad9b8" name="ab67494aab5310044554564ba7a9ce123a9fa346af5415b8c1d46c3247f72ad9b8"></a>Transition&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a5fa29bf270c3e38428dbffd243e7b665" name="ab67494aab5310044554564ba7a9ce123a5fa29bf270c3e38428dbffd243e7b665"></a>Buffer&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a10b4471b36e98368fc44faed500a22ee" name="ab67494aab5310044554564ba7a9ce123a10b4471b36e98368fc44faed500a22ee"></a>Response&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123af13c5940ef4a38d885da3537de1038bf" name="ab67494aab5310044554564ba7a9ce123af13c5940ef4a38d885da3537de1038bf"></a>NoResponse&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a9fa346af5415b8c1d46c3247f72ad9b8" name="ab67494aab5310044554564ba7a9ce123a9fa346af5415b8c1d46c3247f72ad9b8"></a>Transition&#160;</td><td class="fielddoc"><p>Bit 0 clear (0). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a5fa29bf270c3e38428dbffd243e7b665" name="ab67494aab5310044554564ba7a9ce123a5fa29bf270c3e38428dbffd243e7b665"></a>Buffer&#160;</td><td class="fielddoc"><p>Bit 0 set (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123a10b4471b36e98368fc44faed500a22ee" name="ab67494aab5310044554564ba7a9ce123a10b4471b36e98368fc44faed500a22ee"></a>Response&#160;</td><td class="fielddoc"><p>Bit 1 clear (0). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab67494aab5310044554564ba7a9ce123af13c5940ef4a38d885da3537de1038bf" name="ab67494aab5310044554564ba7a9ce123af13c5940ef4a38d885da3537de1038bf"></a>NoResponse&#160;</td><td class="fielddoc"><p>Bit 1 set (2). </p>
+</td></tr>
 </table>
 
 </div>
@@ -275,6 +321,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <a id="aae2ac09edd30e94136a43ff1182fa0c1" name="aae2ac09edd30e94136a43ff1182fa0c1"></a>
@@ -299,6 +347,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -327,6 +377,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the Buffer bit of flags f (1 if set, else 0). </p>
+
 </div>
 </div>
 <a id="a0d80d7b22fd834927ecc52b7968f5d27" name="a0d80d7b22fd834927ecc52b7968f5d27"></a>
@@ -352,6 +404,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the 2-bit flags field (bits 31-30) of data. </p>
 
 </div>
 </div>
@@ -389,6 +443,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return data with its flags field replaced by v (v is masked to the field width). </p>
+
 </div>
 </div>
 <a id="a278f58ba5d00bd04fabaec64b9209299" name="a278f58ba5d00bd04fabaec64b9209299"></a>
@@ -414,6 +470,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the 24-bit index field (bits 23-0) of data. </p>
 
 </div>
 </div>
@@ -451,6 +509,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return data with its index field replaced by v (v is masked to the field width). </p>
+
 </div>
 </div>
 <a id="acf3cc499e2074eed896cb7e992d11f6d" name="acf3cc499e2074eed896cb7e992d11f6d"></a>
@@ -477,6 +537,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the NoResponse bit of flags f (2 if set, else 0). </p>
+
 </div>
 </div>
 <a id="ae68eabd1b88cc0b167f5406555381605" name="ae68eabd1b88cc0b167f5406555381605"></a>
@@ -502,6 +564,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the 6-bit source field (bits 29-24) of data. </p>
 
 </div>
 </div>
@@ -538,6 +602,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return data with its source field replaced by v (v is masked to the field width). </p>
 
 </div>
 </div>
@@ -580,6 +646,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Build an immediate data word from flags f, source s and index i, each masked to its field width. </p>
 
 </div>
 </div>

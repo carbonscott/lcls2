@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "lcls2", "index.html", [
+    [ "Todo List", "todo.html", null ],
     [ "Topics", "topics.html", "topics" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],

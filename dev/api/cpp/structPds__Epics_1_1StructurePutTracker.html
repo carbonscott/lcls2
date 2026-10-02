@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1StructurePutTracke
 </div><!--header-->
 <div class="contents">
 
+<p>Put callback that fills the top-level fields of a PV structure from a packed buffer and signals completionEvent when the put ends.  
+ <a href="structPds__Epics_1_1StructurePutTracker.html#details">More...</a></p>
+
 <p><code>#include &lt;EpicsPVA.hh&gt;</code></p>
 
 <p>Inherits pvac::ClientChannel::PutCallback.</p>
@@ -105,28 +108,39 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1StructurePutTracke
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5eed9dbd26788fb142366da60536ef1e" id="r_a5eed9dbd26788fb142366da60536ef1e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a5eed9dbd26788fb142366da60536ef1e">POINTER_DEFINITIONS</a> (<a class="el" href="structPds__Epics_1_1StructurePutTracker.html">StructurePutTracker</a>)</td></tr>
+<tr class="memdesc:a5eed9dbd26788fb142366da60536ef1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands the pvData POINTER_DEFINITIONS macro for this type; doxygen lists it as a function.  <br /></td></tr>
 <tr class="separator:a5eed9dbd26788fb142366da60536ef1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a943187100cf6bb36264f37a43e455d20" id="r_a943187100cf6bb36264f37a43e455d20"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a943187100cf6bb36264f37a43e455d20">StructurePutTracker</a> (const char *val, const unsigned *sz, bool debug)</td></tr>
+<tr class="memdesc:a943187100cf6bb36264f37a43e455d20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the buffer and size pointers (not copied) and the debug flag.  <br /></td></tr>
 <tr class="separator:a943187100cf6bb36264f37a43e455d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08f3cb116a2c742a834919cad1121498" id="r_a08f3cb116a2c742a834919cad1121498"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a08f3cb116a2c742a834919cad1121498">~StructurePutTracker</a> ()</td></tr>
+<tr class="memdesc:a08f3cb116a2c742a834919cad1121498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a08f3cb116a2c742a834919cad1121498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf97e886ea110d5c61bdb14cf4c40d70" id="r_adf97e886ea110d5c61bdb14cf4c40d70"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70">putBuild</a> (const epics::pvData::StructureConstPtr &amp;build, pvac::ClientChannel::PutCallback::Args &amp;args)</td></tr>
+<tr class="memdesc:adf97e886ea110d5c61bdb14cf4c40d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the put structure from build and fill its top-level scalar and scalar array fields in order from value, as int32, int64, uint32, uint64, float or double (array lengths from sizes).  <br /></td></tr>
 <tr class="separator:adf97e886ea110d5c61bdb14cf4c40d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d12713ecfc758956e93a510c2c751c3" id="r_a0d12713ecfc758956e93a510c2c751c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a0d12713ecfc758956e93a510c2c751c3">putDone</a> (const pvac::PutEvent &amp;evt) OVERRIDE FINAL</td></tr>
+<tr class="memdesc:a0d12713ecfc758956e93a510c2c751c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print a message for a failed or cancelled put, then signal completionEvent.  <br /></td></tr>
 <tr class="separator:a0d12713ecfc758956e93a510c2c751c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a937973fb0d2d56b55adf36e7e517b491" id="r_a937973fb0d2d56b55adf36e7e517b491"><td class="memItemLeft" align="right" valign="top">epicsEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a937973fb0d2d56b55adf36e7e517b491">completionEvent</a></td></tr>
+<tr class="memdesc:a937973fb0d2d56b55adf36e7e517b491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signalled by <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a0d12713ecfc758956e93a510c2c751c3" title="Print a message for a failed or cancelled put, then signal completionEvent.">putDone()</a>.  <br /></td></tr>
 <tr class="separator:a937973fb0d2d56b55adf36e7e517b491"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac48c39dc35859d181d7354c9a92de644" id="r_ac48c39dc35859d181d7354c9a92de644"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#ac48c39dc35859d181d7354c9a92de644">value</a></td></tr>
+<tr class="memdesc:ac48c39dc35859d181d7354c9a92de644"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed field values, read in field order; <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> advances this pointer.  <br /></td></tr>
 <tr class="separator:ac48c39dc35859d181d7354c9a92de644"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad38f21f0b5dc44b2987c3baee777cb6a" id="r_ad38f21f0b5dc44b2987c3baee777cb6a"><td class="memItemLeft" align="right" valign="top">const unsigned *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#ad38f21f0b5dc44b2987c3baee777cb6a">sizes</a></td></tr>
+<tr class="memdesc:ad38f21f0b5dc44b2987c3baee777cb6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element counts of the array fields, in field order; <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> advances this pointer.  <br /></td></tr>
 <tr class="separator:ad38f21f0b5dc44b2987c3baee777cb6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73eda4006c02e43f7a5286f9dff00387" id="r_a73eda4006c02e43f7a5286f9dff00387"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a73eda4006c02e43f7a5286f9dff00387">ldebug</a></td></tr>
+<tr class="memdesc:a73eda4006c02e43f7a5286f9dff00387"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> dumps the structure and prints each value read.  <br /></td></tr>
 <tr class="separator:a73eda4006c02e43f7a5286f9dff00387"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Put callback that fills the top-level fields of a PV structure from a packed buffer and signals completionEvent when the put ends. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a943187100cf6bb36264f37a43e455d20" name="a943187100cf6bb36264f37a43e455d20"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a943187100cf6bb36264f37a43e455d20">&#9670;&#160;</a></span>StructurePutTracker()</h2>
 
@@ -167,6 +181,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Store the buffer and size pointers (not copied) and the debug flag. </p>
+
 </div>
 </div>
 <a id="a08f3cb116a2c742a834919cad1121498" name="a08f3cb116a2c742a834919cad1121498"></a>
@@ -192,6 +208,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty virtual destructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -210,6 +228,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Expands the pvData POINTER_DEFINITIONS macro for this type; doxygen lists it as a function. </p>
 
 </div>
 </div>
@@ -247,6 +267,9 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Create the put structure from build and fill its top-level scalar and scalar array fields in order from value, as int32, int64, uint32, uint64, float or double (array lengths from sizes). </p>
+<p>Other field kinds are skipped and other element types throw a std::string; bit 0 of the send mask is set. </p>
+
 </div>
 </div>
 <a id="a0d12713ecfc758956e93a510c2c751c3" name="a0d12713ecfc758956e93a510c2c751c3"></a>
@@ -273,6 +296,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Print a message for a failed or cancelled put, then signal completionEvent. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -288,6 +313,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Signalled by <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#a0d12713ecfc758956e93a510c2c751c3" title="Print a message for a failed or cancelled put, then signal completionEvent.">putDone()</a>. </p>
+
 </div>
 </div>
 <a id="a73eda4006c02e43f7a5286f9dff00387" name="a73eda4006c02e43f7a5286f9dff00387"></a>
@@ -301,6 +328,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>If true, <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> dumps the structure and prints each value read. </p>
 
 </div>
 </div>
@@ -316,6 +345,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Element counts of the array fields, in field order; <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> advances this pointer. </p>
+
 </div>
 </div>
 <a id="ac48c39dc35859d181d7354c9a92de644" name="ac48c39dc35859d181d7354c9a92de644"></a>
@@ -329,6 +360,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Packed field values, read in field order; <a class="el" href="structPds__Epics_1_1StructurePutTracker.html#adf97e886ea110d5c61bdb14cf4c40d70" title="Create the put structure from build and fill its top-level scalar and scalar array fields in order fr...">putBuild()</a> advances this pointer. </p>
 
 </div>
 </div>

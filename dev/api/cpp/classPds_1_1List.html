@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1List.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
+<p>Head (label) of an intrusive doubly linked list of <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a> objects; insert, jam and remove hold a spin lock, their NL variants do not.  
+ <a href="classPds_1_1List.html#details">More...</a></p>
+
 <p><code>#include &lt;Queue.hh&gt;</code></p>
 
 <p>Inherited by Pds::Queue&lt; PoolEntry &gt;<code> [private]</code>, Pds::Queue&lt; Pds::Routine &gt;<code> [private]</code>, and <a class="el" href="classPds_1_1QueueSS.html">Pds::QueueSS&lt; T &gt;</a><code> [private]</code>.</p>
@@ -104,27 +107,39 @@ $(document).ready(function(){initNavTree('classPds_1_1List.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0f0d241d77342fa6b6c2fded693748f3" id="r_a0f0d241d77342fa6b6c2fded693748f3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a0f0d241d77342fa6b6c2fded693748f3">List</a> ()</td></tr>
+<tr class="memdesc:a0f0d241d77342fa6b6c2fded693748f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an empty list (both links point at the list label).  <br /></td></tr>
 <tr class="separator:a0f0d241d77342fa6b6c2fded693748f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada9d31fdef868a99f25910550362006d" id="r_ada9d31fdef868a99f25910550362006d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d">empty</a> () const</td></tr>
+<tr class="memdesc:ada9d31fdef868a99f25910550362006d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the list label address, which <a class="el" href="classPds_1_1List.html#ac49bab3ae859f10da7c20e1cc7fde80e" title="Return the head entry (empty() if the list is empty).">atHead()</a> and <a class="el" href="classPds_1_1List.html#a061692ae5d48a8f5b51a47b11f192abe" title="Under the lock, unlink and return the head entry; returns empty() if the list is empty.">remove()</a> return when the list is empty.  <br /></td></tr>
 <tr class="separator:ada9d31fdef868a99f25910550362006d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a900000b03df35f0492d842b0fb82c542" id="r_a900000b03df35f0492d842b0fb82c542"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a900000b03df35f0492d842b0fb82c542">insert</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *)</td></tr>
+<tr class="memdesc:a900000b03df35f0492d842b0fb82c542"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, append entry at the tail and return the entry it was inserted after.  <br /></td></tr>
 <tr class="separator:a900000b03df35f0492d842b0fb82c542"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a997a5cba1aee88d40818346482581a8f" id="r_a997a5cba1aee88d40818346482581a8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a997a5cba1aee88d40818346482581a8f">insertNL</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *)</td></tr>
+<tr class="memdesc:a997a5cba1aee88d40818346482581a8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append entry at the tail without locking and return the entry it was inserted after.  <br /></td></tr>
 <tr class="separator:a997a5cba1aee88d40818346482581a8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ae28b6d9cdb0e791cf3500f86d67b8a" id="r_a1ae28b6d9cdb0e791cf3500f86d67b8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a1ae28b6d9cdb0e791cf3500f86d67b8a">jam</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *)</td></tr>
+<tr class="memdesc:a1ae28b6d9cdb0e791cf3500f86d67b8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, insert entry at the head and return the entry it was inserted after.  <br /></td></tr>
 <tr class="separator:a1ae28b6d9cdb0e791cf3500f86d67b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a061692ae5d48a8f5b51a47b11f192abe" id="r_a061692ae5d48a8f5b51a47b11f192abe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a061692ae5d48a8f5b51a47b11f192abe">remove</a> ()</td></tr>
+<tr class="memdesc:a061692ae5d48a8f5b51a47b11f192abe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, unlink and return the head entry; returns <a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty.  <br /></td></tr>
 <tr class="separator:a061692ae5d48a8f5b51a47b11f192abe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49f16459b7bade075b3aedab1bd85a3a" id="r_a49f16459b7bade075b3aedab1bd85a3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#a49f16459b7bade075b3aedab1bd85a3a">removeNL</a> ()</td></tr>
+<tr class="memdesc:a49f16459b7bade075b3aedab1bd85a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlink and return the head entry without locking; returns <a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty.  <br /></td></tr>
 <tr class="separator:a49f16459b7bade075b3aedab1bd85a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4fed0d418ecc3af717cd9ae2ece0bf0" id="r_ae4fed0d418ecc3af717cd9ae2ece0bf0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#ae4fed0d418ecc3af717cd9ae2ece0bf0">remove</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *)</td></tr>
+<tr class="memdesc:ae4fed0d418ecc3af717cd9ae2ece0bf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, unlink entry and return it.  <br /></td></tr>
 <tr class="separator:ae4fed0d418ecc3af717cd9ae2ece0bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac49bab3ae859f10da7c20e1cc7fde80e" id="r_ac49bab3ae859f10da7c20e1cc7fde80e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#ac49bab3ae859f10da7c20e1cc7fde80e">atHead</a> () const</td></tr>
+<tr class="memdesc:ac49bab3ae859f10da7c20e1cc7fde80e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the head entry (<a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty).  <br /></td></tr>
 <tr class="separator:ac49bab3ae859f10da7c20e1cc7fde80e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af62e0c7fb4880006073863e9147ab815" id="r_af62e0c7fb4880006073863e9147ab815"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1List.html#af62e0c7fb4880006073863e9147ab815">atTail</a> () const</td></tr>
+<tr class="memdesc:af62e0c7fb4880006073863e9147ab815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tail entry (<a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty).  <br /></td></tr>
 <tr class="separator:af62e0c7fb4880006073863e9147ab815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Head (label) of an intrusive doubly linked list of <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a> objects; insert, jam and remove hold a spin lock, their NL variants do not. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0f0d241d77342fa6b6c2fded693748f3" name="a0f0d241d77342fa6b6c2fded693748f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0f0d241d77342fa6b6c2fded693748f3">&#9670;&#160;</a></span>List()</h2>
 
@@ -147,6 +162,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct an empty list (both links point at the list label). </p>
 
 </div>
 </div>
@@ -174,6 +191,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the head entry (<a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty). </p>
+
 </div>
 </div>
 <a id="af62e0c7fb4880006073863e9147ab815" name="af62e0c7fb4880006073863e9147ab815"></a>
@@ -199,6 +218,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the tail entry (<a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty). </p>
+
 </div>
 </div>
 <a id="ada9d31fdef868a99f25910550362006d" name="ada9d31fdef868a99f25910550362006d"></a>
@@ -223,6 +244,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the list label address, which <a class="el" href="classPds_1_1List.html#ac49bab3ae859f10da7c20e1cc7fde80e" title="Return the head entry (empty() if the list is empty).">atHead()</a> and <a class="el" href="classPds_1_1List.html#a061692ae5d48a8f5b51a47b11f192abe" title="Under the lock, unlink and return the head entry; returns empty() if the list is empty.">remove()</a> return when the list is empty. </p>
 
 </div>
 </div>
@@ -250,6 +273,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, append entry at the tail and return the entry it was inserted after. </p>
+
 </div>
 </div>
 <a id="a997a5cba1aee88d40818346482581a8f" name="a997a5cba1aee88d40818346482581a8f"></a>
@@ -275,6 +300,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Append entry at the tail without locking and return the entry it was inserted after. </p>
 
 </div>
 </div>
@@ -302,6 +329,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, insert entry at the head and return the entry it was inserted after. </p>
+
 </div>
 </div>
 <a id="a061692ae5d48a8f5b51a47b11f192abe" name="a061692ae5d48a8f5b51a47b11f192abe"></a>
@@ -326,6 +355,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Under the lock, unlink and return the head entry; returns <a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty. </p>
 
 </div>
 </div>
@@ -353,6 +384,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, unlink entry and return it. </p>
+
 </div>
 </div>
 <a id="a49f16459b7bade075b3aedab1bd85a3a" name="a49f16459b7bade075b3aedab1bd85a3a"></a>
@@ -377,6 +410,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Unlink and return the head entry without locking; returns <a class="el" href="classPds_1_1List.html#ada9d31fdef868a99f25910550362006d" title="Return the list label address, which atHead() and remove() return when the list is empty.">empty()</a> if the list is empty. </p>
 
 </div>
 </div>

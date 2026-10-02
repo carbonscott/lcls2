@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1MonTracker.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Monitor of one PV whose events are handled on the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  
+ <a href="classPds__Epics_1_1MonTracker.html#details">More...</a></p>
+
 <p><code>#include &lt;MonTracker.hh&gt;</code></p>
 
 <p>Inherits pvac::ClientChannel::MonitorCallback, <a class="el" href="structPds__Epics_1_1Worker.html">Pds_Epics::Worker</a>, std::tr1::enable_shared_from_this&lt; MonTracker &gt;, and <a class="el" href="classPds__Epics_1_1PVMonitorCb.html">Pds_Epics::PVMonitorCb</a>.</p>
@@ -109,37 +112,51 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1MonTracker.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af1415719fd7934054ced8869fcd6351b" id="r_af1415719fd7934054ced8869fcd6351b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#af1415719fd7934054ced8869fcd6351b">POINTER_DEFINITIONS</a> (<a class="el" href="classPds__Epics_1_1MonTracker.html">MonTracker</a>)</td></tr>
+<tr class="memdesc:af1415719fd7934054ced8869fcd6351b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands the pvData POINTER_DEFINITIONS macro for this class; doxygen lists it as a function.  <br /></td></tr>
 <tr class="separator:af1415719fd7934054ced8869fcd6351b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abadf603530cb4afb385c60c6107651b4" id="r_abadf603530cb4afb385c60c6107651b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#abadf603530cb4afb385c60c6107651b4">MonTracker</a> (const std::string &amp;<a class="el" href="classPds__Epics_1_1MonTracker.html#a31d661e9d6dc954bd88d76f60c7a70af">name</a>, const std::string &amp;request=&quot;field()&quot;)</td></tr>
+<tr class="memdesc:abadf603530cb4afb385c60c6107651b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to name through pva and start a monitor with request (default field()).  <br /></td></tr>
 <tr class="separator:abadf603530cb4afb385c60c6107651b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b05eb580fac8b730fe9f785d723bf77" id="r_a9b05eb580fac8b730fe9f785d723bf77"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a9b05eb580fac8b730fe9f785d723bf77">MonTracker</a> (const std::string &amp;provider, const std::string &amp;<a class="el" href="classPds__Epics_1_1MonTracker.html#a31d661e9d6dc954bd88d76f60c7a70af">name</a>, const std::string &amp;request=&quot;field()&quot;)</td></tr>
+<tr class="memdesc:a9b05eb580fac8b730fe9f785d723bf77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to name through ca if provider is ca, otherwise pva, and start a monitor with request.  <br /></td></tr>
 <tr class="separator:a9b05eb580fac8b730fe9f785d723bf77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9edafa51c65afe6952820612f0446b0d" id="r_a9edafa51c65afe6952820612f0446b0d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a9edafa51c65afe6952820612f0446b0d">~MonTracker</a> ()</td></tr>
+<tr class="memdesc:a9edafa51c65afe6952820612f0446b0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancel the monitor.  <br /></td></tr>
 <tr class="separator:a9edafa51c65afe6952820612f0446b0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31d661e9d6dc954bd88d76f60c7a70af" id="r_a31d661e9d6dc954bd88d76f60c7a70af"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a31d661e9d6dc954bd88d76f60c7a70af">name</a> () const</td></tr>
+<tr class="memdesc:a31d661e9d6dc954bd88d76f60c7a70af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the channel name.  <br /></td></tr>
 <tr class="separator:a31d661e9d6dc954bd88d76f60c7a70af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0d4ea3918d0011f8f04e36b86662dc8" id="r_af0d4ea3918d0011f8f04e36b86662dc8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#af0d4ea3918d0011f8f04e36b86662dc8">connected</a> () const</td></tr>
+<tr class="memdesc:af0d4ea3918d0011f8f04e36b86662dc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true from the first data update until a disconnect.  <br /></td></tr>
 <tr class="separator:af0d4ea3918d0011f8f04e36b86662dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6205a5c49b0eb1664c7356f58e6350c3" id="r_a6205a5c49b0eb1664c7356f58e6350c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a6205a5c49b0eb1664c7356f58e6350c3">monitorEvent</a> (const pvac::MonitorEvent &amp;evt) OVERRIDE FINAL</td></tr>
+<tr class="memdesc:a6205a5c49b0eb1664c7356f58e6350c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitor callback on a pvAccess thread: queue the event on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> for <a class="el" href="classPds__Epics_1_1MonTracker.html#a8cc45759ca44ec99669d859200a29937" title="Handle a monitor event on the WorkQueue thread.">process()</a>.  <br /></td></tr>
 <tr class="separator:a6205a5c49b0eb1664c7356f58e6350c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cc45759ca44ec99669d859200a29937" id="r_a8cc45759ca44ec99669d859200a29937"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a8cc45759ca44ec99669d859200a29937">process</a> (const pvac::MonitorEvent &amp;evt) OVERRIDE FINAL</td></tr>
+<tr class="memdesc:a8cc45759ca44ec99669d859200a29937"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a monitor event on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  <br /></td></tr>
 <tr class="separator:a8cc45759ca44ec99669d859200a29937"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_structPds__Epics_1_1Worker"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structPds__Epics_1_1Worker')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structPds__Epics_1_1Worker.html">Pds_Epics::Worker</a></td></tr>
 <tr class="memitem:acf90229415af7cc475330c8d1859f918 inherit pub_methods_structPds__Epics_1_1Worker" id="r_acf90229415af7cc475330c8d1859f918"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1Worker.html#acf90229415af7cc475330c8d1859f918">~Worker</a> ()</td></tr>
+<tr class="memdesc:acf90229415af7cc475330c8d1859f918 inherit pub_methods_structPds__Epics_1_1Worker"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:acf90229415af7cc475330c8d1859f918 inherit pub_methods_structPds__Epics_1_1Worker"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds__Epics_1_1PVMonitorCb"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds__Epics_1_1PVMonitorCb')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds__Epics_1_1PVMonitorCb.html">Pds_Epics::PVMonitorCb</a></td></tr>
 <tr class="memitem:ae955e7cb71f1a25af022b2fce366a19f inherit pub_methods_classPds__Epics_1_1PVMonitorCb" id="r_ae955e7cb71f1a25af022b2fce366a19f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#ae955e7cb71f1a25af022b2fce366a19f">~PVMonitorCb</a> ()</td></tr>
+<tr class="memdesc:ae955e7cb71f1a25af022b2fce366a19f inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:ae955e7cb71f1a25af022b2fce366a19f inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac8ce185ffe4e4cb5d417a13bd9fb491 inherit pub_methods_classPds__Epics_1_1PVMonitorCb" id="r_aac8ce185ffe4e4cb5d417a13bd9fb491"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aac8ce185ffe4e4cb5d417a13bd9fb491">onConnect</a> ()</td></tr>
+<tr class="memdesc:aac8ce185ffe4e4cb5d417a13bd9fb491 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on the first data update after connecting; does nothing by default.  <br /></td></tr>
 <tr class="separator:aac8ce185ffe4e4cb5d417a13bd9fb491 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad2b2feec0fbca0aa416456c307a11b6 inherit pub_methods_classPds__Epics_1_1PVMonitorCb" id="r_aad2b2feec0fbca0aa416456c307a11b6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aad2b2feec0fbca0aa416456c307a11b6">onDisconnect</a> ()</td></tr>
+<tr class="memdesc:aad2b2feec0fbca0aa416456c307a11b6 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on a disconnect; does nothing by default.  <br /></td></tr>
 <tr class="separator:aad2b2feec0fbca0aa416456c307a11b6 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefb362519801cc2236c0eb7eb29df5d0 inherit pub_methods_classPds__Epics_1_1PVMonitorCb" id="r_aefb362519801cc2236c0eb7eb29df5d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aefb362519801cc2236c0eb7eb29df5d0">updated</a> ()=0</td></tr>
+<tr class="memdesc:aefb362519801cc2236c0eb7eb29df5d0 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: called for each update of the PV.  <br /></td></tr>
 <tr class="separator:aefb362519801cc2236c0eb7eb29df5d0 inherit pub_methods_classPds__Epics_1_1PVMonitorCb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a29c58d7d7c51d95039f9cd92cb5536ca" id="r_a29c58d7d7c51d95039f9cd92cb5536ca"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a29c58d7d7c51d95039f9cd92cb5536ca">close</a> ()</td></tr>
+<tr class="memdesc:a29c58d7d7c51d95039f9cd92cb5536ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a>.  <br /></td></tr>
 <tr class="separator:a29c58d7d7c51d95039f9cd92cb5536ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -162,7 +179,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a407255964e9b29b04a57e569f987ae00" id="r_a407255964e9b29b04a57e569f987ae00"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html#a407255964e9b29b04a57e569f987ae00">_connected</a></td></tr>
 <tr class="separator:a407255964e9b29b04a57e569f987ae00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Monitor of one PV whose events are handled on the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread. </p>
+<p>The first data update after connecting calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aac8ce185ffe4e4cb5d417a13bd9fb491" title="Called by MonTracker on the first data update after connecting; does nothing by default.">onConnect()</a>, later ones call <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aefb362519801cc2236c0eb7eb29df5d0" title="Pure virtual: called for each update of the PV.">updated()</a>, and a disconnect calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aad2b2feec0fbca0aa416456c307a11b6" title="Called by MonTracker on a disconnect; does nothing by default.">onDisconnect()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abadf603530cb4afb385c60c6107651b4" name="abadf603530cb4afb385c60c6107651b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abadf603530cb4afb385c60c6107651b4">&#9670;&#160;</a></span>MonTracker() <span class="overload">[1/2]</span></h2>
 
@@ -188,6 +208,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Connect to name through pva and start a monitor with request (default field()). </p>
 
 </div>
 </div>
@@ -223,6 +245,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Connect to name through ca if provider is ca, otherwise pva, and start a monitor with request. </p>
+
 </div>
 </div>
 <a id="a9edafa51c65afe6952820612f0446b0d" name="a9edafa51c65afe6952820612f0446b0d"></a>
@@ -247,6 +271,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Cancel the monitor. </p>
 
 </div>
 </div>
@@ -274,6 +300,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Close the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a>. </p>
+
 </div>
 </div>
 <a id="af0d4ea3918d0011f8f04e36b86662dc8" name="af0d4ea3918d0011f8f04e36b86662dc8"></a>
@@ -298,6 +326,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true from the first data update until a disconnect. </p>
 
 </div>
 </div>
@@ -350,6 +380,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Monitor callback on a pvAccess thread: queue the event on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> for <a class="el" href="classPds__Epics_1_1MonTracker.html#a8cc45759ca44ec99669d859200a29937" title="Handle a monitor event on the WorkQueue thread.">process()</a>. </p>
+<p>Cancel events, and events that arrive while the object is being destroyed, are dropped. </p>
+
 </div>
 </div>
 <a id="a31d661e9d6dc954bd88d76f60c7a70af" name="a31d661e9d6dc954bd88d76f60c7a70af"></a>
@@ -375,6 +408,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the channel name. </p>
+
 </div>
 </div>
 <a id="af1415719fd7934054ced8869fcd6351b" name="af1415719fd7934054ced8869fcd6351b"></a>
@@ -392,6 +427,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Expands the pvData POINTER_DEFINITIONS macro for this class; doxygen lists it as a function. </p>
 
 </div>
 </div>
@@ -418,6 +455,9 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Handle a monitor event on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread. </p>
+<p>Failures and cancels are printed; a disconnect clears <a class="el" href="classPds__Epics_1_1MonTracker.html#af0d4ea3918d0011f8f04e36b86662dc8" title="Return true from the first data update until a disconnect.">connected()</a> and calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aad2b2feec0fbca0aa416456c307a11b6" title="Called by MonTracker on a disconnect; does nothing by default.">onDisconnect()</a>; for data, up to 2 updates are taken per call (the first after connecting calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aac8ce185ffe4e4cb5d417a13bd9fb491" title="Called by MonTracker on the first data update after connecting; does nothing by default.">onConnect()</a>, others <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aefb362519801cc2236c0eb7eb29df5d0" title="Pure virtual: called for each update of the PV.">updated()</a>) and the event is queued again if 2 were taken. </p>
 
 <p>Implements <a class="el" href="structPds__Epics_1_1Worker.html#a6b63635676a6608ea86e2ccd949547da">Pds_Epics::Worker</a>.</p>
 

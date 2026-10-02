@@ -97,46 +97,68 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1LocalIOVec.html
 </div><!--header-->
 <div class="contents">
 
+<p>Growable array of struct iovec entries plus one memory-region descriptor per entry, for vectored libfabric calls.  
+ <a href="classPds_1_1Fabrics_1_1LocalIOVec.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aac416782ede39d923dbf6100d7aa7715" id="r_aac416782ede39d923dbf6100d7aa7715"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#aac416782ede39d923dbf6100d7aa7715">LocalIOVec</a> (size_t <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470">count</a>=1)</td></tr>
+<tr class="memdesc:aac416782ede39d923dbf6100d7aa7715"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an empty vector (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> is 0) with capacity for count entries.  <br /></td></tr>
 <tr class="separator:aac416782ede39d923dbf6100d7aa7715"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab57c21988137120da457eb8b97cd3b4b" id="r_ab57c21988137120da457eb8b97cd3b4b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#ab57c21988137120da457eb8b97cd3b4b">LocalIOVec</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *local_addrs, size_t <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470">count</a>)</td></tr>
+<tr class="memdesc:ab57c21988137120da457eb8b97cd3b4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from an array of count <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> objects, copying each iovec and, where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set, its descriptor.  <br /></td></tr>
 <tr class="separator:ab57c21988137120da457eb8b97cd3b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefecb3a3692a7797e4c91cf7c288650e" id="r_aefecb3a3692a7797e4c91cf7c288650e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#aefecb3a3692a7797e4c91cf7c288650e">LocalIOVec</a> (const std::vector&lt; <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> * &gt; &amp;local_addrs)</td></tr>
+<tr class="memdesc:aefecb3a3692a7797e4c91cf7c288650e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a vector of <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> pointers, copying each iovec and, where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set, its descriptor.  <br /></td></tr>
 <tr class="separator:aefecb3a3692a7797e4c91cf7c288650e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3b3d9cd6f1e623f0b2a73d135aaf079" id="r_ab3b3d9cd6f1e623f0b2a73d135aaf079"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#ab3b3d9cd6f1e623f0b2a73d135aaf079">~LocalIOVec</a> ()</td></tr>
+<tr class="memdesc:ab3b3d9cd6f1e623f0b2a73d135aaf079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the iovec and descriptor arrays.  <br /></td></tr>
 <tr class="separator:ab3b3d9cd6f1e623f0b2a73d135aaf079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e3544cb6c6796a63069b7fa2a3d8eb2" id="r_a4e3544cb6c6796a63069b7fa2a3d8eb2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a4e3544cb6c6796a63069b7fa2a3d8eb2">reset</a> ()</td></tr>
+<tr class="memdesc:a4e3544cb6c6796a63069b7fa2a3d8eb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> to 0 and set the all-descriptors-present flag; the capacity is kept.  <br /></td></tr>
 <tr class="separator:a4e3544cb6c6796a63069b7fa2a3d8eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a759a8def024fdcc0de2443966b59b23e" id="r_a759a8def024fdcc0de2443966b59b23e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e">check_mr</a> ()</td></tr>
+<tr class="memdesc:a759a8def024fdcc0de2443966b59b23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the cached flag that says every entry has a memory-region descriptor.  <br /></td></tr>
 <tr class="separator:a759a8def024fdcc0de2443966b59b23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57ad98e633469f0778eddcde23e04470" id="r_a57ad98e633469f0778eddcde23e04470"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470">count</a> () const</td></tr>
+<tr class="memdesc:a57ad98e633469f0778eddcde23e04470"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of entries in use.  <br /></td></tr>
 <tr class="separator:a57ad98e633469f0778eddcde23e04470"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a342c9a6d30088abb726a1c1d31a2c0e9" id="r_a342c9a6d30088abb726a1c1d31a2c0e9"><td class="memItemLeft" align="right" valign="top">const struct iovec *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a342c9a6d30088abb726a1c1d31a2c0e9">iovecs</a> () const</td></tr>
+<tr class="memdesc:a342c9a6d30088abb726a1c1d31a2c0e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the iovec array.  <br /></td></tr>
 <tr class="separator:a342c9a6d30088abb726a1c1d31a2c0e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63fed38663bccedcdf24f398faa7188f" id="r_a63fed38663bccedcdf24f398faa7188f"><td class="memItemLeft" align="right" valign="top">void **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a63fed38663bccedcdf24f398faa7188f">desc</a> () const</td></tr>
+<tr class="memdesc:a63fed38663bccedcdf24f398faa7188f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the descriptor array (one entry per iovec).  <br /></td></tr>
 <tr class="separator:a63fed38663bccedcdf24f398faa7188f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af254cccdb92b88914972a6f48d4c217f" id="r_af254cccdb92b88914972a6f48d4c217f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#af254cccdb92b88914972a6f48d4c217f">allocate</a> ()</td></tr>
+<tr class="memdesc:af254cccdb92b88914972a6f48d4c217f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grow the capacity by one if needed and return a pointer to the next unused iovec, incrementing <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a>.  <br /></td></tr>
 <tr class="separator:af254cccdb92b88914972a6f48d4c217f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bbdb4944d5efafaa5392a268695b7a7" id="r_a4bbdb4944d5efafaa5392a268695b7a7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a4bbdb4944d5efafaa5392a268695b7a7">add_iovec</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *local_addr, size_t <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470">count</a>=1)</td></tr>
+<tr class="memdesc:a4bbdb4944d5efafaa5392a268695b7a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append count entries from the <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> array local_addr, copying descriptors where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set.  <br /></td></tr>
 <tr class="separator:a4bbdb4944d5efafaa5392a268695b7a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1631f16baf911bf0c4e65c99d98619cd" id="r_a1631f16baf911bf0c4e65c99d98619cd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a1631f16baf911bf0c4e65c99d98619cd">add_iovec</a> (std::vector&lt; <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> * &gt; &amp;local_addr)</td></tr>
+<tr class="memdesc:a1631f16baf911bf0c4e65c99d98619cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append one entry per <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> in the vector, copying descriptors where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set; always returns true.  <br /></td></tr>
 <tr class="separator:a1631f16baf911bf0c4e65c99d98619cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9a15c2a9d33c12ec6095cad74cd767a" id="r_ad9a15c2a9d33c12ec6095cad74cd767a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#ad9a15c2a9d33c12ec6095cad74cd767a">add_iovec</a> (void *buf, size_t len, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:ad9a15c2a9d33c12ec6095cad74cd767a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append one entry for buf and len, recording the descriptor of mr when mr is given; always returns true.  <br /></td></tr>
 <tr class="separator:ad9a15c2a9d33c12ec6095cad74cd767a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4c7e3f9a8d414436bf7740b319604e0" id="r_af4c7e3f9a8d414436bf7740b319604e0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#af4c7e3f9a8d414436bf7740b319604e0">set_count</a> (size_t <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470">count</a>)</td></tr>
+<tr class="memdesc:af4c7e3f9a8d414436bf7740b319604e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> to count; returns false without a change if count is not less than the current capacity.  <br /></td></tr>
 <tr class="separator:af4c7e3f9a8d414436bf7740b319604e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4257ce0a12605479cf6fcc86333dcd0f" id="r_a4257ce0a12605479cf6fcc86333dcd0f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a4257ce0a12605479cf6fcc86333dcd0f">set_iovec</a> (unsigned index, <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *local_addr)</td></tr>
+<tr class="memdesc:a4257ce0a12605479cf6fcc86333dcd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overwrite entry index from local_addr, including its descriptor if it has a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> (otherwise <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e" title="Return the cached flag that says every entry has a memory-region descriptor.">check_mr()</a> becomes false).  <br /></td></tr>
 <tr class="separator:a4257ce0a12605479cf6fcc86333dcd0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae273888ced2c9893f7997db612daecd" id="r_aae273888ced2c9893f7997db612daecd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#aae273888ced2c9893f7997db612daecd">set_iovec</a> (unsigned index, void *buf, size_t len, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:aae273888ced2c9893f7997db612daecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overwrite entry index with buf and len and, if mr is given, its descriptor (otherwise <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e" title="Return the cached flag that says every entry has a memory-region descriptor.">check_mr()</a> becomes false).  <br /></td></tr>
 <tr class="separator:aae273888ced2c9893f7997db612daecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb29c451368489416a60f612d82e629e" id="r_aeb29c451368489416a60f612d82e629e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#aeb29c451368489416a60f612d82e629e">set_iovec_mr</a> (unsigned index, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr)</td></tr>
+<tr class="memdesc:aeb29c451368489416a60f612d82e629e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the descriptor of entry index from mr; returns false if index is not less than the capacity or mr is NULL.  <br /></td></tr>
 <tr class="separator:aeb29c451368489416a60f612d82e629e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Growable array of struct iovec entries plus one memory-region descriptor per entry, for vectored libfabric calls. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aac416782ede39d923dbf6100d7aa7715" name="aac416782ede39d923dbf6100d7aa7715"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac416782ede39d923dbf6100d7aa7715">&#9670;&#160;</a></span>LocalIOVec() <span class="overload">[1/3]</span></h2>
 
@@ -152,6 +174,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct an empty vector (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> is 0) with capacity for count entries. </p>
 
 </div>
 </div>
@@ -181,6 +205,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from an array of count <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> objects, copying each iovec and, where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set, its descriptor. </p>
+<p>If local_addrs is NULL, <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> is still count but the entries are not filled and <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e" title="Return the cached flag that says every entry has a memory-region descriptor.">check_mr()</a> is false. </p>
+
 </div>
 </div>
 <a id="aefecb3a3692a7797e4c91cf7c288650e" name="aefecb3a3692a7797e4c91cf7c288650e"></a>
@@ -199,6 +226,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from a vector of <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> pointers, copying each iovec and, where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set, its descriptor. </p>
+
 </div>
 </div>
 <a id="ab3b3d9cd6f1e623f0b2a73d135aaf079" name="ab3b3d9cd6f1e623f0b2a73d135aaf079"></a>
@@ -215,6 +244,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the iovec and descriptor arrays. </p>
 
 </div>
 </div>
@@ -245,6 +276,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Append count entries from the <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> array local_addr, copying descriptors where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set. </p>
+<p>Returns false if local_addr is NULL (the capacity may still have grown), otherwise true. </p>
+
 </div>
 </div>
 <a id="a1631f16baf911bf0c4e65c99d98619cd" name="a1631f16baf911bf0c4e65c99d98619cd"></a>
@@ -262,6 +296,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Append one entry per <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html" title="Local buffer (pointer and length) with an optional MemoryRegion; its first two fields are reinterpret...">LocalAddress</a> in the vector, copying descriptors where a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> is set; always returns true. </p>
 
 </div>
 </div>
@@ -297,6 +333,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Append one entry for buf and len, recording the descriptor of mr when mr is given; always returns true. </p>
+
 </div>
 </div>
 <a id="af254cccdb92b88914972a6f48d4c217f" name="af254cccdb92b88914972a6f48d4c217f"></a>
@@ -313,6 +351,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Grow the capacity by one if needed and return a pointer to the next unused iovec, incrementing <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a>. </p>
+<p>The descriptor of that entry is not set. </p>
 
 </div>
 </div>
@@ -331,6 +372,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the cached flag that says every entry has a memory-region descriptor. </p>
+
 </div>
 </div>
 <a id="a57ad98e633469f0778eddcde23e04470" name="a57ad98e633469f0778eddcde23e04470"></a>
@@ -347,6 +390,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the number of entries in use. </p>
 
 </div>
 </div>
@@ -365,6 +410,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the descriptor array (one entry per iovec). </p>
+
 </div>
 </div>
 <a id="a342c9a6d30088abb726a1c1d31a2c0e9" name="a342c9a6d30088abb726a1c1d31a2c0e9"></a>
@@ -381,6 +428,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the iovec array. </p>
 
 </div>
 </div>
@@ -399,6 +448,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> to 0 and set the all-descriptors-present flag; the capacity is kept. </p>
+
 </div>
 </div>
 <a id="af4c7e3f9a8d414436bf7740b319604e0" name="af4c7e3f9a8d414436bf7740b319604e0"></a>
@@ -416,6 +467,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a57ad98e633469f0778eddcde23e04470" title="Return the number of entries in use.">count()</a> to count; returns false without a change if count is not less than the current capacity. </p>
 
 </div>
 </div>
@@ -444,6 +497,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Overwrite entry index from local_addr, including its descriptor if it has a <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a> (otherwise <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e" title="Return the cached flag that says every entry has a memory-region descriptor.">check_mr()</a> becomes false). </p>
+<p>Returns false if index is not less than the capacity. </p>
 
 </div>
 </div>
@@ -485,6 +541,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Overwrite entry index with buf and len and, if mr is given, its descriptor (otherwise <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html#a759a8def024fdcc0de2443966b59b23e" title="Return the cached flag that says every entry has a memory-region descriptor.">check_mr()</a> becomes false). </p>
+<p>Returns false if index is not less than the capacity. </p>
+
 </div>
 </div>
 <a id="aeb29c451368489416a60f612d82e629e" name="aeb29c451368489416a60f612d82e629e"></a>
@@ -512,6 +571,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the descriptor of entry index from mr; returns false if index is not less than the capacity or mr is NULL. </p>
 
 </div>
 </div>

@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('xpm_2Module_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">Module.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Xpm::Module, the register map and control functions of an XPM (accessed through Cphw::Reg), and the statistics records it returns.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="cphw_2Reg_8hh.html">psdaq/cphw/Reg.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="cphw_2Reg64_8hh.html">psdaq/cphw/Reg64.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AmcPLL_8hh.html">psdaq/cphw/AmcPLL.hh</a>&quot;</code><br />
@@ -110,16 +113,22 @@ $(document).ready(function(){initNavTree('xpm_2Module_8hh.html',''); initResizab
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1TimingCounts.html">Pds::Xpm::TimingCounts</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Snapshot of the counters of one timing receiver (<a class="el" href="classPds_1_1Cphw_1_1TimingRx.html">Cphw::TimingRx</a>), as built by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a>.  <a href="classPds_1_1Xpm_1_1TimingCounts.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PllStats.html">Pds::Xpm::PllStats</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status of one AMC PLL, as returned by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac0344adec34fe95b2f598a6d47c37bab" title="Select AMC idx and return its PLL status (Status0, Status1, Count0, Count1).">Module::pllStat()</a>.  <a href="classPds_1_1Xpm_1_1PllStats.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1CoreCounts.html">Pds::Xpm::CoreCounts</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counters of the two timing receivers, as returned by <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a>.  <a href="classPds_1_1Xpm_1_1CoreCounts.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1L0Stats.html">Pds::Xpm::L0Stats</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">L0 trigger statistics of the selected partition, as sampled by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a>.  <a href="classPds_1_1Xpm_1_1L0Stats.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html">Pds::Xpm::LinkStatus</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status of one link, as returned by <a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4" title="Select the link and return its status (see LinkStatus).">Module::linkStatus()</a>.  <a href="classPds_1_1Xpm_1_1LinkStatus.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1Module.html">Pds::Xpm::Module</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register map of an XPM, laid out so that member addresses equal register offsets (see <a class="el" href="classPds_1_1Xpm_1_1Module.html#ab108f11faea94cb49f39e2f641d2961e" title="Construct a Module with placement new at address 0 and return it, so that member addresses are regist...">locate()</a>), with functions that select a partition, link or AMC through the _index register and read or write fields of the selected registers.  <a href="classPds_1_1Xpm_1_1Module.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -128,9 +137,13 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Xpm" id="r_namespacePds_1_1Xpm"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Xpm.html">Pds::Xpm</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Xpm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the XPM register access and control code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Xpm::Module, the register map and control functions of an XPM (accessed through Cphw::Reg), and the statistics records it returns. </p>
+<p>Register bit layouts below are quoted from the comments in this header. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

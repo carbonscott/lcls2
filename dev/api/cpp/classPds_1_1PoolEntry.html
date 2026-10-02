@@ -100,27 +100,36 @@ $(document).ready(function(){initNavTree('classPds_1_1PoolEntry.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p>Header in front of each pool buffer: two words used as queue links while the buffer is free, the owning <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pool</a> and a tag.  
+ <a href="classPds_1_1PoolEntry.html#details">More...</a></p>
+
 <p><code>#include &lt;PoolEntry.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa417fad8afcd2272879b5adbc5c0c8ff" id="r_aa417fad8afcd2272879b5adbc5c0c8ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#aa417fad8afcd2272879b5adbc5c0c8ff">PoolEntry</a> (<a class="el" href="classPds_1_1Pool.html">Pool</a> *)</td></tr>
+<tr class="memdesc:aa417fad8afcd2272879b5adbc5c0c8ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the owning pool and set the tag to 0xffffffff.  <br /></td></tr>
 <tr class="separator:aa417fad8afcd2272879b5adbc5c0c8ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fb734e089be79062894aa6284d4de18" id="r_a6fb734e089be79062894aa6284d4de18"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#a6fb734e089be79062894aa6284d4de18">operator new</a> (size_t, char *)</td></tr>
+<tr class="memdesc:a6fb734e089be79062894aa6284d4de18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Placement new: return p (the size is not used).  <br /></td></tr>
 <tr class="separator:a6fb734e089be79062894aa6284d4de18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa2555f10e4791b61b715b3f338384bb2" id="r_aa2555f10e4791b61b715b3f338384bb2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPds_1_1PoolEntry.html">PoolEntry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#aa2555f10e4791b61b715b3f338384bb2">entry</a> (void *buffer)</td></tr>
+<tr class="memdesc:aa2555f10e4791b61b715b3f338384bb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header that precedes the user buffer buffer.  <br /></td></tr>
 <tr class="separator:aa2555f10e4791b61b715b3f338384bb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad77f5617b03c7ce1e7712b799de3439f" id="r_ad77f5617b03c7ce1e7712b799de3439f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#ad77f5617b03c7ce1e7712b799de3439f">_opaque</a> [2]</td></tr>
+<tr class="memdesc:ad77f5617b03c7ce1e7712b799de3439f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Two words used as the <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a> queue links while the buffer is on the free list of a <a class="el" href="classPds_1_1GenericPool.html" title="Pool whose buffers are carved from one new[] block and kept on a Queue of PoolEntry (spin-locked); al...">GenericPool</a>.  <br /></td></tr>
 <tr class="separator:ad77f5617b03c7ce1e7712b799de3439f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f129bc40e925e68d436931a8b14ccad" id="r_a0f129bc40e925e68d436931a8b14ccad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Pool.html">Pool</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#a0f129bc40e925e68d436931a8b14ccad">_pool</a></td></tr>
+<tr class="memdesc:a0f129bc40e925e68d436931a8b14ccad"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pool</a> that owns the buffer; <a class="el" href="classPds_1_1Pool.html#aed3d2bbb85d64e9b91e51f33e2a36640" title="Return the user buffer buffer to the pool recorded in its PoolEntry header and count the free.">Pool::free(void*)</a> returns it there.  <br /></td></tr>
 <tr class="separator:a0f129bc40e925e68d436931a8b14ccad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5082976ab68a08f6e5197677d9143989" id="r_a5082976ab68a08f6e5197677d9143989"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#a5082976ab68a08f6e5197677d9143989">_tag</a></td></tr>
+<tr class="memdesc:a5082976ab68a08f6e5197677d9143989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to 0xffffffff by the constructor; not read elsewhere in psdaq.  <br /></td></tr>
 <tr class="separator:a5082976ab68a08f6e5197677d9143989"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -128,7 +137,10 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a1090f24dfedcc5641b91c50eedaf3c20" id="r_a1090f24dfedcc5641b91c50eedaf3c20"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PoolEntry.html#a1090f24dfedcc5641b91c50eedaf3c20">PoolEntry</a> ()</td></tr>
 <tr class="separator:a1090f24dfedcc5641b91c50eedaf3c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Header in front of each pool buffer: two words used as queue links while the buffer is free, the owning <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pool</a> and a tag. </p>
+<p>The user buffer starts right after it. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa417fad8afcd2272879b5adbc5c0c8ff" name="aa417fad8afcd2272879b5adbc5c0c8ff"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa417fad8afcd2272879b5adbc5c0c8ff">&#9670;&#160;</a></span>PoolEntry() <span class="overload">[1/2]</span></h2>
 
@@ -152,6 +164,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Record the owning pool and set the tag to 0xffffffff. </p>
 
 </div>
 </div>
@@ -205,6 +219,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header that precedes the user buffer buffer. </p>
+
 </div>
 </div>
 <a id="a6fb734e089be79062894aa6284d4de18" name="a6fb734e089be79062894aa6284d4de18"></a>
@@ -241,6 +257,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Placement new: return p (the size is not used). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -256,6 +274,8 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Two words used as the <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a> queue links while the buffer is on the free list of a <a class="el" href="classPds_1_1GenericPool.html" title="Pool whose buffers are carved from one new[] block and kept on a Queue of PoolEntry (spin-locked); al...">GenericPool</a>. </p>
+
 </div>
 </div>
 <a id="a0f129bc40e925e68d436931a8b14ccad" name="a0f129bc40e925e68d436931a8b14ccad"></a>
@@ -270,6 +290,8 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pool</a> that owns the buffer; <a class="el" href="classPds_1_1Pool.html#aed3d2bbb85d64e9b91e51f33e2a36640" title="Return the user buffer buffer to the pool recorded in its PoolEntry header and count the free.">Pool::free(void*)</a> returns it there. </p>
+
 </div>
 </div>
 <a id="a5082976ab68a08f6e5197677d9143989" name="a5082976ab68a08f6e5197677d9143989"></a>
@@ -283,6 +305,8 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set to 0xffffffff by the constructor; not read elsewhere in psdaq. </p>
 
 </div>
 </div>

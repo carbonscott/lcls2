@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('drp_2FileWriter_8hh.html',''); initRes
   <div class="headertitle"><div class="title">FileWriter.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Buffered file writers: single-threaded (BufferedFileWriter), with a writer thread (BufferedFileWriterMT), round-robin over several files (BufferedMultiFileWriterMT), and the small-data SmdWriter.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
@@ -110,12 +113,16 @@ $(document).ready(function(){initNavTree('drp_2FileWriter_8hh.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html">Drp::BufferedFileWriter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-threaded file writer that collects events in one memory buffer and writes the buffer when the next event does not fit or the batch is more than 2 s old (by timestamp seconds).  <a href="classDrp_1_1BufferedFileWriter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html">Drp::BufferedFileWriterMT</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">File writer with a pool of page-aligned buffers and a writer thread: <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> fills buffers and queues full ones, and the thread writes them to the file.  <a href="classDrp_1_1BufferedFileWriterMT.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html">Drp::BufferedMultiFileWriterMT</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes events round-robin to several <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> files.  <a href="classDrp_1_1BufferedMultiFileWriterMT.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriter.html">Drp::SmdWriter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Small-data writer that forwards open, close and writeEvent to an internal <a class="el" href="classDrp_1_1BufferedFileWriter.html" title="Single-threaded file writer that collects events in one memory buffer and writes the buffer when the ...">BufferedFileWriter</a>.  <a href="classDrp_1_1SmdWriter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -124,7 +131,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Buffered file writers: single-threaded (BufferedFileWriter), with a writer thread (BufferedFileWriterMT), round-robin over several files (BufferedMultiFileWriterMT), and the small-data SmdWriter. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1PVMonitorCb.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Callback interface for PV events.  
+ <a href="classPds__Epics_1_1PVMonitorCb.html#details">More...</a></p>
+
 <p><code>#include &lt;PVMonitorCb.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds__Epics_1_1MonTracker.html">Pds_Epics::MonTracker</a>, <a class="el" href="classPds__Epics_1_1PVBase.html">Pds_Epics::PVBase</a>, and <a class="el" href="classPds__Epics_1_1PvServer.html">Pds_Epics::PvServer</a>.</p>
@@ -104,15 +107,22 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1PVMonitorCb.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae955e7cb71f1a25af022b2fce366a19f" id="r_ae955e7cb71f1a25af022b2fce366a19f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#ae955e7cb71f1a25af022b2fce366a19f">~PVMonitorCb</a> ()</td></tr>
+<tr class="memdesc:ae955e7cb71f1a25af022b2fce366a19f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:ae955e7cb71f1a25af022b2fce366a19f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac8ce185ffe4e4cb5d417a13bd9fb491" id="r_aac8ce185ffe4e4cb5d417a13bd9fb491"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aac8ce185ffe4e4cb5d417a13bd9fb491">onConnect</a> ()</td></tr>
+<tr class="memdesc:aac8ce185ffe4e4cb5d417a13bd9fb491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on the first data update after connecting; does nothing by default.  <br /></td></tr>
 <tr class="separator:aac8ce185ffe4e4cb5d417a13bd9fb491"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad2b2feec0fbca0aa416456c307a11b6" id="r_aad2b2feec0fbca0aa416456c307a11b6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aad2b2feec0fbca0aa416456c307a11b6">onDisconnect</a> ()</td></tr>
+<tr class="memdesc:aad2b2feec0fbca0aa416456c307a11b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on a disconnect; does nothing by default.  <br /></td></tr>
 <tr class="separator:aad2b2feec0fbca0aa416456c307a11b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefb362519801cc2236c0eb7eb29df5d0" id="r_aefb362519801cc2236c0eb7eb29df5d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aefb362519801cc2236c0eb7eb29df5d0">updated</a> ()=0</td></tr>
+<tr class="memdesc:aefb362519801cc2236c0eb7eb29df5d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: called for each update of the PV.  <br /></td></tr>
 <tr class="separator:aefb362519801cc2236c0eb7eb29df5d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Callback interface for PV events. </p>
+<p><a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a> calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aefb362519801cc2236c0eb7eb29df5d0" title="Pure virtual: called for each update of the PV.">updated()</a> for each monitor update; <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> also calls <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aac8ce185ffe4e4cb5d417a13bd9fb491" title="Called by MonTracker on the first data update after connecting; does nothing by default.">onConnect()</a> and <a class="el" href="classPds__Epics_1_1PVMonitorCb.html#aad2b2feec0fbca0aa416456c307a11b6" title="Called by MonTracker on a disconnect; does nothing by default.">onDisconnect()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae955e7cb71f1a25af022b2fce366a19f" name="ae955e7cb71f1a25af022b2fce366a19f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae955e7cb71f1a25af022b2fce366a19f">&#9670;&#160;</a></span>~PVMonitorCb()</h2>
 
@@ -135,6 +145,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -161,6 +173,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on the first data update after connecting; does nothing by default. </p>
 
 <p>Reimplemented in <a class="el" href="classDrp_1_1PvMonitor.html#a4efbdccfd0423de60019e07164cd98db">Drp::PvMonitor</a>.</p>
 
@@ -189,6 +203,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Called by <a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> on a disconnect; does nothing by default. </p>
+
 <p>Reimplemented in <a class="el" href="classDrp_1_1PvMonitor.html#aa2e1f659ebaf935b248708d55653c3d4">Drp::PvMonitor</a>.</p>
 
 </div>
@@ -215,6 +231,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: called for each update of the PV. </p>
 
 <p>Implemented in <a class="el" href="classPds__Epics_1_1PVBase.html#aaab2a5707d8eccb45c6984dc57987616">Pds_Epics::PVBase</a>, <a class="el" href="classPds__Epics_1_1PvServer.html#a1ee2581bde26294cfd9c49c8b000aaeb">Pds_Epics::PvServer</a>, and <a class="el" href="classDrp_1_1PvMonitor.html#abd24d4cabb0e24f96679d3c3dd2bf50f">Drp::PvMonitor</a>.</p>
 

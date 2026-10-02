@@ -97,26 +97,39 @@ $(document).ready(function(){initNavTree('classBld_1_1HpsEventIterator.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Decodes the events of an HPS BLD packet into one <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a>, which can hold up to 31 channel values after it.  
+ <a href="classBld_1_1HpsEventIterator.html#details">More...</a></p>
+
 <p><code>#include &lt;HpsEventIterator.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9418b00c58ab647b84ad03aa61931ec3" id="r_a9418b00c58ab647b84ad03aa61931ec3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#a9418b00c58ab647b84ad03aa61931ec3">HpsEventIterator</a> (const char *b, size_t sz)</td></tr>
+<tr class="memdesc:a9418b00c58ab647b84ad03aa61931ec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode the first event of the sz-byte packet at b and check that sz equals the first event's size plus a whole number of later events (see <a class="el" href="classBld_1_1HpsEventIterator.html#a968b14d06628d67965dd4be383934899" title="Return the result of the packet size check made by the constructor.">valid()</a>).  <br /></td></tr>
 <tr class="separator:a9418b00c58ab647b84ad03aa61931ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a968b14d06628d67965dd4be383934899" id="r_a968b14d06628d67965dd4be383934899"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#a968b14d06628d67965dd4be383934899">valid</a> () const</td></tr>
+<tr class="memdesc:a968b14d06628d67965dd4be383934899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the result of the packet size check made by the constructor.  <br /></td></tr>
 <tr class="separator:a968b14d06628d67965dd4be383934899"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a001579a0bc485db0a0c7a9fdb617003a" id="r_a001579a0bc485db0a0c7a9fdb617003a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#a001579a0bc485db0a0c7a9fdb617003a">next</a> ()</td></tr>
+<tr class="memdesc:a001579a0bc485db0a0c7a9fdb617003a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode the next event into the current <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a>, adding its pulse ID and time stamp offsets to the first event's values.  <br /></td></tr>
 <tr class="separator:a001579a0bc485db0a0c7a9fdb617003a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a273979a512953b7fbe879a10e3bf1561" id="r_a273979a512953b7fbe879a10e3bf1561"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classBld_1_1HpsEvent.html">HpsEvent</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#a273979a512953b7fbe879a10e3bf1561">operator*</a> ()</td></tr>
+<tr class="memdesc:a273979a512953b7fbe879a10e3bf1561"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current decoded event.  <br /></td></tr>
 <tr class="separator:a273979a512953b7fbe879a10e3bf1561"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae164a8c5c2685e169482a8457da1ee5d" id="r_ae164a8c5c2685e169482a8457da1ee5d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#ae164a8c5c2685e169482a8457da1ee5d">id</a> () const</td></tr>
+<tr class="memdesc:ae164a8c5c2685e169482a8457da1ee5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the ID, which is initialized to 0 and never set.  <br /></td></tr>
 <tr class="separator:ae164a8c5c2685e169482a8457da1ee5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac28bf763cc2d31aded6aeaf5d3b11ae" id="r_aac28bf763cc2d31aded6aeaf5d3b11ae"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#aac28bf763cc2d31aded6aeaf5d3b11ae">nchannels</a> () const</td></tr>
+<tr class="memdesc:aac28bf763cc2d31aded6aeaf5d3b11ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of channels, the number of bits set in the first event's channel mask.  <br /></td></tr>
 <tr class="separator:aac28bf763cc2d31aded6aeaf5d3b11ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad23fa7572cc8aba2cbc2f22d966a6619" id="r_ad23fa7572cc8aba2cbc2f22d966a6619"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEventIterator.html#ad23fa7572cc8aba2cbc2f22d966a6619">eventSize</a> () const</td></tr>
+<tr class="memdesc:ad23fa7572cc8aba2cbc2f22d966a6619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of an <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a> plus its channel values, in bytes.  <br /></td></tr>
 <tr class="separator:ad23fa7572cc8aba2cbc2f22d966a6619"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Decodes the events of an HPS BLD packet into one <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a>, which can hold up to 31 channel values after it. </p>
+<p>The first event is decoded by the constructor; <a class="el" href="classBld_1_1HpsEventIterator.html#a001579a0bc485db0a0c7a9fdb617003a" title="Decode the next event into the current HpsEvent, adding its pulse ID and time stamp offsets to the fi...">next()</a> decodes each later one. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9418b00c58ab647b84ad03aa61931ec3" name="a9418b00c58ab647b84ad03aa61931ec3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9418b00c58ab647b84ad03aa61931ec3">&#9670;&#160;</a></span>HpsEventIterator()</h2>
 
@@ -151,6 +164,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Decode the first event of the sz-byte packet at b and check that sz equals the first event's size plus a whole number of later events (see <a class="el" href="classBld_1_1HpsEventIterator.html#a968b14d06628d67965dd4be383934899" title="Return the result of the packet size check made by the constructor.">valid()</a>). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -177,6 +192,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the size of an <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a> plus its channel values, in bytes. </p>
+
 </div>
 </div>
 <a id="ae164a8c5c2685e169482a8457da1ee5d" name="ae164a8c5c2685e169482a8457da1ee5d"></a>
@@ -201,6 +218,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the ID, which is initialized to 0 and never set. </p>
 
 </div>
 </div>
@@ -227,6 +246,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of channels, the number of bits set in the first event's channel mask. </p>
+
 </div>
 </div>
 <a id="a001579a0bc485db0a0c7a9fdb617003a" name="a001579a0bc485db0a0c7a9fdb617003a"></a>
@@ -243,6 +264,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Decode the next event into the current <a class="el" href="classBld_1_1HpsEvent.html" title="One event decoded from an HPS BLD packet; the channel values follow the object in memory (see channel...">HpsEvent</a>, adding its pulse ID and time stamp offsets to the first event's values. </p>
+<p>Returns false at the end of the packet. </p>
 
 </div>
 </div>
@@ -269,6 +293,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the current decoded event. </p>
+
 </div>
 </div>
 <a id="a968b14d06628d67965dd4be383934899" name="a968b14d06628d67965dd4be383934899"></a>
@@ -293,6 +319,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the result of the packet size check made by the constructor. </p>
 
 </div>
 </div>

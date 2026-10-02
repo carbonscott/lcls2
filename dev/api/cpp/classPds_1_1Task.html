@@ -99,45 +99,64 @@ $(document).ready(function(){initNavTree('classPds_1_1Task.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
+<p>Thread that runs <a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> jobs from a queue in order (TaskMainLoop).  
+ <a href="classPds_1_1Task.html#details">More...</a></p>
+
 <p><code>#include &lt;Task.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a8f2b0acca773f14cc6778e8ed9898826" id="r_a8f2b0acca773f14cc6778e8ed9898826"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a8f2b0acca773f14cc6778e8ed9898826">MakeThisATaskFlag</a> { <a class="el" href="classPds_1_1Task.html#a8f2b0acca773f14cc6778e8ed9898826ac9f4d0a2ee7b39000b9789677edfe5d2">MakeThisATask</a>
  }</td></tr>
+<tr class="memdesc:a8f2b0acca773f14cc6778e8ed9898826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tag type that selects the constructor which wraps the calling thread instead of creating one.  <a href="classPds_1_1Task.html#a8f2b0acca773f14cc6778e8ed9898826">More...</a><br /></td></tr>
 <tr class="separator:a8f2b0acca773f14cc6778e8ed9898826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a391fb7d4ba39899995982014cd3a45ce" id="r_a391fb7d4ba39899995982014cd3a45ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a391fb7d4ba39899995982014cd3a45ce">Task</a> (const <a class="el" href="classPds_1_1TaskObject.html">TaskObject</a> &amp;)</td></tr>
+<tr class="memdesc:a391fb7d4ba39899995982014cd3a45ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters, create the job queue and pending semaphore and start the thread with pthread_create() (stack size and priority from the parameters); a creation error is ignored.  <br /></td></tr>
 <tr class="separator:a391fb7d4ba39899995982014cd3a45ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae116f73a9bf5920de6a52ebf0f0ca205" id="r_ae116f73a9bf5920de6a52ebf0f0ca205"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#ae116f73a9bf5920de6a52ebf0f0ca205">Task</a> (const <a class="el" href="classPds_1_1Task.html">Task</a> &amp;)</td></tr>
+<tr class="memdesc:ae116f73a9bf5920de6a52ebf0f0ca205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Share the thread, queue, semaphore and parameters of aTask and increment the shared reference count.  <br /></td></tr>
 <tr class="separator:ae116f73a9bf5920de6a52ebf0f0ca205"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d7b76a46c57d9d117ca3b5c1f792987" id="r_a5d7b76a46c57d9d117ca3b5c1f792987"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a5d7b76a46c57d9d117ca3b5c1f792987">Task</a> (<a class="el" href="classPds_1_1Task.html#a8f2b0acca773f14cc6778e8ed9898826">MakeThisATaskFlag</a>)</td></tr>
+<tr class="memdesc:a5d7b76a46c57d9d117ca3b5c1f792987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrap the calling thread: create default <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters (thread ID of the caller), a job queue and a pending semaphore, without starting a thread.  <br /></td></tr>
 <tr class="separator:a5d7b76a46c57d9d117ca3b5c1f792987"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57f4a0377aefbe09b5a62b3555390b90" id="r_a57f4a0377aefbe09b5a62b3555390b90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a57f4a0377aefbe09b5a62b3555390b90">operator=</a> (const <a class="el" href="classPds_1_1Task.html">Task</a> &amp;)</td></tr>
+<tr class="memdesc:a57f4a0377aefbe09b5a62b3555390b90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Share the thread, queue, semaphore and parameters of aTask; unlike the copy constructor, the reference count is not incremented.  <br /></td></tr>
 <tr class="separator:a57f4a0377aefbe09b5a62b3555390b90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d48bcf9448e1d850c3ea27e644d2bc6" id="r_a3d48bcf9448e1d850c3ea27e644d2bc6"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1TaskObject.html">TaskObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a3d48bcf9448e1d850c3ea27e644d2bc6">parameters</a> () const</td></tr>
+<tr class="memdesc:a3d48bcf9448e1d850c3ea27e644d2bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters.  <br /></td></tr>
 <tr class="separator:a3d48bcf9448e1d850c3ea27e644d2bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1adcbfb20264a839917064e478f7284" id="r_ab1adcbfb20264a839917064e478f7284"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#ab1adcbfb20264a839917064e478f7284">call</a> (<a class="el" href="classPds_1_1Routine.html">Routine</a> *)</td></tr>
+<tr class="memdesc:ab1adcbfb20264a839917064e478f7284"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert routine at the tail of the job queue and give the pending semaphore if the queue was empty.  <br /></td></tr>
 <tr class="separator:ab1adcbfb20264a839917064e478f7284"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c2f0d2f9c93774539161e265a2a746a" id="r_a0c2f0d2f9c93774539161e265a2a746a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a0c2f0d2f9c93774539161e265a2a746a">destroy</a> ()</td></tr>
+<tr class="memdesc:a0c2f0d2f9c93774539161e265a2a746a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrement the shared reference count; if others remain, delete this handle, and if it reaches 0, queue a <a class="el" href="classPds_1_1TaskDelete.html" title="Routine queued by Task::destroy() so that the task deletes itself from its own thread (per the code c...">TaskDelete</a> so that the thread deletes everything and exits.  <br /></td></tr>
 <tr class="separator:a0c2f0d2f9c93774539161e265a2a746a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0794f2b18786c349ffb8ce48149a031" id="r_ab0794f2b18786c349ffb8ce48149a031"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#ab0794f2b18786c349ffb8ce48149a031">mainLoop</a> ()</td></tr>
+<tr class="memdesc:ab0794f2b18786c349ffb8ce48149a031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run <a class="el" href="classPds_1_1Task.html#af8ffbee698f67534637e0e8c7e868c16" title="Lets TaskMainLoop() reach the private job queue and semaphore.">TaskMainLoop()</a> on the calling thread (used with the MakeThisATask constructor); never returns.  <br /></td></tr>
 <tr class="separator:ab0794f2b18786c349ffb8ce48149a031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fd0cfa5a44947f40f6d33abce096407" id="r_a1fd0cfa5a44947f40f6d33abce096407"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a1fd0cfa5a44947f40f6d33abce096407">signal</a> (int signal)</td></tr>
+<tr class="memdesc:a1fd0cfa5a44947f40f6d33abce096407"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send signal to the task thread with pthread_kill().  <br /></td></tr>
 <tr class="separator:a1fd0cfa5a44947f40f6d33abce096407"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afba5d7ec88099554eb571b4f179e4558" id="r_afba5d7ec88099554eb571b4f179e4558"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#afba5d7ec88099554eb571b4f179e4558">is_self</a> () const</td></tr>
+<tr class="memdesc:afba5d7ec88099554eb571b4f179e4558"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the calling thread is the task thread.  <br /></td></tr>
 <tr class="separator:afba5d7ec88099554eb571b4f179e4558"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a4b7553ff124720a24cb8d4c345bad6ee" id="r_a4b7553ff124720a24cb8d4c345bad6ee"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#a4b7553ff124720a24cb8d4c345bad6ee">TaskDelete</a></td></tr>
+<tr class="memdesc:a4b7553ff124720a24cb8d4c345bad6ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lets <a class="el" href="classPds_1_1TaskDelete.html" title="Routine queued by Task::destroy() so that the task deletes itself from its own thread (per the code c...">TaskDelete</a> call the private deleteTask().  <br /></td></tr>
 <tr class="separator:a4b7553ff124720a24cb8d4c345bad6ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8ffbee698f67534637e0e8c7e868c16" id="r_af8ffbee698f67534637e0e8c7e868c16"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html#af8ffbee698f67534637e0e8c7e868c16">TaskMainLoop</a> (void *)</td></tr>
+<tr class="memdesc:af8ffbee698f67534637e0e8c7e868c16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lets <a class="el" href="classPds_1_1Task.html#af8ffbee698f67534637e0e8c7e868c16" title="Lets TaskMainLoop() reach the private job queue and semaphore.">TaskMainLoop()</a> reach the private job queue and semaphore.  <br /></td></tr>
 <tr class="separator:af8ffbee698f67534637e0e8c7e868c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Thread that runs <a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> jobs from a queue in order (TaskMainLoop). </p>
+<p>Copies share the same thread, queue and reference count. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a8f2b0acca773f14cc6778e8ed9898826" name="a8f2b0acca773f14cc6778e8ed9898826"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f2b0acca773f14cc6778e8ed9898826">&#9670;&#160;</a></span>MakeThisATaskFlag</h2>
 
@@ -149,8 +168,11 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Tag type that selects the constructor which wraps the calling thread instead of creating one. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8f2b0acca773f14cc6778e8ed9898826ac9f4d0a2ee7b39000b9789677edfe5d2" name="a8f2b0acca773f14cc6778e8ed9898826ac9f4d0a2ee7b39000b9789677edfe5d2"></a>MakeThisATask&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8f2b0acca773f14cc6778e8ed9898826ac9f4d0a2ee7b39000b9789677edfe5d2" name="a8f2b0acca773f14cc6778e8ed9898826ac9f4d0a2ee7b39000b9789677edfe5d2"></a>MakeThisATask&#160;</td><td class="fielddoc"><p>The only value of the tag. </p>
+</td></tr>
 </table>
 
 </div>
@@ -172,6 +194,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy the <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters, create the job queue and pending semaphore and start the thread with pthread_create() (stack size and priority from the parameters); a creation error is ignored. </p>
+
 </div>
 </div>
 <a id="ae116f73a9bf5920de6a52ebf0f0ca205" name="ae116f73a9bf5920de6a52ebf0f0ca205"></a>
@@ -190,6 +214,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Share the thread, queue, semaphore and parameters of aTask and increment the shared reference count. </p>
+
 </div>
 </div>
 <a id="a5d7b76a46c57d9d117ca3b5c1f792987" name="a5d7b76a46c57d9d117ca3b5c1f792987"></a>
@@ -207,6 +233,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Wrap the calling thread: create default <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters (thread ID of the caller), a job queue and a pending semaphore, without starting a thread. </p>
 
 </div>
 </div>
@@ -227,6 +255,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Insert routine at the tail of the job queue and give the pending semaphore if the queue was empty. </p>
+
 </div>
 </div>
 <a id="a0c2f0d2f9c93774539161e265a2a746a" name="a0c2f0d2f9c93774539161e265a2a746a"></a>
@@ -243,6 +273,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Decrement the shared reference count; if others remain, delete this handle, and if it reaches 0, queue a <a class="el" href="classPds_1_1TaskDelete.html" title="Routine queued by Task::destroy() so that the task deletes itself from its own thread (per the code c...">TaskDelete</a> so that the thread deletes everything and exits. </p>
 
 </div>
 </div>
@@ -261,6 +293,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return true if the calling thread is the task thread. </p>
+
 </div>
 </div>
 <a id="ab0794f2b18786c349ffb8ce48149a031" name="ab0794f2b18786c349ffb8ce48149a031"></a>
@@ -277,6 +311,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Run <a class="el" href="classPds_1_1Task.html#af8ffbee698f67534637e0e8c7e868c16" title="Lets TaskMainLoop() reach the private job queue and semaphore.">TaskMainLoop()</a> on the calling thread (used with the MakeThisATask constructor); never returns. </p>
 
 </div>
 </div>
@@ -296,6 +332,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Share the thread, queue, semaphore and parameters of aTask; unlike the copy constructor, the reference count is not incremented. </p>
+
 </div>
 </div>
 <a id="a3d48bcf9448e1d850c3ea27e644d2bc6" name="a3d48bcf9448e1d850c3ea27e644d2bc6"></a>
@@ -312,6 +350,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the <a class="el" href="classPds_1_1TaskObject.html" title="Thread parameters of a Task: name, priority, stack size and base, queue size and pthread attributes,...">TaskObject</a> parameters. </p>
 
 </div>
 </div>
@@ -330,6 +370,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send signal to the task thread with pthread_kill(). </p>
 
 </div>
 </div>
@@ -353,6 +395,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Lets <a class="el" href="classPds_1_1TaskDelete.html" title="Routine queued by Task::destroy() so that the task deletes itself from its own thread (per the code c...">TaskDelete</a> call the private deleteTask(). </p>
 
 </div>
 </div>
@@ -379,6 +423,9 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Lets <a class="el" href="classPds_1_1Task.html#af8ffbee698f67534637e0e8c7e868c16" title="Lets TaskMainLoop() reach the private job queue and semaphore.">TaskMainLoop()</a> reach the private job queue and semaphore. </p>
+<p>Never returns. </p>
 
 </div>
 </div>

@@ -97,28 +97,42 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1PVSeq.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>EPICS PVs of one XPM sequence engine, named pvbase, a colon and the PV name.  
+ <a href="classPds_1_1Xpm_1_1PVSeq.html#details">More...</a></p>
+
 <p><code>#include &lt;PVSeq.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a83be1ed991507531c55ebd3db57ed023" id="r_a83be1ed991507531c55ebd3db57ed023"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a83be1ed991507531c55ebd3db57ed023">PVSeq</a> (<a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html">XpmSequenceEngine</a> &amp;, const std::string &amp;pvbase)</td></tr>
+<tr class="memdesc:a83be1ed991507531c55ebd3db57ed023"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the PVs for pvbase (DESCINSTRS, INSTRCNT, SEQIDX, SEQDESC, SEQ00IDX, SEQ00DESC, RMVIDX, RUNIDX and RUNNING, plus the monitored INSTRS, RMVSEQ, INS, SCHEDRESET and FORCERESET).  <br /></td></tr>
 <tr class="separator:a83be1ed991507531c55ebd3db57ed023"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af46070502462adcc499f4a757860573a" id="r_af46070502462adcc499f4a757860573a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#af46070502462adcc499f4a757860573a">~PVSeq</a> ()</td></tr>
+<tr class="memdesc:af46070502462adcc499f4a757860573a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the PVs and any parsed instructions not yet inserted.  <br /></td></tr>
 <tr class="separator:af46070502462adcc499f4a757860573a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e6f9166616c70e280f4a43bb2210c00" id="r_a6e6f9166616c70e280f4a43bb2210c00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a6e6f9166616c70e280f4a43bb2210c00">cacheSeq</a> (pvd::shared_vector&lt; const int &gt; &amp;)</td></tr>
+<tr class="memdesc:a6e6f9166616c70e280f4a43bb2210c00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace the parsed instructions with those decoded from the INSTRS array and write their number to INSTRCNT.  <br /></td></tr>
 <tr class="separator:a6e6f9166616c70e280f4a43bb2210c00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3451d6bf77ebf36ef9ce1610bbd051bd" id="r_a3451d6bf77ebf36ef9ce1610bbd051bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a3451d6bf77ebf36ef9ce1610bbd051bd">insertSeq</a> ()</td></tr>
+<tr class="memdesc:a3451d6bf77ebf36ef9ce1610bbd051bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert the parsed instructions into the engine and, on success, write the returned index to SEQ00IDX, give up the instructions (the engine owns them) and dump the engine.  <br /></td></tr>
 <tr class="separator:a3451d6bf77ebf36ef9ce1610bbd051bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3d710e4f29f4e9ddce155863c235686" id="r_ab3d710e4f29f4e9ddce155863c235686"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#ab3d710e4f29f4e9ddce155863c235686">removeSeq</a> ()</td></tr>
+<tr class="memdesc:ab3d710e4f29f4e9ddce155863c235686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the sequence whose index is in RMVIDX if that index is 2 to 63, clear its description and write 0 to SEQ00IDX.  <br /></td></tr>
 <tr class="separator:ab3d710e4f29f4e9ddce155863c235686"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45541fdee0f0be3229bbab17dd6d588c" id="r_a45541fdee0f0be3229bbab17dd6d588c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a45541fdee0f0be3229bbab17dd6d588c">scheduleReset</a> ()</td></tr>
+<tr class="memdesc:a45541fdee0f0be3229bbab17dd6d588c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the sequence whose index is in RUNIDX: write RUNNING (1 if the index is above 1, else 0), enable the engine, set its start address with sync value 1 and reset it.  <br /></td></tr>
 <tr class="separator:a45541fdee0f0be3229bbab17dd6d588c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aead4ded261a10104570ad8cf086d22e6" id="r_aead4ded261a10104570ad8cf086d22e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#aead4ded261a10104570ad8cf086d22e6">forceReset</a> ()</td></tr>
+<tr class="memdesc:aead4ded261a10104570ad8cf086d22e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a45541fdee0f0be3229bbab17dd6d588c" title="Start the sequence whose index is in RUNIDX: write RUNNING (1 if the index is above 1,...">scheduleReset()</a> but sets the start address with sync value 0.  <br /></td></tr>
 <tr class="separator:aead4ded261a10104570ad8cf086d22e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab60f1d640355f1cf3bdba2fe0507e91d" id="r_ab60f1d640355f1cf3bdba2fe0507e91d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#ab60f1d640355f1cf3bdba2fe0507e91d">checkPoint</a> (unsigned)</td></tr>
+<tr class="memdesc:ab60f1d640355f1cf3bdba2fe0507e91d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write 0 to RUNNING; the argument is not used.  <br /></td></tr>
 <tr class="separator:ab60f1d640355f1cf3bdba2fe0507e91d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EPICS PVs of one XPM sequence engine, named pvbase, a colon and the PV name. </p>
+<p>Writing a non-zero value to INS, RMVSEQ, SCHEDRESET or FORCERESET inserts, removes or starts a sequence; INSTRS receives the encoded instructions. Created by <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61" title="Delete earlier PVs and create the control PVs named title, a colon and the control name,...">PVCtrls::allocate()</a> with pvbase ending in SEQENG:0. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a83be1ed991507531c55ebd3db57ed023" name="a83be1ed991507531c55ebd3db57ed023"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a83be1ed991507531c55ebd3db57ed023">&#9670;&#160;</a></span>PVSeq()</h2>
 
@@ -145,6 +159,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create the PVs for pvbase (DESCINSTRS, INSTRCNT, SEQIDX, SEQDESC, SEQ00IDX, SEQ00DESC, RMVIDX, RUNIDX and RUNNING, plus the monitored INSTRS, RMVSEQ, INS, SCHEDRESET and FORCERESET). </p>
+<p>Mark descriptions 0 and 1 as reserved and write 0 to SEQ00IDX. </p>
+
 </div>
 </div>
 <a id="af46070502462adcc499f4a757860573a" name="af46070502462adcc499f4a757860573a"></a>
@@ -161,6 +178,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delete the PVs and any parsed instructions not yet inserted. </p>
 
 </div>
 </div>
@@ -181,6 +200,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Replace the parsed instructions with those decoded from the INSTRS array and write their number to INSTRCNT. </p>
+<p>Element 0 is the instruction count; each instruction then takes 7 ints (argument count, opcode as in psdaq/seq/seq.py, arguments). Unknown opcodes, including beam requests, are skipped with a message. </p>
+
 </div>
 </div>
 <a id="ab60f1d640355f1cf3bdba2fe0507e91d" name="ab60f1d640355f1cf3bdba2fe0507e91d"></a>
@@ -199,6 +221,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Write 0 to RUNNING; the argument is not used. </p>
+
 </div>
 </div>
 <a id="aead4ded261a10104570ad8cf086d22e6" name="aead4ded261a10104570ad8cf086d22e6"></a>
@@ -215,6 +239,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Same as <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#a45541fdee0f0be3229bbab17dd6d588c" title="Start the sequence whose index is in RUNIDX: write RUNNING (1 if the index is above 1,...">scheduleReset()</a> but sets the start address with sync value 0. </p>
 
 </div>
 </div>
@@ -233,6 +259,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Insert the parsed instructions into the engine and, on success, write the returned index to SEQ00IDX, give up the instructions (the engine owns them) and dump the engine. </p>
+<p>On failure, print the error code and keep the instructions. </p>
+
 </div>
 </div>
 <a id="ab3d710e4f29f4e9ddce155863c235686" name="ab3d710e4f29f4e9ddce155863c235686"></a>
@@ -250,6 +279,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Remove the sequence whose index is in RMVIDX if that index is 2 to 63, clear its description and write 0 to SEQ00IDX. </p>
+<p>Prints a message and does nothing if RMVIDX is not connected or the index is out of range. </p>
+
 </div>
 </div>
 <a id="a45541fdee0f0be3229bbab17dd6d588c" name="a45541fdee0f0be3229bbab17dd6d588c"></a>
@@ -266,6 +298,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Start the sequence whose index is in RUNIDX: write RUNNING (1 if the index is above 1, else 0), enable the engine, set its start address with sync value 1 and reset it. </p>
+<p>Does nothing if RUNIDX is not connected. </p>
 
 </div>
 </div>

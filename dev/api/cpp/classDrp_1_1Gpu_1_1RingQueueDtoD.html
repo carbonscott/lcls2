@@ -97,13 +97,18 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1RingQueueDtoD.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Lock-free ring of values of type T with one producer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a170ed9dbc1f6abb781c521e5200d16bd" title="Store value at head and advance when not full.">push()</a>) and one consumer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a64b671f357a344ff4d976ab9f69aaff1" title="Fetch value at tail and advance when not empty.">pop()</a>).  
+ <a href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#details">More...</a></p>
+
 <p><code>#include &lt;RingQueue_DtoD.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a331bd8f91d4213357d2005d5de0cb738" id="r_a331bd8f91d4213357d2005d5de0cb738"><td class="memItemLeft" align="right" valign="top">__host__&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a331bd8f91d4213357d2005d5de0cb738">RingQueueDtoD</a> (const unsigned capacity)</td></tr>
+<tr class="memdesc:a331bd8f91d4213357d2005d5de0cb738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the pinned head and tail words and a pinned ring of capacity values, starting empty; asserts that capacity is a power of 2.  <br /></td></tr>
 <tr class="separator:a331bd8f91d4213357d2005d5de0cb738"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ca87e77456f655a77bba013f19ee44d" id="r_a7ca87e77456f655a77bba013f19ee44d"><td class="memItemLeft" align="right" valign="top">__host__&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a7ca87e77456f655a77bba013f19ee44d">~RingQueueDtoD</a> ()</td></tr>
+<tr class="memdesc:a7ca87e77456f655a77bba013f19ee44d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the pinned ring, tail and head.  <br /></td></tr>
 <tr class="separator:a7ca87e77456f655a77bba013f19ee44d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a170ed9dbc1f6abb781c521e5200d16bd" id="r_a170ed9dbc1f6abb781c521e5200d16bd"><td class="memItemLeft" align="right" valign="top">__device__ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a170ed9dbc1f6abb781c521e5200d16bd">push</a> (const T &amp;value) const</td></tr>
 <tr class="memdesc:a170ed9dbc1f6abb781c521e5200d16bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store value at head and advance when not full.  <br /></td></tr>
@@ -112,17 +117,26 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a64b671f357a344ff4d976ab9f69aaff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetch value at tail and advance when not empty.  <br /></td></tr>
 <tr class="separator:a64b671f357a344ff4d976ab9f69aaff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9cab67b486c7d74383b5ac87b605672" id="r_ae9cab67b486c7d74383b5ac87b605672"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#ae9cab67b486c7d74383b5ac87b605672">head</a> () const</td></tr>
+<tr class="memdesc:ae9cab67b486c7d74383b5ac87b605672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the head, the next slot to be pushed.  <br /></td></tr>
 <tr class="separator:ae9cab67b486c7d74383b5ac87b605672"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7828c59051081b89a4be5e29e76b5d7b" id="r_a7828c59051081b89a4be5e29e76b5d7b"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a7828c59051081b89a4be5e29e76b5d7b">tail</a> () const</td></tr>
+<tr class="memdesc:a7828c59051081b89a4be5e29e76b5d7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tail, the next slot to be popped.  <br /></td></tr>
 <tr class="separator:a7828c59051081b89a4be5e29e76b5d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a936489f89faed12e931a95676df617fa" id="r_a936489f89faed12e931a95676df617fa"><td class="memItemLeft" align="right" valign="top">__host__ __device__ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a936489f89faed12e931a95676df617fa">occupancy</a> () const</td></tr>
+<tr class="memdesc:a936489f89faed12e931a95676df617fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of values queued (head minus tail, modulo the capacity).  <br /></td></tr>
 <tr class="separator:a936489f89faed12e931a95676df617fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93f1ef5b3ea5356e9c8f0510716f09f0" id="r_a93f1ef5b3ea5356e9c8f0510716f09f0"><td class="memItemLeft" align="right" valign="top">__host__ __device__ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a93f1ef5b3ea5356e9c8f0510716f09f0">size</a> () const</td></tr>
+<tr class="memdesc:a93f1ef5b3ea5356e9c8f0510716f09f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the capacity.  <br /></td></tr>
 <tr class="separator:a93f1ef5b3ea5356e9c8f0510716f09f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c12b28ae60f9be7ba8bb90b236c5f1d" id="r_a0c12b28ae60f9be7ba8bb90b236c5f1d"><td class="memItemLeft" align="right" valign="top">__host__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a0c12b28ae60f9be7ba8bb90b236c5f1d">reset</a> ()</td></tr>
+<tr class="memdesc:a0c12b28ae60f9be7ba8bb90b236c5f1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the head and tail to 0 (empty); not synchronized with the other side.  <br /></td></tr>
 <tr class="separator:a0c12b28ae60f9be7ba8bb90b236c5f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class Drp::Gpu::RingQueueDtoD&lt; T &gt;</div><p>Lock-free ring of values of type T with one producer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a170ed9dbc1f6abb781c521e5200d16bd" title="Store value at head and advance when not full.">push()</a>) and one consumer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a64b671f357a344ff4d976ab9f69aaff1" title="Fetch value at tail and advance when not empty.">pop()</a>). </p>
+<p>The values and the head and tail counters are in pinned host memory; one slot always stays empty. Not used elsewhere in drpGpu. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a331bd8f91d4213357d2005d5de0cb738" name="a331bd8f91d4213357d2005d5de0cb738"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a331bd8f91d4213357d2005d5de0cb738">&#9670;&#160;</a></span>RingQueueDtoD()</h2>
 
@@ -148,6 +162,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Allocate the pinned head and tail words and a pinned ring of capacity values, starting empty; asserts that capacity is a power of 2. </p>
 
 </div>
 </div>
@@ -175,6 +191,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Free the pinned ring, tail and head. </p>
 
 </div>
 </div>
@@ -204,6 +222,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the head, the next slot to be pushed. </p>
+
 </div>
 </div>
 <a id="a936489f89faed12e931a95676df617fa" name="a936489f89faed12e931a95676df617fa"></a>
@@ -230,6 +250,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of values queued (head minus tail, modulo the capacity). </p>
 
 </div>
 </div>
@@ -318,6 +340,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Set the head and tail to 0 (empty); not synchronized with the other side. </p>
+
 </div>
 </div>
 <a id="a93f1ef5b3ea5356e9c8f0510716f09f0" name="a93f1ef5b3ea5356e9c8f0510716f09f0"></a>
@@ -345,6 +369,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the capacity. </p>
+
 </div>
 </div>
 <a id="a7828c59051081b89a4be5e29e76b5d7b" name="a7828c59051081b89a4be5e29e76b5d7b"></a>
@@ -371,6 +397,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the tail, the next slot to be popped. </p>
 
 </div>
 </div>

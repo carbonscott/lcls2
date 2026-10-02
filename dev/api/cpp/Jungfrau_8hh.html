@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Jungfrau_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">Jungfrau.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Jungfrau, the DRP detector class for Jungfrau modules controlled through the sls library.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="BEBDetector_8hh.html">BEBDetector.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="JungfrauDetectorId_8hh.html">JungfrauDetectorId.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Allocator_8hh.html">psalg/alloc/Allocator.hh</a>&quot;</code><br />
@@ -106,17 +109,21 @@ $(document).ready(function(){initNavTree('Jungfrau_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Jungfrau.html">Drp::Jungfrau</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for one or more <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> modules (one per PGP lane), controlled through sls::Detector and assembled from per-packet UDP data.  <a href="classDrp_1_1Jungfrau.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacesls" id="r_namespacesls"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesls.html">sls</a></td></tr>
+<tr class="memdesc:namespacesls"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the external sls detector library (headers under sls/); only sls::Detector is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp" id="r_namespaceDrp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html">Drp</a></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Jungfrau, the DRP detector class for Jungfrau modules controlled through the sls library. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

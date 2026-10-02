@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Pgp.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>.  
+ <a href="classDrp_1_1Pgp.html#details">More...</a></p>
+
 <p><code>#include &lt;EpicsArch.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a>, <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a>, <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a>, <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a>, and <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a>.</p>
@@ -104,30 +107,43 @@ $(document).ready(function(){initNavTree('classDrp_1_1Pgp.html',''); initResizab
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a223e621870359f5341b35b5bc7e25d7e" id="r_a223e621870359f5341b35b5bc7e25d7e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a223e621870359f5341b35b5bc7e25d7e">Pgp</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1DrpBase.html">DrpBase</a> &amp;drp, <a class="el" href="classDrp_1_1Detector.html">Detector</a> *det)</td></tr>
+<tr class="memdesc:a223e621870359f5341b35b5bc7e25d7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> on the pool of drp (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure.  <br /></td></tr>
 <tr class="separator:a223e621870359f5341b35b5bc7e25d7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6b45254de9da4db15e895460bb49a03" id="r_ad6b45254de9da4db15e895460bb49a03"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#ad6b45254de9da4db15e895460bb49a03">next</a> ()</td></tr>
+<tr class="memdesc:ad6b45254de9da4db15e895460bb49a03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the TimingHeader of the current DMA buffer, reading new buffers when the previous batch is used up and timing out TEB batches while waiting.  <br /></td></tr>
 <tr class="separator:ad6b45254de9da4db15e895460bb49a03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe1805c7bc7fa550e331240ccdf0552f" id="r_abe1805c7bc7fa550e331240ccdf0552f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#abe1805c7bc7fa550e331240ccdf0552f">worker</a> (std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">Pds::MetricExporter</a> &gt; exporter[], prometheus::Exposer *)</td></tr>
+<tr class="memdesc:abe1805c7bc7fa550e331240ccdf0552f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body: build the BLD sources from <a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a> (comma-separated names, or entries with plus signs looked up through PVs), set up their metrics, then match timing headers with BLD events by timestamp.  <br /></td></tr>
 <tr class="separator:abe1805c7bc7fa550e331240ccdf0552f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a051d4084d4f206301290dbac6c6407d3" id="r_a051d4084d4f206301290dbac6c6407d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a051d4084d4f206301290dbac6c6407d3">shutdown</a> ()</td></tr>
+<tr class="memdesc:a051d4084d4f206301290dbac6c6407d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ask the worker loop to stop and clear the names lookup of the detector.  <br /></td></tr>
 <tr class="separator:a051d4084d4f206301290dbac6c6407d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af70b4a988cad96f115cae93d008e3914" id="r_af70b4a988cad96f115cae93d008e3914"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#af70b4a988cad96f115cae93d008e3914">Pgp</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, <a class="el" href="classDrp_1_1Detector.html">Detector</a> &amp;det, <a class="el" href="classDrp_1_1PGPDrp.html">PGPDrp</a> &amp;m_drp)</td></tr>
+<tr class="memdesc:af70b4a988cad96f115cae93d008e3914"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 1000 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det; aborts with a message if that fails.  <br /></td></tr>
 <tr class="separator:af70b4a988cad96f115cae93d008e3914"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8041cc3f473440bfabdbeb2d24340bca" id="r_a8041cc3f473440bfabdbeb2d24340bca"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a8041cc3f473440bfabdbeb2d24340bca">handleBrokenEvent</a> (const <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> &amp;event) override</td></tr>
+<tr class="memdesc:a8041cc3f473440bfabdbeb2d24340bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook called for events that are dropped; the default does nothing.  <br /></td></tr>
 <tr class="separator:a8041cc3f473440bfabdbeb2d24340bca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6b31df226b7bc171c2c86a1d4029cef" id="r_ab6b31df226b7bc171c2c86a1d4029cef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#ab6b31df226b7bc171c2c86a1d4029cef">resetEventCounter</a> () override</td></tr>
+<tr class="memdesc:ab6b31df226b7bc171c2c86a1d4029cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun.  <br /></td></tr>
 <tr class="separator:ab6b31df226b7bc171c2c86a1d4029cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af52ca33387833dcbd152cbf5bed76cfe" id="r_af52ca33387833dcbd152cbf5bed76cfe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#af52ca33387833dcbd152cbf5bed76cfe">Pgp</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, <a class="el" href="classDrp_1_1Detector.html">Detector</a> *det)</td></tr>
+<tr class="memdesc:af52ca33387833dcbd152cbf5bed76cfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure.  <br /></td></tr>
 <tr class="separator:af52ca33387833dcbd152cbf5bed76cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc0e407533a07288c0b45c841872787e" id="r_acc0e407533a07288c0b45c841872787e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#acc0e407533a07288c0b45c841872787e">next</a> (uint32_t &amp;evtIndex)</td></tr>
+<tr class="memdesc:acc0e407533a07288c0b45c841872787e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next complete event as an EbDgram built in its pebble buffer (its index is stored in evtIndex), reading more DMA buffers when the previous batch is used up.  <br /></td></tr>
 <tr class="separator:acc0e407533a07288c0b45c841872787e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca1fe8891a4a012c297e8d4f1b926f36" id="r_aca1fe8891a4a012c297e8d4f1b926f36"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#aca1fe8891a4a012c297e8d4f1b926f36">nDmaRet</a> () const</td></tr>
+<tr class="memdesc:aca1fe8891a4a012c297e8d4f1b926f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers returned by the most recent read.  <br /></td></tr>
 <tr class="separator:aca1fe8891a4a012c297e8d4f1b926f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b08f9511285b0b08ea971f042f7a898" id="r_a4b08f9511285b0b08ea971f042f7a898"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a4b08f9511285b0b08ea971f042f7a898">Pgp</a> (const UdpParameters &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, <a class="el" href="classDrp_1_1Detector.html">Detector</a> *det)</td></tr>
+<tr class="memdesc:a4b08f9511285b0b08ea971f042f7a898"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure.  <br /></td></tr>
 <tr class="separator:a4b08f9511285b0b08ea971f042f7a898"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc0e407533a07288c0b45c841872787e" id="r_acc0e407533a07288c0b45c841872787e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#acc0e407533a07288c0b45c841872787e">next</a> (uint32_t &amp;evtIndex)</td></tr>
+<tr class="memdesc:acc0e407533a07288c0b45c841872787e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next complete event as an EbDgram built in its pebble buffer (its index is stored in evtIndex), reading more DMA buffers when the previous batch is used up.  <br /></td></tr>
 <tr class="separator:acc0e407533a07288c0b45c841872787e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b7365b7b1437c7fb0a822e6c92ea2c2" id="r_a0b7365b7b1437c7fb0a822e6c92ea2c2"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#a0b7365b7b1437c7fb0a822e6c92ea2c2">nDmaRet</a> ()</td></tr>
+<tr class="memdesc:a0b7365b7b1437c7fb0a822e6c92ea2c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers returned by the most recent read.  <br /></td></tr>
 <tr class="separator:a0b7365b7b1437c7fb0a822e6c92ea2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af52ca33387833dcbd152cbf5bed76cfe" id="r_af52ca33387833dcbd152cbf5bed76cfe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html#af52ca33387833dcbd152cbf5bed76cfe">Pgp</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, <a class="el" href="classDrp_1_1Detector.html">Detector</a> *det)</td></tr>
 <tr class="separator:af52ca33387833dcbd152cbf5bed76cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,44 +153,64 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aca1fe8891a4a012c297e8d4f1b926f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1PgpReader"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1PgpReader')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1PgpReader.html">Drp::PgpReader</a></td></tr>
 <tr class="memitem:ae1075391ed599da67d6573a916c08af5 inherit pub_methods_classDrp_1_1PgpReader" id="r_ae1075391ed599da67d6573a916c08af5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ae1075391ed599da67d6573a916c08af5">PgpReader</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> &amp;pool, unsigned maxRetCnt, unsigned dmaFreeCnt)</td></tr>
+<tr class="memdesc:ae1075391ed599da67d6573a916c08af5 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size the bulk-read arrays for maxRetCnt buffers and the free-index batch for dmaFreeCnt buffers (aborting if the pool has fewer DMA buffers than dmaFreeCnt), set up poll() on the device file descriptor and reset the pool counters.  <br /></td></tr>
 <tr class="separator:ae1075391ed599da67d6573a916c08af5 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20f2207c71c15dcdaf5d4e8c1981cd87 inherit pub_methods_classDrp_1_1PgpReader" id="r_a20f2207c71c15dcdaf5d4e8c1981cd87"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a20f2207c71c15dcdaf5d4e8c1981cd87">~PgpReader</a> ()</td></tr>
+<tr class="memdesc:a20f2207c71c15dcdaf5d4e8c1981cd87 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1PgpReader.html#a425dcfcafad4b79d6b5cbcfff1535e03" title="Return the DMA indices queued for freeing, return every DMA buffer that can still be read without cou...">flush()</a>.  <br /></td></tr>
 <tr class="separator:a20f2207c71c15dcdaf5d4e8c1981cd87 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa55362384db524eb4492c7d535fd7cd5 inherit pub_methods_classDrp_1_1PgpReader" id="r_aa55362384db524eb4492c7d535fd7cd5"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aa55362384db524eb4492c7d535fd7cd5">read</a> ()</td></tr>
+<tr class="memdesc:aa55362384db524eb4492c7d535fd7cd5 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read up to maxRetCnt DMA buffers.  <br /></td></tr>
 <tr class="separator:aa55362384db524eb4492c7d535fd7cd5 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a425dcfcafad4b79d6b5cbcfff1535e03 inherit pub_methods_classDrp_1_1PgpReader" id="r_a425dcfcafad4b79d6b5cbcfff1535e03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a425dcfcafad4b79d6b5cbcfff1535e03">flush</a> ()</td></tr>
+<tr class="memdesc:a425dcfcafad4b79d6b5cbcfff1535e03 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the DMA indices queued for freeing, return every DMA buffer that can still be read without counting it, and free all pebble buffers in use.  <br /></td></tr>
 <tr class="separator:a425dcfcafad4b79d6b5cbcfff1535e03 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82f1ec9339ab470ba490f57bfa192824 inherit pub_methods_classDrp_1_1PgpReader" id="r_a82f1ec9339ab470ba490f57bfa192824"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824">handle</a> (<a class="el" href="classDrp_1_1Detector.html">Detector</a> *det, unsigned current)</td></tr>
+<tr class="memdesc:a82f1ec9339ab470ba490f57bfa192824 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process DMA buffer current of the last <a class="el" href="classDrp_1_1PgpReader.html#aa55362384db524eb4492c7d535fd7cd5" title="Read up to maxRetCnt DMA buffers.">read()</a> for detector det: record it in the <a class="el" href="structDrp_1_1PGPEvent.html" title="One event being assembled from up to PGP_MAX_LANES lanes: a DmaBuffer per lane, the mask of lanes rec...">PGPEvent</a> chosen by its event counter and, once all lanes have arrived, check the event (counter jumps, common readout group, readout groups of SlowUpdates) and allocate a transition buffer (non-L1Accept) and a pebble buffer index.  <br /></td></tr>
 <tr class="separator:a82f1ec9339ab470ba490f57bfa192824 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a410449af45e9d34813f30694f8b729bc inherit pub_methods_classDrp_1_1PgpReader" id="r_a410449af45e9d34813f30694f8b729bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a410449af45e9d34813f30694f8b729bc">freeDma</a> (<a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *event)</td></tr>
+<tr class="memdesc:a410449af45e9d34813f30694f8b729bc inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue the DMA buffers of all lanes of event for return to the driver (returned in batches of dmaFreeCnt) and clear the lane mask of the event.  <br /></td></tr>
 <tr class="separator:a410449af45e9d34813f30694f8b729bc inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5008a56a16bff789f5a6f43edac0bd37 inherit pub_methods_classDrp_1_1PgpReader" id="r_a5008a56a16bff789f5a6f43edac0bd37"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a5008a56a16bff789f5a6f43edac0bd37">dmaBytes</a> () const</td></tr>
+<tr class="memdesc:a5008a56a16bff789f5a6f43edac0bd37 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the total number of DMA bytes handled.  <br /></td></tr>
 <tr class="separator:a5008a56a16bff789f5a6f43edac0bd37 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebfcf88c98b831c7fc0d5dc56226425d inherit pub_methods_classDrp_1_1PgpReader" id="r_aebfcf88c98b831c7fc0d5dc56226425d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aebfcf88c98b831c7fc0d5dc56226425d">dmaSize</a> () const</td></tr>
+<tr class="memdesc:aebfcf88c98b831c7fc0d5dc56226425d inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of the last DMA buffer handled.  <br /></td></tr>
 <tr class="separator:aebfcf88c98b831c7fc0d5dc56226425d inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6face5e567abf60f118b065857025552 inherit pub_methods_classDrp_1_1PgpReader" id="r_a6face5e567abf60f118b065857025552"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a6face5e567abf60f118b065857025552">latency</a> () const</td></tr>
+<tr class="memdesc:a6face5e567abf60f118b065857025552 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last measured TimingHeader latency in microseconds, updated about every 92857 pulse IDs (10 Hz per the code comment).  <br /></td></tr>
 <tr class="separator:a6face5e567abf60f118b065857025552 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f950f2247776cad55ff22af415aefdf inherit pub_methods_classDrp_1_1PgpReader" id="r_a3f950f2247776cad55ff22af415aefdf"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a3f950f2247776cad55ff22af415aefdf">nDmaErrors</a> () const</td></tr>
+<tr class="memdesc:a3f950f2247776cad55ff22af415aefdf inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of DMA buffers that reported an error.  <br /></td></tr>
 <tr class="separator:a3f950f2247776cad55ff22af415aefdf inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66ed48e9cbb995c10d1f993fd473985 inherit pub_methods_classDrp_1_1PgpReader" id="r_ae66ed48e9cbb995c10d1f993fd473985"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ae66ed48e9cbb995c10d1f993fd473985">nNoComRoG</a> () const</td></tr>
+<tr class="memdesc:ae66ed48e9cbb995c10d1f993fd473985 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of events dropped because the common readout group was missing.  <br /></td></tr>
 <tr class="separator:ae66ed48e9cbb995c10d1f993fd473985 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4865af2823bdf823cbe67a6929fa8588 inherit pub_methods_classDrp_1_1PgpReader" id="r_a4865af2823bdf823cbe67a6929fa8588"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a4865af2823bdf823cbe67a6929fa8588">nMissingRoGs</a> () const</td></tr>
+<tr class="memdesc:a4865af2823bdf823cbe67a6929fa8588 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of SlowUpdates dropped because readout groups in <a class="el" href="structDrp_1_1Parameters.html#afc2f97e23e010c17faaed0c9b8caa62e" title="Readout group mask built by DrpBase.cc from the connect information (0x00ff0000 plus one bit per read...">Parameters::rogMask</a> were missing.  <br /></td></tr>
 <tr class="separator:a4865af2823bdf823cbe67a6929fa8588 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76e1260ad53aac215054cb8f29476c90 inherit pub_methods_classDrp_1_1PgpReader" id="r_a76e1260ad53aac215054cb8f29476c90"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a76e1260ad53aac215054cb8f29476c90">nTmgHdrError</a> () const</td></tr>
+<tr class="memdesc:a76e1260ad53aac215054cb8f29476c90 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of timing headers with the error bit set.  <br /></td></tr>
 <tr class="separator:a76e1260ad53aac215054cb8f29476c90 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad078b58d844547dc91170f1388aa18db inherit pub_methods_classDrp_1_1PgpReader" id="r_ad078b58d844547dc91170f1388aa18db"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#ad078b58d844547dc91170f1388aa18db">nPgpJumps</a> () const</td></tr>
+<tr class="memdesc:ad078b58d844547dc91170f1388aa18db inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of event counter jumps detected.  <br /></td></tr>
 <tr class="separator:ad078b58d844547dc91170f1388aa18db inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f9d607bbda25899e9636465c8049cd3 inherit pub_methods_classDrp_1_1PgpReader" id="r_a3f9d607bbda25899e9636465c8049cd3"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a3f9d607bbda25899e9636465c8049cd3">nNoTrDgrams</a> () const</td></tr>
+<tr class="memdesc:a3f9d607bbda25899e9636465c8049cd3 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of events dropped because no transition buffer was available.  <br /></td></tr>
 <tr class="separator:a3f9d607bbda25899e9636465c8049cd3 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4893e95a2f60fd4b1946f52154352f inherit pub_methods_classDrp_1_1PgpReader" id="r_aca4893e95a2f60fd4b1946f52154352f"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aca4893e95a2f60fd4b1946f52154352f">nPgpInUser</a> () const</td></tr>
+<tr class="memdesc:aca4893e95a2f60fd4b1946f52154352f inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a87d5a0c2f03b0bf0322adad500371164" title="Get the receive buffer count in user.">dmaGetRxBuffinUserCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:aca4893e95a2f60fd4b1946f52154352f inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5444c2a7b19f92b808bb7163a689be06 inherit pub_methods_classDrp_1_1PgpReader" id="r_a5444c2a7b19f92b808bb7163a689be06"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a5444c2a7b19f92b808bb7163a689be06">nPgpInHw</a> () const</td></tr>
+<tr class="memdesc:a5444c2a7b19f92b808bb7163a689be06 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a2f0d00e0a6ac3d2d28ac40d1cc825a04" title="Get the receive buffer count in hardware.">dmaGetRxBuffinHwCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:a5444c2a7b19f92b808bb7163a689be06 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa86af8037c608a477ed8858ba344cf3a inherit pub_methods_classDrp_1_1PgpReader" id="r_aa86af8037c608a477ed8858ba344cf3a"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#aa86af8037c608a477ed8858ba344cf3a">nPgpInPreHw</a> () const</td></tr>
+<tr class="memdesc:aa86af8037c608a477ed8858ba344cf3a inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#aa4e1a166277b389fb2fa075259427bc4" title="Get the receive buffer count in pre-hardware queue.">dmaGetRxBuffinPreHwQCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:aa86af8037c608a477ed8858ba344cf3a inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a301e295133c7764471cbdf1a22659e52 inherit pub_methods_classDrp_1_1PgpReader" id="r_a301e295133c7764471cbdf1a22659e52"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a301e295133c7764471cbdf1a22659e52">nPgpInRx</a> () const</td></tr>
+<tr class="memdesc:a301e295133c7764471cbdf1a22659e52 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="aes-stream-drivers_2DmaDriver_8h.html#a9b518eceb82550599d35eeead411740e" title="Get the receive buffer count in software queue.">dmaGetRxBuffinSwQCount()</a> for the device of the pool.  <br /></td></tr>
 <tr class="separator:a301e295133c7764471cbdf1a22659e52 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d68cae431a6827b5e79a516f4b16432 inherit pub_methods_classDrp_1_1PgpReader" id="r_a0d68cae431a6827b5e79a516f4b16432"><td class="memItemLeft" align="right" valign="top">std::chrono::nanoseconds&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a0d68cae431a6827b5e79a516f4b16432">age</a> (const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> &amp;time) const</td></tr>
+<tr class="memdesc:a0d68cae431a6827b5e79a516f4b16432 inherit pub_methods_classDrp_1_1PgpReader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the latency of timestamp time (<a class="el" href="namespacePds_1_1Eb.html#a1511334769de9ec9a170963d154cfa6a" title="Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T.">Pds::Eb::latency()</a>) in nanoseconds.  <br /></td></tr>
 <tr class="separator:a0d68cae431a6827b5e79a516f4b16432 inherit pub_methods_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -237,7 +273,11 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a715e1157b8cad69c1903c51f080d2c97 inherit pro_attribs_classDrp_1_1PgpReader" id="r_a715e1157b8cad69c1903c51f080d2c97"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PgpReader.html#a715e1157b8cad69c1903c51f080d2c97">m_dmaOverrun</a></td></tr>
 <tr class="separator:a715e1157b8cad69c1903c51f080d2c97 inherit pro_attribs_classDrp_1_1PgpReader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>. </p>
+<p><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the UDP encoder DRP that turns complete PGP events into EbDgrams in the pebble.</p>
+<p><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PV DRP that turns complete PGP events into EbDgrams in the pebble. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a223e621870359f5341b35b5bc7e25d7e" name="a223e621870359f5341b35b5bc7e25d7e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a223e621870359f5341b35b5bc7e25d7e">&#9670;&#160;</a></span>Pgp() <span class="overload">[1/5]</span></h2>
 
@@ -269,6 +309,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> on the pool of drp (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure. </p>
 
 </div>
 </div>
@@ -310,6 +352,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 1000 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det; aborts with a message if that fails. </p>
+
 </div>
 </div>
 <a id="af52ca33387833dcbd152cbf5bed76cfe" name="af52ca33387833dcbd152cbf5bed76cfe"></a>
@@ -344,6 +388,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure. </p>
+
 </div>
 </div>
 <a id="a4b08f9511285b0b08ea971f042f7a898" name="a4b08f9511285b0b08ea971f042f7a898"></a>
@@ -377,6 +423,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct the <a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> (at most 100 buffers per read, 32 per free batch) and set the driver mask for laneMask on the virtual channel of det, logging an error on failure. </p>
 
 </div>
 </div>
@@ -439,6 +487,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Hook called for events that are dropped; the default does nothing. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1PgpReader.html#a3c24ee97c7443e4ab6b02c9259aa3aa4">Drp::PgpReader</a>.</p>
 
 </div>
@@ -466,6 +516,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of DMA buffers returned by the most recent read. </p>
+
 </div>
 </div>
 <a id="aca1fe8891a4a012c297e8d4f1b926f36" name="aca1fe8891a4a012c297e8d4f1b926f36"></a>
@@ -490,6 +542,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of DMA buffers returned by the most recent read. </p>
 
 </div>
 </div>
@@ -533,6 +587,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the TimingHeader of the current DMA buffer, reading new buffers when the previous batch is used up and timing out TEB batches while waiting. </p>
+<p>Returns nullptr if nothing arrives within 20 ms. </p>
+
 </div>
 </div>
 <a id="acc0e407533a07288c0b45c841872787e" name="acc0e407533a07288c0b45c841872787e"></a>
@@ -551,6 +608,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the next complete event as an EbDgram built in its pebble buffer (its index is stored in evtIndex), reading more DMA buffers when the previous batch is used up. </p>
+<p>Returns nullptr if the read returned 0 or the buffer did not complete an event. </p>
+
 </div>
 </div>
 <a id="acc0e407533a07288c0b45c841872787e" name="acc0e407533a07288c0b45c841872787e"></a>
@@ -568,6 +628,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the next complete event as an EbDgram built in its pebble buffer (its index is stored in evtIndex), reading more DMA buffers when the previous batch is used up. </p>
+<p>Returns nullptr if nothing was read or the buffer did not complete an event. </p>
 
 </div>
 </div>
@@ -612,6 +675,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Reset the last completed event counter to 0; <a class="el" href="classDrp_1_1PgpReader.html#a82f1ec9339ab470ba490f57bfa192824" title="Process DMA buffer current of the last read() for detector det: record it in the PGPEvent chosen by i...">handle()</a> calls this at BeginRun. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1PgpReader.html#a6a1339089040f15b1c2418a31dc8b9b1">Drp::PgpReader</a>.</p>
 
 </div>
@@ -630,6 +695,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Ask the worker loop to stop and clear the names lookup of the detector. </p>
 
 </div>
 </div>
@@ -658,6 +725,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Thread body: build the BLD sources from <a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a> (comma-separated names, or entries with plus signs looked up through PVs), set up their metrics, then match timing headers with BLD events by timestamp. </p>
+<p>Transitions are sent at once (Configure also adds the source names); L1Accepts are sent once older than bld_tmo_ms (default 50 ms), with DroppedContribution damage if a source has no matching event. </p>
 
 </div>
 </div>

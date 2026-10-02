@@ -1684,6 +1684,10 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents first">
 
+        <p>Client-side <code>DaqControl</code> class that talks to the DAQ collection process over ZMQ.</p>
+<p>Requests go over REQ sockets to <code>front_rep_port</code> and <code>fast_rep_port</code>; status updates
+are received on a SUB socket connected to <code>front_pub_port</code> and <code>step_pub_port</code>.</p>
+
 
 
 
@@ -1755,6 +1759,32 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send a 'getstate' request and return the reply's <code>header['key']</code>.</p>
+<p>On a receive timeout (zmq.Again) the front REQ socket is re-created.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The reply key, or 'error' on timeout, exception, KeyboardInterrupt or a missing key.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1772,6 +1802,32 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a 'getstate' request and return the reply's body.</p>
+<p>On a receive timeout (zmq.Again) the front REQ socket is re-created.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']</code>, or {} on timeout, exception, KeyboardInterrupt or a missing key.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -1791,6 +1847,10 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Return the platform info converted by <code>levels_to_activedet</code> as indented, sorted JSON.</p>
+<p>Note that neither <code>levels_to_activedet</code> nor <code>oldjson</code> is imported in this module, so
+as written this raises NameError.</p>
+
 
     </div>
 
@@ -1808,6 +1868,62 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a 'storejsonconfig' request with body <code>{'json_data': json_data}</code>.</p>
+<p>On a receive timeout (zmq.Again) the front REQ socket is re-created.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>json_data</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Data placed in the request body.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']</code>, or {} on timeout, exception, KeyboardInterrupt or a missing key.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -1827,6 +1943,63 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send a 'selectplatform' request with the given body.</p>
+<p>On a receive timeout (zmq.Again) the front REQ socket is re-created.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>body</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Request body.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']</code>, or {} on timeout, exception, KeyboardInterrupt or a missing key.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1844,6 +2017,32 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a 'getinstrument' request on the fast REQ socket.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['instrument']</code>, or None if the request or lookup fails (the
+exception is printed).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -1863,6 +2062,33 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send a 'getstatus' request and return fields of the reply body.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>(transition, state, config_alias, recording, platform, bypass_activedet,
+experiment_name, run_number, last_run_number). Defaults are 'error' for every
+field except platform ({}); on a KeyError, fields read before it keep their values.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1880,6 +2106,14 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Block on the SUB socket until a recognized message arrives and return its fields.</p>
+<p>Messages with other keys are ignored. Always returns an 8-tuple:
+'status' -&gt; (transition, state, config_alias, recording, bypass_activedet,
+experiment_name, run_number, last_run_number); 'error'/'warning' -&gt; (key, err_info,
+'error' x6); 'fileReport' -&gt; ('fileReport', path, 'error' x6); 'progress' -&gt;
+('progress', transition, elapsed, total, 'error' x4); 'step' -&gt; ('step', step_done,
+'error' x6). On KeyboardInterrupt or KeyError returns eight Nones.</p>
 
 
     </div>
@@ -1899,6 +2133,79 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send a 'setstate.<state>' request with <code>phase1Info</code> as the body.</p>
+<p>On a receive timeout (zmq.Again) the front REQ socket is re-created.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>state</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Target state name.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>phase1Info</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Per-transition phase-1 info, e.g. <code>{'beginstep': {...}, 'enable': {...}}</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['err_info']</code> if present, an error string on timeout/exception, else None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1916,6 +2223,31 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a 'setconfig.<config>' request on the front REQ socket.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['err_info']</code> if present, an error string on exception, else None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -1935,6 +2267,63 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send 'setrecord.1' or 'setrecord.0' on the fast REQ socket.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>recordIn</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Record flag; any non-bool value is rejected without sending.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['err_info']</code> if present, an error string on exception or non-bool
+input, else None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1952,6 +2341,31 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a 'getblock' request with <code>data</code> as body on the fast REQ socket.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="object">object</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']</code>, or None if the request or lookup fails (the exception is printed).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -1971,6 +2385,63 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Send 'setbypass.1' or 'setbypass.0' on the front REQ socket.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bypassIn</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Bypass flag; any non-bool value is rejected without sending.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['err_info']</code> if present, an error string on exception or non-bool
+input, else None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -1988,6 +2459,31 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Send a request whose key is <code>transition</code> with <code>phase1Info</code> as the body.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>reply['body']['err_info']</code> if present, an error string on exception, else None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -2007,6 +2503,10 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 
     <div class="doc doc-contents ">
 
+        <p>Close the existing front REQ socket (if any) and create a new one.</p>
+<p>The new socket has linger 0 and RCVTIMEO set to <code>self.timeout</code>, and is connected to
+<code>front_req_endpoint</code>.</p>
+
 
     </div>
 
@@ -2024,6 +2524,10 @@ and others. It is used by <code>daqstate</code>, <code>timed_run</code> and the 
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Close the existing fast REQ socket (if any) and create a new one.</p>
+<p>The new socket has linger 0 and RCVTIMEO set to <code>self.timeout</code>, and is connected to
+<code>fast_req_endpoint</code>.</p>
 
 
     </div>

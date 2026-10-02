@@ -97,20 +97,29 @@ $(document).ready(function(){initNavTree('classTPGen_1_1InstructionCache.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Description of one instruction sequence held in sequence RAM, as returned by <a class="el" href="classTPGen_1_1SequenceEngine.html#a43d9156d73f7dd0101f6b3ac25d260b7" title="Pure virtual: return the RAM description of sequence index.">SequenceEngine::cache()</a>.  
+ <a href="classTPGen_1_1InstructionCache.html#details">More...</a></p>
+
 <p><code>#include &lt;sequence_engine.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ae87bc72eaa9510643bdb69ff7a343e6a" id="r_ae87bc72eaa9510643bdb69ff7a343e6a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1InstructionCache.html#ae87bc72eaa9510643bdb69ff7a343e6a">index</a></td></tr>
+<tr class="memdesc:ae87bc72eaa9510643bdb69ff7a343e6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sequence index; -1 if not found.  <br /></td></tr>
 <tr class="separator:ae87bc72eaa9510643bdb69ff7a343e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a909e1e42b194b54c01499d6448053a7d" id="r_a909e1e42b194b54c01499d6448053a7d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1InstructionCache.html#a909e1e42b194b54c01499d6448053a7d">ram_address</a></td></tr>
+<tr class="memdesc:a909e1e42b194b54c01499d6448053a7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start address in sequence RAM.  <br /></td></tr>
 <tr class="separator:a909e1e42b194b54c01499d6448053a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ca3fe56a72c635fd42557537e21ad85" id="r_a2ca3fe56a72c635fd42557537e21ad85"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1InstructionCache.html#a2ca3fe56a72c635fd42557537e21ad85">ram_size</a></td></tr>
+<tr class="memdesc:a2ca3fe56a72c635fd42557537e21ad85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of RAM words used.  <br /></td></tr>
 <tr class="separator:a2ca3fe56a72c635fd42557537e21ad85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a766704b199a82ff445d5454ec00a33ca" id="r_a766704b199a82ff445d5454ec00a33ca"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classTPGen_1_1Instruction.html">Instruction</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1InstructionCache.html#a766704b199a82ff445d5454ec00a33ca">instructions</a></td></tr>
+<tr class="memdesc:a766704b199a82ff445d5454ec00a33ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">The instructions of the sequence (pointers owned by the engine).  <br /></td></tr>
 <tr class="separator:a766704b199a82ff445d5454ec00a33ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Description of one instruction sequence held in sequence RAM, as returned by <a class="el" href="classTPGen_1_1SequenceEngine.html#a43d9156d73f7dd0101f6b3ac25d260b7" title="Pure virtual: return the RAM description of sequence index.">SequenceEngine::cache()</a>. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="ae87bc72eaa9510643bdb69ff7a343e6a" name="ae87bc72eaa9510643bdb69ff7a343e6a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae87bc72eaa9510643bdb69ff7a343e6a">&#9670;&#160;</a></span>index</h2>
 
@@ -122,6 +131,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sequence index; -1 if not found. </p>
 
 </div>
 </div>
@@ -137,6 +148,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The instructions of the sequence (pointers owned by the engine). </p>
+
 </div>
 </div>
 <a id="a909e1e42b194b54c01499d6448053a7d" name="a909e1e42b194b54c01499d6448053a7d"></a>
@@ -151,6 +164,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start address in sequence RAM. </p>
+
 </div>
 </div>
 <a id="a2ca3fe56a72c635fd42557537e21ad85" name="a2ca3fe56a72c635fd42557537e21ad85"></a>
@@ -164,6 +179,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of RAM words used. </p>
 
 </div>
 </div>

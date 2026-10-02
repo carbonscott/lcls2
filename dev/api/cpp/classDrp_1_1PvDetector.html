@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1PvDetector.html',''); init
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that records one or more EPICS PVs (<a class="el" href="structDrp_1_1Parameters.html" title="Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executab...">Parameters</a> pvSpecs) through <a class="el" href="classDrp_1_1PvMonitor.html" title="Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of ...">PvMonitor</a> objects, with optional configuration from the Python module psdaq.configdb.pvadetector_config.  
+ <a href="classDrp_1_1PvDetector.html#details">More...</a></p>
+
 <p><code>#include &lt;PvaDetector.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1XpmDetector.html">Drp::XpmDetector</a>.</p>
@@ -109,104 +112,147 @@ Public Types</h2></td></tr>
 , <a class="el" href="classDrp_1_1PvDetector.html#ae403b76578fb7577ba64b980d1551ce1add13fca5c581f70fcef362d80c141c6b">RawNamesIndex</a> = unsigned(ConfigNamesIndex) + maxSupportedPVs
 , <a class="el" href="classDrp_1_1PvDetector.html#ae403b76578fb7577ba64b980d1551ce1a0f7c70ed0a42bb9163a8e3e08cd889c9">InfoNamesIndex</a> = unsigned(RawNamesIndex) + maxSupportedPVs
  }</td></tr>
+<tr class="memdesc:ae403b76578fb7577ba64b980d1551ce1"><td class="mdescLeft">&#160;</td><td class="mdescRight">NamesId index bases, one block of maxSupportedPVs indices each.  <a href="classDrp_1_1PvDetector.html#ae403b76578fb7577ba64b980d1551ce1">More...</a><br /></td></tr>
 <tr class="separator:ae403b76578fb7577ba64b980d1551ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aca2bf719fbe623f2c0440da241d792ea" id="r_aca2bf719fbe623f2c0440da241d792ea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#aca2bf719fbe623f2c0440da241d792ea">PvDetector</a> (PvParameters &amp;, <a class="el" href="classDrp_1_1MemPoolCpu.html">MemPoolCpu</a> &amp;)</td></tr>
+<tr class="memdesc:aca2bf719fbe623f2c0440da241d792ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> base with virtual channel 0 and import psdaq.configdb.pvadetector_config (aborting if that fails).  <br /></td></tr>
 <tr class="separator:aca2bf719fbe623f2c0440da241d792ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a712f84238ded80c5e711b65fa81984f8" id="r_a712f84238ded80c5e711b65fa81984f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a712f84238ded80c5e711b65fa81984f8">~PvDetector</a> ()</td></tr>
+<tr class="memdesc:a712f84238ded80c5e711b65fa81984f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release the Python module.  <br /></td></tr>
 <tr class="separator:a712f84238ded80c5e711b65fa81984f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a078a702957ff390351312055e348dedf" id="r_a078a702957ff390351312055e348dedf"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a078a702957ff390351312055e348dedf">connect</a> (const nlohmann::json &amp;, const std::string &amp;collectionId, std::string &amp;msg)</td></tr>
+<tr class="memdesc:a078a702957ff390351312055e348dedf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1XpmDetector.html#ad8d617bd22493193f6c69fbb468271f3" title="Does nothing unless overridden.">XpmDetector::connect()</a> and create one <a class="el" href="classDrp_1_1PvMonitor.html" title="Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of ...">PvMonitor</a> per PV spec, parsing an optional alias=, provider/, ,firstDim, .field, [shape] and (type) from each spec.  <br /></td></tr>
 <tr class="separator:a078a702957ff390351312055e348dedf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66816e7f218d6f9b9b07702d423b881" id="r_ae66816e7f218d6f9b9b07702d423b881"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#ae66816e7f218d6f9b9b07702d423b881">disconnect</a> ()</td></tr>
+<tr class="memdesc:ae66816e7f218d6f9b9b07702d423b881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1XpmDetector.html#a24314d4c50561b10da0dfc70ff30f458" title="Does nothing unless overridden.">XpmDetector::shutdown()</a> and drop the PV monitors; returns 0.  <br /></td></tr>
 <tr class="separator:ae66816e7f218d6f9b9b07702d423b881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31197f0482346c0fe184a37c74364797" id="r_a31197f0482346c0fe184a37c74364797"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a31197f0482346c0fe184a37c74364797">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a31197f0482346c0fe184a37c74364797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
 <tr class="separator:a31197f0482346c0fe184a37c74364797"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3d7d960711ce35af9c5ccc1c7e57659" id="r_aa3d7d960711ce35af9c5ccc1c7e57659"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#aa3d7d960711ce35af9c5ccc1c7e57659">unconfigure</a> ()</td></tr>
+<tr class="memdesc:aa3d7d960711ce35af9c5ccc1c7e57659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the names lookup table; returns 0.  <br /></td></tr>
 <tr class="separator:aa3d7d960711ce35af9c5ccc1c7e57659"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a403d5ccf43e41360311056716a2eaa83" id="r_a403d5ccf43e41360311056716a2eaa83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a403d5ccf43e41360311056716a2eaa83">enable</a> ()</td></tr>
+<tr class="memdesc:a403d5ccf43e41360311056716a2eaa83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the running flag that lets PV updates be matched.  <br /></td></tr>
 <tr class="separator:a403d5ccf43e41360311056716a2eaa83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a132315f81c6f3e9c696bdff724b2360c" id="r_a132315f81c6f3e9c696bdff724b2360c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a132315f81c6f3e9c696bdff724b2360c">disable</a> ()</td></tr>
+<tr class="memdesc:a132315f81c6f3e9c696bdff724b2360c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the running flag.  <br /></td></tr>
 <tr class="separator:a132315f81c6f3e9c696bdff724b2360c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e64a1128a473801b91a0c63211cf814" id="r_a8e64a1128a473801b91a0c63211cf814"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a8e64a1128a473801b91a0c63211cf814">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;evt, const void *bufEnd, <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *, uint64_t l1count) override</td></tr>
+<tr class="memdesc:a8e64a1128a473801b91a0c63211cf814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram.  <br /></td></tr>
 <tr class="separator:a8e64a1128a473801b91a0c63211cf814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6321c7485b8d97c77179aeb9e70dcc56" id="r_a6321c7485b8d97c77179aeb9e70dcc56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a6321c7485b8d97c77179aeb9e70dcc56">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;evt, const void *bufEnd, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) override</td></tr>
+<tr class="memdesc:a6321c7485b8d97c77179aeb9e70dcc56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden; called with the trigger result for an event.  <br /></td></tr>
 <tr class="separator:a6321c7485b8d97c77179aeb9e70dcc56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e6df4b2e83c893203b36ef3927afcef" id="r_a0e6df4b2e83c893203b36ef3927afcef"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classDrp_1_1PvMonitor.html">PvMonitor</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a0e6df4b2e83c893203b36ef3927afcef">pvMonitors</a> () const</td></tr>
+<tr class="memdesc:a0e6df4b2e83c893203b36ef3927afcef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the PV monitors created by <a class="el" href="classDrp_1_1PvDetector.html#a078a702957ff390351312055e348dedf" title="Call XpmDetector::connect() and create one PvMonitor per PV spec, parsing an optional alias=,...">connect()</a>.  <br /></td></tr>
 <tr class="separator:a0e6df4b2e83c893203b36ef3927afcef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a191f2cceb69098dee0e73b94215fe095" id="r_a191f2cceb69098dee0e73b94215fe095"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a191f2cceb69098dee0e73b94215fe095">enable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info)</td></tr>
+<tr class="memdesc:a191f2cceb69098dee0e73b94215fe095"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a191f2cceb69098dee0e73b94215fe095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea8bf0d28f260e4727507aa7b415cb76" id="r_aea8bf0d28f260e4727507aa7b415cb76"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#aea8bf0d28f260e4727507aa7b415cb76">disable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info)</td></tr>
+<tr class="memdesc:aea8bf0d28f260e4727507aa7b415cb76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:aea8bf0d28f260e4727507aa7b415cb76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector" id="r_a9aaeb79a3955ca22af5ca16ec36f02f9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a9aaeb79a3955ca22af5ca16ec36f02f9">Detector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set nodeId to -1u and virtChan to 0, keep para and pool, and allocate a transition buffer of para-&gt;maxTrSize bytes.  <br /></td></tr>
 <tr class="separator:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector" id="r_a13abe7372fb48e060171b4d9f13a0e1a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a13abe7372fb48e060171b4d9f13a0e1a">~Detector</a> ()</td></tr>
+<tr class="memdesc:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector" id="r_afd23204a69c5b99cdcad6081efdb1f14"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#afd23204a69c5b99cdcad6081efdb1f14">gpuDetector</a> ()</td></tr>
+<tr class="memdesc:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return nullptr; <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> overrides it to return itself.  <br /></td></tr>
 <tr class="separator:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector" id="r_a0a7c5dabf101c1363d8bf15517e9c57d"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a0a7c5dabf101c1363d8bf15517e9c57d">beginrun</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;runInfo)</td></tr>
+<tr class="memdesc:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector" id="r_a32521535113867759c83a7236803a94e"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a32521535113867759c83a7236803a94e">beginstep</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;stepInfo)</td></tr>
+<tr class="memdesc:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector" id="r_ad94e3a761069b2b70cd691f47cce4d35"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35">slowupdate</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset xtc to an empty Parent Xtc whose source is nodeId.  <br /></td></tr>
 <tr class="separator:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector" id="r_a0a602bd6368dbe39f95a82e79684af3d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classXtcData_1_1Shape.html">XtcData::Shape</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a0a602bd6368dbe39f95a82e79684af3d">shapeCube</a> (unsigned rawDefIndex, unsigned valueIndex, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shape in rawData of entry valueIndex of raw definition rawDefIndex (from <a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">rawDef()</a>).  <br /></td></tr>
 <tr class="separator:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector" id="r_adda60e4cf19dc50f3b5b2b9d861ec459"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459">addToCube</a> (unsigned rawDefIndex, unsigned valueIndex, unsigned subIndex, double *dst, unsigned bin, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData, converted to double, into bin bin of dst (entries of any XTC numeric type).  <br /></td></tr>
 <tr class="separator:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector" id="r_adb105eef8e8c2091124df29c12226330"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adb105eef8e8c2091124df29c12226330">subIndices</a> ()</td></tr>
+<tr class="memdesc:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector" id="r_a00805bb525971846ed2a88d75cef4d61"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a00805bb525971846ed2a88d75cef4d61">rawNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector" id="r_a038fe929d9bd6058eda7ea7408a20439"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a038fe929d9bd6058eda7ea7408a20439">cubeNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector" id="r_a3b5c2801fd7a76e6322f6b8f728d35a9"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3b5c2801fd7a76e6322f6b8f728d35a9">cubeBinBytes</a> ()</td></tr>
+<tr class="memdesc:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return ten times the pebble buffer size unless overridden.  <br /></td></tr>
 <tr class="separator:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector" id="r_a1fb07fe50433927c6b2f3965754d0f79"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classXtcData_1_1VarDef.html">XtcData::VarDef</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79">rawDef</a> ()</td></tr>
+<tr class="memdesc:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error and abort; detectors used for cube binning must override it.  <br /></td></tr>
 <tr class="separator:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector" id="r_a3f8dc901dc052a6a3301a64b50e9072b"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3f8dc901dc052a6a3301a64b50e9072b">maxMonBufSize</a> ()</td></tr>
+<tr class="memdesc:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pebble buffer size, times 10 when <a class="el" href="structDrp_1_1Parameters.html#adaea3aa8a30b8c70e03dfacef776cf23" title="Number of cube workers (-Q option in drp.cc; default 0).">Parameters::nCubeWorkers</a> is non-zero.  <br /></td></tr>
 <tr class="separator:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector" id="r_af4fbc5ed6786e6429905ba35e2db2079"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#af4fbc5ed6786e6429905ba35e2db2079">configureScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 1 (failure) unless overridden, per the code comment.  <br /></td></tr>
 <tr class="separator:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector" id="r_af6343c41a83916537bb33cc86efd3041"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#af6343c41a83916537bb33cc86efd3041">stepScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 1 (failure) unless overridden.  <br /></td></tr>
 <tr class="separator:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0b9864c4f43b875f8db02da15a591c5 inherit pub_methods_classDrp_1_1Detector" id="r_ad0b9864c4f43b875f8db02da15a591c5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad0b9864c4f43b875f8db02da15a591c5">getTimingHeader</a> (uint32_t index) const</td></tr>
+<tr class="memdesc:ad0b9864c4f43b875f8db02da15a591c5 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of DMA buffer index as a TimingHeader pointer.  <br /></td></tr>
 <tr class="separator:ad0b9864c4f43b875f8db02da15a591c5 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector" id="r_a4dcb29c2de6826aa3166568ddea01095"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a4dcb29c2de6826aa3166568ddea01095">scanEnabled</a> ()</td></tr>
+<tr class="memdesc:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return false unless overridden.  <br /></td></tr>
 <tr class="separator:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector" id="r_a83bfaca37a8d3a2de54ae9bca09081d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a83bfaca37a8d3a2de54ae9bca09081d2">transitionXtc</a> ()</td></tr>
+<tr class="memdesc:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the transition buffer as an Xtc reference.  <br /></td></tr>
 <tr class="separator:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector" id="r_ac7527247ab0e8ad0c116e11b6aeb08b5"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ac7527247ab0e8ad0c116e11b6aeb08b5">trXtcBufEnd</a> ()</td></tr>
+<tr class="memdesc:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the end of the transition buffer.  <br /></td></tr>
 <tr class="separator:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector" id="r_ae64cfa6d926d74f10c80ad7c5f804856"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ae64cfa6d926d74f10c80ad7c5f804856">namesLookup</a> ()</td></tr>
+<tr class="memdesc:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the names lookup table of this detector.  <br /></td></tr>
 <tr class="separator:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a5b043e392611c687482309479adc428d" id="r_a5b043e392611c687482309479adc428d"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PvDetector.html#a5b043e392611c687482309479adc428d">maxSupportedPVs</a> = 64</td></tr>
+<tr class="memdesc:a5b043e392611c687482309479adc428d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of PVs per detector (64); spaces the names indices below.  <br /></td></tr>
 <tr class="separator:a5b043e392611c687482309479adc428d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector" id="r_a4666a5c232669b455ebeb8436a1d1adb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a4666a5c232669b455ebeb8436a1d1adb">nodeId</a></td></tr>
+<tr class="memdesc:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Node ID used as the XTC source; -1u until set.  <br /></td></tr>
 <tr class="separator:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector" id="r_ad4c16b4c76dce6bbacf910da01fcdd62"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad4c16b4c76dce6bbacf910da01fcdd62">virtChan</a></td></tr>
+<tr class="memdesc:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual channel number; 0 unless a subclass sets it.  <br /></td></tr>
 <tr class="separator:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classDrp_1_1XpmDetector"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classDrp_1_1XpmDetector')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classDrp_1_1XpmDetector.html">Drp::XpmDetector</a></td></tr>
 <tr class="memitem:af0924ec06e3513473d1496d4c802600a inherit pro_methods_classDrp_1_1XpmDetector" id="r_af0924ec06e3513473d1496d4c802600a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#af0924ec06e3513473d1496d4c802600a">XpmDetector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool, unsigned len=100)</td></tr>
 <tr class="separator:af0924ec06e3513473d1496d4c802600a inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc9d998f60b9747836f366769ba7afd3 inherit pro_methods_classDrp_1_1XpmDetector" id="r_abc9d998f60b9747836f366769ba7afd3"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#abc9d998f60b9747836f366769ba7afd3">connectionInfo</a> (const nlohmann::json &amp;msg) override</td></tr>
+<tr class="memdesc:abc9d998f60b9747836f366769ba7afd3 inherit pro_methods_classDrp_1_1XpmDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an empty JSON object unless overridden; msg is not used.  <br /></td></tr>
 <tr class="separator:abc9d998f60b9747836f366769ba7afd3 inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8d617bd22493193f6c69fbb468271f3 inherit pro_methods_classDrp_1_1XpmDetector" id="r_ad8d617bd22493193f6c69fbb468271f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#ad8d617bd22493193f6c69fbb468271f3">connect</a> (const nlohmann::json &amp;, const std::string &amp;collectionId) override</td></tr>
+<tr class="memdesc:ad8d617bd22493193f6c69fbb468271f3 inherit pro_methods_classDrp_1_1XpmDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:ad8d617bd22493193f6c69fbb468271f3 inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa79b949fc3f0a5fc9c64e647582ae77e inherit pro_methods_classDrp_1_1XpmDetector" id="r_aa79b949fc3f0a5fc9c64e647582ae77e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#aa79b949fc3f0a5fc9c64e647582ae77e">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:aa79b949fc3f0a5fc9c64e647582ae77e inherit pro_methods_classDrp_1_1XpmDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
 <tr class="separator:aa79b949fc3f0a5fc9c64e647582ae77e inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24314d4c50561b10da0dfc70ff30f458 inherit pro_methods_classDrp_1_1XpmDetector" id="r_a24314d4c50561b10da0dfc70ff30f458"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#a24314d4c50561b10da0dfc70ff30f458">shutdown</a> () override</td></tr>
+<tr class="memdesc:a24314d4c50561b10da0dfc70ff30f458 inherit pro_methods_classDrp_1_1XpmDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a24314d4c50561b10da0dfc70ff30f458 inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abca9d7b4f4fce22b8ee8f152ef82ed39 inherit pro_methods_classDrp_1_1XpmDetector" id="r_abca9d7b4f4fce22b8ee8f152ef82ed39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#abca9d7b4f4fce22b8ee8f152ef82ed39">connectionShutdown</a> () override</td></tr>
+<tr class="memdesc:abca9d7b4f4fce22b8ee8f152ef82ed39 inherit pro_methods_classDrp_1_1XpmDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:abca9d7b4f4fce22b8ee8f152ef82ed39 inherit pro_methods_classDrp_1_1XpmDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classDrp_1_1XpmDetector"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classDrp_1_1XpmDetector')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classDrp_1_1XpmDetector.html">Drp::XpmDetector</a></td></tr>
 <tr class="memitem:a56947715e6b602496d0e9cb45b26dd0c inherit pro_attribs_classDrp_1_1XpmDetector" id="r_a56947715e6b602496d0e9cb45b26dd0c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1XpmDetector.html#a56947715e6b602496d0e9cb45b26dd0c">m_length</a></td></tr>
@@ -221,7 +267,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ad33e7581ca1e211d7afe2799aa62a276 inherit pro_attribs_classDrp_1_1Detector" id="r_ad33e7581ca1e211d7afe2799aa62a276"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad33e7581ca1e211d7afe2799aa62a276">m_xtcbuf</a></td></tr>
 <tr class="separator:ad33e7581ca1e211d7afe2799aa62a276 inherit pro_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> that records one or more EPICS PVs (<a class="el" href="structDrp_1_1Parameters.html" title="Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executab...">Parameters</a> pvSpecs) through <a class="el" href="classDrp_1_1PvMonitor.html" title="Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of ...">PvMonitor</a> objects, with optional configuration from the Python module psdaq.configdb.pvadetector_config. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ae403b76578fb7577ba64b980d1551ce1" name="ae403b76578fb7577ba64b980d1551ce1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae403b76578fb7577ba64b980d1551ce1">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -233,10 +281,15 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>NamesId index bases, one block of maxSupportedPVs indices each. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1af8863f0815c6021a62a06da2e675958d" name="ae403b76578fb7577ba64b980d1551ce1af8863f0815c6021a62a06da2e675958d"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1add13fca5c581f70fcef362d80c141c6b" name="ae403b76578fb7577ba64b980d1551ce1add13fca5c581f70fcef362d80c141c6b"></a>RawNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1a0f7c70ed0a42bb9163a8e3e08cd889c9" name="ae403b76578fb7577ba64b980d1551ce1a0f7c70ed0a42bb9163a8e3e08cd889c9"></a>InfoNamesIndex&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1af8863f0815c6021a62a06da2e675958d" name="ae403b76578fb7577ba64b980d1551ce1af8863f0815c6021a62a06da2e675958d"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"><p><a class="el" href="classConfiguration.html">Configuration</a> names, from <a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176" title="Value 0; BldDetector.cc uses it as its base names index.">NamesIndex::BASE</a> (0) plus the PV index. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1add13fca5c581f70fcef362d80c141c6b" name="ae403b76578fb7577ba64b980d1551ce1add13fca5c581f70fcef362d80c141c6b"></a>RawNamesIndex&#160;</td><td class="fielddoc"><p>Raw PV data names, from 64 plus the PV index. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae403b76578fb7577ba64b980d1551ce1a0f7c70ed0a42bb9163a8e3e08cd889c9" name="ae403b76578fb7577ba64b980d1551ce1a0f7c70ed0a42bb9163a8e3e08cd889c9"></a>InfoNamesIndex&#160;</td><td class="fielddoc"><p>The pvdetinfo names (128). </p>
+</td></tr>
 </table>
 
 </div>
@@ -268,6 +321,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the <a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> base with virtual channel 0 and import psdaq.configdb.pvadetector_config (aborting if that fails). </p>
+
 </div>
 </div>
 <a id="a712f84238ded80c5e711b65fa81984f8" name="a712f84238ded80c5e711b65fa81984f8"></a>
@@ -284,6 +339,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Release the Python module. </p>
 
 </div>
 </div>
@@ -307,7 +364,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"><em>xtc</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -327,6 +384,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a183aa15f691a48150c57b264c604975d">Drp::Detector</a>.</p>
 
@@ -364,6 +423,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1XpmDetector.html#ad8d617bd22493193f6c69fbb468271f3" title="Does nothing unless overridden.">XpmDetector::connect()</a> and create one <a class="el" href="classDrp_1_1PvMonitor.html" title="Monitors one EPICS PV and copies its value into the L1Accept whose timestamp equals the timestamp of ...">PvMonitor</a> per PV spec, parsing an optional alias=, provider/, ,firstDim, .field, [shape] and (type) from each spec. </p>
+<p>Returns 0, or 1 with msg set (and no monitors kept) if a spec has an unrecognized type. </p>
+
 </div>
 </div>
 <a id="a132315f81c6f3e9c696bdff724b2360c" name="a132315f81c6f3e9c696bdff724b2360c"></a>
@@ -380,6 +442,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Clear the running flag. </p>
 
 </div>
 </div>
@@ -423,6 +487,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return 0 without doing anything unless overridden. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#aea8bf0d28f260e4727507aa7b415cb76">Drp::Detector</a>.</p>
 
 </div>
@@ -442,6 +508,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1XpmDetector.html#a24314d4c50561b10da0dfc70ff30f458" title="Does nothing unless overridden.">XpmDetector::shutdown()</a> and drop the PV monitors; returns 0. </p>
+
 </div>
 </div>
 <a id="a403d5ccf43e41360311056716a2eaa83" name="a403d5ccf43e41360311056716a2eaa83"></a>
@@ -458,6 +526,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the running flag that lets PV updates be matched. </p>
 
 </div>
 </div>
@@ -501,6 +571,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return 0 without doing anything unless overridden. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a191f2cceb69098dee0e73b94215fe095">Drp::Detector</a>.</p>
 
 </div>
@@ -518,7 +590,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::PvDetector::event </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;&#160;</td>
-          <td class="paramname"><em>evt</em>, </td>
+          <td class="paramname"><em>dgram</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -530,7 +602,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;&#160;</td>
-          <td class="paramname">&#160;</td>
+          <td class="paramname"><em>result</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -544,6 +616,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing unless overridden; called with the trigger result for an event. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a9f187e8fe9f0d4a9c6a3f54faac3578c">Drp::Detector</a>.</p>
 
@@ -562,7 +636,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">void Drp::PvDetector::event </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;&#160;</td>
-          <td class="paramname"><em>evt</em>, </td>
+          <td class="paramname"><em>dgram</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -574,13 +648,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"><em>event</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>l1count</em>&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -594,6 +668,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a6122859951cd436d9e724a61faa06fc5">Drp::Detector</a>.</p>
 
@@ -622,6 +698,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the PV monitors created by <a class="el" href="classDrp_1_1PvDetector.html#a078a702957ff390351312055e348dedf" title="Call XpmDetector::connect() and create one PvMonitor per PV spec, parsing an optional alias=,...">connect()</a>. </p>
+
 </div>
 </div>
 <a id="aa3d7d960711ce35af9c5ccc1c7e57659" name="aa3d7d960711ce35af9c5ccc1c7e57659"></a>
@@ -638,6 +716,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Clear the names lookup table; returns 0. </p>
 
 </div>
 </div>
@@ -661,6 +741,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Maximum number of PVs per detector (64); spaces the names indices below. </p>
 
 </div>
 </div>

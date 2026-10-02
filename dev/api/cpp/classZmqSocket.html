@@ -98,37 +98,53 @@ $(document).ready(function(){initNavTree('classZmqSocket.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 
+<p>Wraps one ZeroMQ socket created from a <a class="el" href="classZmqContext.html" title="Owns a ZeroMQ context.">ZmqContext</a>.  
+ <a href="classZmqSocket.html#details">More...</a></p>
+
 <p><code>#include &lt;Collection.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aef9262f586ecadab1c7bffa1358e7135" id="r_aef9262f586ecadab1c7bffa1358e7135"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#aef9262f586ecadab1c7bffa1358e7135">ZmqSocket</a> (<a class="el" href="classZmqContext.html">ZmqContext</a> *context, int type)</td></tr>
+<tr class="memdesc:aef9262f586ecadab1c7bffa1358e7135"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a socket of the given ZeroMQ type in context.  <br /></td></tr>
 <tr class="separator:aef9262f586ecadab1c7bffa1358e7135"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37962b768c26b13bee2d84994621cfc1" id="r_a37962b768c26b13bee2d84994621cfc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a37962b768c26b13bee2d84994621cfc1">~ZmqSocket</a> ()</td></tr>
+<tr class="memdesc:a37962b768c26b13bee2d84994621cfc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the socket.  <br /></td></tr>
 <tr class="separator:a37962b768c26b13bee2d84994621cfc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade55c29cba14322138f4dabff980a982" id="r_ade55c29cba14322138f4dabff980a982"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#ade55c29cba14322138f4dabff980a982">connect</a> (const std::string &amp;host)</td></tr>
+<tr class="memdesc:ade55c29cba14322138f4dabff980a982"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect the socket to the endpoint host; throws std::runtime_error on failure.  <br /></td></tr>
 <tr class="separator:ade55c29cba14322138f4dabff980a982"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec8171a552b410a229b3814f744448e" id="r_a7ec8171a552b410a229b3814f744448e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a7ec8171a552b410a229b3814f744448e">bind</a> (const std::string &amp;host)</td></tr>
+<tr class="memdesc:a7ec8171a552b410a229b3814f744448e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind the socket to the endpoint host; throws std::runtime_error on failure.  <br /></td></tr>
 <tr class="separator:a7ec8171a552b410a229b3814f744448e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ad797d7e430aa597055be6a5001a12c" id="r_a9ad797d7e430aa597055be6a5001a12c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a9ad797d7e430aa597055be6a5001a12c">setsockopt</a> (int option, const void *optval, size_t optvallen)</td></tr>
+<tr class="memdesc:a9ad797d7e430aa597055be6a5001a12c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a socket option; throws std::runtime_error on failure.  <br /></td></tr>
 <tr class="separator:a9ad797d7e430aa597055be6a5001a12c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38a83ac015c88f81757e25f53d9e2aaa" id="r_a38a83ac015c88f81757e25f53d9e2aaa"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a38a83ac015c88f81757e25f53d9e2aaa">recv</a> ()</td></tr>
+<tr class="memdesc:a38a83ac015c88f81757e25f53d9e2aaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive one frame and return it as a string; logs an error and returns an empty string if the receive fails.  <br /></td></tr>
 <tr class="separator:a38a83ac015c88f81757e25f53d9e2aaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca27cd02795d2de272560468a7835586" id="r_aca27cd02795d2de272560468a7835586"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#aca27cd02795d2de272560468a7835586">recvJson</a> ()</td></tr>
+<tr class="memdesc:aca27cd02795d2de272560468a7835586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive one frame and parse it as JSON; logs an error and returns an empty JSON object if the receive fails.  <br /></td></tr>
 <tr class="separator:aca27cd02795d2de272560468a7835586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92007cb8358e4ee2e43c1e7e0f30b263" id="r_a92007cb8358e4ee2e43c1e7e0f30b263"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classZmqMessage.html">ZmqMessage</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a92007cb8358e4ee2e43c1e7e0f30b263">recvMultipart</a> ()</td></tr>
+<tr class="memdesc:a92007cb8358e4ee2e43c1e7e0f30b263"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive all frames of one multi-part message; returns an empty vector (after logging) if a receive or ZMQ_RCVMORE query fails.  <br /></td></tr>
 <tr class="separator:a92007cb8358e4ee2e43c1e7e0f30b263"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83c38790bd04a99dba1d4dbb96311195" id="r_a83c38790bd04a99dba1d4dbb96311195"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a83c38790bd04a99dba1d4dbb96311195">send</a> (const std::string &amp;msg)</td></tr>
+<tr class="memdesc:a83c38790bd04a99dba1d4dbb96311195"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send msg as one frame; a failure is only logged.  <br /></td></tr>
 <tr class="separator:a83c38790bd04a99dba1d4dbb96311195"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af488885fa7e2f7a5f539c8e308cbb844" id="r_af488885fa7e2f7a5f539c8e308cbb844"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#af488885fa7e2f7a5f539c8e308cbb844">poll</a> (short events, long timeout)</td></tr>
+<tr class="memdesc:af488885fa7e2f7a5f539c8e308cbb844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Poll this socket for events for up to timeout (zmq_poll() units) and return the zmq_poll() result.  <br /></td></tr>
 <tr class="separator:af488885fa7e2f7a5f539c8e308cbb844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a795a87c43bed8e5d002c422c53b25f17" id="r_a795a87c43bed8e5d002c422c53b25f17"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html#a795a87c43bed8e5d002c422c53b25f17">socket</a></td></tr>
+<tr class="memdesc:a795a87c43bed8e5d002c422c53b25f17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw ZeroMQ socket handle.  <br /></td></tr>
 <tr class="separator:a795a87c43bed8e5d002c422c53b25f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Wraps one ZeroMQ socket created from a <a class="el" href="classZmqContext.html" title="Owns a ZeroMQ context.">ZmqContext</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aef9262f586ecadab1c7bffa1358e7135" name="aef9262f586ecadab1c7bffa1358e7135"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef9262f586ecadab1c7bffa1358e7135">&#9670;&#160;</a></span>ZmqSocket()</h2>
 
@@ -155,6 +171,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create a socket of the given ZeroMQ type in context. </p>
+
 </div>
 </div>
 <a id="a37962b768c26b13bee2d84994621cfc1" name="a37962b768c26b13bee2d84994621cfc1"></a>
@@ -180,6 +198,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Close the socket. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -199,6 +219,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Bind the socket to the endpoint host; throws std::runtime_error on failure. </p>
+
 </div>
 </div>
 <a id="ade55c29cba14322138f4dabff980a982" name="ade55c29cba14322138f4dabff980a982"></a>
@@ -216,6 +238,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Connect the socket to the endpoint host; throws std::runtime_error on failure. </p>
 
 </div>
 </div>
@@ -245,6 +269,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Poll this socket for events for up to timeout (zmq_poll() units) and return the zmq_poll() result. </p>
+
 </div>
 </div>
 <a id="a38a83ac015c88f81757e25f53d9e2aaa" name="a38a83ac015c88f81757e25f53d9e2aaa"></a>
@@ -261,6 +287,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Receive one frame and return it as a string; logs an error and returns an empty string if the receive fails. </p>
 
 </div>
 </div>
@@ -279,6 +307,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Receive one frame and parse it as JSON; logs an error and returns an empty JSON object if the receive fails. </p>
+
 </div>
 </div>
 <a id="a92007cb8358e4ee2e43c1e7e0f30b263" name="a92007cb8358e4ee2e43c1e7e0f30b263"></a>
@@ -295,6 +325,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Receive all frames of one multi-part message; returns an empty vector (after logging) if a receive or ZMQ_RCVMORE query fails. </p>
 
 </div>
 </div>
@@ -313,6 +345,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send msg as one frame; a failure is only logged. </p>
 
 </div>
 </div>
@@ -348,6 +382,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set a socket option; throws std::runtime_error on failure. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -362,6 +398,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Raw ZeroMQ socket handle. </p>
 
 </div>
 </div>

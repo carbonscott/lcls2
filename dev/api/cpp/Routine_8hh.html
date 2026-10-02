@@ -96,11 +96,15 @@ $(document).ready(function(){initNavTree('Routine_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">Routine.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Routine, the job interface queued to and run by a Task.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Queue_8hh.html">Queue.hh</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Routine.html">Pds::Routine</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Job that can be queued to a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> with <a class="el" href="classPds_1_1Task.html#ab1adcbfb20264a839917064e478f7284" title="Insert routine at the tail of the job queue and give the pending semaphore if the queue was empty.">Task::call()</a> (a queue <a class="el" href="classPds_1_1Entry.html" title="Element of an intrusive doubly linked List; a new entry is linked to itself.">Entry</a>); the task thread calls <a class="el" href="classPds_1_1Routine.html#a5cab18b495ad8ab7f331b9245cb41373" title="Pure virtual: the work to run on the task thread.">routine()</a>.  <a href="classPds_1_1Routine.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -109,7 +113,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Routine, the job interface queued to and run by a Task. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

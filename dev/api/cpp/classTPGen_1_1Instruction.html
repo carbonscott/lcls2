@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classTPGen_1_1Instruction.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Base of the sequence engine instructions (per the code comment); <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a> identifies the concrete type.  
+ <a href="classTPGen_1_1Instruction.html#details">More...</a></p>
+
 <p><code>#include &lt;user_sequence.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classTPGen_1_1ACRateSync.html">TPGen::ACRateSync</a>, <a class="el" href="classTPGen_1_1Branch.html">TPGen::Branch</a>, <a class="el" href="classTPGen_1_1Checkpoint.html">TPGen::Checkpoint</a>, <a class="el" href="classTPGen_1_1ControlRequest.html">TPGen::ControlRequest</a>, and <a class="el" href="classTPGen_1_1FixedRateSync.html">TPGen::FixedRateSync</a>.</p>
@@ -113,16 +116,21 @@ Public Types</h2></td></tr>
 &#160;&#160;<a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b">Request</a>
 <br />
  }</td></tr>
+<tr class="memdesc:afcaac78a8c0afcdb0424cdb7c8a02667"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classTPGen_1_1Instruction.html" title="Base of the sequence engine instructions (per the code comment); instr() identifies the concrete type...">Instruction</a> type returned by <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a>.  <a href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667">More...</a><br /></td></tr>
 <tr class="separator:afcaac78a8c0afcdb0424cdb7c8a02667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af13ad34901972f937791beacf4ecd85a" id="r_af13ad34901972f937791beacf4ecd85a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html#af13ad34901972f937791beacf4ecd85a">~Instruction</a> ()</td></tr>
+<tr class="memdesc:af13ad34901972f937791beacf4ecd85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:af13ad34901972f937791beacf4ecd85a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd5cd678e2b3951778f2f7dd39074c32" id="r_abd5cd678e2b3951778f2f7dd39074c32"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667">Instruction::Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32">instr</a> () const =0</td></tr>
+<tr class="memdesc:abd5cd678e2b3951778f2f7dd39074c32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the instruction type.  <br /></td></tr>
 <tr class="separator:abd5cd678e2b3951778f2f7dd39074c32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base of the sequence engine instructions (per the code comment); <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a> identifies the concrete type. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="afcaac78a8c0afcdb0424cdb7c8a02667" name="afcaac78a8c0afcdb0424cdb7c8a02667"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afcaac78a8c0afcdb0424cdb7c8a02667">&#9670;&#160;</a></span>Type</h2>
 
@@ -134,12 +142,19 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classTPGen_1_1Instruction.html" title="Base of the sequence engine instructions (per the code comment); instr() identifies the concrete type...">Instruction</a> type returned by <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a5437d789f2c425fec25777e16d6b6824" name="afcaac78a8c0afcdb0424cdb7c8a02667a5437d789f2c425fec25777e16d6b6824"></a>Fixed&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a128d48a648f5ad50c7c6da8373b8c8b9" name="afcaac78a8c0afcdb0424cdb7c8a02667a128d48a648f5ad50c7c6da8373b8c8b9"></a>AC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667abf5d15ae4657e9617ea41b341384e4e1" name="afcaac78a8c0afcdb0424cdb7c8a02667abf5d15ae4657e9617ea41b341384e4e1"></a>Branch&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a27f48d42fe6334d2b81c76190a8799da" name="afcaac78a8c0afcdb0424cdb7c8a02667a27f48d42fe6334d2b81c76190a8799da"></a>Check&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b" name="afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b"></a>Request&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a5437d789f2c425fec25777e16d6b6824" name="afcaac78a8c0afcdb0424cdb7c8a02667a5437d789f2c425fec25777e16d6b6824"></a>Fixed&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1FixedRateSync.html" title="Wait for the occurrence-th fixed-rate marker marker_id (per the code comment).">FixedRateSync</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a128d48a648f5ad50c7c6da8373b8c8b9" name="afcaac78a8c0afcdb0424cdb7c8a02667a128d48a648f5ad50c7c6da8373b8c8b9"></a>AC&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1ACRateSync.html" title="Wait for the occurrence-th powerline-synchronized marker marker_id in the timeslots of timeslot_mask ...">ACRateSync</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667abf5d15ae4657e9617ea41b341384e4e1" name="afcaac78a8c0afcdb0424cdb7c8a02667abf5d15ae4657e9617ea41b341384e4e1"></a>Branch&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1Branch.html" title="Jump to another instruction, unconditionally or, per the constructor comment, while a counter is less...">Branch</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a27f48d42fe6334d2b81c76190a8799da" name="afcaac78a8c0afcdb0424cdb7c8a02667a27f48d42fe6334d2b81c76190a8799da"></a>Check&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1Checkpoint.html" title="Instruction to notify software through a callback (per the code comment); compiled unless EXCLUDE_CHE...">Checkpoint</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b" name="afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b"></a>Request&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1ControlRequest.html" title="Base of the request instructions; value() is the request word.">ControlRequest</a> (<a class="el" href="classTPGen_1_1BeamRequest.html" title="Request beam with the selected charge (per the code comment).">BeamRequest</a> or <a class="el" href="classTPGen_1_1ExptRequest.html" title="Request an experiment control word (per the code comment).">ExptRequest</a>). </p>
+</td></tr>
 </table>
 
 </div>
@@ -168,6 +183,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty virtual destructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -193,6 +210,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the instruction type. </p>
 
 <p>Implemented in <a class="el" href="classTPGen_1_1Checkpoint.html#ab0fc3a1401905a8ae4e61082ef54f1bf">TPGen::Checkpoint</a>, <a class="el" href="classTPGen_1_1FixedRateSync.html#a9a1c2acc59c810bded87779f20cff7d2">TPGen::FixedRateSync</a>, <a class="el" href="classTPGen_1_1ACRateSync.html#a150cbd1b7fbc121cd1a1b4da53ec1066">TPGen::ACRateSync</a>, <a class="el" href="classTPGen_1_1Branch.html#abf323e28a2b9e4bbcdf214bcd9d3a273">TPGen::Branch</a>, and <a class="el" href="classTPGen_1_1ControlRequest.html#ad488f057be149aa57f02717bdd848b8e">TPGen::ControlRequest</a>.</p>
 

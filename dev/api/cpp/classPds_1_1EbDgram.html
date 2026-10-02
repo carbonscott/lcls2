@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1EbDgram.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p>Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.  
+ <a href="classPds_1_1EbDgram.html#details">More...</a></p>
+
 <p><code>#include &lt;EbDgram.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1PulseId.html">Pds::PulseId</a>, and <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a>.</p>
@@ -106,19 +109,26 @@ $(document).ready(function(){initNavTree('classPds_1_1EbDgram.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aebdf9e3c40e7cca4b09f7a798dc1dc5c" id="r_aebdf9e3c40e7cca4b09f7a798dc1dc5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#aebdf9e3c40e7cca4b09f7a798dc1dc5c">EbDgram</a> (const <a class="el" href="classPds_1_1PulseId.html">PulseId</a> &amp;<a class="el" href="classPds_1_1PulseId.html#acea7efb7104dd4753e4ed3da4b6026e7">pulseId</a>, const <a class="el" href="classXtcData_1_1Dgram.html#ab42197ad5701bc8e5dd1510b26041f69">Dgram</a> &amp;dgram)</td></tr>
+<tr class="memdesc:aebdf9e3c40e7cca4b09f7a798dc1dc5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from the pulse ID of pulseId (control bits dropped) and a copy of dgram.  <br /></td></tr>
 <tr class="separator:aebdf9e3c40e7cca4b09f7a798dc1dc5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e02e9e72386aebd3637d1021e2a469f" id="r_a0e02e9e72386aebd3637d1021e2a469f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a0e02e9e72386aebd3637d1021e2a469f">EbDgram</a> (const <a class="el" href="classPds_1_1TimingHeader.html">TimingHeader</a> &amp;th, const <a class="el" href="classXtcData_1_1Src.html">XtcData::Src</a> src, uint32_t envRogMask)</td></tr>
+<tr class="memdesc:a0e02e9e72386aebd3637d1021e2a469f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a timing header: pulse ID (control bits dropped), time, env set to the control bits in bits 31-24 plus th.env masked by envRogMask, and an empty Parent Xtc with source src.  <br /></td></tr>
 <tr class="separator:a0e02e9e72386aebd3637d1021e2a469f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65ffeef6534ea06da639ace68a58e394" id="r_a65ffeef6534ea06da639ace68a58e394"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a65ffeef6534ea06da639ace68a58e394">setEOL</a> () const</td></tr>
+<tr class="memdesc:a65ffeef6534ea06da639ace68a58e394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bit 62 of the pulse ID word, marking the last entry of a batch (callable on const objects).  <br /></td></tr>
 <tr class="separator:a65ffeef6534ea06da639ace68a58e394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bee9db903860e8082e3d181c439dbbb" id="r_a8bee9db903860e8082e3d181c439dbbb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a8bee9db903860e8082e3d181c439dbbb">isEOL</a> () const</td></tr>
+<tr class="memdesc:a8bee9db903860e8082e3d181c439dbbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit 62 of the pulse ID word is set.  <br /></td></tr>
 <tr class="separator:a8bee9db903860e8082e3d181c439dbbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3cf52000956e493c0a496f0b870c789" id="r_ad3cf52000956e493c0a496f0b870c789"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#ad3cf52000956e493c0a496f0b870c789">keepRaw</a> () const</td></tr>
+<tr class="memdesc:ad3cf52000956e493c0a496f0b870c789"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 22 of env.  <br /></td></tr>
 <tr class="separator:ad3cf52000956e493c0a496f0b870c789"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1PulseId"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1PulseId')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1PulseId.html">Pds::PulseId</a></td></tr>
 <tr class="memitem:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId" id="r_aa1df914e45bd85fe08d91efedda68cc8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#aa1df914e45bd85fe08d91efedda68cc8">PulseId</a> (uint64_t value)</td></tr>
+<tr class="memdesc:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store value as the whole 64-bit word, control bits included.  <br /></td></tr>
 <tr class="separator:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId" id="r_acea7efb7104dd4753e4ed3da4b6026e7"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#acea7efb7104dd4753e4ed3da4b6026e7">pulseId</a> () const</td></tr>
+<tr class="memdesc:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the low 56 bits of the word (the pulse ID without the control bits).  <br /></td></tr>
 <tr class="separator:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classXtcData_1_1Dgram"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classXtcData_1_1Dgram')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a></td></tr>
 <tr class="memitem:ab42197ad5701bc8e5dd1510b26041f69 inherit pub_methods_classXtcData_1_1Dgram" id="r_ab42197ad5701bc8e5dd1510b26041f69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXtcData_1_1Dgram.html#ab42197ad5701bc8e5dd1510b26041f69">Dgram</a> ()</td></tr>
@@ -195,7 +205,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a6814b0b8dcbce0fe76bb267596e0af68 inherit pro_attribs_classPds_1_1PulseId" id="r_a6814b0b8dcbce0fe76bb267596e0af68"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#a6814b0b8dcbce0fe76bb267596e0af68">_pulseIdAndControl</a></td></tr>
 <tr class="separator:a6814b0b8dcbce0fe76bb267596e0af68 inherit pro_attribs_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders. </p>
+<p>Bit 62 of the word (control bit 6) marks the end of a batch (EOL). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aebdf9e3c40e7cca4b09f7a798dc1dc5c" name="aebdf9e3c40e7cca4b09f7a798dc1dc5c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebdf9e3c40e7cca4b09f7a798dc1dc5c">&#9670;&#160;</a></span>EbDgram() <span class="overload">[1/2]</span></h2>
 
@@ -229,6 +242,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct from the pulse ID of pulseId (control bits dropped) and a copy of dgram. </p>
 
 </div>
 </div>
@@ -272,6 +287,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct from a timing header: pulse ID (control bits dropped), time, env set to the control bits in bits 31-24 plus th.env masked by envRogMask, and an empty Parent Xtc with source src. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -298,6 +315,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if bit 62 of the pulse ID word is set. </p>
+
 </div>
 </div>
 <a id="ad3cf52000956e493c0a496f0b870c789" name="ad3cf52000956e493c0a496f0b870c789"></a>
@@ -323,6 +342,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return bit 22 of env. </p>
+
 </div>
 </div>
 <a id="a65ffeef6534ea06da639ace68a58e394" name="a65ffeef6534ea06da639ace68a58e394"></a>
@@ -347,6 +368,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set bit 62 of the pulse ID word, marking the last entry of a batch (callable on const objects). </p>
 
 </div>
 </div>

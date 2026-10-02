@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1TimingData.html',''); init
 </div><!--header-->
 <div class="contents">
 
+<p>Packed (1-byte aligned) 153-byte timing record whose fields follow the order of the <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a> name list.  
+ <a href="classDrp_1_1TimingData.html#details">More...</a></p>
+
 <p><code>#include &lt;TimingDef.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -114,51 +117,73 @@ Public Types</h2></td></tr>
 , <a class="el" href="classDrp_1_1TimingData.html#a095ebdb02860a3488887b910695c6db4a83837b0396ac148a9a821aecb036ea35">_1MHz</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a095ebdb02860a3488887b910695c6db4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indices into fixedRates for <a class="el" href="classDrp_1_1TimingData.html#af1f555e6b731a257d76fe56fbe0dae9e" title="Return true if fixedRates[r] is non-zero.">fixedRate()</a>; the rates are taken from the enumerator names.  <a href="classDrp_1_1TimingData.html#a095ebdb02860a3488887b910695c6db4">More...</a><br /></td></tr>
 <tr class="separator:a095ebdb02860a3488887b910695c6db4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af1f555e6b731a257d76fe56fbe0dae9e" id="r_af1f555e6b731a257d76fe56fbe0dae9e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#af1f555e6b731a257d76fe56fbe0dae9e">fixedRate</a> (<a class="el" href="classDrp_1_1TimingData.html#a095ebdb02860a3488887b910695c6db4">FixedRates</a> r) const</td></tr>
+<tr class="memdesc:af1f555e6b731a257d76fe56fbe0dae9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if fixedRates[r] is non-zero.  <br /></td></tr>
 <tr class="separator:af1f555e6b731a257d76fe56fbe0dae9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9496b9cf99af2ac2e367f0ca0a96708" id="r_aa9496b9cf99af2ac2e367f0ca0a96708"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#aa9496b9cf99af2ac2e367f0ca0a96708">eventCode</a> (unsigned code) const</td></tr>
+<tr class="memdesc:aa9496b9cf99af2ac2e367f0ca0a96708"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit (code &amp; 0xf) of sequenceValues[code &gt;&gt; 4] is set.  <br /></td></tr>
 <tr class="separator:aa9496b9cf99af2ac2e367f0ca0a96708"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8f44b8eb875fdbb13e41ed3afc0c1c98" id="r_a8f44b8eb875fdbb13e41ed3afc0c1c98"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a8f44b8eb875fdbb13e41ed3afc0c1c98">pulseId</a></td></tr>
+<tr class="memdesc:a8f44b8eb875fdbb13e41ed3afc0c1c98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulse ID (64 bits).  <br /></td></tr>
 <tr class="separator:a8f44b8eb875fdbb13e41ed3afc0c1c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8b6654d910ab6351953909ad3efcff4" id="r_ac8b6654d910ab6351953909ad3efcff4"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#ac8b6654d910ab6351953909ad3efcff4">timeStamp</a></td></tr>
+<tr class="memdesc:ac8b6654d910ab6351953909ad3efcff4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp (64 bits).  <br /></td></tr>
 <tr class="separator:ac8b6654d910ab6351953909ad3efcff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a403986d9a4d9438f7fd9e2a8ca2a3258" id="r_a403986d9a4d9438f7fd9e2a8ca2a3258"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a403986d9a4d9438f7fd9e2a8ca2a3258">fixedRates</a> [10]</td></tr>
+<tr class="memdesc:a403986d9a4d9438f7fd9e2a8ca2a3258"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ten fixed-rate flags, indexed by FixedRates; non-zero means set (see <a class="el" href="classDrp_1_1TimingData.html#af1f555e6b731a257d76fe56fbe0dae9e" title="Return true if fixedRates[r] is non-zero.">fixedRate()</a>).  <br /></td></tr>
 <tr class="separator:a403986d9a4d9438f7fd9e2a8ca2a3258"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44ba7031a75cf37164e90188202b11ad" id="r_a44ba7031a75cf37164e90188202b11ad"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a44ba7031a75cf37164e90188202b11ad">acRates</a> [6]</td></tr>
+<tr class="memdesc:a44ba7031a75cf37164e90188202b11ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Six AC-rate flags. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a44ba7031a75cf37164e90188202b11ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad554e4fe5a4a4a1f51a0b6e9c1d201b1" id="r_ad554e4fe5a4a4a1f51a0b6e9c1d201b1"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#ad554e4fe5a4a4a1f51a0b6e9c1d201b1">timeSlot</a></td></tr>
+<tr class="memdesc:ad554e4fe5a4a4a1f51a0b6e9c1d201b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time slot. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:ad554e4fe5a4a4a1f51a0b6e9c1d201b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62d64cf232fb84f073605c8010570280" id="r_a62d64cf232fb84f073605c8010570280"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a62d64cf232fb84f073605c8010570280">timeSlotPhase</a></td></tr>
+<tr class="memdesc:a62d64cf232fb84f073605c8010570280"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time slot phase. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a62d64cf232fb84f073605c8010570280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55971da546f11409030e254e76e21e91" id="r_a55971da546f11409030e254e76e21e91"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a55971da546f11409030e254e76e21e91">ebeamPresent</a></td></tr>
+<tr class="memdesc:a55971da546f11409030e254e76e21e91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Electron-beam-present flag. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a55971da546f11409030e254e76e21e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a474e813f3684e589c114a60e9b9f56a0" id="r_a474e813f3684e589c114a60e9b9f56a0"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a474e813f3684e589c114a60e9b9f56a0">ebeamDestn</a></td></tr>
+<tr class="memdesc:a474e813f3684e589c114a60e9b9f56a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Electron beam destination. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a474e813f3684e589c114a60e9b9f56a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a214c27090f5ca616df8289a7d901fa21" id="r_a214c27090f5ca616df8289a7d901fa21"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a214c27090f5ca616df8289a7d901fa21">ebeamCharge</a></td></tr>
+<tr class="memdesc:a214c27090f5ca616df8289a7d901fa21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Electron beam charge (16-bit raw value). Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a214c27090f5ca616df8289a7d901fa21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a149010eef9495c82785024feaed00cf9" id="r_a149010eef9495c82785024feaed00cf9"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a149010eef9495c82785024feaed00cf9">ebeamEnergy</a> [4]</td></tr>
+<tr class="memdesc:a149010eef9495c82785024feaed00cf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Four electron beam energy values (16-bit raw). Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a149010eef9495c82785024feaed00cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cba739c95177af3e099c407ba00c9a0" id="r_a4cba739c95177af3e099c407ba00c9a0"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a4cba739c95177af3e099c407ba00c9a0">xWavelength</a> [2]</td></tr>
+<tr class="memdesc:a4cba739c95177af3e099c407ba00c9a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Two X-ray wavelength values (16-bit raw). Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a4cba739c95177af3e099c407ba00c9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e77ac9b71ae482df03450f47c5ef1da" id="r_a8e77ac9b71ae482df03450f47c5ef1da"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a8e77ac9b71ae482df03450f47c5ef1da">dmod5</a></td></tr>
+<tr class="memdesc:a8e77ac9b71ae482df03450f47c5ef1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">16-bit value named dmod5; meaning not shown in code.  <br /></td></tr>
 <tr class="separator:a8e77ac9b71ae482df03450f47c5ef1da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2257e8658dd5a7e6abe6df79093ce52" id="r_af2257e8658dd5a7e6abe6df79093ce52"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#af2257e8658dd5a7e6abe6df79093ce52">mpsLimits</a> [16]</td></tr>
+<tr class="memdesc:af2257e8658dd5a7e6abe6df79093ce52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sixteen MPS limit values. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:af2257e8658dd5a7e6abe6df79093ce52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8023aae4e97a0452dd99819040dc4c6c" id="r_a8023aae4e97a0452dd99819040dc4c6c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a8023aae4e97a0452dd99819040dc4c6c">mpsPowerClass</a> [16]</td></tr>
+<tr class="memdesc:a8023aae4e97a0452dd99819040dc4c6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sixteen MPS power class values. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a8023aae4e97a0452dd99819040dc4c6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3467d517513163ff076c42770eead0f" id="r_ab3467d517513163ff076c42770eead0f"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#ab3467d517513163ff076c42770eead0f">sequenceValues</a> [18]</td></tr>
+<tr class="memdesc:ab3467d517513163ff076c42770eead0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eighteen 16-bit sequence words; <a class="el" href="classDrp_1_1TimingData.html#aa9496b9cf99af2ac2e367f0ca0a96708" title="Return true if bit (code &amp; 0xf) of sequenceValues[code &gt;&gt; 4] is set.">eventCode()</a> reads event code bits from them.  <br /></td></tr>
 <tr class="separator:ab3467d517513163ff076c42770eead0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b4ab63a53a2cd4218380853e00e0f4e" id="r_a7b4ab63a53a2cd4218380853e00e0f4e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1TimingData.html#a7b4ab63a53a2cd4218380853e00e0f4e">inhibitCounts</a> [8]</td></tr>
+<tr class="memdesc:a7b4ab63a53a2cd4218380853e00e0f4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eight 32-bit inhibit counters. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a7b4ab63a53a2cd4218380853e00e0f4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packed (1-byte aligned) 153-byte timing record whose fields follow the order of the <a class="el" href="classDrp_1_1TimingDef.html" title="XtcData::VarDef with the names and types of the 16 timing fields, in the order of the index enum,...">TimingDef</a> name list. </p>
+<p>Field meanings below come from the names only unless stated otherwise. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a095ebdb02860a3488887b910695c6db4" name="a095ebdb02860a3488887b910695c6db4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a095ebdb02860a3488887b910695c6db4">&#9670;&#160;</a></span>FixedRates</h2>
 
@@ -170,14 +195,23 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Indices into fixedRates for <a class="el" href="classDrp_1_1TimingData.html#af1f555e6b731a257d76fe56fbe0dae9e" title="Return true if fixedRates[r] is non-zero.">fixedRate()</a>; the rates are taken from the enumerator names. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a2faf6c391d5d0c642675d0671e19722a" name="a095ebdb02860a3488887b910695c6db4a2faf6c391d5d0c642675d0671e19722a"></a>_1Hz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a38dd79a2add1e93cc27b1e250bea69d4" name="a095ebdb02860a3488887b910695c6db4a38dd79a2add1e93cc27b1e250bea69d4"></a>_10Hz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4ad82fb8a4e41b728a755b0ac3e44b6eb4" name="a095ebdb02860a3488887b910695c6db4ad82fb8a4e41b728a755b0ac3e44b6eb4"></a>_100Hz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4aa74dd61e637374e13e4c74272614baf9" name="a095ebdb02860a3488887b910695c6db4aa74dd61e637374e13e4c74272614baf9"></a>_1kHz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a547b3d624bfc694f100bc6d51d8a0a8e" name="a095ebdb02860a3488887b910695c6db4a547b3d624bfc694f100bc6d51d8a0a8e"></a>_10kHz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a7d4c81d0661443d667724bc93111bd1e" name="a095ebdb02860a3488887b910695c6db4a7d4c81d0661443d667724bc93111bd1e"></a>_71kHz&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a83837b0396ac148a9a821aecb036ea35" name="a095ebdb02860a3488887b910695c6db4a83837b0396ac148a9a821aecb036ea35"></a>_1MHz&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a2faf6c391d5d0c642675d0671e19722a" name="a095ebdb02860a3488887b910695c6db4a2faf6c391d5d0c642675d0671e19722a"></a>_1Hz&#160;</td><td class="fielddoc"><p>Index 0 (1 Hz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a38dd79a2add1e93cc27b1e250bea69d4" name="a095ebdb02860a3488887b910695c6db4a38dd79a2add1e93cc27b1e250bea69d4"></a>_10Hz&#160;</td><td class="fielddoc"><p>Index 1 (10 Hz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4ad82fb8a4e41b728a755b0ac3e44b6eb4" name="a095ebdb02860a3488887b910695c6db4ad82fb8a4e41b728a755b0ac3e44b6eb4"></a>_100Hz&#160;</td><td class="fielddoc"><p>Index 2 (100 Hz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4aa74dd61e637374e13e4c74272614baf9" name="a095ebdb02860a3488887b910695c6db4aa74dd61e637374e13e4c74272614baf9"></a>_1kHz&#160;</td><td class="fielddoc"><p>Index 3 (1 kHz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a547b3d624bfc694f100bc6d51d8a0a8e" name="a095ebdb02860a3488887b910695c6db4a547b3d624bfc694f100bc6d51d8a0a8e"></a>_10kHz&#160;</td><td class="fielddoc"><p>Index 4 (10 kHz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a7d4c81d0661443d667724bc93111bd1e" name="a095ebdb02860a3488887b910695c6db4a7d4c81d0661443d667724bc93111bd1e"></a>_71kHz&#160;</td><td class="fielddoc"><p>Index 5 (71 kHz by name). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a095ebdb02860a3488887b910695c6db4a83837b0396ac148a9a821aecb036ea35" name="a095ebdb02860a3488887b910695c6db4a83837b0396ac148a9a821aecb036ea35"></a>_1MHz&#160;</td><td class="fielddoc"><p>Index 6 (1 MHz by name). </p>
+</td></tr>
 </table>
 
 </div>
@@ -207,6 +241,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if bit (code &amp; 0xf) of sequenceValues[code &gt;&gt; 4] is set. </p>
+
 </div>
 </div>
 <a id="af1f555e6b731a257d76fe56fbe0dae9e" name="af1f555e6b731a257d76fe56fbe0dae9e"></a>
@@ -233,6 +269,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if fixedRates[r] is non-zero. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -248,6 +286,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Six AC-rate flags. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a8e77ac9b71ae482df03450f47c5ef1da" name="a8e77ac9b71ae482df03450f47c5ef1da"></a>
@@ -261,6 +301,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>16-bit value named dmod5; meaning not shown in code. </p>
 
 </div>
 </div>
@@ -276,6 +318,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Electron beam charge (16-bit raw value). Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a474e813f3684e589c114a60e9b9f56a0" name="a474e813f3684e589c114a60e9b9f56a0"></a>
@@ -289,6 +333,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Electron beam destination. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -304,6 +350,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Four electron beam energy values (16-bit raw). Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a55971da546f11409030e254e76e21e91" name="a55971da546f11409030e254e76e21e91"></a>
@@ -317,6 +365,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Electron-beam-present flag. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -332,6 +382,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Ten fixed-rate flags, indexed by FixedRates; non-zero means set (see <a class="el" href="classDrp_1_1TimingData.html#af1f555e6b731a257d76fe56fbe0dae9e" title="Return true if fixedRates[r] is non-zero.">fixedRate()</a>). </p>
+
 </div>
 </div>
 <a id="a7b4ab63a53a2cd4218380853e00e0f4e" name="a7b4ab63a53a2cd4218380853e00e0f4e"></a>
@@ -345,6 +397,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Eight 32-bit inhibit counters. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -360,6 +414,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Sixteen MPS limit values. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a8023aae4e97a0452dd99819040dc4c6c" name="a8023aae4e97a0452dd99819040dc4c6c"></a>
@@ -373,6 +429,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sixteen MPS power class values. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -388,6 +446,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pulse ID (64 bits). </p>
+
 </div>
 </div>
 <a id="ab3467d517513163ff076c42770eead0f" name="ab3467d517513163ff076c42770eead0f"></a>
@@ -401,6 +461,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Eighteen 16-bit sequence words; <a class="el" href="classDrp_1_1TimingData.html#aa9496b9cf99af2ac2e367f0ca0a96708" title="Return true if bit (code &amp; 0xf) of sequenceValues[code &gt;&gt; 4] is set.">eventCode()</a> reads event code bits from them. </p>
 
 </div>
 </div>
@@ -416,6 +478,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Time slot. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a62d64cf232fb84f073605c8010570280" name="a62d64cf232fb84f073605c8010570280"></a>
@@ -429,6 +493,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time slot phase. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -444,6 +510,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Timestamp (64 bits). </p>
+
 </div>
 </div>
 <a id="a4cba739c95177af3e099c407ba00c9a0" name="a4cba739c95177af3e099c407ba00c9a0"></a>
@@ -457,6 +525,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Two X-ray wavelength values (16-bit raw). Inferred from the name; not verified in code. </p>
 
 </div>
 </div>

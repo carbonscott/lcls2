@@ -98,23 +98,33 @@ $(document).ready(function(){initNavTree('classZmqMessage.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
+<p>Owns one zmq_msg_t frame; movable but not copyable.  
+ <a href="classZmqMessage.html#details">More...</a></p>
+
 <p><code>#include &lt;Collection.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad49234042acc89aaba38373c3534ad1e" id="r_ad49234042acc89aaba38373c3534ad1e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#ad49234042acc89aaba38373c3534ad1e">ZmqMessage</a> ()</td></tr>
+<tr class="memdesc:ad49234042acc89aaba38373c3534ad1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an empty frame with zmq_msg_init().  <br /></td></tr>
 <tr class="separator:ad49234042acc89aaba38373c3534ad1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6372576535ac4bf884327f44504e876b" id="r_a6372576535ac4bf884327f44504e876b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#a6372576535ac4bf884327f44504e876b">~ZmqMessage</a> ()</td></tr>
+<tr class="memdesc:a6372576535ac4bf884327f44504e876b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the frame with zmq_msg_close().  <br /></td></tr>
 <tr class="separator:a6372576535ac4bf884327f44504e876b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2364b7291f610a6589da0d17a9bc09a" id="r_af2364b7291f610a6589da0d17a9bc09a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#af2364b7291f610a6589da0d17a9bc09a">ZmqMessage</a> (<a class="el" href="classZmqMessage.html">ZmqMessage</a> &amp;&amp;m) noexcept</td></tr>
+<tr class="memdesc:af2364b7291f610a6589da0d17a9bc09a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor: take over the frame of m and reinitialize m as empty.  <br /></td></tr>
 <tr class="separator:af2364b7291f610a6589da0d17a9bc09a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bb41e9d23b24d9dc3cc95d5137003c0" id="r_a3bb41e9d23b24d9dc3cc95d5137003c0"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#a3bb41e9d23b24d9dc3cc95d5137003c0">data</a> ()</td></tr>
+<tr class="memdesc:a3bb41e9d23b24d9dc3cc95d5137003c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the frame contents.  <br /></td></tr>
 <tr class="separator:a3bb41e9d23b24d9dc3cc95d5137003c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34a02d02d4d4456c1db18aeaa080e6f5" id="r_a34a02d02d4d4456c1db18aeaa080e6f5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#a34a02d02d4d4456c1db18aeaa080e6f5">size</a> ()</td></tr>
+<tr class="memdesc:a34a02d02d4d4456c1db18aeaa080e6f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the frame size in bytes.  <br /></td></tr>
 <tr class="separator:a34a02d02d4d4456c1db18aeaa080e6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaf78f68af72491aa75981d2ca26ac63" id="r_aeaf78f68af72491aa75981d2ca26ac63"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#aeaf78f68af72491aa75981d2ca26ac63">ZmqMessage</a> (const <a class="el" href="classZmqMessage.html">ZmqMessage</a> &amp;)=delete</td></tr>
+<tr class="memdesc:aeaf78f68af72491aa75981d2ca26ac63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: frames are not copyable.  <br /></td></tr>
 <tr class="separator:aeaf78f68af72491aa75981d2ca26ac63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad1d6d58cc72bca18b49e0aa8181983" id="r_a3ad1d6d58cc72bca18b49e0aa8181983"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#a3ad1d6d58cc72bca18b49e0aa8181983">operator=</a> (const <a class="el" href="classZmqMessage.html">ZmqMessage</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a3ad1d6d58cc72bca18b49e0aa8181983"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: frames are not copy-assignable.  <br /></td></tr>
 <tr class="separator:a3ad1d6d58cc72bca18b49e0aa8181983"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
@@ -122,7 +132,9 @@ Friends</h2></td></tr>
 <tr class="memitem:abffcdb390a85c27b3c3ca2d3c3801a99" id="r_abffcdb390a85c27b3c3ca2d3c3801a99"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html#abffcdb390a85c27b3c3ca2d3c3801a99">ZmqSocket</a></td></tr>
 <tr class="separator:abffcdb390a85c27b3c3ca2d3c3801a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Owns one zmq_msg_t frame; movable but not copyable. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad49234042acc89aaba38373c3534ad1e" name="ad49234042acc89aaba38373c3534ad1e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad49234042acc89aaba38373c3534ad1e">&#9670;&#160;</a></span>ZmqMessage() <span class="overload">[1/3]</span></h2>
 
@@ -145,6 +157,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initialize an empty frame with zmq_msg_init(). </p>
 
 </div>
 </div>
@@ -170,6 +184,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Close the frame with zmq_msg_close(). </p>
 
 </div>
 </div>
@@ -197,6 +213,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Move constructor: take over the frame of m and reinitialize m as empty. </p>
+
 </div>
 </div>
 <a id="aeaf78f68af72491aa75981d2ca26ac63" name="aeaf78f68af72491aa75981d2ca26ac63"></a>
@@ -222,6 +240,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Deleted: frames are not copyable. </p>
 
 </div>
 </div>
@@ -249,6 +269,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a pointer to the frame contents. </p>
+
 </div>
 </div>
 <a id="a3ad1d6d58cc72bca18b49e0aa8181983" name="a3ad1d6d58cc72bca18b49e0aa8181983"></a>
@@ -275,6 +297,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Deleted: frames are not copy-assignable. </p>
+
 </div>
 </div>
 <a id="a34a02d02d4d4456c1db18aeaa080e6f5" name="a34a02d02d4d4456c1db18aeaa080e6f5"></a>
@@ -299,6 +323,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the frame size in bytes. </p>
 
 </div>
 </div>

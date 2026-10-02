@@ -97,20 +97,29 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1PVPStats.html','');
 </div><!--header-->
 <div class="contents">
 
+<p>EPICS statistics PVs of one XPM partition, updated from <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a> by <a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a7a4da58c5caa408bc1c90e37fb497dad" title="Select the partition, read Module::l0Stats() and publish values computed from the change since the la...">update()</a>.  
+ <a href="classPds_1_1Xpm_1_1PVPStats.html#details">More...</a></p>
+
 <p><code>#include &lt;PVPStats.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abb016b71fc82c2555dca4692a47b4118" id="r_abb016b71fc82c2555dca4692a47b4118"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#abb016b71fc82c2555dca4692a47b4118">PVPStats</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;, unsigned partition)</td></tr>
+<tr class="memdesc:abb016b71fc82c2555dca4692a47b4118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the module and partition; no PVs until <a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a18fe0944e6ea191f2155f3f3fe24aa6d" title="Delete earlier PVs and create the partition PVs named title, a colon and L0InpRate,...">allocate()</a>.  <br /></td></tr>
 <tr class="separator:abb016b71fc82c2555dca4692a47b4118"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58651b52dd6e32f59143f21fefca6c72" id="r_a58651b52dd6e32f59143f21fefca6c72"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a58651b52dd6e32f59143f21fefca6c72">~PVPStats</a> ()</td></tr>
+<tr class="memdesc:a58651b52dd6e32f59143f21fefca6c72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; the PVs are not deleted.  <br /></td></tr>
 <tr class="separator:a58651b52dd6e32f59143f21fefca6c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18fe0944e6ea191f2155f3f3fe24aa6d" id="r_a18fe0944e6ea191f2155f3f3fe24aa6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a18fe0944e6ea191f2155f3f3fe24aa6d">allocate</a> (const std::string &amp;title, const std::string &amp;dttitle)</td></tr>
+<tr class="memdesc:a18fe0944e6ea191f2155f3f3fe24aa6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete earlier PVs and create the partition PVs named title, a colon and L0InpRate, L0AccRate, L1Rate, NumL0Inp, NumL0Acc, NumL1, DeadFrac, DeadTime, RunTime or MsgDelay, plus the 32-element dttitle:DeadFLnk.  <br /></td></tr>
 <tr class="separator:a18fe0944e6ea191f2155f3f3fe24aa6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a4da58c5caa408bc1c90e37fb497dad" id="r_a7a4da58c5caa408bc1c90e37fb497dad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a7a4da58c5caa408bc1c90e37fb497dad">update</a> (bool)</td></tr>
+<tr class="memdesc:a7a4da58c5caa408bc1c90e37fb497dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the partition, read <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a> and publish values computed from the change since the last call; the fiducial period is taken as 14/13 us.  <br /></td></tr>
 <tr class="separator:a7a4da58c5caa408bc1c90e37fb497dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EPICS statistics PVs of one XPM partition, updated from <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a> by <a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a7a4da58c5caa408bc1c90e37fb497dad" title="Select the partition, read Module::l0Stats() and publish values computed from the change since the la...">update()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abb016b71fc82c2555dca4692a47b4118" name="abb016b71fc82c2555dca4692a47b4118"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb016b71fc82c2555dca4692a47b4118">&#9670;&#160;</a></span>PVPStats()</h2>
 
@@ -137,6 +146,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the module and partition; no PVs until <a class="el" href="classPds_1_1Xpm_1_1PVPStats.html#a18fe0944e6ea191f2155f3f3fe24aa6d" title="Delete earlier PVs and create the partition PVs named title, a colon and L0InpRate,...">allocate()</a>. </p>
+
 </div>
 </div>
 <a id="a58651b52dd6e32f59143f21fefca6c72" name="a58651b52dd6e32f59143f21fefca6c72"></a>
@@ -153,6 +164,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; the PVs are not deleted. </p>
 
 </div>
 </div>
@@ -183,6 +196,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Delete earlier PVs and create the partition PVs named title, a colon and L0InpRate, L0AccRate, L1Rate, NumL0Inp, NumL0Acc, NumL1, DeadFrac, DeadTime, RunTime or MsgDelay, plus the 32-element dttitle:DeadFLnk. </p>
+
 </div>
 </div>
 <a id="a7a4da58c5caa408bc1c90e37fb497dad" name="a7a4da58c5caa408bc1c90e37fb497dad"></a>
@@ -200,6 +215,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Select the partition, read <a class="el" href="classPds_1_1Xpm_1_1Module.html#a65a7382ac7b61f4113adf362df1161bd" title="Freeze the counter updates, sample the L0 statistics of the selected partition (the totals and per-li...">Module::l0Stats()</a> and publish values computed from the change since the last call; the fiducial period is taken as 14/13 us. </p>
+<p>If enabled, write RunTime, MsgDelay (the L0 delay), the L0 input and accept rates, the counts, DeadFrac and, if L0 was enabled in the interval, DeadTime and the per-link DeadFLnk. Otherwise write only DeadFLnk, from the per-link inhibit times over the elapsed wall-clock time; L1Rate and NumL1 are never written. </p>
 
 </div>
 </div>

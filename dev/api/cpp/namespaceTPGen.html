@@ -96,28 +96,41 @@ $(document).ready(function(){initNavTree('namespaceTPGen.html',''); initResizabl
   <div class="headertitle"><div class="title">TPGen Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace of the timing pattern sequence engine interface and its instruction classes.  
+<a href="namespaceTPGen.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ACRateSync.html">ACRateSync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the occurrence-th powerline-synchronized marker marker_id in the timeslots of timeslot_mask (per the code comment).  <a href="classTPGen_1_1ACRateSync.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1BeamRequest.html">BeamRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request beam with the selected charge (per the code comment).  <a href="classTPGen_1_1BeamRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Branch.html">Branch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jump to another instruction, unconditionally or, per the constructor comment, while a counter is less than a test value.  <a href="classTPGen_1_1Branch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Checkpoint.html">Checkpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classTPGen_1_1Instruction.html" title="Base of the sequence engine instructions (per the code comment); instr() identifies the concrete type...">Instruction</a> to notify software through a callback (per the code comment); compiled unless EXCLUDE_CHECKPOINT is defined.  <a href="classTPGen_1_1Checkpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html">ControlRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the request instructions; <a class="el" href="classTPGen_1_1ControlRequest.html#a063e8cbdee159a1d4a3a5e813d696632" title="Pure virtual: return the request word.">value()</a> is the request word.  <a href="classTPGen_1_1ControlRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ExptRequest.html">ExptRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request an experiment control word (per the code comment).  <a href="classTPGen_1_1ExptRequest.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1FixedRateSync.html">FixedRateSync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the occurrence-th fixed-rate marker marker_id (per the code comment).  <a href="classTPGen_1_1FixedRateSync.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html">Instruction</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the sequence engine instructions (per the code comment); <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a> identifies the concrete type.  <a href="classTPGen_1_1Instruction.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1InstructionCache.html">InstructionCache</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description of one instruction sequence held in sequence RAM, as returned by <a class="el" href="classTPGen_1_1SequenceEngine.html#a43d9156d73f7dd0101f6b3ac25d260b7" title="Pure virtual: return the RAM description of sequence index.">SequenceEngine::cache()</a>.  <a href="classTPGen_1_1InstructionCache.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1SequenceEngine.html">SequenceEngine</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface of a timing sequence engine: store instruction sequences in sequence RAM and choose where the engine starts or jumps.  <a href="classTPGen_1_1SequenceEngine.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -127,9 +140,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4">ctrC</a>
 , <a class="el" href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228">ctrD</a>
  }</td></tr>
+<tr class="memdesc:afcf5d9f7a933861b642319cf98e451f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional counter used by Branch (per the code comment).  <a href="namespaceTPGen.html#afcf5d9f7a933861b642319cf98e451f0">More...</a><br /></td></tr>
 <tr class="separator:afcf5d9f7a933861b642319cf98e451f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace of the timing pattern sequence engine interface and its instruction classes. </p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="afcf5d9f7a933861b642319cf98e451f0" name="afcf5d9f7a933861b642319cf98e451f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afcf5d9f7a933861b642319cf98e451f0">&#9670;&#160;</a></span>CCnt</h2>
 
@@ -141,11 +157,17 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Conditional counter used by <a class="el" href="classTPGen_1_1Branch.html" title="Jump to another instruction, unconditionally or, per the constructor comment, while a counter is less...">Branch</a> (per the code comment). </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0ad6c5999fa66428d958660bdd54853ad1" name="afcf5d9f7a933861b642319cf98e451f0ad6c5999fa66428d958660bdd54853ad1"></a>ctrA&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0a5067a1c67dddff19a5fc6dab64a1f4d3" name="afcf5d9f7a933861b642319cf98e451f0a5067a1c67dddff19a5fc6dab64a1f4d3"></a>ctrB&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4" name="afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4"></a>ctrC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228" name="afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228"></a>ctrD&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0ad6c5999fa66428d958660bdd54853ad1" name="afcf5d9f7a933861b642319cf98e451f0ad6c5999fa66428d958660bdd54853ad1"></a>ctrA&#160;</td><td class="fielddoc"><p>Counter A (0); also the counter of an unconditional <a class="el" href="classTPGen_1_1Branch.html" title="Jump to another instruction, unconditionally or, per the constructor comment, while a counter is less...">Branch</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0a5067a1c67dddff19a5fc6dab64a1f4d3" name="afcf5d9f7a933861b642319cf98e451f0a5067a1c67dddff19a5fc6dab64a1f4d3"></a>ctrB&#160;</td><td class="fielddoc"><p>Counter B (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4" name="afcf5d9f7a933861b642319cf98e451f0ad6984b4cdb6d661f2507b46a8f5eafe4"></a>ctrC&#160;</td><td class="fielddoc"><p>Counter C (2). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228" name="afcf5d9f7a933861b642319cf98e451f0a0fbb405a7c5446b8335b05b9d3990228"></a>ctrD&#160;</td><td class="fielddoc"><p>Counter D (3). </p>
+</td></tr>
 </table>
 
 </div>

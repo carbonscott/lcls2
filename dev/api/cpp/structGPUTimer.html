@@ -106,19 +106,25 @@ $(document).ready(function(){initNavTree('structGPUTimer.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa7c1823c1be2585624196e9130523cef" id="r_aa7c1823c1be2585624196e9130523cef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#aa7c1823c1be2585624196e9130523cef">GPUTimer</a> ()</td></tr>
+<tr class="memdesc:aa7c1823c1be2585624196e9130523cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the start and stop events (return codes not checked).  <br /></td></tr>
 <tr class="separator:aa7c1823c1be2585624196e9130523cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c2ed04edc530e95c2f4e5aecaac8bef" id="r_a8c2ed04edc530e95c2f4e5aecaac8bef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#a8c2ed04edc530e95c2f4e5aecaac8bef">~GPUTimer</a> ()</td></tr>
+<tr class="memdesc:a8c2ed04edc530e95c2f4e5aecaac8bef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the two events.  <br /></td></tr>
 <tr class="separator:a8c2ed04edc530e95c2f4e5aecaac8bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20bd3ce2a2d10c2b2c15398caf6f9a51" id="r_a20bd3ce2a2d10c2b2c15398caf6f9a51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#a20bd3ce2a2d10c2b2c15398caf6f9a51">start</a> ()</td></tr>
+<tr class="memdesc:a20bd3ce2a2d10c2b2c15398caf6f9a51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the start event on the default stream.  <br /></td></tr>
 <tr class="separator:a20bd3ce2a2d10c2b2c15398caf6f9a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab502c55009690765569c91d2acc55929" id="r_ab502c55009690765569c91d2acc55929"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#ab502c55009690765569c91d2acc55929">stop</a> ()</td></tr>
+<tr class="memdesc:ab502c55009690765569c91d2acc55929"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record the stop event on the default stream, wait for it and return the time since the start event in milliseconds.  <br /></td></tr>
 <tr class="separator:ab502c55009690765569c91d2acc55929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a864a192034d88a752ba828a56b4048fe" id="r_a864a192034d88a752ba828a56b4048fe"><td class="memItemLeft" align="right" valign="top">cudaEvent_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#a864a192034d88a752ba828a56b4048fe">beg</a></td></tr>
+<tr class="memdesc:a864a192034d88a752ba828a56b4048fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start event, recorded by <a class="el" href="structGPUTimer.html#a20bd3ce2a2d10c2b2c15398caf6f9a51" title="Record the start event on the default stream.">start()</a>.  <br /></td></tr>
 <tr class="separator:a864a192034d88a752ba828a56b4048fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d3d25eb5d672440bd63054820133f5e" id="r_a5d3d25eb5d672440bd63054820133f5e"><td class="memItemLeft" align="right" valign="top">cudaEvent_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUTimer.html#a5d3d25eb5d672440bd63054820133f5e">end</a></td></tr>
+<tr class="memdesc:a5d3d25eb5d672440bd63054820133f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop event, recorded by <a class="el" href="structGPUTimer.html#ab502c55009690765569c91d2acc55929" title="Record the stop event on the default stream, wait for it and return the time since the start event in...">stop()</a>.  <br /></td></tr>
 <tr class="separator:a5d3d25eb5d672440bd63054820133f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -147,6 +153,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Create the start and stop events (return codes not checked). </p>
+
 </div>
 </div>
 <a id="a8c2ed04edc530e95c2f4e5aecaac8bef" name="a8c2ed04edc530e95c2f4e5aecaac8bef"></a>
@@ -171,6 +179,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Destroy the two events. </p>
 
 </div>
 </div>
@@ -198,6 +208,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Record the start event on the default stream. </p>
+
 </div>
 </div>
 <a id="ab502c55009690765569c91d2acc55929" name="ab502c55009690765569c91d2acc55929"></a>
@@ -223,6 +235,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Record the stop event on the default stream, wait for it and return the time since the start event in milliseconds. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -238,6 +252,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start event, recorded by <a class="el" href="structGPUTimer.html#a20bd3ce2a2d10c2b2c15398caf6f9a51" title="Record the start event on the default stream.">start()</a>. </p>
+
 </div>
 </div>
 <a id="a5d3d25eb5d672440bd63054820133f5e" name="a5d3d25eb5d672440bd63054820133f5e"></a>
@@ -251,6 +267,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Stop event, recorded by <a class="el" href="structGPUTimer.html#ab502c55009690765569c91d2acc55929" title="Record the stop event on the default stream, wait for it and return the time since the start event in...">stop()</a>. </p>
 
 </div>
 </div>

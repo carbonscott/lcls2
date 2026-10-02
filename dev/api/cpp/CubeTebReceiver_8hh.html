@@ -96,12 +96,16 @@ $(document).ready(function(){initNavTree('CubeTebReceiver_8hh.html',''); initRes
   <div class="headertitle"><div class="title">CubeTebReceiver.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>CubeTebReceiver, a TebReceiver that bins detector raw data into a cube according to the trigger results.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="TebReceiver_8hh.html">TebReceiver.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CubeResult_8hh.html">CubeResult.hh</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeTebReceiver.html">Drp::CubeTebReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1TebReceiver.html" title="TebReceiverBase that writes recorded events with a BufferedFileWriterMT and a small-data SmdWriter,...">TebReceiver</a> that accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into bins chosen by the Cube trigger results, using nCubeWorkers worker threads; the full cube is recorded at EndRun and single bins are recorded or monitored as the results request (per the file comment).  <a href="classDrp_1_1CubeTebReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -110,7 +114,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>CubeTebReceiver, a TebReceiver that bins detector raw data into a cube according to the trigger results. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

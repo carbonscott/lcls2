@@ -97,34 +97,51 @@ $(document).ready(function(){initNavTree('classDrp_1_1CubeData.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>Accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into nbins bins.  
+ <a href="classDrp_1_1CubeData.html#details">More...</a></p>
+
 <p><code>#include &lt;CubeData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a96bb3847815fe8f3f8b21f59ce10b168" id="r_a96bb3847815fe8f3f8b21f59ce10b168"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a96bb3847815fe8f3f8b21f59ce10b168">CubeData</a> (<a class="el" href="classDrp_1_1Detector.html">Detector</a> &amp;det, unsigned nbins, unsigned poolBufferSize)</td></tr>
+<tr class="memdesc:a96bb3847815fe8f3f8b21f59ce10b168"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take the raw definitions and names indices from det, split the nbins bins over enough buffers to keep each below 2 GiB, allocate those buffers, and allocate a separate buffer (sized for one bin plus poolBufferSize) used by <a class="el" href="classDrp_1_1CubeData.html#a988e13bd1635f8b2d049c420c7af41a1" title="Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indi...">copyBins()</a>.  <br /></td></tr>
 <tr class="separator:a96bb3847815fe8f3f8b21f59ce10b168"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a348c5a3d7d5046424c78fdd1b57c3f52" id="r_a348c5a3d7d5046424c78fdd1b57c3f52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a348c5a3d7d5046424c78fdd1b57c3f52">~CubeData</a> ()</td></tr>
+<tr class="memdesc:a348c5a3d7d5046424c78fdd1b57c3f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the cube buffers and the bin buffer.  <br /></td></tr>
 <tr class="separator:a348c5a3d7d5046424c78fdd1b57c3f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6802653e5251eeab69d59945160b0cc8" id="r_a6802653e5251eeab69d59945160b0cc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a6802653e5251eeab69d59945160b0cc8">initialize</a> (<a class="el" href="classXtcData_1_1Src.html">XtcData::Src</a> &amp;src, const <a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a> &amp;rawData, int threadNum=1)</td></tr>
+<tr class="memdesc:a6802653e5251eeab69d59945160b0cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lay out each cube buffer as a datagram with source src: per raw definition, bin indices, zeroed entry counts and zeroed sums, with array shapes taken from <a class="el" href="classDrp_1_1Detector.html#a0a602bd6368dbe39f95a82e79684af3d" title="Return the shape in rawData of entry valueIndex of raw definition rawDefIndex (from rawDef()).">Detector::shapeCube()</a> for rawData.  <br /></td></tr>
 <tr class="separator:a6802653e5251eeab69d59945160b0cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4ce6af2be6783c10785717cf193b134" id="r_ae4ce6af2be6783c10785717cf193b134"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#ae4ce6af2be6783c10785717cf193b134">flush</a> (const std::vector&lt; unsigned &gt; &amp;bins)</td></tr>
+<tr class="memdesc:ae4ce6af2be6783c10785717cf193b134"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the entry count and all sums of each bin in bins.  <br /></td></tr>
 <tr class="separator:ae4ce6af2be6783c10785717cf193b134"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7b6f106779d2a54563738c47fc49600" id="r_ae7b6f106779d2a54563738c47fc49600"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#ae7b6f106779d2a54563738c47fc49600">addNames</a> (unsigned detSegment, <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> *<a class="el" href="classDrp_1_1CubeData.html#aa730a38aaf2848db802f376cfb0042f9">dgram</a>, const void *bufEnd)</td></tr>
+<tr class="memdesc:ae7b6f106779d2a54563738c47fc49600"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add cube Names (algorithm cube 2.0.0, with the detector name, type and ID of the raw names) for each raw definition to dgram and register them in the detector's names lookup.  <br /></td></tr>
 <tr class="separator:ae7b6f106779d2a54563738c47fc49600"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4f5c39bb8ceb12196a4d35d23ebeb65" id="r_af4f5c39bb8ceb12196a4d35d23ebeb65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#af4f5c39bb8ceb12196a4d35d23ebeb65">add</a> (unsigned bin, const <a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a> &amp;rawData)</td></tr>
+<tr class="memdesc:af4f5c39bb8ceb12196a4d35d23ebeb65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add one event to bin: increment its entry count and call <a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459" title="Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData,...">Detector::addToCube()</a> (subIndex 0) for every raw value; raw definitions with no data in rawData are skipped.  <br /></td></tr>
 <tr class="separator:af4f5c39bb8ceb12196a4d35d23ebeb65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a162ef8cc440d736e01b9edffdc471dcf" id="r_a162ef8cc440d736e01b9edffdc471dcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a162ef8cc440d736e01b9edffdc471dcf">addSub</a> (unsigned bin, unsigned subDet, const <a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a> &amp;rawData)</td></tr>
+<tr class="memdesc:a162ef8cc440d736e01b9edffdc471dcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classDrp_1_1CubeData.html#af4f5c39bb8ceb12196a4d35d23ebeb65" title="Add one event to bin: increment its entry count and call Detector::addToCube() (subIndex 0) for every...">add()</a> for sub-detector subDet (passed to <a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459" title="Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData,...">Detector::addToCube()</a> as subIndex), without incrementing the entry count.  <br /></td></tr>
 <tr class="separator:a162ef8cc440d736e01b9edffdc471dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a988e13bd1635f8b2d049c420c7af41a1" id="r_a988e13bd1635f8b2d049c420c7af41a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a988e13bd1635f8b2d049c420c7af41a1">copyBins</a> (const std::vector&lt; unsigned &gt; &amp;bins, <a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a> &amp;rawDataV, <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dg)</td></tr>
+<tr class="memdesc:a988e13bd1635f8b2d049c420c7af41a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indices, entry counts and sums) copied from the cube; the new ShapesData pointers are appended to rawDataV.  <br /></td></tr>
 <tr class="separator:a988e13bd1635f8b2d049c420c7af41a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afee2939487aabe3f25808c38b51b7903" id="r_afee2939487aabe3f25808c38b51b7903"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#afee2939487aabe3f25808c38b51b7903">addBins</a> (const std::vector&lt; unsigned &gt; &amp;bins, const <a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a> &amp;rawDataV, <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dg)</td></tr>
+<tr class="memdesc:afee2939487aabe3f25808c38b51b7903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the entry counts and sums of the given bins of the cube into the entries described by rawDataV (as produced by <a class="el" href="classDrp_1_1CubeData.html#a988e13bd1635f8b2d049c420c7af41a1" title="Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indi...">copyBins()</a>); dg is not used.  <br /></td></tr>
 <tr class="separator:afee2939487aabe3f25808c38b51b7903"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa730a38aaf2848db802f376cfb0042f9" id="r_aa730a38aaf2848db802f376cfb0042f9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#aa730a38aaf2848db802f376cfb0042f9">dgram</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> *, <a class="el" href="classXtcData_1_1TransitionId.html#a77fdbc76c92675556b0a726469e787e9">XtcData::TransitionId::Value</a>)</td></tr>
+<tr class="memdesc:aa730a38aaf2848db802f376cfb0042f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overwrite the transition header of every cube buffer with the type, time and env of dgram and transition ID transitionId (bit 16 of env is set on all but the last buffer) and return the buffers as datagrams.  <br /></td></tr>
 <tr class="separator:aa730a38aaf2848db802f376cfb0042f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4684922f693050eb06e4d92114b84c23" id="r_a4684922f693050eb06e4d92114b84c23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html#a4684922f693050eb06e4d92114b84c23">add</a> (std::vector&lt; <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> * &gt; &amp;)</td></tr>
+<tr class="memdesc:a4684922f693050eb06e4d92114b84c23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add the entry counts and sums of every bin of this cube into the matching cube datagrams in the argument (one per buffer).  <br /></td></tr>
 <tr class="separator:a4684922f693050eb06e4d92114b84c23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into nbins bins. </p>
+<p>The cube is stored as one or more datagrams (each below 2 GiB) holding, per raw definition, the bin indices, entry counts and double-valued sums. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a96bb3847815fe8f3f8b21f59ce10b168" name="a96bb3847815fe8f3f8b21f59ce10b168"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a96bb3847815fe8f3f8b21f59ce10b168">&#9670;&#160;</a></span>CubeData()</h2>
 
@@ -157,6 +174,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Take the raw definitions and names indices from det, split the nbins bins over enough buffers to keep each below 2 GiB, allocate those buffers, and allocate a separate buffer (sized for one bin plus poolBufferSize) used by <a class="el" href="classDrp_1_1CubeData.html#a988e13bd1635f8b2d049c420c7af41a1" title="Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indi...">copyBins()</a>. </p>
+
 </div>
 </div>
 <a id="a348c5a3d7d5046424c78fdd1b57c3f52" name="a348c5a3d7d5046424c78fdd1b57c3f52"></a>
@@ -173,6 +192,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the cube buffers and the bin buffer. </p>
 
 </div>
 </div>
@@ -192,6 +213,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Add the entry counts and sums of every bin of this cube into the matching cube datagrams in the argument (one per buffer). </p>
 
 </div>
 </div>
@@ -220,6 +243,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Add one event to bin: increment its entry count and call <a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459" title="Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData,...">Detector::addToCube()</a> (subIndex 0) for every raw value; raw definitions with no data in rawData are skipped. </p>
 
 </div>
 </div>
@@ -255,6 +280,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Add the entry counts and sums of the given bins of the cube into the entries described by rawDataV (as produced by <a class="el" href="classDrp_1_1CubeData.html#a988e13bd1635f8b2d049c420c7af41a1" title="Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indi...">copyBins()</a>); dg is not used. </p>
+
 </div>
 </div>
 <a id="ae7b6f106779d2a54563738c47fc49600" name="ae7b6f106779d2a54563738c47fc49600"></a>
@@ -288,6 +315,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Add cube Names (algorithm cube 2.0.0, with the detector name, type and ID of the raw names) for each raw definition to dgram and register them in the detector's names lookup. </p>
 
 </div>
 </div>
@@ -323,6 +352,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Like <a class="el" href="classDrp_1_1CubeData.html#af4f5c39bb8ceb12196a4d35d23ebeb65" title="Add one event to bin: increment its entry count and call Detector::addToCube() (subIndex 0) for every...">add()</a> for sub-detector subDet (passed to <a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459" title="Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData,...">Detector::addToCube()</a> as subIndex), without incrementing the entry count. </p>
+
 </div>
 </div>
 <a id="a988e13bd1635f8b2d049c420c7af41a1" name="a988e13bd1635f8b2d049c420c7af41a1"></a>
@@ -357,6 +388,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy dg into the bin buffer and append, per raw definition, a cube entry holding the given bins (indices, entry counts and sums) copied from the cube; the new ShapesData pointers are appended to rawDataV. </p>
+<p>Returns the copy; aborts if it would overflow the bin buffer. </p>
+
 </div>
 </div>
 <a id="aa730a38aaf2848db802f376cfb0042f9" name="aa730a38aaf2848db802f376cfb0042f9"></a>
@@ -385,6 +419,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Overwrite the transition header of every cube buffer with the type, time and env of dgram and transition ID transitionId (bit 16 of env is set on all but the last buffer) and return the buffers as datagrams. </p>
+
 </div>
 </div>
 <a id="ae4ce6af2be6783c10785717cf193b134" name="ae4ce6af2be6783c10785717cf193b134"></a>
@@ -402,6 +438,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero the entry count and all sums of each bin in bins. </p>
 
 </div>
 </div>
@@ -436,6 +474,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Lay out each cube buffer as a datagram with source src: per raw definition, bin indices, zeroed entry counts and zeroed sums, with array shapes taken from <a class="el" href="classDrp_1_1Detector.html#a0a602bd6368dbe39f95a82e79684af3d" title="Return the shape in rawData of entry valueIndex of raw definition rawDefIndex (from rawDef()).">Detector::shapeCube()</a> for rawData. </p>
+<p>Aborts if array data is needed but rawData is missing, or if a buffer would overflow. threadNum only controls logging (the comment says debugging only). </p>
 
 </div>
 </div>

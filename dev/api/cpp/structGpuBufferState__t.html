@@ -97,18 +97,26 @@ $(document).ready(function(){initNavTree('structGpuBufferState__t.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>A read buffer and a write buffer on the GPU, mapped to the FPGA by <a class="el" href="GpuAsyncLib_8hh.html#a651b5a35e8a7f1cc233b61644221bbba" title="Allocates and inits buffer pairs on the GPU for RDMA operation.">gpuInitBufferState()</a>.  
+ <a href="structGpuBufferState__t.html#details">More...</a></p>
+
 <p><code>#include &lt;GpuAsyncLib.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aba04adfdfdf26c04b6ea12a6a26e46f3" id="r_aba04adfdfdf26c04b6ea12a6a26e46f3"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuBufferState__t.html#aba04adfdfdf26c04b6ea12a6a26e46f3">swFpgaRegs</a></td></tr>
+<tr class="memdesc:aba04adfdfdf26c04b6ea12a6a26e46f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register pointer; not set or read anywhere in psdaq.  <br /></td></tr>
 <tr class="separator:aba04adfdfdf26c04b6ea12a6a26e46f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d553a452759e457ae89756780e91a01" id="r_a4d553a452759e457ae89756780e91a01"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGpuDmaBuffer__t.html">GpuDmaBuffer_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuBufferState__t.html#a4d553a452759e457ae89756780e91a01">bread</a></td></tr>
+<tr class="memdesc:a4d553a452759e457ae89756780e91a01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer mapped with write set to 0.  <br /></td></tr>
 <tr class="separator:a4d553a452759e457ae89756780e91a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7065e02e2b79dc368b90c7ea700fa989" id="r_a7065e02e2b79dc368b90c7ea700fa989"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGpuDmaBuffer__t.html">GpuDmaBuffer_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGpuBufferState__t.html#a7065e02e2b79dc368b90c7ea700fa989">bwrite</a></td></tr>
+<tr class="memdesc:a7065e02e2b79dc368b90c7ea700fa989"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer mapped with write set to 1.  <br /></td></tr>
 <tr class="separator:a7065e02e2b79dc368b90c7ea700fa989"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A read buffer and a write buffer on the GPU, mapped to the FPGA by <a class="el" href="GpuAsyncLib_8hh.html#a651b5a35e8a7f1cc233b61644221bbba" title="Allocates and inits buffer pairs on the GPU for RDMA operation.">gpuInitBufferState()</a>. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a4d553a452759e457ae89756780e91a01" name="a4d553a452759e457ae89756780e91a01"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d553a452759e457ae89756780e91a01">&#9670;&#160;</a></span>bread</h2>
 
@@ -120,6 +128,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Buffer mapped with write set to 0. </p>
 
 </div>
 </div>
@@ -135,6 +145,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffer mapped with write set to 1. </p>
+
 </div>
 </div>
 <a id="aba04adfdfdf26c04b6ea12a6a26e46f3" name="aba04adfdfdf26c04b6ea12a6a26e46f3"></a>
@@ -148,6 +160,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register pointer; not set or read anywhere in psdaq. </p>
 
 </div>
 </div>

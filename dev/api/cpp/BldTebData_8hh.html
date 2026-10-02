@@ -97,12 +97,16 @@ $(document).ready(function(){initNavTree('BldTebData_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">BldTebData.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>BldTebData, the TEB input record that packs data from several BLD sources behind a bit mask of the sources present.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html">Pds::Trg::BldTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record for BLD: a 64-bit mask of sources present, followed by the record of each present source in BldSource order.  <a href="classPds_1_1Trg_1_1BldTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -111,14 +115,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Trg" id="r_namespacePds_1_1Trg"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html">Pds::Trg</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Trg"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ae09e845604642afb72fbc48f8b586ee2" id="r_ae09e845604642afb72fbc48f8b586ee2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BldTebData_8hh.html#ae09e845604642afb72fbc48f8b586ee2">DATADEF</a>(N,  T)</td></tr>
+<tr class="memdesc:ae09e845604642afb72fbc48f8b586ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines an accessor N() that returns the record of source N cast to T*, or null if the bit N_ is not set in sources.  <br /></td></tr>
 <tr class="separator:ae09e845604642afb72fbc48f8b586ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>BldTebData, the TEB input record that packs data from several BLD sources behind a bit mask of the sources present. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ae09e845604642afb72fbc48f8b586ee2" name="ae09e845604642afb72fbc48f8b586ee2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae09e845604642afb72fbc48f8b586ee2">&#9670;&#160;</a></span>DATADEF</h2>
 
@@ -147,6 +155,8 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">        T* N() \</div>
 <div class="line">        { <span class="keywordflow">return</span> (sources&gt;&gt;N##_)&amp;1 ? <span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>((<span class="keywordtype">char</span>*)<span class="keyword">this</span>+offset_(N##_)) : 0; }</div>
 </div><!-- fragment -->
+<p>Defines an accessor N() that returns the record of source N cast to T*, or null if the bit N_ is not set in sources. </p>
+
 </div>
 </div>
 </div><!-- contents -->

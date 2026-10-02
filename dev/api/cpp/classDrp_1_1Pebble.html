@@ -97,34 +97,50 @@ $(document).ready(function(){initNavTree('classDrp_1_1Pebble.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
+<p>One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buffer ends with a sentinel word used to detect overruns.  
+ <a href="classDrp_1_1Pebble.html#details">More...</a></p>
+
 <p><code>#include &lt;drp.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aac93b333ff3f5e03b7acf945e2aa8cc1" id="r_aac93b333ff3f5e03b7acf945e2aa8cc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#aac93b333ff3f5e03b7acf945e2aa8cc1">~Pebble</a> ()</td></tr>
+<tr class="memdesc:aac93b333ff3f5e03b7acf945e2aa8cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release the allocation with delete if it is non-null.  <br /></td></tr>
 <tr class="separator:aac93b333ff3f5e03b7acf945e2aa8cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4daaff04818620c5bccb80ab866b175" id="r_ae4daaff04818620c5bccb80ab866b175"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#ae4daaff04818620c5bccb80ab866b175">create</a> (unsigned <a class="el" href="classDrp_1_1Pebble.html#a9baf9b25d4003d4d323add24c66c0d5b">nL1Buffers</a>, size_t l1BufSize, unsigned <a class="el" href="classDrp_1_1Pebble.html#af80a51de22c3cc698fdb2aa56539be55">nTrBuffers</a>, size_t <a class="el" href="classDrp_1_1Pebble.html#aa13cec2143dae979a5331ad56ea97c2d">trBufSize</a>)</td></tr>
+<tr class="memdesc:ae4daaff04818620c5bccb80ab866b175"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate nL1Buffers buffers of l1BufSize bytes and nTrBuffers buffers of trBufSize bytes (each size rounded up to 16 bytes, each pool rounded up to whole pages plus one extra page) and write sentinel words (0xcdcdcdcd for L1Accept, 0xefefefef for transitions) at the end of every buffer and after each pool.  <br /></td></tr>
 <tr class="separator:ae4daaff04818620c5bccb80ab866b175"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae101e9106359e37cb235487337b09fb7" id="r_ae101e9106359e37cb235487337b09fb7"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#ae101e9106359e37cb235487337b09fb7">operator[]</a> (unsigned <a class="el" href="classDrp_1_1Pebble.html#af6914c0711d39dfdaa51f9fb88563fe5">index</a>)</td></tr>
+<tr class="memdesc:ae101e9106359e37cb235487337b09fb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address of L1Accept buffer index.  <br /></td></tr>
 <tr class="separator:ae101e9106359e37cb235487337b09fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6914c0711d39dfdaa51f9fb88563fe5" id="r_af6914c0711d39dfdaa51f9fb88563fe5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#af6914c0711d39dfdaa51f9fb88563fe5">index</a> (void *<a class="el" href="classDrp_1_1Pebble.html#a0c02c2abea3f68515c2c6ec6ff337c01">buffer</a>) const</td></tr>
+<tr class="memdesc:af6914c0711d39dfdaa51f9fb88563fe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the index of the L1Accept buffer that contains buffer.  <br /></td></tr>
 <tr class="separator:af6914c0711d39dfdaa51f9fb88563fe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe42d61c2e1e6aa34d83a413b17b8193" id="r_afe42d61c2e1e6aa34d83a413b17b8193"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#afe42d61c2e1e6aa34d83a413b17b8193">size</a> () const</td></tr>
+<tr class="memdesc:afe42d61c2e1e6aa34d83a413b17b8193"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the total allocation size in bytes.  <br /></td></tr>
 <tr class="separator:afe42d61c2e1e6aa34d83a413b17b8193"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c02c2abea3f68515c2c6ec6ff337c01" id="r_a0c02c2abea3f68515c2c6ec6ff337c01"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#a0c02c2abea3f68515c2c6ec6ff337c01">buffer</a> () const</td></tr>
+<tr class="memdesc:a0c02c2abea3f68515c2c6ec6ff337c01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the L1Accept buffer pool.  <br /></td></tr>
 <tr class="separator:a0c02c2abea3f68515c2c6ec6ff337c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75608468336897303234b202fc229229" id="r_a75608468336897303234b202fc229229"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#a75608468336897303234b202fc229229">bufferSize</a> () const</td></tr>
+<tr class="memdesc:a75608468336897303234b202fc229229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one L1Accept buffer (rounded up to 16 bytes).  <br /></td></tr>
 <tr class="separator:a75608468336897303234b202fc229229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa13cec2143dae979a5331ad56ea97c2d" id="r_aa13cec2143dae979a5331ad56ea97c2d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#aa13cec2143dae979a5331ad56ea97c2d">trBufSize</a> () const</td></tr>
+<tr class="memdesc:aa13cec2143dae979a5331ad56ea97c2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of one transition buffer (rounded up to 16 bytes).  <br /></td></tr>
 <tr class="separator:aa13cec2143dae979a5331ad56ea97c2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcaabd7cf1fa8af6a55d1957976fb317" id="r_abcaabd7cf1fa8af6a55d1957976fb317"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#abcaabd7cf1fa8af6a55d1957976fb317">trBuffer</a> () const</td></tr>
+<tr class="memdesc:abcaabd7cf1fa8af6a55d1957976fb317"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the transition buffer pool.  <br /></td></tr>
 <tr class="separator:abcaabd7cf1fa8af6a55d1957976fb317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af80a51de22c3cc698fdb2aa56539be55" id="r_af80a51de22c3cc698fdb2aa56539be55"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#af80a51de22c3cc698fdb2aa56539be55">nTrBuffers</a> () const</td></tr>
+<tr class="memdesc:af80a51de22c3cc698fdb2aa56539be55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of transition buffers.  <br /></td></tr>
 <tr class="separator:af80a51de22c3cc698fdb2aa56539be55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9baf9b25d4003d4d323add24c66c0d5b" id="r_a9baf9b25d4003d4d323add24c66c0d5b"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pebble.html#a9baf9b25d4003d4d323add24c66c0d5b">nL1Buffers</a> () const</td></tr>
+<tr class="memdesc:a9baf9b25d4003d4d323add24c66c0d5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of L1Accept buffers.  <br /></td></tr>
 <tr class="separator:a9baf9b25d4003d4d323add24c66c0d5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>One page-aligned allocation holding the L1Accept buffers followed by the transition buffers; each buffer ends with a sentinel word used to detect overruns. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aac93b333ff3f5e03b7acf945e2aa8cc1" name="aac93b333ff3f5e03b7acf945e2aa8cc1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aac93b333ff3f5e03b7acf945e2aa8cc1">&#9670;&#160;</a></span>~Pebble()</h2>
 
@@ -147,6 +163,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Release the allocation with delete if it is non-null. </p>
+<p>Note that <a class="el" href="classDrp_1_1Pebble.html#ae4daaff04818620c5bccb80ab866b175" title="Allocate nL1Buffers buffers of l1BufSize bytes and nTrBuffers buffers of trBufSize bytes (each size r...">create()</a> allocates it with posix_memalign(). </p>
 
 </div>
 </div>
@@ -174,6 +193,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the start of the L1Accept buffer pool. </p>
+
 </div>
 </div>
 <a id="a75608468336897303234b202fc229229" name="a75608468336897303234b202fc229229"></a>
@@ -198,6 +219,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the size of one L1Accept buffer (rounded up to 16 bytes). </p>
 
 </div>
 </div>
@@ -239,6 +262,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate nL1Buffers buffers of l1BufSize bytes and nTrBuffers buffers of trBufSize bytes (each size rounded up to 16 bytes, each pool rounded up to whole pages plus one extra page) and write sentinel words (0xcdcdcdcd for L1Accept, 0xefefefef for transitions) at the end of every buffer and after each pool. </p>
+<p>Throws a C string if the allocation fails. </p>
+
 </div>
 </div>
 <a id="af6914c0711d39dfdaa51f9fb88563fe5" name="af6914c0711d39dfdaa51f9fb88563fe5"></a>
@@ -265,6 +291,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the index of the L1Accept buffer that contains buffer. </p>
+
 </div>
 </div>
 <a id="a9baf9b25d4003d4d323add24c66c0d5b" name="a9baf9b25d4003d4d323add24c66c0d5b"></a>
@@ -290,6 +318,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of L1Accept buffers. </p>
+
 </div>
 </div>
 <a id="af80a51de22c3cc698fdb2aa56539be55" name="af80a51de22c3cc698fdb2aa56539be55"></a>
@@ -314,6 +344,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of transition buffers. </p>
 
 </div>
 </div>
@@ -341,6 +373,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the address of L1Accept buffer index. </p>
+
 </div>
 </div>
 <a id="afe42d61c2e1e6aa34d83a413b17b8193" name="afe42d61c2e1e6aa34d83a413b17b8193"></a>
@@ -365,6 +399,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the total allocation size in bytes. </p>
 
 </div>
 </div>
@@ -391,6 +427,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the start of the transition buffer pool. </p>
+
 </div>
 </div>
 <a id="aa13cec2143dae979a5331ad56ea97c2d" name="aa13cec2143dae979a5331ad56ea97c2d"></a>
@@ -415,6 +453,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the size of one transition buffer (rounded up to 16 bytes). </p>
 
 </div>
 </div>

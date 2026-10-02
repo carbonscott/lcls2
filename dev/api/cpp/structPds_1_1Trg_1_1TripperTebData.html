@@ -99,28 +99,38 @@ $(document).ready(function(){initNavTree('structPds_1_1Trg_1_1TripperTebData.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Packed TEB input record for the MFX tripper trigger: either hot-pixel information (Jungfrau and dummy contributions) or the timing sequence words, with detType acting as the tag.  
+ <a href="structPds_1_1Trg_1_1TripperTebData.html#details">More...</a></p>
+
 <p><code>#include &lt;TripperTebData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionPds_1_1Trg_1_1TripperTebData_1_1SmallData.html">SmallData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Union of the hot-pixel fields and the 18 timing sequence words.  <a href="unionPds_1_1Trg_1_1TripperTebData_1_1SmallData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a77222b010917431f50ddb9f30af9f87a" id="r_a77222b010917431f50ddb9f30af9f87a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html#a77222b010917431f50ddb9f30af9f87a">TripperTebData</a> (uint16_t _hotPixelThresh, uint32_t _numHotPixels, uint32_t _maxHotPixels, const char *_detType)</td></tr>
+<tr class="memdesc:a77222b010917431f50ddb9f30af9f87a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill the hot-pixel fields and copy _detType (truncated to 29 characters and NUL-terminated).  <br /></td></tr>
 <tr class="separator:a77222b010917431f50ddb9f30af9f87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86603f5e8c2d3a4919432180a21c662c" id="r_a86603f5e8c2d3a4919432180a21c662c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html#a86603f5e8c2d3a4919432180a21c662c">TripperTebData</a> (uint16_t *_seqInfo, const char *_detType)</td></tr>
+<tr class="memdesc:a86603f5e8c2d3a4919432180a21c662c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the union, copy 18 sequence words from _seqInfo and copy _detType (truncated to 29 characters and NUL-terminated).  <br /></td></tr>
 <tr class="separator:a86603f5e8c2d3a4919432180a21c662c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ac311f744467cedb841123aaabcea0b42" id="r_ac311f744467cedb841123aaabcea0b42"><td class="memItemLeft" align="right" valign="top">union <a class="el" href="unionPds_1_1Trg_1_1TripperTebData_1_1SmallData.html">Pds::Trg::TripperTebData::SmallData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html#ac311f744467cedb841123aaabcea0b42">smalldata</a></td></tr>
+<tr class="memdesc:ac311f744467cedb841123aaabcea0b42"><td class="mdescLeft">&#160;</td><td class="mdescRight">The detector-specific data, selected by detType.  <br /></td></tr>
 <tr class="separator:ac311f744467cedb841123aaabcea0b42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a832e06f55e0556cf4922accca157b1aa" id="r_a832e06f55e0556cf4922accca157b1aa"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html#a832e06f55e0556cf4922accca157b1aa">detType</a> [30]</td></tr>
+<tr class="memdesc:a832e06f55e0556cf4922accca157b1aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">NUL-terminated detector type; the code comment says the TEB uses it as the union tag to choose between tripping and event code selection.  <br /></td></tr>
 <tr class="separator:a832e06f55e0556cf4922accca157b1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packed TEB input record for the MFX tripper trigger: either hot-pixel information (Jungfrau and dummy contributions) or the timing sequence words, with detType acting as the tag. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a77222b010917431f50ddb9f30af9f87a" name="a77222b010917431f50ddb9f30af9f87a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77222b010917431f50ddb9f30af9f87a">&#9670;&#160;</a></span>TripperTebData() <span class="overload">[1/2]</span></h2>
 
@@ -167,6 +177,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Fill the hot-pixel fields and copy _detType (truncated to 29 characters and NUL-terminated). </p>
+
 </div>
 </div>
 <a id="a86603f5e8c2d3a4919432180a21c662c" name="a86603f5e8c2d3a4919432180a21c662c"></a>
@@ -203,6 +215,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Zero the union, copy 18 sequence words from _seqInfo and copy _detType (truncated to 29 characters and NUL-terminated). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -218,6 +232,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>NUL-terminated detector type; the code comment says the TEB uses it as the union tag to choose between tripping and event code selection. </p>
+
 </div>
 </div>
 <a id="ac311f744467cedb841123aaabcea0b42" name="ac311f744467cedb841123aaabcea0b42"></a>
@@ -231,6 +247,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The detector-specific data, selected by detType. </p>
 
 </div>
 </div>

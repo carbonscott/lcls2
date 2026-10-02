@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('BEBDetector_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">BEBDetector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>BEBDetector, the base of DRP detectors whose events are built by the AxiStreamBatcherEventBuilder firmware and configured through Python, and its NamesId index constants.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="drp_8hh.html">drp.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="psdaq_2drp_2Detector_8hh.html">Detector.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventBatcher_8hh.html">EventBatcher.hh</a>&quot;</code><br />
@@ -108,6 +111,7 @@ $(document).ready(function(){initNavTree('BEBDetector_8hh.html',''); initResizab
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html">Drp::BEBDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware (per the header comment).  <a href="classDrp_1_1BEBDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -120,14 +124,18 @@ Namespaces</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:a59e414f27ba6fba67912175de7c813ba" id="r_a59e414f27ba6fba67912175de7c813ba"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp.html#a59e414f27ba6fba67912175de7c813baa2cc9807c9ff480de01359c3ec8fe20cd">Drp::MaxSegsPerNode</a> = 10
  }</td></tr>
+<tr class="memdesc:a59e414f27ba6fba67912175de7c813ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Segment limit used to space the names indices below.  <a href="namespaceDrp.html#a59e414f27ba6fba67912175de7c813ba">More...</a><br /></td></tr>
 <tr class="separator:a59e414f27ba6fba67912175de7c813ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01c50f3b47a3d48b9d4b7e6e43c7ff46" id="r_a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46a7978a4338c41e4efede67ae25a36f3af">Drp::ConfigNamesIndex</a> = NamesIndex::BASE
 , <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46a569862549ffdf78744e2ce49bdfe7646">Drp::EventNamesIndex</a> = unsigned(ConfigNamesIndex) + unsigned(MaxSegsPerNode)
 , <a class="el" href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46adea5eaf94a428b2d4910e5400d59e7ce">Drp::UpdateNamesIndex</a> = unsigned(EventNamesIndex) + unsigned(MaxSegsPerNode)
  }</td></tr>
+<tr class="memdesc:a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="mdescLeft">&#160;</td><td class="mdescRight">NamesId index bases of BEB detectors, one block of MaxSegsPerNode indices each (the code comment says index for xtc NamesId).  <a href="namespaceDrp.html#a01c50f3b47a3d48b9d4b7e6e43c7ff46">More...</a><br /></td></tr>
 <tr class="separator:a01c50f3b47a3d48b9d4b7e6e43c7ff46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>BEBDetector, the base of DRP detectors whose events are built by the AxiStreamBatcherEventBuilder firmware and configured through Python, and its NamesId index constants. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

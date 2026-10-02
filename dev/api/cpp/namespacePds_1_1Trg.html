@@ -96,54 +96,79 @@ $(document).ready(function(){initNavTree('namespacePds_1_1Trg.html',''); initRes
   <div class="headertitle"><div class="title">Pds::Trg Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions.  
+<a href="namespacePds_1_1Trg.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1BldTebData.html">BldTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record for BLD: a 64-bit mask of sources present, followed by the record of each present source in BldSource order.  <a href="classPds_1_1Trg_1_1BldTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1EBeamTebData.html">EBeamTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record for EBeam BLD data, filled by bldTebPrimitive.cc from ebeamL3Energy.  <a href="structPds_1_1Trg_1_1EBeamTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Factory.html">Factory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a shared library and creates one object of type T with a C function exported by it; the object is deleted when the factory is destroyed or reused.  <a href="classPds_1_1Trg_1_1Factory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1GasDetTebData.html">GasDetTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record holding the six gas detector values named as in <a class="el" href="classBldNames_1_1GasDet.html" title="Name list for GasDet records: six DOUBLE fields.">BldNames::GasDet</a>.  <a href="structPds_1_1Trg_1_1GasDetTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1GmdTebData.html">GmdTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record for GMD BLD data, filled by bldTebPrimitive.cc.  <a href="structPds_1_1Trg_1_1GmdTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html">HrEncoderTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record made by hrEncoderTebPrimitive.cc from the start of the encoder data payload.  <a href="structPds_1_1Trg_1_1HrEncoderTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1PhaseCavityTebData.html">PhaseCavityTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record holding the phase cavity values named as in <a class="el" href="classBldNames_1_1PCav.html" title="Name list for PCav records: four DOUBLE fields.">BldNames::PCav</a>, plus a severity word.  <a href="structPds_1_1Trg_1_1PhaseCavityTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1Piranha4TTTebData.html">Piranha4TTTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record with six timetool values copied from a double array.  <a href="structPds_1_1Trg_1_1Piranha4TTTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TimingTebData.html">TimingTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record written by timingTebPrimitive.cc from the timing data of an event.  <a href="structPds_1_1Trg_1_1TimingTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TmoTebData.html">TmoTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed example values (0xdeadbeef, 0x12345678) and tmoTeb.cc compares them with its configured values.  <a href="structPds_1_1Trg_1_1TmoTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TmoTebPrimitive.html">TmoTebPrimitive</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Example trigger primitive writing a <a class="el" href="structPds_1_1Trg_1_1TmoTebData.html" title="TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed examp...">TmoTebData</a> record with fixed values.  <a href="classPds_1_1Trg_1_1TmoTebPrimitive.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1Trigger.html">Trigger</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface of the trigger decision code loaded by the TEB: <a class="el" href="classPds_1_1Trg_1_1Trigger.html#ac5f97513af472e82df0afc07e2a14ca4" title="Pure virtual: set the trigger decision in result from the contributions in [start,...">event()</a> fills the result datagram of each built event from its contributions.  <a href="classPds_1_1Trg_1_1Trigger.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TriggerData__bld.html">TriggerData_bld</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record of the example BLD trigger (TriggerPrimitiveExample_bld.cc writes it, TriggerExample.cc reads it).  <a href="structPds_1_1Trg_1_1TriggerData__bld.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TriggerData__cam.html">TriggerData_cam</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record written by TriggerPrimitiveExample_cam.cc.  <a href="structPds_1_1Trg_1_1TriggerData__cam.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TriggerData__timing.html">TriggerData_timing</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record holding nine 32-bit event code words; no user was found in psdaq.  <a href="structPds_1_1Trg_1_1TriggerData__timing.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TriggerData__xpphsd.html">TriggerData_xpphsd</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record written by TriggerPrimitiveExample_xpphsd.cc.  <a href="structPds_1_1Trg_1_1TriggerData__xpphsd.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html">TriggerPrimitive</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface of the DRP plugins that produce the TEB input data (<a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd" title="Pure virtual: return the size in bytes of the TEB input data.">size()</a> bytes) for each event, either on the CPU or in a CUDA stream.  <a href="classPds_1_1Trg_1_1TriggerPrimitive.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TripperTebData.html">TripperTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packed TEB input record for the MFX tripper trigger: either hot-pixel information (Jungfrau and dummy contributions) or the timing sequence words, with detType acting as the tag.  <a href="structPds_1_1Trg_1_1TripperTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1XGmdTebData.html">XGmdTebData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">TEB input record for XGMD BLD data (pulse energy, vertical position and severity).  <a href="structPds_1_1Trg_1_1XGmdTebData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4854e5a3cc11e326d694496c75095e62" id="r_a4854e5a3cc11e326d694496c75095e62"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html#a4854e5a3cc11e326d694496c75095e62">fetchDocument</a> (const std::string &amp;connectMsg, const std::string &amp;configAlias, const std::string &amp;section, rapidjson::Document &amp;top)</td></tr>
+<tr class="memdesc:a4854e5a3cc11e326d694496c75095e62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call get_config_json of the Python module psdaq.configdb.get_config with connectMsg, configAlias and section (and 0), and parse the returned JSON into top.  <br /></td></tr>
 <tr class="separator:a4854e5a3cc11e326d694496c75095e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a4854e5a3cc11e326d694496c75095e62" name="a4854e5a3cc11e326d694496c75095e62"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4854e5a3cc11e326d694496c75095e62">&#9670;&#160;</a></span>fetchDocument()</h2>
 
@@ -181,6 +206,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call get_config_json of the Python module psdaq.configdb.get_config with connectMsg, configAlias and section (and 0), and parse the returned JSON into top. </p>
+<p>Returns 0, or -1 on a Python or parse error. Python must already be initialized (per the code comment). </p>
 
 </div>
 </div>

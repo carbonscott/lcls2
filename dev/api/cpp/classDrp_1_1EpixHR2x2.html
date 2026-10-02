@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1EpixHR2x2.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePixHR 2x2.  
+ <a href="classDrp_1_1EpixHR2x2.html#details">More...</a></p>
+
 <p><code>#include &lt;EpixHR2x2.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1BEBDetector.html">Drp::BEBDetector</a>.</p>
@@ -106,80 +109,117 @@ $(document).ready(function(){initNavTree('classDrp_1_1EpixHR2x2.html',''); initR
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac645af642029a1bb9243bb023c441036" id="r_ac645af642029a1bb9243bb023c441036"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#ac645af642029a1bb9243bb023c441036">EpixHR2x2</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:ac645af642029a1bb9243bb023c441036"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> base, initialize it with the detector name, disable descrambling and install a one-shot handler for SIGINT, SIGABRT, SIGKILL and SIGSEGV that calls <a class="el" href="classDrp_1_1EpixHR2x2.html#a2b864b317ed9fdfa5ad92a8feafde723" title="Call the Python function &lt;detType&gt;_disable of the configuration module with the device root object.">monStreamEnable()</a> and then re-raises the signal.  <br /></td></tr>
 <tr class="separator:ac645af642029a1bb9243bb023c441036"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c9d51cda8d6cd5f245daeed0eddd5d1" id="r_a0c9d51cda8d6cd5f245daeed0eddd5d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a0c9d51cda8d6cd5f245daeed0eddd5d1">~EpixHR2x2</a> ()</td></tr>
+<tr class="memdesc:a0c9d51cda8d6cd5f245daeed0eddd5d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a0c9d51cda8d6cd5f245daeed0eddd5d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0173249f7cd29ee1779360e589d896cf" id="r_a0173249f7cd29ee1779360e589d896cf"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a0173249f7cd29ee1779360e589d896cf">enable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
+<tr class="memdesc:a0173249f7cd29ee1779360e589d896cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1EpixHR2x2.html#acc6933d67204eab75b4d1c72a6f6cb9f" title="Call the Python function &lt;detType&gt;_enable of the configuration module with the device root object.">monStreamDisable()</a> and return 0.  <br /></td></tr>
 <tr class="separator:a0173249f7cd29ee1779360e589d896cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b99d9a1ce6c0157cecad8cbbffba34e" id="r_a7b99d9a1ce6c0157cecad8cbbffba34e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a7b99d9a1ce6c0157cecad8cbbffba34e">disable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
+<tr class="memdesc:a7b99d9a1ce6c0157cecad8cbbffba34e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1EpixHR2x2.html#a2b864b317ed9fdfa5ad92a8feafde723" title="Call the Python function &lt;detType&gt;_disable of the configuration module with the device root object.">monStreamEnable()</a> and return 0.  <br /></td></tr>
 <tr class="separator:a7b99d9a1ce6c0157cecad8cbbffba34e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19653c6c803a902f8e269f4dcab08851" id="r_a19653c6c803a902f8e269f4dcab08851"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a19653c6c803a902f8e269f4dcab08851">slowupdate</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a19653c6c803a902f8e269f4dcab08851"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35" title="Reset xtc to an empty Parent Xtc whose source is nodeId.">Detector::slowupdate()</a>.  <br /></td></tr>
 <tr class="separator:a19653c6c803a902f8e269f4dcab08851"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e22c79c4364fe3ae62ced54d0c566b5" id="r_a7e22c79c4364fe3ae62ced54d0c566b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a7e22c79c4364fe3ae62ced54d0c566b5">scanEnabled</a> () override</td></tr>
+<tr class="memdesc:a7e22c79c4364fe3ae62ced54d0c566b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return false.  <br /></td></tr>
 <tr class="separator:a7e22c79c4364fe3ae62ced54d0c566b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68a74b0c7ed937c85f329b9e1db5ac1d" id="r_a68a74b0c7ed937c85f329b9e1db5ac1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a68a74b0c7ed937c85f329b9e1db5ac1d">shutdown</a> () override</td></tr>
+<tr class="memdesc:a68a74b0c7ed937c85f329b9e1db5ac1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a68a74b0c7ed937c85f329b9e1db5ac1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a382df8a6369739a81becad18357f3265" id="r_a382df8a6369739a81becad18357f3265"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a382df8a6369739a81becad18357f3265">write_image</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd, std::vector&lt; <a class="el" href="classXtcData_1_1Array.html">XtcData::Array</a>&lt; uint8_t &gt; &gt; &amp;, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> &amp;)</td></tr>
+<tr class="memdesc:a382df8a6369739a81becad18357f3265"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared here; no definition was found in psdaq/drp.  <br /></td></tr>
 <tr class="separator:a382df8a6369739a81becad18357f3265"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25a6f0a1876fe45fab11962dc5474bfc" id="r_a25a6f0a1876fe45fab11962dc5474bfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a25a6f0a1876fe45fab11962dc5474bfc">getTimingHeader</a> (uint32_t index) const override</td></tr>
+<tr class="memdesc:a25a6f0a1876fe45fab11962dc5474bfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the timing header of DMA buffer index, located after two nested event-batcher headers.  <br /></td></tr>
 <tr class="separator:a25a6f0a1876fe45fab11962dc5474bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b864b317ed9fdfa5ad92a8feafde723" id="r_a2b864b317ed9fdfa5ad92a8feafde723"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#a2b864b317ed9fdfa5ad92a8feafde723">monStreamEnable</a> ()</td></tr>
+<tr class="memdesc:a2b864b317ed9fdfa5ad92a8feafde723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the Python function <code>&lt;detType&gt;_disable</code> of the configuration module with the device root object.  <br /></td></tr>
 <tr class="separator:a2b864b317ed9fdfa5ad92a8feafde723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc6933d67204eab75b4d1c72a6f6cb9f" id="r_acc6933d67204eab75b4d1c72a6f6cb9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EpixHR2x2.html#acc6933d67204eab75b4d1c72a6f6cb9f">monStreamDisable</a> ()</td></tr>
+<tr class="memdesc:acc6933d67204eab75b4d1c72a6f6cb9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the Python function <code>&lt;detType&gt;_enable</code> of the configuration module with the device root object.  <br /></td></tr>
 <tr class="separator:acc6933d67204eab75b4d1c72a6f6cb9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1BEBDetector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1BEBDetector')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1BEBDetector.html">Drp::BEBDetector</a></td></tr>
 <tr class="memitem:a73206168b87c268f273a05d9901ba1a0 inherit pub_methods_classDrp_1_1BEBDetector" id="r_a73206168b87c268f273a05d9901ba1a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#a73206168b87c268f273a05d9901ba1a0">BEBDetector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:a73206168b87c268f273a05d9901ba1a0 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> base with virtual channel 1 and no Python module yet; subclasses must call <a class="el" href="classDrp_1_1BEBDetector.html#a729b1d9279561d28ce8d2ce4991b40f0">_init()</a> (or their own variant).  <br /></td></tr>
 <tr class="separator:a73206168b87c268f273a05d9901ba1a0 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a137653d03fde1d3d005a16dabe9cac96 inherit pub_methods_classDrp_1_1BEBDetector" id="r_a137653d03fde1d3d005a16dabe9cac96"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#a137653d03fde1d3d005a16dabe9cac96">~BEBDetector</a> ()</td></tr>
+<tr class="memdesc:a137653d03fde1d3d005a16dabe9cac96 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the config scanner and release the Python module.  <br /></td></tr>
 <tr class="separator:a137653d03fde1d3d005a16dabe9cac96 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca870a77ee64986ad032194bb1382ac6 inherit pub_methods_classDrp_1_1BEBDetector" id="r_aca870a77ee64986ad032194bb1382ac6"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#aca870a77ee64986ad032194bb1382ac6">connectionInfo</a> (const nlohmann::json &amp;msg) override</td></tr>
+<tr class="memdesc:aca870a77ee64986ad032194bb1382ac6 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>&lt;detType&gt;_connectionInfo</code> in Python with the device handle and msg, store its paddr entry (aborting if it is 0, 0xffffffff or has a low byte above 15), pass the result to <a class="el" href="classDrp_1_1BEBDetector.html#a71ba718576ae5bd1c254bc6ff560e749">_connectionInfo()</a> and return xpmInfo(paddr).  <br /></td></tr>
 <tr class="separator:aca870a77ee64986ad032194bb1382ac6 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24f1dc90451aa94987d6bf7e61e40076 inherit pub_methods_classDrp_1_1BEBDetector" id="r_a24f1dc90451aa94987d6bf7e61e40076"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#a24f1dc90451aa94987d6bf7e61e40076">connectionShutdown</a> () override</td></tr>
+<tr class="memdesc:a24f1dc90451aa94987d6bf7e61e40076 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>&lt;detType&gt;_connectionShutdown</code> in Python if the module defines it.  <br /></td></tr>
 <tr class="separator:a24f1dc90451aa94987d6bf7e61e40076 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe32ec762ead308b30c7c5335f6fb0c9 inherit pub_methods_classDrp_1_1BEBDetector" id="r_abe32ec762ead308b30c7c5335f6fb0c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#abe32ec762ead308b30c7c5335f6fb0c9">connect</a> (const nlohmann::json &amp;, const std::string &amp;collectionId) override</td></tr>
+<tr class="memdesc:abe32ec762ead308b30c7c5335f6fb0c9 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep the connect message and the readout group of this DRP (det_info.readout of entry collectionId).  <br /></td></tr>
 <tr class="separator:abe32ec762ead308b30c7c5335f6fb0c9 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab60d4ad48384604d1d35feca64b62bf7 inherit pub_methods_classDrp_1_1BEBDetector" id="r_ab60d4ad48384604d1d35feca64b62bf7"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#ab60d4ad48384604d1d35feca64b62bf7">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:ab60d4ad48384604d1d35feca64b62bf7 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>&lt;detType&gt;_config</code> in Python (with segment and serial numbers in multi-segment mode), translate the returned JSON, or list of JSON per segment, into configuration XTC, let the subclass <a class="el" href="classDrp_1_1BEBDetector.html#a1152c69f0f2132aaba1d10628c4f264e">_configure()</a> add its names, append the configuration to xtc and return the <a class="el" href="classDrp_1_1BEBDetector.html#a1152c69f0f2132aaba1d10628c4f264e">_configure()</a> result.  <br /></td></tr>
 <tr class="separator:ab60d4ad48384604d1d35feca64b62bf7 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea8dc46e1344e19c9e229dc0b18a16ad inherit pub_methods_classDrp_1_1BEBDetector" id="r_aea8dc46e1344e19c9e229dc0b18a16ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#aea8dc46e1344e19c9e229dc0b18a16ad">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;dgram, const void *bufEnd, <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *event, uint64_t l1count) override</td></tr>
+<tr class="memdesc:aea8dc46e1344e19c9e229dc0b18a16ad inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Split the DMA buffer of each lane in event-&gt;mask into batcher subframes (one more batcher level is unwrapped when m_debatch is set), keep all subframes of the first lane that has more than 2 and subframe 2 of each later one, and pass them to <a class="el" href="classDrp_1_1BEBDetector.html#a4c27cd39a26ce40cede812535c7b8333">_event()</a>.  <br /></td></tr>
 <tr class="separator:aea8dc46e1344e19c9e229dc0b18a16ad inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e0676b7c94efabe705e7422028d9bac inherit pub_methods_classDrp_1_1BEBDetector" id="r_a7e0676b7c94efabe705e7422028d9bac"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#a7e0676b7c94efabe705e7422028d9bac">configureScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:a7e0676b7c94efabe705e7422028d9bac inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f" title="Call &lt;detType&gt;_scan_keys with keys, translate the returned JSON (or list of JSON, one per segment) in...">PythonConfigScanner::configure()</a> with the update names ID and return its result.  <br /></td></tr>
 <tr class="separator:a7e0676b7c94efabe705e7422028d9bac inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefdb733a9b979b92732cd28048f1c3f9 inherit pub_methods_classDrp_1_1BEBDetector" id="r_aefdb733a9b979b92732cd28048f1c3f9"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#aefdb733a9b979b92732cd28048f1c3f9">stepScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd) override</td></tr>
+<tr class="memdesc:aefdb733a9b979b92732cd28048f1c3f9 inherit pub_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass stepInfo to <a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2" title="Call &lt;detType&gt;_update with dict, translate the returned JSON (or list of JSON, one per segment) into ...">PythonConfigScanner::step()</a> with the update names ID and return its result.  <br /></td></tr>
 <tr class="separator:aefdb733a9b979b92732cd28048f1c3f9 inherit pub_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector" id="r_a9aaeb79a3955ca22af5ca16ec36f02f9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a9aaeb79a3955ca22af5ca16ec36f02f9">Detector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set nodeId to -1u and virtChan to 0, keep para and pool, and allocate a transition buffer of para-&gt;maxTrSize bytes.  <br /></td></tr>
 <tr class="separator:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector" id="r_a13abe7372fb48e060171b4d9f13a0e1a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a13abe7372fb48e060171b4d9f13a0e1a">~Detector</a> ()</td></tr>
+<tr class="memdesc:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a13abe7372fb48e060171b4d9f13a0e1a inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector" id="r_afd23204a69c5b99cdcad6081efdb1f14"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#afd23204a69c5b99cdcad6081efdb1f14">gpuDetector</a> ()</td></tr>
+<tr class="memdesc:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return nullptr; <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> overrides it to return itself.  <br /></td></tr>
 <tr class="separator:afd23204a69c5b99cdcad6081efdb1f14 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector" id="r_a0a7c5dabf101c1363d8bf15517e9c57d"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a0a7c5dabf101c1363d8bf15517e9c57d">beginrun</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;runInfo)</td></tr>
+<tr class="memdesc:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a0a7c5dabf101c1363d8bf15517e9c57d inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector" id="r_a32521535113867759c83a7236803a94e"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a32521535113867759c83a7236803a94e">beginstep</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;stepInfo)</td></tr>
+<tr class="memdesc:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a32521535113867759c83a7236803a94e inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector" id="r_a9f187e8fe9f0d4a9c6a3f54faac3578c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a9f187e8fe9f0d4a9c6a3f54faac3578c">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;dgram, const void *bufEnd, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;result)</td></tr>
+<tr class="memdesc:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden; called with the trigger result for an event.  <br /></td></tr>
 <tr class="separator:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector" id="r_a0a602bd6368dbe39f95a82e79684af3d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classXtcData_1_1Shape.html">XtcData::Shape</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a0a602bd6368dbe39f95a82e79684af3d">shapeCube</a> (unsigned rawDefIndex, unsigned valueIndex, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shape in rawData of entry valueIndex of raw definition rawDefIndex (from <a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">rawDef()</a>).  <br /></td></tr>
 <tr class="separator:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector" id="r_adda60e4cf19dc50f3b5b2b9d861ec459"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459">addToCube</a> (unsigned rawDefIndex, unsigned valueIndex, unsigned subIndex, double *dst, unsigned bin, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData, converted to double, into bin bin of dst (entries of any XTC numeric type).  <br /></td></tr>
 <tr class="separator:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector" id="r_adb105eef8e8c2091124df29c12226330"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adb105eef8e8c2091124df29c12226330">subIndices</a> ()</td></tr>
+<tr class="memdesc:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector" id="r_a00805bb525971846ed2a88d75cef4d61"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a00805bb525971846ed2a88d75cef4d61">rawNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector" id="r_a038fe929d9bd6058eda7ea7408a20439"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a038fe929d9bd6058eda7ea7408a20439">cubeNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector" id="r_a3b5c2801fd7a76e6322f6b8f728d35a9"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3b5c2801fd7a76e6322f6b8f728d35a9">cubeBinBytes</a> ()</td></tr>
+<tr class="memdesc:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return ten times the pebble buffer size unless overridden.  <br /></td></tr>
 <tr class="separator:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector" id="r_a1fb07fe50433927c6b2f3965754d0f79"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classXtcData_1_1VarDef.html">XtcData::VarDef</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79">rawDef</a> ()</td></tr>
+<tr class="memdesc:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error and abort; detectors used for cube binning must override it.  <br /></td></tr>
 <tr class="separator:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector" id="r_a3f8dc901dc052a6a3301a64b50e9072b"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3f8dc901dc052a6a3301a64b50e9072b">maxMonBufSize</a> ()</td></tr>
+<tr class="memdesc:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pebble buffer size, times 10 when <a class="el" href="structDrp_1_1Parameters.html#adaea3aa8a30b8c70e03dfacef776cf23" title="Number of cube workers (-Q option in drp.cc; default 0).">Parameters::nCubeWorkers</a> is non-zero.  <br /></td></tr>
 <tr class="separator:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector" id="r_a83bfaca37a8d3a2de54ae9bca09081d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a83bfaca37a8d3a2de54ae9bca09081d2">transitionXtc</a> ()</td></tr>
+<tr class="memdesc:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the transition buffer as an Xtc reference.  <br /></td></tr>
 <tr class="separator:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector" id="r_ac7527247ab0e8ad0c116e11b6aeb08b5"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ac7527247ab0e8ad0c116e11b6aeb08b5">trXtcBufEnd</a> ()</td></tr>
+<tr class="memdesc:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the end of the transition buffer.  <br /></td></tr>
 <tr class="separator:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector" id="r_ae64cfa6d926d74f10c80ad7c5f804856"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ae64cfa6d926d74f10c80ad7c5f804856">namesLookup</a> ()</td></tr>
+<tr class="memdesc:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the names lookup table of this detector.  <br /></td></tr>
 <tr class="separator:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -245,17 +285,23 @@ Protected Attributes</h2></td></tr>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_static_methods_classDrp_1_1BEBDetector"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classDrp_1_1BEBDetector')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classDrp_1_1BEBDetector.html">Drp::BEBDetector</a></td></tr>
 <tr class="memitem:aedaf8129d5c5e3c94478154839e15e5f inherit pub_static_methods_classDrp_1_1BEBDetector" id="r_aedaf8129d5c5e3c94478154839e15e5f"><td class="memItemLeft" align="right" valign="top">static PyObject *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#aedaf8129d5c5e3c94478154839e15e5f">_check</a> (PyObject *)</td></tr>
+<tr class="memdesc:aedaf8129d5c5e3c94478154839e15e5f inherit pub_static_methods_classDrp_1_1BEBDetector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return obj; if it is null, print the Python error, log it and abort.  <br /></td></tr>
 <tr class="separator:aedaf8129d5c5e3c94478154839e15e5f inherit pub_static_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector" id="r_a4666a5c232669b455ebeb8436a1d1adb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a4666a5c232669b455ebeb8436a1d1adb">nodeId</a></td></tr>
+<tr class="memdesc:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Node ID used as the XTC source; -1u until set.  <br /></td></tr>
 <tr class="separator:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector" id="r_ad4c16b4c76dce6bbacf910da01fcdd62"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad4c16b4c76dce6bbacf910da01fcdd62">virtChan</a></td></tr>
+<tr class="memdesc:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual channel number; 0 unless a subclass sets it.  <br /></td></tr>
 <tr class="separator:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_classDrp_1_1BEBDetector"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classDrp_1_1BEBDetector')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classDrp_1_1BEBDetector.html">Drp::BEBDetector</a></td></tr>
 <tr class="memitem:af83a30e0da57c11dd645623d4f680ef0 inherit pro_static_methods_classDrp_1_1BEBDetector" id="r_af83a30e0da57c11dd645623d4f680ef0"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BEBDetector.html#af83a30e0da57c11dd645623d4f680ef0">_string_from_PyDict</a> (PyObject *, const char *key)</td></tr>
 <tr class="separator:af83a30e0da57c11dd645623d4f680ef0 inherit pro_static_methods_classDrp_1_1BEBDetector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> for the ePixHR 2x2. </p>
+<p>L1Accept data is a 288 x 384 UINT16 raw frame assembled from subframes 3 and 4; the monitoring stream is switched with the Python functions <code>&lt;detType&gt;_enable</code> and <code>&lt;detType&gt;_disable</code>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac645af642029a1bb9243bb023c441036" name="ac645af642029a1bb9243bb023c441036"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac645af642029a1bb9243bb023c441036">&#9670;&#160;</a></span>EpixHR2x2()</h2>
 
@@ -282,6 +328,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct the <a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> base, initialize it with the detector name, disable descrambling and install a one-shot handler for SIGINT, SIGABRT, SIGKILL and SIGSEGV that calls <a class="el" href="classDrp_1_1EpixHR2x2.html#a2b864b317ed9fdfa5ad92a8feafde723" title="Call the Python function &lt;detType&gt;_disable of the configuration module with the device root object.">monStreamEnable()</a> and then re-raises the signal. </p>
+
 </div>
 </div>
 <a id="a0c9d51cda8d6cd5f245daeed0eddd5d1" name="a0c9d51cda8d6cd5f245daeed0eddd5d1"></a>
@@ -298,6 +346,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -464,6 +514,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1EpixHR2x2.html#a2b864b317ed9fdfa5ad92a8feafde723" title="Call the Python function &lt;detType&gt;_disable of the configuration module with the device root object.">monStreamEnable()</a> and return 0. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#aea8bf0d28f260e4727507aa7b415cb76">Drp::Detector</a>.</p>
 
 </div>
@@ -508,6 +560,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1EpixHR2x2.html#acc6933d67204eab75b4d1c72a6f6cb9f" title="Call the Python function &lt;detType&gt;_enable of the configuration module with the device root object.">monStreamDisable()</a> and return 0. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a191f2cceb69098dee0e73b94215fe095">Drp::Detector</a>.</p>
 
 </div>
@@ -536,6 +590,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the timing header of DMA buffer index, located after two nested event-batcher headers. </p>
+<p>With descrambling enabled and words 2 and 3 zero, the word pairs at offsets 4, 8, 12 and 16 are first moved in place to offsets 2, 4, 6 and 8 (descrambling is disabled by the constructor). </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1BEBDetector.html#a5a37d02215188b1558c8b1a8a4a19283">Drp::BEBDetector</a>.</p>
 
 </div>
@@ -555,6 +612,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call the Python function <code>&lt;detType&gt;_enable</code> of the configuration module with the device root object. </p>
+
 </div>
 </div>
 <a id="a2b864b317ed9fdfa5ad92a8feafde723" name="a2b864b317ed9fdfa5ad92a8feafde723"></a>
@@ -571,6 +630,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call the Python function <code>&lt;detType&gt;_disable</code> of the configuration module with the device root object. </p>
 
 </div>
 </div>
@@ -596,6 +657,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return false. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#a4dcb29c2de6826aa3166568ddea01095">Drp::Detector</a>.</p>
 
@@ -623,6 +686,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1BEBDetector.html#ac61229cd768b885fe2bfe3a7f3e2a938">Drp::BEBDetector</a>.</p>
 
@@ -661,6 +726,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35" title="Reset xtc to an empty Parent Xtc whose source is nodeId.">Detector::slowupdate()</a>. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35">Drp::Detector</a>.</p>
 
@@ -703,6 +770,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared here; no definition was found in psdaq/drp. </p>
 
 </div>
 </div>

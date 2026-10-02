@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1ReducerAlgo.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Base of the GPU data reduction algorithms.  
+ <a href="classDrp_1_1Gpu_1_1ReducerAlgo.html#details">More...</a></p>
+
 <p><code>#include &lt;ReducerAlgo.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html">Drp::Gpu::SleekReducer</a>.</p>
@@ -105,22 +108,31 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1ReducerAlgo.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a470a3fa6ed196498ea7f4134623241a3" id="r_a470a3fa6ed196498ea7f4134623241a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a470a3fa6ed196498ea7f4134623241a3">ReducerAlgo</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, const <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;pool, <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;det)</td></tr>
+<tr class="memdesc:a470a3fa6ed196498ea7f4134623241a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep references to the parameters, the memory pool and the detector.  <br /></td></tr>
 <tr class="separator:a470a3fa6ed196498ea7f4134623241a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f5484dcf1977a04426adb530b4b411c" id="r_a2f5484dcf1977a04426adb530b4b411c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a2f5484dcf1977a04426adb530b4b411c">~ReducerAlgo</a> ()</td></tr>
+<tr class="memdesc:a2f5484dcf1977a04426adb530b4b411c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a2f5484dcf1977a04426adb530b4b411c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af54145ef79213a95e53eb10329f027e4" id="r_af54145ef79213a95e53eb10329f027e4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#af54145ef79213a95e53eb10329f027e4">hasGraph</a> () const =0</td></tr>
+<tr class="memdesc:af54145ef79213a95e53eb10329f027e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return true if the algorithm is recorded into a CUDA graph with <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a6289ef91164e03f890ec65dc5c8c1bbf" title="Pure virtual: record into stream, which is being captured, the kernels that reduce calibrated buffer ...">recordGraph()</a>.  <br /></td></tr>
 <tr class="separator:af54145ef79213a95e53eb10329f027e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88db9923203486be3ac4e9593f84b902" id="r_a88db9923203486be3ac4e9593f84b902"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a88db9923203486be3ac4e9593f84b902">payloadSize</a> () const =0</td></tr>
+<tr class="memdesc:a88db9923203486be3ac4e9593f84b902"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the largest reduced data size in bytes; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> sizes the reduce buffers from it, raising it to maxTrSize less the datagram header if that is larger.  <br /></td></tr>
 <tr class="separator:a88db9923203486be3ac4e9593f84b902"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6289ef91164e03f890ec65dc5c8c1bbf" id="r_a6289ef91164e03f890ec65dc5c8c1bbf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a6289ef91164e03f890ec65dc5c8c1bbf">recordGraph</a> (<a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a> stream, unsigned *const state, unsigned *const index, float const *const calibBuffers, size_t const calibBufsCnt, uint8_t *const dataBuffers, size_t const dataBufsCnt)=0</td></tr>
+<tr class="memdesc:a6289ef91164e03f890ec65dc5c8c1bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: record into stream, which is being captured, the kernels that reduce calibrated buffer *index (calibBufsCnt floats each) into data buffer *index (dataBufsCnt bytes each).  <br /></td></tr>
 <tr class="separator:a6289ef91164e03f890ec65dc5c8c1bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a649daaa3475aef673c1f1752f32dc6fe" id="r_a649daaa3475aef673c1f1752f32dc6fe"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a649daaa3475aef673c1f1752f32dc6fe">reduce</a> (cudaGraphExec_t, <a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a>, unsigned index, size_t *dataSize, unsigned *retCode)=0</td></tr>
+<tr class="memdesc:a649daaa3475aef673c1f1752f32dc6fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: run the reduction of buffer index on stream (launching graph if the algorithm uses one) and return the reduced size and an error code through dataSize and retCode, possibly by asynchronous copies on stream.  <br /></td></tr>
 <tr class="separator:a649daaa3475aef673c1f1752f32dc6fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfaaa9aa231f188a850814adad0f2943" id="r_acfaaa9aa231f188a850814adad0f2943"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#acfaaa9aa231f188a850814adad0f2943">configure</a> (const nlohmann::json &amp;configureMsg, const nlohmann::json &amp;connectMsg, size_t collectionId)=0</td></tr>
+<tr class="memdesc:acfaaa9aa231f188a850814adad0f2943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: configure the algorithm from the Configure and Connect messages (per the code comment, the configDb configuration); return non-zero on failure.  <br /></td></tr>
 <tr class="separator:acfaaa9aa231f188a850814adad0f2943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af305b443434b0c6fe473bdbf0132bd98" id="r_af305b443434b0c6fe473bdbf0132bd98"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#af305b443434b0c6fe473bdbf0132bd98">configure</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd)=0</td></tr>
+<tr class="memdesc:af305b443434b0c6fe473bdbf0132bd98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the names (descriptions) of the reduced data to xtc, without going past bufEnd (per the code comment); return non-zero on failure.  <br /></td></tr>
 <tr class="separator:af305b443434b0c6fe473bdbf0132bd98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05b8c1973253a77855d43ad9ccdebfcb" id="r_a05b8c1973253a77855d43ad9ccdebfcb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a05b8c1973253a77855d43ad9ccdebfcb">event</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd, unsigned dataSize)</td></tr>
+<tr class="memdesc:a05b8c1973253a77855d43ad9ccdebfcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Describe dataSize of reduced data in the event xtc (per the code comment, fill the xtc data description); does nothing in this base class.  <br /></td></tr>
 <tr class="separator:a05b8c1973253a77855d43ad9ccdebfcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -132,7 +144,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a900178b00767a5a21fcd9ba39fdf74a7" id="r_a900178b00767a5a21fcd9ba39fdf74a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a900178b00767a5a21fcd9ba39fdf74a7">m_det</a></td></tr>
 <tr class="separator:a900178b00767a5a21fcd9ba39fdf74a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base of the GPU data reduction algorithms. </p>
+<p>Each one is built as a shared library whose name is lib, the reducer kwarg and .so; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> loads it and calls <a class="el" href="ReducerAlgo_8hh.html#a7b28184fa252db146473701349f5ced0" title="Factory function defined by each reducer library: return a new instance of its ReducerAlgo.">createReducer()</a> once per worker. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a470a3fa6ed196498ea7f4134623241a3" name="a470a3fa6ed196498ea7f4134623241a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a470a3fa6ed196498ea7f4134623241a3">&#9670;&#160;</a></span>ReducerAlgo()</h2>
 
@@ -173,6 +188,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Keep references to the parameters, the memory pool and the detector. </p>
+
 </div>
 </div>
 <a id="a2f5484dcf1977a04426adb530b4b411c" name="a2f5484dcf1977a04426adb530b4b411c"></a>
@@ -197,6 +214,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -241,6 +260,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: configure the algorithm from the Configure and Connect messages (per the code comment, the configDb configuration); return non-zero on failure. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#a26c456da3e6401118dc4beac13aee37a">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#a43f0b5fd7378f932fef9af8643f79b00">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#ad4422a7aacc280c9dc50d14ec956af11">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#a630587f1345d913ab31892c1896f98b1">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a3d286dfa8b04db2c88e005090099b098">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a4ddd92573ccefccd998845ea80f56a15">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#afee4c06b97944218624b51a50621cfb7">Drp::Gpu::SleekReducer</a>.</p>
 
 </div>
@@ -278,6 +299,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: add the names (descriptions) of the reduced data to xtc, without going past bufEnd (per the code comment); return non-zero on failure. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#a37f15a2d9880d60c3f6895d610dc6c85">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#a0cb80694488002ab4176caaa80fe86b3">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#afd41e0455f0772f6c38ac1721369ec81">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#a91adce1dd4e2a75ab10ec9fc06cb1a92">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a8ed83630f724577a43eac2b392762cc5">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a74484b112eca1b193e3b53b9dbd3fa73">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a49a70f7546c24bda1bee5abcff5d087e">Drp::Gpu::SleekReducer</a>.</p>
 
@@ -323,6 +346,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Describe dataSize of reduced data in the event xtc (per the code comment, fill the xtc data description); does nothing in this base class. </p>
+
 <p>Reimplemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#ac6b1cee3edba6c1848953bc134157cf6">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#af7b8209eb8daa33a1bfbbb1a08889536">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#aa66c8134806feabfb03fffc82408a238">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#a11bcd60b475d6d550ecb2daf4a70aebf">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a47218d2354386732bdbc76bd0fcd610c">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a9e795d19954afd148a0e2c9f157a4c80">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#adca6ee310bb2ff53306aa1cc43753b1c">Drp::Gpu::SleekReducer</a>.</p>
 
 </div>
@@ -350,6 +375,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: return true if the algorithm is recorded into a CUDA graph with <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#a6289ef91164e03f890ec65dc5c8c1bbf" title="Pure virtual: record into stream, which is being captured, the kernels that reduce calibrated buffer ...">recordGraph()</a>. </p>
+<p><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> checks the first instance to choose device ring queues and graphs (true) or host queues (false), and calls the <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html#acfaaa9aa231f188a850814adad0f2943" title="Pure virtual: configure the algorithm from the Configure and Connect messages (per the code comment,...">configure()</a> overloads only when it is true. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#a1ea21ae3310823c20fcc86095487dd0b">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#a8740a81a80e668c085116f43fb050cac">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#aac23cee562324a243cdbb4c801796444">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#ab898cc8c7c031f2ac9fb0e9369f328d1">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a6da13968a667c5fba03fa3a4bd4e8139">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#af0fd86840d34cdd86801b12ef617d702">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a52a91c76d9099ade68691ff806a71192">Drp::Gpu::SleekReducer</a>.</p>
 
 </div>
@@ -376,6 +404,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the largest reduced data size in bytes; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> sizes the reduce buffers from it, raising it to maxTrSize less the datagram header if that is larger. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#a3acdbb2516cafd418d452a3809afcaca">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#ab3861177c27626c7e3c4e6548ba144c7">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#a32a692514a8a8d2873c9f113a4ebba99">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#ab86570878f7b3f0772f8dad1ecd29e99">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a695d78a2c1da6dbd4b154ec552127462">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a969ca1e17de5ea0c5e745df566471c62">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a2893d79778a1773c341dca432d21ef4b">Drp::Gpu::SleekReducer</a>.</p>
 
@@ -445,6 +475,9 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: record into stream, which is being captured, the kernels that reduce calibrated buffer *index (calibBufsCnt floats each) into data buffer *index (dataBufsCnt bytes each). </p>
+<p>As <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html" title="Reducer that copies the calibrated floats unchanged into the output buffer, using its own CUDA kernel...">NoOpReducer</a> and the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> kernels show, the kernels act when *state is 1, store the reduced size in the size_t just before the data, and set *state to 2. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#acab0aa82d308aca2585f3a4c8af60b03">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#afac26abbcc58d8f56b6b6d2dc9fb2ee6">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#aeeae3ad5da4adbb7bcd40e5e69795ac5">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#afbf679a155759401a2c90ffadc62503d">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a58c7d89c714a310358252408da388170">Drp::Gpu::PfplReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#a77c15f08fd48d13afce26dbe826f485e">Drp::Gpu::SleekReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#a69c3d68d2247694618a03c1062514eef">Drp::Gpu::LcReducer</a>.</p>
 
 </div>
@@ -500,6 +533,9 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: run the reduction of buffer index on stream (launching graph if the algorithm uses one) and return the reduced size and an error code through dataSize and retCode, possibly by asynchronous copies on stream. </p>
+<p>Called only by <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> worker threads, which exist in builds with HOST_LAUNCHED_REDUCERS. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html#ae6d4ce7352b1aac2c24d6ff1721fbe57">Drp::Gpu::CuSZpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html#a26d495579de72def90900256674d1963">Drp::Gpu::CuSzReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html#a02d5da948279eb65f2d0263b37cea172">Drp::Gpu::EipReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html#a418c9a1cec432233b2c31a7e927b0b2f">Drp::Gpu::LcReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html#a8ca449ed839b31efce608c91374ecdca">Drp::Gpu::NoOpReducer</a>, <a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html#a7c98380318dc576cff5b3376d079ad77">Drp::Gpu::PfplReducer</a>, and <a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html#ac3712eab54f770d1b564b85b5a367c43">Drp::Gpu::SleekReducer</a>.</p>
 

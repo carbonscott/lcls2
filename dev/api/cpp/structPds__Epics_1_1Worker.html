@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1Worker.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Interface for objects whose monitor events are processed on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  
+ <a href="structPds__Epics_1_1Worker.html#details">More...</a></p>
+
 <p><code>#include &lt;MonTracker.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds__Epics_1_1MonTracker.html">Pds_Epics::MonTracker</a>.</p>
@@ -104,11 +107,15 @@ $(document).ready(function(){initNavTree('structPds__Epics_1_1Worker.html',''); 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf90229415af7cc475330c8d1859f918" id="r_acf90229415af7cc475330c8d1859f918"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1Worker.html#acf90229415af7cc475330c8d1859f918">~Worker</a> ()</td></tr>
+<tr class="memdesc:acf90229415af7cc475330c8d1859f918"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:acf90229415af7cc475330c8d1859f918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b63635676a6608ea86e2ccd949547da" id="r_a6b63635676a6608ea86e2ccd949547da"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1Worker.html#a6b63635676a6608ea86e2ccd949547da">process</a> (const pvac::MonitorEvent &amp;event)=0</td></tr>
+<tr class="memdesc:a6b63635676a6608ea86e2ccd949547da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: handle one monitor event.  <br /></td></tr>
 <tr class="separator:a6b63635676a6608ea86e2ccd949547da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Interface for objects whose monitor events are processed on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acf90229415af7cc475330c8d1859f918" name="acf90229415af7cc475330c8d1859f918"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf90229415af7cc475330c8d1859f918">&#9670;&#160;</a></span>~Worker()</h2>
 
@@ -131,6 +138,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -158,6 +167,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: handle one monitor event. </p>
 
 <p>Implemented in <a class="el" href="classPds__Epics_1_1MonTracker.html#a8cc45759ca44ec99669d859200a29937">Pds_Epics::MonTracker</a>.</p>
 

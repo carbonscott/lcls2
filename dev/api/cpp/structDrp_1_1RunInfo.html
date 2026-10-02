@@ -97,16 +97,23 @@ $(document).ready(function(){initNavTree('structDrp_1_1RunInfo.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>Experiment name and run number of the current run, filled by <a class="el" href="classDrp_1_1DrpBase.html#a9d32f20b7f6eb0c69fd138811992b654" title="Fill runInfo from run_info in phase1Info (run number forced to 0 if monitor_info marks this detector ...">DrpBase::beginrun()</a>.  
+ <a href="structDrp_1_1RunInfo.html#details">More...</a></p>
+
 <p><code>#include &lt;DrpBase.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ac70b685f8cecfa1ed14442346f3a7ec7" id="r_ac70b685f8cecfa1ed14442346f3a7ec7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1RunInfo.html#ac70b685f8cecfa1ed14442346f3a7ec7">experimentName</a></td></tr>
+<tr class="memdesc:ac70b685f8cecfa1ed14442346f3a7ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Experiment name from run_info.experiment_name of the BeginRun phase-1 info (empty if absent).  <br /></td></tr>
 <tr class="separator:ac70b685f8cecfa1ed14442346f3a7ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09829b4d96b90a3c943966dd40e4551d" id="r_a09829b4d96b90a3c943966dd40e4551d"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1RunInfo.html#a09829b4d96b90a3c943966dd40e4551d">runNumber</a></td></tr>
+<tr class="memdesc:a09829b4d96b90a3c943966dd40e4551d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run number from run_info.run_number; 0 means not recording (<a class="el" href="classDrp_1_1DrpBase.html#a9d32f20b7f6eb0c69fd138811992b654" title="Fill runInfo from run_info in phase1Info (run number forced to 0 if monitor_info marks this detector ...">DrpBase::beginrun()</a> also forces 0 for monitor-only detectors).  <br /></td></tr>
 <tr class="separator:a09829b4d96b90a3c943966dd40e4551d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Experiment name and run number of the current run, filled by <a class="el" href="classDrp_1_1DrpBase.html#a9d32f20b7f6eb0c69fd138811992b654" title="Fill runInfo from run_info in phase1Info (run number forced to 0 if monitor_info marks this detector ...">DrpBase::beginrun()</a>. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="ac70b685f8cecfa1ed14442346f3a7ec7" name="ac70b685f8cecfa1ed14442346f3a7ec7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac70b685f8cecfa1ed14442346f3a7ec7">&#9670;&#160;</a></span>experimentName</h2>
 
@@ -118,6 +125,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Experiment name from run_info.experiment_name of the BeginRun phase-1 info (empty if absent). </p>
 
 </div>
 </div>
@@ -132,6 +141,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Run number from run_info.run_number; 0 means not recording (<a class="el" href="classDrp_1_1DrpBase.html#a9d32f20b7f6eb0c69fd138811992b654" title="Fill runInfo from run_info in phase1Info (run number forced to 0 if monitor_info marks this detector ...">DrpBase::beginrun()</a> also forces 0 for monitor-only detectors). </p>
 
 </div>
 </div>

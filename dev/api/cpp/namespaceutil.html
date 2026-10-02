@@ -95,20 +95,28 @@ $(document).ready(function(){initNavTree('namespaceutil.html',''); initResizable
   <div class="headertitle"><div class="title">util Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Small generic helpers that return the common type of their arguments.  
+<a href="namespaceutil.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:abefc7de47d36221e9377602a2c2e315e" id="r_abefc7de47d36221e9377602a2c2e315e"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B &gt; </td></tr>
 <tr class="memitem:abefc7de47d36221e9377602a2c2e315e"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#abefc7de47d36221e9377602a2c2e315e">min</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="memdesc:abefc7de47d36221e9377602a2c2e315e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the smaller of a and b (b if they compare equal), as their common type.  <br /></td></tr>
 <tr class="separator:abefc7de47d36221e9377602a2c2e315e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b180b8e6c7ddbdede582e0a0170350c" id="r_a9b180b8e6c7ddbdede582e0a0170350c"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B &gt; </td></tr>
 <tr class="memitem:a9b180b8e6c7ddbdede582e0a0170350c"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#a9b180b8e6c7ddbdede582e0a0170350c">max</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="memdesc:a9b180b8e6c7ddbdede582e0a0170350c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the larger of a and b (b if they compare equal), as their common type.  <br /></td></tr>
 <tr class="separator:a9b180b8e6c7ddbdede582e0a0170350c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1261d85b516d7689cd4ffd1ee852650" id="r_ab1261d85b516d7689cd4ffd1ee852650"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B , typename C &gt; </td></tr>
 <tr class="memitem:ab1261d85b516d7689cd4ffd1ee852650"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B, C &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#ab1261d85b516d7689cd4ffd1ee852650">clamp</a> (const A &amp;val, const B &amp;lower, const C &amp;upper)</td></tr>
+<tr class="memdesc:ab1261d85b516d7689cd4ffd1ee852650"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return val limited to the range from lower to upper, as the common type of the three arguments.  <br /></td></tr>
 <tr class="separator:ab1261d85b516d7689cd4ffd1ee852650"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Small generic helpers that return the common type of their arguments. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ab1261d85b516d7689cd4ffd1ee852650" name="ab1261d85b516d7689cd4ffd1ee852650"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab1261d85b516d7689cd4ffd1ee852650">&#9670;&#160;</a></span>clamp()</h2>
 
@@ -143,6 +151,8 @@ template&lt;typename A , typename B , typename C &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Return val limited to the range from lower to upper, as the common type of the three arguments. </p>
+
 </div>
 </div>
 <a id="a9b180b8e6c7ddbdede582e0a0170350c" name="a9b180b8e6c7ddbdede582e0a0170350c"></a>
@@ -173,6 +183,8 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Return the larger of a and b (b if they compare equal), as their common type. </p>
+
 </div>
 </div>
 <a id="abefc7de47d36221e9377602a2c2e315e" name="abefc7de47d36221e9377602a2c2e315e"></a>
@@ -202,6 +214,8 @@ template&lt;typename A , typename B &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the smaller of a and b (b if they compare equal), as their common type. </p>
 
 </div>
 </div>

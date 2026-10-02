@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classBldNames_1_1SpectrometerDataV1.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Name list for <a class="el" href="classBldNames_1_1SpectrometerDataV1.html" title="Name list for SpectrometerDataV1 records: scalar results followed by the hproj, peakPos,...">SpectrometerDataV1</a> records: scalar results followed by the hproj, peakPos, peakHeight and FWHM arrays.  
+ <a href="classBldNames_1_1SpectrometerDataV1.html#details">More...</a></p>
+
 <p><code>#include &lt;BldNames.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classXtcData_1_1VarDef.html">XtcData::VarDef</a>.</p>
@@ -105,13 +108,16 @@ $(document).ready(function(){initNavTree('classBldNames_1_1SpectrometerDataV1.ht
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af0610d5613f6307c55c9dcd64f590759" id="r_af0610d5613f6307c55c9dcd64f590759"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBldNames_1_1SpectrometerDataV1.html#af0610d5613f6307c55c9dcd64f590759">SpectrometerDataV1</a> ()</td></tr>
+<tr class="memdesc:af0610d5613f6307c55c9dcd64f590759"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fill NameVec with width, hproj_y1, hproj_y2, comRaw, baseline, com, integral, nPeaks, and the arrays hproj (INT32), peakPos and peakHeight (DOUBLE) and FWHM (INT32).  <br /></td></tr>
 <tr class="separator:af0610d5613f6307c55c9dcd64f590759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a4c546bb31cfbec4fa9ef0f3a3bf01c" id="r_a7a4c546bb31cfbec4fa9ef0f3a3bf01c"><td class="memItemLeft" align="right" valign="top">static std::map&lt; unsigned, unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBldNames_1_1SpectrometerDataV1.html#a7a4c546bb31cfbec4fa9ef0f3a3bf01c">arraySizeMap</a> ()</td></tr>
+<tr class="memdesc:a7a4c546bb31cfbec4fa9ef0f3a3bf01c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a map from entry X to entry Y: X is a scalar if Y equals X, otherwise the value of entry Y is the array length of X (hproj uses width, the three peak arrays use nPeaks).  <br /></td></tr>
 <tr class="separator:a7a4c546bb31cfbec4fa9ef0f3a3bf01c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fb4baa0b187d6616ede93b0253a0c44" id="r_a6fb4baa0b187d6616ede93b0253a0c44"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBldNames_1_1SpectrometerDataV1.html#a6fb4baa0b187d6616ede93b0253a0c44">byteSizes</a> ()</td></tr>
+<tr class="memdesc:a6fb4baa0b187d6616ede93b0253a0c44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the element size in bytes of each entry in order: 4, 4, 4, 8, 8, 8, 8, 4, 4, 8, 8, 4.  <br /></td></tr>
 <tr class="separator:a6fb4baa0b187d6616ede93b0253a0c44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -121,7 +127,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a3900475c65cf697d10ffa4fef04d7744 inherit pub_attribs_classXtcData_1_1VarDef"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classXtcData_1_1Name.html" title="Description of one data field: an Alg, a name (char[MaxNameSize]), a DataType and a rank.">Name</a> definitions, in order.  <br /></td></tr>
 <tr class="separator:a3900475c65cf697d10ffa4fef04d7744 inherit pub_attribs_classXtcData_1_1VarDef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Name list for <a class="el" href="classBldNames_1_1SpectrometerDataV1.html" title="Name list for SpectrometerDataV1 records: scalar results followed by the hproj, peakPos,...">SpectrometerDataV1</a> records: scalar results followed by the hproj, peakPos, peakHeight and FWHM arrays. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af0610d5613f6307c55c9dcd64f590759" name="af0610d5613f6307c55c9dcd64f590759"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0610d5613f6307c55c9dcd64f590759">&#9670;&#160;</a></span>SpectrometerDataV1()</h2>
 
@@ -136,6 +144,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fill NameVec with width, hproj_y1, hproj_y2, comRaw, baseline, com, integral, nPeaks, and the arrays hproj (INT32), peakPos and peakHeight (DOUBLE) and FWHM (INT32). </p>
 
 </div>
 </div>
@@ -163,6 +173,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a map from entry X to entry Y: X is a scalar if Y equals X, otherwise the value of entry Y is the array length of X (hproj uses width, the three peak arrays use nPeaks). </p>
+
 </div>
 </div>
 <a id="a6fb4baa0b187d6616ede93b0253a0c44" name="a6fb4baa0b187d6616ede93b0253a0c44"></a>
@@ -187,6 +199,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the element size in bytes of each entry in order: 4, 4, 4, 8, 8, 8, 8, 4, 4, 8, 8, 4. </p>
 
 </div>
 </div>

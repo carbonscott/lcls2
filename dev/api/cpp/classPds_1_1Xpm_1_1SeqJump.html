@@ -97,18 +97,26 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1SeqJump.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Jump registers of one sequence engine (16 words); only register 15 is used here.  
+ <a href="classPds_1_1Xpm_1_1SeqJump.html#details">More...</a></p>
+
 <p><code>#include &lt;SeqJump.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0bb58ea987d17f4898205461dc90683e" id="r_a0bb58ea987d17f4898205461dc90683e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqJump.html#a0bb58ea987d17f4898205461dc90683e">SeqJump</a> ()</td></tr>
+<tr class="memdesc:a0bb58ea987d17f4898205461dc90683e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a0bb58ea987d17f4898205461dc90683e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ff40bec9aa76e614cd62d06340aa519" id="r_a7ff40bec9aa76e614cd62d06340aa519"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqJump.html#a7ff40bec9aa76e614cd62d06340aa519">setManSync</a> (unsigned sync)</td></tr>
+<tr class="memdesc:a7ff40bec9aa76e614cd62d06340aa519"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the upper 16 bits of register 15 to sync.  <br /></td></tr>
 <tr class="separator:a7ff40bec9aa76e614cd62d06340aa519"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8eac9ea52c7a21c8274832d39b7dd21" id="r_ac8eac9ea52c7a21c8274832d39b7dd21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqJump.html#ac8eac9ea52c7a21c8274832d39b7dd21">setManStart</a> (unsigned addr, unsigned pclass)</td></tr>
+<tr class="memdesc:ac8eac9ea52c7a21c8274832d39b7dd21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the lower 16 bits of register 15 to addr (12 bits) and pclass (4 bits, above addr).  <br /></td></tr>
 <tr class="separator:ac8eac9ea52c7a21c8274832d39b7dd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Jump registers of one sequence engine (16 words); only register 15 is used here. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0bb58ea987d17f4898205461dc90683e" name="a0bb58ea987d17f4898205461dc90683e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0bb58ea987d17f4898205461dc90683e">&#9670;&#160;</a></span>SeqJump()</h2>
 
@@ -131,6 +139,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -169,6 +179,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the lower 16 bits of register 15 to addr (12 bits) and pclass (4 bits, above addr). </p>
+
 </div>
 </div>
 <a id="a7ff40bec9aa76e614cd62d06340aa519" name="a7ff40bec9aa76e614cd62d06340aa519"></a>
@@ -194,6 +206,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the upper 16 bits of register 15 to sync. </p>
 
 </div>
 </div>

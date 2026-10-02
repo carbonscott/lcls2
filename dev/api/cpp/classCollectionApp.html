@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classCollectionApp.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
+<p>Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp://manager:(zmq_base_port + platform) and a SUB socket (topic all) to port zmq_base_port + 10 + platform, binds inproc://drp, and dispatches incoming messages by key to the handle* methods.  
+ <a href="classCollectionApp.html#details">More...</a></p>
+
 <p><code>#include &lt;Collection.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classDrp_1_1BldApp.html">Drp::BldApp</a>, <a class="el" href="classDrp_1_1EpicsArchApp.html">Drp::EpicsArchApp</a>, <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html">Drp::Gpu::PGPDetectorApp</a>, <a class="el" href="classDrp_1_1PGPDetectorApp.html">Drp::PGPDetectorApp</a>, <a class="el" href="classDrp_1_1PvApp.html">Drp::PvApp</a>, <a class="el" href="classDrp_1_1TprApp.html">Drp::TprApp</a>, and <a class="el" href="classDrp_1_1UdpApp.html">Drp::UdpApp</a>.</p>
@@ -107,15 +110,19 @@ $(document).ready(function(){initNavTree('classCollectionApp.html',''); initResi
 Public Types</h2></td></tr>
 <tr class="memitem:a72e7f6bc6f81065a58017d52190f58d7" id="r_a72e7f6bc6f81065a58017d52190f58d7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db">zmq_base_port</a> = 29980
  }</td></tr>
+<tr class="memdesc:a72e7f6bc6f81065a58017d52190f58d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base TCP port of the collection sockets.  <a href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7">More...</a><br /></td></tr>
 <tr class="separator:a72e7f6bc6f81065a58017d52190f58d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:adc697792b5bb454148b34f1f1b1d90ed" id="r_adc697792b5bb454148b34f1f1b1d90ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#adc697792b5bb454148b34f1f1b1d90ed">CollectionApp</a> (const std::string &amp;managerHostname, int platform, const std::string &amp;level, const std::string &amp;alias, const std::string &amp;device=std::string())</td></tr>
+<tr class="memdesc:adc697792b5bb454148b34f1f1b1d90ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the resource limits (throwing a C string if they are inadequate), connect the PUSH and SUB sockets to managerHostname for platform, bind inproc://drp, and register handlers for rollcall, alloc, dealloc, connect, disconnect, reset and the phase-1 transitions (configure, unconfigure, beginrun, endrun, beginstep, endstep, enable, disable).  <br /></td></tr>
 <tr class="separator:adc697792b5bb454148b34f1f1b1d90ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85f56b0061369d28f7371948fba8947" id="r_ad85f56b0061369d28f7371948fba8947"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#ad85f56b0061369d28f7371948fba8947">~CollectionApp</a> ()</td></tr>
+<tr class="memdesc:ad85f56b0061369d28f7371948fba8947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ad85f56b0061369d28f7371948fba8947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5333e0f78c49e83e0b2ffa0d7628c98e" id="r_a5333e0f78c49e83e0b2ffa0d7628c98e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a5333e0f78c49e83e0b2ffa0d7628c98e">run</a> ()</td></tr>
+<tr class="memdesc:a5333e0f78c49e83e0b2ffa0d7628c98e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Message loop: dispatch collection messages from the SUB socket to their handlers by header key, and forward pulseId, fileReport, error and chunkRequest messages from inproc://drp to the manager.  <br /></td></tr>
 <tr class="separator:a5333e0f78c49e83e0b2ffa0d7628c98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -153,7 +160,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a4c67537e683b2439ed17369252a85862" id="r_a4c67537e683b2439ed17369252a85862"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a4c67537e683b2439ed17369252a85862">unsubscribePartition</a> ()</td></tr>
 <tr class="separator:a4c67537e683b2439ed17369252a85862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp://manager:(zmq_base_port + platform) and a SUB socket (topic all) to port zmq_base_port + 10 + platform, binds inproc://drp, and dispatches incoming messages by key to the handle* methods. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a72e7f6bc6f81065a58017d52190f58d7" name="a72e7f6bc6f81065a58017d52190f58d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72e7f6bc6f81065a58017d52190f58d7">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -165,8 +174,11 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Base TCP port of the collection sockets. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db" name="a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db"></a>zmq_base_port&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db" name="a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db"></a>zmq_base_port&#160;</td><td class="fielddoc"><p>29980; the PUSH port is this plus the platform, the SUB port this plus 10 plus the platform. </p>
+</td></tr>
 </table>
 
 </div>
@@ -216,6 +228,8 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Check the resource limits (throwing a C string if they are inadequate), connect the PUSH and SUB sockets to managerHostname for platform, bind inproc://drp, and register handlers for rollcall, alloc, dealloc, connect, disconnect, reset and the phase-1 transitions (configure, unconfigure, beginrun, endrun, beginstep, endstep, enable, disable). </p>
+
 </div>
 </div>
 <a id="ad85f56b0061369d28f7371948fba8947" name="ad85f56b0061369d28f7371948fba8947"></a>
@@ -240,6 +254,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -623,6 +639,9 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Message loop: dispatch collection messages from the SUB socket to their handlers by header key, and forward pulseId, fileReport, error and chunkRequest messages from inproc://drp to the manager. </p>
+<p>Returns when zmq_poll() is interrupted or a malformed (fewer than 2 frames) message arrives. </p>
 
 </div>
 </div>

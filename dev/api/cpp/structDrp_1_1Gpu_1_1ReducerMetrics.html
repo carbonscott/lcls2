@@ -97,18 +97,26 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1ReducerMetrics.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Per-worker counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a882d68dd7d04b6a533411665af3fa18c" title="Add the per-worker DRP_redState, DRP_inpWtCtr, DRP_outWtCtr, DRP_inputQueue and DRP_outputQueue metri...">Reducer::setupMetrics()</a>.  
+ <a href="structDrp_1_1Gpu_1_1ReducerMetrics.html#details">More...</a></p>
+
 <p><code>#include &lt;Reducer.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a4f585e4eaf0335df292cc5d262456f9b" id="r_a4f585e4eaf0335df292cc5d262456f9b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReducerMetrics.html#a4f585e4eaf0335df292cc5d262456f9b">state</a></td></tr>
+<tr class="memdesc:a4f585e4eaf0335df292cc5d262456f9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel state monitors, exported as DRP_redState; the kernel writes to them are commented out, so they stay 0.  <br /></td></tr>
 <tr class="separator:a4f585e4eaf0335df292cc5d262456f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af34f16bf6392d9858d694b5666f789d6" id="r_af34f16bf6392d9858d694b5666f789d6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReducerMetrics.html#af34f16bf6392d9858d694b5666f789d6">inpWtCtr</a></td></tr>
+<tr class="memdesc:af34f16bf6392d9858d694b5666f789d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input counters, exported as DRP_inpWtCtr; the kernel increment is commented out.  <br /></td></tr>
 <tr class="separator:af34f16bf6392d9858d694b5666f789d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc0e9422b9469fd8587ffdb3a2e08e0a" id="r_adc0e9422b9469fd8587ffdb3a2e08e0a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReducerMetrics.html#adc0e9422b9469fd8587ffdb3a2e08e0a">outWtCtr</a></td></tr>
+<tr class="memdesc:adc0e9422b9469fd8587ffdb3a2e08e0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output counters, exported as DRP_outWtCtr; the kernel increment is commented out.  <br /></td></tr>
 <tr class="separator:adc0e9422b9469fd8587ffdb3a2e08e0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Per-worker counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a882d68dd7d04b6a533411665af3fa18c" title="Add the per-worker DRP_redState, DRP_inpWtCtr, DRP_outWtCtr, DRP_inputQueue and DRP_outputQueue metri...">Reducer::setupMetrics()</a>. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="af34f16bf6392d9858d694b5666f789d6" name="af34f16bf6392d9858d694b5666f789d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af34f16bf6392d9858d694b5666f789d6">&#9670;&#160;</a></span>inpWtCtr</h2>
 
@@ -120,6 +128,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Input counters, exported as DRP_inpWtCtr; the kernel increment is commented out. </p>
 
 </div>
 </div>
@@ -135,6 +145,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Output counters, exported as DRP_outWtCtr; the kernel increment is commented out. </p>
+
 </div>
 </div>
 <a id="a4f585e4eaf0335df292cc5d262456f9b" name="a4f585e4eaf0335df292cc5d262456f9b"></a>
@@ -148,6 +160,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Kernel state monitors, exported as DRP_redState; the kernel writes to them are commented out, so they stay 0. </p>
 
 </div>
 </div>

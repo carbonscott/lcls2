@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Entry.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 
+<p>Element of an intrusive doubly linked <a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a>; a new entry is linked to itself.  
+ <a href="classPds_1_1Entry.html#details">More...</a></p>
+
 <p><code>#include &lt;Queue.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1Routine.html">Pds::Routine</a>.</p>
@@ -104,19 +107,27 @@ $(document).ready(function(){initNavTree('classPds_1_1Entry.html',''); initResiz
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a10919ff645f48c2fc5223d5f1f97480e" id="r_a10919ff645f48c2fc5223d5f1f97480e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a10919ff645f48c2fc5223d5f1f97480e">Entry</a> ()</td></tr>
+<tr class="memdesc:a10919ff645f48c2fc5223d5f1f97480e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an entry whose links point to itself.  <br /></td></tr>
 <tr class="separator:a10919ff645f48c2fc5223d5f1f97480e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f0d798d48b8d76965a26b83d21dc3b" id="r_a74f0d798d48b8d76965a26b83d21dc3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a74f0d798d48b8d76965a26b83d21dc3b">insert</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *after)</td></tr>
+<tr class="memdesc:a74f0d798d48b8d76965a26b83d21dc3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert this entry after after and return after.  <br /></td></tr>
 <tr class="separator:a74f0d798d48b8d76965a26b83d21dc3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ef34de864aa2945d68b29be6a527df" id="r_a49ef34de864aa2945d68b29be6a527df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a49ef34de864aa2945d68b29be6a527df">insertList</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *after)</td></tr>
+<tr class="memdesc:a49ef34de864aa2945d68b29be6a527df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splice the list that this entry belongs to (from this entry to its predecessor) in after after; returns after.  <br /></td></tr>
 <tr class="separator:a49ef34de864aa2945d68b29be6a527df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bbb85eb27813bb863ca4aeadf666598" id="r_a6bbb85eb27813bb863ca4aeadf666598"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#a6bbb85eb27813bb863ca4aeadf666598">remove</a> ()</td></tr>
+<tr class="memdesc:a6bbb85eb27813bb863ca4aeadf666598"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlink this entry from its list, relink it to itself and return it.  <br /></td></tr>
 <tr class="separator:a6bbb85eb27813bb863ca4aeadf666598"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad756f8f0355699322d851fe3e34cfeda" id="r_ad756f8f0355699322d851fe3e34cfeda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#ad756f8f0355699322d851fe3e34cfeda">next</a> () const</td></tr>
+<tr class="memdesc:ad756f8f0355699322d851fe3e34cfeda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the next entry.  <br /></td></tr>
 <tr class="separator:ad756f8f0355699322d851fe3e34cfeda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaeacd59634674b756dca32343eab8cca" id="r_aaeacd59634674b756dca32343eab8cca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Entry.html">Entry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Entry.html#aaeacd59634674b756dca32343eab8cca">previous</a> () const</td></tr>
+<tr class="memdesc:aaeacd59634674b756dca32343eab8cca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the previous entry.  <br /></td></tr>
 <tr class="separator:aaeacd59634674b756dca32343eab8cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Element of an intrusive doubly linked <a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a>; a new entry is linked to itself. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a10919ff645f48c2fc5223d5f1f97480e" name="a10919ff645f48c2fc5223d5f1f97480e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a10919ff645f48c2fc5223d5f1f97480e">&#9670;&#160;</a></span>Entry()</h2>
 
@@ -139,6 +150,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct an entry whose links point to itself. </p>
 
 </div>
 </div>
@@ -167,6 +180,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Insert this entry after after and return after. </p>
+<p>The code comment warns that inserting an entry after itself corrupts the list. </p>
+
 </div>
 </div>
 <a id="a49ef34de864aa2945d68b29be6a527df" name="a49ef34de864aa2945d68b29be6a527df"></a>
@@ -193,6 +209,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Splice the list that this entry belongs to (from this entry to its predecessor) in after after; returns after. </p>
+
 </div>
 </div>
 <a id="ad756f8f0355699322d851fe3e34cfeda" name="ad756f8f0355699322d851fe3e34cfeda"></a>
@@ -217,6 +235,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the next entry. </p>
 
 </div>
 </div>
@@ -243,6 +263,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the previous entry. </p>
+
 </div>
 </div>
 <a id="a6bbb85eb27813bb863ca4aeadf666598" name="a6bbb85eb27813bb863ca4aeadf666598"></a>
@@ -267,6 +289,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Unlink this entry from its list, relink it to itself and return it. </p>
 
 </div>
 </div>

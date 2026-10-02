@@ -97,28 +97,41 @@ $(document).ready(function(){initNavTree('classDrp_1_1CubeResult.html',''); init
 </div><!--header-->
 <div class="contents">
 
+<p>Decodes the binning fields of a ResultDgram, reading it as a CubeResultDgram when the result type is Cube and as a WindowResultDgram otherwise.  
+ <a href="classDrp_1_1CubeResult.html#details">More...</a></p>
+
 <p><code>#include &lt;CubeResult.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3a6bc8c7559b85bbedf3fd4dc6beb867" id="r_a3a6bc8c7559b85bbedf3fd4dc6beb867"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#a3a6bc8c7559b85bbedf3fd4dc6beb867">CubeResult</a> (<a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747c">Pds::Eb::ResultType</a> rtype)</td></tr>
+<tr class="memdesc:a3a6bc8c7559b85bbedf3fd4dc6beb867"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the result type that selects the decoding.  <br /></td></tr>
 <tr class="separator:a3a6bc8c7559b85bbedf3fd4dc6beb867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d738a1e0ee0ffdb16f8df26c8f546ab" id="r_a7d738a1e0ee0ffdb16f8df26c8f546ab"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#a7d738a1e0ee0ffdb16f8df26c8f546ab">add_bins</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:a7d738a1e0ee0ffdb16f8df26c8f546ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">For Cube results return the single bin index; otherwise return the indices of the set bits of the window add field, lowest first.  <br /></td></tr>
 <tr class="separator:a7d738a1e0ee0ffdb16f8df26c8f546ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a943861e6a425061977663d1a8d87cb98" id="r_a943861e6a425061977663d1a8d87cb98"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#a943861e6a425061977663d1a8d87cb98">monitor_bins</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:a943861e6a425061977663d1a8d87cb98"><td class="mdescLeft">&#160;</td><td class="mdescRight">For Cube results return the single bin index; otherwise return the indices of the set bits of the window monitor field, lowest first.  <br /></td></tr>
 <tr class="separator:a943861e6a425061977663d1a8d87cb98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31ca4e7cc1f9fe7d6c016d07586645d6" id="r_a31ca4e7cc1f9fe7d6c016d07586645d6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#a31ca4e7cc1f9fe7d6c016d07586645d6">record_bins</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:a31ca4e7cc1f9fe7d6c016d07586645d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">For Cube results return the single bin index; otherwise return the indices of the set bits of the window record field, lowest first.  <br /></td></tr>
 <tr class="separator:a31ca4e7cc1f9fe7d6c016d07586645d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6b0ea1c3189b27108be4cb7c33608a8" id="r_ad6b0ea1c3189b27108be4cb7c33608a8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#ad6b0ea1c3189b27108be4cb7c33608a8">flush_bins</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:ad6b0ea1c3189b27108be4cb7c33608a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">For Cube results return the single bin index; otherwise return the indices of the set bits of the window flush field, lowest first.  <br /></td></tr>
 <tr class="separator:ad6b0ea1c3189b27108be4cb7c33608a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae764dc315b6b6da67ad21e39bd5062ed" id="r_ae764dc315b6b6da67ad21e39bd5062ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#ae764dc315b6b6da67ad21e39bd5062ed">update_monitor</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:ae764dc315b6b6da67ad21e39bd5062ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the update-monitor bit for Cube results, otherwise whether the window monitor field is non-zero.  <br /></td></tr>
 <tr class="separator:ae764dc315b6b6da67ad21e39bd5062ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c6248ec1a507a3711afa9d0290e0f2f" id="r_a7c6248ec1a507a3711afa9d0290e0f2f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#a7c6248ec1a507a3711afa9d0290e0f2f">update_record</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:a7c6248ec1a507a3711afa9d0290e0f2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the update-record bit for Cube results, otherwise whether the window record field is non-zero.  <br /></td></tr>
 <tr class="separator:a7c6248ec1a507a3711afa9d0290e0f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad28f18a249811f3320e4fb9ae6880f55" id="r_ad28f18a249811f3320e4fb9ae6880f55"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeResult.html#ad28f18a249811f3320e4fb9ae6880f55">flush</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;) const</td></tr>
+<tr class="memdesc:ad28f18a249811f3320e4fb9ae6880f55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the flush bit for Cube results, otherwise whether the window flush field is non-zero.  <br /></td></tr>
 <tr class="separator:ad28f18a249811f3320e4fb9ae6880f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Decodes the binning fields of a ResultDgram, reading it as a CubeResultDgram when the result type is Cube and as a WindowResultDgram otherwise. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3a6bc8c7559b85bbedf3fd4dc6beb867" name="a3a6bc8c7559b85bbedf3fd4dc6beb867"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3a6bc8c7559b85bbedf3fd4dc6beb867">&#9670;&#160;</a></span>CubeResult()</h2>
 
@@ -143,6 +156,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Store the result type that selects the decoding. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -162,6 +177,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>For Cube results return the single bin index; otherwise return the indices of the set bits of the window add field, lowest first. </p>
+
 </div>
 </div>
 <a id="ad28f18a249811f3320e4fb9ae6880f55" name="ad28f18a249811f3320e4fb9ae6880f55"></a>
@@ -179,6 +196,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the flush bit for Cube results, otherwise whether the window flush field is non-zero. </p>
 
 </div>
 </div>
@@ -198,6 +217,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>For Cube results return the single bin index; otherwise return the indices of the set bits of the window flush field, lowest first. </p>
+
 </div>
 </div>
 <a id="a943861e6a425061977663d1a8d87cb98" name="a943861e6a425061977663d1a8d87cb98"></a>
@@ -215,6 +236,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>For Cube results return the single bin index; otherwise return the indices of the set bits of the window monitor field, lowest first. </p>
 
 </div>
 </div>
@@ -234,6 +257,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>For Cube results return the single bin index; otherwise return the indices of the set bits of the window record field, lowest first. </p>
+
 </div>
 </div>
 <a id="ae764dc315b6b6da67ad21e39bd5062ed" name="ae764dc315b6b6da67ad21e39bd5062ed"></a>
@@ -252,6 +277,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the update-monitor bit for Cube results, otherwise whether the window monitor field is non-zero. </p>
+
 </div>
 </div>
 <a id="a7c6248ec1a507a3711afa9d0290e0f2f" name="a7c6248ec1a507a3711afa9d0290e0f2f"></a>
@@ -269,6 +296,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the update-record bit for Cube results, otherwise whether the window record field is non-zero. </p>
 
 </div>
 </div>

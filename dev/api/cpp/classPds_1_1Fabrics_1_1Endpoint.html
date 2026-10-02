@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1Endpoint.html',
 </div><!--header-->
 <div class="contents">
 
+<p>Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking _sync variants.  
+ <a href="classPds_1_1Fabrics_1_1Endpoint.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a>.</p>
@@ -104,130 +107,192 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1Endpoint.html',
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a69afc9830eb08c56eafdf74b07e541d3" id="r_a69afc9830eb08c56eafdf74b07e541d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a69afc9830eb08c56eafdf74b07e541d3">Endpoint</a> (const char *addr, const char *port, uint64_t flags=0, <a class="el" href="classPds_1_1Fabrics_1_1Info.html">Info</a> *hints=0)</td></tr>
+<tr class="memdesc:a69afc9830eb08c56eafdf74b07e541d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an endpoint that owns a new <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> for addr and port and its own queues.  <br /></td></tr>
 <tr class="separator:a69afc9830eb08c56eafdf74b07e541d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a484230787affd5453db8e45afb0cede1" id="r_a484230787affd5453db8e45afb0cede1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a484230787affd5453db8e45afb0cede1">Endpoint</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a9495d2dbfcd13b3a3ce0e78dc395a844">fabric</a>, <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a8f1667969b242b18ec38a2975a48e058">eq</a>=0, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9">txcq</a>=0, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a50cb4ba64577bed2055d4845274028b4">rxcq</a>=0)</td></tr>
+<tr class="memdesc:a484230787affd5453db8e45afb0cede1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an endpoint on an existing <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, using any supplied queues and creating the missing ones.  <br /></td></tr>
 <tr class="separator:a484230787affd5453db8e45afb0cede1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd837b9a03a15e6536c6b2fdc9e95dc1" id="r_acd837b9a03a15e6536c6b2fdc9e95dc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acd837b9a03a15e6536c6b2fdc9e95dc1">~Endpoint</a> ()</td></tr>
+<tr class="memdesc:acd837b9a03a15e6536c6b2fdc9e95dc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826" title="Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so th...">shutdown()</a> to close the libfabric endpoint; the base destructor then deletes owned queues and the fabric if owned.  <br /></td></tr>
 <tr class="separator:acd837b9a03a15e6536c6b2fdc9e95dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7642dba1adfa40d98c33d2b876d7043a" id="r_a7642dba1adfa40d98c33d2b876d7043a"><td class="memItemLeft" align="right" valign="top">struct fid_ep *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a7642dba1adfa40d98c33d2b876d7043a">endpoint</a> () const</td></tr>
+<tr class="memdesc:a7642dba1adfa40d98c33d2b876d7043a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the libfabric fid_ep, or NULL before <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a> or <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab54771fdb1d458355f92f3c51afce516" title="Like connect(), but the fid_ep is created from remote_info (a connection request) and fi_accept() is ...">accept()</a> and after <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826" title="Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so th...">shutdown()</a>.  <br /></td></tr>
 <tr class="separator:a7642dba1adfa40d98c33d2b876d7043a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c3696e3033da907822ae7b44f61a826" id="r_a9c3696e3033da907822ae7b44f61a826"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826">shutdown</a> ()</td></tr>
+<tr class="memdesc:a9c3696e3033da907822ae7b44f61a826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so that <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a> or <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab54771fdb1d458355f92f3c51afce516" title="Like connect(), but the fid_ep is created from remote_info (a connection request) and fi_accept() is ...">accept()</a> can be called again.  <br /></td></tr>
 <tr class="separator:a9c3696e3033da907822ae7b44f61a826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca4dbc6c67d98a8eedd7c66a90a45bfb" id="r_aca4dbc6c67d98a8eedd7c66a90a45bfb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb">connect</a> (int timeout=-1, uint64_t txFlags=0, uint64_t rxFlags=0, void *context=NULL)</td></tr>
+<tr class="memdesc:aca4dbc6c67d98a8eedd7c66a90a45bfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destination address of the fabric info and wait (with timeout) for FI_CONNECTED.  <br /></td></tr>
 <tr class="separator:aca4dbc6c67d98a8eedd7c66a90a45bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab54771fdb1d458355f92f3c51afce516" id="r_ab54771fdb1d458355f92f3c51afce516"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab54771fdb1d458355f92f3c51afce516">accept</a> (struct fi_info *remote_info, int timeout=-1, uint64_t txFlags=0, uint64_t rxFlags=0, void *context=NULL)</td></tr>
+<tr class="memdesc:ab54771fdb1d458355f92f3c51afce516"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a>, but the fid_ep is created from remote_info (a connection request) and fi_accept() is called before waiting for FI_CONNECTED.  <br /></td></tr>
 <tr class="separator:ab54771fdb1d458355f92f3c51afce516"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0ab094fdc420641c880251a2eaf7f2c" id="r_af0ab094fdc420641c880251a2eaf7f2c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#af0ab094fdc420641c880251a2eaf7f2c">recv_comp_data</a> (void *context=NULL)</td></tr>
+<tr class="memdesc:af0ab094fdc420641c880251a2eaf7f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post a zero-length receive (fi_recv) for remote completion data; returns the fi_recv() result (-FI_EAGAIN is not recorded as an error).  <br /></td></tr>
 <tr class="separator:af0ab094fdc420641c880251a2eaf7f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acedb460534e708ff08106b05e2c898db" id="r_acedb460534e708ff08106b05e2c898db"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db">send</a> (const void *buf, size_t len, void *context, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:acedb460534e708ff08106b05e2c898db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_send() of len bytes from buf.  <br /></td></tr>
 <tr class="separator:acedb460534e708ff08106b05e2c898db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c8aef7889716eec23766e3ebaea0404" id="r_a4c8aef7889716eec23766e3ebaea0404"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4c8aef7889716eec23766e3ebaea0404">recv</a> (void *buf, size_t len, void *context, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:a4c8aef7889716eec23766e3ebaea0404"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>; returns the fi_recv() result.  <br /></td></tr>
 <tr class="separator:a4c8aef7889716eec23766e3ebaea0404"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec272d5b410514f2f7ca683a574cd1f2" id="r_aec272d5b410514f2f7ca683a574cd1f2"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aec272d5b410514f2f7ca683a574cd1f2">read</a> (void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:aec272d5b410514f2f7ca683a574cd1f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>; returns the fi_read() result.  <br /></td></tr>
 <tr class="separator:aec272d5b410514f2f7ca683a574cd1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74f3489b48c072f84c91befbd0a52d26" id="r_a74f3489b48c072f84c91befbd0a52d26"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a74f3489b48c072f84c91befbd0a52d26">write</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:a74f3489b48c072f84c91befbd0a52d26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -FI_EAGAIN handling as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a74f3489b48c072f84c91befbd0a52d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a707425264d7f0ded9468685fff1174" id="r_a0a707425264d7f0ded9468685fff1174"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a0a707425264d7f0ded9468685fff1174">writedata</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context, uint64_t data, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:a0a707425264d7f0ded9468685fff1174"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value data; memory-region lookup and -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a0a707425264d7f0ded9468685fff1174"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37fdef9e0d8250d50d9c7c4f8546255c" id="r_a37fdef9e0d8250d50d9c7c4f8546255c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a37fdef9e0d8250d50d9c7c4f8546255c">inject_writedata</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, uint64_t data)</td></tr>
+<tr class="memdesc:a37fdef9e0d8250d50d9c7c4f8546255c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call fi_inject_writedata() for len bytes from buf to raddr with the immediate value data (no memory region, no context); -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a37fdef9e0d8250d50d9c7c4f8546255c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab27aa18f0725c0e85f05adf49abde2af" id="r_ab27aa18f0725c0e85f05adf49abde2af"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab27aa18f0725c0e85f05adf49abde2af">injectdata</a> (const void *buf, size_t len, uint64_t data)</td></tr>
+<tr class="memdesc:ab27aa18f0725c0e85f05adf49abde2af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call fi_injectdata() for len bytes from buf with the immediate value data; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:ab27aa18f0725c0e85f05adf49abde2af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55b77e4ef4d2f2fb45990529951bb6ae" id="r_a55b77e4ef4d2f2fb45990529951bb6ae"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a55b77e4ef4d2f2fb45990529951bb6ae">send</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, void *context)</td></tr>
+<tr class="memdesc:a55b77e4ef4d2f2fb45990529951bb6ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a55b77e4ef4d2f2fb45990529951bb6ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96b5d914c2c6c44afb4535375c1753c4" id="r_a96b5d914c2c6c44afb4535375c1753c4"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a96b5d914c2c6c44afb4535375c1753c4">recv</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, void *context)</td></tr>
+<tr class="memdesc:a96b5d914c2c6c44afb4535375c1753c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4c8aef7889716eec23766e3ebaea0404" title="Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as send(); returns the...">recv()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a96b5d914c2c6c44afb4535375c1753c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00b1b5d7ae46346d9baa1f5a273bcb57" id="r_a00b1b5d7ae46346d9baa1f5a273bcb57"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a00b1b5d7ae46346d9baa1f5a273bcb57">read</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context)</td></tr>
+<tr class="memdesc:a00b1b5d7ae46346d9baa1f5a273bcb57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aec272d5b410514f2f7ca683a574cd1f2" title="Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as se...">read()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a00b1b5d7ae46346d9baa1f5a273bcb57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a740b3e687a03d585166d2a6d78b0e6c7" id="r_a740b3e687a03d585166d2a6d78b0e6c7"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a740b3e687a03d585166d2a6d78b0e6c7">write</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context)</td></tr>
+<tr class="memdesc:a740b3e687a03d585166d2a6d78b0e6c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a74f3489b48c072f84c91befbd0a52d26" title="Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -...">write()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a740b3e687a03d585166d2a6d78b0e6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e38dd1fadc5ab010559d7a337032c3a" id="r_a8e38dd1fadc5ab010559d7a337032c3a"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a8e38dd1fadc5ab010559d7a337032c3a">writedata</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context, uint64_t data)</td></tr>
+<tr class="memdesc:a8e38dd1fadc5ab010559d7a337032c3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a0a707425264d7f0ded9468685fff1174" title="Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value dat...">writedata()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a8e38dd1fadc5ab010559d7a337032c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0d16bff7f1bc3e1c87e92dd13c442c0" id="r_ad0d16bff7f1bc3e1c87e92dd13c442c0"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ad0d16bff7f1bc3e1c87e92dd13c442c0">inject_writedata</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, uint64_t data)</td></tr>
+<tr class="memdesc:ad0d16bff7f1bc3e1c87e92dd13c442c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a37fdef9e0d8250d50d9c7c4f8546255c" title="Call fi_inject_writedata() for len bytes from buf to raddr with the immediate value data (no memory r...">inject_writedata()</a> with the buffer and length of laddr.  <br /></td></tr>
 <tr class="separator:ad0d16bff7f1bc3e1c87e92dd13c442c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf2bd8176396c10fb10801efb708e9d5" id="r_adf2bd8176396c10fb10801efb708e9d5"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#adf2bd8176396c10fb10801efb708e9d5">injectdata</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, uint64_t data)</td></tr>
+<tr class="memdesc:adf2bd8176396c10fb10801efb708e9d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab27aa18f0725c0e85f05adf49abde2af" title="Call fi_injectdata() for len bytes from buf with the immediate value data; -FI_EAGAIN handling as in ...">injectdata()</a> with the buffer and length of laddr.  <br /></td></tr>
 <tr class="separator:adf2bd8176396c10fb10801efb708e9d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73135aa1c83289b0e2a6580cdc439bb6" id="r_a73135aa1c83289b0e2a6580cdc439bb6"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a73135aa1c83289b0e2a6580cdc439bb6">sendv</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, void *context)</td></tr>
+<tr class="memdesc:a73135aa1c83289b0e2a6580cdc439bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_sendv() of the entries of iov.  <br /></td></tr>
 <tr class="separator:a73135aa1c83289b0e2a6580cdc439bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adca5fa2d05d035caa05b1f46d7e0c6c4" id="r_adca5fa2d05d035caa05b1f46d7e0c6c4"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#adca5fa2d05d035caa05b1f46d7e0c6c4">recvv</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, void *context)</td></tr>
+<tr class="memdesc:adca5fa2d05d035caa05b1f46d7e0c6c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_recvv() into the entries of iov, with the same descriptor lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a73135aa1c83289b0e2a6580cdc439bb6" title="Post fi_sendv() of the entries of iov.">sendv()</a>; returns the fi_recvv() result.  <br /></td></tr>
 <tr class="separator:adca5fa2d05d035caa05b1f46d7e0c6c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3b2261675d0799adfb807b46a7bc78b" id="r_ae3b2261675d0799adfb807b46a7bc78b"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae3b2261675d0799adfb807b46a7bc78b">recvmsg</a> (<a class="el" href="classPds_1_1Fabrics_1_1Message.html">Message</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:ae3b2261675d0799adfb807b46a7bc78b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_recvmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; returns the fi_recvmsg() result.  <br /></td></tr>
 <tr class="separator:ae3b2261675d0799adfb807b46a7bc78b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57af67d31172c4e7adf253bcc508f2d5" id="r_a57af67d31172c4e7adf253bcc508f2d5"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a57af67d31172c4e7adf253bcc508f2d5">sendmsg</a> (<a class="el" href="classPds_1_1Fabrics_1_1Message.html">Message</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:a57af67d31172c4e7adf253bcc508f2d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_sendmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a57af67d31172c4e7adf253bcc508f2d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a662bed570b0ea338dccf221621f1e745" id="r_a662bed570b0ea338dccf221621f1e745"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a662bed570b0ea338dccf221621f1e745">readv</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context)</td></tr>
+<tr class="memdesc:a662bed570b0ea338dccf221621f1e745"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv() result.  <br /></td></tr>
 <tr class="separator:a662bed570b0ea338dccf221621f1e745"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51e5a9f5447ada68e4e44e019b0f9cc4" id="r_a51e5a9f5447ada68e4e44e019b0f9cc4"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a51e5a9f5447ada68e4e44e019b0f9cc4">writev</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, void *context)</td></tr>
+<tr class="memdesc:a51e5a9f5447ada68e4e44e019b0f9cc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a51e5a9f5447ada68e4e44e019b0f9cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1ffba6bcc1782f1215e1d5b624141fd" id="r_af1ffba6bcc1782f1215e1d5b624141fd"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#af1ffba6bcc1782f1215e1d5b624141fd">readmsg</a> (<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">RmaMessage</a> *msg, uint64_t flags)</td></tr>
+<tr class="memdesc:af1ffba6bcc1782f1215e1d5b624141fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_readmsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; returns the fi_readmsg() result.  <br /></td></tr>
 <tr class="separator:af1ffba6bcc1782f1215e1d5b624141fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29d03a7bf99dae7624933c59d3e43c97" id="r_a29d03a7bf99dae7624933c59d3e43c97"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a29d03a7bf99dae7624933c59d3e43c97">writemsg</a> (<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">RmaMessage</a> *msg, uint64_t flags)</td></tr>
+<tr class="memdesc:a29d03a7bf99dae7624933c59d3e43c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post fi_writemsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>.  <br /></td></tr>
 <tr class="separator:a29d03a7bf99dae7624933c59d3e43c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fc140e79ced5d34054eaf1790db365a" id="r_a8fc140e79ced5d34054eaf1790db365a"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a8fc140e79ced5d34054eaf1790db365a">recv_comp_data_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *cq, uint64_t *data=NULL)</td></tr>
+<tr class="memdesc:a8fc140e79ced5d34054eaf1790db365a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post a zero-length receive and wait (no timeout) on cq for a completion with FI_REMOTE_CQ_DATA and this call's context; its data is stored in data if data is non-null.  <br /></td></tr>
 <tr class="separator:a8fc140e79ced5d34054eaf1790db365a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae805498415cc5df0bc53d61aeb031fb2" id="r_ae805498415cc5df0bc53d61aeb031fb2"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae805498415cc5df0bc53d61aeb031fb2">send_sync</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:ae805498415cc5df0bc53d61aeb031fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>: post it, then wait (no timeout) on the transmit queue for a completion with this call's context and FI_SEND | FI_MSG.  <br /></td></tr>
 <tr class="separator:ae805498415cc5df0bc53d61aeb031fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cde57f1af00fa4d7b43500b39a60222" id="r_a4cde57f1af00fa4d7b43500b39a60222"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4cde57f1af00fa4d7b43500b39a60222">recv_sync</a> (void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:a4cde57f1af00fa4d7b43500b39a60222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4c8aef7889716eec23766e3ebaea0404" title="Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as send(); returns the...">recv()</a>: post it, then wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_MSG).  <br /></td></tr>
 <tr class="separator:a4cde57f1af00fa4d7b43500b39a60222"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0610f573dfbb6097cdded0d86f6b7e0" id="r_aa0610f573dfbb6097cdded0d86f6b7e0"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aa0610f573dfbb6097cdded0d86f6b7e0">read_sync</a> (void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:aa0610f573dfbb6097cdded0d86f6b7e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aec272d5b410514f2f7ca683a574cd1f2" title="Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as se...">read()</a>: post it, then wait (no timeout) on the receive completion queue for the matching completion (FI_READ | FI_RMA).  <br /></td></tr>
 <tr class="separator:aa0610f573dfbb6097cdded0d86f6b7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9540a308e15b874f3d5921459f9c2251" id="r_a9540a308e15b874f3d5921459f9c2251"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9540a308e15b874f3d5921459f9c2251">write_sync</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:a9540a308e15b874f3d5921459f9c2251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a74f3489b48c072f84c91befbd0a52d26" title="Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -...">write()</a>: post it, then wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA).  <br /></td></tr>
 <tr class="separator:a9540a308e15b874f3d5921459f9c2251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc120e08649bc088ac5b506fc6bd5669" id="r_abc120e08649bc088ac5b506fc6bd5669"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#abc120e08649bc088ac5b506fc6bd5669">writedata_sync</a> (const void *buf, size_t len, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, uint64_t data, const <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *mr=NULL)</td></tr>
+<tr class="memdesc:abc120e08649bc088ac5b506fc6bd5669"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a0a707425264d7f0ded9468685fff1174" title="Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value dat...">writedata()</a>: post it, then wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA).  <br /></td></tr>
 <tr class="separator:abc120e08649bc088ac5b506fc6bd5669"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47d58f4c5b23fdbe45ebfc61dcde24cf" id="r_a47d58f4c5b23fdbe45ebfc61dcde24cf"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a47d58f4c5b23fdbe45ebfc61dcde24cf">send_sync</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr)</td></tr>
+<tr class="memdesc:a47d58f4c5b23fdbe45ebfc61dcde24cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae805498415cc5df0bc53d61aeb031fb2" title="Blocking send(): post it, then wait (no timeout) on the transmit queue for a completion with this cal...">send_sync()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a47d58f4c5b23fdbe45ebfc61dcde24cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29d9f4c7cde2b2620eb3121334bf7eb7" id="r_a29d9f4c7cde2b2620eb3121334bf7eb7"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a29d9f4c7cde2b2620eb3121334bf7eb7">recv_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr)</td></tr>
+<tr class="memdesc:a29d9f4c7cde2b2620eb3121334bf7eb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4cde57f1af00fa4d7b43500b39a60222" title="Blocking recv(): post it, then wait (no timeout) on the receive queue for the matching completion (FI...">recv_sync()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a29d9f4c7cde2b2620eb3121334bf7eb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62dd7abce253b43815600ae818a28885" id="r_a62dd7abce253b43815600ae818a28885"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a62dd7abce253b43815600ae818a28885">read_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr)</td></tr>
+<tr class="memdesc:a62dd7abce253b43815600ae818a28885"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aa0610f573dfbb6097cdded0d86f6b7e0" title="Blocking read(): post it, then wait (no timeout) on the receive completion queue for the matching com...">read_sync()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:a62dd7abce253b43815600ae818a28885"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc29bc02fd09630998295dd86395179a" id="r_afc29bc02fd09630998295dd86395179a"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#afc29bc02fd09630998295dd86395179a">write_sync</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr)</td></tr>
+<tr class="memdesc:afc29bc02fd09630998295dd86395179a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9540a308e15b874f3d5921459f9c2251" title="Blocking write(): post it, then wait (no timeout) on the transmit queue for the matching completion (...">write_sync()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:afc29bc02fd09630998295dd86395179a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa76e8f9f2aaa160e399d9963fd2617c" id="r_afa76e8f9f2aaa160e399d9963fd2617c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#afa76e8f9f2aaa160e399d9963fd2617c">writedata_sync</a> (const <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a> *laddr, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr, uint64_t data)</td></tr>
+<tr class="memdesc:afa76e8f9f2aaa160e399d9963fd2617c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#abc120e08649bc088ac5b506fc6bd5669" title="Blocking writedata(): post it, then wait (no timeout) on the transmit queue for the matching completi...">writedata_sync()</a> with the buffer, length and memory region of laddr.  <br /></td></tr>
 <tr class="separator:afa76e8f9f2aaa160e399d9963fd2617c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa166e928cdd6b779ed400820665690a9" id="r_aa166e928cdd6b779ed400820665690a9"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aa166e928cdd6b779ed400820665690a9">sendv_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov)</td></tr>
+<tr class="memdesc:aa166e928cdd6b779ed400820665690a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a73135aa1c83289b0e2a6580cdc439bb6" title="Post fi_sendv() of the entries of iov.">sendv()</a>: wait (no timeout) on the transmit queue for the matching completion (FI_SEND | FI_RMA).  <br /></td></tr>
 <tr class="separator:aa166e928cdd6b779ed400820665690a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adeee2ada74f1779e59faccfc6cbd4bd1" id="r_adeee2ada74f1779e59faccfc6cbd4bd1"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#adeee2ada74f1779e59faccfc6cbd4bd1">recvv_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov)</td></tr>
+<tr class="memdesc:adeee2ada74f1779e59faccfc6cbd4bd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#adca5fa2d05d035caa05b1f46d7e0c6c4" title="Post fi_recvv() into the entries of iov, with the same descriptor lookup as sendv(); returns the fi_r...">recvv()</a>: wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_RMA).  <br /></td></tr>
 <tr class="separator:adeee2ada74f1779e59faccfc6cbd4bd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23c1e9413a289fae24512dc22782f22c" id="r_a23c1e9413a289fae24512dc22782f22c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a23c1e9413a289fae24512dc22782f22c">recvmsg_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1Message.html">Message</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:a23c1e9413a289fae24512dc22782f22c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae3b2261675d0799adfb807b46a7bc78b" title="Post fi_recvmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; returns th...">recvmsg()</a> and wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_MSG).  <br /></td></tr>
 <tr class="separator:a23c1e9413a289fae24512dc22782f22c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32fafc0760e8f3a19b89b4f55df47688" id="r_a32fafc0760e8f3a19b89b4f55df47688"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a32fafc0760e8f3a19b89b4f55df47688">sendmsg_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1Message.html">Message</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:a32fafc0760e8f3a19b89b4f55df47688"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a57af67d31172c4e7adf253bcc508f2d5" title="Post fi_sendmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; -FI_EAGAIN...">sendmsg()</a> and wait (no timeout) on the transmit queue for the matching completion (FI_SEND | FI_MSG).  <br /></td></tr>
 <tr class="separator:a32fafc0760e8f3a19b89b4f55df47688"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87e50032c9a8639caff4beee83972cc3" id="r_a87e50032c9a8639caff4beee83972cc3"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a87e50032c9a8639caff4beee83972cc3">readv_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr)</td></tr>
+<tr class="memdesc:a87e50032c9a8639caff4beee83972cc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a662bed570b0ea338dccf221621f1e745" title="Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv...">readv()</a>: wait (no timeout) on the receive queue for the matching completion (FI_READ | FI_RMA).  <br /></td></tr>
 <tr class="separator:a87e50032c9a8639caff4beee83972cc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8be8114908659b903f266db6e6ea251f" id="r_a8be8114908659b903f266db6e6ea251f"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a8be8114908659b903f266db6e6ea251f">writev_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a> *iov, const <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a> *raddr)</td></tr>
+<tr class="memdesc:a8be8114908659b903f266db6e6ea251f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Meant as a blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a51e5a9f5447ada68e4e44e019b0f9cc4" title="Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as ...">writev()</a>, but the body calls <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a662bed570b0ea338dccf221621f1e745" title="Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv...">readv()</a> (not <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a51e5a9f5447ada68e4e44e019b0f9cc4" title="Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as ...">writev()</a>) and then waits on the transmit queue for FI_WRITE | FI_RMA.  <br /></td></tr>
 <tr class="separator:a8be8114908659b903f266db6e6ea251f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e0961ecdf60f1344ceeb9a5457c4861" id="r_a3e0961ecdf60f1344ceeb9a5457c4861"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a3e0961ecdf60f1344ceeb9a5457c4861">readmsg_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">RmaMessage</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:a3e0961ecdf60f1344ceeb9a5457c4861"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#af1ffba6bcc1782f1215e1d5b624141fd" title="Post fi_readmsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; retu...">readmsg()</a> and wait (no timeout) on the receive queue for the matching completion (FI_READ | FI_RMA).  <br /></td></tr>
 <tr class="separator:a3e0961ecdf60f1344ceeb9a5457c4861"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a317c4c995d650ce0232fc30eac530f61" id="r_a317c4c995d650ce0232fc30eac530f61"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a317c4c995d650ce0232fc30eac530f61">writemsg_sync</a> (<a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">RmaMessage</a> *msg, uint64_t flags=0)</td></tr>
+<tr class="memdesc:a317c4c995d650ce0232fc30eac530f61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a29d03a7bf99dae7624933c59d3e43c97" title="Post fi_writemsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; -FI...">writemsg()</a> and wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA).  <br /></td></tr>
 <tr class="separator:a317c4c995d650ce0232fc30eac530f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1EndpointBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a></td></tr>
 <tr class="memitem:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_af12bd31e2ce3e1d2e7c0eab7c21a170b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#af12bd31e2ce3e1d2e7c0eab7c21a170b">state</a> () const</td></tr>
+<tr class="memdesc:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current endpoint State.  <br /></td></tr>
 <tr class="separator:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a9495d2dbfcd13b3a3ce0e78dc395a844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a9495d2dbfcd13b3a3ce0e78dc395a844">fabric</a> () const</td></tr>
+<tr class="memdesc:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> used by this endpoint.  <br /></td></tr>
 <tr class="separator:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a8f1667969b242b18ec38a2975a48e058"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a8f1667969b242b18ec38a2975a48e058">eq</a> () const</td></tr>
+<tr class="memdesc:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the event queue.  <br /></td></tr>
 <tr class="separator:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a19726e1f9b0814bec7d5a7629f8bbae9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9">txcq</a> () const</td></tr>
+<tr class="memdesc:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the transmit completion queue.  <br /></td></tr>
 <tr class="separator:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a50cb4ba64577bed2055d4845274028b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a50cb4ba64577bed2055d4845274028b4">rxcq</a> () const</td></tr>
+<tr class="memdesc:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the receive completion queue.  <br /></td></tr>
 <tr class="separator:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a4d7b2d33be20621ea71439b5c08e5a18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a> (uint32_t *event, void *entry, bool *cm_entry)</td></tr>
+<tr class="memdesc:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one event from the event queue without blocking (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">EventQueue::event()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a17fcd15b393e3c116c89709c5a3bf4e9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a17fcd15b393e3c116c89709c5a3bf4e9">event_wait</a> (uint32_t *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a>, void *entry, bool *cm_entry, int timeout=-1)</td></tr>
+<tr class="memdesc:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for one event on the event queue with the given timeout (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aad94455f3736be581bbf97a37ca851c4" title="Like event(), but blocks in fi_eq_sread() with the given timeout.">EventQueue::event_wait()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a2bbaee108d996895c782ed2afc687c72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a2bbaee108d996895c782ed2afc687c72">event_error</a> (struct fi_eq_err_entry *entry)</td></tr>
+<tr class="memdesc:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one error entry from the event queue into entry; returns false, copying the queue's error, if none could be read.  <br /></td></tr>
 <tr class="separator:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -273,7 +338,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking _sync variants. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a69afc9830eb08c56eafdf74b07e541d3" name="a69afc9830eb08c56eafdf74b07e541d3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a69afc9830eb08c56eafdf74b07e541d3">&#9670;&#160;</a></span>Endpoint() <span class="overload">[1/2]</span></h2>
 
@@ -311,6 +378,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Create an endpoint that owns a new <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> for addr and port and its own queues. </p>
 
 </div>
 </div>
@@ -352,6 +421,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create an endpoint on an existing <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, using any supplied queues and creating the missing ones. </p>
+
 </div>
 </div>
 <a id="acd837b9a03a15e6536c6b2fdc9e95dc1" name="acd837b9a03a15e6536c6b2fdc9e95dc1"></a>
@@ -368,6 +439,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826" title="Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so th...">shutdown()</a> to close the libfabric endpoint; the base destructor then deletes owned queues and the fabric if owned. </p>
 
 </div>
 </div>
@@ -416,6 +489,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Like <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a>, but the fid_ep is created from remote_info (a connection request) and fi_accept() is called before waiting for FI_CONNECTED. </p>
+
 </div>
 </div>
 <a id="aca4dbc6c67d98a8eedd7c66a90a45bfb" name="aca4dbc6c67d98a8eedd7c66a90a45bfb"></a>
@@ -456,6 +531,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destination address of the fabric info and wait (with timeout) for FI_CONNECTED. </p>
+<p>Zero txFlags and rxFlags default to FI_TRANSMIT and FI_RECV for internally created queues. Returns false on any failure (error recorded); on success the state is EP_CONNECTED. </p>
+
 </div>
 </div>
 <a id="a7642dba1adfa40d98c33d2b876d7043a" name="a7642dba1adfa40d98c33d2b876d7043a"></a>
@@ -472,6 +550,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the libfabric fid_ep, or NULL before <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a> or <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab54771fdb1d458355f92f3c51afce516" title="Like connect(), but the fid_ep is created from remote_info (a connection request) and fi_accept() is ...">accept()</a> and after <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826" title="Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so th...">shutdown()</a>. </p>
 
 </div>
 </div>
@@ -506,6 +586,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a37fdef9e0d8250d50d9c7c4f8546255c" title="Call fi_inject_writedata() for len bytes from buf to raddr with the immediate value data (no memory r...">inject_writedata()</a> with the buffer and length of laddr. </p>
 
 </div>
 </div>
@@ -547,6 +629,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call fi_inject_writedata() for len bytes from buf to raddr with the immediate value data (no memory region, no context); -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="adf2bd8176396c10fb10801efb708e9d5" name="adf2bd8176396c10fb10801efb708e9d5"></a>
@@ -574,6 +658,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab27aa18f0725c0e85f05adf49abde2af" title="Call fi_injectdata() for len bytes from buf with the immediate value data; -FI_EAGAIN handling as in ...">injectdata()</a> with the buffer and length of laddr. </p>
 
 </div>
 </div>
@@ -609,6 +695,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call fi_injectdata() for len bytes from buf with the immediate value data; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="a00b1b5d7ae46346d9baa1f5a273bcb57" name="a00b1b5d7ae46346d9baa1f5a273bcb57"></a>
@@ -642,6 +730,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aec272d5b410514f2f7ca683a574cd1f2" title="Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as se...">read()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -689,6 +779,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>; returns the fi_read() result. </p>
+
 </div>
 </div>
 <a id="a62dd7abce253b43815600ae818a28885" name="a62dd7abce253b43815600ae818a28885"></a>
@@ -716,6 +808,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aa0610f573dfbb6097cdded0d86f6b7e0" title="Blocking read(): post it, then wait (no timeout) on the receive completion queue for the matching com...">read_sync()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -757,6 +851,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aec272d5b410514f2f7ca683a574cd1f2" title="Post an RMA read (fi_read) of len bytes from raddr into buf, with the same memory-region lookup as se...">read()</a>: post it, then wait (no timeout) on the receive completion queue for the matching completion (FI_READ | FI_RMA). </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="af1ffba6bcc1782f1215e1d5b624141fd" name="af1ffba6bcc1782f1215e1d5b624141fd"></a>
@@ -785,6 +882,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_readmsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; returns the fi_readmsg() result. </p>
+
 </div>
 </div>
 <a id="a3e0961ecdf60f1344ceeb9a5457c4861" name="a3e0961ecdf60f1344ceeb9a5457c4861"></a>
@@ -812,6 +911,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#af1ffba6bcc1782f1215e1d5b624141fd" title="Post fi_readmsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; retu...">readmsg()</a> and wait (no timeout) on the receive queue for the matching completion (FI_READ | FI_RMA). </p>
 
 </div>
 </div>
@@ -847,6 +948,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv() result. </p>
+
 </div>
 </div>
 <a id="a87e50032c9a8639caff4beee83972cc3" name="a87e50032c9a8639caff4beee83972cc3"></a>
@@ -875,6 +978,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a662bed570b0ea338dccf221621f1e745" title="Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv...">readv()</a>: wait (no timeout) on the receive queue for the matching completion (FI_READ | FI_RMA). </p>
+
 </div>
 </div>
 <a id="a96b5d914c2c6c44afb4535375c1753c4" name="a96b5d914c2c6c44afb4535375c1753c4"></a>
@@ -902,6 +1007,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4c8aef7889716eec23766e3ebaea0404" title="Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as send(); returns the...">recv()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -943,6 +1050,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>; returns the fi_recv() result. </p>
+
 </div>
 </div>
 <a id="af0ab094fdc420641c880251a2eaf7f2c" name="af0ab094fdc420641c880251a2eaf7f2c"></a>
@@ -960,6 +1069,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Post a zero-length receive (fi_recv) for remote completion data; returns the fi_recv() result (-FI_EAGAIN is not recorded as an error). </p>
 
 </div>
 </div>
@@ -989,6 +1100,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post a zero-length receive and wait (no timeout) on cq for a completion with FI_REMOTE_CQ_DATA and this call's context; its data is stored in data if data is non-null. </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="a29d9f4c7cde2b2620eb3121334bf7eb7" name="a29d9f4c7cde2b2620eb3121334bf7eb7"></a>
@@ -1006,6 +1120,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4cde57f1af00fa4d7b43500b39a60222" title="Blocking recv(): post it, then wait (no timeout) on the receive queue for the matching completion (FI...">recv_sync()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1041,6 +1157,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a4c8aef7889716eec23766e3ebaea0404" title="Post fi_recv() of up to len bytes into buf, with the same memory-region lookup as send(); returns the...">recv()</a>: post it, then wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_MSG). </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="ae3b2261675d0799adfb807b46a7bc78b" name="ae3b2261675d0799adfb807b46a7bc78b"></a>
@@ -1068,6 +1187,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Post fi_recvmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; returns the fi_recvmsg() result. </p>
+<p>On failure the recorded error text names fi_readmsg. </p>
 
 </div>
 </div>
@@ -1097,6 +1219,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae3b2261675d0799adfb807b46a7bc78b" title="Post fi_recvmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; returns th...">recvmsg()</a> and wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_MSG). </p>
+
 </div>
 </div>
 <a id="adca5fa2d05d035caa05b1f46d7e0c6c4" name="adca5fa2d05d035caa05b1f46d7e0c6c4"></a>
@@ -1125,6 +1249,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_recvv() into the entries of iov, with the same descriptor lookup as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a73135aa1c83289b0e2a6580cdc439bb6" title="Post fi_sendv() of the entries of iov.">sendv()</a>; returns the fi_recvv() result. </p>
+
 </div>
 </div>
 <a id="adeee2ada74f1779e59faccfc6cbd4bd1" name="adeee2ada74f1779e59faccfc6cbd4bd1"></a>
@@ -1142,6 +1268,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#adca5fa2d05d035caa05b1f46d7e0c6c4" title="Post fi_recvv() into the entries of iov, with the same descriptor lookup as sendv(); returns the fi_r...">recvv()</a>: wait (no timeout) on the receive queue for the matching completion (FI_RECV | FI_RMA). </p>
 
 </div>
 </div>
@@ -1170,6 +1298,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1211,6 +1341,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_send() of len bytes from buf. </p>
+<p>If mr is NULL a registered region containing buf is looked up; -FI_EINVAL is returned if none is found or buf is outside mr. On -FI_EAGAIN the transmit queue is polled once without waiting and -FI_EAGAIN (or that poll's error) is returned. </p>
+
 </div>
 </div>
 <a id="a47d58f4c5b23fdbe45ebfc61dcde24cf" name="a47d58f4c5b23fdbe45ebfc61dcde24cf"></a>
@@ -1228,6 +1361,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ae805498415cc5df0bc53d61aeb031fb2" title="Blocking send(): post it, then wait (no timeout) on the transmit queue for a completion with this cal...">send_sync()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1263,6 +1398,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>: post it, then wait (no timeout) on the transmit queue for a completion with this call's context and FI_SEND | FI_MSG. </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="a57af67d31172c4e7adf253bcc508f2d5" name="a57af67d31172c4e7adf253bcc508f2d5"></a>
@@ -1290,6 +1428,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Post fi_sendmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
 
 </div>
 </div>
@@ -1319,6 +1459,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a57af67d31172c4e7adf253bcc508f2d5" title="Post fi_sendmsg() for msg with flags, after the descriptor lookup on the IO vector of msg; -FI_EAGAIN...">sendmsg()</a> and wait (no timeout) on the transmit queue for the matching completion (FI_SEND | FI_MSG). </p>
+
 </div>
 </div>
 <a id="a73135aa1c83289b0e2a6580cdc439bb6" name="a73135aa1c83289b0e2a6580cdc439bb6"></a>
@@ -1347,6 +1489,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_sendv() of the entries of iov. </p>
+<p>Missing descriptors are looked up among the registered regions of the fabric (-FI_EINVAL if any stay unresolved); -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="aa166e928cdd6b779ed400820665690a9" name="aa166e928cdd6b779ed400820665690a9"></a>
@@ -1364,6 +1509,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a73135aa1c83289b0e2a6580cdc439bb6" title="Post fi_sendv() of the entries of iov.">sendv()</a>: wait (no timeout) on the transmit queue for the matching completion (FI_SEND | FI_RMA). </p>
 
 </div>
 </div>
@@ -1389,6 +1536,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so that <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#aca4dbc6c67d98a8eedd7c66a90a45bfb" title="Create and enable the fid_ep, bind the event and completion queues, call fi_connect() to the destinat...">connect()</a> or <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#ab54771fdb1d458355f92f3c51afce516" title="Like connect(), but the fid_ep is created from remote_info (a connection request) and fi_accept() is ...">accept()</a> can be called again. </p>
 
 <p>Reimplemented from <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a74d338142ad1815794d9cb9f5d8e0415">Pds::Fabrics::EndpointBase</a>.</p>
 
@@ -1425,6 +1574,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a74f3489b48c072f84c91befbd0a52d26" title="Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -...">write()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1472,6 +1623,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -FI_EAGAIN handling as <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="afc29bc02fd09630998295dd86395179a" name="afc29bc02fd09630998295dd86395179a"></a>
@@ -1499,6 +1652,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9540a308e15b874f3d5921459f9c2251" title="Blocking write(): post it, then wait (no timeout) on the transmit queue for the matching completion (...">write_sync()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1540,6 +1695,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a74f3489b48c072f84c91befbd0a52d26" title="Post an RMA write (fi_write) of len bytes from buf to raddr, with the same memory-region lookup and -...">write()</a>: post it, then wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA). </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="a8e38dd1fadc5ab010559d7a337032c3a" name="a8e38dd1fadc5ab010559d7a337032c3a"></a>
@@ -1579,6 +1737,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a0a707425264d7f0ded9468685fff1174" title="Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value dat...">writedata()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1632,6 +1792,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value data; memory-region lookup and -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="afa76e8f9f2aaa160e399d9963fd2617c" name="afa76e8f9f2aaa160e399d9963fd2617c"></a>
@@ -1665,6 +1827,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#abc120e08649bc088ac5b506fc6bd5669" title="Blocking writedata(): post it, then wait (no timeout) on the transmit queue for the matching completi...">writedata_sync()</a> with the buffer, length and memory region of laddr. </p>
 
 </div>
 </div>
@@ -1712,6 +1876,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a0a707425264d7f0ded9468685fff1174" title="Post fi_writedata(), an RMA write of len bytes from buf to raddr that carries the immediate value dat...">writedata()</a>: post it, then wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA). </p>
+<p>Returns 0 on success or a negative error. </p>
+
 </div>
 </div>
 <a id="a29d03a7bf99dae7624933c59d3e43c97" name="a29d03a7bf99dae7624933c59d3e43c97"></a>
@@ -1740,6 +1907,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_writemsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="a317c4c995d650ce0232fc30eac530f61" name="a317c4c995d650ce0232fc30eac530f61"></a>
@@ -1767,6 +1936,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the context of msg to a per-call value, call <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a29d03a7bf99dae7624933c59d3e43c97" title="Post fi_writemsg() for msg with flags, after the descriptor lookup on the local IO vector of msg; -FI...">writemsg()</a> and wait (no timeout) on the transmit queue for the matching completion (FI_WRITE | FI_RMA). </p>
 
 </div>
 </div>
@@ -1802,6 +1973,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#acedb460534e708ff08106b05e2c898db" title="Post fi_send() of len bytes from buf.">send()</a>. </p>
+
 </div>
 </div>
 <a id="a8be8114908659b903f266db6e6ea251f" name="a8be8114908659b903f266db6e6ea251f"></a>
@@ -1829,6 +2002,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Meant as a blocking <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a51e5a9f5447ada68e4e44e019b0f9cc4" title="Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as ...">writev()</a>, but the body calls <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a662bed570b0ea338dccf221621f1e745" title="Post fi_readv() from raddr into the entries of iov, after the descriptor lookup; returns the fi_readv...">readv()</a> (not <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a51e5a9f5447ada68e4e44e019b0f9cc4" title="Post fi_writev() of the entries of iov to raddr, after the descriptor lookup; -FI_EAGAIN handling as ...">writev()</a>) and then waits on the transmit queue for FI_WRITE | FI_RMA. </p>
 
 </div>
 </div>

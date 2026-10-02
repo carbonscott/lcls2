@@ -97,20 +97,29 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1ReaderMetrics.html
 </div><!--header-->
 <div class="contents">
 
+<p>Per-reader counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac17267a421c451b531838be9c3c5de7e" title="Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics ...">Reader::setupMetrics()</a>; the kernels update them only if DBG is enabled in Reader.cu.  
+ <a href="structDrp_1_1Gpu_1_1ReaderMetrics.html#details">More...</a></p>
+
 <p><code>#include &lt;Reader.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aff89b1a5d5bb5dc2ef4dd8898dc83ac3" id="r_aff89b1a5d5bb5dc2ef4dd8898dc83ac3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html#aff89b1a5d5bb5dc2ef4dd8898dc83ac3">states</a></td></tr>
+<tr class="memdesc:aff89b1a5d5bb5dc2ef4dd8898dc83ac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel state monitors (DRP_readerState).  <br /></td></tr>
 <tr class="separator:aff89b1a5d5bb5dc2ef4dd8898dc83ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7fa34db7c6e34bbb007d337b0e7d94c" id="r_ae7fa34db7c6e34bbb007d337b0e7d94c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html#ae7fa34db7c6e34bbb007d337b0e7d94c">pblWtCtrs</a></td></tr>
+<tr class="memdesc:ae7fa34db7c6e34bbb007d337b0e7d94c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts of pebble indices taken (DRP_pblWtCtr).  <br /></td></tr>
 <tr class="separator:ae7fa34db7c6e34bbb007d337b0e7d94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add09624ef0d5efed66a8ade5225c0312" id="r_add09624ef0d5efed66a8ade5225c0312"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html#add09624ef0d5efed66a8ade5225c0312">dmaWtCtrs</a></td></tr>
+<tr class="memdesc:add09624ef0d5efed66a8ade5225c0312"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts of DMA completions seen (DRP_dmaWtCtr).  <br /></td></tr>
 <tr class="separator:add09624ef0d5efed66a8ade5225c0312"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15fd8834ec1a130befd390b0ad6578ad" id="r_a15fd8834ec1a130befd390b0ad6578ad"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint64_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html#a15fd8834ec1a130befd390b0ad6578ad">fwdWtCtrs</a></td></tr>
+<tr class="memdesc:a15fd8834ec1a130befd390b0ad6578ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts of buffers passed to the reader queue (DRP_rdrFwd).  <br /></td></tr>
 <tr class="separator:a15fd8834ec1a130befd390b0ad6578ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Per-reader counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac17267a421c451b531838be9c3c5de7e" title="Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics ...">Reader::setupMetrics()</a>; the kernels update them only if DBG is enabled in Reader.cu. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="add09624ef0d5efed66a8ade5225c0312" name="add09624ef0d5efed66a8ade5225c0312"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#add09624ef0d5efed66a8ade5225c0312">&#9670;&#160;</a></span>dmaWtCtrs</h2>
 
@@ -122,6 +131,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Counts of DMA completions seen (DRP_dmaWtCtr). </p>
 
 </div>
 </div>
@@ -137,6 +148,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Counts of buffers passed to the reader queue (DRP_rdrFwd). </p>
+
 </div>
 </div>
 <a id="ae7fa34db7c6e34bbb007d337b0e7d94c" name="ae7fa34db7c6e34bbb007d337b0e7d94c"></a>
@@ -151,6 +164,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Counts of pebble indices taken (DRP_pblWtCtr). </p>
+
 </div>
 </div>
 <a id="aff89b1a5d5bb5dc2ef4dd8898dc83ac3" name="aff89b1a5d5bb5dc2ef4dd8898dc83ac3"></a>
@@ -164,6 +179,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Kernel state monitors (DRP_readerState). </p>
 
 </div>
 </div>

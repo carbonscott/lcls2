@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('xpm_2PVCtrls_8hh.html',''); initResiza
   <div class="headertitle"><div class="title">PVCtrls.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>PVCtrls, the module-wide EPICS control PVs of an XPM (links, group L0 control, XTPG settings, MMCM scans and the sequence engine PVs).  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="EpicsPVA_8hh.html">psdaq/epicstools/EpicsPVA.hh</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -103,6 +106,7 @@ $(document).ready(function(){initNavTree('xpm_2PVCtrls_8hh.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html">Pds::Xpm::PVCtrls</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Module-wide EPICS control PVs of an XPM, created by <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61" title="Delete earlier PVs and create the control PVs named title, a colon and the control name,...">allocate()</a>; most PV callbacks call the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> under the semaphore.  <a href="classPds_1_1Xpm_1_1PVCtrls.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -111,9 +115,12 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Xpm" id="r_namespacePds_1_1Xpm"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Xpm.html">Pds::Xpm</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Xpm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the XPM register access and control code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>PVCtrls, the module-wide EPICS control PVs of an XPM (links, group L0 control, XTPG settings, MMCM scans and the sequence engine PVs). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

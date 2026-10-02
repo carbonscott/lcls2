@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('TTFex_8hh.html',''); initResizable(); 
   <div class="headertitle"><div class="title">TTFex.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Helper types for timetool feature extraction: Roi, EventInfo (decoded timing information), EventSelect (event-code and destination filter) and the COPY_CFG_VECTOR macro.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -105,10 +108,13 @@ $(document).ready(function(){initNavTree('TTFex_8hh.html',''); initResizable(); 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html">Drp::Roi</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rectangular region of interest with inclusive corners; OpalTTFex.cc reads it from the configuration entries name.x0, name.y0, name.x1 and name.y1 and uses it for projections.  <a href="classDrp_1_1Roi.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventInfo.html">Drp::EventInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timing information of one event, decoded from the timing data (the code comment calls it the l2si-core EventTimingMessage auxiliary data): pulse ID, fixed-rate and AC-rate bits, beam present and destination, and the sequencer words.  <a href="classDrp_1_1EventInfo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html">Drp::EventSelect</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event filter on event codes and beam destinations: an event is selected if it matches an include condition and no exclude condition; a value of 0 is never matched.  <a href="classDrp_1_1EventSelect.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -123,9 +129,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a641fa985de1ced8823817f4a66c87b2d" id="r_a641fa985de1ced8823817f4a66c87b2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TTFex_8hh.html#a641fa985de1ced8823817f4a66c87b2d">COPY_CFG_VECTOR</a>(t,  a,  b)</td></tr>
+<tr class="memdesc:a641fa985de1ced8823817f4a66c87b2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">For use inside a loop over configuration names with name, descdata and i in scope: if the current name equals a, copy array entry i of element type t into the vector b (resized to fit).  <br /></td></tr>
 <tr class="separator:a641fa985de1ced8823817f4a66c87b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Helper types for timetool feature extraction: Roi, EventInfo (decoded timing information), EventSelect (event-code and destination filter) and the COPY_CFG_VECTOR macro. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a641fa985de1ced8823817f4a66c87b2d" name="a641fa985de1ced8823817f4a66c87b2d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a641fa985de1ced8823817f4a66c87b2d">&#9670;&#160;</a></span>COPY_CFG_VECTOR</h2>
 
@@ -165,6 +174,8 @@ Macros</h2></td></tr>
 <div class="line">        memcpy(v.data(),w.data(),len*<span class="keyword">sizeof</span>(t));                \</div>
 <div class="line">    }</div>
 </div><!-- fragment -->
+<p>For use inside a loop over configuration names with name, descdata and i in scope: if the current name equals a, copy array entry i of element type t into the vector b (resized to fit). </p>
+
 </div>
 </div>
 </div><!-- contents -->

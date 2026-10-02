@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('UdpEncoder_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">UdpEncoder.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>UDP encoder DRP: encoder frame layouts, the UDP frame receiver, the PGP reader, a polynomial interpolator, and the UdpEncoder, UdpDrp and UdpApp classes.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -121,16 +124,22 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__frame__t.html">Drp::encoder_frame_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpReceiver.html">Drp::UdpReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue, and reports missing and out-of-order frames to the collection server.  <a href="classDrp_1_1UdpReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>.  <a href="classDrp_1_1Pgp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Interpolator.html">Drp::Interpolator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Least-squares polynomial fit (Eigen QR) over the last n (time, value) points, used to estimate encoder values at event times.  <a href="classDrp_1_1Interpolator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpEncoder.html">Drp::UdpEncoder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1XpmDetector.html" title="Detector base for devices read through the PGP card with XPM timing.">XpmDetector</a> for a UDP encoder: owns the <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> and records each frame as raw and, when interpolating, interpolated encoder data.  <a href="classDrp_1_1UdpEncoder.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpDrp.html">Drp::UdpDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionally interpolating) and sends the results to the TEB.  <a href="classDrp_1_1UdpDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1UdpApp.html">Drp::UdpApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the UDP encoder DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, the <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> and the <a class="el" href="classDrp_1_1UdpDrp.html" title="DrpBase for the UDP encoder: a worker thread matches PGP timing events with encoder frames (optionall...">UdpDrp</a> and handles the collection transitions.  <a href="classDrp_1_1UdpApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -142,9 +151,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:adee75da04a79f93253579269cfb1fd6e" id="r_adee75da04a79f93253579269cfb1fd6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UdpEncoder_8hh.html#adee75da04a79f93253579269cfb1fd6e">UDP_RCVBUF_SIZE</a>&#160;&#160;&#160;10000</td></tr>
+<tr class="memdesc:adee75da04a79f93253579269cfb1fd6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket receive buffer size (10000) requested by createUdpSocket() in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:adee75da04a79f93253579269cfb1fd6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>UDP encoder DRP: encoder frame layouts, the UDP frame receiver, the PGP reader, a polynomial interpolator, and the UdpEncoder, UdpDrp and UdpApp classes. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="adee75da04a79f93253579269cfb1fd6e" name="adee75da04a79f93253579269cfb1fd6e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adee75da04a79f93253579269cfb1fd6e">&#9670;&#160;</a></span>UDP_RCVBUF_SIZE</h2>
 
@@ -156,6 +168,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Socket receive buffer size (10000) requested by createUdpSocket() in UdpEncoder.cc. </p>
 
 </div>
 </div>

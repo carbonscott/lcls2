@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1EpixUHRemu.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>GPU DRP detector for detType epixuhremu (registered in <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a>).  
+ <a href="classDrp_1_1Gpu_1_1EpixUHRemu.html#details">More...</a></p>
+
 <p><code>#include &lt;EpixUHRemu.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a>.</p>
@@ -105,111 +108,160 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1EpixUHRemu.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af8a96a2283e0c72dd373e78c630c8432" id="r_af8a96a2283e0c72dd373e78c630c8432"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#af8a96a2283e0c72dd373e78c630c8432">EpixUHRemu</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> &amp;pool)</td></tr>
+<tr class="memdesc:af8a96a2283e0c72dd373e78c630c8432"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the wrapped XpmDetector-based detector, the calibration buffers for NPixels pixels and device arrays of NRanges times NPixels pedestals and gains, which <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> fills.  <br /></td></tr>
 <tr class="separator:af8a96a2283e0c72dd373e78c630c8432"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af541dbf25e0cdac76143e484d411b587" id="r_af541dbf25e0cdac76143e484d411b587"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#af541dbf25e0cdac76143e484d411b587">~EpixUHRemu</a> () override</td></tr>
+<tr class="memdesc:af541dbf25e0cdac76143e484d411b587"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the pedestal and gain arrays and destroy the calibration buffers.  <br /></td></tr>
 <tr class="separator:af541dbf25e0cdac76143e484d411b587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6a0bd14e0882c38f49ce8dbe34eebd8" id="r_ad6a0bd14e0882c38f49ce8dbe34eebd8"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ad6a0bd14e0882c38f49ce8dbe34eebd8">configure</a> (const std::string &amp;config_alias, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;, const void *bufEnd) override</td></tr>
+<tr class="memdesc:ad6a0bd14e0882c38f49ce8dbe34eebd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success.  <br /></td></tr>
 <tr class="separator:ad6a0bd14e0882c38f49ce8dbe34eebd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8f8d19316a217783fced866fb94ab28" id="r_ae8f8d19316a217783fced866fb94ab28"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28">beginrun</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;runInfo) override</td></tr>
+<tr class="memdesc:ae8f8d19316a217783fced866fb94ab28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:ae8f8d19316a217783fced866fb94ab28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2db2f4a64f0015677a7b556b5d7102d8" id="r_a2db2f4a64f0015677a7b556b5d7102d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a2db2f4a64f0015677a7b556b5d7102d8">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;dgram, const void *bufEnd, <a class="el" href="structDrp_1_1PGPEvent.html">PGPEvent</a> *event, uint64_t count) override</td></tr>
+<tr class="memdesc:a2db2f4a64f0015677a7b556b5d7102d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram.  <br /></td></tr>
 <tr class="separator:a2db2f4a64f0015677a7b556b5d7102d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5f07bc53333630e3ed30af575bd6078" id="r_ae5f07bc53333630e3ed30af575bd6078"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae5f07bc53333630e3ed30af575bd6078">rangeOffset</a> () const override</td></tr>
+<tr class="memdesc:ae5f07bc53333630e3ed30af575bd6078"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return RangeOffset (14).  <br /></td></tr>
 <tr class="separator:ae5f07bc53333630e3ed30af575bd6078"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57ea0ff266bf847996cd42dc028b4dbb" id="r_a57ea0ff266bf847996cd42dc028b4dbb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a57ea0ff266bf847996cd42dc028b4dbb">rangeBits</a> () const override</td></tr>
+<tr class="memdesc:a57ea0ff266bf847996cd42dc028b4dbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return RangeBits (2).  <br /></td></tr>
 <tr class="separator:a57ea0ff266bf847996cd42dc028b4dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a272bab8b2b9ac6bf0fd2eb849b7e43c5" id="r_a272bab8b2b9ac6bf0fd2eb849b7e43c5"><td class="memItemLeft" align="right" valign="top">float const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a272bab8b2b9ac6bf0fd2eb849b7e43c5">pedestals_d</a> () const override</td></tr>
+<tr class="memdesc:a272bab8b2b9ac6bf0fd2eb849b7e43c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device pedestal array (NRanges sets of NPixels values); <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> sets every pedestal to 0.  <br /></td></tr>
 <tr class="separator:a272bab8b2b9ac6bf0fd2eb849b7e43c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b7d5420d582b85d432b8d6bca2c3ef0" id="r_a2b7d5420d582b85d432b8d6bca2c3ef0"><td class="memItemLeft" align="right" valign="top">float const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a2b7d5420d582b85d432b8d6bca2c3ef0">gains_d</a> () const override</td></tr>
+<tr class="memdesc:a2b7d5420d582b85d432b8d6bca2c3ef0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device gain array, laid out like <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a272bab8b2b9ac6bf0fd2eb849b7e43c5" title="Return the device pedestal array (NRanges sets of NPixels values); beginrun() sets every pedestal to ...">pedestals_d()</a>; <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> sets every gain to 1.  <br /></td></tr>
 <tr class="separator:a2b7d5420d582b85d432b8d6bca2c3ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Gpu_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Gpu_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a></td></tr>
 <tr class="memitem:a4a75dd361f9ba686622f008507a3dae7 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a4a75dd361f9ba686622f008507a3dae7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a4a75dd361f9ba686622f008507a3dae7">Detector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a> *pool)</td></tr>
+<tr class="memdesc:a4a75dd361f9ba686622f008507a3dae7 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass para and pool to <a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Drp::Detector</a>; no wrapped detector until <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a329bc962d0977e6cc2bada85014f8499">_initialize()</a> is called.  <br /></td></tr>
 <tr class="separator:a4a75dd361f9ba686622f008507a3dae7 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a88eaf3bf13f979dc2abb64f7a198ed09"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a88eaf3bf13f979dc2abb64f7a198ed09">~Detector</a> ()</td></tr>
+<tr class="memdesc:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a88eaf3bf13f979dc2abb64f7a198ed09 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a715ed99c061177c9e09200bd26e3f52d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Gpu::Detector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a715ed99c061177c9e09200bd26e3f52d">gpuDetector</a> () override</td></tr>
+<tr class="memdesc:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return nullptr; <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> overrides it to return itself.  <br /></td></tr>
 <tr class="separator:a715ed99c061177c9e09200bd26e3f52d inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f6a11518e3dddc55b4c1a0fe6050f1b inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a8f6a11518e3dddc55b4c1a0fe6050f1b"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a8f6a11518e3dddc55b4c1a0fe6050f1b">connectionInfo</a> (const nlohmann::json &amp;msg) override</td></tr>
+<tr class="memdesc:a8f6a11518e3dddc55b4c1a0fe6050f1b inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an empty JSON object unless overridden; msg is not used.  <br /></td></tr>
 <tr class="separator:a8f6a11518e3dddc55b4c1a0fe6050f1b inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35a9957f94be185cc55e714a592a75a6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a35a9957f94be185cc55e714a592a75a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a35a9957f94be185cc55e714a592a75a6">connectionShutdown</a> () override</td></tr>
+<tr class="memdesc:a35a9957f94be185cc55e714a592a75a6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a35a9957f94be185cc55e714a592a75a6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481237de589d5e2fe3558af7914a569f inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a481237de589d5e2fe3558af7914a569f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a481237de589d5e2fe3558af7914a569f">connect</a> (const nlohmann::json &amp;connect_json, const std::string &amp;collectionId) override</td></tr>
+<tr class="memdesc:a481237de589d5e2fe3558af7914a569f inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:a481237de589d5e2fe3558af7914a569f inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a65fbad344bcedafda8826ed92b3480d6"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a65fbad344bcedafda8826ed92b3480d6">beginstep</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;stepInfo) override</td></tr>
+<tr class="memdesc:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a65fbad344bcedafda8826ed92b3480d6 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a19af6092dd74f4735c1625f18c3e332c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a19af6092dd74f4735c1625f18c3e332c">enable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
+<tr class="memdesc:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a19af6092dd74f4735c1625f18c3e332c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a460a0e7a3ffed45a293d9d1a6062e63e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a460a0e7a3ffed45a293d9d1a6062e63e">disable</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, const nlohmann::json &amp;info) override</td></tr>
+<tr class="memdesc:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 without doing anything unless overridden.  <br /></td></tr>
 <tr class="separator:a460a0e7a3ffed45a293d9d1a6062e63e inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85e7933a1957b5d3d97fcd9bcb0d338 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_ad85e7933a1957b5d3d97fcd9bcb0d338"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#ad85e7933a1957b5d3d97fcd9bcb0d338">shutdown</a> () override</td></tr>
+<tr class="memdesc:ad85e7933a1957b5d3d97fcd9bcb0d338 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden.  <br /></td></tr>
 <tr class="separator:ad85e7933a1957b5d3d97fcd9bcb0d338 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_ac4dfb48074cfeaa9504d0486713ab4af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1TimingHeader.html">Pds::TimingHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#ac4dfb48074cfeaa9504d0486713ab4af">getTimingHeader</a> (uint32_t index) const override</td></tr>
+<tr class="memdesc:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of DMA buffer index as a TimingHeader pointer.  <br /></td></tr>
 <tr class="separator:ac4dfb48074cfeaa9504d0486713ab4af inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d00c5a88ac1e647b1d14e1e7dd9707c inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a6d00c5a88ac1e647b1d14e1e7dd9707c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a6d00c5a88ac1e647b1d14e1e7dd9707c">issuePhase2</a> (<a class="el" href="classXtcData_1_1TransitionId.html#a77fdbc76c92675556b0a726469e787e9">XtcData::TransitionId::Value</a>)</td></tr>
+<tr class="memdesc:a6d00c5a88ac1e647b1d14e1e7dd9707c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start phase 2 of a transition; <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a> calls it after phase 1 only in simulator mode (device /dev/null).  <br /></td></tr>
 <tr class="separator:a6d00c5a88ac1e647b1d14e1e7dd9707c inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac757c74f6a82020f21ebcde309529787 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_ac757c74f6a82020f21ebcde309529787"><td class="memItemLeft" align="right" valign="top">virtual float const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#ac757c74f6a82020f21ebcde309529787">referenceBuffers</a> () const</td></tr>
+<tr class="memdesc:ac757c74f6a82020f21ebcde309529787 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return device buffers of reference calibrated data for checking (used in simulator mode only, per the code comment); null here.  <br /></td></tr>
 <tr class="separator:ac757c74f6a82020f21ebcde309529787 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dd594ef4f81ad59ee45c53607671717 inherit pub_methods_classDrp_1_1Gpu_1_1Detector" id="r_a3dd594ef4f81ad59ee45c53607671717"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a3dd594ef4f81ad59ee45c53607671717">referenceBufCnt</a> () const</td></tr>
+<tr class="memdesc:a3dd594ef4f81ad59ee45c53607671717 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of reference buffers; 0 here.  <br /></td></tr>
 <tr class="separator:a3dd594ef4f81ad59ee45c53607671717 inherit pub_methods_classDrp_1_1Gpu_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector" id="r_a9aaeb79a3955ca22af5ca16ec36f02f9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a9aaeb79a3955ca22af5ca16ec36f02f9">Detector</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> *para, <a class="el" href="classDrp_1_1MemPool.html">MemPool</a> *pool)</td></tr>
+<tr class="memdesc:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set nodeId to -1u and virtChan to 0, keep para and pool, and allocate a transition buffer of para-&gt;maxTrSize bytes.  <br /></td></tr>
 <tr class="separator:a9aaeb79a3955ca22af5ca16ec36f02f9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector" id="r_ad94e3a761069b2b70cd691f47cce4d35"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad94e3a761069b2b70cd691f47cce4d35">slowupdate</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset xtc to an empty Parent Xtc whose source is nodeId.  <br /></td></tr>
 <tr class="separator:ad94e3a761069b2b70cd691f47cce4d35 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector" id="r_a9f187e8fe9f0d4a9c6a3f54faac3578c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a9f187e8fe9f0d4a9c6a3f54faac3578c">event</a> (<a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a> &amp;dgram, const void *bufEnd, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> &amp;result)</td></tr>
+<tr class="memdesc:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing unless overridden; called with the trigger result for an event.  <br /></td></tr>
 <tr class="separator:a9f187e8fe9f0d4a9c6a3f54faac3578c inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector" id="r_a0a602bd6368dbe39f95a82e79684af3d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classXtcData_1_1Shape.html">XtcData::Shape</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a0a602bd6368dbe39f95a82e79684af3d">shapeCube</a> (unsigned rawDefIndex, unsigned valueIndex, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shape in rawData of entry valueIndex of raw definition rawDefIndex (from <a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">rawDef()</a>).  <br /></td></tr>
 <tr class="separator:a0a602bd6368dbe39f95a82e79684af3d inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector" id="r_adda60e4cf19dc50f3b5b2b9d861ec459"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adda60e4cf19dc50f3b5b2b9d861ec459">addToCube</a> (unsigned rawDefIndex, unsigned valueIndex, unsigned subIndex, double *dst, unsigned bin, <a class="el" href="classXtcData_1_1DescData.html">XtcData::DescData</a> &amp;rawData)</td></tr>
+<tr class="memdesc:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic cube accumulation without calibration: add the value or array entry valueIndex of rawData, converted to double, into bin bin of dst (entries of any XTC numeric type).  <br /></td></tr>
 <tr class="separator:adda60e4cf19dc50f3b5b2b9d861ec459 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector" id="r_adb105eef8e8c2091124df29c12226330"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#adb105eef8e8c2091124df29c12226330">subIndices</a> ()</td></tr>
+<tr class="memdesc:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:adb105eef8e8c2091124df29c12226330 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector" id="r_a00805bb525971846ed2a88d75cef4d61"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a00805bb525971846ed2a88d75cef4d61">rawNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a00805bb525971846ed2a88d75cef4d61 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector" id="r_a038fe929d9bd6058eda7ea7408a20439"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a038fe929d9bd6058eda7ea7408a20439">cubeNamesIndex</a> ()</td></tr>
+<tr class="memdesc:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 0 unless overridden.  <br /></td></tr>
 <tr class="separator:a038fe929d9bd6058eda7ea7408a20439 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector" id="r_a3b5c2801fd7a76e6322f6b8f728d35a9"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3b5c2801fd7a76e6322f6b8f728d35a9">cubeBinBytes</a> ()</td></tr>
+<tr class="memdesc:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return ten times the pebble buffer size unless overridden.  <br /></td></tr>
 <tr class="separator:a3b5c2801fd7a76e6322f6b8f728d35a9 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector" id="r_a1fb07fe50433927c6b2f3965754d0f79"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classXtcData_1_1VarDef.html">XtcData::VarDef</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79">rawDef</a> ()</td></tr>
+<tr class="memdesc:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error and abort; detectors used for cube binning must override it.  <br /></td></tr>
 <tr class="separator:a1fb07fe50433927c6b2f3965754d0f79 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector" id="r_a3f8dc901dc052a6a3301a64b50e9072b"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a3f8dc901dc052a6a3301a64b50e9072b">maxMonBufSize</a> ()</td></tr>
+<tr class="memdesc:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pebble buffer size, times 10 when <a class="el" href="structDrp_1_1Parameters.html#adaea3aa8a30b8c70e03dfacef776cf23" title="Number of cube workers (-Q option in drp.cc; default 0).">Parameters::nCubeWorkers</a> is non-zero.  <br /></td></tr>
 <tr class="separator:a3f8dc901dc052a6a3301a64b50e9072b inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector" id="r_af4fbc5ed6786e6429905ba35e2db2079"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#af4fbc5ed6786e6429905ba35e2db2079">configureScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 1 (failure) unless overridden, per the code comment.  <br /></td></tr>
 <tr class="separator:af4fbc5ed6786e6429905ba35e2db2079 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector" id="r_af6343c41a83916537bb33cc86efd3041"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#af6343c41a83916537bb33cc86efd3041">stepScan</a> (const nlohmann::json &amp;stepInfo, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd)</td></tr>
+<tr class="memdesc:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 1 (failure) unless overridden.  <br /></td></tr>
 <tr class="separator:af6343c41a83916537bb33cc86efd3041 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector" id="r_a4dcb29c2de6826aa3166568ddea01095"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a4dcb29c2de6826aa3166568ddea01095">scanEnabled</a> ()</td></tr>
+<tr class="memdesc:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return false unless overridden.  <br /></td></tr>
 <tr class="separator:a4dcb29c2de6826aa3166568ddea01095 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector" id="r_a83bfaca37a8d3a2de54ae9bca09081d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a83bfaca37a8d3a2de54ae9bca09081d2">transitionXtc</a> ()</td></tr>
+<tr class="memdesc:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the transition buffer as an Xtc reference.  <br /></td></tr>
 <tr class="separator:a83bfaca37a8d3a2de54ae9bca09081d2 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector" id="r_ac7527247ab0e8ad0c116e11b6aeb08b5"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ac7527247ab0e8ad0c116e11b6aeb08b5">trXtcBufEnd</a> ()</td></tr>
+<tr class="memdesc:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the end of the transition buffer.  <br /></td></tr>
 <tr class="separator:ac7527247ab0e8ad0c116e11b6aeb08b5 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector" id="r_ae64cfa6d926d74f10c80ad7c5f804856"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ae64cfa6d926d74f10c80ad7c5f804856">namesLookup</a> ()</td></tr>
+<tr class="memdesc:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the names lookup table of this detector.  <br /></td></tr>
 <tr class="separator:ae64cfa6d926d74f10c80ad7c5f804856 inherit pub_methods_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a753b514bb9ae676e29ba75837930f7d8" id="r_a753b514bb9ae676e29ba75837930f7d8"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a753b514bb9ae676e29ba75837930f7d8">NumAsics</a> { 6 }</td></tr>
+<tr class="memdesc:a753b514bb9ae676e29ba75837930f7d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of ASICs (6).  <br /></td></tr>
 <tr class="separator:a753b514bb9ae676e29ba75837930f7d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4fdd301a7eca285bf5aa903a9f15f56" id="r_ae4fdd301a7eca285bf5aa903a9f15f56"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae4fdd301a7eca285bf5aa903a9f15f56">NumRows</a> { 192 }</td></tr>
+<tr class="memdesc:ae4fdd301a7eca285bf5aa903a9f15f56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rows per ASIC (192).  <br /></td></tr>
 <tr class="separator:ae4fdd301a7eca285bf5aa903a9f15f56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54f731a6017d89c31af9f75d95a143e4" id="r_a54f731a6017d89c31af9f75d95a143e4"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a54f731a6017d89c31af9f75d95a143e4">NumCols</a> { 168 }</td></tr>
+<tr class="memdesc:a54f731a6017d89c31af9f75d95a143e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Columns per ASIC (168).  <br /></td></tr>
 <tr class="separator:a54f731a6017d89c31af9f75d95a143e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61c092bf88f0d5346b3848da1ff5f591" id="r_a61c092bf88f0d5346b3848da1ff5f591"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a61c092bf88f0d5346b3848da1ff5f591">NPixels</a> { <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a753b514bb9ae676e29ba75837930f7d8">NumAsics</a>*<a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae4fdd301a7eca285bf5aa903a9f15f56">NumRows</a>*<a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a54f731a6017d89c31af9f75d95a143e4">NumCols</a> }</td></tr>
+<tr class="memdesc:a61c092bf88f0d5346b3848da1ff5f591"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total number of pixels, NumAsics * NumRows * NumCols (193536).  <br /></td></tr>
 <tr class="separator:a61c092bf88f0d5346b3848da1ff5f591"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d3a1642ad72108f901087608d7806dc" id="r_a7d3a1642ad72108f901087608d7806dc"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a7d3a1642ad72108f901087608d7806dc">RangeOffset</a> { 14 }</td></tr>
+<tr class="memdesc:a7d3a1642ad72108f901087608d7806dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit position of the gain range field in a raw 16-bit value (14); the bits below it hold the data value.  <br /></td></tr>
 <tr class="separator:a7d3a1642ad72108f901087608d7806dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73e1c5d93ad4056ddb9dfee48a5e4fc8" id="r_a73e1c5d93ad4056ddb9dfee48a5e4fc8"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a73e1c5d93ad4056ddb9dfee48a5e4fc8">RangeBits</a> { 2 }</td></tr>
+<tr class="memdesc:a73e1c5d93ad4056ddb9dfee48a5e4fc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Width of the gain range field (2 bits).  <br /></td></tr>
 <tr class="separator:a73e1c5d93ad4056ddb9dfee48a5e4fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd0f1bc135298304fa53380de7b5b98c" id="r_abd0f1bc135298304fa53380de7b5b98c"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#abd0f1bc135298304fa53380de7b5b98c">NRanges</a> { 4 }</td></tr>
+<tr class="memdesc:abd0f1bc135298304fa53380de7b5b98c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of gain ranges with their own pedestal and gain arrays (4).  <br /></td></tr>
 <tr class="separator:abd0f1bc135298304fa53380de7b5b98c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_attribs_classDrp_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classDrp_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
 <tr class="memitem:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector" id="r_a4666a5c232669b455ebeb8436a1d1adb"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#a4666a5c232669b455ebeb8436a1d1adb">nodeId</a></td></tr>
+<tr class="memdesc:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Node ID used as the XTC source; -1u until set.  <br /></td></tr>
 <tr class="separator:a4666a5c232669b455ebeb8436a1d1adb inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector" id="r_ad4c16b4c76dce6bbacf910da01fcdd62"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad4c16b4c76dce6bbacf910da01fcdd62">virtChan</a></td></tr>
+<tr class="memdesc:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual channel number; 0 unless a subclass sets it.  <br /></td></tr>
 <tr class="separator:ad4c16b4c76dce6bbacf910da01fcdd62 inherit pub_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classDrp_1_1Gpu_1_1Detector"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classDrp_1_1Gpu_1_1Detector')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Drp::Gpu::Detector</a></td></tr>
 <tr class="memitem:a329bc962d0977e6cc2bada85014f8499 inherit pro_methods_classDrp_1_1Gpu_1_1Detector" id="r_a329bc962d0977e6cc2bada85014f8499"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -228,7 +280,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ad33e7581ca1e211d7afe2799aa62a276 inherit pro_attribs_classDrp_1_1Detector" id="r_ad33e7581ca1e211d7afe2799aa62a276"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html#ad33e7581ca1e211d7afe2799aa62a276">m_xtcbuf</a></td></tr>
 <tr class="separator:ad33e7581ca1e211d7afe2799aa62a276 inherit pro_attribs_classDrp_1_1Detector"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>GPU DRP detector for detType epixuhremu (registered in <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a>). </p>
+<p>It wraps an XpmDetector-based detector, allocates the calibration buffers and per-range pedestal and gain arrays, and names the raw data (array raw) in the Configure xtc. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af8a96a2283e0c72dd373e78c630c8432" name="af8a96a2283e0c72dd373e78c630c8432"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8a96a2283e0c72dd373e78c630c8432">&#9670;&#160;</a></span>EpixUHRemu()</h2>
 
@@ -255,6 +310,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create the wrapped XpmDetector-based detector, the calibration buffers for NPixels pixels and device arrays of NRanges times NPixels pedestals and gains, which <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> fills. </p>
+<p>Asserts that NPixels 16-bit values fit in a DMA buffer after the TimingHeader. </p>
+
 </div>
 </div>
 <a id="af541dbf25e0cdac76143e484d411b587" name="af541dbf25e0cdac76143e484d411b587"></a>
@@ -279,6 +337,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Free the pedestal and gain arrays and destroy the calibration buffers. </p>
 
 </div>
 </div>
@@ -323,6 +383,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return 0 without doing anything unless overridden. </p>
+
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a1ceb287abf29aee20c56b7d7bb25b32c">Drp::Gpu::Detector</a>.</p>
 
 </div>
@@ -346,7 +408,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;&#160;</td>
-          <td class="paramname">, </td>
+          <td class="paramname"><em>xtc</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -366,6 +428,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: add the Configure data for config_alias to xtc; implementations return 0 on success. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a4c4371594d77c1c167e21a70d8a18644">Drp::Gpu::Detector</a>.</p>
 
@@ -417,6 +481,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: add the L1Accept data of event (the DMA buffers of its lanes) to dgram. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Detector.html#a6122859951cd436d9e724a61faa06fc5">Drp::Detector</a>.</p>
 
 </div>
@@ -443,6 +509,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the device gain array, laid out like <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#a272bab8b2b9ac6bf0fd2eb849b7e43c5" title="Return the device pedestal array (NRanges sets of NPixels values); beginrun() sets every pedestal to ...">pedestals_d()</a>; <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> sets every gain to 1. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a52f258d9519622c12f9019e6efa82f77">Drp::Gpu::Detector</a>.</p>
 
@@ -471,6 +539,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the device pedestal array (NRanges sets of NPixels values); <a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html#ae8f8d19316a217783fced866fb94ab28" title="Return 0 without doing anything unless overridden.">beginrun()</a> sets every pedestal to 0. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a69c65d8a3f7ad94a9b3e9d054cb306e5">Drp::Gpu::Detector</a>.</p>
 
 </div>
@@ -497,6 +567,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return RangeBits (2). </p>
 
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a0d5db6afe83d43adc3f25044529e3325">Drp::Gpu::Detector</a>.</p>
 
@@ -525,6 +597,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return RangeOffset (14). </p>
+
 <p>Implements <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a33ff71ee7c7027ad664e8f71e9cae61c">Drp::Gpu::Detector</a>.</p>
 
 </div>
@@ -550,6 +624,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Total number of pixels, NumAsics * NumRows * NumCols (193536). </p>
+
 </div>
 </div>
 <a id="abd0f1bc135298304fa53380de7b5b98c" name="abd0f1bc135298304fa53380de7b5b98c"></a>
@@ -571,6 +647,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Number of gain ranges with their own pedestal and gain arrays (4). </p>
 
 </div>
 </div>
@@ -594,6 +672,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Number of ASICs (6). </p>
+
 </div>
 </div>
 <a id="a54f731a6017d89c31af9f75d95a143e4" name="a54f731a6017d89c31af9f75d95a143e4"></a>
@@ -615,6 +695,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Columns per ASIC (168). </p>
 
 </div>
 </div>
@@ -638,6 +720,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Rows per ASIC (192). </p>
+
 </div>
 </div>
 <a id="a73e1c5d93ad4056ddb9dfee48a5e4fc8" name="a73e1c5d93ad4056ddb9dfee48a5e4fc8"></a>
@@ -660,6 +744,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Width of the gain range field (2 bits). </p>
+
 </div>
 </div>
 <a id="a7d3a1642ad72108f901087608d7806dc" name="a7d3a1642ad72108f901087608d7806dc"></a>
@@ -681,6 +767,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Bit position of the gain range field in a raw 16-bit value (14); the bits below it hold the data value. </p>
 
 </div>
 </div>

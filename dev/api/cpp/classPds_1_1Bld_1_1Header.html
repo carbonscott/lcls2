@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Bld_1_1Header.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classPds_1_1Bld_1_1Header.html" title="Header of a BLD multicast packet, overlaid on the packet buffer: a full header before the first paylo...">Header</a> of a BLD multicast packet, overlaid on the packet buffer: a full header before the first payload and a short header, holding offsets from the full header, before each later payload.  
+ <a href="classPds_1_1Bld_1_1Header.html#details">More...</a></p>
+
 <p><code>#include &lt;Header.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -105,27 +108,37 @@ Public Types</h2></td></tr>
 <tr class="memitem:a8da663f231de22cfadc54675b4b7104c" id="r_a8da663f231de22cfadc54675b4b7104c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Bld_1_1Header.html#a8da663f231de22cfadc54675b4b7104ca57b18e606420c026dc2f2ced6181318d">sizeofFirst</a> = 28
 , <a class="el" href="classPds_1_1Bld_1_1Header.html#a8da663f231de22cfadc54675b4b7104ca415a5682c7190a57eb00a194d452732b">sizeofNext</a> = 12
  }</td></tr>
+<tr class="memdesc:a8da663f231de22cfadc54675b4b7104c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Bld_1_1Header.html" title="Header of a BLD multicast packet, overlaid on the packet buffer: a full header before the first paylo...">Header</a> sizes in bytes.  <a href="classPds_1_1Bld_1_1Header.html#a8da663f231de22cfadc54675b4b7104c">More...</a><br /></td></tr>
 <tr class="separator:a8da663f231de22cfadc54675b4b7104c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96ccacb93afa5d4513bffea526ab3ca0" id="r_a96ccacb93afa5d4513bffea526ab3ca0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classPds_1_1Bld_1_1Header.html#a96ccacb93afa5d4513bffea526ab3ca0a26dd6077d20af2e8d44b43e41e5e4152">MTU</a> = 8192
  }</td></tr>
+<tr class="memdesc:a96ccacb93afa5d4513bffea526ab3ca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packet buffer size.  <a href="classPds_1_1Bld_1_1Header.html#a96ccacb93afa5d4513bffea526ab3ca0">More...</a><br /></td></tr>
 <tr class="separator:a96ccacb93afa5d4513bffea526ab3ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a516e95fdefa9de00a050556d907c36f1" id="r_a516e95fdefa9de00a050556d907c36f1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#a516e95fdefa9de00a050556d907c36f1">Header</a> ()</td></tr>
+<tr class="memdesc:a516e95fdefa9de00a050556d907c36f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; used to overlay an existing buffer.  <br /></td></tr>
 <tr class="separator:a516e95fdefa9de00a050556d907c36f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78fdafa6857f995485995dc9da1ef447" id="r_a78fdafa6857f995485995dc9da1ef447"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#a78fdafa6857f995485995dc9da1ef447">Header</a> (uint64_t <a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef">pulseId</a>, uint64_t timeStamp, unsigned src)</td></tr>
+<tr class="memdesc:a78fdafa6857f995485995dc9da1ef447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a full header: pulseId in 64-bit word 0, timeStamp in 64-bit word 1 and src in the following 32-bit word; only these 20 bytes are written.  <br /></td></tr>
 <tr class="separator:a78fdafa6857f995485995dc9da1ef447"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ce43a5019e756f9133b191b772f9947" id="r_a2ce43a5019e756f9133b191b772f9947"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#a2ce43a5019e756f9133b191b772f9947">Header</a> (uint64_t <a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef">pulseId</a>, uint64_t timeStamp, const <a class="el" href="classPds_1_1Bld_1_1Header.html">Header</a> &amp;ref)</td></tr>
+<tr class="memdesc:a2ce43a5019e756f9133b191b772f9947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a short header word relative to the full header ref: bits 31-20 hold the low 12 bits of the pulse ID difference and bits 19-0 the low 20 bits of the time stamp difference.  <br /></td></tr>
 <tr class="separator:a2ce43a5019e756f9133b191b772f9947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72defe1c1893b10e53118731ce88feb3" id="r_a72defe1c1893b10e53118731ce88feb3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#a72defe1c1893b10e53118731ce88feb3">done</a> (uint64_t <a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef">pulseId</a>) const</td></tr>
+<tr class="memdesc:a72defe1c1893b10e53118731ce88feb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if pulseId exceeds 64-bit word 0 of this header by more than 1023.  <br /></td></tr>
 <tr class="separator:a72defe1c1893b10e53118731ce88feb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fedde8fff33312e4aadaf80258773ef" id="r_a3fedde8fff33312e4aadaf80258773ef"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef">pulseId</a> () const</td></tr>
+<tr class="memdesc:a3fedde8fff33312e4aadaf80258773ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 64-bit word 1 of the header.  <br /></td></tr>
 <tr class="separator:a3fedde8fff33312e4aadaf80258773ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6b0a34bd8f2a2bd1661cd0f23485b27" id="r_aa6b0a34bd8f2a2bd1661cd0f23485b27"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Header.html#aa6b0a34bd8f2a2bd1661cd0f23485b27">id</a> () const</td></tr>
+<tr class="memdesc:aa6b0a34bd8f2a2bd1661cd0f23485b27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return 32-bit word 4 (bytes 16-19), where the full-header constructor stores src.  <br /></td></tr>
 <tr class="separator:aa6b0a34bd8f2a2bd1661cd0f23485b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classPds_1_1Bld_1_1Header.html" title="Header of a BLD multicast packet, overlaid on the packet buffer: a full header before the first paylo...">Header</a> of a BLD multicast packet, overlaid on the packet buffer: a full header before the first payload and a short header, holding offsets from the full header, before each later payload. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a8da663f231de22cfadc54675b4b7104c" name="a8da663f231de22cfadc54675b4b7104c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8da663f231de22cfadc54675b4b7104c">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -137,9 +150,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classPds_1_1Bld_1_1Header.html" title="Header of a BLD multicast packet, overlaid on the packet buffer: a full header before the first paylo...">Header</a> sizes in bytes. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8da663f231de22cfadc54675b4b7104ca57b18e606420c026dc2f2ced6181318d" name="a8da663f231de22cfadc54675b4b7104ca57b18e606420c026dc2f2ced6181318d"></a>sizeofFirst&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a8da663f231de22cfadc54675b4b7104ca415a5682c7190a57eb00a194d452732b" name="a8da663f231de22cfadc54675b4b7104ca415a5682c7190a57eb00a194d452732b"></a>sizeofNext&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8da663f231de22cfadc54675b4b7104ca57b18e606420c026dc2f2ced6181318d" name="a8da663f231de22cfadc54675b4b7104ca57b18e606420c026dc2f2ced6181318d"></a>sizeofFirst&#160;</td><td class="fielddoc"><p>Bytes before the first payload of a packet (28). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8da663f231de22cfadc54675b4b7104ca415a5682c7190a57eb00a194d452732b" name="a8da663f231de22cfadc54675b4b7104ca415a5682c7190a57eb00a194d452732b"></a>sizeofNext&#160;</td><td class="fielddoc"><p>Bytes before each later payload (12); the short-header constructor writes only the first 4. </p>
+</td></tr>
 </table>
 
 </div>
@@ -155,8 +172,11 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Packet buffer size. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a96ccacb93afa5d4513bffea526ab3ca0a26dd6077d20af2e8d44b43e41e5e4152" name="a96ccacb93afa5d4513bffea526ab3ca0a26dd6077d20af2e8d44b43e41e5e4152"></a>MTU&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a96ccacb93afa5d4513bffea526ab3ca0a26dd6077d20af2e8d44b43e41e5e4152" name="a96ccacb93afa5d4513bffea526ab3ca0a26dd6077d20af2e8d44b43e41e5e4152"></a>MTU&#160;</td><td class="fielddoc"><p>Size in bytes of the packet buffers of <a class="el" href="classPds_1_1Bld_1_1Client.html" title="Receives BLD multicast packets and returns their payloads one entry at a time; a packet whose source ...">Client</a> and <a class="el" href="classPds_1_1Bld_1_1Server.html" title="Packs payloads with BLD headers into an 8192-byte buffer and sends it as one packet when it is full o...">Server</a> (8192). </p>
+</td></tr>
 </table>
 
 </div>
@@ -184,6 +204,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; used to overlay an existing buffer. </p>
 
 </div>
 </div>
@@ -227,6 +249,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Write a full header: pulseId in 64-bit word 0, timeStamp in 64-bit word 1 and src in the following 32-bit word; only these 20 bytes are written. </p>
+
 </div>
 </div>
 <a id="a2ce43a5019e756f9133b191b772f9947" name="a2ce43a5019e756f9133b191b772f9947"></a>
@@ -269,6 +293,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Write a short header word relative to the full header ref: bits 31-20 hold the low 12 bits of the pulse ID difference and bits 19-0 the low 20 bits of the time stamp difference. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -296,6 +322,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return true if pulseId exceeds 64-bit word 0 of this header by more than 1023. </p>
+
 </div>
 </div>
 <a id="aa6b0a34bd8f2a2bd1661cd0f23485b27" name="aa6b0a34bd8f2a2bd1661cd0f23485b27"></a>
@@ -321,6 +349,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return 32-bit word 4 (bytes 16-19), where the full-header constructor stores src. </p>
+
 </div>
 </div>
 <a id="a3fedde8fff33312e4aadaf80258773ef" name="a3fedde8fff33312e4aadaf80258773ef"></a>
@@ -345,6 +375,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return 64-bit word 1 of the header. </p>
+<p>Note that the full-header constructor stores timeStamp there and pulseId in word 0. </p>
 
 </div>
 </div>

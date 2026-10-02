@@ -97,36 +97,53 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1CoreRegisters.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Access to the GpuAsyncCore registers, either through a GpuAsyncCoreRegs object on the mapped firmware registers or, in simulator mode, through a plain memory block laid out like them.  
+ <a href="classDrp_1_1Gpu_1_1CoreRegisters.html#details">More...</a></p>
+
 <p><code>#include &lt;gpuUtils.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abbdbe12f6a119eda6f85882c38dc3371" id="r_abbdbe12f6a119eda6f85882c38dc3371"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#abbdbe12f6a119eda6f85882c38dc3371">CoreRegisters</a> ()</td></tr>
+<tr class="memdesc:abbdbe12f6a119eda6f85882c38dc3371"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with neither register object nor simulated block; <a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a4ff356a9add3c811ccd547ea5b82b29b" title="If sim is false, wrap the mapped registers at regs in a new GpuAsyncCoreRegs; otherwise use regs as t...">initialize()</a> must be called before use.  <br /></td></tr>
 <tr class="separator:abbdbe12f6a119eda6f85882c38dc3371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ff356a9add3c811ccd547ea5b82b29b" id="r_a4ff356a9add3c811ccd547ea5b82b29b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a4ff356a9add3c811ccd547ea5b82b29b">initialize</a> (bool sim, void *regs)</td></tr>
+<tr class="memdesc:a4ff356a9add3c811ccd547ea5b82b29b"><td class="mdescLeft">&#160;</td><td class="mdescRight">If sim is false, wrap the mapped registers at regs in a new GpuAsyncCoreRegs; otherwise use regs as the simulated register block.  <br /></td></tr>
 <tr class="separator:a4ff356a9add3c811ccd547ea5b82b29b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada3a0cd7a2dbfba166facd4b896a9d5d" id="r_ada3a0cd7a2dbfba166facd4b896a9d5d"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#ada3a0cd7a2dbfba166facd4b896a9d5d">dmaDataBytes</a> () const</td></tr>
+<tr class="memdesc:ada3a0cd7a2dbfba166facd4b896a9d5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the DMA data bytes field (GpuAsyncReg_DmaDataBytes when simulated).  <br /></td></tr>
 <tr class="separator:ada3a0cd7a2dbfba166facd4b896a9d5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad78e1476b3a1e1f375a2615feb05a522" id="r_ad78e1476b3a1e1f375a2615feb05a522"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#ad78e1476b3a1e1f375a2615feb05a522">setDataBytes</a> (uint32_t val)</td></tr>
+<tr class="memdesc:ad78e1476b3a1e1f375a2615feb05a522"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the DMA data bytes field in simulator mode; does nothing with real registers.  <br /></td></tr>
 <tr class="separator:ad78e1476b3a1e1f375a2615feb05a522"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ef8badf22a33ebf4563403f62e506c5" id="r_a9ef8badf22a33ebf4563403f62e506c5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a9ef8badf22a33ebf4563403f62e506c5">writeEnable</a> () const</td></tr>
+<tr class="memdesc:a9ef8badf22a33ebf4563403f62e506c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the write enable field (GpuAsyncReg_WriteEnableV1 when simulated).  <br /></td></tr>
 <tr class="separator:a9ef8badf22a33ebf4563403f62e506c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a879ac9dd8521eed932ef335633b736b3" id="r_a879ac9dd8521eed932ef335633b736b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a879ac9dd8521eed932ef335633b736b3">setWriteEnable</a> (uint32_t val)</td></tr>
+<tr class="memdesc:a879ac9dd8521eed932ef335633b736b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the write enable field.  <br /></td></tr>
 <tr class="separator:a879ac9dd8521eed932ef335633b736b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabd7abbadef42dbc9437791c34086904" id="r_aabd7abbadef42dbc9437791c34086904"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#aabd7abbadef42dbc9437791c34086904">setWriteCount</a> (uint32_t val)</td></tr>
+<tr class="memdesc:aabd7abbadef42dbc9437791c34086904"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the write count field (GpuAsyncReg_WriteCountV1 when simulated); <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> writes the number of DMA buffers less 1.  <br /></td></tr>
 <tr class="separator:aabd7abbadef42dbc9437791c34086904"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ecb772567fad860070d9a406ae60c36" id="r_a8ecb772567fad860070d9a406ae60c36"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a8ecb772567fad860070d9a406ae60c36">axisDeMuxSelect</a> () const</td></tr>
+<tr class="memdesc:a8ecb772567fad860070d9a406ae60c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the AXI stream demux select field, which <a class="el" href="namespaceDrp_1_1Gpu.html#a404249e7866106f82d07e9bcfccbeeec" title="Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other...">dmaTgtGet()</a> reads.  <br /></td></tr>
 <tr class="separator:a8ecb772567fad860070d9a406ae60c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ec2a36923b6b8e0bfcac61d2f4f7bb9" id="r_a6ec2a36923b6b8e0bfcac61d2f4f7bb9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a6ec2a36923b6b8e0bfcac61d2f4f7bb9">setAxisDeMuxSelect</a> (uint32_t val)</td></tr>
+<tr class="memdesc:a6ec2a36923b6b8e0bfcac61d2f4f7bb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the AXI stream demux select field, which <a class="el" href="namespaceDrp_1_1Gpu.html#a1bcf091c900efc4eb97537d27e02f909" title="Write tgt to the AXI stream demux select field of coreRegs.">dmaTgtSet()</a> writes.  <br /></td></tr>
 <tr class="separator:a6ec2a36923b6b8e0bfcac61d2f4f7bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfa24359a21999b68d5d96c1a7ca30fb" id="r_acfa24359a21999b68d5d96c1a7ca30fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#acfa24359a21999b68d5d96c1a7ca30fb">returnFreeListIndex</a> (uint32_t buffer)</td></tr>
+<tr class="memdesc:acfa24359a21999b68d5d96c1a7ca30fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call GpuAsyncCoreRegs::returnFreeListIndex(buffer); in simulator mode, write 1 to the register at freeListOffset(buffer).  <br /></td></tr>
 <tr class="separator:acfa24359a21999b68d5d96c1a7ca30fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c9e367d89ad8aad59127117f7cdaab9" id="r_a9c9e367d89ad8aad59127117f7cdaab9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a9c9e367d89ad8aad59127117f7cdaab9">freeListOffset</a> (uint32_t buffer) const</td></tr>
+<tr class="memdesc:a9c9e367d89ad8aad59127117f7cdaab9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the register offset of the free-list entry of buffer (GPU_ASYNC_REG_WRITE_DETECT_OFFSET_V1 when simulated).  <br /></td></tr>
 <tr class="separator:a9c9e367d89ad8aad59127117f7cdaab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f445fad4a1b1d92517d24384d51d15c" id="r_a0f445fad4a1b1d92517d24384d51d15c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a0f445fad4a1b1d92517d24384d51d15c">setRemoteWriteMaxSize</a> (uint32_t buffer, uint32_t size)</td></tr>
+<tr class="memdesc:a0f445fad4a1b1d92517d24384d51d15c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the remote write maximum size of buffer (GPU_ASYNC_REG_WRITE_SIZE_OFFSET_V1 when simulated); <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> sets it to the DMA buffer size.  <br /></td></tr>
 <tr class="separator:a0f445fad4a1b1d92517d24384d51d15c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Access to the GpuAsyncCore registers, either through a GpuAsyncCoreRegs object on the mapped firmware registers or, in simulator mode, through a plain memory block laid out like them. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abbdbe12f6a119eda6f85882c38dc3371" name="abbdbe12f6a119eda6f85882c38dc3371"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abbdbe12f6a119eda6f85882c38dc3371">&#9670;&#160;</a></span>CoreRegisters()</h2>
 
@@ -149,6 +166,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Start with neither register object nor simulated block; <a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html#a4ff356a9add3c811ccd547ea5b82b29b" title="If sim is false, wrap the mapped registers at regs in a new GpuAsyncCoreRegs; otherwise use regs as t...">initialize()</a> must be called before use. </p>
 
 </div>
 </div>
@@ -176,6 +195,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the AXI stream demux select field, which <a class="el" href="namespaceDrp_1_1Gpu.html#a404249e7866106f82d07e9bcfccbeeec" title="Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other...">dmaTgtGet()</a> reads. </p>
+
 </div>
 </div>
 <a id="ada3a0cd7a2dbfba166facd4b896a9d5d" name="ada3a0cd7a2dbfba166facd4b896a9d5d"></a>
@@ -200,6 +221,9 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the DMA data bytes field (GpuAsyncReg_DmaDataBytes when simulated). </p>
+<p><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> uses it as the DMA header size (per its code comment, DMA_AXI_CONFIG_G.DATA_BYTES_C). </p>
 
 </div>
 </div>
@@ -226,6 +250,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the register offset of the free-list entry of buffer (GPU_ASYNC_REG_WRITE_DETECT_OFFSET_V1 when simulated). </p>
 
 </div>
 </div>
@@ -255,6 +281,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If sim is false, wrap the mapped registers at regs in a new GpuAsyncCoreRegs; otherwise use regs as the simulated register block. </p>
+
 </div>
 </div>
 <a id="acfa24359a21999b68d5d96c1a7ca30fb" name="acfa24359a21999b68d5d96c1a7ca30fb"></a>
@@ -280,6 +308,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Call GpuAsyncCoreRegs::returnFreeListIndex(buffer); in simulator mode, write 1 to the register at freeListOffset(buffer). </p>
 
 </div>
 </div>
@@ -307,6 +337,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the AXI stream demux select field, which <a class="el" href="namespaceDrp_1_1Gpu.html#a1bcf091c900efc4eb97537d27e02f909" title="Write tgt to the AXI stream demux select field of coreRegs.">dmaTgtSet()</a> writes. </p>
+
 </div>
 </div>
 <a id="ad78e1476b3a1e1f375a2615feb05a522" name="ad78e1476b3a1e1f375a2615feb05a522"></a>
@@ -332,6 +364,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the DMA data bytes field in simulator mode; does nothing with real registers. </p>
 
 </div>
 </div>
@@ -369,6 +403,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the remote write maximum size of buffer (GPU_ASYNC_REG_WRITE_SIZE_OFFSET_V1 when simulated); <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> sets it to the DMA buffer size. </p>
+
 </div>
 </div>
 <a id="aabd7abbadef42dbc9437791c34086904" name="aabd7abbadef42dbc9437791c34086904"></a>
@@ -394,6 +430,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the write count field (GpuAsyncReg_WriteCountV1 when simulated); <a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> writes the number of DMA buffers less 1. </p>
 
 </div>
 </div>
@@ -421,6 +459,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the write enable field. </p>
+<p><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> writes 0 to stop the FPGA side, and <a class="el" href="namespaceDrp_1_1Gpu.html#ad3ffb2af69dbd7ab73b5ee5a1fca8b7d" title="Function to reset the DMA buffer round-robin index.">dmaIdxReset()</a> writes 0 then 1 to reset the DMA buffer index (per the code comments). </p>
+
 </div>
 </div>
 <a id="a9ef8badf22a33ebf4563403f62e506c5" name="a9ef8badf22a33ebf4563403f62e506c5"></a>
@@ -445,6 +486,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the write enable field (GpuAsyncReg_WriteEnableV1 when simulated). </p>
 
 </div>
 </div>

@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('PvMonitorBase_8hh.html',''); initResiz
   <div class="headertitle"><div class="title">PvMonitorBase.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>PvMonitorBase, a MonTracker that copies the monitored field of a PV into raw payload buffers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="MonTracker_8hh.html">MonTracker.hh</a>&quot;</code><br />
@@ -105,14 +108,18 @@ $(document).ready(function(){initNavTree('PvMonitorBase_8hh.html',''); initResiz
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PvMonitorBase.html">Pds_Epics::PvMonitorBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> that copies the payload field of a PV (value by default) into raw buffers: <a class="el" href="classPds__Epics_1_1PvMonitorBase.html#aa21a89f398487b0ba703d523cccd6a4a" title="From the latest structure, return the element type, element count and rank of the payload field and s...">getParams()</a> inspects the field's type and selects the getData function.  <a href="classPds__Epics_1_1PvMonitorBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacePds__Epics" id="r_namespacePds__Epics"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds__Epics.html">Pds_Epics</a></td></tr>
+<tr class="memdesc:namespacePds__Epics"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq EPICS client helpers (pvAccess and Channel Access). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>PvMonitorBase, a MonTracker that copies the monitored field of a PV into raw payload buffers. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

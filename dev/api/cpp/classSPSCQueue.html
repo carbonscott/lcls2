@@ -97,52 +97,79 @@ $(document).ready(function(){initNavTree('classSPSCQueue.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 
+<p>Fixed-capacity ring buffer for one producer thread and one consumer thread.  
+ <a href="classSPSCQueue.html#details">More...</a></p>
+
 <p><code>#include &lt;spscqueue.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abf2ac34fbd73152a34773c955bf144be" id="r_abf2ac34fbd73152a34773c955bf144be"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#abf2ac34fbd73152a34773c955bf144be">SPSCQueue</a> (int capacity)</td></tr>
+<tr class="memdesc:abf2ac34fbd73152a34773c955bf144be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate capacity slots; throws a C string (after printing a message) if capacity is not a power of 2.  <br /></td></tr>
 <tr class="separator:abf2ac34fbd73152a34773c955bf144be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f0af89e515e7de70ed84031a43e1b1a" id="r_a6f0af89e515e7de70ed84031a43e1b1a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a6f0af89e515e7de70ed84031a43e1b1a">SPSCQueue</a> (const <a class="el" href="classSPSCQueue.html">SPSCQueue</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a6f0af89e515e7de70ed84031a43e1b1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copying is disabled.  <br /></td></tr>
 <tr class="separator:a6f0af89e515e7de70ed84031a43e1b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdd54af2a49edd6d35916e0e3fb33cce" id="r_acdd54af2a49edd6d35916e0e3fb33cce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#acdd54af2a49edd6d35916e0e3fb33cce">operator=</a> (const <a class="el" href="classSPSCQueue.html">SPSCQueue</a> &amp;)=delete</td></tr>
+<tr class="memdesc:acdd54af2a49edd6d35916e0e3fb33cce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment is disabled.  <br /></td></tr>
 <tr class="separator:acdd54af2a49edd6d35916e0e3fb33cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5636126418f3f974286a6e2379be1483" id="r_a5636126418f3f974286a6e2379be1483"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a5636126418f3f974286a6e2379be1483">SPSCQueue</a> (<a class="el" href="classSPSCQueue.html">SPSCQueue</a> &amp;&amp;d) noexcept</td></tr>
+<tr class="memdesc:a5636126418f3f974286a6e2379be1483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor: take over the slots, indices, capacity and mask of d; the terminate flag starts cleared.  <br /></td></tr>
 <tr class="separator:a5636126418f3f974286a6e2379be1483"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82e9ba6534aa370955db984f9287ed78" id="r_a82e9ba6534aa370955db984f9287ed78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78">push</a> (T value)</td></tr>
+<tr class="memdesc:a82e9ba6534aa370955db984f9287ed78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write value at the back and wake a reader if the queue was empty.  <br /></td></tr>
 <tr class="separator:a82e9ba6534aa370955db984f9287ed78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabf14d5d7a9dc4e1d77f18760830b87e" id="r_aabf14d5d7a9dc4e1d77f18760830b87e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e">popW</a> (T &amp;value)</td></tr>
+<tr class="memdesc:aabf14d5d7a9dc4e1d77f18760830b87e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop the front element into value, blocking while the queue is empty.  <br /></td></tr>
 <tr class="separator:aabf14d5d7a9dc4e1d77f18760830b87e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8030f871c4c281516e8e624ce0c730b" id="r_af8030f871c4c281516e8e624ce0c730b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#af8030f871c4c281516e8e624ce0c730b">popW</a> (T &amp;value, unsigned msTmo)</td></tr>
+<tr class="memdesc:af8030f871c4c281516e8e624ce0c730b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e" title="Pop the front element into value, blocking while the queue is empty.">popW(T&amp;)</a>, but waits at most msTmo milliseconds; returns false on timeout or if terminating while still empty.  <br /></td></tr>
 <tr class="separator:af8030f871c4c281516e8e624ce0c730b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67d070eb8ed6a6fe69acdb04d590b62e" id="r_a67d070eb8ed6a6fe69acdb04d590b62e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a67d070eb8ed6a6fe69acdb04d590b62e">pop</a> (T &amp;value)</td></tr>
+<tr class="memdesc:a67d070eb8ed6a6fe69acdb04d590b62e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop the front element into value, polling for up to 1 ms and then blocking with <a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e" title="Pop the front element into value, blocking while the queue is empty.">popW(T&amp;)</a>.  <br /></td></tr>
 <tr class="separator:a67d070eb8ed6a6fe69acdb04d590b62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add31c00ebf6b115bdb37609008c536bf" id="r_add31c00ebf6b115bdb37609008c536bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#add31c00ebf6b115bdb37609008c536bf">try_pop</a> (T &amp;value)</td></tr>
+<tr class="memdesc:add31c00ebf6b115bdb37609008c536bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop the front element into value without blocking; returns false if the queue is empty.  <br /></td></tr>
 <tr class="separator:add31c00ebf6b115bdb37609008c536bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3178b72d56ba26722d0beac261f2a71b" id="r_a3178b72d56ba26722d0beac261f2a71b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a3178b72d56ba26722d0beac261f2a71b">peek</a> (T &amp;value) const</td></tr>
+<tr class="memdesc:a3178b72d56ba26722d0beac261f2a71b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the front element into value without removing it; returns false if the queue is empty.  <br /></td></tr>
 <tr class="separator:a3178b72d56ba26722d0beac261f2a71b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43eb12443c5dbbabbc62f8e35847c5f2" id="r_a43eb12443c5dbbabbc62f8e35847c5f2"><td class="memItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a43eb12443c5dbbabbc62f8e35847c5f2">front</a> ()</td></tr>
+<tr class="memdesc:a43eb12443c5dbbabbc62f8e35847c5f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the slot at the read position (not checked for emptiness).  <br /></td></tr>
 <tr class="separator:a43eb12443c5dbbabbc62f8e35847c5f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b884bf72627764e90376c32ac713313" id="r_a8b884bf72627764e90376c32ac713313"><td class="memItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a8b884bf72627764e90376c32ac713313">front</a> () const</td></tr>
+<tr class="memdesc:a8b884bf72627764e90376c32ac713313"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a const reference to the slot at the read position (not checked for emptiness).  <br /></td></tr>
 <tr class="separator:a8b884bf72627764e90376c32ac713313"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9efa5b4b441f4d6213a3e5a8db7cd5d8" id="r_a9efa5b4b441f4d6213a3e5a8db7cd5d8"><td class="memItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a9efa5b4b441f4d6213a3e5a8db7cd5d8">back</a> ()</td></tr>
+<tr class="memdesc:a9efa5b4b441f4d6213a3e5a8db7cd5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the slot at the write position, the next one <a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78" title="Write value at the back and wake a reader if the queue was empty.">push()</a> will fill.  <br /></td></tr>
 <tr class="separator:a9efa5b4b441f4d6213a3e5a8db7cd5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af18c8fd17774fa5cc7eba46a47e24866" id="r_af18c8fd17774fa5cc7eba46a47e24866"><td class="memItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#af18c8fd17774fa5cc7eba46a47e24866">back</a> () const</td></tr>
+<tr class="memdesc:af18c8fd17774fa5cc7eba46a47e24866"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a const reference to the slot at the write position, the next one <a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78" title="Write value at the back and wake a reader if the queue was empty.">push()</a> will fill.  <br /></td></tr>
 <tr class="separator:af18c8fd17774fa5cc7eba46a47e24866"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eae4dc88e70566076714d3efc00038a" id="r_a7eae4dc88e70566076714d3efc00038a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a7eae4dc88e70566076714d3efc00038a">is_empty</a> () const</td></tr>
+<tr class="memdesc:a7eae4dc88e70566076714d3efc00038a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the read and write positions are equal.  <br /></td></tr>
 <tr class="separator:a7eae4dc88e70566076714d3efc00038a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae627f00b9997761f1c9aae660b4b5b85" id="r_ae627f00b9997761f1c9aae660b4b5b85"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#ae627f00b9997761f1c9aae660b4b5b85">wait_for_nonempty</a> () const</td></tr>
+<tr class="memdesc:ae627f00b9997761f1c9aae660b4b5b85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Block until the queue is not empty; returns false if <a class="el" href="classSPSCQueue.html#a3cc893c4503ea1854e0517efe783f4da" title="Set the terminate flag and wake one blocked reader.">shutdown()</a> was called while it is still empty, else true.  <br /></td></tr>
 <tr class="separator:ae627f00b9997761f1c9aae660b4b5b85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a553d1afca9212b50faffb03abe99b5ff" id="r_a553d1afca9212b50faffb03abe99b5ff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a553d1afca9212b50faffb03abe99b5ff">guess_size</a> () const</td></tr>
+<tr class="memdesc:a553d1afca9212b50faffb03abe99b5ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of queued elements (write minus read position, plus the capacity if negative).  <br /></td></tr>
 <tr class="separator:a553d1afca9212b50faffb03abe99b5ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a886b5b2fdf3219f84b1579c5a997398e" id="r_a886b5b2fdf3219f84b1579c5a997398e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a886b5b2fdf3219f84b1579c5a997398e">size</a> () const</td></tr>
+<tr class="memdesc:a886b5b2fdf3219f84b1579c5a997398e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the capacity.  <br /></td></tr>
 <tr class="separator:a886b5b2fdf3219f84b1579c5a997398e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cc893c4503ea1854e0517efe783f4da" id="r_a3cc893c4503ea1854e0517efe783f4da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a3cc893c4503ea1854e0517efe783f4da">shutdown</a> ()</td></tr>
+<tr class="memdesc:a3cc893c4503ea1854e0517efe783f4da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the terminate flag and wake one blocked reader.  <br /></td></tr>
 <tr class="separator:a3cc893c4503ea1854e0517efe783f4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ff13b67c636286e93e340ddfab86ac8" id="r_a6ff13b67c636286e93e340ddfab86ac8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSPSCQueue.html#a6ff13b67c636286e93e340ddfab86ac8">startup</a> ()</td></tr>
+<tr class="memdesc:a6ff13b67c636286e93e340ddfab86ac8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the terminate flag and reset both positions to 0.  <br /></td></tr>
 <tr class="separator:a6ff13b67c636286e93e340ddfab86ac8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class SPSCQueue&lt; T &gt;</div><p>Fixed-capacity ring buffer for one producer thread and one consumer thread. </p>
+<p><a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78" title="Write value at the back and wake a reader if the queue was empty.">push()</a> never checks for a full queue; the read functions can block on a condition variable, and <a class="el" href="classSPSCQueue.html#a3cc893c4503ea1854e0517efe783f4da" title="Set the terminate flag and wake one blocked reader.">shutdown()</a> releases blocked readers. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abf2ac34fbd73152a34773c955bf144be" name="abf2ac34fbd73152a34773c955bf144be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf2ac34fbd73152a34773c955bf144be">&#9670;&#160;</a></span>SPSCQueue() <span class="overload">[1/3]</span></h2>
 
@@ -168,6 +195,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Allocate capacity slots; throws a C string (after printing a message) if capacity is not a power of 2. </p>
 
 </div>
 </div>
@@ -197,6 +226,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Copying is disabled. </p>
+
 </div>
 </div>
 <a id="a5636126418f3f974286a6e2379be1483" name="a5636126418f3f974286a6e2379be1483"></a>
@@ -224,6 +255,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Move constructor: take over the slots, indices, capacity and mask of d; the terminate flag starts cleared. </p>
 
 </div>
 </div>
@@ -253,6 +286,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the slot at the write position, the next one <a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78" title="Write value at the back and wake a reader if the queue was empty.">push()</a> will fill. </p>
+
 </div>
 </div>
 <a id="af18c8fd17774fa5cc7eba46a47e24866" name="af18c8fd17774fa5cc7eba46a47e24866"></a>
@@ -279,6 +314,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return a const reference to the slot at the write position, the next one <a class="el" href="classSPSCQueue.html#a82e9ba6534aa370955db984f9287ed78" title="Write value at the back and wake a reader if the queue was empty.">push()</a> will fill. </p>
 
 </div>
 </div>
@@ -307,6 +344,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the slot at the read position (not checked for emptiness). </p>
+
 </div>
 </div>
 <a id="a8b884bf72627764e90376c32ac713313" name="a8b884bf72627764e90376c32ac713313"></a>
@@ -333,6 +372,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return a const reference to the slot at the read position (not checked for emptiness). </p>
 
 </div>
 </div>
@@ -361,6 +402,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of queued elements (write minus read position, plus the capacity if negative). </p>
+
 </div>
 </div>
 <a id="a7eae4dc88e70566076714d3efc00038a" name="a7eae4dc88e70566076714d3efc00038a"></a>
@@ -387,6 +430,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if the read and write positions are equal. </p>
 
 </div>
 </div>
@@ -416,6 +461,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Copy assignment is disabled. </p>
+
 </div>
 </div>
 <a id="a3178b72d56ba26722d0beac261f2a71b" name="a3178b72d56ba26722d0beac261f2a71b"></a>
@@ -443,6 +490,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Copy the front element into value without removing it; returns false if the queue is empty. </p>
 
 </div>
 </div>
@@ -472,6 +521,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Pop the front element into value, polling for up to 1 ms and then blocking with <a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e" title="Pop the front element into value, blocking while the queue is empty.">popW(T&amp;)</a>. </p>
+<p>Returns false only if <a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e" title="Pop the front element into value, blocking while the queue is empty.">popW()</a> does. </p>
+
 </div>
 </div>
 <a id="aabf14d5d7a9dc4e1d77f18760830b87e" name="aabf14d5d7a9dc4e1d77f18760830b87e"></a>
@@ -499,6 +551,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pop the front element into value, blocking while the queue is empty. </p>
+<p>Returns false, without popping, if the queue was empty on entry and <a class="el" href="classSPSCQueue.html#a3cc893c4503ea1854e0517efe783f4da" title="Set the terminate flag and wake one blocked reader.">shutdown()</a> has been called (even if an element arrived meanwhile); otherwise true. </p>
 
 </div>
 </div>
@@ -538,6 +593,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Like <a class="el" href="classSPSCQueue.html#aabf14d5d7a9dc4e1d77f18760830b87e" title="Pop the front element into value, blocking while the queue is empty.">popW(T&amp;)</a>, but waits at most msTmo milliseconds; returns false on timeout or if terminating while still empty. </p>
+
 </div>
 </div>
 <a id="a82e9ba6534aa370955db984f9287ed78" name="a82e9ba6534aa370955db984f9287ed78"></a>
@@ -566,6 +623,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Write value at the back and wake a reader if the queue was empty. </p>
+<p>Does not check whether the queue is full (per the code comment). </p>
+
 </div>
 </div>
 <a id="a3cc893c4503ea1854e0517efe783f4da" name="a3cc893c4503ea1854e0517efe783f4da"></a>
@@ -592,6 +652,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the terminate flag and wake one blocked reader. </p>
 
 </div>
 </div>
@@ -620,6 +682,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the capacity. </p>
+
 </div>
 </div>
 <a id="a6ff13b67c636286e93e340ddfab86ac8" name="a6ff13b67c636286e93e340ddfab86ac8"></a>
@@ -646,6 +710,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Clear the terminate flag and reset both positions to 0. </p>
 
 </div>
 </div>
@@ -675,6 +741,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Pop the front element into value without blocking; returns false if the queue is empty. </p>
+
 </div>
 </div>
 <a id="ae627f00b9997761f1c9aae660b4b5b85" name="ae627f00b9997761f1c9aae660b4b5b85"></a>
@@ -701,6 +769,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Block until the queue is not empty; returns false if <a class="el" href="classSPSCQueue.html#a3cc893c4503ea1854e0517efe783f4da" title="Set the terminate flag and wake one blocked reader.">shutdown()</a> was called while it is still empty, else true. </p>
 
 </div>
 </div>

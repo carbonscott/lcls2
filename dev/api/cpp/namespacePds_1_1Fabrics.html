@@ -96,40 +96,59 @@ $(document).ready(function(){initNavTree('namespacePds_1_1Fabrics.html',''); ini
   <div class="headertitle"><div class="title">Pds::Fabrics Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Thin C++ wrappers around the libfabric API.  
+<a href="namespacePds_1_1Fabrics.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html">CompletionPoller</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits on the wait file descriptors of several completion queues with <a class="el" href="classPds_1_1Fabrics_1_1CompletionPoller.html#a264e87a549cfd383d98ebc97eac62eda" title="Call fi_trywait() on all queues and, if it succeeds, poll() their fds with timeout.">poll()</a>.  <a href="classPds_1_1Fabrics_1_1CompletionPoller.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a libfabric completion queue (fid_cq).  <a href="classPds_1_1Fabrics_1_1CompletionQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking _sync variants.  <a href="classPds_1_1Fabrics_1_1Endpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">EndpointBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Common base of active and passive endpoints: holds the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, the event queue and the transmit and receive completion queues, creating any that are not supplied.  <a href="classPds_1_1Fabrics_1_1EndpointBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">ErrorHandler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class that keeps the last error number and a formatted error message (256-byte buffer).  <a href="classPds_1_1Fabrics_1_1ErrorHandler.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a libfabric event queue (fid_eq).  <a href="classPds_1_1Fabrics_1_1EventQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions registered in that domain.  <a href="classPds_1_1Fabrics_1_1Fabric.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Info.html">Info</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a libfabric fi_info hints structure, preset by initialize() for FI_EP_MSG endpoints with FI_MSG and FI_RMA capabilities, FI_SOCKADDR_IN addresses and FI_RX_CQ_DATA mode.  <a href="classPds_1_1Fabrics_1_1Info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html">LocalAddress</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local buffer (pointer and length) with an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>; its first two fields are reinterpreted as a struct iovec by <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a68dc3613fec6929dd34921ed8c8c4009" title="Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the f...">iovec()</a>.  <a href="classPds_1_1Fabrics_1_1LocalAddress.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html">LocalIOVec</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growable array of struct iovec entries plus one memory-region descriptor per entry, for vectored libfabric calls.  <a href="classPds_1_1Fabrics_1_1LocalIOVec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a registered libfabric memory region (fid_mr) together with its start address and length.  <a href="classPds_1_1Fabrics_1_1MemoryRegion.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1Message.html">Message</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a struct fi_msg built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a>, for fi_sendmsg() and fi_recvmsg().  <a href="classPds_1_1Fabrics_1_1Message.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html">PassiveEndpoint</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listening libfabric endpoint that accepts or rejects connection requests and keeps the Endpoints it accepted.  <a href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html">RemoteAddress</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote memory descriptor (address, length, key) for RMA calls; its fields are reinterpreted as a struct fi_rma_iov by <a class="el" href="classPds_1_1Fabrics_1_1RemoteAddress.html#a16c6b3e643253dd5a5a5de88c3ac4b31" title="Return this object reinterpreted as a const struct fi_rma_iov pointer (relies on the addr,...">rma_iov()</a>.  <a href="classPds_1_1Fabrics_1_1RemoteAddress.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html">RemoteIOVec</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.  <a href="classPds_1_1Fabrics_1_1RemoteIOVec.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1RmaMessage.html">RmaMessage</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a struct fi_msg_rma built from a <a class="el" href="classPds_1_1Fabrics_1_1LocalIOVec.html" title="Growable array of struct iovec entries plus one memory-region descriptor per entry,...">LocalIOVec</a> and a <a class="el" href="classPds_1_1Fabrics_1_1RemoteIOVec.html" title="Growable array of struct fi_rma_iov entries that describe remote buffers for vectored RMA calls.">RemoteIOVec</a>, for fi_readmsg() and fi_writemsg().  <a href="classPds_1_1Fabrics_1_1RmaMessage.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -144,9 +163,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912">EP_CONNECTED</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a2c5db474aba427c5ad48573c3f093203"><td class="mdescLeft">&#160;</td><td class="mdescRight">Life-cycle state of an EndpointBase, as assigned by the methods in Endpoint.cc.  <a href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203">More...</a><br /></td></tr>
 <tr class="separator:a2c5db474aba427c5ad48573c3f093203"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Thin C++ wrappers around the libfabric API. </p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a2c5db474aba427c5ad48573c3f093203" name="a2c5db474aba427c5ad48573c3f093203"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2c5db474aba427c5ad48573c3f093203">&#9670;&#160;</a></span>State</h2>
 
@@ -158,13 +180,21 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Life-cycle state of an <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html" title="Common base of active and passive endpoints: holds the Fabric, the event queue and the transmit and r...">EndpointBase</a>, as assigned by the methods in Endpoint.cc. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a33f79a8b47872ecdb519c4f0c3eeb078" name="a2c5db474aba427c5ad48573c3f093203a33f79a8b47872ecdb519c4f0c3eeb078"></a>EP_CLOSED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203ac408d7852f83dc320f65dffade7117c5" name="a2c5db474aba427c5ad48573c3f093203ac408d7852f83dc320f65dffade7117c5"></a>EP_INIT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a7be9b628b26ec0ae97009f6f85c071a3" name="a2c5db474aba427c5ad48573c3f093203a7be9b628b26ec0ae97009f6f85c071a3"></a>EP_UP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a58b20f7fd7151a7ee1f053a025471426" name="a2c5db474aba427c5ad48573c3f093203a58b20f7fd7151a7ee1f053a025471426"></a>EP_ENABLED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a8bc006f13c05a85d4096dd53118968d2" name="a2c5db474aba427c5ad48573c3f093203a8bc006f13c05a85d4096dd53118968d2"></a>EP_LISTEN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912" name="a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912"></a>EP_CONNECTED&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a33f79a8b47872ecdb519c4f0c3eeb078" name="a2c5db474aba427c5ad48573c3f093203a33f79a8b47872ecdb519c4f0c3eeb078"></a>EP_CLOSED&#160;</td><td class="fielddoc"><p>Set by <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a74d338142ad1815794d9cb9f5d8e0415" title="Delete the event and completion queues that this object created and set the state to EP_CLOSED.">EndpointBase::shutdown()</a> and when <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html" title="Common base of active and passive endpoints: holds the Fabric, the event queue and the transmit and r...">EndpointBase</a> initialization fails. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203ac408d7852f83dc320f65dffade7117c5" name="a2c5db474aba427c5ad48573c3f093203ac408d7852f83dc320f65dffade7117c5"></a>EP_INIT&#160;</td><td class="fielddoc"><p>Initial state; also restored by <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826" title="Shut down and close the fid_ep if open and set the state to EP_INIT; queues and fabric are kept so th...">Endpoint::shutdown()</a> and <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a8d7a44bd2a8af828880bd02a402188b3" title="Shut down every accepted endpoint, close the passive endpoint and set the state to EP_INIT; queues an...">PassiveEndpoint::shutdown()</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a7be9b628b26ec0ae97009f6f85c071a3" name="a2c5db474aba427c5ad48573c3f093203a7be9b628b26ec0ae97009f6f85c071a3"></a>EP_UP&#160;</td><td class="fielddoc"><p>Set once <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a41a737c0a3398c83a6641790526b169a">EndpointBase::initialize()</a> has the event and completion queues. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a58b20f7fd7151a7ee1f053a025471426" name="a2c5db474aba427c5ad48573c3f093203a58b20f7fd7151a7ee1f053a025471426"></a>EP_ENABLED&#160;</td><td class="fielddoc"><p>Not assigned anywhere in Endpoint.cc. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203a8bc006f13c05a85d4096dd53118968d2" name="a2c5db474aba427c5ad48573c3f093203a8bc006f13c05a85d4096dd53118968d2"></a>EP_LISTEN&#160;</td><td class="fielddoc"><p>Set by <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a7b558cafda2287da6cf73e8b3b804736" title="Open the passive endpoint, bind it to the event queue, try to set the backlog (FI_ENOSYS is ignored) ...">PassiveEndpoint::listen()</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912" name="a2c5db474aba427c5ad48573c3f093203abf0bf072ecd1d081aadd7adf7692f912"></a>EP_CONNECTED&#160;</td><td class="fielddoc"><p>Set when a connect() or accept() handshake receives FI_CONNECTED. </p>
+</td></tr>
 </table>
 
 </div>

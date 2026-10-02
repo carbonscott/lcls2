@@ -98,108 +98,151 @@ $(document).ready(function(){initNavTree('namespaceDrp_1_1Gpu.html',''); initRes
   <div class="headertitle"><div class="title">Drp::Gpu Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here.  
+<a href="namespaceDrp_1_1Gpu.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1AreaDetector.html">AreaDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU DRP detector for detType fakecam (registered in <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a>).  <a href="classDrp_1_1Gpu_1_1AreaDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access to the GpuAsyncCore registers, either through a GpuAsyncCoreRegs object on the mapped firmware registers or, in simulator mode, through a plain memory block laid out like them.  <a href="classDrp_1_1Gpu_1_1CoreRegisters.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CudaContext.html">CudaContext</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a cuda context and handles some initialization for you.  <a href="classDrp_1_1Gpu_1_1CudaContext.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CuSZpReducer.html">CuSZpReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with cuSZp (cuSZp_compress_1D_plain_f32) using an error bound of 1.2e-4 (absolute, per the code comment).  <a href="classDrp_1_1Gpu_1_1CuSZpReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1CuSzReducer.html">CuSzReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with cuSZ (Lorenzo predictor, relative error bound 1.2e-4, Huffman coding).  <a href="classDrp_1_1Gpu_1_1CuSzReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1DataDev.html">DataDev</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a data_dev device so it can be automatically freed.  <a href="classDrp_1_1Gpu_1_1DataDev.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Detector.html">Detector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the GPU DRP detectors (<a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Drp::Gpu::Detector</a>).  <a href="classDrp_1_1Gpu_1_1Detector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1DetectorFactory.html">DetectorFactory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates GPU detectors from shared libraries: each detector type name is mapped to a library that defines <a class="el" href="psdaq_2drpGpu_2Detector_8hh.html#aa70ac15fef9407a411418ee15982de21" title="Factory function defined by each GPU detector library (AreaDetector, EpixUHRemu, EpixUHRsim): return ...">createDetector()</a>.  <a href="classDrp_1_1Gpu_1_1DetectorFactory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html">DetPanel</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PGP device of the GPU DRP and the GPU resources tied to it.  <a href="structDrp_1_1Gpu_1_1DetPanel.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EipReducer.html">EipReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with EIP::Compressor.  <a href="classDrp_1_1Gpu_1_1EipReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRemu.html">EpixUHRemu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU DRP detector for detType epixuhremu (registered in <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a>).  <a href="classDrp_1_1Gpu_1_1EpixUHRemu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1EpixUHRsim.html">EpixUHRsim</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simulated GPU DRP detector for detType epixuhrsim (registered in <a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html" title="Collection application of the GPU DRP: handles the control transitions and drives a Drp::Gpu::PGPDrp ...">PGPDetectorApp</a>).  <a href="classDrp_1_1Gpu_1_1EpixUHRsim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html">FileWriter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes event data that is already in GPU memory to a file with NVIDIA cuFile.  <a href="classDrp_1_1Gpu_1_1FileWriter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1FileWriterAsync.html">FileWriterAsync</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html" title="Writes event data that is already in GPU memory to a file with NVIDIA cuFile.">FileWriter</a> that splits its GPU buffer into two halves: a filled half is written with cuFileWriteAsync on the registered stream while events are copied into the other half.  <a href="classDrp_1_1Gpu_1_1FileWriterAsync.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1GPUTimer.html">GPUTimer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for timing various things.  <a href="structDrp_1_1Gpu_1_1GPUTimer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1LcReducer.html">LcReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with an LC framework compressor (the QUANT_ABS_0_f32, BIT_4, RZE_1 pipeline, per the included header name), recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph.  <a href="classDrp_1_1Gpu_1_1LcReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">MemPoolGpu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory pool of the GPU DRP.  <a href="classDrp_1_1Gpu_1_1MemPoolGpu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1NoOpReducer.html">NoOpReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that copies the calibrated floats unchanged into the output buffer, using its own CUDA kernel.  <a href="classDrp_1_1Gpu_1_1NoOpReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PfplReducer.html">PfplReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with PFPL::Compressor (from f32_abs_comp_gpu.hh), recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph.  <a href="classDrp_1_1Gpu_1_1PfplReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html">PGPDetectorApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collection application of the GPU DRP: handles the control transitions and drives a <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">Drp::Gpu::PGPDrp</a> and the GPU detector.  <a href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html">PGPDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">DRP for the GPU detectors (<a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">Drp::Gpu::PGPDrp</a>).  <a href="classDrp_1_1Gpu_1_1PGPDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1Ptr.html">Ptr</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pair of pointers of type T, one for the host and one for the device; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> uses it for each ring queue object and its device copy.  <a href="structDrp_1_1Gpu_1_1Ptr.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reader.html">Reader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives the FPGA DMA buffers on the GPU.  <a href="classDrp_1_1Gpu_1_1Reader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReaderMetrics.html">ReaderMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-reader counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reader.html#ac17267a421c451b531838be9c3c5de7e" title="Add the per-reader DRP_readerState, DRP_pblWtCtr, DRP_dmaWtCtr, DRP_rdrFwd and DRP_rdrQueOcc metrics ...">Reader::setupMetrics()</a>; the kernels update them only if DBG is enabled in Reader.cu.  <a href="structDrp_1_1Gpu_1_1ReaderMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html">Reducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the data reduction on the GPU for <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">PGPDrp</a>: loads the reducer library named by the reducer kwarg, creates one <a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html" title="Base of the GPU data reduction algorithms.">ReducerAlgo</a> per worker, and passes buffer indices in and <a class="el" href="structDrp_1_1Gpu_1_1ReducerTuple.html" title="Result of reducing one buffer, passed from the reducer back to the recorder.">ReducerTuple</a> results out through per-worker queues.  <a href="classDrp_1_1Gpu_1_1Reducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1ReducerAlgo.html">ReducerAlgo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of the GPU data reduction algorithms.  <a href="classDrp_1_1Gpu_1_1ReducerAlgo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReducerMetrics.html">ReducerMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-worker counters in pinned host memory, exported by <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html#a882d68dd7d04b6a533411665af3fa18c" title="Add the per-worker DRP_redState, DRP_inpWtCtr, DRP_outWtCtr, DRP_inputQueue and DRP_outputQueue metri...">Reducer::setupMetrics()</a>.  <a href="structDrp_1_1Gpu_1_1ReducerMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1ReducerTuple.html">ReducerTuple</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of reducing one buffer, passed from the reducer back to the recorder.  <a href="structDrp_1_1Gpu_1_1ReducerTuple.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoD.html">RingIndexDtoD</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of buffer indices with a device producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoD.html#a7f6a8b79881e81ad457e5c65256dea3f" title="Move head forward when not full.">push()</a>) and a device consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoD.html#a3dd079c624a3463b50b75f6a58befb67" title="Return current head.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingIndexDtoD.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html">RingIndexDtoH</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of buffer indices with a device producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a09d480deb5e3551d274e34cf159c3305" title="Move head forward when not full.">push()</a>) and a host consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#a4f9074ab7fd5a58322423684a4b5ae97" title="Return current head when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingIndexDtoH.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingIndexHtoD.html">RingIndexHtoD</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of buffer indices with one host producer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexHtoD.html#a09df05e8b1eb0d15b2efdcecc53e115d" title="Move head forward when not full.">push()</a>) and one device consumer (<a class="el" href="classDrp_1_1Gpu_1_1RingIndexHtoD.html#a00878c8b6dd5aada78ff92b63ee85c9e" title="Return current tail when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingIndexHtoD.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html">RingQueueDtoD</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of values of type T with one producer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a170ed9dbc1f6abb781c521e5200d16bd" title="Store value at head and advance when not full.">push()</a>) and one consumer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#a64b671f357a344ff4d976ab9f69aaff1" title="Fetch value at tail and advance when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingQueueDtoD.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoH.html">RingQueueDtoH</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of values of type T with one producer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoH.html#a3634f92f48153cbd1d3cb9687d076748" title="Store value at head and advance when not full.">push()</a>) and one consumer on the host (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueDtoH.html#ac02f25e2393a4246b2fbef6338f52cb0" title="Fetch value at tail and advance when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingQueueDtoH.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1RingQueueHtoD.html">RingQueueHtoD</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock-free ring of values of type T with one producer on the host (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueHtoD.html#ad6792e86b039304df2e784bc9f8f1910" title="Store value at head and advance when not full.">push()</a>) and one consumer on the GPU (<a class="el" href="classDrp_1_1Gpu_1_1RingQueueHtoD.html#a651f508f4b2bbed99572847017bf0bce" title="Fetch value at tail and advance when not empty.">pop()</a>).  <a href="classDrp_1_1Gpu_1_1RingQueueHtoD.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SimDetector.html">SimDetector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of simulated GPU detectors (<a class="el" href="classDrp_1_1Gpu_1_1EpixUHRsim.html" title="Simulated GPU DRP detector for detType epixuhrsim (registered in PGPDetectorApp).">EpixUHRsim</a> uses it).  <a href="classDrp_1_1Gpu_1_1SimDetector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1SleekReducer.html">SleekReducer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> that compresses each calibrated buffer with SLEEK::SingleCompressorLossy, recorded into the <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> graph.  <a href="classDrp_1_1Gpu_1_1SleekReducer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html">TebReceiver</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a> of the GPU DRP.  <a href="classDrp_1_1Gpu_1_1TebReceiver.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html">TebReceiverMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counters of the GPU <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html" title="TebReceiver of the GPU DRP.">TebReceiver</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#af1d8971cfcb4d270cea82b46a1b82659">TebReceiver::setupMetrics()</a>.  <a href="structDrp_1_1Gpu_1_1TebReceiverMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html">TrgInpGen</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph, taking buffers from the reader queues in turn and passing them to the host through a ring queue.  <a href="classDrp_1_1Gpu_1_1TrgInpGen.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html">TrgInpGenMetrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counters of <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html" title="Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph,...">TrgInpGen</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a1d8882887e2bd782ac415d784c00a9a8" title="Reset the counters and add the DRP_tigState, DRP_tigRcv, DRP_tigFwd, DRP_colRcv, DRP_pidWtCtr,...">TrgInpGen::setupMetrics()</a>.  <a href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:aed1e35712c6e0f4e0017ae8d3668249c" id="r_aed1e35712c6e0f4e0017ae8d3668249c"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#aed1e35712c6e0f4e0017ae8d3668249c">ResultTuple</a> = std::tuple&lt; unsigned, const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">Pds::Eb::ResultDgram</a> * &gt;</td></tr>
+<tr class="memdesc:aed1e35712c6e0f4e0017ae8d3668249c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer index and TEB result, queued by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#a8e624d2627363ccef41c78596eebff36">TebReceiver::complete()</a> for the recorder thread.  <br /></td></tr>
 <tr class="separator:aed1e35712c6e0f4e0017ae8d3668249c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a52dd1ec19594691efb39c273f96465f0" id="r_a52dd1ec19594691efb39c273f96465f0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp_1_1Gpu.html#a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616">MaxPnlsPerNode</a> = 10
  }</td></tr>
+<tr class="memdesc:a52dd1ec19594691efb39c273f96465f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Panel limit used to space the NamesId indices below.  <a href="namespaceDrp_1_1Gpu.html#a52dd1ec19594691efb39c273f96465f0">More...</a><br /></td></tr>
 <tr class="separator:a52dd1ec19594691efb39c273f96465f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bcabdde436cc05876dffa8c681dfd5c" id="r_a5bcabdde436cc05876dffa8c681dfd5c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b">ConfigNamesIndex</a> = Drp::NamesIndex::BASE
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef">EventNamesIndex</a> = unsigned(ConfigNamesIndex) + unsigned(MaxPnlsPerNode)
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7">FexNamesIndex</a> = unsigned(EventNamesIndex) + unsigned(MaxPnlsPerNode)
 , <a class="el" href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795">ReducerNamesIndex</a>
  }</td></tr>
+<tr class="memdesc:a5bcabdde436cc05876dffa8c681dfd5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">NamesId indices for the xtc names of the GPU DRP (per the code comment).  <a href="namespaceDrp_1_1Gpu.html#a5bcabdde436cc05876dffa8c681dfd5c">More...</a><br /></td></tr>
 <tr class="separator:a5bcabdde436cc05876dffa8c681dfd5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeebfe1ccf333903cb378362ea79b4527" id="r_aeebfe1ccf333903cb378362ea79b4527"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527">DmaTgt_t</a> { <a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527a95d67fb596eb2035e0cc49464eb40cca">TGT_CPU</a> =0x0
 , <a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527a429b23202223b13f59cc6c42938eb04f">TGT_GPU</a> =0x1
@@ -211,20 +254,27 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a6f703c7021f52e9974139b3f48d2f7ef" id="r_a6f703c7021f52e9974139b3f48d2f7ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a6f703c7021f52e9974139b3f48d2f7ef">checkError</a> (CUresult status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:a6f703c7021f52e9974139b3f48d2f7ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:a6f703c7021f52e9974139b3f48d2f7ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9631d0842c6cf64b203c9cefcb45ac7" id="r_ab9631d0842c6cf64b203c9cefcb45ac7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#ab9631d0842c6cf64b203c9cefcb45ac7">checkError</a> (cudaError status, const char *func, const char *file, int line, bool crash=true, const char *msg=&quot;&quot;)</td></tr>
+<tr class="memdesc:ab9631d0842c6cf64b203c9cefcb45ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true.  <br /></td></tr>
 <tr class="separator:ab9631d0842c6cf64b203c9cefcb45ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a404249e7866106f82d07e9bcfccbeeec" id="r_a404249e7866106f82d07e9bcfccbeeec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527">DmaTgt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a404249e7866106f82d07e9bcfccbeeec">dmaTgtGet</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;)</td></tr>
+<tr class="memdesc:a404249e7866106f82d07e9bcfccbeeec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other value.  <br /></td></tr>
 <tr class="separator:a404249e7866106f82d07e9bcfccbeeec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bcf091c900efc4eb97537d27e02f909" id="r_a1bcf091c900efc4eb97537d27e02f909"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#a1bcf091c900efc4eb97537d27e02f909">dmaTgtSet</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;, <a class="el" href="namespaceDrp_1_1Gpu.html#aeebfe1ccf333903cb378362ea79b4527">DmaTgt_t</a>)</td></tr>
+<tr class="memdesc:a1bcf091c900efc4eb97537d27e02f909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write tgt to the AXI stream demux select field of coreRegs.  <br /></td></tr>
 <tr class="separator:a1bcf091c900efc4eb97537d27e02f909"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d" id="r_ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#ad3ffb2af69dbd7ab73b5ee5a1fca8b7d">dmaIdxReset</a> (<a class="el" href="classDrp_1_1Gpu_1_1CoreRegisters.html">CoreRegisters</a> &amp;)</td></tr>
 <tr class="memdesc:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to reset the DMA buffer round-robin index.  <br /></td></tr>
 <tr class="separator:ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcde766d5b7c3cbce7b8e17101788e65" id="r_adcde766d5b7c3cbce7b8e17101788e65"><td class="memItemLeft" align="right" valign="top">struct&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#adcde766d5b7c3cbce7b8e17101788e65">__attribute__</a> ((packed)) DmaDsc</td></tr>
+<tr class="memdesc:adcde766d5b7c3cbce7b8e17101788e65"><td class="mdescLeft">&#160;</td><td class="mdescRight">DmaDsc: the 8-byte DMA descriptor (header word and size word) defined by AxiStreamDmaV2Write.vhd in the SURF library (per the code comment).  <br /></td></tr>
 <tr class="separator:adcde766d5b7c3cbce7b8e17101788e65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="aed1e35712c6e0f4e0017ae8d3668249c" name="aed1e35712c6e0f4e0017ae8d3668249c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aed1e35712c6e0f4e0017ae8d3668249c">&#9670;&#160;</a></span>ResultTuple</h2>
 
@@ -236,6 +286,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Buffer index and TEB result, queued by <a class="el" href="classDrp_1_1Gpu_1_1TebReceiver.html#a8e624d2627363ccef41c78596eebff36">TebReceiver::complete()</a> for the recorder thread. </p>
 
 </div>
 </div>
@@ -251,8 +303,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Panel limit used to space the NamesId indices below. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616" name="a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616"></a>MaxPnlsPerNode&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616" name="a52dd1ec19594691efb39c273f96465f0a3960546d8beb7642684da31f85b0a616"></a>MaxPnlsPerNode&#160;</td><td class="fielddoc"><p>Maximum number of panels per node, 10 (per the code comment, taken from <a class="el" href="BEBDetector_8hh.html" title="BEBDetector, the base of DRP detectors whose events are built by the AxiStreamBatcherEventBuilder fir...">BEBDetector.hh</a>). </p>
+</td></tr>
 </table>
 
 </div>
@@ -268,11 +323,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>NamesId indices for the xtc names of the GPU DRP (per the code comment). </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b" name="a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef" name="a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef"></a>EventNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7" name="a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7"></a>FexNamesIndex&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795" name="a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795"></a>ReducerNamesIndex&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b" name="a5bcabdde436cc05876dffa8c681dfd5cabfc11eeb8e5300211bf744b14e933a0b"></a>ConfigNamesIndex&#160;</td><td class="fielddoc"><p><a class="el" href="namespaceDrp.html#a262f7e15eae88ef18ce209ebf55519b1a9362ed4605a01409bb4908f94c7db176" title="Value 0; BldDetector.cc uses it as its base names index.">Drp::NamesIndex::BASE</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef" name="a5bcabdde436cc05876dffa8c681dfd5ca3329a10c0c6bce0318c4db66ff8bb0ef"></a>EventNamesIndex&#160;</td><td class="fielddoc"><p>ConfigNamesIndex plus MaxPnlsPerNode. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7" name="a5bcabdde436cc05876dffa8c681dfd5cad74e6ea604b39b4b4c233bd500d6e0b7"></a>FexNamesIndex&#160;</td><td class="fielddoc"><p>EventNamesIndex plus MaxPnlsPerNode. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795" name="a5bcabdde436cc05876dffa8c681dfd5cac72ae9535d931f80c066924addca8795"></a>ReducerNamesIndex&#160;</td><td class="fielddoc"><p>FexNamesIndex plus 1; the reducers register the names of the reduced data under it. </p>
+</td></tr>
 </table>
 
 </div>
@@ -298,9 +359,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527a95d67fb596eb2035e0cc49464eb40cca" name="aeebfe1ccf333903cb378362ea79b4527a95d67fb596eb2035e0cc49464eb40cca"></a>TGT_CPU&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527a429b23202223b13f59cc6c42938eb04f" name="aeebfe1ccf333903cb378362ea79b4527a429b23202223b13f59cc6c42938eb04f"></a>TGT_GPU&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527afde75b9d9740b4dacdb4d7250ffac640" name="aeebfe1ccf333903cb378362ea79b4527afde75b9d9740b4dacdb4d7250ffac640"></a>TGT_ERR&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527a95d67fb596eb2035e0cc49464eb40cca" name="aeebfe1ccf333903cb378362ea79b4527a95d67fb596eb2035e0cc49464eb40cca"></a>TGT_CPU&#160;</td><td class="fielddoc"><p>Value 0: destination CPU. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527a429b23202223b13f59cc6c42938eb04f" name="aeebfe1ccf333903cb378362ea79b4527a429b23202223b13f59cc6c42938eb04f"></a>TGT_GPU&#160;</td><td class="fielddoc"><p>Value 1: destination GPU. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeebfe1ccf333903cb378362ea79b4527afde75b9d9740b4dacdb4d7250ffac640" name="aeebfe1ccf333903cb378362ea79b4527afde75b9d9740b4dacdb4d7250ffac640"></a>TGT_ERR&#160;</td><td class="fielddoc"><p>Returned by <a class="el" href="namespaceDrp_1_1Gpu.html#a404249e7866106f82d07e9bcfccbeeec" title="Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other...">dmaTgtGet()</a> for any other register value. </p>
+</td></tr>
 </table>
 
 </div>
@@ -321,6 +385,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>DmaDsc: the 8-byte DMA descriptor (header word and size word) defined by AxiStreamDmaV2Write.vhd in the SURF library (per the code comment). </p>
+<p>Doxygen parses this packed struct as a function named <b>attribute</b>. </p>
 
 </div>
 </div>
@@ -374,6 +441,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If status is not cudaSuccess, log file, line, the error name and description and msg, then abort if crash is true. </p>
+<p>Returns true on failure, else false; func is not used. </p>
+
 </div>
 </div>
 <a id="a6f703c7021f52e9974139b3f48d2f7ef" name="a6f703c7021f52e9974139b3f48d2f7ef"></a>
@@ -426,6 +496,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If status is not CUDA_SUCCESS, log file, line, the error name and description and msg, then abort if crash is true. </p>
+<p>Returns true on failure, else false; func is not used. </p>
+
 </div>
 </div>
 <a id="ad3ffb2af69dbd7ab73b5ee5a1fca8b7d" name="ad3ffb2af69dbd7ab73b5ee5a1fca8b7d"></a>
@@ -470,6 +543,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return TGT_CPU or TGT_GPU for the AXI stream demux select value of coreRegs, or TGT_ERR for any other value. </p>
+
 </div>
 </div>
 <a id="a1bcf091c900efc4eb97537d27e02f909" name="a1bcf091c900efc4eb97537d27e02f909"></a>
@@ -497,6 +572,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write tgt to the AXI stream demux select field of coreRegs. </p>
+<p><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html" title="Memory pool of the GPU DRP.">MemPoolGpu</a> sets TGT_GPU so that timing messages are sent to the GPU (per its code comment). </p>
 
 </div>
 </div>

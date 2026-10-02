@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('TriggerPrimitive_8hh.html',''); initRe
   <div class="headertitle"><div class="title">TriggerPrimitive.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>TriggerPrimitive, the interface of DRP plugins that compute the TEB input data of each event.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Dl_8hh.html">psdaq/service/Dl.hh</a>&quot;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
@@ -105,6 +108,7 @@ $(document).ready(function(){initNavTree('TriggerPrimitive_8hh.html',''); initRe
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html">Pds::Trg::TriggerPrimitive</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface of the DRP plugins that produce the TEB input data (<a class="el" href="classPds_1_1Trg_1_1TriggerPrimitive.html#a300c1813efbe545978e11121be17b7dd" title="Pure virtual: return the size in bytes of the TEB input data.">size()</a> bytes) for each event, either on the CPU or in a CUDA stream.  <a href="classPds_1_1Trg_1_1TriggerPrimitive.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -119,14 +123,18 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Trg" id="r_namespacePds_1_1Trg"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Trg.html">Pds::Trg</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Trg"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq trigger code: TEB input data records, trigger primitives and trigger decisions. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ae15d9c8b7a240312b533d6122558085a" id="r_ae15d9c8b7a240312b533d6122558085a"><td class="memItemLeft" align="right" valign="top">typedef struct CUstream_st *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TriggerPrimitive_8hh.html#ae15d9c8b7a240312b533d6122558085a">cudaStream_t</a></td></tr>
+<tr class="memdesc:ae15d9c8b7a240312b533d6122558085a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward declaration of the CUDA stream handle type, so that this header does not need the CUDA headers.  <br /></td></tr>
 <tr class="separator:ae15d9c8b7a240312b533d6122558085a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TriggerPrimitive, the interface of DRP plugins that compute the TEB input data of each event. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="ae15d9c8b7a240312b533d6122558085a" name="ae15d9c8b7a240312b533d6122558085a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae15d9c8b7a240312b533d6122558085a">&#9670;&#160;</a></span>cudaStream_t</h2>
 
@@ -138,6 +146,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Forward declaration of the CUDA stream handle type, so that this header does not need the CUDA headers. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('CubeData_8hh.html',''); initResizable(
   <div class="headertitle"><div class="title">CubeData.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>CubeData, which accumulates detector raw data into bins (a cube) held in one or more datagram buffers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="NamesId_8hh.html">xtcdata/xtc/NamesId.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TransitionId_8hh.html">xtcdata/xtc/TransitionId.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VarDef_8hh.html">xtcdata/xtc/VarDef.hh</a>&quot;</code><br />
@@ -104,6 +107,7 @@ $(document).ready(function(){initNavTree('CubeData_8hh.html',''); initResizable(
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1CubeData.html">Drp::CubeData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accumulates the detector raw data (<a class="el" href="classDrp_1_1Detector.html#a1fb07fe50433927c6b2f3965754d0f79" title="Log an error and abort; detectors used for cube binning must override it.">Detector::rawDef()</a>) into nbins bins.  <a href="classDrp_1_1CubeData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -121,9 +125,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a7ae88149ffdde61e619946e1d3ab2404" id="r_a7ae88149ffdde61e619946e1d3ab2404"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classXtcData_1_1ShapesData.html">XtcData::ShapesData</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CubeData_8hh.html#a7ae88149ffdde61e619946e1d3ab2404">SDV</a></td></tr>
+<tr class="memdesc:a7ae88149ffdde61e619946e1d3ab2404"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for a vector of <a class="el" href="classXtcData_1_1ShapesData.html" title="Xtc of type TypeId::ShapesData whose payload holds a Shapes xtc and a Data xtc, in either order.">XtcData::ShapesData</a> pointers (one per raw definition of the detector).  <br /></td></tr>
 <tr class="separator:a7ae88149ffdde61e619946e1d3ab2404"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>CubeData, which accumulates detector raw data into bins (a cube) held in one or more datagram buffers. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a7ae88149ffdde61e619946e1d3ab2404" name="a7ae88149ffdde61e619946e1d3ab2404"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ae88149ffdde61e619946e1d3ab2404">&#9670;&#160;</a></span>SDV</h2>
 
@@ -135,6 +142,8 @@ Typedefs</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Alias for a vector of <a class="el" href="classXtcData_1_1ShapesData.html" title="Xtc of type TypeId::ShapesData whose payload holds a Shapes xtc and a Data xtc, in either order.">XtcData::ShapesData</a> pointers (one per raw definition of the detector). </p>
 
 </div>
 </div>

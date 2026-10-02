@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Utils_8h.html',''); initResizable(); }
   <div class="headertitle"><div class="title">Utils.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>General C, C++ and CUDA helpers from axi-pcie-devel: memory dumps, raw register access, a monotonic clock and min, max and clamp.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('Utils_8h.html',''); initResizable(); }
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceutil" id="r_namespaceutil"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutil.html">util</a></td></tr>
+<tr class="memdesc:namespaceutil"><td class="mdescLeft">&#160;</td><td class="mdescRight">Small generic helpers that return the common type of their arguments. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -125,18 +129,25 @@ Functions</h2></td></tr>
 <tr class="memdesc:a3d3a18f23f146c57c132c5d764f09ce5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stupid wrapper for reading FPGA registers mapped via DMA.  <br /></td></tr>
 <tr class="separator:a3d3a18f23f146c57c132c5d764f09ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60dc2d073b6f2f82b3df67d3d18fe507" id="r_a60dc2d073b6f2f82b3df67d3d18fe507"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Utils_8h.html#a60dc2d073b6f2f82b3df67d3d18fe507">curTime</a> ()</td></tr>
+<tr class="memdesc:a60dc2d073b6f2f82b3df67d3d18fe507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the CLOCK_MONOTONIC time in seconds.  <br /></td></tr>
 <tr class="separator:a60dc2d073b6f2f82b3df67d3d18fe507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abefc7de47d36221e9377602a2c2e315e" id="r_abefc7de47d36221e9377602a2c2e315e"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B &gt; </td></tr>
 <tr class="memitem:abefc7de47d36221e9377602a2c2e315e"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#abefc7de47d36221e9377602a2c2e315e">util::min</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="memdesc:abefc7de47d36221e9377602a2c2e315e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the smaller of a and b (b if they compare equal), as their common type.  <br /></td></tr>
 <tr class="separator:abefc7de47d36221e9377602a2c2e315e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b180b8e6c7ddbdede582e0a0170350c" id="r_a9b180b8e6c7ddbdede582e0a0170350c"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B &gt; </td></tr>
 <tr class="memitem:a9b180b8e6c7ddbdede582e0a0170350c"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#a9b180b8e6c7ddbdede582e0a0170350c">util::max</a> (const A &amp;a, const B &amp;b)</td></tr>
+<tr class="memdesc:a9b180b8e6c7ddbdede582e0a0170350c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the larger of a and b (b if they compare equal), as their common type.  <br /></td></tr>
 <tr class="separator:a9b180b8e6c7ddbdede582e0a0170350c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1261d85b516d7689cd4ffd1ee852650" id="r_ab1261d85b516d7689cd4ffd1ee852650"><td class="memTemplParams" colspan="2">template&lt;typename A , typename B , typename C &gt; </td></tr>
 <tr class="memitem:ab1261d85b516d7689cd4ffd1ee852650"><td class="memTemplItemLeft" align="right" valign="top">std::common_type&lt; A, B, C &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutil.html#ab1261d85b516d7689cd4ffd1ee852650">util::clamp</a> (const A &amp;val, const B &amp;lower, const C &amp;upper)</td></tr>
+<tr class="memdesc:ab1261d85b516d7689cd4ffd1ee852650"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return val limited to the range from lower to upper, as the common type of the three arguments.  <br /></td></tr>
 <tr class="separator:ab1261d85b516d7689cd4ffd1ee852650"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>General C, C++ and CUDA helpers from axi-pcie-devel: memory dumps, raw register access, a monotonic clock and min, max and clamp. </p>
+<p>Used in psdaq through <a class="el" href="GpuAsyncLib_8hh.html" title="CUDA and GPU Async helpers (error checks, DataDev, CudaContext, FPGA and GPU memory mapping,...">GpuAsyncLib.hh</a> by the pgpread_gpu tool. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a60dc2d073b6f2f82b3df67d3d18fe507" name="a60dc2d073b6f2f82b3df67d3d18fe507"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a60dc2d073b6f2f82b3df67d3d18fe507">&#9670;&#160;</a></span>curTime()</h2>
 
@@ -159,6 +170,8 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the CLOCK_MONOTONIC time in seconds. </p>
 
 </div>
 </div>

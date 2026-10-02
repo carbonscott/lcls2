@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('GenericPoolW_8hh.html',''); initResiza
   <div class="headertitle"><div class="title">GenericPoolW.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>GenericPoolW, a GenericPool whose allocation waits for a free buffer instead of failing.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="GenericPool_8hh.html">GenericPool.hh</a>&quot;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;mutex&gt;</code><br />
@@ -104,6 +107,7 @@ $(document).ready(function(){initNavTree('GenericPoolW_8hh.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1GenericPoolW.html">Pds::GenericPoolW</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1GenericPool.html" title="Pool whose buffers are carved from one new[] block and kept on a Queue of PoolEntry (spin-locked); al...">GenericPool</a> whose allocation blocks on a condition variable until a buffer is freed (or <a class="el" href="classPds_1_1GenericPoolW.html#a5c5f550bfb817d852ba1ca692daa7866" title="Set the stopping flag and wake all waiting allocations, which then return nullptr.">stop()</a> is called); frees wake one waiter.  <a href="classPds_1_1GenericPoolW.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -112,7 +116,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>GenericPoolW, a GenericPool whose allocation waits for a free buffer instead of failing. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

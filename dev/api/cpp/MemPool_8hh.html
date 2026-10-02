@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('MemPool_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">MemPool.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>MemPoolGpu, the memory pool of the GPU DRP (DMA, host write, calibration and reduce buffers), with <a class="el" href="classDataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>, DetPanel, DmaDsc and Ptr.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="gpuUtils_8hh.html">gpuUtils.hh</a>&quot;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -110,13 +113,16 @@ $(document).ready(function(){initNavTree('MemPool_8hh.html',''); initResizable()
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1Ptr.html">Drp::Gpu::Ptr&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pair of pointers of type T, one for the host and one for the device; <a class="el" href="classDrp_1_1Gpu_1_1Reducer.html" title="Runs the data reduction on the GPU for PGPDrp: loads the reducer library named by the reducer kwarg,...">Reducer</a> uses it for each ring queue object and its device copy.  <a href="structDrp_1_1Gpu_1_1Ptr.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1DataDev.html">Drp::Gpu::DataDev</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps a data_dev device so it can be automatically freed.  <a href="classDrp_1_1Gpu_1_1DataDev.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1DetPanel.html">Drp::Gpu::DetPanel</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PGP device of the GPU DRP and the GPU resources tied to it.  <a href="structDrp_1_1Gpu_1_1DetPanel.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1MemPoolGpu.html">Drp::Gpu::MemPoolGpu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory pool of the GPU DRP.  <a href="classDrp_1_1Gpu_1_1MemPoolGpu.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -125,19 +131,25 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a403cddad6902bf807429ac09878dda01" id="r_a403cddad6902bf807429ac09878dda01"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MemPool_8hh.html#a403cddad6902bf807429ac09878dda01">NVTX_DISABLE</a></td></tr>
+<tr class="memdesc:a403cddad6902bf807429ac09878dda01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable NVTX profiling annotations; per the comment above, NVTX headers check this macro.  <br /></td></tr>
 <tr class="separator:a403cddad6902bf807429ac09878dda01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:adcde766d5b7c3cbce7b8e17101788e65" id="r_adcde766d5b7c3cbce7b8e17101788e65"><td class="memItemLeft" align="right" valign="top">struct&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html#adcde766d5b7c3cbce7b8e17101788e65">Drp::Gpu::__attribute__</a> ((packed)) DmaDsc</td></tr>
+<tr class="memdesc:adcde766d5b7c3cbce7b8e17101788e65"><td class="mdescLeft">&#160;</td><td class="mdescRight">DmaDsc: the 8-byte DMA descriptor (header word and size word) defined by AxiStreamDmaV2Write.vhd in the SURF library (per the code comment).  <br /></td></tr>
 <tr class="separator:adcde766d5b7c3cbce7b8e17101788e65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>MemPoolGpu, the memory pool of the GPU DRP (DMA, host write, calibration and reduce buffers), with <a class="el" href="classDataDev.html" title="Wraps a data_dev device so it can be automatically freed.">DataDev</a>, DetPanel, DmaDsc and Ptr. </p>
+<p>Also holds the HOST_REARMS_DMA and HOST_LAUNCHED_REDUCERS build switches, both commented out. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a403cddad6902bf807429ac09878dda01" name="a403cddad6902bf807429ac09878dda01"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a403cddad6902bf807429ac09878dda01">&#9670;&#160;</a></span>NVTX_DISABLE</h2>
 
@@ -149,6 +161,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Disable NVTX profiling annotations; per the comment above, NVTX headers check this macro. </p>
+<p>It is defined after nvtx3.hpp is included above. </p>
 
 </div>
 </div>

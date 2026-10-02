@@ -102,26 +102,37 @@ $(document).ready(function(){initNavTree('structDrp_1_1encoder__header__t.html',
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a4d46957a962d3f8016d157d87a6b7c04" id="r_a4d46957a962d3f8016d157d87a6b7c04"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#a4d46957a962d3f8016d157d87a6b7c04">frameCount</a></td></tr>
+<tr class="memdesc:a4d46957a962d3f8016d157d87a6b7c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frame counter, in network byte order on the wire; <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> converts it and uses it to detect missing and out-of-order frames.  <br /></td></tr>
 <tr class="separator:a4d46957a962d3f8016d157d87a6b7c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a406ed728bd9a59faeadc81b9aad32334" id="r_a406ed728bd9a59faeadc81b9aad32334"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#a406ed728bd9a59faeadc81b9aad32334">reserved1</a> [2]</td></tr>
+<tr class="memdesc:a406ed728bd9a59faeadc81b9aad32334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Two bytes named reserved1; not used in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:a406ed728bd9a59faeadc81b9aad32334"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf19a19e27a5b75a3dfc87ae33a018a9" id="r_abf19a19e27a5b75a3dfc87ae33a018a9"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#abf19a19e27a5b75a3dfc87ae33a018a9">majorVersion</a></td></tr>
+<tr class="memdesc:abf19a19e27a5b75a3dfc87ae33a018a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Major version, in network byte order on the wire; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79aff18b742a9de929d703ae5301dd8834e" title="Major version (3).">UdpEncoder::MajorVersion</a>.  <br /></td></tr>
 <tr class="separator:abf19a19e27a5b75a3dfc87ae33a018a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1693d4bc62558d2851839b1f2a621eb" id="r_ad1693d4bc62558d2851839b1f2a621eb"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#ad1693d4bc62558d2851839b1f2a621eb">minorVersion</a></td></tr>
+<tr class="memdesc:ad1693d4bc62558d2851839b1f2a621eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minor version; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79a77de61b19db460ba3622a7daa5f705a5" title="Minor version (0).">UdpEncoder::MinorVersion</a>.  <br /></td></tr>
 <tr class="separator:ad1693d4bc62558d2851839b1f2a621eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a639a90e2fdc3eefea32df18b6c44e268" id="r_a639a90e2fdc3eefea32df18b6c44e268"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#a639a90e2fdc3eefea32df18b6c44e268">microVersion</a></td></tr>
+<tr class="memdesc:a639a90e2fdc3eefea32df18b6c44e268"><td class="mdescLeft">&#160;</td><td class="mdescRight">Micro version; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79a5a4dad4115ff7caac44522696f96a374" title="Micro version (0).">UdpEncoder::MicroVersion</a>.  <br /></td></tr>
 <tr class="separator:a639a90e2fdc3eefea32df18b6c44e268"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9205333d178e538e8b0a77917f7c01d4" id="r_a9205333d178e538e8b0a77917f7c01d4"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#a9205333d178e538e8b0a77917f7c01d4">hardwareID</a> [16]</td></tr>
+<tr class="memdesc:a9205333d178e538e8b0a77917f7c01d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hardware ID text (16 bytes), logged at debug level; the loopback sender writes LOOPBACK SIM.  <br /></td></tr>
 <tr class="separator:a9205333d178e538e8b0a77917f7c01d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02fa9bb89063a00c8c9f96e37e1cbae8" id="r_a02fa9bb89063a00c8c9f96e37e1cbae8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#a02fa9bb89063a00c8c9f96e37e1cbae8">reserved2</a></td></tr>
+<tr class="memdesc:a02fa9bb89063a00c8c9f96e37e1cbae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">One byte named reserved2; not used in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:a02fa9bb89063a00c8c9f96e37e1cbae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8c2c26824f2f72e037d8b7df22e345b" id="r_af8c2c26824f2f72e037d8b7df22e345b"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#af8c2c26824f2f72e037d8b7df22e345b">channelMask</a></td></tr>
+<tr class="memdesc:af8c2c26824f2f72e037d8b7df22e345b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channel mask; the loopback sender writes 0x01, otherwise not read in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:af8c2c26824f2f72e037d8b7df22e345b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac22c2777cd0bfdb1267ec7791b066fb8" id="r_ac22c2777cd0bfdb1267ec7791b066fb8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#ac22c2777cd0bfdb1267ec7791b066fb8">errorMask</a></td></tr>
+<tr class="memdesc:ac22c2777cd0bfdb1267ec7791b066fb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error mask; not read in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:ac22c2777cd0bfdb1267ec7791b066fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae24558a24770fe2ce7c863842eff058f" id="r_ae24558a24770fe2ce7c863842eff058f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#ae24558a24770fe2ce7c863842eff058f">mode</a></td></tr>
+<tr class="memdesc:ae24558a24770fe2ce7c863842eff058f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Header mode byte; not read in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:ae24558a24770fe2ce7c863842eff058f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2005f17dd16459aa51fdfae2f6d702a" id="r_ac2005f17dd16459aa51fdfae2f6d702a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__header__t.html#ac2005f17dd16459aa51fdfae2f6d702a">reserved3</a> [4]</td></tr>
+<tr class="memdesc:ac2005f17dd16459aa51fdfae2f6d702a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Four bytes named reserved3; not used in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:ac2005f17dd16459aa51fdfae2f6d702a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -137,6 +148,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Channel mask; the loopback sender writes 0x01, otherwise not read in UdpEncoder.cc. </p>
+
 </div>
 </div>
 <a id="ac22c2777cd0bfdb1267ec7791b066fb8" name="ac22c2777cd0bfdb1267ec7791b066fb8"></a>
@@ -150,6 +163,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Error mask; not read in UdpEncoder.cc. </p>
 
 </div>
 </div>
@@ -165,6 +180,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Frame counter, in network byte order on the wire; <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> converts it and uses it to detect missing and out-of-order frames. </p>
+
 </div>
 </div>
 <a id="a9205333d178e538e8b0a77917f7c01d4" name="a9205333d178e538e8b0a77917f7c01d4"></a>
@@ -178,6 +195,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Hardware ID text (16 bytes), logged at debug level; the loopback sender writes LOOPBACK SIM. </p>
 
 </div>
 </div>
@@ -193,6 +212,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Major version, in network byte order on the wire; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79aff18b742a9de929d703ae5301dd8834e" title="Major version (3).">UdpEncoder::MajorVersion</a>. </p>
+
 </div>
 </div>
 <a id="a639a90e2fdc3eefea32df18b6c44e268" name="a639a90e2fdc3eefea32df18b6c44e268"></a>
@@ -206,6 +227,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Micro version; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79a5a4dad4115ff7caac44522696f96a374" title="Micro version (0).">UdpEncoder::MicroVersion</a>. </p>
 
 </div>
 </div>
@@ -221,6 +244,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Minor version; the loopback sender writes <a class="el" href="classDrp_1_1UdpEncoder.html#acb514efa2e8248a42cadc88f83fe8f79a77de61b19db460ba3622a7daa5f705a5" title="Minor version (0).">UdpEncoder::MinorVersion</a>. </p>
+
 </div>
 </div>
 <a id="ae24558a24770fe2ce7c863842eff058f" name="ae24558a24770fe2ce7c863842eff058f"></a>
@@ -234,6 +259,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Header mode byte; not read in UdpEncoder.cc. </p>
 
 </div>
 </div>
@@ -249,6 +276,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Two bytes named reserved1; not used in UdpEncoder.cc. </p>
+
 </div>
 </div>
 <a id="a02fa9bb89063a00c8c9f96e37e1cbae8" name="a02fa9bb89063a00c8c9f96e37e1cbae8"></a>
@@ -263,6 +292,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>One byte named reserved2; not used in UdpEncoder.cc. </p>
+
 </div>
 </div>
 <a id="ac2005f17dd16459aa51fdfae2f6d702a" name="ac2005f17dd16459aa51fdfae2f6d702a"></a>
@@ -276,6 +307,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Four bytes named reserved3; not used in UdpEncoder.cc. </p>
 
 </div>
 </div>

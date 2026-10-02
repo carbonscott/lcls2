@@ -98,21 +98,29 @@ $(document).ready(function(){initNavTree('structPds_1_1Trg_1_1TmoTebData.html','
 </div><!--header-->
 <div class="contents">
 
+<p>TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed example values (0xdeadbeef, 0x12345678) and tmoTeb.cc compares them with its configured values.  
+ <a href="structPds_1_1Trg_1_1TmoTebData.html#details">More...</a></p>
+
 <p><code>#include &lt;TmoTebData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a005a1c741a9a8dc9e83538d81d03355c" id="r_a005a1c741a9a8dc9e83538d81d03355c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TmoTebData.html#a005a1c741a9a8dc9e83538d81d03355c">TmoTebData</a> (uint32_t write_, uint32_t monitor_)</td></tr>
+<tr class="memdesc:a005a1c741a9a8dc9e83538d81d03355c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the write and monitor words.  <br /></td></tr>
 <tr class="separator:a005a1c741a9a8dc9e83538d81d03355c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:afe7996b4287a91d751eb59183aac7cd9" id="r_afe7996b4287a91d751eb59183aac7cd9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TmoTebData.html#afe7996b4287a91d751eb59183aac7cd9">write</a></td></tr>
+<tr class="memdesc:afe7996b4287a91d751eb59183aac7cd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Word compared by tmoTeb.cc with its write value to set the persist bit of the result.  <br /></td></tr>
 <tr class="separator:afe7996b4287a91d751eb59183aac7cd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a863324c0659f9af200b4d910bc0847b8" id="r_a863324c0659f9af200b4d910bc0847b8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1TmoTebData.html#a863324c0659f9af200b4d910bc0847b8">monitor</a></td></tr>
+<tr class="memdesc:a863324c0659f9af200b4d910bc0847b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Word compared by tmoTeb.cc with its monitor value to request monitoring by all MEBs.  <br /></td></tr>
 <tr class="separator:a863324c0659f9af200b4d910bc0847b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TEB input record with a write word and a monitor word; tmoTebPrimitive.cc fills them with fixed example values (0xdeadbeef, 0x12345678) and tmoTeb.cc compares them with its configured values. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a005a1c741a9a8dc9e83538d81d03355c" name="a005a1c741a9a8dc9e83538d81d03355c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a005a1c741a9a8dc9e83538d81d03355c">&#9670;&#160;</a></span>TmoTebData()</h2>
 
@@ -147,6 +155,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Store the write and monitor words. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -162,6 +172,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Word compared by tmoTeb.cc with its monitor value to request monitoring by all MEBs. </p>
+
 </div>
 </div>
 <a id="afe7996b4287a91d751eb59183aac7cd9" name="afe7996b4287a91d751eb59183aac7cd9"></a>
@@ -175,6 +187,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Word compared by tmoTeb.cc with its write value to set the persist bit of the result. </p>
 
 </div>
 </div>

@@ -98,33 +98,47 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1LocalAddress.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Local buffer (pointer and length) with an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>; its first two fields are reinterpreted as a struct iovec by <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a68dc3613fec6929dd34921ed8c8c4009" title="Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the f...">iovec()</a>.  
+ <a href="classPds_1_1Fabrics_1_1LocalAddress.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a77d2247982f123f3e468d0d217bede22" id="r_a77d2247982f123f3e468d0d217bede22"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a77d2247982f123f3e468d0d217bede22">LocalAddress</a> ()</td></tr>
+<tr class="memdesc:a77d2247982f123f3e468d0d217bede22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with a null buffer, zero length and no memory region.  <br /></td></tr>
 <tr class="separator:a77d2247982f123f3e468d0d217bede22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82ef07c1e7d178324c6af48591c645fe" id="r_a82ef07c1e7d178324c6af48591c645fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a82ef07c1e7d178324c6af48591c645fe">LocalAddress</a> (void *<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#afddb12d3a603a414f079a6eb9bc3c876">buf</a>, size_t <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a22d02239ef17517d3d529e5a277cc0d5">len</a>, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *<a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#aae6c89ac0c92fdfa329dffda3659dde7">mr</a>=NULL)</td></tr>
+<tr class="memdesc:a82ef07c1e7d178324c6af48591c645fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a buffer pointer, its length and an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>.  <br /></td></tr>
 <tr class="separator:a82ef07c1e7d178324c6af48591c645fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afddb12d3a603a414f079a6eb9bc3c876" id="r_afddb12d3a603a414f079a6eb9bc3c876"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#afddb12d3a603a414f079a6eb9bc3c876">buf</a> () const</td></tr>
+<tr class="memdesc:afddb12d3a603a414f079a6eb9bc3c876"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the buffer pointer.  <br /></td></tr>
 <tr class="separator:afddb12d3a603a414f079a6eb9bc3c876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22d02239ef17517d3d529e5a277cc0d5" id="r_a22d02239ef17517d3d529e5a277cc0d5"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a22d02239ef17517d3d529e5a277cc0d5">len</a> () const</td></tr>
+<tr class="memdesc:a22d02239ef17517d3d529e5a277cc0d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the buffer length.  <br /></td></tr>
 <tr class="separator:a22d02239ef17517d3d529e5a277cc0d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae6c89ac0c92fdfa329dffda3659dde7" id="r_aae6c89ac0c92fdfa329dffda3659dde7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#aae6c89ac0c92fdfa329dffda3659dde7">mr</a> () const</td></tr>
+<tr class="memdesc:aae6c89ac0c92fdfa329dffda3659dde7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the associated <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>, or NULL if none is set.  <br /></td></tr>
 <tr class="separator:aae6c89ac0c92fdfa329dffda3659dde7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68dc3613fec6929dd34921ed8c8c4009" id="r_a68dc3613fec6929dd34921ed8c8c4009"><td class="memItemLeft" align="right" valign="top">const struct iovec *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a68dc3613fec6929dd34921ed8c8c4009">iovec</a> () const</td></tr>
+<tr class="memdesc:a68dc3613fec6929dd34921ed8c8c4009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the first members).  <br /></td></tr>
 <tr class="separator:a68dc3613fec6929dd34921ed8c8c4009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a25c1eaf5350be4be5a6acf9a5d22207d" id="r_a25c1eaf5350be4be5a6acf9a5d22207d"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a25c1eaf5350be4be5a6acf9a5d22207d">_buf</a></td></tr>
+<tr class="memdesc:a25c1eaf5350be4be5a6acf9a5d22207d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer pointer (the iovec iov_base field).  <br /></td></tr>
 <tr class="separator:a25c1eaf5350be4be5a6acf9a5d22207d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcc178b960027a44695aa32691de41e0" id="r_abcc178b960027a44695aa32691de41e0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#abcc178b960027a44695aa32691de41e0">_len</a></td></tr>
+<tr class="memdesc:abcc178b960027a44695aa32691de41e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffer length (the iovec iov_len field).  <br /></td></tr>
 <tr class="separator:abcc178b960027a44695aa32691de41e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad26be4c4c9b45aa55f039cd6664701dd" id="r_ad26be4c4c9b45aa55f039cd6664701dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">MemoryRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#ad26be4c4c9b45aa55f039cd6664701dd">_mr</a></td></tr>
+<tr class="memdesc:ad26be4c4c9b45aa55f039cd6664701dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associated memory region or NULL; set by <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#aa635717d8839f75a04088093c590de1e" title="Register the buffer of laddr like register_memory(void*, size_t) and also store the new MemoryRegion ...">Fabric::register_memory(LocalAddress*)</a>.  <br /></td></tr>
 <tr class="separator:ad26be4c4c9b45aa55f039cd6664701dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Local buffer (pointer and length) with an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>; its first two fields are reinterpreted as a struct iovec by <a class="el" href="classPds_1_1Fabrics_1_1LocalAddress.html#a68dc3613fec6929dd34921ed8c8c4009" title="Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the f...">iovec()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a77d2247982f123f3e468d0d217bede22" name="a77d2247982f123f3e468d0d217bede22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77d2247982f123f3e468d0d217bede22">&#9670;&#160;</a></span>LocalAddress() <span class="overload">[1/2]</span></h2>
 
@@ -139,6 +153,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with a null buffer, zero length and no memory region. </p>
 
 </div>
 </div>
@@ -174,6 +190,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct from a buffer pointer, its length and an optional <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -192,6 +210,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the buffer pointer. </p>
+
 </div>
 </div>
 <a id="a68dc3613fec6929dd34921ed8c8c4009" name="a68dc3613fec6929dd34921ed8c8c4009"></a>
@@ -208,6 +228,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return this object reinterpreted as a const struct iovec pointer (relies on _buf and _len being the first members). </p>
 
 </div>
 </div>
@@ -226,6 +248,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the buffer length. </p>
+
 </div>
 </div>
 <a id="aae6c89ac0c92fdfa329dffda3659dde7" name="aae6c89ac0c92fdfa329dffda3659dde7"></a>
@@ -243,6 +267,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the associated <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html" title="Owns a registered libfabric memory region (fid_mr) together with its start address and length.">MemoryRegion</a>, or NULL if none is set. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -258,6 +284,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffer pointer (the iovec iov_base field). </p>
+
 </div>
 </div>
 <a id="abcc178b960027a44695aa32691de41e0" name="abcc178b960027a44695aa32691de41e0"></a>
@@ -272,6 +300,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffer length (the iovec iov_len field). </p>
+
 </div>
 </div>
 <a id="ad26be4c4c9b45aa55f039cd6664701dd" name="ad26be4c4c9b45aa55f039cd6664701dd"></a>
@@ -285,6 +315,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Associated memory region or NULL; set by <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html#aa635717d8839f75a04088093c590de1e" title="Register the buffer of laddr like register_memory(void*, size_t) and also store the new MemoryRegion ...">Fabric::register_memory(LocalAddress*)</a>. </p>
 
 </div>
 </div>

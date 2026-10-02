@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedMultiFileWriterMT.
 </div><!--header-->
 <div class="contents">
 
+<p>Writes events round-robin to several <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> files.  
+ <a href="classDrp_1_1BufferedMultiFileWriterMT.html#details">More...</a></p>
+
 <p><code>#include &lt;FileWriter.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a>.</p>
@@ -104,35 +107,50 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedMultiFileWriterMT.
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a224bbc5e2979d26d0371b6f4d6c53ec1" id="r_a224bbc5e2979d26d0371b6f4d6c53ec1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a224bbc5e2979d26d0371b6f4d6c53ec1">BufferedMultiFileWriterMT</a> (size_t bufferSize, size_t numFiles)</td></tr>
+<tr class="memdesc:a224bbc5e2979d26d0371b6f4d6c53ec1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create numFiles <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> writers with buffers of bufferSize bytes.  <br /></td></tr>
 <tr class="separator:a224bbc5e2979d26d0371b6f4d6c53ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04fd6c53eda0a17049b8c91bae4911db" id="r_a04fd6c53eda0a17049b8c91bae4911db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a04fd6c53eda0a17049b8c91bae4911db">BufferedMultiFileWriterMT</a> (size_t bufferSize, size_t numFiles, bool dio)</td></tr>
+<tr class="memdesc:a04fd6c53eda0a17049b8c91bae4911db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create numFiles <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> writers with buffers of bufferSize bytes and the given direct-I/O setting.  <br /></td></tr>
 <tr class="separator:a04fd6c53eda0a17049b8c91bae4911db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2dc0aef05328f614422519aef85b6479" id="r_a2dc0aef05328f614422519aef85b6479"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a2dc0aef05328f614422519aef85b6479">~BufferedMultiFileWriterMT</a> () override</td></tr>
+<tr class="memdesc:a2dc0aef05328f614422519aef85b6479"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty body; the writers are destroyed with their vector.  <br /></td></tr>
 <tr class="separator:a2dc0aef05328f614422519aef85b6479"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3934de02ad46317eaf696e61abc47f0a" id="r_a3934de02ad46317eaf696e61abc47f0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a3934de02ad46317eaf696e61abc47f0a">open</a> (const std::string &amp;fileName) override</td></tr>
+<tr class="memdesc:a3934de02ad46317eaf696e61abc47f0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open one file per writer, named from fileName by inserting -iNN (00, 01, ...) before the last dot.  <br /></td></tr>
 <tr class="separator:a3934de02ad46317eaf696e61abc47f0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bea5f4dc0fdfc5ad8e3bdd910d60b65" id="r_a8bea5f4dc0fdfc5ad8e3bdd910d60b65"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a8bea5f4dc0fdfc5ad8e3bdd910d60b65">close</a> () override</td></tr>
+<tr class="memdesc:a8bea5f4dc0fdfc5ad8e3bdd910d60b65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close each writer, stopping at the first non-zero result, which is returned (0 if all succeed).  <br /></td></tr>
 <tr class="separator:a8bea5f4dc0fdfc5ad8e3bdd910d60b65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb1137cd6e71905c27303c3161cc4514" id="r_abb1137cd6e71905c27303c3161cc4514"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#abb1137cd6e71905c27303c3161cc4514">writeEvent</a> (const void *data, size_t <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a978d1bf473c283e410ceef2037cd6de7">size</a>, <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> ts) override</td></tr>
+<tr class="memdesc:abb1137cd6e71905c27303c3161cc4514"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass the event to the next writer in round-robin order.  <br /></td></tr>
 <tr class="separator:abb1137cd6e71905c27303c3161cc4514"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3802d8a64850f920c4c3c9c8ec390b45" id="r_a3802d8a64850f920c4c3c9c8ec390b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a3802d8a64850f920c4c3c9c8ec390b45">run</a> ()</td></tr>
+<tr class="memdesc:a3802d8a64850f920c4c3c9c8ec390b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared here; no definition was found in psdaq.  <br /></td></tr>
 <tr class="separator:a3802d8a64850f920c4c3c9c8ec390b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83722088f2fb5f638c68c4b1c6f8834a" id="r_a83722088f2fb5f638c68c4b1c6f8834a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a83722088f2fb5f638c68c4b1c6f8834a">depth</a> (size_t i) const</td></tr>
+<tr class="memdesc:a83722088f2fb5f638c68c4b1c6f8834a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a83722088f2fb5f638c68c4b1c6f8834a" title="Return depth() of writer i.">depth()</a> of writer i.  <br /></td></tr>
 <tr class="separator:a83722088f2fb5f638c68c4b1c6f8834a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a978d1bf473c283e410ceef2037cd6de7" id="r_a978d1bf473c283e410ceef2037cd6de7"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a978d1bf473c283e410ceef2037cd6de7">size</a> (size_t i) const</td></tr>
+<tr class="memdesc:a978d1bf473c283e410ceef2037cd6de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a978d1bf473c283e410ceef2037cd6de7" title="Return size() of writer i.">size()</a> of writer i.  <br /></td></tr>
 <tr class="separator:a978d1bf473c283e410ceef2037cd6de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61dae0f3c401580e3d3a3c81c4a8054d" id="r_a61dae0f3c401580e3d3a3c81c4a8054d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a61dae0f3c401580e3d3a3c81c4a8054d">writing</a> (size_t i) const</td></tr>
+<tr class="memdesc:a61dae0f3c401580e3d3a3c81c4a8054d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a61dae0f3c401580e3d3a3c81c4a8054d" title="Return writing() of writer i.">writing()</a> of writer i.  <br /></td></tr>
 <tr class="separator:a61dae0f3c401580e3d3a3c81c4a8054d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dca0e6e3432a39aa346a9746b3d1c04" id="r_a0dca0e6e3432a39aa346a9746b3d1c04"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a0dca0e6e3432a39aa346a9746b3d1c04">freeBlocked</a> (size_t i) const</td></tr>
+<tr class="memdesc:a0dca0e6e3432a39aa346a9746b3d1c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a0dca0e6e3432a39aa346a9746b3d1c04" title="Return freeBlocked() of writer i.">freeBlocked()</a> of writer i.  <br /></td></tr>
 <tr class="separator:a0dca0e6e3432a39aa346a9746b3d1c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba63b4ea12040e8a0ce63548915b03e1" id="r_aba63b4ea12040e8a0ce63548915b03e1"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#aba63b4ea12040e8a0ce63548915b03e1">pendBlocked</a> (size_t i) const</td></tr>
+<tr class="memdesc:aba63b4ea12040e8a0ce63548915b03e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#aba63b4ea12040e8a0ce63548915b03e1" title="Return pendBlocked() of writer i.">pendBlocked()</a> of writer i.  <br /></td></tr>
 <tr class="separator:aba63b4ea12040e8a0ce63548915b03e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dced26d62dabc46b112f3821e54848" id="r_ab3dced26d62dabc46b112f3821e54848"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#ab3dced26d62dabc46b112f3821e54848">writing</a> () const</td></tr>
+<tr class="memdesc:ab3dced26d62dabc46b112f3821e54848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Brings <a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848" title="Return the writing counter (non-zero while an implementation is inside a write).">FileWriterBase::writing()</a> into scope next to the per-file writing(i) overload.  <br /></td></tr>
 <tr class="separator:ab3dced26d62dabc46b112f3821e54848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1FileWriterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1FileWriterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with the writing counter at 0.  <br /></td></tr>
 <tr class="separator:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ac05e5eacde9fb730bf4abc2b362c402e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac05e5eacde9fb730bf4abc2b362c402e">~FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -141,7 +159,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase" id="r_a015874f88c3a5c3cad1c96415375746d"><td class="memItemLeft" align="right" valign="top">volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a015874f88c3a5c3cad1c96415375746d">m_writing</a></td></tr>
 <tr class="separator:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Writes events round-robin to several <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> files. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a224bbc5e2979d26d0371b6f4d6c53ec1" name="a224bbc5e2979d26d0371b6f4d6c53ec1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a224bbc5e2979d26d0371b6f4d6c53ec1">&#9670;&#160;</a></span>BufferedMultiFileWriterMT() <span class="overload">[1/2]</span></h2>
 
@@ -167,6 +187,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Create numFiles <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> writers with buffers of bufferSize bytes. </p>
 
 </div>
 </div>
@@ -202,6 +224,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create numFiles <a class="el" href="classDrp_1_1BufferedFileWriterMT.html" title="File writer with a pool of page-aligned buffers and a writer thread: writeEvent() fills buffers and q...">BufferedFileWriterMT</a> writers with buffers of bufferSize bytes and the given direct-I/O setting. </p>
+
 </div>
 </div>
 <a id="a2dc0aef05328f614422519aef85b6479" name="a2dc0aef05328f614422519aef85b6479"></a>
@@ -226,6 +250,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Empty body; the writers are destroyed with their vector. </p>
 
 </div>
 </div>
@@ -252,6 +278,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Close each writer, stopping at the first non-zero result, which is returned (0 if all succeed). </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#a318270a36a20e28499d517847a5499fa">Drp::FileWriterBase</a>.</p>
 
@@ -281,6 +309,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a83722088f2fb5f638c68c4b1c6f8834a" title="Return depth() of writer i.">depth()</a> of writer i. </p>
+
 </div>
 </div>
 <a id="a0dca0e6e3432a39aa346a9746b3d1c04" name="a0dca0e6e3432a39aa346a9746b3d1c04"></a>
@@ -307,6 +337,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a0dca0e6e3432a39aa346a9746b3d1c04" title="Return freeBlocked() of writer i.">freeBlocked()</a> of writer i. </p>
+
 </div>
 </div>
 <a id="a3934de02ad46317eaf696e61abc47f0a" name="a3934de02ad46317eaf696e61abc47f0a"></a>
@@ -332,6 +364,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Open one file per writer, named from fileName by inserting -iNN (00, 01, ...) before the last dot. </p>
+<p>Returns -1 if fileName has no dot, otherwise the first non-zero <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a3934de02ad46317eaf696e61abc47f0a" title="Open one file per writer, named from fileName by inserting -iNN (00, 01, ...) before the last dot.">open()</a> result, or 0. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#ac82a7a44cc34200010e85f553d89f8db">Drp::FileWriterBase</a>.</p>
 
@@ -361,6 +396,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#aba63b4ea12040e8a0ce63548915b03e1" title="Return pendBlocked() of writer i.">pendBlocked()</a> of writer i. </p>
+
 </div>
 </div>
 <a id="a3802d8a64850f920c4c3c9c8ec390b45" name="a3802d8a64850f920c4c3c9c8ec390b45"></a>
@@ -377,6 +414,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared here; no definition was found in psdaq. </p>
 
 </div>
 </div>
@@ -403,6 +442,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a978d1bf473c283e410ceef2037cd6de7" title="Return size() of writer i.">size()</a> of writer i. </p>
 
 </div>
 </div>
@@ -446,6 +487,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pass the event to the next writer in round-robin order. </p>
+
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#af3cb61987edf71770e9c710e4c70f0e1">Drp::FileWriterBase</a>.</p>
 
 </div>
@@ -472,6 +515,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Brings <a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848" title="Return the writing counter (non-zero while an implementation is inside a write).">FileWriterBase::writing()</a> into scope next to the per-file writing(i) overload. </p>
 
 <p>Reimplemented from <a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848">Drp::FileWriterBase</a>.</p>
 
@@ -500,6 +545,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a61dae0f3c401580e3d3a3c81c4a8054d" title="Return writing() of writer i.">writing()</a> of writer i. </p>
 
 </div>
 </div>

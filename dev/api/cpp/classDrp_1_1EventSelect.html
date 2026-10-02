@@ -97,24 +97,35 @@ $(document).ready(function(){initNavTree('classDrp_1_1EventSelect.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>Event filter on event codes and beam destinations: an event is selected if it matches an include condition and no exclude condition; a value of 0 is never matched.  
+ <a href="classDrp_1_1EventSelect.html#details">More...</a></p>
+
 <p><code>#include &lt;TTFex.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8716e5d00cbad88d99bffbab926d38a1" id="r_a8716e5d00cbad88d99bffbab926d38a1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#a8716e5d00cbad88d99bffbab926d38a1">EventSelect</a> ()</td></tr>
+<tr class="memdesc:a8716e5d00cbad88d99bffbab926d38a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the include and exclude event codes and destinations to 0 (unused).  <br /></td></tr>
 <tr class="separator:a8716e5d00cbad88d99bffbab926d38a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41decf55b014dc86adb5c6ebb2c0ebbb" id="r_a41decf55b014dc86adb5c6ebb2c0ebbb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#a41decf55b014dc86adb5c6ebb2c0ebbb">select</a> (const <a class="el" href="classDrp_1_1EventInfo.html">EventInfo</a> &amp;) const</td></tr>
+<tr class="memdesc:a41decf55b014dc86adb5c6ebb2c0ebbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if info has the include event code or the include destination, and has neither the exclude event code nor the exclude destination.  <br /></td></tr>
 <tr class="separator:a41decf55b014dc86adb5c6ebb2c0ebbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3847616033fde19508f6f0046a3850c5" id="r_a3847616033fde19508f6f0046a3850c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#a3847616033fde19508f6f0046a3850c5">set_incl_eventcode</a> (unsigned code)</td></tr>
+<tr class="memdesc:a3847616033fde19508f6f0046a3850c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the event code that selects an event (0 never matches).  <br /></td></tr>
 <tr class="separator:a3847616033fde19508f6f0046a3850c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1e9fdb5ac9f1a087f057063a43381c2" id="r_ab1e9fdb5ac9f1a087f057063a43381c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#ab1e9fdb5ac9f1a087f057063a43381c2">set_excl_eventcode</a> (unsigned code)</td></tr>
+<tr class="memdesc:ab1e9fdb5ac9f1a087f057063a43381c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the event code that rejects an event (0 never matches).  <br /></td></tr>
 <tr class="separator:ab1e9fdb5ac9f1a087f057063a43381c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ec811fc1719ed5d6050f0d349063fb1" id="r_a4ec811fc1719ed5d6050f0d349063fb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#a4ec811fc1719ed5d6050f0d349063fb1">set_incl_destination</a> (unsigned dest)</td></tr>
+<tr class="memdesc:a4ec811fc1719ed5d6050f0d349063fb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the beam destination that selects an event (0 never matches).  <br /></td></tr>
 <tr class="separator:a4ec811fc1719ed5d6050f0d349063fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59d49836fed14c2ce637ef7c1c214df5" id="r_a59d49836fed14c2ce637ef7c1c214df5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EventSelect.html#a59d49836fed14c2ce637ef7c1c214df5">set_excl_destination</a> (unsigned dest)</td></tr>
+<tr class="memdesc:a59d49836fed14c2ce637ef7c1c214df5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the beam destination that rejects an event (0 never matches).  <br /></td></tr>
 <tr class="separator:a59d49836fed14c2ce637ef7c1c214df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Event filter on event codes and beam destinations: an event is selected if it matches an include condition and no exclude condition; a value of 0 is never matched. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8716e5d00cbad88d99bffbab926d38a1" name="a8716e5d00cbad88d99bffbab926d38a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8716e5d00cbad88d99bffbab926d38a1">&#9670;&#160;</a></span>EventSelect()</h2>
 
@@ -138,6 +149,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the include and exclude event codes and destinations to 0 (unused). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -156,6 +169,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return true if info has the include event code or the include destination, and has neither the exclude event code nor the exclude destination. </p>
 
 </div>
 </div>
@@ -183,6 +198,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the beam destination that rejects an event (0 never matches). </p>
+
 </div>
 </div>
 <a id="ab1e9fdb5ac9f1a087f057063a43381c2" name="ab1e9fdb5ac9f1a087f057063a43381c2"></a>
@@ -208,6 +225,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the event code that rejects an event (0 never matches). </p>
 
 </div>
 </div>
@@ -235,6 +254,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the beam destination that selects an event (0 never matches). </p>
+
 </div>
 </div>
 <a id="a3847616033fde19508f6f0046a3850c5" name="a3847616033fde19508f6f0046a3850c5"></a>
@@ -260,6 +281,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the event code that selects an event (0 never matches). </p>
 
 </div>
 </div>

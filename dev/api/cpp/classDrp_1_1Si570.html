@@ -97,22 +97,33 @@ $(document).ready(function(){initNavTree('classDrp_1_1Si570.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1Si570.html" title="Si570 device accessed as an array of 256 Pds::Mmhw::Reg registers.">Si570</a> device accessed as an array of 256 <a class="el" href="classPds_1_1Mmhw_1_1Reg.html">Pds::Mmhw::Reg</a> registers.  
+ <a href="classDrp_1_1Si570.html#details">More...</a></p>
+
 <p><code>#include &lt;Si570.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a36267c09526bb24024c77733630b08cd" id="r_a36267c09526bb24024c77733630b08cd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html#a36267c09526bb24024c77733630b08cd">Si570</a> ()</td></tr>
+<tr class="memdesc:a36267c09526bb24024c77733630b08cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a36267c09526bb24024c77733630b08cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1cbb20c96dbac2e0f1431fe60047aad" id="r_aa1cbb20c96dbac2e0f1431fe60047aad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html#aa1cbb20c96dbac2e0f1431fe60047aad">~Si570</a> ()</td></tr>
+<tr class="memdesc:aa1cbb20c96dbac2e0f1431fe60047aad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:aa1cbb20c96dbac2e0f1431fe60047aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abff7387602cb24402ed52215b693657e" id="r_abff7387602cb24402ed52215b693657e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html#abff7387602cb24402ed52215b693657e">reset</a> ()</td></tr>
+<tr class="memdesc:abff7387602cb24402ed52215b693657e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write 1 to register 135 and poll every 100 us until its bit 0 reads back clear (no timeout).  <br /></td></tr>
 <tr class="separator:abff7387602cb24402ed52215b693657e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95a395b1971ce1f0c04d7250f53ba6fa" id="r_a95a395b1971ce1f0c04d7250f53ba6fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html#a95a395b1971ce1f0c04d7250f53ba6fa">program</a> (int index=1)</td></tr>
+<tr class="memdesc:a95a395b1971ce1f0c04d7250f53ba6fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1Si570.html#abff7387602cb24402ed52215b693657e" title="Write 1 to register 135 and poll every 100 us until its bit 0 reads back clear (no timeout).">reset()</a> and <a class="el" href="classDrp_1_1Si570.html#aa3273c3a3dac09d8d61cbe04adb0b45b" title="Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156....">read()</a>, then set bit 4 of register 137 (freeze DCO, per the code comment), write HS_DIV, N1 and RFREQ for setting index (0 or 1, default 1) into registers 7 to 12, clear that bit again, set bit 6 of register 135 and call <a class="el" href="classDrp_1_1Si570.html#aa3273c3a3dac09d8d61cbe04adb0b45b" title="Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156....">read()</a> once more.  <br /></td></tr>
 <tr class="separator:a95a395b1971ce1f0c04d7250f53ba6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3273c3a3dac09d8d61cbe04adb0b45b" id="r_aa3273c3a3dac09d8d61cbe04adb0b45b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Si570.html#aa3273c3a3dac09d8d61cbe04adb0b45b">read</a> ()</td></tr>
+<tr class="memdesc:aa3273c3a3dac09d8d61cbe04adb0b45b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156.25 * HS_DIV * (N1 + 1) * 2^28 / RFREQ, which the log message labels as MHz.  <br /></td></tr>
 <tr class="separator:aa3273c3a3dac09d8d61cbe04adb0b45b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1Si570.html" title="Si570 device accessed as an array of 256 Pds::Mmhw::Reg registers.">Si570</a> device accessed as an array of 256 <a class="el" href="classPds_1_1Mmhw_1_1Reg.html">Pds::Mmhw::Reg</a> registers. </p>
+<p>The methods decode and set a frequency (logged in MHz) through registers 7 to 12, 135 and 137. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a36267c09526bb24024c77733630b08cd" name="a36267c09526bb24024c77733630b08cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a36267c09526bb24024c77733630b08cd">&#9670;&#160;</a></span>Si570()</h2>
 
@@ -127,6 +138,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -144,6 +157,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -164,6 +179,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1Si570.html#abff7387602cb24402ed52215b693657e" title="Write 1 to register 135 and poll every 100 us until its bit 0 reads back clear (no timeout).">reset()</a> and <a class="el" href="classDrp_1_1Si570.html#aa3273c3a3dac09d8d61cbe04adb0b45b" title="Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156....">read()</a>, then set bit 4 of register 137 (freeze DCO, per the code comment), write HS_DIV, N1 and RFREQ for setting index (0 or 1, default 1) into registers 7 to 12, clear that bit again, set bit 6 of register 135 and call <a class="el" href="classDrp_1_1Si570.html#aa3273c3a3dac09d8d61cbe04adb0b45b" title="Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156....">read()</a> once more. </p>
+<p>The comments give the target as 1300/7 MHz (185.7 MHz). </p>
+
 </div>
 </div>
 <a id="aa3273c3a3dac09d8d61cbe04adb0b45b" name="aa3273c3a3dac09d8d61cbe04adb0b45b"></a>
@@ -181,6 +199,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Decode HS_DIV, N1 and RFREQ from registers 7 to 12 (logging each register) and return 156.25 * HS_DIV * (N1 + 1) * 2^28 / RFREQ, which the log message labels as MHz. </p>
+<p>The code comment calls this reading the factory calibration for 156.25 MHz. </p>
+
 </div>
 </div>
 <a id="abff7387602cb24402ed52215b693657e" name="abff7387602cb24402ed52215b693657e"></a>
@@ -197,6 +218,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write 1 to register 135 and poll every 100 us until its bit 0 reads back clear (no timeout). </p>
+<p>The header comment says this goes back to factory defaults. </p>
 
 </div>
 </div>

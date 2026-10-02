@@ -95,39 +95,58 @@ $(document).ready(function(){initNavTree('namespacePds__Epics.html',''); initRes
   <div class="headertitle"><div class="title">Pds_Epics Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace of the psdaq EPICS client helpers (pvAccess and Channel Access).  
+<a href="namespacePds__Epics.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsProviders.html">EpicsProviders</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process-wide pva and ca client providers, both created on first use from the EPICS environment configuration.  <a href="classPds__Epics_1_1EpicsProviders.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsPVA.html">EpicsPVA</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structClient.html">Client</a> of one EPICS PV over pvAccess or Channel Access.  <a href="classPds__Epics_1_1EpicsPVA.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html">MonTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitor of one PV whose events are handled on the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  <a href="classPds__Epics_1_1MonTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1PutTracker.html">PutTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that writes one scalar to the value field of a PV and signals completionEvent when the put ends (copied from the EPICS V4 example code, per the code comment).  <a href="structPds__Epics_1_1PutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVBase.html">PVBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a> that is its own monitor callback; the base for read and write PVs (per the code comment).  <a href="classPds__Epics_1_1PVBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVCached.html">PVCached</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a> that caches the last values put, so that unchanged values are not sent again.  <a href="classPds__Epics_1_1PVCached.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitor.html">PVMonitor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a> that reports updates to a separate <a class="el" href="classPds__Epics_1_1PVMonitorCb.html" title="Callback interface for PV events.">PVMonitorCb</a>; not used elsewhere in psdaq.  <a href="classPds__Epics_1_1PVMonitor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PvMonitorBase.html">PvMonitorBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1MonTracker.html" title="Monitor of one PV whose events are handled on the shared WorkQueue thread.">MonTracker</a> that copies the payload field of a PV (value by default) into raw buffers: <a class="el" href="classPds__Epics_1_1PvMonitorBase.html#aa21a89f398487b0ba703d523cccd6a4a" title="From the latest structure, return the element type, element count and rank of the payload field and s...">getParams()</a> inspects the field's type and selects the getData function.  <a href="classPds__Epics_1_1PvMonitorBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PVMonitorCb.html">PVMonitorCb</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback interface for PV events.  <a href="classPds__Epics_1_1PVMonitorCb.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1PvServer.html">PvServer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a> whose monitor updates go to a file-static callback that ignores them, so its own <a class="el" href="classPds__Epics_1_1PvServer.html#a1ee2581bde26294cfd9c49c8b000aaeb" title="Does nothing; empty body.">updated()</a> is not called by <a class="el" href="classPds__Epics_1_1EpicsPVA.html" title="Client of one EPICS PV over pvAccess or Channel Access.">EpicsPVA</a>.  <a href="classPds__Epics_1_1PvServer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1StructurePutTracker.html">StructurePutTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that fills the top-level fields of a PV structure from a packed buffer and signals completionEvent when the put ends.  <a href="structPds__Epics_1_1StructurePutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1VectorPutTracker.html">VectorPutTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put callback that writes an array to the value field of a PV and signals completionEvent when the put ends.  <a href="structPds__Epics_1_1VectorPutTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1Worker.html">Worker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for objects whose monitor events are processed on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  <a href="structPds__Epics_1_1Worker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html">WorkQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).  <a href="classPds__Epics_1_1WorkQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace of the psdaq EPICS client helpers (pvAccess and Channel Access). </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

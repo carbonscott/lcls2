@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1QueueSS.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
+<p>Queue of T over <a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> (private base) whose insert, remove, atHead and atTail hold a pthread mutex (per the header comment, re-entrant but slow).  
+ <a href="classPds_1_1QueueSS.html#details">More...</a></p>
+
 <p><code>#include &lt;QueueSlowSafeUx.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1List.html">Pds::List</a>.</p>
@@ -104,21 +107,32 @@ $(document).ready(function(){initNavTree('classPds_1_1QueueSS.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a726bccc2d054609375e0fd81debbd4ed" id="r_a726bccc2d054609375e0fd81debbd4ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#a726bccc2d054609375e0fd81debbd4ed">QueueSS</a> ()</td></tr>
+<tr class="memdesc:a726bccc2d054609375e0fd81debbd4ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the mutex.  <br /></td></tr>
 <tr class="separator:a726bccc2d054609375e0fd81debbd4ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4655784764b9708b8667f1df953365d4" id="r_a4655784764b9708b8667f1df953365d4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#a4655784764b9708b8667f1df953365d4">~QueueSS</a> ()</td></tr>
+<tr class="memdesc:a4655784764b9708b8667f1df953365d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the mutex.  <br /></td></tr>
 <tr class="separator:a4655784764b9708b8667f1df953365d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4af5220ec3054bcbd911071afbdf9e5" id="r_af4af5220ec3054bcbd911071afbdf9e5"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#af4af5220ec3054bcbd911071afbdf9e5">empty</a> () const</td></tr>
+<tr class="memdesc:af4af5220ec3054bcbd911071afbdf9e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the list label as T*, without locking.  <br /></td></tr>
 <tr class="separator:af4af5220ec3054bcbd911071afbdf9e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf4ac4ac71a305428cf7ff67591d3cf0" id="r_abf4ac4ac71a305428cf7ff67591d3cf0"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#abf4ac4ac71a305428cf7ff67591d3cf0">insert</a> (<a class="el" href="classPds_1_1Entry.html">Entry</a> *entry)</td></tr>
+<tr class="memdesc:abf4ac4ac71a305428cf7ff67591d3cf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append entry at the tail while holding the mutex; returns the entry it was inserted after.  <br /></td></tr>
 <tr class="separator:abf4ac4ac71a305428cf7ff67591d3cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d5ee8ca2fb4da16fdab04ac867cbd09" id="r_a4d5ee8ca2fb4da16fdab04ac867cbd09"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#a4d5ee8ca2fb4da16fdab04ac867cbd09">remove</a> ()</td></tr>
+<tr class="memdesc:a4d5ee8ca2fb4da16fdab04ac867cbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove and return the head entry while holding the mutex (the list label if empty).  <br /></td></tr>
 <tr class="separator:a4d5ee8ca2fb4da16fdab04ac867cbd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58bbf926d34d2911a13a4bd3878b9d0a" id="r_a58bbf926d34d2911a13a4bd3878b9d0a"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#a58bbf926d34d2911a13a4bd3878b9d0a">atHead</a> () const</td></tr>
+<tr class="memdesc:a58bbf926d34d2911a13a4bd3878b9d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the head entry while holding the mutex.  <br /></td></tr>
 <tr class="separator:a58bbf926d34d2911a13a4bd3878b9d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15c564c7aaf58d8dadf3b8e9a36516c6" id="r_a15c564c7aaf58d8dadf3b8e9a36516c6"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1QueueSS.html#a15c564c7aaf58d8dadf3b8e9a36516c6">atTail</a> () const</td></tr>
+<tr class="memdesc:a15c564c7aaf58d8dadf3b8e9a36516c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tail entry while holding the mutex.  <br /></td></tr>
 <tr class="separator:a15c564c7aaf58d8dadf3b8e9a36516c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
+class Pds::QueueSS&lt; T &gt;</div><p>Queue of T over <a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> (private base) whose insert, remove, atHead and atTail hold a pthread mutex (per the header comment, re-entrant but slow). </p>
+<p>Note that <a class="el" href="classPds_1_1QueueSS.html#a58bbf926d34d2911a13a4bd3878b9d0a" title="Return the head entry while holding the mutex.">atHead()</a> and <a class="el" href="classPds_1_1QueueSS.html#a15c564c7aaf58d8dadf3b8e9a36516c6" title="Return the tail entry while holding the mutex.">atTail()</a> are const but call the non-const lock helpers. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a726bccc2d054609375e0fd81debbd4ed" name="a726bccc2d054609375e0fd81debbd4ed"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a726bccc2d054609375e0fd81debbd4ed">&#9670;&#160;</a></span>QueueSS()</h2>
 
@@ -143,6 +157,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initialize the mutex. </p>
 
 </div>
 </div>
@@ -170,6 +186,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Destroy the mutex. </p>
 
 </div>
 </div>
@@ -199,6 +217,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the head entry while holding the mutex. </p>
+
 </div>
 </div>
 <a id="a15c564c7aaf58d8dadf3b8e9a36516c6" name="a15c564c7aaf58d8dadf3b8e9a36516c6"></a>
@@ -226,6 +246,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the tail entry while holding the mutex. </p>
+
 </div>
 </div>
 <a id="af4af5220ec3054bcbd911071afbdf9e5" name="af4af5220ec3054bcbd911071afbdf9e5"></a>
@@ -252,6 +274,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the list label as T*, without locking. </p>
 
 </div>
 </div>
@@ -281,6 +305,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Append entry at the tail while holding the mutex; returns the entry it was inserted after. </p>
+
 </div>
 </div>
 <a id="a4d5ee8ca2fb4da16fdab04ac867cbd09" name="a4d5ee8ca2fb4da16fdab04ac867cbd09"></a>
@@ -307,6 +333,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Remove and return the head entry while holding the mutex (the list label if empty). </p>
 
 </div>
 </div>

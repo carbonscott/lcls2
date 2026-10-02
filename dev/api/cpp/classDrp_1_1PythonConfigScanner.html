@@ -97,20 +97,29 @@ $(document).ready(function(){initNavTree('classDrp_1_1PythonConfigScanner.html',
 </div><!--header-->
 <div class="contents">
 
+<p>Scan support for Python-configured detectors: calls the functions <code>&lt;detType&gt;_scan_keys</code> and <code>&lt;detType&gt;_update</code> of the given module (per the header comment) and translates their JSON into XTC.  
+ <a href="classDrp_1_1PythonConfigScanner.html#details">More...</a></p>
+
 <p><code>#include &lt;PythonConfigScanner.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a72f750a3b35fa201fa9d2316c599525c" id="r_a72f750a3b35fa201fa9d2316c599525c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PythonConfigScanner.html#a72f750a3b35fa201fa9d2316c599525c">PythonConfigScanner</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;, PyObject &amp;module)</td></tr>
+<tr class="memdesc:a72f750a3b35fa201fa9d2316c599525c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep references to the parameters and the Python module.  <br /></td></tr>
 <tr class="separator:a72f750a3b35fa201fa9d2316c599525c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cfec49647c79511580ae446fc0b20da" id="r_a2cfec49647c79511580ae446fc0b20da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PythonConfigScanner.html#a2cfec49647c79511580ae446fc0b20da">~PythonConfigScanner</a> ()</td></tr>
+<tr class="memdesc:a2cfec49647c79511580ae446fc0b20da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a2cfec49647c79511580ae446fc0b20da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72d30ffef75361d90a5f9b0f0abb841f" id="r_a72d30ffef75361d90a5f9b0f0abb841f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PythonConfigScanner.html#a72d30ffef75361d90a5f9b0f0abb841f">configure</a> (const nlohmann::json &amp;keys, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> &amp;namesId, <a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;namesLookup, std::vector&lt; unsigned &gt; segNos={}, std::vector&lt; std::string &gt; serNos={})</td></tr>
+<tr class="memdesc:a72d30ffef75361d90a5f9b0f0abb841f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>&lt;detType&gt;_scan_keys</code> with keys, translate the returned JSON (or list of JSON, one per segment) into XTC Names with namesId + segment (segment numbers from detName:RO or from segNos, with serNos), and append them to xtc.  <br /></td></tr>
 <tr class="separator:a72d30ffef75361d90a5f9b0f0abb841f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d904b5bb23c522c582c0f94af8454b2" id="r_a5d904b5bb23c522c582c0f94af8454b2"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1PythonConfigScanner.html#a5d904b5bb23c522c582c0f94af8454b2">step</a> (const nlohmann::json &amp;dict, <a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;xtc, const void *bufEnd, <a class="el" href="classXtcData_1_1NamesId.html">XtcData::NamesId</a> &amp;namesId, <a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a> &amp;namesLookup, std::vector&lt; unsigned &gt; segNos={}, std::vector&lt; std::string &gt; serNos={})</td></tr>
+<tr class="memdesc:a5d904b5bb23c522c582c0f94af8454b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <code>&lt;detType&gt;_update</code> with dict, translate the returned JSON (or list of JSON, one per segment) into XTC, and append it to xtc.  <br /></td></tr>
 <tr class="separator:a5d904b5bb23c522c582c0f94af8454b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Scan support for Python-configured detectors: calls the functions <code>&lt;detType&gt;_scan_keys</code> and <code>&lt;detType&gt;_update</code> of the given module (per the header comment) and translates their JSON into XTC. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a72f750a3b35fa201fa9d2316c599525c" name="a72f750a3b35fa201fa9d2316c599525c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72f750a3b35fa201fa9d2316c599525c">&#9670;&#160;</a></span>PythonConfigScanner()</h2>
 
@@ -137,6 +146,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Keep references to the parameters and the Python module. </p>
+
 </div>
 </div>
 <a id="a2cfec49647c79511580ae446fc0b20da" name="a2cfec49647c79511580ae446fc0b20da"></a>
@@ -153,6 +164,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -213,6 +226,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <code>&lt;detType&gt;_scan_keys</code> with keys, translate the returned JSON (or list of JSON, one per segment) into XTC Names with namesId + segment (segment numbers from detName:RO or from segNos, with serNos), and append them to xtc. </p>
+<p>Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. </p>
+
 </div>
 </div>
 <a id="a5d904b5bb23c522c582c0f94af8454b2" name="a5d904b5bb23c522c582c0f94af8454b2"></a>
@@ -270,6 +286,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <code>&lt;detType&gt;_update</code> with dict, translate the returned JSON (or list of JSON, one per segment) into XTC, and append it to xtc. </p>
+<p>Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. </p>
 
 </div>
 </div>

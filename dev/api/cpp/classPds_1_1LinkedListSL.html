@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1LinkedListSL.html',''); in
 </div><!--header-->
 <div class="contents">
 
+<p>Typed wrapper over <a class="el" href="classPds_1_1ListBase.html" title="Node of an intrusive doubly linked list; an object can be a list head (label) or an element.">Pds::ListBase</a> (private base) in which every operation holds a per-object <a class="el" href="classPds_1_1SpinLock.html" title="Busy-waiting lock on an atomic flag; satisfies the lock() and unlock() interface of std::lock_guard.">Pds::SpinLock</a>.  
+ <a href="classPds_1_1LinkedListSL.html#details">More...</a></p>
+
 <p><code>#include &lt;LinkedListSL.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1ListBase.html">Pds::ListBase</a>.</p>
@@ -104,29 +107,43 @@ $(document).ready(function(){initNavTree('classPds_1_1LinkedListSL.html',''); in
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6cae4c33d1533b36ee55f4bcdf25425c" id="r_a6cae4c33d1533b36ee55f4bcdf25425c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a6cae4c33d1533b36ee55f4bcdf25425c">~LinkedListSL</a> ()</td></tr>
+<tr class="memdesc:a6cae4c33d1533b36ee55f4bcdf25425c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a6cae4c33d1533b36ee55f4bcdf25425c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d810097db38862cb27f12f030752f75" id="r_a8d810097db38862cb27f12f030752f75"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a8d810097db38862cb27f12f030752f75">LinkedListSL</a> ()</td></tr>
+<tr class="memdesc:a8d810097db38862cb27f12f030752f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an element linked to itself (<a class="el" href="classPds_1_1ListBase.html" title="Node of an intrusive doubly linked list; an object can be a list head (label) or an element.">ListBase</a> default constructor).  <br /></td></tr>
 <tr class="separator:a8d810097db38862cb27f12f030752f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a5e21bbdbf2de81c0f6012659ff14c1" id="r_a2a5e21bbdbf2de81c0f6012659ff14c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a2a5e21bbdbf2de81c0f6012659ff14c1">LinkedListSL</a> (T *listhead)</td></tr>
+<tr class="memdesc:a2a5e21bbdbf2de81c0f6012659ff14c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with ListBase(listhead).  <br /></td></tr>
 <tr class="separator:a2a5e21bbdbf2de81c0f6012659ff14c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b8f2c33b784039c787dd26d315d2341" id="r_a3b8f2c33b784039c787dd26d315d2341"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a3b8f2c33b784039c787dd26d315d2341">connect</a> (T *after)</td></tr>
+<tr class="memdesc:a3b8f2c33b784039c787dd26d315d2341"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, insert this element after after (<a class="el" href="classPds_1_1ListBase.html#a648f9df9b5f075e7969dbbb199a46a0b" title="Insert this object after after and return after.">ListBase::connect()</a>) and return after as T*.  <br /></td></tr>
 <tr class="separator:a3b8f2c33b784039c787dd26d315d2341"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d99e76ad4afcf816b34333d151998d7" id="r_a5d99e76ad4afcf816b34333d151998d7"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a5d99e76ad4afcf816b34333d151998d7">disconnect</a> ()</td></tr>
+<tr class="memdesc:a5d99e76ad4afcf816b34333d151998d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, unlink this element (<a class="el" href="classPds_1_1ListBase.html#a9ccf963d56cc3652c4c34fb140192837" title="Unlink this object from its list and return it (its own links are left unchanged).">ListBase::disconnect()</a>) and return it as T*.  <br /></td></tr>
 <tr class="separator:a5d99e76ad4afcf816b34333d151998d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3e57ea90f96375a1de77a4b6dd8c6da" id="r_aa3e57ea90f96375a1de77a4b6dd8c6da"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#aa3e57ea90f96375a1de77a4b6dd8c6da">insert</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *entry)</td></tr>
+<tr class="memdesc:aa3e57ea90f96375a1de77a4b6dd8c6da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, call ListBase::insert(entry) and return the result as T*.  <br /></td></tr>
 <tr class="separator:aa3e57ea90f96375a1de77a4b6dd8c6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f3b5440b81f41adfe060371826457a7" id="r_a0f3b5440b81f41adfe060371826457a7"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a0f3b5440b81f41adfe060371826457a7">insertList</a> (<a class="el" href="classPds_1_1ListBase.html">ListBase</a> *list)</td></tr>
+<tr class="memdesc:a0f3b5440b81f41adfe060371826457a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, call ListBase::insertList(list) and return the result as T*.  <br /></td></tr>
 <tr class="separator:a0f3b5440b81f41adfe060371826457a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cacf2c540fd10aa68f57337a61701a6" id="r_a4cacf2c540fd10aa68f57337a61701a6"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a4cacf2c540fd10aa68f57337a61701a6">remove</a> ()</td></tr>
+<tr class="memdesc:a4cacf2c540fd10aa68f57337a61701a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, call <a class="el" href="classPds_1_1ListBase.html#a820f6f3c31275c94170f75ab0a9d1579" title="Treating this object as a list head, unlink and return the head element (the head itself,...">ListBase::remove()</a> and return the result as T*.  <br /></td></tr>
 <tr class="separator:a4cacf2c540fd10aa68f57337a61701a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac49169c3fecfcc08ebd80bbdd473a17b" id="r_ac49169c3fecfcc08ebd80bbdd473a17b"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#ac49169c3fecfcc08ebd80bbdd473a17b">empty</a> () const</td></tr>
+<tr class="memdesc:ac49169c3fecfcc08ebd80bbdd473a17b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, return <a class="el" href="classPds_1_1ListBase.html#ad28405ee80b6cd75ac235bf70be59497" title="Return the address of this object as the list label, which forward() returns when the list is empty.">ListBase::empty()</a> as T*.  <br /></td></tr>
 <tr class="separator:ac49169c3fecfcc08ebd80bbdd473a17b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8085e1982ed6dc3cafe695d984e66171" id="r_a8085e1982ed6dc3cafe695d984e66171"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#a8085e1982ed6dc3cafe695d984e66171">forward</a> () const</td></tr>
+<tr class="memdesc:a8085e1982ed6dc3cafe695d984e66171"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, return the next element as T*.  <br /></td></tr>
 <tr class="separator:a8085e1982ed6dc3cafe695d984e66171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab7cd5e2bac08a54e4958bcf74da7393" id="r_aab7cd5e2bac08a54e4958bcf74da7393"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1LinkedListSL.html#aab7cd5e2bac08a54e4958bcf74da7393">reverse</a> () const</td></tr>
+<tr class="memdesc:aab7cd5e2bac08a54e4958bcf74da7393"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the lock, return the previous element as T*.  <br /></td></tr>
 <tr class="separator:aab7cd5e2bac08a54e4958bcf74da7393"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
+class Pds::LinkedListSL&lt; T &gt;</div><p>Typed wrapper over <a class="el" href="classPds_1_1ListBase.html" title="Node of an intrusive doubly linked list; an object can be a list head (label) or an element.">Pds::ListBase</a> (private base) in which every operation holds a per-object <a class="el" href="classPds_1_1SpinLock.html" title="Busy-waiting lock on an atomic flag; satisfies the lock() and unlock() interface of std::lock_guard.">Pds::SpinLock</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6cae4c33d1533b36ee55f4bcdf25425c" name="a6cae4c33d1533b36ee55f4bcdf25425c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6cae4c33d1533b36ee55f4bcdf25425c">&#9670;&#160;</a></span>~LinkedListSL()</h2>
 
@@ -151,6 +168,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -179,6 +198,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Construct an element linked to itself (<a class="el" href="classPds_1_1ListBase.html" title="Node of an intrusive doubly linked list; an object can be a list head (label) or an element.">ListBase</a> default constructor). </p>
+
 </div>
 </div>
 <a id="a2a5e21bbdbf2de81c0f6012659ff14c1" name="a2a5e21bbdbf2de81c0f6012659ff14c1"></a>
@@ -206,6 +227,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct with ListBase(listhead). </p>
 
 </div>
 </div>
@@ -236,6 +259,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, insert this element after after (<a class="el" href="classPds_1_1ListBase.html#a648f9df9b5f075e7969dbbb199a46a0b" title="Insert this object after after and return after.">ListBase::connect()</a>) and return after as T*. </p>
+
 </div>
 </div>
 <a id="a5d99e76ad4afcf816b34333d151998d7" name="a5d99e76ad4afcf816b34333d151998d7"></a>
@@ -262,6 +287,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Under the lock, unlink this element (<a class="el" href="classPds_1_1ListBase.html#a9ccf963d56cc3652c4c34fb140192837" title="Unlink this object from its list and return it (its own links are left unchanged).">ListBase::disconnect()</a>) and return it as T*. </p>
 
 </div>
 </div>
@@ -290,6 +317,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, return <a class="el" href="classPds_1_1ListBase.html#ad28405ee80b6cd75ac235bf70be59497" title="Return the address of this object as the list label, which forward() returns when the list is empty.">ListBase::empty()</a> as T*. </p>
+
 </div>
 </div>
 <a id="a8085e1982ed6dc3cafe695d984e66171" name="a8085e1982ed6dc3cafe695d984e66171"></a>
@@ -316,6 +345,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Under the lock, return the next element as T*. </p>
 
 </div>
 </div>
@@ -345,6 +376,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, call ListBase::insert(entry) and return the result as T*. </p>
+
 </div>
 </div>
 <a id="a0f3b5440b81f41adfe060371826457a7" name="a0f3b5440b81f41adfe060371826457a7"></a>
@@ -373,6 +406,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, call ListBase::insertList(list) and return the result as T*. </p>
+
 </div>
 </div>
 <a id="a4cacf2c540fd10aa68f57337a61701a6" name="a4cacf2c540fd10aa68f57337a61701a6"></a>
@@ -400,6 +435,8 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Under the lock, call <a class="el" href="classPds_1_1ListBase.html#a820f6f3c31275c94170f75ab0a9d1579" title="Treating this object as a list head, unlink and return the head element (the head itself,...">ListBase::remove()</a> and return the result as T*. </p>
+
 </div>
 </div>
 <a id="aab7cd5e2bac08a54e4958bcf74da7393" name="aab7cd5e2bac08a54e4958bcf74da7393"></a>
@@ -426,6 +463,8 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Under the lock, return the previous element as T*. </p>
 
 </div>
 </div>

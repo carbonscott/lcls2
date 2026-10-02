@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbCtrbInBase.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Receives trigger result batches from the TEBs over libfabric server links, matches them with the contributor's pending input batches and calls <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> for each matched event.  
+ <a href="classPds_1_1Eb_1_1EbCtrbInBase.html#details">More...</a></p>
+
 <p><code>#include &lt;EbCtrbInBase.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classDrp_1_1TebReceiverBase.html">Drp::TebReceiverBase</a>.</p>
@@ -104,29 +107,43 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbCtrbInBase.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6c537019c489b8e9e96802f7482cfbd3" id="r_a6c537019c489b8e9e96802f7482cfbd3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a6c537019c489b8e9e96802f7482cfbd3">EbCtrbInBase</a> (const <a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html">TebCtrbParams</a> &amp;)</td></tr>
+<tr class="memdesc:a6c537019c489b8e9e96802f7482cfbd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep a reference to the parameters and create the server transport from prms.verbose and prms.kwargs.  <br /></td></tr>
 <tr class="separator:a6c537019c489b8e9e96802f7482cfbd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cf819eaa1a7fc84896538dbf6773bea" id="r_a3cf819eaa1a7fc84896538dbf6773bea"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a3cf819eaa1a7fc84896538dbf6773bea">~EbCtrbInBase</a> ()</td></tr>
+<tr class="memdesc:a3cf819eaa1a7fc84896538dbf6773bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the result region.  <br /></td></tr>
 <tr class="separator:a3cf819eaa1a7fc84896538dbf6773bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8272cf3c8731fb339be78a747840bfba" id="r_a8272cf3c8731fb339be78a747840bfba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a8272cf3c8731fb339be78a747840bfba">resetCounters</a> ()</td></tr>
+<tr class="memdesc:a8272cf3c8731fb339be78a747840bfba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the batch, event, missing, bypass and no-progress counters; returns 0.  <br /></td></tr>
 <tr class="separator:a8272cf3c8731fb339be78a747840bfba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dc766c1fd80498e0ad65d039736f88b" id="r_a9dc766c1fd80498e0ad65d039736f88b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a9dc766c1fd80498e0ad65d039736f88b">startConnection</a> (std::string &amp;port)</td></tr>
+<tr class="memdesc:a9dc766c1fd80498e0ad65d039736f88b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listen on prms.ifAddr:port for up to MAX_TEBS TEB connections with <a class="el" href="classPds_1_1Eb_1_1EbLfServer.html#a943f4fc9a53d16c42839af4448acdd63" title="Create a passive endpoint on addr:port and start listening with a backlog of nLinks.">EbLfServer::listen()</a>; an empty port is replaced by the bound ephemeral port.  <br /></td></tr>
 <tr class="separator:a9dc766c1fd80498e0ad65d039736f88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71df9ea2d0051eb8ab0f5c6b9ef39291" id="r_a71df9ea2d0051eb8ab0f5c6b9ef39291"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a71df9ea2d0051eb8ab0f5c6b9ef39291">connect</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">MetricExporter</a> &gt;)</td></tr>
+<tr class="memdesc:a71df9ea2d0051eb8ab0f5c6b9ef39291"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metrics with the exporter (if non-null) and accept one link per builder in prms.builders with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>.  <br /></td></tr>
 <tr class="separator:a71df9ea2d0051eb8ab0f5c6b9ef39291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cdc59b41af5621f80bb3e79e9afdb3e" id="r_a8cdc59b41af5621f80bb3e79e9afdb3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a8cdc59b41af5621f80bb3e79e9afdb3e">configure</a> (unsigned numBuffers)</td></tr>
+<tr class="memdesc:a8cdc59b41af5621f80bb3e79e9afdb3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forget left-over inputs and deferred results, then for each TEB link receive the result region size, (re)allocate the shared result region if the size changed, and register it and send its description with <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html#a35f7c2b9516bb15591f74eaeb2f15474" title="Register (or reuse) a memory region for size bytes at region, send its description to the client with...">EbLfSvrLink::setupMr()</a>.  <br /></td></tr>
 <tr class="separator:a8cdc59b41af5621f80bb3e79e9afdb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac98bf6b876f81e386a8912b5c1392fcc" id="r_ac98bf6b876f81e386a8912b5c1392fcc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac98bf6b876f81e386a8912b5c1392fcc">unconfigure</a> ()</td></tr>
+<tr class="memdesc:ac98bf6b876f81e386a8912b5c1392fcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac98bf6b876f81e386a8912b5c1392fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac016aec51167879444c0e499a8963e50" id="r_ac016aec51167879444c0e499a8963e50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac016aec51167879444c0e499a8963e50">disconnect</a> ()</td></tr>
+<tr class="memdesc:ac016aec51167879444c0e499a8963e50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac98bf6b876f81e386a8912b5c1392fcc" title="Does nothing; empty body.">unconfigure()</a>, then disconnect and drop all links.  <br /></td></tr>
 <tr class="separator:ac016aec51167879444c0e499a8963e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec5efc523ca340931390697198f11322" id="r_aec5efc523ca340931390697198f11322"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#aec5efc523ca340931390697198f11322">shutdown</a> ()</td></tr>
+<tr class="memdesc:aec5efc523ca340931390697198f11322"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac016aec51167879444c0e499a8963e50" title="Call unconfigure(), then disconnect and drop all links.">disconnect()</a>, then shut down the transport.  <br /></td></tr>
 <tr class="separator:aec5efc523ca340931390697198f11322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12809db77f8efdd73ece1342d93327ad" id="r_a12809db77f8efdd73ece1342d93327ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a12809db77f8efdd73ece1342d93327ad">receiver</a> (<a class="el" href="classPds_1_1Eb_1_1TebContributor.html">TebContributor</a> &amp;, std::atomic&lt; bool &gt; &amp;running)</td></tr>
+<tr class="memdesc:a12809db77f8efdd73ece1342d93327ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body: pin to prms.core[1], name the thread drp/TEBreceiver and repeatedly wait (100 ms each) for result batches and match them with the pending inputs of ctrb, until running becomes false.  <br /></td></tr>
 <tr class="separator:a12809db77f8efdd73ece1342d93327ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb1b62ec94eb3307810431eb0449509b" id="r_abb1b62ec94eb3307810431eb0449509b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b">process</a> (const <a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">ResultDgram</a> &amp;result, unsigned index)=0</td></tr>
+<tr class="memdesc:abb1b62ec94eb3307810431eb0449509b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: handle the result of one event; index is the buffer index of the matching input datagram.  <br /></td></tr>
 <tr class="separator:abb1b62ec94eb3307810431eb0449509b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Receives trigger result batches from the TEBs over libfabric server links, matches them with the contributor's pending input batches and calls <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> for each matched event. </p>
+<p>Abstract: a subclass supplies <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6c537019c489b8e9e96802f7482cfbd3" name="a6c537019c489b8e9e96802f7482cfbd3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c537019c489b8e9e96802f7482cfbd3">&#9670;&#160;</a></span>EbCtrbInBase()</h2>
 
@@ -142,6 +159,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Keep a reference to the parameters and create the server transport from prms.verbose and prms.kwargs. </p>
 
 </div>
 </div>
@@ -168,6 +187,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Free the result region. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -187,6 +208,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Forget left-over inputs and deferred results, then for each TEB link receive the result region size, (re)allocate the shared result region if the size changed, and register it and send its description with <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html#a35f7c2b9516bb15591f74eaeb2f15474" title="Register (or reuse) a memory region for size bytes at region, send its description to the client with...">EbLfSvrLink::setupMr()</a>. </p>
+<p>The result buffer size is the region size divided by numBuffers. Returns 0, ENOMEM, -1 if the TEBs ask for different sizes, or the first link error. </p>
+
 </div>
 </div>
 <a id="a71df9ea2d0051eb8ab0f5c6b9ef39291" name="a71df9ea2d0051eb8ab0f5c6b9ef39291"></a>
@@ -205,6 +229,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register metrics with the exporter (if non-null) and accept one link per builder in prms.builders with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>. </p>
+<p>Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="ac016aec51167879444c0e499a8963e50" name="ac016aec51167879444c0e499a8963e50"></a>
@@ -221,6 +248,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac98bf6b876f81e386a8912b5c1392fcc" title="Does nothing; empty body.">unconfigure()</a>, then disconnect and drop all links. </p>
 
 </div>
 </div>
@@ -258,6 +287,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: handle the result of one event; index is the buffer index of the matching input datagram. </p>
+<p>Called from the receiver thread for each input matched with a result, and with a locally built persist result for inputs that bypassed the TEBs. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1TebReceiverBase.html#ad81d73953381aff434f185f9949eaa52">Drp::TebReceiverBase</a>.</p>
 
 </div>
@@ -288,6 +320,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Thread body: pin to prms.core[1], name the thread drp/TEBreceiver and repeatedly wait (100 ms each) for result batches and match them with the pending inputs of ctrb, until running becomes false. </p>
+<p>Throws a C string if a TEB connection is lost (-FI_ENOTCONN) or the same negative error occurs twice in a row. </p>
+
 </div>
 </div>
 <a id="a8272cf3c8731fb339be78a747840bfba" name="a8272cf3c8731fb339be78a747840bfba"></a>
@@ -305,6 +340,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the batch, event, missing, bypass and no-progress counters; returns 0. </p>
+
 </div>
 </div>
 <a id="aec5efc523ca340931390697198f11322" name="aec5efc523ca340931390697198f11322"></a>
@@ -321,6 +358,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#ac016aec51167879444c0e499a8963e50" title="Call unconfigure(), then disconnect and drop all links.">disconnect()</a>, then shut down the transport. </p>
 
 </div>
 </div>
@@ -340,6 +379,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Listen on prms.ifAddr:port for up to MAX_TEBS TEB connections with <a class="el" href="classPds_1_1Eb_1_1EbLfServer.html#a943f4fc9a53d16c42839af4448acdd63" title="Create a passive endpoint on addr:port and start listening with a backlog of nLinks.">EbLfServer::listen()</a>; an empty port is replaced by the bound ephemeral port. </p>
+<p>Returns 0 or the listen error. </p>
+
 </div>
 </div>
 <a id="ac98bf6b876f81e386a8912b5c1392fcc" name="ac98bf6b876f81e386a8912b5c1392fcc"></a>
@@ -356,6 +398,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>

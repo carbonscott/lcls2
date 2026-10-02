@@ -3580,6 +3580,11 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 
     <div class="doc doc-contents first">
 
+        <p>DAQ collection manager.</p>
+<p>Defines <code>CollectionManager</code>, a <code>transitions.Machine</code>-based state machine that talks to
+DAQ processes over ZMQ, to XPMs through PVA PVs (<code>DaqXPM</code>, <code>DaqPVA</code>) and to the logbook
+web service over HTTP, plus helper functions and the <code>main</code> command-line entry point.</p>
+
 
 
 
@@ -3651,6 +3656,8 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 
     <div class="doc doc-contents ">
 
+        <p>Return the PV name.</p>
+
 
     </div>
 
@@ -3668,6 +3675,8 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return the PV description, or the PV name if the description is None.</p>
 
 
     </div>
@@ -3734,6 +3743,65 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 
     <div class="doc doc-contents ">
 
+        <p>Return <code>fileSet</code> plus the files included by lines starting with '&lt;' in those files.</p>
+<p>In each file, text after '#' is dropped; a line starting with '&lt;' is parsed as a
+comma-separated list of file names. Relative names are prefixed with the directory of
+<code>self.path</code>. Errors opening/reading a file are logged and skipped.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>fileSet</code>
+            </td>
+            <td>
+                  <code>set of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Files to scan.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>set of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Union of <code>fileSet</code> and the included file names found.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -3751,6 +3819,11 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Parse the files in <code>self.fileSet</code> and set <code>self.pvaList</code> and <code>self.caList</code>.</p>
+<p>Lines starting with '<em>' or '#</em>' set the description used for the following PV lines;
+'&lt;' lines, blank lines and other '#' lines reset it to None. Any other line is a PV
+name, stored as a <code>PvInfo</code> in <code>pvaList</code> if followed by 'pva', else in <code>caList</code>.</p>
 
 
     </div>
@@ -3770,6 +3843,12 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 
     <div class="doc doc-contents ">
 
+        <p>Collect the run-parameter files and PVs starting from <code>self.path</code>.</p>
+<p>If <code>self.path</code> is not '/dev/null' and does not exist, an error is reported via
+<code>collection.report_error</code>. Otherwise include files are followed recursively with
+<code>updateFileSet</code>, and missing files are reported and dropped. Then <code>updatePvSet</code> is
+called if any files were found and <code>recordedExperiments</code> is reset to an empty set.</p>
+
 
     </div>
 
@@ -3787,6 +3866,8 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Clear <code>fileSet</code>, <code>pvaList</code> and <code>caList</code>.</p>
 
 
     </div>
@@ -3806,6 +3887,19 @@ the run-parameter PVs recorded at BeginRun; <code>main()</code> parses the comma
 
     <div class="doc doc-contents ">
 
+        <p>Read run parameters and post them to the logbook for <code>experiment_name</code>.</p>
+<p>Does nothing in simulator mode. Reads the PVA PVs via <code>pva.pv_get</code> and the CA PVs via
+<code>epics.caget_many</code> (failed reads and nan/inf floats are reported as warnings and
+skipped), adds 'partition' and, for each active non-monitor drp alias of the form
+'<name>_<N>', a 'DAQ Detectors/drp/<name>' entry with the sorted segment numbers.</p>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The parameters are sent with <code>collection.add_run_params</code>; PV descriptions are sent
+with <code>collection.add_update_run_param_descriptions</code> only the first time an experiment is
+seen. Errors are reported if fewer items were recorded than sent.</p>
+</details>
 
     </div>
 
@@ -3917,6 +4011,9 @@ Attributes:
 
 
 
+        <p>Thin wrapper around a p4p 'pva' client <code>Context</code> for PV gets and puts.</p>
+<p><code>report_error</code> is a callable used to report failed puts.</p>
+
 
 
 
@@ -3951,6 +4048,62 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Get one or more PVA PVs without raising on errors.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>pvList</code>
+            </td>
+            <td>
+                  <code>list of str, str or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>PV name(s); a single name is wrapped in a list.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Values or exception objects from <code>ctxt.get(..., throw=False)</code>; [] if <code>pvList</code> is None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -3968,6 +4121,79 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Put a value to one or more PVA PVs without waiting.</p>
+<p>If <code>pvName</code> is a list and <code>val</code> is not, <code>val</code> is repeated for each name. Timeouts and
+other exceptions are reported with <code>report_error</code>.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>pvName</code>
+            </td>
+            <td>
+                  <code>str or list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>PV name(s).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>val</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Value or list of values.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if the put call did not raise, else False.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -3997,6 +4223,11 @@ Attributes:
     <div class="doc doc-contents ">
 
 
+
+        <p>Encapsulate control-to-XPM communication.</p>
+<p>PV names are built from <code>pv_base + ':XPM:&lt;xpm_master&gt;'</code>. Register writes go through
+PVA puts when <code>xpm_host</code> is None; otherwise some are sent as JSON messages on a ZMQ
+PUSH socket connected to <code>xpm_host</code> at <code>xpm_pull_port</code>.</p>
 
 
 
@@ -4032,6 +4263,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Build per-group PV name lists and put <code>groups</code> to each group's L0Groups PV.</p>
+<p>For each bit g set in <code>groups</code>, ':PART:<g>:MsgHeader', ':PART:<g>:Master' and
+':PART:<g>:L0Groups' PV names are stored in <code>pvListMsgHeader</code>, <code>pvListXPM</code> and
+<code>pvListL0Groups</code>. An error is reported if the put fails.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result of <code>pva.pv_put</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4049,6 +4308,34 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Configure the common group for <code>platform</code>.</p>
+<p>Puts <code>groups ^ (1 &lt;&lt; platform)</code> to ':PART:<platform>:L0Groups', reads the
+':PART:<g>:L0Delay' PVs of those groups and puts the fixed value 99 to ':CommonL0Delay'
+(the read values are not used).</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if a put fails (or the get returns None), else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4068,6 +4355,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Put 0 to all L0Groups PVs in <code>pvListL0Groups</code> and return the put result; <code>groups</code> is unused.</p>
+
 
     </div>
 
@@ -4085,6 +4374,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Put <code>recording</code> to ':PART:<g>:Recording' for each bit g set in <code>groups</code>.</p>
 
 
     </div>
@@ -4104,6 +4395,10 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Write <code>groups</code> to the group L0 reset, insert a ClearReadout transition and sleep 1 s.</p>
+<p>The reset is a PVA put to ':GroupL0Reset' or, when using the XPM host, a ZMQ
+'set_reg' message for register 'groupL0Reset'.</p>
+
 
     </div>
 
@@ -4121,6 +4416,31 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Put 1 to every ':PART:<g>:Master' PV in <code>pvListXPM</code>.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False at the first failed put, else True. <code>groups</code> is unused.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4140,6 +4460,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Put 2 to ':PART:<common>:Master'; report an error and return False if the put fails, else return True.</p>
+
 
     </div>
 
@@ -4157,6 +4479,33 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Enable or disable L0 triggering for <code>groups</code>.</p>
+<p>Writes <code>groups</code> to ':GroupL0Enable' (or ':GroupL0Disable') by PVA put, or sends a ZMQ
+'set_reg' message for 'groupL0Enable'/'groupL0Disable' when using the XPM host.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The put result, or True when the ZMQ message was sent.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4176,6 +4525,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Insert transition <code>id</code> for <code>groups</code>.</p>
+<p>With PVA, puts <code>id</code> to all MsgHeader PVs and then, if that succeeded, <code>groups</code> to
+':GroupMsgInsert'. Otherwise sends 'set_idx_reg' (reg 'msgHdr') and 'set_reg'
+(reg 'groupMsgInsert') ZMQ messages.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The PVA put result, or True when ZMQ messages were sent.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4193,6 +4570,34 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Set up step-end counting for readout group <code>group</code>.</p>
+<p>Writes <code>readout</code> to ':PART:<group>:StepEnd' and <code>mask</code> to ':PART:<group>:StepGroups'
+(PVA puts, or ZMQ 'set_reg' messages when using the XPM host), and puts 0 to
+':PART:<group>:StepDone', which is stored as <code>pvStepDone</code>.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result of the StepGroups put, or True on the ZMQ path.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4212,6 +4617,31 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Put 0 to ':PART:<g>:StepGroups' for each bit g set in <code>groups</code>.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False (and logs an error) if the put fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4230,6 +4660,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Set <code>pvStepDone</code> to <code>seqpv</code> and return 0.</p>
+
 
     </div>
 
@@ -4247,6 +4679,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Start a PVA monitor on <code>pvStepDone</code> with <code>callback</code> and return the subscription.</p>
 
 
     </div>
@@ -4277,6 +4711,19 @@ Attributes:
 
 
 
+        <p>DAQ collection manager state machine.</p>
+<p>The constructor binds the back PULL/PUB, front REP/PUB and fast REP ZMQ sockets,
+creates DAQ helper objects, registers the transitions with a <code>transitions.Machine</code>,
+starts the fast-reply (and optional slow-update) threads and then runs the main loop
+<code>run()</code>; when it returns, the threads are stopped and joined.</p>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Each transition calls its <code>condition_*</code> method; the state changes only if it returns
+True, after which <code>report_status</code> is called (<code>enable</code> also calls <code>after_enable</code>).
+'slowupdate' is an internal transition in 'running' with no state change or report.</p>
+</details>
 
 
 
@@ -4311,6 +4758,9 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return a dict with only the <code>cmstate</code> entries whose keys are in <code>level_keys</code>.</p>
+<p><code>level_keys</code> is {'drp', 'teb', 'meb', 'control', 'tpr'}.</p>
+
 
     </div>
 
@@ -4329,6 +4779,19 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Receive one request on the front REP socket and handle it.</p>
+<p>Keys 'setstate.<STATE>' (after storing 'run_type' and merging the body into
+<code>phase1Info</code>) and 'setconfig.<ALIAS>' are passed to <code>handle_setstate</code>/
+<code>handle_setconfig</code>, which send their own replies. A transition key gets an 'ok' reply
+before <code>handle_trigger</code> runs; other keys use <code>handle_request</code>.</p>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>'slowupdate' is dropped while slow updates are disabled. A KeyError produces an
+'error' reply. For a transition with a non-empty body the code uses <code>key[1]</code> and an
+undefined name <code>phase1Info</code>, which would raise.</p>
+</details>
 
     </div>
 
@@ -4346,6 +4809,11 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Receive one request on the fast REP socket and handle it.</p>
+<p>'setrecord.&lt;0|1&gt;' and 'setbypass.&lt;0|1&gt;' call <code>handle_setrecord</code>/<code>handle_setbypass</code>
+(any value other than '0' means True), which reply themselves. Other keys are looked up
+in <code>handle_fast</code> and the result is sent as the reply; a KeyError sends an 'error' reply.</p>
 
 
     </div>
@@ -4365,6 +4833,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Publish a fileReport and register the data file with the logbook.</p>
+<p>Does nothing in simulator mode. Sends <code>fileReport_msg(path)</code> on the front PUB socket
+and POSTs <code>body</code> as JSON to '<url>lgbk/<experiment>/ws/register_file' with HTTP basic auth.</p>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="ConfigDBError (psdaq.control.control.ConfigDBError)" href="#psdaq.control.control.ConfigDBError">ConfigDBError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>experiment_name</code> is None, the request raises, the status is not OK, or the
+reply's 'success' is false.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4382,6 +4878,36 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Collect replies from <code>ids</code> on <code>socket</code> until all respond, an error arrives or time runs out.</p>
+<p>Uses <code>wait_for_answers</code> in 1 s slices up to <code>wait_time</code> ms; if <code>progress_txt</code> is given,
+<code>progressReport</code> is called each slice. A message whose body has 'err_info' (key other
+than 'warning') ends the wait and resets the pending list to that sender only.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>(ids still pending, list of reply messages, list of report messages). After an
+error the pending list is empty if the error came in a regular reply and holds the
+sender if it came in a report.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4401,6 +4927,11 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Handle report messages.</p>
+<p>'fileReport' calls <code>register_file</code> (which may raise ConfigDBError), 'error'/'warning'
+are re-published with <code>report_error</code>/<code>report_warning</code>, and 'chunkRequest' calls
+<code>handle_chunkrequest</code>. KeyErrors are logged.</p>
+
 
     </div>
 
@@ -4418,6 +4949,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Receive one JSON message on the back PULL socket and pass it to <code>process_reports</code>.</p>
 
 
     </div>
@@ -4437,6 +4970,9 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Main loop: poll the front REP and back PULL sockets and service whichever is ready.</p>
+<p>Runs until KeyboardInterrupt, which is logged.</p>
+
 
     </div>
 
@@ -4454,6 +4990,34 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Fire state-machine trigger <code>key</code> and build a reply.</p>
+<p>MachineError and AttributeError from the trigger are turned into an error text. With
+<code>stateChange</code> True, an unchanged state is also an error.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Message keyed by the current state with body <code>cmstate</code>, or with body
+<code>{'err_info': &lt;text without double quotes&gt;}</code> on error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4473,6 +5037,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the next transition from <code>next_dict</code> to move from <code>oldstate</code> toward <code>newstate</code>, or 'error'.</p>
+
 
     </div>
 
@@ -4490,6 +5056,34 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Reply on the front REP socket and step the state machine toward <code>newstate</code>.</p>
+<p>An unknown state gets an 'error' reply. Otherwise an 'ok' reply is sent first and
+transitions from <code>next_transition</code> are triggered until the state matches; it stops at
+the first error, which is reported with <code>report_error</code>.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The last reply/answer message built.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4509,6 +5103,10 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Set the config alias and reply on the front REP socket.</p>
+<p>In 'running' or 'paused' an 'error' reply is sent. Otherwise, if <code>newconfig</code> differs
+from <code>config_alias</code>, it is stored and <code>report_status</code> is called; then 'ok' is sent.</p>
+
 
     </div>
 
@@ -4526,6 +5124,10 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Set the recording flag and reply on the fast REP socket.</p>
+<p>In 'running', 'paused' or 'starting' an 'error' reply is sent. Otherwise, if the value
+changed, <code>recording</code> is updated and <code>report_status</code> is called; then 'ok' is sent.</p>
 
 
     </div>
@@ -4545,6 +5147,10 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Set the bypass_activedet flag and reply on the fast REP socket.</p>
+<p>Only allowed in 'reset' or 'unallocated'; otherwise an 'error' reply is sent. If the
+value changed, <code>bypass_activedet</code> is updated and <code>report_status</code> is called; then 'ok' is sent.</p>
+
 
     </div>
 
@@ -4562,6 +5168,11 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return a 'status' message.</p>
+<p>The body has 'state', 'transition' (last transition), 'platform' (<code>cmstate_levels()</code>),
+'config_alias', 'recording', 'bypass_activedet', 'experiment_name' ('None' if unset),
+'run_number' and 'last_run_number'.</p>
 
 
     </div>
@@ -4581,6 +5192,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Publish <code>status_msg()</code> on the front PUB socket.</p>
+
 
     </div>
 
@@ -4598,6 +5211,9 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Report each answer that contains <code>body['err_info']</code> and return how many there were.</p>
+<p>Each error is reported as '<alias>: <err_info>' using <code>get_aliases</code>.</p>
 
 
     </div>
@@ -4617,6 +5233,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Wait for phase-2 replies to <code>transition</code> from active drp and meb processes.</p>
+<p>Uses <code>confirm_response</code> on the back PULL socket with <code>phase2_timeout</code>, then processes
+reports; a ConfigDBError from them is reported.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if report processing raised ConfigDBError or any process did not respond
+(each is reported), else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4634,6 +5278,37 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for the 'alloc' transition.</p>
+<p>Publishes 'alloc' (body: active ids plus <code>cmstate</code>), waits up to 15 s for replies and
+merges them into <code>cmstate</code>. Assigns 'drp_id', 'teb_id' and 'meb_id' numbers, computes
+the readout-group mask <code>groups</code> and (outside simulator mode) disables L0, clears step
+groups, allocates XPM PVs and optionally sets up the common group.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True on success. False if a client does not respond, there is no active drp or teb,
+no drp uses readout group <code>platform</code>, disabling L0, clearing step groups or XPM <code>allocate</code> fails, or writing the activedet
+file (only done when its content changes) raises.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4653,6 +5328,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for the 'dealloc' transition.</p>
+<p>Publishes 'dealloc', waits up to 30 s for replies and, if all answered without
+errors, puts 0 to the L0Groups PVs (outside simulator mode).</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True on success. On a deallocate failure the code formats an undefined name <code>pv</code>,
+which would raise NameError.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4670,6 +5373,35 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for the 'beginrun' transition.</p>
+<p>Looks up the experiment; when recording, starts a run in the logbook and records run
+parameters, otherwise uses run number 0. Puts run/monitor info in
+<code>phase1Info['beginrun']</code>, advertises recording to the XPM, runs phase 1 via
+<code>condition_common</code> and, outside simulator mode, clears readout and inserts BeginRun.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if the experiment lookup, start_run, phase 1 or phase 2 replies fail, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4689,6 +5421,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for the 'endrun' transition.</p>
+<p>Ends the logbook run if recording, runs phase 1, then (outside simulator mode)
+inserts EndRun and sets XPM recording to False before collecting phase-2 replies. On
+success moves <code>run_number</code> to <code>last_run_number</code> if it is &gt; 0.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if phase 1 or phase 2 fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4706,6 +5466,31 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for 'beginstep': phase 1 (30 s timeout), insert BeginStep (outside simulator mode), phase-2 replies.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if phase 1 or phase 2 fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4725,6 +5510,31 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for 'endstep': phase 1 (6 s timeout), insert EndStep (outside simulator mode), phase-2 replies.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if phase 1 or phase 2 fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4742,6 +5552,32 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for 'slowupdate': insert transition <code>0x80 | SlowUpdate</code> (outside simulator mode).</p>
+<p>The code comment says 0x80 means "throw away transition if there is deadtime".</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result of <code>insert_transition</code>, or True in simulator mode.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4761,6 +5597,35 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for the 'connect' transition.</p>
+<p>Outside simulator mode sets the XPM master (and common group if enabled). Then
+publishes 'connect' with the active part of <code>cmstate_levels()</code> and waits up to 20 s
+for replies without errors.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True on success. On an XPM failure the code calls <code>self.report_err</code>, which is not
+defined in this class (raises AttributeError).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4778,6 +5643,31 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for 'disconnect': publish 'disconnect' and wait up to 30 s for error-free replies.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if any client did not respond or replied with an error, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4797,6 +5687,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return a message keyed by the current state with body <code>cmstate_levels()</code>; <code>body</code> is unused.</p>
+
 
     </div>
 
@@ -4814,6 +5706,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return <code>status_msg()</code>; <code>body</code> is unused.</p>
 
 
     </div>
@@ -4833,6 +5727,32 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Trigger 'disable' then 'enable' if in 'running'.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>'ok' message on success; the failing trigger's answer on error; an 'error' message
+if not in 'running'.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4850,6 +5770,9 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Write <code>body</code> (as text) to the active detectors file unless it is '/dev/null', and return {}.</p>
+<p>File errors are not caught.</p>
 
 
     </div>
@@ -4869,6 +5792,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return an 'instrument' message with body <code>{'instrument': ..., 'station': ...}</code>.</p>
+
 
     </div>
 
@@ -4886,6 +5811,36 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Build an xtc block from <code>body</code> using the <code>CyDgram</code> object and return it hex-encoded.</p>
+<p>Adds a detector from the 'detname', 'dettype', 'serial_number', 'namesid',
+'alg_name', 'alg_version' and 'motors' fields, then calls <code>getSelect</code> with 'timestamp',
+'transitionid', 'add_names' and 'add_shapes_data'. The dgram work is done in
+<code>psana.dgramCreate</code>; not visible here.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>'block' message whose body is the hex of the bytes after the first 12, or an
+<code>error_msg</code> if <code>body</code> is not a dict.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4905,6 +5860,33 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Update 'active', 'monitor' and drp/tpr readout groups in <code>cmstate</code> from <code>body</code>.</p>
+<p>Only allowed in 'unallocated'. Attempts to clear a control-level active flag are
+reverted with a warning, and monitor-only entries produce a warning.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>'ok' message, or an <code>error_msg</code> if the state is wrong or an exception occurs.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4922,6 +5904,10 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Clear <code>cmstate</code> and <code>ids</code>.</p>
+<p>The <code>transitions</code> package calls a model method named <code>on_enter_&lt;state&gt;</code> when that
+state is entered; that dispatch is not visible here.</p>
 
 
     </div>
@@ -4941,6 +5927,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Remove '<level>/<alias>' for every client in <code>cmstate_levels()</code> from <code>missing_set</code> in place.</p>
+
 
     </div>
 
@@ -4958,6 +5946,32 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Read a JSON file and return its contents.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Parsed JSON, or {} if the file is missing (a warning for '/dev/null', else an
+error), empty, or fails to parse (errors are reported).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -4977,6 +5991,31 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Split the entries under <code>d['activedet']</code> into active and inactive '<level>/<alias>' sets.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>tuple of set</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>(active_set, inactive_set); a KeyError is logged and the partial sets returned.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -4994,6 +6033,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Publish a progress message for <code>progress_txt</code> once at least 1 s has elapsed since <code>begin_time</code>.</p>
 
 
     </div>
@@ -5013,6 +6054,35 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for the 'rollcall' transition.</p>
+<p>Reads the active detectors file (unless bypassed), then repeatedly publishes
+'rollcall' until all expected clients answer or <code>rollcall_timeout</code> expires, filling
+<code>cmstate</code> and <code>ids</code>. Active flags and readout groups come from the file, history or
+defaults; a 'control' entry is added if missing.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Always True; missing clients and duplicate aliases are only reported.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5030,6 +6100,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return the set of '<level>/<alias>' entries whose alias was already seen in <code>cmstate_levels()</code>.</p>
 
 
     </div>
@@ -5049,6 +6121,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the subset of <code>ids</code> whose <code>cmstate_levels()</code> entry has 'active' equal to 1.</p>
+
 
     </div>
 
@@ -5066,6 +6140,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return a new level -&gt; id dict with shallow copies of the entries whose 'active' is 1.</p>
 
 
     </div>
@@ -5085,6 +6161,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the subset of <code>ids</code> found under levels whose name starts with <code>prefix</code>.</p>
+
 
     </div>
 
@@ -5102,6 +6180,10 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return the aliases of the clients in <code>id_list</code>.</p>
+<p>Entries without 'proc_info' are skipped; if 'alias' is missing,
+'<level>/<pid>/<host>' is used instead.</p>
 
 
     </div>
@@ -5121,6 +6203,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Log <code>msg</code> as an error and publish an <code>error_msg</code> on the front PUB socket.</p>
+
 
     </div>
 
@@ -5138,6 +6222,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Log <code>msg</code> as a warning and publish a <code>warning_msg</code> on the front PUB socket.</p>
 
 
     </div>
@@ -5157,6 +6243,56 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Start a run in the logbook and return its number.</p>
+<p>POSTs to '<url>/run_control/<experiment>/ws/start_run?run_type=<runType>' and resets
+<code>runType</code> to the default. In simulator mode returns the seconds since the EPICS epoch.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The run number from <code>value['num']</code> of the reply.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="Exception">Exception</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>'start_run error' if the request fails or does not report success.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5174,6 +6310,31 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>POST <code>params</code> as JSON to '<url>/run_control/<experiment>/ws/add_run_params'.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>len(params) on success (or if <code>params</code> is empty), else 0 after reporting an error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5193,6 +6354,31 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>POST <code>param_descs</code> to '<url>/run_control/<experiment>/ws/add_update_run_param_descriptions'.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>len(param_descs) on success (or if empty), else 0 after reporting an error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5210,6 +6396,9 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>POST to '<url>/run_control/<experiment>/ws/end_run'; report an error on failure.</p>
+<p>Does nothing in simulator mode. Returns None.</p>
 
 
     </div>
@@ -5229,6 +6418,33 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the current run number of <code>experiment_name</code> from the logbook.</p>
+<p>GETs '<url>/lgbk/<experiment>/ws/current_run' (with 'ws-auth'/'ws-kerb' replaced by
+'ws'). In simulator mode returns the seconds since the EPICS epoch.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>value['num']</code> from the reply, or 0 on any failure.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5246,6 +6462,33 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return the active experiment name for this instrument and station.</p>
+<p>GETs '.../lgbk/ws/activeexperiment_for_instrument_station' (URL with 'ws-auth'/
+'ws-kerb' replaced by 'ws'). In simulator mode returns '<instrument>_1'.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> or None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>value['name']</code> from the reply, or None on failure.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5265,6 +6508,33 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Run phase 1 of <code>transition</code>: publish it to the partition and wait for replies.</p>
+<p>Any <code>phase1Info[transition]</code> is added to the body as 'phase1Info' and then removed.
+Replies are awaited from active drp, teb and meb processes for <code>timeout</code> ms.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if no replies are expected or all replied without errors, else False.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5282,6 +6552,36 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for the 'configure' transition.</p>
+<p>Reads optional 'readout_count', 'step_group', 'seqpv_name'/'seqpv_val' and
+'seqpv_done' from <code>phase1Info['configure']</code> and fetches the trigger config from the
+configdb (a dummy dict in simulator mode). Runs phase 1 with 'config_alias',
+'trigger_config' and 'trigger_body', configures <code>runParams</code> and, outside simulator
+mode, clears readout, inserts Configure, sets up steps and may start the step-done thread.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if the configdb fetch, phase 1 or phase 2 fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5301,6 +6601,32 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for 'unconfigure': clear <code>phase1Info</code>, unconfigure <code>runParams</code>, phase 1, insert Unconfigure, phase-2 replies.</p>
+<p>The <code>step_exit.set()</code> call after <code>return False</code> is unreachable.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if phase 1 or phase 2 fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5318,6 +6644,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Set <code>slow_update_enabled</code> and log whether slowupdate transitions are enabled.</p>
 
 
     </div>
@@ -5337,6 +6665,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Enable slowupdate transitions if <code>slow_update_rate</code> is non-zero.</p>
+
 
     </div>
 
@@ -5354,6 +6684,37 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for the 'enable' transition.</p>
+<p>Runs phase 1; outside simulator mode adds <code>phase1Info['enable']['readout_count']</code> (if</p>
+<blockquote>
+<p>0) to the cumulative StepEnd count and inserts Enable. After phase-2 replies it may
+issue one slow update (first Enable after BeginRun), then enables L0 and optionally
+puts 1 to <code>seqpv_name</code>.</p>
+</blockquote>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if any step fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5373,6 +6734,34 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Condition for the 'disable' transition.</p>
+<p>Outside simulator mode puts 0 to <code>seqpv_name</code> (if set) and disables L0 first; slow
+updates are then disabled. Runs phase 1, inserts <code>0x180 | Disable</code> (outside simulator
+mode) and collects phase-2 replies.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False if any step fails, else True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5390,6 +6779,33 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Condition for the 'reset' transition.</p>
+<p>Clears <code>phase1Info</code>, disables L0 if running (outside simulator mode), disables slow
+updates, sets <code>step_exit</code> and publishes 'reset' to all clients.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Always True.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5409,6 +6825,10 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Thread body: send 'slowupdate' requests to this manager's front REP port while enabled.</p>
+<p>Uses its own REQ socket to localhost and runs at <code>slow_update_rate</code> Hz until
+<code>threads_exit</code> is set.</p>
+
 
     </div>
 
@@ -5427,6 +6847,9 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Thread body: poll the fast REP socket and call <code>service_fast</code> until <code>threads_exit</code> is set.</p>
+<p>It also creates a REP socket that is never used.</p>
+
 
     </div>
 
@@ -5444,6 +6867,13 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Thread body: publish a 'step' message when the StepDone PV reports done.</p>
+<p>Creates a new ZMQ context (replacing <code>self.context</code>) and a PUB socket bound to
+<code>step_pub_port</code>. Outside simulator mode it monitors the StepDone PV and, while
+<code>step_exit</code> is not set, sends <code>step_msg(1)</code> each time the callback sets <code>step_done</code>
+in 'running' or 'paused'. In simulator mode <code>sub</code> is never assigned, so <code>sub.close()</code>
+raises NameError.</p>
 
 
     </div>
@@ -5472,6 +6902,62 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the sorted elements of <code>seg_set</code> as a comma-separated string.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>seg_set</code>
+            </td>
+            <td>
+                  <code><span title="iterable">iterable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Elements to join; each is formatted with an f-string.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>E.g. '0,1,3'; empty string for an empty input.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5489,6 +6975,8 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return <code>drp_alias</code> with its last '_' suffix removed (e.g. 'cam_1' -&gt; 'cam').</p>
 
 
     </div>
@@ -5508,6 +6996,94 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Count drp entries in <code>platform_dict</code> whose alias maps to <code>det_name</code>.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>det_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Detector name compared with <code>detector_name(alias)</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>platform_dict</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dict with a 'drp' level mapping ids to entries with <code>['proc_info']['alias']</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>only_active</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, count only entries whose 'active' value is 1.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The count; counting stops (keeping the partial count) at the first KeyError.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5526,6 +7102,8 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Return the current UTC time as <code>'%010d-%09d' % (sec, nsec)</code> with seconds since the EPICS epoch.</p>
+
 
     </div>
 
@@ -5543,6 +7121,64 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Return a bitmask of the readout groups used by 'drp' and 'tpr' entries in <code>body</code>.</p>
+<p>For each entry, bit <code>node_info['det_info']['readout']</code> is set; entries without that
+key are skipped.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>body</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mapping of level name to {id: node_info}.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The readout-group bitmask.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5642,6 +7278,64 @@ Attributes:
 
     <div class="doc doc-contents ">
 
+        <p>Convert a platform/cmstate dict to the active-detectors file layout.</p>
+<p>The 'control' level is skipped. Each remaining entry is stored under its alias with
+its 'active' value and a copy of 'det_info' if present.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>src</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mapping of level -&gt; id -&gt; entry with <code>['proc_info']['alias']</code> and 'active'.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><code>{'activedet': {level: {alias: {'active': ..., ['det_info': ...]}}}}</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 
@@ -5659,6 +7353,10 @@ Attributes:
 </code></pre></div>
 
     <div class="doc doc-contents ">
+
+        <p>Parse command-line arguments, configure SysLog logging and run a <code>CollectionManager</code>.</p>
+<p>Outside simulator mode -x and -B are required (an error is printed and it returns if
+missing); in simulator mode they are ignored with a warning.</p>
 
 
     </div>

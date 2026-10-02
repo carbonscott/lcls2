@@ -97,16 +97,24 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1EpicsProviders.html
 </div><!--header-->
 <div class="contents">
 
+<p>Process-wide pva and ca client providers, both created on first use from the EPICS environment configuration.  
+ <a href="classPds__Epics_1_1EpicsProviders.html#details">More...</a></p>
+
 <p><code>#include &lt;EpicsProviders.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab80ac6be22742d1d4e4e1a8be41ed2c8" id="r_ab80ac6be22742d1d4e4e1a8be41ed2c8"><td class="memItemLeft" align="right" valign="top">static pvac::ClientProvider &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsProviders.html#ab80ac6be22742d1d4e4e1a8be41ed2c8">pva</a> ()</td></tr>
+<tr class="memdesc:ab80ac6be22742d1d4e4e1a8be41ed2c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shared pva client provider, creating both providers on first use.  <br /></td></tr>
 <tr class="separator:ab80ac6be22742d1d4e4e1a8be41ed2c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a015d4a2dfa9c76a242c9ca4fb95a1cc6" id="r_a015d4a2dfa9c76a242c9ca4fb95a1cc6"><td class="memItemLeft" align="right" valign="top">static pvac::ClientProvider &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1EpicsProviders.html#a015d4a2dfa9c76a242c9ca4fb95a1cc6">ca</a> ()</td></tr>
+<tr class="memdesc:a015d4a2dfa9c76a242c9ca4fb95a1cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the shared Channel Access client provider, creating both providers on first use (which also starts the CA client factory).  <br /></td></tr>
 <tr class="separator:a015d4a2dfa9c76a242c9ca4fb95a1cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Process-wide pva and ca client providers, both created on first use from the EPICS environment configuration. </p>
+<p>The lazy creation is not protected against concurrent first calls. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a015d4a2dfa9c76a242c9ca4fb95a1cc6" name="a015d4a2dfa9c76a242c9ca4fb95a1cc6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a015d4a2dfa9c76a242c9ca4fb95a1cc6">&#9670;&#160;</a></span>ca()</h2>
 
@@ -129,6 +137,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the shared Channel Access client provider, creating both providers on first use (which also starts the CA client factory). </p>
 
 </div>
 </div>
@@ -154,6 +164,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the shared pva client provider, creating both providers on first use. </p>
 
 </div>
 </div>

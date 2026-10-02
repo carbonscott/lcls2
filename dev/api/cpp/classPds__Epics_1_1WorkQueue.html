@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1WorkQueue.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).  
+ <a href="classPds__Epics_1_1WorkQueue.html#details">More...</a></p>
+
 <p><code>#include &lt;MonTracker.hh&gt;</code></p>
 
 <p>Inherits epicsThreadRunable.</p>
@@ -104,17 +107,25 @@ $(document).ready(function(){initNavTree('classPds__Epics_1_1WorkQueue.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1a7afb440cfd6895c486a6c2f17c0146" id="r_a1a7afb440cfd6895c486a6c2f17c0146"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html#a1a7afb440cfd6895c486a6c2f17c0146">WorkQueue</a> ()</td></tr>
+<tr class="memdesc:a1a7afb440cfd6895c486a6c2f17c0146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the worker thread, named Monitor handler.  <br /></td></tr>
 <tr class="separator:a1a7afb440cfd6895c486a6c2f17c0146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb748d959201e72b21e3b17714cea35f" id="r_aeb748d959201e72b21e3b17714cea35f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html#aeb748d959201e72b21e3b17714cea35f">~WorkQueue</a> ()</td></tr>
+<tr class="memdesc:aeb748d959201e72b21e3b17714cea35f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>.  <br /></td></tr>
 <tr class="separator:aeb748d959201e72b21e3b17714cea35f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad5cc9573bdcd902a78fc271908fd6b4" id="r_aad5cc9573bdcd902a78fc271908fd6b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4">close</a> ()</td></tr>
+<tr class="memdesc:aad5cc9573bdcd902a78fc271908fd6b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop accepting events, wake the thread and wait for it to exit.  <br /></td></tr>
 <tr class="separator:aad5cc9573bdcd902a78fc271908fd6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbb89ac8b071354b9ebd1de1cecb4b56" id="r_adbb89ac8b071354b9ebd1de1cecb4b56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html#adbb89ac8b071354b9ebd1de1cecb4b56">push</a> (const weak_type &amp;cb, const pvac::MonitorEvent &amp;evt)</td></tr>
+<tr class="memdesc:adbb89ac8b071354b9ebd1de1cecb4b56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue evt for worker cb and wake the thread if the queue was empty; ignored after <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>.  <br /></td></tr>
 <tr class="separator:adbb89ac8b071354b9ebd1de1cecb4b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdcf6f83623546ba5843fb7a9efacf5b" id="r_acdcf6f83623546ba5843fb7a9efacf5b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html#acdcf6f83623546ba5843fb7a9efacf5b">run</a> () OVERRIDE FINAL</td></tr>
+<tr class="memdesc:acdcf6f83623546ba5843fb7a9efacf5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body: until <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>, take each queued event and call process() on its worker if the worker still exists, printing any std::exception it throws.  <br /></td></tr>
 <tr class="separator:acdcf6f83623546ba5843fb7a9efacf5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Queue and thread that move monitor event handling off the pvAccess threads (per the code comment). </p>
+<p>It holds only weak pointers, so workers must be kept alive elsewhere. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1a7afb440cfd6895c486a6c2f17c0146" name="a1a7afb440cfd6895c486a6c2f17c0146"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a7afb440cfd6895c486a6c2f17c0146">&#9670;&#160;</a></span>WorkQueue()</h2>
 
@@ -129,6 +140,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Start the worker thread, named Monitor handler. </p>
 
 </div>
 </div>
@@ -147,6 +160,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -164,6 +179,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Stop accepting events, wake the thread and wait for it to exit. </p>
 
 </div>
 </div>
@@ -193,6 +210,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Queue evt for worker cb and wake the thread if the queue was empty; ignored after <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>. </p>
+
 </div>
 </div>
 <a id="acdcf6f83623546ba5843fb7a9efacf5b" name="acdcf6f83623546ba5843fb7a9efacf5b"></a>
@@ -217,6 +236,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Thread body: until <a class="el" href="classPds__Epics_1_1WorkQueue.html#aad5cc9573bdcd902a78fc271908fd6b4" title="Stop accepting events, wake the thread and wait for it to exit.">close()</a>, take each queued event and call process() on its worker if the worker still exists, printing any std::exception it throws. </p>
 
 </div>
 </div>

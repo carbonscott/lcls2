@@ -97,34 +97,50 @@ $(document).ready(function(){initNavTree('classPds_1_1Histogram.html',''); initR
 </div><!--header-->
 <div class="contents">
 
+<p>Integer histogram with 2^size bins and an overflow count; unitsCvt converts a bin index to physical units when printing.  
+ <a href="classPds_1_1Histogram.html#details">More...</a></p>
+
 <p><code>#include &lt;Histogram.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a95d59d276b7fc692a35c0692dcc97371" id="r_a95d59d276b7fc692a35c0692dcc97371"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a95d59d276b7fc692a35c0692dcc97371">Histogram</a> (unsigned size, double unitsCvt)</td></tr>
+<tr class="memdesc:a95d59d276b7fc692a35c0692dcc97371"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate 2^size zeroed bins (size is the log2 of the bin count) and keep the units conversion unitsCvt.  <br /></td></tr>
 <tr class="separator:a95d59d276b7fc692a35c0692dcc97371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85921ac1aef40b084366ee59fa642d68" id="r_a85921ac1aef40b084366ee59fa642d68"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a85921ac1aef40b084366ee59fa642d68">~Histogram</a> ()</td></tr>
+<tr class="memdesc:a85921ac1aef40b084366ee59fa642d68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the bins.  <br /></td></tr>
 <tr class="separator:a85921ac1aef40b084366ee59fa642d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a927ace46dd86109da809e24245470158" id="r_a927ace46dd86109da809e24245470158"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158">sum</a> ()</td></tr>
+<tr class="memdesc:a927ace46dd86109da809e24245470158"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recompute the total counts and the count-weighted sum of bin indices from the bins.  <br /></td></tr>
 <tr class="separator:a927ace46dd86109da809e24245470158"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a1e484a78ad2035aeba80bd54d95165" id="r_a2a1e484a78ad2035aeba80bd54d95165"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a2a1e484a78ad2035aeba80bd54d95165">dump</a> (char *filesSpec)</td></tr>
+<tr class="memdesc:a2a1e484a78ad2035aeba80bd54d95165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the non-empty bins (index times units, count), the overflow count, and the totals, mean and maximum index to the file filesSpec; prints a message if the file cannot be opened or closed.  <br /></td></tr>
 <tr class="separator:a2a1e484a78ad2035aeba80bd54d95165"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6729ec9e5c20473a8fd591e1f6c92069" id="r_a6729ec9e5c20473a8fd591e1f6c92069"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a6729ec9e5c20473a8fd591e1f6c92069">dump</a> () const</td></tr>
+<tr class="memdesc:a6729ec9e5c20473a8fd591e1f6c92069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print all bins, the overflow count, and the totals, mean and maximum index to stdout (calls <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>).  <br /></td></tr>
 <tr class="separator:a6729ec9e5c20473a8fd591e1f6c92069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21f5146f8360cd3c8aae7f44017a5a52" id="r_a21f5146f8360cd3c8aae7f44017a5a52"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a21f5146f8360cd3c8aae7f44017a5a52">units</a> () const</td></tr>
+<tr class="memdesc:a21f5146f8360cd3c8aae7f44017a5a52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the units conversion factor per bin.  <br /></td></tr>
 <tr class="separator:a21f5146f8360cd3c8aae7f44017a5a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca349bf837bd2833b07ec9cb6a3dae26" id="r_aca349bf837bd2833b07ec9cb6a3dae26"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#aca349bf837bd2833b07ec9cb6a3dae26">weight</a> () const</td></tr>
+<tr class="memdesc:aca349bf837bd2833b07ec9cb6a3dae26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the count-weighted sum of bin indices from the last <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>.  <br /></td></tr>
 <tr class="separator:aca349bf837bd2833b07ec9cb6a3dae26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ab57c80075ac90c0c72a13bf741099d" id="r_a1ab57c80075ac90c0c72a13bf741099d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a1ab57c80075ac90c0c72a13bf741099d">counts</a> () const</td></tr>
+<tr class="memdesc:a1ab57c80075ac90c0c72a13bf741099d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the total counts from the last <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>.  <br /></td></tr>
 <tr class="separator:a1ab57c80075ac90c0c72a13bf741099d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed9ff7a312a6b691f30497ad99506712" id="r_aed9ff7a312a6b691f30497ad99506712"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#aed9ff7a312a6b691f30497ad99506712">overflows</a> () const</td></tr>
+<tr class="memdesc:aed9ff7a312a6b691f30497ad99506712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of indices that were beyond the last bin.  <br /></td></tr>
 <tr class="separator:aed9ff7a312a6b691f30497ad99506712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d6734a27a1ba6b6af186f1190d33d6a" id="r_a4d6734a27a1ba6b6af186f1190d33d6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a4d6734a27a1ba6b6af186f1190d33d6a">bump</a> (uint64_t index)</td></tr>
+<tr class="memdesc:a4d6734a27a1ba6b6af186f1190d33d6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increment the bin index, or the overflow count if index is beyond the last bin, and track the largest index seen.  <br /></td></tr>
 <tr class="separator:a4d6734a27a1ba6b6af186f1190d33d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b982eb9965321dff26a2609ea2ccf59" id="r_a6b982eb9965321dff26a2609ea2ccf59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Histogram.html#a6b982eb9965321dff26a2609ea2ccf59">reset</a> ()</td></tr>
+<tr class="memdesc:a6b982eb9965321dff26a2609ea2ccf59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero all bins, the overflow count, the largest index and the totals.  <br /></td></tr>
 <tr class="separator:a6b982eb9965321dff26a2609ea2ccf59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Integer histogram with 2^size bins and an overflow count; unitsCvt converts a bin index to physical units when printing. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a95d59d276b7fc692a35c0692dcc97371" name="a95d59d276b7fc692a35c0692dcc97371"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a95d59d276b7fc692a35c0692dcc97371">&#9670;&#160;</a></span>Histogram()</h2>
 
@@ -151,6 +167,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate 2^size zeroed bins (size is the log2 of the bin count) and keep the units conversion unitsCvt. </p>
+
 </div>
 </div>
 <a id="a85921ac1aef40b084366ee59fa642d68" name="a85921ac1aef40b084366ee59fa642d68"></a>
@@ -167,6 +185,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the bins. </p>
 
 </div>
 </div>
@@ -195,6 +215,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Increment the bin index, or the overflow count if index is beyond the last bin, and track the largest index seen. </p>
+
 </div>
 </div>
 <a id="a1ab57c80075ac90c0c72a13bf741099d" name="a1ab57c80075ac90c0c72a13bf741099d"></a>
@@ -220,6 +242,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the total counts from the last <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>. </p>
+
 </div>
 </div>
 <a id="a6729ec9e5c20473a8fd591e1f6c92069" name="a6729ec9e5c20473a8fd591e1f6c92069"></a>
@@ -236,6 +260,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print all bins, the overflow count, and the totals, mean and maximum index to stdout (calls <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>). </p>
 
 </div>
 </div>
@@ -254,6 +280,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Write the non-empty bins (index times units, count), the overflow count, and the totals, mean and maximum index to the file filesSpec; prints a message if the file cannot be opened or closed. </p>
 
 </div>
 </div>
@@ -280,6 +308,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of indices that were beyond the last bin. </p>
+
 </div>
 </div>
 <a id="a6b982eb9965321dff26a2609ea2ccf59" name="a6b982eb9965321dff26a2609ea2ccf59"></a>
@@ -297,6 +327,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Zero all bins, the overflow count, the largest index and the totals. </p>
+
 </div>
 </div>
 <a id="a927ace46dd86109da809e24245470158" name="a927ace46dd86109da809e24245470158"></a>
@@ -313,6 +345,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Recompute the total counts and the count-weighted sum of bin indices from the bins. </p>
 
 </div>
 </div>
@@ -339,6 +373,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the units conversion factor per bin. </p>
+
 </div>
 </div>
 <a id="aca349bf837bd2833b07ec9cb6a3dae26" name="aca349bf837bd2833b07ec9cb6a3dae26"></a>
@@ -363,6 +399,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the count-weighted sum of bin indices from the last <a class="el" href="classPds_1_1Histogram.html#a927ace46dd86109da809e24245470158" title="Recompute the total counts and the count-weighted sum of bin indices from the bins.">sum()</a>. </p>
 
 </div>
 </div>

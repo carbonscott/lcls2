@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('EbEvent_8hh.html',''); initResizable()
   <div class="headertitle"><div class="title">EbEvent.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>EbEvent, one event being built: the contributions received so far for a pulse ID and the contributors still missing.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="eb_8hh.html">eb.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LinkedList_8hh.html">psdaq/service/LinkedList.hh</a>&quot;</code><br />
@@ -106,6 +109,7 @@ $(document).ready(function(){initNavTree('EbEvent_8hh.html',''); initResizable()
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html">Pds::Eb::EbEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One event being built by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a>: its contributions (a variable-length array that follows the object), the bit list of contributors still missing, accumulated damage and payload size.  <a href="classPds_1_1Eb_1_1EbEvent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -114,9 +118,12 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EbEvent, one event being built: the contributions received so far for a pulse ID and the contributors still missing. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -95,29 +95,43 @@ $(document).ready(function(){initNavTree('namespacePds_1_1Ipc.html',''); initRes
   <div class="headertitle"><div class="title">Pds::Ipc Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>POSIX shared-memory and message-queue helpers for the DRP.  
+<a href="namespacePds_1_1Ipc.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a21bf9ab6738b6fbfbc8030fea013c613" id="r_a21bf9ab6738b6fbfbc8030fea013c613"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a21bf9ab6738b6fbfbc8030fea013c613">setupDrpShMem</a> (std::string key, size_t size, int &amp;shmId)</td></tr>
+<tr class="memdesc:a21bf9ab6738b6fbfbc8030fea013c613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open (creating if needed) the POSIX shared memory object key with mode 0666, store its descriptor in shmId and resize it to size bytes.  <br /></td></tr>
 <tr class="separator:a21bf9ab6738b6fbfbc8030fea013c613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7487e882347f707d945dd35f902af7ce" id="r_a7487e882347f707d945dd35f902af7ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a7487e882347f707d945dd35f902af7ce">attachDrpShMem</a> (std::string key, int &amp;shmId, size_t size, void *&amp;data, bool write)</td></tr>
+<tr class="memdesc:a7487e882347f707d945dd35f902af7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map size bytes of the shared memory descriptor shmId (read-only, or write-only when write is true) and store the address in data.  <br /></td></tr>
 <tr class="separator:a7487e882347f707d945dd35f902af7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1874e95248b5129c5c3a19bca08e193b" id="r_a1874e95248b5129c5c3a19bca08e193b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a1874e95248b5129c5c3a19bca08e193b">detachDrpShMem</a> (void *&amp;data, int size)</td></tr>
+<tr class="memdesc:a1874e95248b5129c5c3a19bca08e193b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmap size bytes at data; returns the munmap() result.  <br /></td></tr>
 <tr class="separator:a1874e95248b5129c5c3a19bca08e193b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a386f45dab8ae356dd4cea132c3174f54" id="r_a386f45dab8ae356dd4cea132c3174f54"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a386f45dab8ae356dd4cea132c3174f54">setupDrpMsgQueue</a> (std::string key, size_t mqSize, int &amp;mqId, bool write)</td></tr>
+<tr class="memdesc:a386f45dab8ae356dd4cea132c3174f54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open (creating if needed) the POSIX message queue key, write-only or read-only per write, holding one message of up to mqSize bytes, and store its descriptor in mqId.  <br /></td></tr>
 <tr class="separator:a386f45dab8ae356dd4cea132c3174f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb2763410bb2036f1bbade71140dd261" id="r_adb2763410bb2036f1bbade71140dd261"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#adb2763410bb2036f1bbade71140dd261">detachDrpMq</a> (void *&amp;data, int size)</td></tr>
+<tr class="memdesc:adb2763410bb2036f1bbade71140dd261"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared here; IpcUtils.cc defines only detachDrpMq(std::string key), which unlinks the queue, so this signature has no definition.  <br /></td></tr>
 <tr class="separator:adb2763410bb2036f1bbade71140dd261"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add6780e5c05e5bd54f19582d4bee69f8" id="r_add6780e5c05e5bd54f19582d4bee69f8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#add6780e5c05e5bd54f19582d4bee69f8">drpSend</a> (int mqId, const char *msg, size_t msgsize)</td></tr>
+<tr class="memdesc:add6780e5c05e5bd54f19582d4bee69f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send msgsize bytes from msg on queue mqId with priority 31; returns the mq_send() result.  <br /></td></tr>
 <tr class="separator:add6780e5c05e5bd54f19582d4bee69f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bfc9292796671b5a9583fe368c15b45" id="r_a5bfc9292796671b5a9583fe368c15b45"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a5bfc9292796671b5a9583fe368c15b45">drpRecv</a> (int mqId, char *msg, size_t msgsize, unsigned msTmo)</td></tr>
+<tr class="memdesc:a5bfc9292796671b5a9583fe368c15b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive one message into msg (up to msgsize bytes) from queue mqId, waiting up to msTmo milliseconds.  <br /></td></tr>
 <tr class="separator:a5bfc9292796671b5a9583fe368c15b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6639695d2bd5f1376c392c8643e522a1" id="r_a6639695d2bd5f1376c392c8643e522a1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a6639695d2bd5f1376c392c8643e522a1">cleanupDrpShmMem</a> (std::string key, int shmId)</td></tr>
+<tr class="memdesc:a6639695d2bd5f1376c392c8643e522a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close shmId if it is non-zero and unlink the shared memory object key; returns the shm_unlink() result.  <br /></td></tr>
 <tr class="separator:a6639695d2bd5f1376c392c8643e522a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a277aced4329bed2085c414e78b67ad43" id="r_a277aced4329bed2085c414e78b67ad43"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Ipc.html#a277aced4329bed2085c414e78b67ad43">cleanupDrpMq</a> (std::string key, int mqId)</td></tr>
+<tr class="memdesc:a277aced4329bed2085c414e78b67ad43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close mqId if it is non-zero and unlink the message queue key; returns the mq_unlink() result.  <br /></td></tr>
 <tr class="separator:a277aced4329bed2085c414e78b67ad43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>POSIX shared-memory and message-queue helpers for the DRP. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a7487e882347f707d945dd35f902af7ce" name="a7487e882347f707d945dd35f902af7ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7487e882347f707d945dd35f902af7ce">&#9670;&#160;</a></span>attachDrpShMem()</h2>
 
@@ -162,6 +176,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Map size bytes of the shared memory descriptor shmId (read-only, or write-only when write is true) and store the address in data. </p>
+<p>Returns 0, or -1 if mmap() fails; key is not used. </p>
+
 </div>
 </div>
 <a id="a277aced4329bed2085c414e78b67ad43" name="a277aced4329bed2085c414e78b67ad43"></a>
@@ -189,6 +206,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close mqId if it is non-zero and unlink the message queue key; returns the mq_unlink() result. </p>
 
 </div>
 </div>
@@ -218,6 +237,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Close shmId if it is non-zero and unlink the shared memory object key; returns the shm_unlink() result. </p>
+
 </div>
 </div>
 <a id="adb2763410bb2036f1bbade71140dd261" name="adb2763410bb2036f1bbade71140dd261"></a>
@@ -246,6 +267,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Declared here; IpcUtils.cc defines only detachDrpMq(std::string key), which unlinks the queue, so this signature has no definition. </p>
+
 </div>
 </div>
 <a id="a1874e95248b5129c5c3a19bca08e193b" name="a1874e95248b5129c5c3a19bca08e193b"></a>
@@ -273,6 +296,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Unmap size bytes at data; returns the munmap() result. </p>
 
 </div>
 </div>
@@ -314,6 +339,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Receive one message into msg (up to msgsize bytes) from queue mqId, waiting up to msTmo milliseconds. </p>
+<p>Returns 0, or -1 on error or timeout. The nanosecond part of the deadline is not normalized, so it can exceed one second. </p>
+
 </div>
 </div>
 <a id="add6780e5c05e5bd54f19582d4bee69f8" name="add6780e5c05e5bd54f19582d4bee69f8"></a>
@@ -347,6 +375,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send msgsize bytes from msg on queue mqId with priority 31; returns the mq_send() result. </p>
 
 </div>
 </div>
@@ -388,6 +418,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Open (creating if needed) the POSIX message queue key, write-only or read-only per write, holding one message of up to mqSize bytes, and store its descriptor in mqId. </p>
+<p>Returns 0, or -1 if mq_open() fails. </p>
+
 </div>
 </div>
 <a id="a21bf9ab6738b6fbfbc8030fea013c613" name="a21bf9ab6738b6fbfbc8030fea013c613"></a>
@@ -421,6 +454,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Open (creating if needed) the POSIX shared memory object key with mode 0666, store its descriptor in shmId and resize it to size bytes. </p>
+<p>Returns the ftruncate() result, or -1 if shm_open() fails. </p>
 
 </div>
 </div>

@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classTPGen_1_1ControlRequest.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Base of the request instructions; <a class="el" href="classTPGen_1_1ControlRequest.html#a063e8cbdee159a1d4a3a5e813d696632" title="Pure virtual: return the request word.">value()</a> is the request word.  
+ <a href="classTPGen_1_1ControlRequest.html#details">More...</a></p>
+
 <p><code>#include &lt;user_sequence.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classTPGen_1_1Instruction.html">TPGen::Instruction</a>.</p>
@@ -109,6 +112,7 @@ Public Types</h2></td></tr>
 <tr class="memitem:afd8206bd9766e796b983381ba6cfb1b6" id="r_afd8206bd9766e796b983381ba6cfb1b6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html#afd8206bd9766e796b983381ba6cfb1b6">Type</a> { <a class="el" href="classTPGen_1_1ControlRequest.html#afd8206bd9766e796b983381ba6cfb1b6a2149e25074d670d623976e1bb9f92d9c">Beam</a>
 , <a class="el" href="classTPGen_1_1ControlRequest.html#afd8206bd9766e796b983381ba6cfb1b6aa2d05e6152f481507d8861537ed3f830">Expt</a>
  }</td></tr>
+<tr class="memdesc:afd8206bd9766e796b983381ba6cfb1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request type returned by <a class="el" href="classTPGen_1_1ControlRequest.html#ab4a70c3ec60cc5d65bdd415b467e8671" title="Pure virtual: return the request type.">request()</a>.  <a href="classTPGen_1_1ControlRequest.html#afd8206bd9766e796b983381ba6cfb1b6">More...</a><br /></td></tr>
 <tr class="separator:afd8206bd9766e796b983381ba6cfb1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classTPGen_1_1Instruction"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classTPGen_1_1Instruction')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classTPGen_1_1Instruction.html">TPGen::Instruction</a></td></tr>
 <tr class="memitem:afcaac78a8c0afcdb0424cdb7c8a02667 inherit pub_types_classTPGen_1_1Instruction" id="r_afcaac78a8c0afcdb0424cdb7c8a02667"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667">Type</a> { <br />
@@ -120,23 +124,31 @@ Public Types</h2></td></tr>
 &#160;&#160;<a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b">Request</a>
 <br />
  }</td></tr>
+<tr class="memdesc:afcaac78a8c0afcdb0424cdb7c8a02667"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classTPGen_1_1Instruction.html" title="Base of the sequence engine instructions (per the code comment); instr() identifies the concrete type...">Instruction</a> type returned by <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32" title="Pure virtual: return the instruction type.">instr()</a>.  <a href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667">More...</a><br /></td></tr>
 <tr class="separator:afcaac78a8c0afcdb0424cdb7c8a02667 inherit pub_types_classTPGen_1_1Instruction"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0599629f3bbf089090e0184816332571" id="r_a0599629f3bbf089090e0184816332571"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html#a0599629f3bbf089090e0184816332571">~ControlRequest</a> ()</td></tr>
+<tr class="memdesc:a0599629f3bbf089090e0184816332571"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a0599629f3bbf089090e0184816332571"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad488f057be149aa57f02717bdd848b8e" id="r_ad488f057be149aa57f02717bdd848b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667">Instruction::Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html#ad488f057be149aa57f02717bdd848b8e">instr</a> () const</td></tr>
+<tr class="memdesc:ad488f057be149aa57f02717bdd848b8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b" title="ControlRequest (BeamRequest or ExptRequest).">Instruction::Request</a>.  <br /></td></tr>
 <tr class="separator:ad488f057be149aa57f02717bdd848b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4a70c3ec60cc5d65bdd415b467e8671" id="r_ab4a70c3ec60cc5d65bdd415b467e8671"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classTPGen_1_1ControlRequest.html#afd8206bd9766e796b983381ba6cfb1b6">ControlRequest::Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html#ab4a70c3ec60cc5d65bdd415b467e8671">request</a> () const =0</td></tr>
+<tr class="memdesc:ab4a70c3ec60cc5d65bdd415b467e8671"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the request type.  <br /></td></tr>
 <tr class="separator:ab4a70c3ec60cc5d65bdd415b467e8671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a063e8cbdee159a1d4a3a5e813d696632" id="r_a063e8cbdee159a1d4a3a5e813d696632"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1ControlRequest.html#a063e8cbdee159a1d4a3a5e813d696632">value</a> () const =0</td></tr>
+<tr class="memdesc:a063e8cbdee159a1d4a3a5e813d696632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the request word.  <br /></td></tr>
 <tr class="separator:a063e8cbdee159a1d4a3a5e813d696632"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classTPGen_1_1Instruction"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classTPGen_1_1Instruction')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classTPGen_1_1Instruction.html">TPGen::Instruction</a></td></tr>
 <tr class="memitem:af13ad34901972f937791beacf4ecd85a inherit pub_methods_classTPGen_1_1Instruction" id="r_af13ad34901972f937791beacf4ecd85a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTPGen_1_1Instruction.html#af13ad34901972f937791beacf4ecd85a">~Instruction</a> ()</td></tr>
+<tr class="memdesc:af13ad34901972f937791beacf4ecd85a inherit pub_methods_classTPGen_1_1Instruction"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:af13ad34901972f937791beacf4ecd85a inherit pub_methods_classTPGen_1_1Instruction"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base of the request instructions; <a class="el" href="classTPGen_1_1ControlRequest.html#a063e8cbdee159a1d4a3a5e813d696632" title="Pure virtual: return the request word.">value()</a> is the request word. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="afd8206bd9766e796b983381ba6cfb1b6" name="afd8206bd9766e796b983381ba6cfb1b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afd8206bd9766e796b983381ba6cfb1b6">&#9670;&#160;</a></span>Type</h2>
 
@@ -148,9 +160,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Request type returned by <a class="el" href="classTPGen_1_1ControlRequest.html#ab4a70c3ec60cc5d65bdd415b467e8671" title="Pure virtual: return the request type.">request()</a>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afd8206bd9766e796b983381ba6cfb1b6a2149e25074d670d623976e1bb9f92d9c" name="afd8206bd9766e796b983381ba6cfb1b6a2149e25074d670d623976e1bb9f92d9c"></a>Beam&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="afd8206bd9766e796b983381ba6cfb1b6aa2d05e6152f481507d8861537ed3f830" name="afd8206bd9766e796b983381ba6cfb1b6aa2d05e6152f481507d8861537ed3f830"></a>Expt&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afd8206bd9766e796b983381ba6cfb1b6a2149e25074d670d623976e1bb9f92d9c" name="afd8206bd9766e796b983381ba6cfb1b6a2149e25074d670d623976e1bb9f92d9c"></a>Beam&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1BeamRequest.html" title="Request beam with the selected charge (per the code comment).">BeamRequest</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="afd8206bd9766e796b983381ba6cfb1b6aa2d05e6152f481507d8861537ed3f830" name="afd8206bd9766e796b983381ba6cfb1b6aa2d05e6152f481507d8861537ed3f830"></a>Expt&#160;</td><td class="fielddoc"><p><a class="el" href="classTPGen_1_1ExptRequest.html" title="Request an experiment control word (per the code comment).">ExptRequest</a>. </p>
+</td></tr>
 </table>
 
 </div>
@@ -179,6 +195,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty virtual destructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -204,6 +222,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <a class="el" href="classTPGen_1_1Instruction.html#afcaac78a8c0afcdb0424cdb7c8a02667a8fc558d9c5393acfa80d1698857d0e2b" title="ControlRequest (BeamRequest or ExptRequest).">Instruction::Request</a>. </p>
 
 <p>Implements <a class="el" href="classTPGen_1_1Instruction.html#abd5cd678e2b3951778f2f7dd39074c32">TPGen::Instruction</a>.</p>
 
@@ -232,6 +252,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: return the request type. </p>
+
 <p>Implemented in <a class="el" href="classTPGen_1_1BeamRequest.html#af1396a97d106b13c991f3bd66a5b60d8">TPGen::BeamRequest</a>, and <a class="el" href="classTPGen_1_1ExptRequest.html#aea30a342ba8ed63a920e5453e48ebad8">TPGen::ExptRequest</a>.</p>
 
 </div>
@@ -258,6 +280,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: return the request word. </p>
 
 <p>Implemented in <a class="el" href="classTPGen_1_1BeamRequest.html#a83636a54da559b464f1744c0b1eff8fb">TPGen::BeamRequest</a>, and <a class="el" href="classTPGen_1_1ExptRequest.html#a1862eb4582ea17a8f24fcc1f654b8cb2">TPGen::ExptRequest</a>.</p>
 

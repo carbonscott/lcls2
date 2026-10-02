@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1EndpointBase.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Common base of active and passive endpoints: holds the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, the event queue and the transmit and receive completion queues, creating any that are not supplied.  
+ <a href="classPds_1_1Fabrics_1_1EndpointBase.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a>.</p>
@@ -108,33 +111,47 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1EndpointBase.ht
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af12bd31e2ce3e1d2e7c0eab7c21a170b" id="r_af12bd31e2ce3e1d2e7c0eab7c21a170b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#af12bd31e2ce3e1d2e7c0eab7c21a170b">state</a> () const</td></tr>
+<tr class="memdesc:af12bd31e2ce3e1d2e7c0eab7c21a170b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current endpoint State.  <br /></td></tr>
 <tr class="separator:af12bd31e2ce3e1d2e7c0eab7c21a170b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9495d2dbfcd13b3a3ce0e78dc395a844" id="r_a9495d2dbfcd13b3a3ce0e78dc395a844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a9495d2dbfcd13b3a3ce0e78dc395a844">fabric</a> () const</td></tr>
+<tr class="memdesc:a9495d2dbfcd13b3a3ce0e78dc395a844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> used by this endpoint.  <br /></td></tr>
 <tr class="separator:a9495d2dbfcd13b3a3ce0e78dc395a844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f1667969b242b18ec38a2975a48e058" id="r_a8f1667969b242b18ec38a2975a48e058"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a8f1667969b242b18ec38a2975a48e058">eq</a> () const</td></tr>
+<tr class="memdesc:a8f1667969b242b18ec38a2975a48e058"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the event queue.  <br /></td></tr>
 <tr class="separator:a8f1667969b242b18ec38a2975a48e058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19726e1f9b0814bec7d5a7629f8bbae9" id="r_a19726e1f9b0814bec7d5a7629f8bbae9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9">txcq</a> () const</td></tr>
+<tr class="memdesc:a19726e1f9b0814bec7d5a7629f8bbae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the transmit completion queue.  <br /></td></tr>
 <tr class="separator:a19726e1f9b0814bec7d5a7629f8bbae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50cb4ba64577bed2055d4845274028b4" id="r_a50cb4ba64577bed2055d4845274028b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a50cb4ba64577bed2055d4845274028b4">rxcq</a> () const</td></tr>
+<tr class="memdesc:a50cb4ba64577bed2055d4845274028b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the receive completion queue.  <br /></td></tr>
 <tr class="separator:a50cb4ba64577bed2055d4845274028b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74d338142ad1815794d9cb9f5d8e0415" id="r_a74d338142ad1815794d9cb9f5d8e0415"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a74d338142ad1815794d9cb9f5d8e0415">shutdown</a> ()</td></tr>
+<tr class="memdesc:a74d338142ad1815794d9cb9f5d8e0415"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the event and completion queues that this object created and set the state to EP_CLOSED.  <br /></td></tr>
 <tr class="separator:a74d338142ad1815794d9cb9f5d8e0415"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d7b2d33be20621ea71439b5c08e5a18" id="r_a4d7b2d33be20621ea71439b5c08e5a18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a> (uint32_t *event, void *entry, bool *cm_entry)</td></tr>
+<tr class="memdesc:a4d7b2d33be20621ea71439b5c08e5a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one event from the event queue without blocking (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">EventQueue::event()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a4d7b2d33be20621ea71439b5c08e5a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17fcd15b393e3c116c89709c5a3bf4e9" id="r_a17fcd15b393e3c116c89709c5a3bf4e9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a17fcd15b393e3c116c89709c5a3bf4e9">event_wait</a> (uint32_t *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a>, void *entry, bool *cm_entry, int timeout=-1)</td></tr>
+<tr class="memdesc:a17fcd15b393e3c116c89709c5a3bf4e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for one event on the event queue with the given timeout (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aad94455f3736be581bbf97a37ca851c4" title="Like event(), but blocks in fi_eq_sread() with the given timeout.">EventQueue::event_wait()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a17fcd15b393e3c116c89709c5a3bf4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bbaee108d996895c782ed2afc687c72" id="r_a2bbaee108d996895c782ed2afc687c72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a2bbaee108d996895c782ed2afc687c72">event_error</a> (struct fi_eq_err_entry *entry)</td></tr>
+<tr class="memdesc:a2bbaee108d996895c782ed2afc687c72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one error entry from the event queue into entry; returns false, copying the queue's error, if none could be read.  <br /></td></tr>
 <tr class="separator:a2bbaee108d996895c782ed2afc687c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -181,7 +198,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Common base of active and passive endpoints: holds the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a>, the event queue and the transmit and receive completion queues, creating any that are not supplied. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a02a18ad62b855f3215e8ab9b97a69ad2" name="a02a18ad62b855f3215e8ab9b97a69ad2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a02a18ad62b855f3215e8ab9b97a69ad2">&#9670;&#160;</a></span>EndpointBase() <span class="overload">[1/2]</span></h2>
 
@@ -319,6 +338,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the event queue. </p>
+
 </div>
 </div>
 <a id="a4d7b2d33be20621ea71439b5c08e5a18" name="a4d7b2d33be20621ea71439b5c08e5a18"></a>
@@ -353,6 +374,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Read one event from the event queue without blocking (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">EventQueue::event()</a>); returns false, copying the queue's error, if no event was read. </p>
+
 </div>
 </div>
 <a id="a2bbaee108d996895c782ed2afc687c72" name="a2bbaee108d996895c782ed2afc687c72"></a>
@@ -370,6 +393,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Read one error entry from the event queue into entry; returns false, copying the queue's error, if none could be read. </p>
 
 </div>
 </div>
@@ -411,6 +436,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wait for one event on the event queue with the given timeout (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aad94455f3736be581bbf97a37ca851c4" title="Like event(), but blocks in fi_eq_sread() with the given timeout.">EventQueue::event_wait()</a>); returns false, copying the queue's error, if no event was read. </p>
+
 </div>
 </div>
 <a id="a9495d2dbfcd13b3a3ce0e78dc395a844" name="a9495d2dbfcd13b3a3ce0e78dc395a844"></a>
@@ -427,6 +454,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> used by this endpoint. </p>
 
 </div>
 </div>
@@ -512,6 +541,9 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the receive completion queue. </p>
+<p>When none was supplied and the transmit queue was created internally, this is the same object as <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9" title="Return the transmit completion queue.">txcq()</a>. </p>
+
 </div>
 </div>
 <a id="a74d338142ad1815794d9cb9f5d8e0415" name="a74d338142ad1815794d9cb9f5d8e0415"></a>
@@ -537,6 +569,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Delete the event and completion queues that this object created and set the state to EP_CLOSED. </p>
+
 <p>Reimplemented in <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html#a9c3696e3033da907822ae7b44f61a826">Pds::Fabrics::Endpoint</a>, and <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a8d7a44bd2a8af828880bd02a402188b3">Pds::Fabrics::PassiveEndpoint</a>.</p>
 
 </div>
@@ -556,6 +590,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the current endpoint State. </p>
+
 </div>
 </div>
 <a id="a19726e1f9b0814bec7d5a7629f8bbae9" name="a19726e1f9b0814bec7d5a7629f8bbae9"></a>
@@ -572,6 +608,8 @@ Protected Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the transmit completion queue. </p>
 
 </div>
 </div>

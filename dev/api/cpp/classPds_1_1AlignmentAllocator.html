@@ -99,59 +99,85 @@ $(document).ready(function(){initNavTree('classPds_1_1AlignmentAllocator.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Stateless allocator for standard containers that allocates with posix_memalign() at N-byte alignment (default 16).  
+ <a href="classPds_1_1AlignmentAllocator.html#details">More...</a></p>
+
 <p><code>#include &lt;AlignmentAllocator.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1AlignmentAllocator_1_1rebind.html">rebind</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gives the same allocator for element type T2 (as other).  <a href="structPds_1_1AlignmentAllocator_1_1rebind.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a107d5cd4daf2fddf262df82fbc3fa8db" id="r_a107d5cd4daf2fddf262df82fbc3fa8db"><td class="memItemLeft" align="right" valign="top">typedef T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a107d5cd4daf2fddf262df82fbc3fa8db">value_type</a></td></tr>
+<tr class="memdesc:a107d5cd4daf2fddf262df82fbc3fa8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Element type T.  <br /></td></tr>
 <tr class="separator:a107d5cd4daf2fddf262df82fbc3fa8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d98f131b2ad0da2745c79f8f2ce3e0d" id="r_a7d98f131b2ad0da2745c79f8f2ce3e0d"><td class="memItemLeft" align="right" valign="top">typedef std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a7d98f131b2ad0da2745c79f8f2ce3e0d">size_type</a></td></tr>
+<tr class="memdesc:a7d98f131b2ad0da2745c79f8f2ce3e0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size type (std::size_t).  <br /></td></tr>
 <tr class="separator:a7d98f131b2ad0da2745c79f8f2ce3e0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c6349c5b32bb80eaaea48f0ff3fcfb" id="r_a80c6349c5b32bb80eaaea48f0ff3fcfb"><td class="memItemLeft" align="right" valign="top">typedef std::ptrdiff_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a80c6349c5b32bb80eaaea48f0ff3fcfb">difference_type</a></td></tr>
+<tr class="memdesc:a80c6349c5b32bb80eaaea48f0ff3fcfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer difference type (std::ptrdiff_t).  <br /></td></tr>
 <tr class="separator:a80c6349c5b32bb80eaaea48f0ff3fcfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad104d09e27f6197ee3d92294f0020285" id="r_ad104d09e27f6197ee3d92294f0020285"><td class="memItemLeft" align="right" valign="top">typedef T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a></td></tr>
+<tr class="memdesc:ad104d09e27f6197ee3d92294f0020285"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to T.  <br /></td></tr>
 <tr class="separator:ad104d09e27f6197ee3d92294f0020285"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f2c58292ef139973c4a762440762ecd" id="r_a1f2c58292ef139973c4a762440762ecd"><td class="memItemLeft" align="right" valign="top">typedef const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a1f2c58292ef139973c4a762440762ecd">const_pointer</a></td></tr>
+<tr class="memdesc:a1f2c58292ef139973c4a762440762ecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to const T.  <br /></td></tr>
 <tr class="separator:a1f2c58292ef139973c4a762440762ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4397ad6a34a5360baf0f6d53714e3125" id="r_a4397ad6a34a5360baf0f6d53714e3125"><td class="memItemLeft" align="right" valign="top">typedef T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a4397ad6a34a5360baf0f6d53714e3125">reference</a></td></tr>
+<tr class="memdesc:a4397ad6a34a5360baf0f6d53714e3125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to T.  <br /></td></tr>
 <tr class="separator:a4397ad6a34a5360baf0f6d53714e3125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbe986212c1f84b6fd6ec09aac3d106d" id="r_afbe986212c1f84b6fd6ec09aac3d106d"><td class="memItemLeft" align="right" valign="top">typedef const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#afbe986212c1f84b6fd6ec09aac3d106d">const_reference</a></td></tr>
+<tr class="memdesc:afbe986212c1f84b6fd6ec09aac3d106d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to const T.  <br /></td></tr>
 <tr class="separator:afbe986212c1f84b6fd6ec09aac3d106d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab5a1edacab0289bf64109b2eacc2b8cf" id="r_ab5a1edacab0289bf64109b2eacc2b8cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#ab5a1edacab0289bf64109b2eacc2b8cf">AlignmentAllocator</a> ()  throw ()</td></tr>
+<tr class="memdesc:ab5a1edacab0289bf64109b2eacc2b8cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ab5a1edacab0289bf64109b2eacc2b8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf5bb6f83a391cb3910dba796d8fd148" id="r_abf5bb6f83a391cb3910dba796d8fd148"><td class="memTemplParams" colspan="2">template&lt;typename T2 &gt; </td></tr>
 <tr class="memitem:abf5bb6f83a391cb3910dba796d8fd148"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#abf5bb6f83a391cb3910dba796d8fd148">AlignmentAllocator</a> (const <a class="el" href="classPds_1_1AlignmentAllocator.html">AlignmentAllocator</a>&lt; T2, N &gt; &amp;)  throw ()</td></tr>
+<tr class="memdesc:abf5bb6f83a391cb3910dba796d8fd148"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converting constructor from an allocator of another element type; does nothing.  <br /></td></tr>
 <tr class="separator:abf5bb6f83a391cb3910dba796d8fd148"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93ef84f14183f284ddef7846ae9abfa5" id="r_a93ef84f14183f284ddef7846ae9abfa5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a93ef84f14183f284ddef7846ae9abfa5">~AlignmentAllocator</a> ()  throw ()</td></tr>
+<tr class="memdesc:a93ef84f14183f284ddef7846ae9abfa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a93ef84f14183f284ddef7846ae9abfa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace2705e1670906628185e3bfa9e906de" id="r_ace2705e1670906628185e3bfa9e906de"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#ace2705e1670906628185e3bfa9e906de">address</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#a4397ad6a34a5360baf0f6d53714e3125">reference</a> r)</td></tr>
+<tr class="memdesc:ace2705e1670906628185e3bfa9e906de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address of r.  <br /></td></tr>
 <tr class="separator:ace2705e1670906628185e3bfa9e906de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bd5a92f3a4c4345be5701f8c3dc07b8" id="r_a8bd5a92f3a4c4345be5701f8c3dc07b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1AlignmentAllocator.html#a1f2c58292ef139973c4a762440762ecd">const_pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a8bd5a92f3a4c4345be5701f8c3dc07b8">address</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#afbe986212c1f84b6fd6ec09aac3d106d">const_reference</a> r) const</td></tr>
+<tr class="memdesc:a8bd5a92f3a4c4345be5701f8c3dc07b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address of the const element r.  <br /></td></tr>
 <tr class="separator:a8bd5a92f3a4c4345be5701f8c3dc07b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509521f254eefc95b00bf86fc5b38d98" id="r_a509521f254eefc95b00bf86fc5b38d98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a509521f254eefc95b00bf86fc5b38d98">allocate</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#a7d98f131b2ad0da2745c79f8f2ce3e0d">size_type</a> n)</td></tr>
+<tr class="memdesc:a509521f254eefc95b00bf86fc5b38d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return n elements of storage aligned to N bytes from posix_memalign(), or nullptr if it fails.  <br /></td></tr>
 <tr class="separator:a509521f254eefc95b00bf86fc5b38d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad00b5e23d968ff00c2a245aa09075334" id="r_ad00b5e23d968ff00c2a245aa09075334"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#ad00b5e23d968ff00c2a245aa09075334">deallocate</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a> p, <a class="el" href="classPds_1_1AlignmentAllocator.html#a7d98f131b2ad0da2745c79f8f2ce3e0d">size_type</a>)</td></tr>
+<tr class="memdesc:ad00b5e23d968ff00c2a245aa09075334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free p with free(); the size argument is not used.  <br /></td></tr>
 <tr class="separator:ad00b5e23d968ff00c2a245aa09075334"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd17a5a4528c0c8e6d062dee8258a928" id="r_acd17a5a4528c0c8e6d062dee8258a928"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#acd17a5a4528c0c8e6d062dee8258a928">construct</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a> p, const <a class="el" href="classPds_1_1AlignmentAllocator.html#a107d5cd4daf2fddf262df82fbc3fa8db">value_type</a> &amp;wert)</td></tr>
+<tr class="memdesc:acd17a5a4528c0c8e6d062dee8258a928"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy-construct wert in place at p.  <br /></td></tr>
 <tr class="separator:acd17a5a4528c0c8e6d062dee8258a928"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a585c2fc964aca0657fb0fa4035004e58" id="r_a585c2fc964aca0657fb0fa4035004e58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a585c2fc964aca0657fb0fa4035004e58">destroy</a> (<a class="el" href="classPds_1_1AlignmentAllocator.html#ad104d09e27f6197ee3d92294f0020285">pointer</a> p)</td></tr>
+<tr class="memdesc:a585c2fc964aca0657fb0fa4035004e58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the destructor of the element at p.  <br /></td></tr>
 <tr class="separator:a585c2fc964aca0657fb0fa4035004e58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f94149f72b0e4765b493e5477d08b1b" id="r_a0f94149f72b0e4765b493e5477d08b1b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1AlignmentAllocator.html#a7d98f131b2ad0da2745c79f8f2ce3e0d">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#a0f94149f72b0e4765b493e5477d08b1b">max_size</a> () const  throw ()</td></tr>
+<tr class="memdesc:a0f94149f72b0e4765b493e5477d08b1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the largest size_type value divided by the element size.  <br /></td></tr>
 <tr class="separator:a0f94149f72b0e4765b493e5477d08b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef49d4b29a2669e2df72feddadf2fe66" id="r_aef49d4b29a2669e2df72feddadf2fe66"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#aef49d4b29a2669e2df72feddadf2fe66">operator!=</a> (const <a class="el" href="classPds_1_1AlignmentAllocator.html">AlignmentAllocator</a>&lt; T, N &gt; &amp;other) const</td></tr>
+<tr class="memdesc:aef49d4b29a2669e2df72feddadf2fe66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the negation of operator==, which is always true, so this always returns false.  <br /></td></tr>
 <tr class="separator:aef49d4b29a2669e2df72feddadf2fe66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af08fc8fd45d31863cff23d0968a23893" id="r_af08fc8fd45d31863cff23d0968a23893"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1AlignmentAllocator.html#af08fc8fd45d31863cff23d0968a23893">operator==</a> (const <a class="el" href="classPds_1_1AlignmentAllocator.html">AlignmentAllocator</a>&lt; T, N &gt; &amp;other) const</td></tr>
+<tr class="memdesc:af08fc8fd45d31863cff23d0968a23893"><td class="mdescLeft">&#160;</td><td class="mdescRight">Always returns true, since the allocator holds no state (per the code comment).  <br /></td></tr>
 <tr class="separator:af08fc8fd45d31863cff23d0968a23893"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T, std::size_t N = 16&gt;<br />
+class Pds::AlignmentAllocator&lt; T, N &gt;</div><p>Stateless allocator for standard containers that allocates with posix_memalign() at N-byte alignment (default 16). </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a1f2c58292ef139973c4a762440762ecd" name="a1f2c58292ef139973c4a762440762ecd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1f2c58292ef139973c4a762440762ecd">&#9670;&#160;</a></span>const_pointer</h2>
 
@@ -165,6 +191,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pointer to const T. </p>
 
 </div>
 </div>
@@ -182,6 +210,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Reference to const T. </p>
+
 </div>
 </div>
 <a id="a80c6349c5b32bb80eaaea48f0ff3fcfb" name="a80c6349c5b32bb80eaaea48f0ff3fcfb"></a>
@@ -197,6 +227,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pointer difference type (std::ptrdiff_t). </p>
 
 </div>
 </div>
@@ -214,6 +246,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Pointer to T. </p>
+
 </div>
 </div>
 <a id="a4397ad6a34a5360baf0f6d53714e3125" name="a4397ad6a34a5360baf0f6d53714e3125"></a>
@@ -229,6 +263,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Reference to T. </p>
 
 </div>
 </div>
@@ -246,6 +282,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Size type (std::size_t). </p>
+
 </div>
 </div>
 <a id="a107d5cd4daf2fddf262df82fbc3fa8db" name="a107d5cd4daf2fddf262df82fbc3fa8db"></a>
@@ -261,6 +299,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Element type T. </p>
 
 </div>
 </div>
@@ -295,6 +335,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -332,6 +374,8 @@ template&lt;typename T2 &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Converting constructor from an allocator of another element type; does nothing. </p>
+
 </div>
 </div>
 <a id="a93ef84f14183f284ddef7846ae9abfa5" name="a93ef84f14183f284ddef7846ae9abfa5"></a>
@@ -365,6 +409,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -394,6 +440,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the address of the const element r. </p>
+
 </div>
 </div>
 <a id="ace2705e1670906628185e3bfa9e906de" name="ace2705e1670906628185e3bfa9e906de"></a>
@@ -422,6 +470,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the address of r. </p>
+
 </div>
 </div>
 <a id="a509521f254eefc95b00bf86fc5b38d98" name="a509521f254eefc95b00bf86fc5b38d98"></a>
@@ -449,6 +499,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return n elements of storage aligned to N bytes from posix_memalign(), or nullptr if it fails. </p>
 
 </div>
 </div>
@@ -488,6 +540,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Copy-construct wert in place at p. </p>
+
 </div>
 </div>
 <a id="ad00b5e23d968ff00c2a245aa09075334" name="ad00b5e23d968ff00c2a245aa09075334"></a>
@@ -526,6 +580,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Free p with free(); the size argument is not used. </p>
+
 </div>
 </div>
 <a id="a585c2fc964aca0657fb0fa4035004e58" name="a585c2fc964aca0657fb0fa4035004e58"></a>
@@ -553,6 +609,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Call the destructor of the element at p. </p>
 
 </div>
 </div>
@@ -587,6 +645,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the largest size_type value divided by the element size. </p>
+
 </div>
 </div>
 <a id="aef49d4b29a2669e2df72feddadf2fe66" name="aef49d4b29a2669e2df72feddadf2fe66"></a>
@@ -615,6 +675,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the negation of operator==, which is always true, so this always returns false. </p>
+
 </div>
 </div>
 <a id="af08fc8fd45d31863cff23d0968a23893" name="af08fc8fd45d31863cff23d0968a23893"></a>
@@ -642,6 +704,8 @@ template&lt;typename T , std::size_t N = 16&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Always returns true, since the allocator holds no state (per the code comment). </p>
 
 </div>
 </div>

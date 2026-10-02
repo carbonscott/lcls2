@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Collection_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">Collection.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>ZeroMQ helpers (context, message, socket), NIC address lookup, and <a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a>, the base of processes that take part in the DAQ collection protocol.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;zmq.h&gt;</code><br />
 <code>#include &lt;nlohmann/json.hpp&gt;</code><br />
@@ -103,32 +106,45 @@ $(document).ready(function(){initNavTree('Collection_8hh.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqContext.html">ZmqContext</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns a ZeroMQ context.  <a href="classZmqContext.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqMessage.html">ZmqMessage</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns one zmq_msg_t frame; movable but not copyable.  <a href="classZmqMessage.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classZmqSocket.html">ZmqSocket</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps one ZeroMQ socket created from a <a class="el" href="classZmqContext.html" title="Owns a ZeroMQ context.">ZmqContext</a>.  <a href="classZmqSocket.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp://manager:(zmq_base_port + platform) and a SUB socket (topic all) to port zmq_base_port + 10 + platform, binds inproc://drp, and dispatches incoming messages by key to the handle* methods.  <a href="classCollectionApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a694b00c2a53afef3b05d7fa7fe4abb86" id="r_a694b00c2a53afef3b05d7fa7fe4abb86"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a694b00c2a53afef3b05d7fa7fe4abb86">getNicIp</a> (const std::string &amp;forceIface)</td></tr>
+<tr class="memdesc:a694b00c2a53afef3b05d7fa7fe4abb86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the IPv4 address of the interface named forceIface; aborts (after logging) if it has none.  <br /></td></tr>
 <tr class="separator:a694b00c2a53afef3b05d7fa7fe4abb86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2dc06d9113c210de0d7a234ea32f9588" id="r_a2dc06d9113c210de0d7a234ea32f9588"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a2dc06d9113c210de0d7a234ea32f9588">getNicIp</a> (bool forceEnet)</td></tr>
+<tr class="memdesc:a2dc06d9113c210de0d7a234ea32f9588"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the IPv4 address of the first Infiniband interface, or of the first running Ethernet interface if there is no Infiniband interface or forceEnet is true; aborts if no suitable interface is found.  <br /></td></tr>
 <tr class="separator:a2dc06d9113c210de0d7a234ea32f9588"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a097db878e2534e41f159a8d2b884f631" id="r_a097db878e2534e41f159a8d2b884f631"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a097db878e2534e41f159a8d2b884f631">createMsg</a> (const std::string &amp;key, const std::string &amp;msg_id, size_t sender_id, nlohmann::json &amp;body)</td></tr>
+<tr class="memdesc:a097db878e2534e41f159a8d2b884f631"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a JSON message with header key, msg_id and sender_id and the given body.  <br /></td></tr>
 <tr class="separator:a097db878e2534e41f159a8d2b884f631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47ba017b668f796b66bded498b1eefbf" id="r_a47ba017b668f796b66bded498b1eefbf"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a47ba017b668f796b66bded498b1eefbf">createAsyncErrMsg</a> (const std::string &amp;alias, const std::string &amp;errMsg)</td></tr>
+<tr class="memdesc:a47ba017b668f796b66bded498b1eefbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an error message (key error, msg_id 0, sender 0) whose body err_info is alias: errMsg.  <br /></td></tr>
 <tr class="separator:a47ba017b668f796b66bded498b1eefbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02f874face53075943dcff082ac9206c" id="r_a02f874face53075943dcff082ac9206c"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a02f874face53075943dcff082ac9206c">createAsyncWarnMsg</a> (const std::string &amp;alias, const std::string &amp;warnMsg)</td></tr>
+<tr class="memdesc:a02f874face53075943dcff082ac9206c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a warning message (key warning, msg_id 0, sender 0) whose body err_info is alias: warnMsg.  <br /></td></tr>
 <tr class="separator:a02f874face53075943dcff082ac9206c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a050345e013d5fc949c712ea53a52fec6" id="r_a050345e013d5fc949c712ea53a52fec6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#a050345e013d5fc949c712ea53a52fec6">checkResourceLimits</a> ()</td></tr>
+<tr class="memdesc:a050345e013d5fc949c712ea53a52fec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check that the hard MEMLOCK limit is unlimited and the hard RTPRIO limit is 99, and raise the soft limits to the hard ones.  <br /></td></tr>
 <tr class="separator:a050345e013d5fc949c712ea53a52fec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa670d6d5bbda440d481f6f205fad4710" id="r_aa670d6d5bbda440d481f6f205fad4710"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Collection_8hh.html#aa670d6d5bbda440d481f6f205fad4710">initShutdownSignals</a> (const std::string &amp;alias, void(*shutdownAction)())</td></tr>
+<tr class="memdesc:aa670d6d5bbda440d481f6f205fad4710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Install a handler for SIGINT, SIGQUIT and SIGTERM that calls shutdownAction on the first signal and exits on the second, and for SIGSEGV and SIGBUS that writes a gdb stack trace to a file named after alias and exits.  <br /></td></tr>
 <tr class="separator:aa670d6d5bbda440d481f6f205fad4710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>ZeroMQ helpers (context, message, socket), NIC address lookup, and <a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a>, the base of processes that take part in the DAQ collection protocol. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a050345e013d5fc949c712ea53a52fec6" name="a050345e013d5fc949c712ea53a52fec6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a050345e013d5fc949c712ea53a52fec6">&#9670;&#160;</a></span>checkResourceLimits()</h2>
 
@@ -143,6 +159,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check that the hard MEMLOCK limit is unlimited and the hard RTPRIO limit is 99, and raise the soft limits to the hard ones. </p>
+<p>Returns true on a fatal problem (MEMLOCK inadequate or not settable, or a getrlimit() failure), else false. </p>
 
 </div>
 </div>
@@ -172,6 +191,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return an error message (key error, msg_id 0, sender 0) whose body err_info is alias: errMsg. </p>
+
 </div>
 </div>
 <a id="a02f874face53075943dcff082ac9206c" name="a02f874face53075943dcff082ac9206c"></a>
@@ -199,6 +220,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return a warning message (key warning, msg_id 0, sender 0) whose body err_info is alias: warnMsg. </p>
 
 </div>
 </div>
@@ -240,6 +263,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return a JSON message with header key, msg_id and sender_id and the given body. </p>
+
 </div>
 </div>
 <a id="a2dc06d9113c210de0d7a234ea32f9588" name="a2dc06d9113c210de0d7a234ea32f9588"></a>
@@ -258,6 +283,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the IPv4 address of the first Infiniband interface, or of the first running Ethernet interface if there is no Infiniband interface or forceEnet is true; aborts if no suitable interface is found. </p>
+
 </div>
 </div>
 <a id="a694b00c2a53afef3b05d7fa7fe4abb86" name="a694b00c2a53afef3b05d7fa7fe4abb86"></a>
@@ -275,6 +302,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the IPv4 address of the interface named forceIface; aborts (after logging) if it has none. </p>
 
 </div>
 </div>
@@ -303,6 +332,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Install a handler for SIGINT, SIGQUIT and SIGTERM that calls shutdownAction on the first signal and exits on the second, and for SIGSEGV and SIGBUS that writes a gdb stack trace to a file named after alias and exits. </p>
 
 </div>
 </div>

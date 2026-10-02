@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedFileWriter.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Single-threaded file writer that collects events in one memory buffer and writes the buffer when the next event does not fit or the batch is more than 2 s old (by timestamp seconds).  
+ <a href="classDrp_1_1BufferedFileWriter.html#details">More...</a></p>
+
 <p><code>#include &lt;FileWriter.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a>.</p>
@@ -104,21 +107,29 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedFileWriter.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aaed89619844c65253b109d0f120f0bc5" id="r_aaed89619844c65253b109d0f120f0bc5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html#aaed89619844c65253b109d0f120f0bc5">BufferedFileWriter</a> (size_t bufferSize)</td></tr>
+<tr class="memdesc:aaed89619844c65253b109d0f120f0bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate a buffer of bufferSize bytes; no file is open yet.  <br /></td></tr>
 <tr class="separator:aaed89619844c65253b109d0f120f0bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e2e7ecd82f76e2b7dcd874be7852d19" id="r_a8e2e7ecd82f76e2b7dcd874be7852d19"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html#a8e2e7ecd82f76e2b7dcd874be7852d19">~BufferedFileWriter</a> () override</td></tr>
+<tr class="memdesc:a8e2e7ecd82f76e2b7dcd874be7852d19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classDrp_1_1BufferedFileWriter.html#a107b9f1ecec5750ee62d62b8aff2d308" title="If a file is open, write the buffered bytes and close it.">close()</a>.  <br /></td></tr>
 <tr class="separator:a8e2e7ecd82f76e2b7dcd874be7852d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4d6378c29d52dec4acf003f12c85927" id="r_ac4d6378c29d52dec4acf003f12c85927"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html#ac4d6378c29d52dec4acf003f12c85927">open</a> (const std::string &amp;fileName) override</td></tr>
+<tr class="memdesc:ac4d6378c29d52dec4acf003f12c85927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close any open file (with a warning), create or truncate fileName with read permission for owner and group, and wait for a write lock on it.  <br /></td></tr>
 <tr class="separator:ac4d6378c29d52dec4acf003f12c85927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a107b9f1ecec5750ee62d62b8aff2d308" id="r_a107b9f1ecec5750ee62d62b8aff2d308"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html#a107b9f1ecec5750ee62d62b8aff2d308">close</a> () override</td></tr>
+<tr class="memdesc:a107b9f1ecec5750ee62d62b8aff2d308"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a file is open, write the buffered bytes and close it.  <br /></td></tr>
 <tr class="separator:a107b9f1ecec5750ee62d62b8aff2d308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3b37ccfd3fe8f6e665f1ca105ea4080" id="r_af3b37ccfd3fe8f6e665f1ca105ea4080"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriter.html#af3b37ccfd3fe8f6e665f1ca105ea4080">writeEvent</a> (const void *data, size_t size, <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> ts) override</td></tr>
+<tr class="memdesc:af3b37ccfd3fe8f6e665f1ca105ea4080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append size bytes from data to the buffer.  <br /></td></tr>
 <tr class="separator:af3b37ccfd3fe8f6e665f1ca105ea4080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1FileWriterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1FileWriterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with the writing counter at 0.  <br /></td></tr>
 <tr class="separator:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ac05e5eacde9fb730bf4abc2b362c402e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac05e5eacde9fb730bf4abc2b362c402e">~FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ab3dced26d62dabc46b112f3821e54848"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848">writing</a> () const</td></tr>
+<tr class="memdesc:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the writing counter (non-zero while an implementation is inside a write).  <br /></td></tr>
 <tr class="separator:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -127,7 +138,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase" id="r_a015874f88c3a5c3cad1c96415375746d"><td class="memItemLeft" align="right" valign="top">volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a015874f88c3a5c3cad1c96415375746d">m_writing</a></td></tr>
 <tr class="separator:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Single-threaded file writer that collects events in one memory buffer and writes the buffer when the next event does not fit or the batch is more than 2 s old (by timestamp seconds). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aaed89619844c65253b109d0f120f0bc5" name="aaed89619844c65253b109d0f120f0bc5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaed89619844c65253b109d0f120f0bc5">&#9670;&#160;</a></span>BufferedFileWriter()</h2>
 
@@ -143,6 +156,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Allocate a buffer of bufferSize bytes; no file is open yet. </p>
 
 </div>
 </div>
@@ -169,6 +184,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classDrp_1_1BufferedFileWriter.html#a107b9f1ecec5750ee62d62b8aff2d308" title="If a file is open, write the buffered bytes and close it.">close()</a>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -194,6 +211,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>If a file is open, write the buffered bytes and close it. </p>
+<p>Returns the <a class="el" href="classDrp_1_1BufferedFileWriter.html#a107b9f1ecec5750ee62d62b8aff2d308" title="If a file is open, write the buffered bytes and close it.">close()</a> result, or 0 if no file was open. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#a318270a36a20e28499d517847a5499fa">Drp::FileWriterBase</a>.</p>
 
@@ -222,6 +242,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Close any open file (with a warning), create or truncate fileName with read permission for owner and group, and wait for a write lock on it. </p>
+<p>Returns 0, or -1 if the file cannot be created or locked. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#ac82a7a44cc34200010e85f553d89f8db">Drp::FileWriterBase</a>.</p>
 
@@ -266,6 +289,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Append size bytes from data to the buffer. </p>
+<p>The buffer is written out first if data does not fit or the batch started more than 2 s earlier; a datagram larger than the free space is written through the buffer in chunks. Aborts if a write fails. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#af3cb61987edf71770e9c710e4c70f0e1">Drp::FileWriterBase</a>.</p>
 

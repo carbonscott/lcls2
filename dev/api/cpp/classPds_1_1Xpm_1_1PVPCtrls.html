@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1PVPCtrls.html','');
 </div><!--header-->
 <div class="contents">
 
+<p>EPICS control PVs of one partition of an XPM; their callbacks program the L0 select, L1 trigger, analysis tag, message and inhibit registers of that partition in the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>.  
+ <a href="classPds_1_1Xpm_1_1PVPCtrls.html#details">More...</a></p>
+
 <p><code>#include &lt;PVPCtrls.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -106,62 +109,91 @@ Public Types</h2></td></tr>
 , <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#af969b8fefb00b62d155f1a4490bd4930aa972f0b9ed42d0768ba0e3de74427860">ACRate</a>
 , <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#af969b8fefb00b62d155f1a4490bd4930a9803b022dc032a57d5feb1cdd342093d">Sequence</a>
  }</td></tr>
+<tr class="memdesc:af969b8fefb00b62d155f1a4490bd4930"><td class="mdescLeft">&#160;</td><td class="mdescRight">L0 select modes stored by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#ab178d00497a020b30afb37f958760645" title="Store the L0 select mode (FixedRate, ACRate or Sequence) used by setL0Select().">l0Select()</a> and used by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a>.  <a href="classPds_1_1Xpm_1_1PVPCtrls.html#af969b8fefb00b62d155f1a4490bd4930">More...</a><br /></td></tr>
 <tr class="separator:af969b8fefb00b62d155f1a4490bd4930"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a99c99a31ab0304db09b7f3d9bd78a15a" id="r_a99c99a31ab0304db09b7f3d9bd78a15a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a99c99a31ab0304db09b7f3d9bd78a15a">PVPCtrls</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;, <a class="el" href="classPds_1_1Semaphore.html">Semaphore</a> &amp;, <a class="el" href="classPds_1_1Xpm_1_1PVPStats.html">PVPStats</a> &amp;, unsigned shelf, unsigned partition)</td></tr>
+<tr class="memdesc:a99c99a31ab0304db09b7f3d9bd78a15a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the module, semaphore, statistics object, shelf and partition; starts disabled and without PVs.  <br /></td></tr>
 <tr class="separator:a99c99a31ab0304db09b7f3d9bd78a15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56d6d9a7e51db0bb51ee3e993529a1a0" id="r_a56d6d9a7e51db0bb51ee3e993529a1a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a56d6d9a7e51db0bb51ee3e993529a1a0">~PVPCtrls</a> ()</td></tr>
+<tr class="memdesc:a56d6d9a7e51db0bb51ee3e993529a1a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; the PVs created by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a3d05692ad8697a88cec26cd1dabfbf62" title="Delete the PVs of an earlier call and create one PV per control, named title, a colon and the control...">allocate()</a> are not deleted.  <br /></td></tr>
 <tr class="separator:a56d6d9a7e51db0bb51ee3e993529a1a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d05692ad8697a88cec26cd1dabfbf62" id="r_a3d05692ad8697a88cec26cd1dabfbf62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a3d05692ad8697a88cec26cd1dabfbf62">allocate</a> (const std::string &amp;title)</td></tr>
+<tr class="memdesc:a3d05692ad8697a88cec26cd1dabfbf62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the PVs of an earlier call and create one PV per control, named title, a colon and the control name (XPM, Run, L0Select, MsgConfig and others).  <br /></td></tr>
 <tr class="separator:a3d05692ad8697a88cec26cd1dabfbf62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd7791897d79265669a1b044cb4d6ec5" id="r_afd7791897d79265669a1b044cb4d6ec5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#afd7791897d79265669a1b044cb4d6ec5">enable</a> (unsigned shelf)</td></tr>
+<tr class="memdesc:afd7791897d79265669a1b044cb4d6ec5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable this object if shelf equals its shelf, else disable it.  <br /></td></tr>
 <tr class="separator:afd7791897d79265669a1b044cb4d6ec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf491603790c2b9e5de330765cbae212" id="r_adf491603790c2b9e5de330765cbae212"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#adf491603790c2b9e5de330765cbae212">update</a> ()</td></tr>
+<tr class="memdesc:adf491603790c2b9e5de330765cbae212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in PVPCtrls.cc.  <br /></td></tr>
 <tr class="separator:adf491603790c2b9e5de330765cbae212"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9788d6d17b1ad6ed16ac3ce597cea18" id="r_ab9788d6d17b1ad6ed16ac3ce597cea18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#ab9788d6d17b1ad6ed16ac3ce597cea18">enabled</a> () const</td></tr>
+<tr class="memdesc:ab9788d6d17b1ad6ed16ac3ce597cea18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the result of the last <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#afd7791897d79265669a1b044cb4d6ec5" title="Enable this object if shelf equals its shelf, else disable it.">enable()</a> call (false before any call).  <br /></td></tr>
 <tr class="separator:ab9788d6d17b1ad6ed16ac3ce597cea18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb7014442bb21f6fdd159a08bcbcdeb1" id="r_acb7014442bb21f6fdd159a08bcbcdeb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#acb7014442bb21f6fdd159a08bcbcdeb1">setPartition</a> ()</td></tr>
+<tr class="memdesc:acb7014442bb21f6fdd159a08bcbcdeb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select this partition in the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html#a3cec47b7894f5be537a3d8d50a10a269" title="Set the partition field (bits 3-0) of _index; const although it writes the register.">Module::setPartition()</a>); the callers in PVPCtrls.cc hold the semaphore.  <br /></td></tr>
 <tr class="separator:acb7014442bb21f6fdd159a08bcbcdeb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ebaf3f7e9d14d873497d9e63cca93b1" id="r_a7ebaf3f7e9d14d873497d9e63cca93b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a7ebaf3f7e9d14d873497d9e63cca93b1">module</a> ()</td></tr>
+<tr class="memdesc:a7ebaf3f7e9d14d873497d9e63cca93b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>.  <br /></td></tr>
 <tr class="separator:a7ebaf3f7e9d14d873497d9e63cca93b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d387eab5f545132d6ed59d58bff13a" id="r_a98d387eab5f545132d6ed59d58bff13a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Semaphore.html">Semaphore</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a98d387eab5f545132d6ed59d58bff13a">sem</a> ()</td></tr>
+<tr class="memdesc:a98d387eab5f545132d6ed59d58bff13a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the semaphore taken around <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> register access.  <br /></td></tr>
 <tr class="separator:a98d387eab5f545132d6ed59d58bff13a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab178d00497a020b30afb37f958760645" id="r_ab178d00497a020b30afb37f958760645"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#ab178d00497a020b30afb37f958760645">l0Select</a> (unsigned v)</td></tr>
+<tr class="memdesc:ab178d00497a020b30afb37f958760645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the L0 select mode (FixedRate, ACRate or Sequence) used by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a>.  <br /></td></tr>
 <tr class="separator:ab178d00497a020b30afb37f958760645"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6beac2c302e50a063c2700e8ffe828af" id="r_a6beac2c302e50a063c2700e8ffe828af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6beac2c302e50a063c2700e8ffe828af">fixedRate</a> (unsigned v)</td></tr>
+<tr class="memdesc:a6beac2c302e50a063c2700e8ffe828af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the rate that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#acff7ef6d5807018d0c7e197039059d54" title="Set the rate selection of _l0Select to fixed-rate mode with marker rate (low 4 bits),...">Module::setL0Select_FixedRate()</a>.  <br /></td></tr>
 <tr class="separator:a6beac2c302e50a063c2700e8ffe828af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a199e2ebf5a80564799bc24f4a808060a" id="r_a199e2ebf5a80564799bc24f4a808060a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a199e2ebf5a80564799bc24f4a808060a">acRate</a> (unsigned v)</td></tr>
+<tr class="memdesc:a199e2ebf5a80564799bc24f4a808060a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the rate that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad" title="Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rat...">Module::setL0Select_ACRate()</a>.  <br /></td></tr>
 <tr class="separator:a199e2ebf5a80564799bc24f4a808060a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cf2d061996f546cd6cd2da12198e5a0" id="r_a6cf2d061996f546cd6cd2da12198e5a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6cf2d061996f546cd6cd2da12198e5a0">acTimeslot</a> (unsigned v)</td></tr>
+<tr class="memdesc:a6cf2d061996f546cd6cd2da12198e5a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the timeslot mask that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad" title="Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rat...">Module::setL0Select_ACRate()</a>.  <br /></td></tr>
 <tr class="separator:a6cf2d061996f546cd6cd2da12198e5a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c4c720d767da4d9fcfdfc37ca0227e8" id="r_a8c4c720d767da4d9fcfdfc37ca0227e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a8c4c720d767da4d9fcfdfc37ca0227e8">seqIdx</a> (unsigned v)</td></tr>
+<tr class="memdesc:a8c4c720d767da4d9fcfdfc37ca0227e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the sequencer number that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc" title="Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits),...">Module::setL0Select_Sequence()</a>.  <br /></td></tr>
 <tr class="separator:a8c4c720d767da4d9fcfdfc37ca0227e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcffff5f99ab93da2a2494d309afea85" id="r_adcffff5f99ab93da2a2494d309afea85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#adcffff5f99ab93da2a2494d309afea85">seqBit</a> (unsigned v)</td></tr>
+<tr class="memdesc:adcffff5f99ab93da2a2494d309afea85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the sequence bit that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc" title="Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits),...">Module::setL0Select_Sequence()</a>.  <br /></td></tr>
 <tr class="separator:adcffff5f99ab93da2a2494d309afea85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a964cf9c63cc3529d97ff95658a5fe369" id="r_a964cf9c63cc3529d97ff95658a5fe369"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a964cf9c63cc3529d97ff95658a5fe369">dstSelect</a> (unsigned v)</td></tr>
+<tr class="memdesc:a964cf9c63cc3529d97ff95658a5fe369"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the destination mode that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a3ad635cfafdb463915e17308c37b0c29" title="Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask,...">Module::setL0Select_Destn()</a>.  <br /></td></tr>
 <tr class="separator:a964cf9c63cc3529d97ff95658a5fe369"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5acfad8515e0d3118e59d3775b96e863" id="r_a5acfad8515e0d3118e59d3775b96e863"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a5acfad8515e0d3118e59d3775b96e863">dstMask</a> (unsigned v)</td></tr>
+<tr class="memdesc:a5acfad8515e0d3118e59d3775b96e863"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the destination mask that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a3ad635cfafdb463915e17308c37b0c29" title="Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask,...">Module::setL0Select_Destn()</a>.  <br /></td></tr>
 <tr class="separator:a5acfad8515e0d3118e59d3775b96e863"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27c7db5890e5b687273fa8800cf2ca1a" id="r_a27c7db5890e5b687273fa8800cf2ca1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a27c7db5890e5b687273fa8800cf2ca1a">configKey</a> (unsigned v)</td></tr>
+<tr class="memdesc:a27c7db5890e5b687273fa8800cf2ca1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the key that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a64742dc84484f731e771c51dc68b5e5c" title="Under the semaphore, write the configuration key as the message payload, set the message header to Tr...">msg_config()</a> writes as the message payload.  <br /></td></tr>
 <tr class="separator:a27c7db5890e5b687273fa8800cf2ca1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6682a9768abfa56e16900042e58c3450" id="r_a6682a9768abfa56e16900042e58c3450"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450">setL0Select</a> ()</td></tr>
+<tr class="memdesc:a6682a9768abfa56e16900042e58c3450"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the semaphore, program the rate selection of this partition from the stored mode and values, then its destination selection.  <br /></td></tr>
 <tr class="separator:a6682a9768abfa56e16900042e58c3450"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b44229f2ab8123f72a466980cb0f75d" id="r_a5b44229f2ab8123f72a466980cb0f75d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a5b44229f2ab8123f72a466980cb0f75d">setDstSelect</a> ()</td></tr>
+<tr class="memdesc:a5b44229f2ab8123f72a466980cb0f75d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in PVPCtrls.cc.  <br /></td></tr>
 <tr class="separator:a5b44229f2ab8123f72a466980cb0f75d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64742dc84484f731e771c51dc68b5e5c" id="r_a64742dc84484f731e771c51dc68b5e5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a64742dc84484f731e771c51dc68b5e5c">msg_config</a> ()</td></tr>
+<tr class="memdesc:a64742dc84484f731e771c51dc68b5e5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the semaphore, write the configuration key as the message payload, set the message header to TransitionId::Configure and insert the message.  <br /></td></tr>
 <tr class="separator:a64742dc84484f731e771c51dc68b5e5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e9beda8417bf0c551c78aff17c64529" id="r_a5e9beda8417bf0c551c78aff17c64529"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a5e9beda8417bf0c551c78aff17c64529">msg_enable</a> ()</td></tr>
+<tr class="memdesc:a5e9beda8417bf0c551c78aff17c64529"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the semaphore, set the message header to TransitionId::Enable and insert the message; the payload is not changed.  <br /></td></tr>
 <tr class="separator:a5e9beda8417bf0c551c78aff17c64529"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fab5c7824070d686e2bf29a4c597524" id="r_a6fab5c7824070d686e2bf29a4c597524"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6fab5c7824070d686e2bf29a4c597524">msg_disable</a> ()</td></tr>
+<tr class="memdesc:a6fab5c7824070d686e2bf29a4c597524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the semaphore, set the message header to TransitionId::Disable and insert the message; the payload is not changed.  <br /></td></tr>
 <tr class="separator:a6fab5c7824070d686e2bf29a4c597524"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa06e07bdfd717e4be3f395e203472339" id="r_aa06e07bdfd717e4be3f395e203472339"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#aa06e07bdfd717e4be3f395e203472339">msg_clear</a> ()</td></tr>
+<tr class="memdesc:aa06e07bdfd717e4be3f395e203472339"><td class="mdescLeft">&#160;</td><td class="mdescRight">Under the semaphore, write payload 0, set the message header to 0 (the file-local MsgClear) and insert the message.  <br /></td></tr>
 <tr class="separator:aa06e07bdfd717e4be3f395e203472339"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedbb6202ac024794892475500d29ccdd" id="r_aedbb6202ac024794892475500d29ccdd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#aedbb6202ac024794892475500d29ccdd">dump</a> () const</td></tr>
+<tr class="memdesc:aedbb6202ac024794892475500d29ccdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the stored partition and L0 select values if PVPCtrls.cc is compiled with DBUG; otherwise does nothing.  <br /></td></tr>
 <tr class="separator:aedbb6202ac024794892475500d29ccdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EPICS control PVs of one partition of an XPM; their callbacks program the L0 select, L1 trigger, analysis tag, message and inhibit registers of that partition in the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>. </p>
+<p>Apart from the XPM PV, a PV callback acts only while <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#ab9788d6d17b1ad6ed16ac3ce597cea18" title="Return the result of the last enable() call (false before any call).">enabled()</a>, that is while the value of the XPM PV equals this shelf. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="af969b8fefb00b62d155f1a4490bd4930" name="af969b8fefb00b62d155f1a4490bd4930"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af969b8fefb00b62d155f1a4490bd4930">&#9670;&#160;</a></span>anonymous enum</h2>
 
@@ -173,10 +205,15 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>L0 select modes stored by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#ab178d00497a020b30afb37f958760645" title="Store the L0 select mode (FixedRate, ACRate or Sequence) used by setL0Select().">l0Select()</a> and used by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930a31510fa5967cd43cd311ec484fc6b38f" name="af969b8fefb00b62d155f1a4490bd4930a31510fa5967cd43cd311ec484fc6b38f"></a>FixedRate&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930aa972f0b9ed42d0768ba0e3de74427860" name="af969b8fefb00b62d155f1a4490bd4930aa972f0b9ed42d0768ba0e3de74427860"></a>ACRate&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930a9803b022dc032a57d5feb1cdd342093d" name="af969b8fefb00b62d155f1a4490bd4930a9803b022dc032a57d5feb1cdd342093d"></a>Sequence&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930a31510fa5967cd43cd311ec484fc6b38f" name="af969b8fefb00b62d155f1a4490bd4930a31510fa5967cd43cd311ec484fc6b38f"></a>FixedRate&#160;</td><td class="fielddoc"><p>Use <a class="el" href="classPds_1_1Xpm_1_1Module.html#acff7ef6d5807018d0c7e197039059d54" title="Set the rate selection of _l0Select to fixed-rate mode with marker rate (low 4 bits),...">Module::setL0Select_FixedRate()</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930aa972f0b9ed42d0768ba0e3de74427860" name="af969b8fefb00b62d155f1a4490bd4930aa972f0b9ed42d0768ba0e3de74427860"></a>ACRate&#160;</td><td class="fielddoc"><p>Use <a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad" title="Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rat...">Module::setL0Select_ACRate()</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af969b8fefb00b62d155f1a4490bd4930a9803b022dc032a57d5feb1cdd342093d" name="af969b8fefb00b62d155f1a4490bd4930a9803b022dc032a57d5feb1cdd342093d"></a>Sequence&#160;</td><td class="fielddoc"><p>Use <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc" title="Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits),...">Module::setL0Select_Sequence()</a>. </p>
+</td></tr>
 </table>
 
 </div>
@@ -226,6 +263,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the module, semaphore, statistics object, shelf and partition; starts disabled and without PVs. </p>
+<p>The statistics object is stored but not used in PVPCtrls.cc. </p>
+
 </div>
 </div>
 <a id="a56d6d9a7e51db0bb51ee3e993529a1a0" name="a56d6d9a7e51db0bb51ee3e993529a1a0"></a>
@@ -242,6 +282,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; the PVs created by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a3d05692ad8697a88cec26cd1dabfbf62" title="Delete the PVs of an earlier call and create one PV per control, named title, a colon and the control...">allocate()</a> are not deleted. </p>
 
 </div>
 </div>
@@ -262,6 +304,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the rate that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad" title="Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rat...">Module::setL0Select_ACRate()</a>. </p>
+
 </div>
 </div>
 <a id="a6cf2d061996f546cd6cd2da12198e5a0" name="a6cf2d061996f546cd6cd2da12198e5a0"></a>
@@ -279,6 +323,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Store the timeslot mask that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a43334667cc847f569d688f60a2a6f4ad" title="Set the rate selection of _l0Select to AC-rate mode with timeslot mask tsmask (6 bits) and marker rat...">Module::setL0Select_ACRate()</a>. </p>
 
 </div>
 </div>
@@ -298,6 +344,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Delete the PVs of an earlier call and create one PV per control, named title, a colon and the control name (XPM, Run, L0Select, MsgConfig and others). </p>
+<p>InhInterval, InhLimit and InhEnable get four PVs each, with suffixes 0 to 3. </p>
+
 </div>
 </div>
 <a id="a27c7db5890e5b687273fa8800cf2ca1a" name="a27c7db5890e5b687273fa8800cf2ca1a"></a>
@@ -315,6 +364,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Store the key that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a64742dc84484f731e771c51dc68b5e5c" title="Under the semaphore, write the configuration key as the message payload, set the message header to Tr...">msg_config()</a> writes as the message payload. </p>
 
 </div>
 </div>
@@ -334,6 +385,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the destination mask that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a3ad635cfafdb463915e17308c37b0c29" title="Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask,...">Module::setL0Select_Destn()</a>. </p>
+
 </div>
 </div>
 <a id="a964cf9c63cc3529d97ff95658a5fe369" name="a964cf9c63cc3529d97ff95658a5fe369"></a>
@@ -352,6 +405,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the destination mode that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#a3ad635cfafdb463915e17308c37b0c29" title="Set the destination selection (upper half) of _l0Select to mode in bit 15 and the low 4 bits of mask,...">Module::setL0Select_Destn()</a>. </p>
+
 </div>
 </div>
 <a id="aedbb6202ac024794892475500d29ccdd" name="aedbb6202ac024794892475500d29ccdd"></a>
@@ -368,6 +423,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the stored partition and L0 select values if PVPCtrls.cc is compiled with DBUG; otherwise does nothing. </p>
 
 </div>
 </div>
@@ -387,6 +444,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Enable this object if shelf equals its shelf, else disable it. </p>
+<p>Under the semaphore, reset L0, set the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> master bit to the result and, if disabled, clear the L0 enable; if enabled, then call updated() on every PV except the first eight (XPM, Run, the message PVs and others). </p>
+
 </div>
 </div>
 <a id="ab9788d6d17b1ad6ed16ac3ce597cea18" name="ab9788d6d17b1ad6ed16ac3ce597cea18"></a>
@@ -403,6 +463,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the result of the last <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#afd7791897d79265669a1b044cb4d6ec5" title="Enable this object if shelf equals its shelf, else disable it.">enable()</a> call (false before any call). </p>
 
 </div>
 </div>
@@ -422,6 +484,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the rate that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#acff7ef6d5807018d0c7e197039059d54" title="Set the rate selection of _l0Select to fixed-rate mode with marker rate (low 4 bits),...">Module::setL0Select_FixedRate()</a>. </p>
+
 </div>
 </div>
 <a id="ab178d00497a020b30afb37f958760645" name="ab178d00497a020b30afb37f958760645"></a>
@@ -440,6 +504,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the L0 select mode (FixedRate, ACRate or Sequence) used by <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a>. </p>
+
 </div>
 </div>
 <a id="a7ebaf3f7e9d14d873497d9e63cca93b1" name="a7ebaf3f7e9d14d873497d9e63cca93b1"></a>
@@ -456,6 +522,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>. </p>
 
 </div>
 </div>
@@ -474,6 +542,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Under the semaphore, write payload 0, set the message header to 0 (the file-local MsgClear) and insert the message. </p>
+
 </div>
 </div>
 <a id="a64742dc84484f731e771c51dc68b5e5c" name="a64742dc84484f731e771c51dc68b5e5c"></a>
@@ -490,6 +560,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Under the semaphore, write the configuration key as the message payload, set the message header to TransitionId::Configure and insert the message. </p>
 
 </div>
 </div>
@@ -508,6 +580,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Under the semaphore, set the message header to TransitionId::Disable and insert the message; the payload is not changed. </p>
+
 </div>
 </div>
 <a id="a5e9beda8417bf0c551c78aff17c64529" name="a5e9beda8417bf0c551c78aff17c64529"></a>
@@ -525,6 +599,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Under the semaphore, set the message header to TransitionId::Enable and insert the message; the payload is not changed. </p>
+
 </div>
 </div>
 <a id="a98d387eab5f545132d6ed59d58bff13a" name="a98d387eab5f545132d6ed59d58bff13a"></a>
@@ -541,6 +617,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the semaphore taken around <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> register access. </p>
 
 </div>
 </div>
@@ -560,6 +638,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the sequence bit that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc" title="Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits),...">Module::setL0Select_Sequence()</a>. </p>
+
 </div>
 </div>
 <a id="a8c4c720d767da4d9fcfdfc37ca0227e8" name="a8c4c720d767da4d9fcfdfc37ca0227e8"></a>
@@ -578,6 +658,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the sequencer number that <a class="el" href="classPds_1_1Xpm_1_1PVPCtrls.html#a6682a9768abfa56e16900042e58c3450" title="Under the semaphore, program the rate selection of this partition from the stored mode and values,...">setL0Select()</a> passes to <a class="el" href="classPds_1_1Xpm_1_1Module.html#ac3f0c59d4e4c715bd8afb04a3b9683cc" title="Set the rate selection of _l0Select to sequence mode with sequencer seq (6 bits) and bit (4 bits),...">Module::setL0Select_Sequence()</a>. </p>
+
 </div>
 </div>
 <a id="a5b44229f2ab8123f72a466980cb0f75d" name="a5b44229f2ab8123f72a466980cb0f75d"></a>
@@ -594,6 +676,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared but not defined in PVPCtrls.cc. </p>
 
 </div>
 </div>
@@ -612,6 +696,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Under the semaphore, program the rate selection of this partition from the stored mode and values, then its destination selection. </p>
+<p>An unknown mode only prints a message; the destination is still written. </p>
+
 </div>
 </div>
 <a id="acb7014442bb21f6fdd159a08bcbcdeb1" name="acb7014442bb21f6fdd159a08bcbcdeb1"></a>
@@ -629,6 +716,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Select this partition in the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html#a3cec47b7894f5be537a3d8d50a10a269" title="Set the partition field (bits 3-0) of _index; const although it writes the register.">Module::setPartition()</a>); the callers in PVPCtrls.cc hold the semaphore. </p>
+
 </div>
 </div>
 <a id="adf491603790c2b9e5de330765cbae212" name="adf491603790c2b9e5de330765cbae212"></a>
@@ -645,6 +734,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared but not defined in PVPCtrls.cc. </p>
 
 </div>
 </div>

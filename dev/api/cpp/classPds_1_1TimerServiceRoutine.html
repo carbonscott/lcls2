@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1TimerServiceRoutine.html',
 </div><!--header-->
 <div class="contents">
 
+<p>UNIX implementation of a <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a>: a separate service <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> waits on a condition variable with a deadline and, on timeout, queues the <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a> on its user task.  
+ <a href="classPds_1_1TimerServiceRoutine.html#details">More...</a></p>
+
 <p><code>#include &lt;Timer.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Routine.html">Pds::Routine</a>.</p>
@@ -104,17 +107,24 @@ $(document).ready(function(){initNavTree('classPds_1_1TimerServiceRoutine.html',
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4bf9dcc1bf125897c3b27479ddae41e" id="r_ab4bf9dcc1bf125897c3b27479ddae41e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html#ab4bf9dcc1bf125897c3b27479ddae41e">TimerServiceRoutine</a> (<a class="el" href="classPds_1_1Timer.html">Timer</a> *timer)</td></tr>
+<tr class="memdesc:ab4bf9dcc1bf125897c3b27479ddae41e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep timer and initialize the status mutex and condition variable; the service task is created on the first <a class="el" href="classPds_1_1TimerServiceRoutine.html#aac60c63121113fd008d80b89359ba264" title="Create the service task on first use (named after the user task, same priority), then if the timer is...">armTimer()</a>.  <br /></td></tr>
 <tr class="separator:ab4bf9dcc1bf125897c3b27479ddae41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6406bc4b71b832997d5794cabdae5f6" id="r_ab6406bc4b71b832997d5794cabdae5f6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html#ab6406bc4b71b832997d5794cabdae5f6">~TimerServiceRoutine</a> ()</td></tr>
+<tr class="memdesc:ab6406bc4b71b832997d5794cabdae5f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroy the condition variable and mutex, and destroy the service task if one was created.  <br /></td></tr>
 <tr class="separator:ab6406bc4b71b832997d5794cabdae5f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac60c63121113fd008d80b89359ba264" id="r_aac60c63121113fd008d80b89359ba264"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html#aac60c63121113fd008d80b89359ba264">armTimer</a> ()</td></tr>
+<tr class="memdesc:aac60c63121113fd008d80b89359ba264"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the service task on first use (named after the user task, same priority), then if the timer is off, turn it on, set the delay to duration() (minus 10 ms when above 10 ms) and queue the wait.  <br /></td></tr>
 <tr class="separator:aac60c63121113fd008d80b89359ba264"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa15013c16d7e378506160b24361e6b77" id="r_aa15013c16d7e378506160b24361e6b77"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html#aa15013c16d7e378506160b24361e6b77">disarmTimer</a> ()</td></tr>
+<tr class="memdesc:aa15013c16d7e378506160b24361e6b77"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the timer is on, turn it off, wake the service task and wait until it has finished; returns 0, or 1 if it was already off.  <br /></td></tr>
 <tr class="separator:aa15013c16d7e378506160b24361e6b77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a497958fbda6a2842eee42c6107d91fbf" id="r_a497958fbda6a2842eee42c6107d91fbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html#a497958fbda6a2842eee42c6107d91fbf">submit</a> ()</td></tr>
+<tr class="memdesc:a497958fbda6a2842eee42c6107d91fbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue the wait routine on the service task if the timer is on.  <br /></td></tr>
 <tr class="separator:a497958fbda6a2842eee42c6107d91fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>UNIX implementation of a <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a>: a separate service <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> waits on a condition variable with a deadline and, on timeout, queues the <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a> on its user task. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab4bf9dcc1bf125897c3b27479ddae41e" name="ab4bf9dcc1bf125897c3b27479ddae41e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab4bf9dcc1bf125897c3b27479ddae41e">&#9670;&#160;</a></span>TimerServiceRoutine()</h2>
 
@@ -130,6 +140,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Keep timer and initialize the status mutex and condition variable; the service task is created on the first <a class="el" href="classPds_1_1TimerServiceRoutine.html#aac60c63121113fd008d80b89359ba264" title="Create the service task on first use (named after the user task, same priority), then if the timer is...">armTimer()</a>. </p>
 
 </div>
 </div>
@@ -156,6 +168,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Destroy the condition variable and mutex, and destroy the service task if one was created. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -174,6 +188,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create the service task on first use (named after the user task, same priority), then if the timer is off, turn it on, set the delay to duration() (minus 10 ms when above 10 ms) and queue the wait. </p>
+<p>Returns 0 if armed, 1 if it was already on. </p>
+
 </div>
 </div>
 <a id="aa15013c16d7e378506160b24361e6b77" name="aa15013c16d7e378506160b24361e6b77"></a>
@@ -191,6 +208,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If the timer is on, turn it off, wake the service task and wait until it has finished; returns 0, or 1 if it was already off. </p>
+
 </div>
 </div>
 <a id="a497958fbda6a2842eee42c6107d91fbf" name="a497958fbda6a2842eee42c6107d91fbf"></a>
@@ -207,6 +226,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Queue the wait routine on the service task if the timer is on. </p>
 
 </div>
 </div>

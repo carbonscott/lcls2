@@ -98,37 +98,54 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1PVCtrls.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Module-wide EPICS control PVs of an XPM, created by <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61" title="Delete earlier PVs and create the control PVs named title, a colon and the control name,...">allocate()</a>; most PV callbacks call the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> under the semaphore.  
+ <a href="classPds_1_1Xpm_1_1PVCtrls.html#details">More...</a></p>
+
 <p><code>#include &lt;PVCtrls.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7e3d72f7a089b548a7b3425cbef73d35" id="r_a7e3d72f7a089b548a7b3425cbef73d35"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a7e3d72f7a089b548a7b3425cbef73d35">PVCtrls</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;, <a class="el" href="classPds_1_1Semaphore.html">Semaphore</a> &amp;<a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#aae5f03af5814aa2e836798065873ffe6">sem</a>)</td></tr>
+<tr class="memdesc:a7e3d72f7a089b548a7b3425cbef73d35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the module and semaphore and make this object the target of <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a8d0cf2d32bddd6b9362002092f02a48f" title="Thread body: connect a UDP socket to port 8197 of the XPM at the IP address string arg,...">notify_thread()</a>.  <br /></td></tr>
 <tr class="separator:a7e3d72f7a089b548a7b3425cbef73d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59dd8f265eb00a5c041751de8335e190" id="r_a59dd8f265eb00a5c041751de8335e190"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a59dd8f265eb00a5c041751de8335e190">~PVCtrls</a> ()</td></tr>
+<tr class="memdesc:a59dd8f265eb00a5c041751de8335e190"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; the PVs are not deleted.  <br /></td></tr>
 <tr class="separator:a59dd8f265eb00a5c041751de8335e190"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b52091416be3e15f516dee6044ead61" id="r_a3b52091416be3e15f516dee6044ead61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61">allocate</a> (const std::string &amp;title)</td></tr>
+<tr class="memdesc:a3b52091416be3e15f516dee6044ead61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete earlier PVs and create the control PVs named title, a colon and the control name, plus one <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html" title="EPICS PVs of one XPM sequence engine, named pvbase, a colon and the PV name.">PVSeq</a> under SEQENG:0 for a new <a class="el" href="classPds_1_1Xpm_1_1Module.html#a0ad221c05d9878bc4e5a857c5a2ceac0" title="Return a new XpmSequenceEngine for the register space after the receive ring buffer; a new object is ...">Module::sequenceEngine()</a>.  <br /></td></tr>
 <tr class="separator:a3b52091416be3e15f516dee6044ead61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56875c2a11d6ba024ffb35e162f11948" id="r_a56875c2a11d6ba024ffb35e162f11948"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a56875c2a11d6ba024ffb35e162f11948">update</a> ()</td></tr>
+<tr class="memdesc:a56875c2a11d6ba024ffb35e162f11948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared but not defined in PVCtrls.cc.  <br /></td></tr>
 <tr class="separator:a56875c2a11d6ba024ffb35e162f11948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75bc52cf7e7f7561de5c6dca999fb155" id="r_a75bc52cf7e7f7561de5c6dca999fb155"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a75bc52cf7e7f7561de5c6dca999fb155">dump</a> () const</td></tr>
+<tr class="memdesc:a75bc52cf7e7f7561de5c6dca999fb155"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a75bc52cf7e7f7561de5c6dca999fb155"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade94375f281b811f71650dcf7d6fd897" id="r_ade94375f281b811f71650dcf7d6fd897"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#ade94375f281b811f71650dcf7d6fd897">checkPoint</a> (unsigned iseq, unsigned addr)</td></tr>
+<tr class="memdesc:ade94375f281b811f71650dcf7d6fd897"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward addr to <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#ab60f1d640355f1cf3bdba2fe0507e91d" title="Write 0 to RUNNING; the argument is not used.">PVSeq::checkPoint()</a> of sequence engine PV set iseq (no range check).  <br /></td></tr>
 <tr class="separator:ade94375f281b811f71650dcf7d6fd897"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0547b11076dc871f4fb64805c7fd408" id="r_aa0547b11076dc871f4fb64805c7fd408"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#aa0547b11076dc871f4fb64805c7fd408">resetMmcm</a> (unsigned)</td></tr>
+<tr class="memdesc:aa0547b11076dc871f4fb64805c7fd408"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset MMCM i (3 or above selects the AMC MMCM), wait until the AMC MMCM is ready, and publish the delay scans of MMCM PVs not yet written.  <br /></td></tr>
 <tr class="separator:aa0547b11076dc871f4fb64805c7fd408"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add7e67717045c9a426f66c7be95c722e" id="r_add7e67717045c9a426f66c7be95c722e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#add7e67717045c9a426f66c7be95c722e">module</a> ()</td></tr>
+<tr class="memdesc:add7e67717045c9a426f66c7be95c722e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>.  <br /></td></tr>
 <tr class="separator:add7e67717045c9a426f66c7be95c722e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae5f03af5814aa2e836798065873ffe6" id="r_aae5f03af5814aa2e836798065873ffe6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Semaphore.html">Semaphore</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#aae5f03af5814aa2e836798065873ffe6">sem</a> ()</td></tr>
+<tr class="memdesc:aae5f03af5814aa2e836798065873ffe6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the semaphore taken around <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> register access.  <br /></td></tr>
 <tr class="separator:aae5f03af5814aa2e836798065873ffe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8992f899987e14fd659daa66726dff1" id="r_aa8992f899987e14fd659daa66726dff1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html">XpmSequenceEngine</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#aa8992f899987e14fd659daa66726dff1">seq</a> ()</td></tr>
+<tr class="memdesc:aa8992f899987e14fd659daa66726dff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the sequence engine pointer.  <br /></td></tr>
 <tr class="separator:aa8992f899987e14fd659daa66726dff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8d0cf2d32bddd6b9362002092f02a48f" id="r_a8d0cf2d32bddd6b9362002092f02a48f"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a8d0cf2d32bddd6b9362002092f02a48f">notify_thread</a> (void *)</td></tr>
+<tr class="memdesc:a8d0cf2d32bddd6b9362002092f02a48f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body: connect a UDP socket to port 8197 of the XPM at the IP address string arg, send a 4-byte datagram, then read datagrams until read() fails.  <br /></td></tr>
 <tr class="separator:a8d0cf2d32bddd6b9362002092f02a48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Module-wide EPICS control PVs of an XPM, created by <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61" title="Delete earlier PVs and create the control PVs named title, a colon and the control name,...">allocate()</a>; most PV callbacks call the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> under the semaphore. </p>
+<p>The last constructed object receives the sequence checkpoint notifications of <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a8d0cf2d32bddd6b9362002092f02a48f" title="Thread body: connect a UDP socket to port 8197 of the XPM at the IP address string arg,...">notify_thread()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7e3d72f7a089b548a7b3425cbef73d35" name="a7e3d72f7a089b548a7b3425cbef73d35"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7e3d72f7a089b548a7b3425cbef73d35">&#9670;&#160;</a></span>PVCtrls()</h2>
 
@@ -155,6 +172,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the module and semaphore and make this object the target of <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a8d0cf2d32bddd6b9362002092f02a48f" title="Thread body: connect a UDP socket to port 8197 of the XPM at the IP address string arg,...">notify_thread()</a>. </p>
+
 </div>
 </div>
 <a id="a59dd8f265eb00a5c041751de8335e190" name="a59dd8f265eb00a5c041751de8335e190"></a>
@@ -171,6 +190,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; the PVs are not deleted. </p>
 
 </div>
 </div>
@@ -190,6 +211,9 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delete earlier PVs and create the control PVs named title, a colon and the control name, plus one <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html" title="EPICS PVs of one XPM sequence engine, named pvbase, a colon and the PV name.">PVSeq</a> under SEQENG:0 for a new <a class="el" href="classPds_1_1Xpm_1_1Module.html#a0ad221c05d9878bc4e5a857c5a2ceac0" title="Return a new XpmSequenceEngine for the register space after the receive ring buffer; a new object is ...">Module::sequenceEngine()</a>. </p>
+<p>If <a class="el" href="classPds_1_1Xpm_1_1Module.html#a97b3795e5ff42a1052dffb395164299a" title="Return the feature revision found by init(): 1 if the build stamp contains xtpg, else 0.">Module::feature_rev()</a> is above 0, first wait until the AMC MMCM is ready and publish the delay scan of each MMCM whose XTPG:MMCMn PV is already connected. Then enable all 24 links; the sequencer programming code after the return statement is never reached. </p>
 
 </div>
 </div>
@@ -219,6 +243,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Forward addr to <a class="el" href="classPds_1_1Xpm_1_1PVSeq.html#ab60f1d640355f1cf3bdba2fe0507e91d" title="Write 0 to RUNNING; the argument is not used.">PVSeq::checkPoint()</a> of sequence engine PV set iseq (no range check). </p>
+
 </div>
 </div>
 <a id="a75bc52cf7e7f7561de5c6dca999fb155" name="a75bc52cf7e7f7561de5c6dca999fb155"></a>
@@ -236,6 +262,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <a id="add7e67717045c9a426f66c7be95c722e" name="add7e67717045c9a426f66c7be95c722e"></a>
@@ -252,6 +280,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a>. </p>
 
 </div>
 </div>
@@ -279,6 +309,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Thread body: connect a UDP socket to port 8197 of the XPM at the IP address string arg, send a 4-byte datagram, then read datagrams until read() fails. </p>
+<p>In each datagram, the first 16-bit word is a mask and, for each set bit i, the next 16-bit word is passed to checkPoint(i, word). Returns null. </p>
+
 </div>
 </div>
 <a id="aa0547b11076dc871f4fb64805c7fd408" name="aa0547b11076dc871f4fb64805c7fd408"></a>
@@ -297,6 +330,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset MMCM i (3 or above selects the AMC MMCM), wait until the AMC MMCM is ready, and publish the delay scans of MMCM PVs not yet written. </p>
+<p>Does nothing if <a class="el" href="classPds_1_1Xpm_1_1Module.html#a97b3795e5ff42a1052dffb395164299a" title="Return the feature revision found by init(): 1 if the build stamp contains xtpg, else 0.">Module::feature_rev()</a> is 0. </p>
+
 </div>
 </div>
 <a id="aae5f03af5814aa2e836798065873ffe6" name="aae5f03af5814aa2e836798065873ffe6"></a>
@@ -313,6 +349,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the semaphore taken around <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> register access. </p>
 
 </div>
 </div>
@@ -331,6 +369,9 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the sequence engine pointer. </p>
+<p>It stays null, because the code in <a class="el" href="classPds_1_1Xpm_1_1PVCtrls.html#a3b52091416be3e15f516dee6044ead61" title="Delete earlier PVs and create the control PVs named title, a colon and the control name,...">allocate()</a> that sets it is after an unconditional return. </p>
+
 </div>
 </div>
 <a id="a56875c2a11d6ba024ffb35e162f11948" name="a56875c2a11d6ba024ffb35e162f11948"></a>
@@ -347,6 +388,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Declared but not defined in PVCtrls.cc. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1PassiveEndpoint
 </div><!--header-->
 <div class="contents">
 
+<p>Listening libfabric endpoint that accepts or rejects connection requests and keeps the Endpoints it accepted.  
+ <a href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a>.</p>
@@ -104,48 +107,69 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1PassiveEndpoint
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a88ea547cb537fbf343b0d5e02c12a08a" id="r_a88ea547cb537fbf343b0d5e02c12a08a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a88ea547cb537fbf343b0d5e02c12a08a">PassiveEndpoint</a> (const char *addr, const char *port, uint64_t flags=0, <a class="el" href="classPds_1_1Fabrics_1_1Info.html">Info</a> *hints=0)</td></tr>
+<tr class="memdesc:a88ea547cb537fbf343b0d5e02c12a08a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a passive endpoint that owns a new <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> for addr and port (FI_SOURCE is added to flags).  <br /></td></tr>
 <tr class="separator:a88ea547cb537fbf343b0d5e02c12a08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56e6c03210f32b3fc3fe7f5c888adde0" id="r_a56e6c03210f32b3fc3fe7f5c888adde0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a56e6c03210f32b3fc3fe7f5c888adde0">~PassiveEndpoint</a> ()</td></tr>
+<tr class="memdesc:a56e6c03210f32b3fc3fe7f5c888adde0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a8d7a44bd2a8af828880bd02a402188b3" title="Shut down every accepted endpoint, close the passive endpoint and set the state to EP_INIT; queues an...">shutdown()</a>, then delete all accepted endpoints.  <br /></td></tr>
 <tr class="separator:a56e6c03210f32b3fc3fe7f5c888adde0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d7a44bd2a8af828880bd02a402188b3" id="r_a8d7a44bd2a8af828880bd02a402188b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a8d7a44bd2a8af828880bd02a402188b3">shutdown</a> ()</td></tr>
+<tr class="memdesc:a8d7a44bd2a8af828880bd02a402188b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shut down every accepted endpoint, close the passive endpoint and set the state to EP_INIT; queues and fabric are kept.  <br /></td></tr>
 <tr class="separator:a8d7a44bd2a8af828880bd02a402188b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b558cafda2287da6cf73e8b3b804736" id="r_a7b558cafda2287da6cf73e8b3b804736"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a7b558cafda2287da6cf73e8b3b804736">listen</a> (int backlog=0)</td></tr>
+<tr class="memdesc:a7b558cafda2287da6cf73e8b3b804736"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open the passive endpoint, bind it to the event queue, try to set the backlog (FI_ENOSYS is ignored) and call fi_listen(); the state becomes EP_LISTEN.  <br /></td></tr>
 <tr class="separator:a7b558cafda2287da6cf73e8b3b804736"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93a75cadc75986dad02d537c678ad88c" id="r_a93a75cadc75986dad02d537c678ad88c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a93a75cadc75986dad02d537c678ad88c">listen</a> (int backlog, uint16_t &amp;port)</td></tr>
+<tr class="memdesc:a93a75cadc75986dad02d537c678ad88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a7b558cafda2287da6cf73e8b3b804736" title="Open the passive endpoint, bind it to the event queue, try to set the backlog (FI_ENOSYS is ignored) ...">listen(int)</a>, but first binds the endpoint to the address from getaddrinfo() (fi_setname) and afterwards stores the bound port in port.  <br /></td></tr>
 <tr class="separator:a93a75cadc75986dad02d537c678ad88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2060af360d8d04bad3982cf0905dd35" id="r_af2060af360d8d04bad3982cf0905dd35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#af2060af360d8d04bad3982cf0905dd35">accept</a> (int timeout=-1, <a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a8f1667969b242b18ec38a2975a48e058">eq</a>=0, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9">txcq</a>=0, uint64_t txFlags=0, <a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a50cb4ba64577bed2055d4845274028b4">rxcq</a>=0, uint64_t rxFlags=0, void *context=NULL)</td></tr>
+<tr class="memdesc:af2060af360d8d04bad3982cf0905dd35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait (with timeout) for a connection request, create an <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html" title="Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking...">Endpoint</a> on this fabric with the given queues and accept it (that handshake waits without timeout).  <br /></td></tr>
 <tr class="separator:af2060af360d8d04bad3982cf0905dd35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81db8648ea7f52459a2bfcd60c295ca6" id="r_a81db8648ea7f52459a2bfcd60c295ca6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a81db8648ea7f52459a2bfcd60c295ca6">reject</a> (int timeout=-1)</td></tr>
+<tr class="memdesc:a81db8648ea7f52459a2bfcd60c295ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait (with timeout) for a connection request and reject it with fi_reject(); returns false if not listening, if no request is read, or if the rejection fails.  <br /></td></tr>
 <tr class="separator:a81db8648ea7f52459a2bfcd60c295ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa405db19615fea9792225358e92521d5" id="r_aa405db19615fea9792225358e92521d5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#aa405db19615fea9792225358e92521d5">close</a> (<a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html">Endpoint</a> *endpoint)</td></tr>
+<tr class="memdesc:aa405db19615fea9792225358e92521d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove endpoint from the accepted list and delete it if it is found; always returns true.  <br /></td></tr>
 <tr class="separator:aa405db19615fea9792225358e92521d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1EndpointBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html">Pds::Fabrics::EndpointBase</a></td></tr>
 <tr class="memitem:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_af12bd31e2ce3e1d2e7c0eab7c21a170b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacePds_1_1Fabrics.html#a2c5db474aba427c5ad48573c3f093203">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#af12bd31e2ce3e1d2e7c0eab7c21a170b">state</a> () const</td></tr>
+<tr class="memdesc:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current endpoint State.  <br /></td></tr>
 <tr class="separator:af12bd31e2ce3e1d2e7c0eab7c21a170b inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a9495d2dbfcd13b3a3ce0e78dc395a844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabric</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a9495d2dbfcd13b3a3ce0e78dc395a844">fabric</a> () const</td></tr>
+<tr class="memdesc:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> used by this endpoint.  <br /></td></tr>
 <tr class="separator:a9495d2dbfcd13b3a3ce0e78dc395a844 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a8f1667969b242b18ec38a2975a48e058"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html">EventQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a8f1667969b242b18ec38a2975a48e058">eq</a> () const</td></tr>
+<tr class="memdesc:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the event queue.  <br /></td></tr>
 <tr class="separator:a8f1667969b242b18ec38a2975a48e058 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a19726e1f9b0814bec7d5a7629f8bbae9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a19726e1f9b0814bec7d5a7629f8bbae9">txcq</a> () const</td></tr>
+<tr class="memdesc:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the transmit completion queue.  <br /></td></tr>
 <tr class="separator:a19726e1f9b0814bec7d5a7629f8bbae9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a50cb4ba64577bed2055d4845274028b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Fabrics_1_1CompletionQueue.html">CompletionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a50cb4ba64577bed2055d4845274028b4">rxcq</a> () const</td></tr>
+<tr class="memdesc:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the receive completion queue.  <br /></td></tr>
 <tr class="separator:a50cb4ba64577bed2055d4845274028b4 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a4d7b2d33be20621ea71439b5c08e5a18"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a> (uint32_t *event, void *entry, bool *cm_entry)</td></tr>
+<tr class="memdesc:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one event from the event queue without blocking (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#ad620866c3b14b1768fae8981e34bd143" title="Read one event without blocking (fi_eq_read()) into event and entry; cm_entry is set true for an fi_e...">EventQueue::event()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a4d7b2d33be20621ea71439b5c08e5a18 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a17fcd15b393e3c116c89709c5a3bf4e9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a17fcd15b393e3c116c89709c5a3bf4e9">event_wait</a> (uint32_t *<a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a4d7b2d33be20621ea71439b5c08e5a18">event</a>, void *entry, bool *cm_entry, int timeout=-1)</td></tr>
+<tr class="memdesc:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for one event on the event queue with the given timeout (<a class="el" href="classPds_1_1Fabrics_1_1EventQueue.html#aad94455f3736be581bbf97a37ca851c4" title="Like event(), but blocks in fi_eq_sread() with the given timeout.">EventQueue::event_wait()</a>); returns false, copying the queue's error, if no event was read.  <br /></td></tr>
 <tr class="separator:a17fcd15b393e3c116c89709c5a3bf4e9 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase" id="r_a2bbaee108d996895c782ed2afc687c72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a2bbaee108d996895c782ed2afc687c72">event_error</a> (struct fi_eq_err_entry *entry)</td></tr>
+<tr class="memdesc:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read one error entry from the event queue into entry; returns false, copying the queue's error, if none could be read.  <br /></td></tr>
 <tr class="separator:a2bbaee108d996895c782ed2afc687c72 inherit pub_methods_classPds_1_1Fabrics_1_1EndpointBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1Fabrics_1_1ErrorHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html">Pds::Fabrics::ErrorHandler</a></td></tr>
 <tr class="memitem:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a6a7afdd386a7a371b730bdf9c6746ffb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a6a7afdd386a7a371b730bdf9c6746ffb">ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate the message buffer and start with no error (FI_SUCCESS and a message built from the text None).  <br /></td></tr>
 <tr class="separator:a6a7afdd386a7a371b730bdf9c6746ffb inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_acc5ab6a4c777bab82f6454635b4b75e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#acc5ab6a4c777bab82f6454635b4b75e7">~ErrorHandler</a> ()</td></tr>
+<tr class="memdesc:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the message buffer.  <br /></td></tr>
 <tr class="separator:acc5ab6a4c777bab82f6454635b4b75e7 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_aaf47dcf49038363f38a61d5759ac3128"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#aaf47dcf49038363f38a61d5759ac3128">error_num</a> () const</td></tr>
+<tr class="memdesc:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error number (FI_SUCCESS if none).  <br /></td></tr>
 <tr class="separator:aaf47dcf49038363f38a61d5759ac3128 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_ac6aff3e9a161c02c6ecdad15defe6225"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#ac6aff3e9a161c02c6ecdad15defe6225">error</a> () const</td></tr>
+<tr class="memdesc:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the last recorded error message.  <br /></td></tr>
 <tr class="separator:ac6aff3e9a161c02c6ecdad15defe6225 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler" id="r_abe0cdfaeed90c0b69f0d6e73283d0e81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#abe0cdfaeed90c0b69f0d6e73283d0e81">clear_error</a> ()</td></tr>
+<tr class="memdesc:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the error number to FI_SUCCESS and the message to the no-error text.  <br /></td></tr>
 <tr class="separator:abe0cdfaeed90c0b69f0d6e73283d0e81 inherit pub_methods_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -191,7 +215,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler" id="r_a49ea080aaa879f7da0446212e98eff42"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1ErrorHandler.html#a49ea080aaa879f7da0446212e98eff42">_error</a></td></tr>
 <tr class="separator:a49ea080aaa879f7da0446212e98eff42 inherit pro_attribs_classPds_1_1Fabrics_1_1ErrorHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Listening libfabric endpoint that accepts or rejects connection requests and keeps the Endpoints it accepted. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a88ea547cb537fbf343b0d5e02c12a08a" name="a88ea547cb537fbf343b0d5e02c12a08a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a88ea547cb537fbf343b0d5e02c12a08a">&#9670;&#160;</a></span>PassiveEndpoint()</h2>
 
@@ -230,6 +256,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Create a passive endpoint that owns a new <a class="el" href="classPds_1_1Fabrics_1_1Fabric.html" title="Opens a libfabric fabric and domain for a node and service, and keeps the list of memory regions regi...">Fabric</a> for addr and port (FI_SOURCE is added to flags). </p>
+
 </div>
 </div>
 <a id="a56e6c03210f32b3fc3fe7f5c888adde0" name="a56e6c03210f32b3fc3fe7f5c888adde0"></a>
@@ -246,6 +274,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a8d7a44bd2a8af828880bd02a402188b3" title="Shut down every accepted endpoint, close the passive endpoint and set the state to EP_INIT; queues an...">shutdown()</a>, then delete all accepted endpoints. </p>
 
 </div>
 </div>
@@ -306,6 +336,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wait (with timeout) for a connection request, create an <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html" title="Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking...">Endpoint</a> on this fabric with the given queues and accept it (that handshake waits without timeout). </p>
+<p>Returns the new <a class="el" href="classPds_1_1Fabrics_1_1Endpoint.html" title="Active (connected) libfabric endpoint with send, receive, RMA read and write calls and their blocking...">Endpoint</a>, which this object keeps and later deletes, or NULL on failure; a failed accept rejects the request. </p>
+
 </div>
 </div>
 <a id="aa405db19615fea9792225358e92521d5" name="aa405db19615fea9792225358e92521d5"></a>
@@ -323,6 +356,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Remove endpoint from the accepted list and delete it if it is found; always returns true. </p>
 
 </div>
 </div>
@@ -352,6 +387,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Like <a class="el" href="classPds_1_1Fabrics_1_1PassiveEndpoint.html#a7b558cafda2287da6cf73e8b3b804736" title="Open the passive endpoint, bind it to the event queue, try to set the backlog (FI_ENOSYS is ignored) ...">listen(int)</a>, but first binds the endpoint to the address from getaddrinfo() (fi_setname) and afterwards stores the bound port in port. </p>
+
 </div>
 </div>
 <a id="a7b558cafda2287da6cf73e8b3b804736" name="a7b558cafda2287da6cf73e8b3b804736"></a>
@@ -370,6 +407,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Open the passive endpoint, bind it to the event queue, try to set the backlog (FI_ENOSYS is ignored) and call fi_listen(); the state becomes EP_LISTEN. </p>
+<p>Returns false on failure. </p>
+
 </div>
 </div>
 <a id="a81db8648ea7f52459a2bfcd60c295ca6" name="a81db8648ea7f52459a2bfcd60c295ca6"></a>
@@ -387,6 +427,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Wait (with timeout) for a connection request and reject it with fi_reject(); returns false if not listening, if no request is read, or if the rejection fails. </p>
 
 </div>
 </div>
@@ -412,6 +454,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Shut down every accepted endpoint, close the passive endpoint and set the state to EP_INIT; queues and fabric are kept. </p>
 
 <p>Reimplemented from <a class="el" href="classPds_1_1Fabrics_1_1EndpointBase.html#a74d338142ad1815794d9cb9f5d8e0415">Pds::Fabrics::EndpointBase</a>.</p>
 

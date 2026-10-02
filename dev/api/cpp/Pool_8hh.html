@@ -97,12 +97,16 @@ $(document).ready(function(){initNavTree('Pool_8hh.html',''); initResizable(); }
   <div class="headertitle"><div class="title">Pool.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class's new and delete through a pool.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="PoolEntry_8hh.html">PoolEntry.hh</a>&quot;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html">Pds::Pool</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract pool of numberofObjects equal buffers, each preceded by a <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a>, with allocation and free counters.  <a href="classPds_1_1Pool.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -114,9 +118,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aa41495aacd415b098ba5e90e9529d46a" id="r_aa41495aacd415b098ba5e90e9529d46a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pool_8hh.html#aa41495aacd415b098ba5e90e9529d46a">PoolDeclare</a></td></tr>
+<tr class="memdesc:aa41495aacd415b098ba5e90e9529d46a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declares an operator new(size, Pool*) that allocates from the pool and an operator delete that returns the buffer with Pool::free(); put it in a class body to allocate that class from a Pool.  <br /></td></tr>
 <tr class="separator:aa41495aacd415b098ba5e90e9529d46a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class's new and delete through a pool. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="aa41495aacd415b098ba5e90e9529d46a" name="aa41495aacd415b098ba5e90e9529d46a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa41495aacd415b098ba5e90e9529d46a">&#9670;&#160;</a></span>PoolDeclare</h2>
 
@@ -132,6 +139,8 @@ Macros</h2></td></tr>
 <div class="line">                        Pool*  pool)   { <span class="keywordflow">return</span> pool-&gt;alloc(size); }    \</div>
 <div class="line">  <span class="keywordtype">void</span>  <span class="keyword">operator</span> <span class="keyword">delete</span>(<span class="keywordtype">void</span>*  buffer) { Pool::free(buffer); }</div>
 </div><!-- fragment -->
+<p>Declares an operator new(size, Pool*) that allocates from the pool and an operator delete that returns the buffer with Pool::free(); put it in a class body to allocate that class from a Pool. </p>
+
 </div>
 </div>
 </div><!-- contents -->

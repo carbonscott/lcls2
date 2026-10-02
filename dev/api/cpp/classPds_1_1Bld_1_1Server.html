@@ -97,24 +97,36 @@ $(document).ready(function(){initNavTree('classPds_1_1Bld_1_1Server.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Packs payloads with BLD headers into an 8192-byte buffer and sends it as one packet when it is full or its first entry is old.  
+ <a href="classPds_1_1Bld_1_1Server.html#details">More...</a></p>
+
 <p><code>#include &lt;Server.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a165053ccc6257a599714797d7307aacb" id="r_a165053ccc6257a599714797d7307aacb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#a165053ccc6257a599714797d7307aacb">Server</a> (int fd)</td></tr>
+<tr class="memdesc:a165053ccc6257a599714797d7307aacb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use socket fd for sending (with send(), so it must be connected); the ID starts at 0 and the buffer is empty.  <br /></td></tr>
 <tr class="separator:a165053ccc6257a599714797d7307aacb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1f0003cd4117cf9cbb704957f6dfe01" id="r_af1f0003cd4117cf9cbb704957f6dfe01"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#af1f0003cd4117cf9cbb704957f6dfe01">~Server</a> ()</td></tr>
+<tr class="memdesc:af1f0003cd4117cf9cbb704957f6dfe01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; the buffer is not freed.  <br /></td></tr>
 <tr class="separator:af1f0003cd4117cf9cbb704957f6dfe01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c4989126bf7344cd1ce1e2bd5398150" id="r_a4c4989126bf7344cd1ce1e2bd5398150"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#a4c4989126bf7344cd1ce1e2bd5398150">id</a> () const</td></tr>
+<tr class="memdesc:a4c4989126bf7344cd1ce1e2bd5398150"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the source ID.  <br /></td></tr>
 <tr class="separator:a4c4989126bf7344cd1ce1e2bd5398150"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace611be87e18b0fb3daf9b2a18c6d5ee" id="r_ace611be87e18b0fb3daf9b2a18c6d5ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#ace611be87e18b0fb3daf9b2a18c6d5ee">setID</a> (uint32_t <a class="el" href="classPds_1_1Bld_1_1Server.html#a4c4989126bf7344cd1ce1e2bd5398150">id</a>)</td></tr>
+<tr class="memdesc:ace611be87e18b0fb3daf9b2a18c6d5ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the source ID written into the full header of each packet.  <br /></td></tr>
 <tr class="separator:ace611be87e18b0fb3daf9b2a18c6d5ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2365be6e60565d048e06cc8a3d28493b" id="r_a2365be6e60565d048e06cc8a3d28493b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#a2365be6e60565d048e06cc8a3d28493b">publish</a> (uint64_t pulseId, uint64_t timeStamp, const char *T, unsigned sizeofT)</td></tr>
+<tr class="memdesc:a2365be6e60565d048e06cc8a3d28493b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a header (full for the first entry of a packet, short otherwise) and the sizeofT-byte payload T.  <br /></td></tr>
 <tr class="separator:a2365be6e60565d048e06cc8a3d28493b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e13719238f5bd1da225c4606c96fd9c" id="r_a8e13719238f5bd1da225c4606c96fd9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Server.html#a8e13719238f5bd1da225c4606c96fd9c">flush</a> ()</td></tr>
+<tr class="memdesc:a8e13719238f5bd1da225c4606c96fd9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send the buffered packet, if any.  <br /></td></tr>
 <tr class="separator:a8e13719238f5bd1da225c4606c96fd9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packs payloads with BLD headers into an 8192-byte buffer and sends it as one packet when it is full or its first entry is old. </p>
+<p>Used by hpsBldServer and hpsBldCopy in psdaq/app. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a165053ccc6257a599714797d7307aacb" name="a165053ccc6257a599714797d7307aacb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a165053ccc6257a599714797d7307aacb">&#9670;&#160;</a></span>Server()</h2>
 
@@ -130,6 +142,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Use socket fd for sending (with send(), so it must be connected); the ID starts at 0 and the buffer is empty. </p>
 
 </div>
 </div>
@@ -148,6 +162,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Does nothing; the buffer is not freed. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -165,6 +181,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Send the buffered packet, if any. </p>
 
 </div>
 </div>
@@ -190,6 +208,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the source ID. </p>
 
 </div>
 </div>
@@ -231,6 +251,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Append a header (full for the first entry of a packet, short otherwise) and the sizeofT-byte payload T. </p>
+<p>Send the packet if another payload of this size would not fit or pulseId exceeds the packet's first pulse ID by more than 1023. </p>
+
 </div>
 </div>
 <a id="ace611be87e18b0fb3daf9b2a18c6d5ee" name="ace611be87e18b0fb3daf9b2a18c6d5ee"></a>
@@ -248,6 +271,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the source ID written into the full header of each packet. </p>
 
 </div>
 </div>

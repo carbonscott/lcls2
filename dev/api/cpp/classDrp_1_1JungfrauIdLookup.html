@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('classDrp_1_1JungfrauIdLookup.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet and reading the eth0 HWaddr from its ifconfig output.  
+ <a href="classDrp_1_1JungfrauIdLookup.html#details">More...</a></p>
+
 <p><code>#include &lt;JungfrauDetectorId.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0c3f87ef6c11d238e8e57b1e181140c0" id="r_a0c3f87ef6c11d238e8e57b1e181140c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#a0c3f87ef6c11d238e8e57b1e181140c0">JungfrauIdLookup</a> ()</td></tr>
+<tr class="memdesc:a0c3f87ef6c11d238e8e57b1e181140c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with an empty cache.  <br /></td></tr>
 <tr class="separator:a0c3f87ef6c11d238e8e57b1e181140c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5c62a0fcd5f764b88337bdeae31aa6f" id="r_ae5c62a0fcd5f764b88337bdeae31aa6f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#ae5c62a0fcd5f764b88337bdeae31aa6f">~JungfrauIdLookup</a> ()</td></tr>
+<tr class="memdesc:ae5c62a0fcd5f764b88337bdeae31aa6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ae5c62a0fcd5f764b88337bdeae31aa6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf69255753f30932103dc98a63c44ece" id="r_adf69255753f30932103dc98a63c44ece"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#adf69255753f30932103dc98a63c44ece">has</a> (const std::string &amp;hostname)</td></tr>
+<tr class="memdesc:adf69255753f30932103dc98a63c44ece"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if a MAC address is known for the IP address of hostname.  <br /></td></tr>
 <tr class="separator:adf69255753f30932103dc98a63c44ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f2d4c28e4a8c373e41d36a0178d49be" id="r_a3f2d4c28e4a8c373e41d36a0178d49be"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#a3f2d4c28e4a8c373e41d36a0178d49be">operator[]</a> (const std::string &amp;hostname)</td></tr>
+<tr class="memdesc:a3f2d4c28e4a8c373e41d36a0178d49be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the cached MAC address for the IP address of hostname; a missing entry is inserted as an empty string.  <br /></td></tr>
 <tr class="separator:a3f2d4c28e4a8c373e41d36a0178d49be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac48d32d377e073ebb61964eaaf109af3" id="r_ac48d32d377e073ebb61964eaaf109af3"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#ac48d32d377e073ebb61964eaaf109af3">host_to_ip</a> (const std::string &amp;hostname)</td></tr>
+<tr class="memdesc:ac48d32d377e073ebb61964eaaf109af3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve hostname with gethostbyname() and return its first address as a dotted IPv4 string.  <br /></td></tr>
 <tr class="separator:ac48d32d377e073ebb61964eaaf109af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab50bb44d7f5ebe14f23ac8accfe0b4f0" id="r_ab50bb44d7f5ebe14f23ac8accfe0b4f0"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html#ab50bb44d7f5ebe14f23ac8accfe0b4f0">mac_to_hex</a> (std::string mac)</td></tr>
+<tr class="memdesc:ab50bb44d7f5ebe14f23ac8accfe0b4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the colons from mac and parse the remaining text as a hexadecimal number with strtoul().  <br /></td></tr>
 <tr class="separator:ab50bb44d7f5ebe14f23ac8accfe0b4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet and reading the eth0 HWaddr from its ifconfig output. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0c3f87ef6c11d238e8e57b1e181140c0" name="a0c3f87ef6c11d238e8e57b1e181140c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0c3f87ef6c11d238e8e57b1e181140c0">&#9670;&#160;</a></span>JungfrauIdLookup()</h2>
 
@@ -133,6 +144,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct with an empty cache. </p>
 
 </div>
 </div>
@@ -150,6 +163,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -169,6 +184,9 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return true if a MAC address is known for the IP address of hostname. </p>
+<p>If it is not cached, /proc/net/arp is reloaded, and if still missing the device is queried over telnet (port 23). </p>
 
 </div>
 </div>
@@ -196,6 +214,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Resolve hostname with gethostbyname() and return its first address as a dotted IPv4 string. </p>
+<p>A failed lookup is not checked (null pointer dereference). </p>
+
 </div>
 </div>
 <a id="ab50bb44d7f5ebe14f23ac8accfe0b4f0" name="ab50bb44d7f5ebe14f23ac8accfe0b4f0"></a>
@@ -222,6 +243,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Remove the colons from mac and parse the remaining text as a hexadecimal number with strtoul(). </p>
+
 </div>
 </div>
 <a id="a3f2d4c28e4a8c373e41d36a0178d49be" name="a3f2d4c28e4a8c373e41d36a0178d49be"></a>
@@ -239,6 +262,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the cached MAC address for the IP address of hostname; a missing entry is inserted as an empty string. </p>
 
 </div>
 </div>

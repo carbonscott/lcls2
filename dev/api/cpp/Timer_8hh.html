@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Timer_8hh.html',''); initResizable(); 
   <div class="headertitle"><div class="title">Timer.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Timer, which calls expired() in a user Task after duration() milliseconds, once or repeatedly, and its UNIX service routine.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Routine_8hh.html">Routine.hh</a>&quot;</code><br />
 <code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;time.h&gt;</code><br />
@@ -103,8 +106,10 @@ $(document).ready(function(){initNavTree('Timer_8hh.html',''); initResizable(); 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TimerServiceRoutine.html">Pds::TimerServiceRoutine</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">UNIX implementation of a <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a>: a separate service <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> waits on a condition variable with a deadline and, on timeout, queues the <a class="el" href="classPds_1_1Timer.html" title="Base of timers: after start(), expired() is run in the Task returned by task() every duration() milli...">Timer</a> on its user task.  <a href="classPds_1_1TimerServiceRoutine.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Timer.html">Pds::Timer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base of timers: after <a class="el" href="classPds_1_1Timer.html#a8feb09a3ad8d3d608f20e0a9ef929537" title="Arm the timer (TimerServiceRoutine::armTimer()); returns 0, or 1 if it was already running.">start()</a>, <a class="el" href="classPds_1_1Timer.html#a453fff72867d13ab5a24c7df41329e49" title="Pure virtual: the user code run in task() when the timer expires.">expired()</a> is run in the <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> returned by <a class="el" href="classPds_1_1Timer.html#a32b793b84053048c6545ae20b907314a" title="Pure virtual: the Task in which expired() runs.">task()</a> every <a class="el" href="classPds_1_1Timer.html#a35e813cd82cf2f7b5ff89cd711ba4b11" title="Pure virtual: the timer period in milliseconds (per the comment).">duration()</a> milliseconds (or once if <a class="el" href="classPds_1_1Timer.html#a9dfdcc3a8128cb8ffca141fa4b1a6a1c" title="Pure virtual: 0 for a one-shot timer, non-zero for a repeating one (per the comment).">repetitive()</a> is 0) until <a class="el" href="classPds_1_1Timer.html#acee3663736e0b2e729ccc0c9f41ba473" title="Disarm the timer and, if it was running, make sure no expired() call is pending: remove it from the q...">cancel()</a>.  <a href="classPds_1_1Timer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -113,7 +118,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Timer, which calls expired() in a user Task after duration() milliseconds, once or repeatedly, and its UNIX service routine. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

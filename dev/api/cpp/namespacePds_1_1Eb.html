@@ -99,69 +99,101 @@ $(document).ready(function(){initNavTree('namespacePds_1_1Eb.html',''); initResi
   <div class="headertitle"><div class="title">Pds::Eb Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Namespace of the psdaq event-builder (eb) code.  
+<a href="namespacePds_1_1Eb.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1Batch.html">Batch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One batch of fixed-size entries in an RDMA region: its start pulse ID, its buffer (chosen from the pulse ID) and its current extent.  <a href="classPds_1_1Eb_1_1Batch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1BatchManager.html">BatchManager</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owns the page-aligned region in which batches are built and decides when a batch has expired.  <a href="classPds_1_1Eb_1_1BatchManager.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html">CtrbBatch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A batch of contiguous input datagrams being built by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html" title="Builds batches of input datagrams in a BatchManager region and posts them over libfabric links to the...">TebContributor</a>.  <a href="structPds_1_1Eb_1_1CtrbBatch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1CubeConfigDgram.html">CubeConfigDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html" title="Trigger result datagram: an EbDgram followed by a 32-bit result word and a 32-bit monitor buffer numb...">ResultDgram</a> that stores a ResultType in the monitor buffer number word, a bin count in the auxdata field, and NUL-terminated JSON text appended to its payload.  <a href="classPds_1_1Eb_1_1CubeConfigDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1CubeResultDgram.html">CubeResultDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html" title="Trigger result datagram: an EbDgram followed by a 32-bit result word and a 32-bit monitor buffer numb...">ResultDgram</a> whose auxdata field holds a record-event bit (bit 0), a record-bin bit (bit 1), a monitor-bin bit (bit 2), a flush bit (bit 3) and a 20-bit bin index (bits 23-4).  <a href="classPds_1_1Eb_1_1CubeResultDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbAppBase.html">EbAppBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a> fed by inbound libfabric server links from the contributors (DRPs).  <a href="classPds_1_1Eb_1_1EbAppBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html">EbCtrbInBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives trigger result batches from the TEBs over libfabric server links, matches them with the contributor's pending input batches and calls <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#abb1b62ec94eb3307810431eb0449509b" title="Pure virtual: handle the result of one event; index is the buffer index of the matching input datagra...">process()</a> for each matched event.  <a href="classPds_1_1Eb_1_1EbCtrbInBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html">EbEpoch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> element for one epoch of the event builder; holds the list of events pending in that epoch.  <a href="classPds_1_1Eb_1_1EbEpoch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html">EbEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One event being built by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a>: its contributions (a variable-length array that follows the object), the bit list of contributors still missing, accumulated damage and payload size.  <a href="classPds_1_1Eb_1_1EbEvent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html">EbLfClient</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and tears down client-side <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html" title="Client side of an EbLfLink; writes data into the server&#39;s registered memory with RDMA.">EbLfCltLink</a> connections; all its links share one pending word and one posting word.  <a href="classPds_1_1Eb_1_1EbLfClient.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structClient.html">Client</a> side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; writes data into the server's registered memory with RDMA.  <a href="classPds_1_1Eb_1_1EbLfCltLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfLink.html">EbLfLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">One libfabric connection between an event-builder client and server.  <a href="classPds_1_1Eb_1_1EbLfLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">EbLfServer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepts client connections on a passive endpoint and receives their notifications.  <a href="classPds_1_1Eb_1_1EbLfServer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">EbLfSvrLink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Server side of an <a class="el" href="classPds_1_1Eb_1_1EbLfLink.html" title="One libfabric connection between an event-builder client and server.">EbLfLink</a>; synchronizes with the client before and after each exchange.  <a href="classPds_1_1Eb_1_1EbLfSvrLink.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1EbParams.html">EbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters used by both TEBs and MEBs, per the original comment.  <a href="structPds_1_1Eb_1_1EbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html">EventBuilder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract event builder.  <a href="classPds_1_1Eb_1_1EventBuilder.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1FiTransport.html">FiTransport</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Point-to-point libfabric transport for DGRAM, RDM or MSG endpoints, adapted from the libfabric pingpong example per the file comment.  <a href="classPds_1_1Eb_1_1FiTransport.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ImmData.html">ImmData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helpers that pack and unpack the 32-bit immediate data word: a 2-bit flags field (bits 31-30), a 6-bit source field (bits 29-24) and a 24-bit index field (bits 23-0).  <a href="classPds_1_1Eb_1_1ImmData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html">IndexPoolBase</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed array of a power-of-2 number of equal-size objects, addressed by a key masked to the array size, with a per-slot allocated flag and allocation counters.  <a href="classPds_1_1Eb_1_1IndexPoolBase.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html">IndexPoolW</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Typed index pool over <code>IndexPoolBaseW&lt;L&gt;</code>, so <a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#a0e50f7c32f26b4e6edec0fc6079a9157" title="Return IndexPoolBaseW&lt;L&gt;::allocate(key), the waiting allocation, cast to T*.">allocate()</a> waits for busy slots.  <a href="classPds_1_1Eb_1_1IndexPoolW.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1MebContributor.html">MebContributor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends L1Accepts to one chosen MEB buffer and transitions to every MEB, over libfabric client links.  <a href="classPds_1_1Eb_1_1MebContributor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1MebCtrbParams.html">MebCtrbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters of an MEB contributor (a DRP), per the original comment.  <a href="structPds_1_1Eb_1_1MebCtrbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html">ResultDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger result datagram: an <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> followed by a 32-bit result word and a 32-bit monitor buffer number word.  <a href="classPds_1_1Eb_1_1ResultDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html">TebContributor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds batches of input datagrams in a <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> region and posts them over libfabric links to the TEBs.  <a href="classPds_1_1Eb_1_1TebContributor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html">TebCtrbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters of a TEB contributor (a DRP), per the original comment.  <a href="structPds_1_1Eb_1_1TebCtrbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1WindowResultDgram.html">WindowResultDgram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html" title="Trigger result datagram: an EbDgram followed by a 32-bit result word and a 32-bit monitor buffer numb...">ResultDgram</a> whose auxdata field holds four 6-bit fields: add (bits 5-0), record (bits 11-6), monitor (bits 17-12) and flush (bits 23-18).  <a href="classPds_1_1Eb_1_1WindowResultDgram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ab635cf54f6f468d3d5c6425d1fffa2b7" id="r_ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#ab635cf54f6f468d3d5c6425d1fffa2b7">LinkMap</a> = std::unordered_map&lt; fid_ep *, <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">EbLfSvrLink</a> * &gt;</td></tr>
+<tr class="memdesc:ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from a raw libfabric endpoint to its server link.  <br /></td></tr>
 <tr class="separator:ab635cf54f6f468d3d5c6425d1fffa2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a081780a153b63eb40d8809b26892bfb7" id="r_a081780a153b63eb40d8809b26892bfb7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a081780a153b63eb40d8809b26892bfb7">BatchQueue</a> = <a class="el" href="classSPSCQueue.html">SPSCQueue</a>&lt; const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> * &gt;</td></tr>
+<tr class="memdesc:a081780a153b63eb40d8809b26892bfb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-producer single-consumer queue of <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> pointers.  <br /></td></tr>
 <tr class="separator:a081780a153b63eb40d8809b26892bfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4efbd91740986fa13e99eabc349b0610" id="r_a4efbd91740986fa13e99eabc349b0610"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a4efbd91740986fa13e99eabc349b0610">time_point_t</a> = std::chrono::time_point&lt; <a class="el" href="classPds_1_1fast__monotonic__clock.html">fast_monotonic_clock</a> &gt;</td></tr>
+<tr class="memdesc:a4efbd91740986fa13e99eabc349b0610"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time point of <a class="el" href="classPds_1_1fast__monotonic__clock.html" title="std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_CO...">fast_monotonic_clock</a>.  <br /></td></tr>
 <tr class="separator:a4efbd91740986fa13e99eabc349b0610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -175,67 +207,94 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespacePds_1_1Eb.html#a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76">VL_DETAILED</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a1987aee2ae92c21a38ab39179a267db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verbosity levels, from none to most detailed.  <a href="namespacePds_1_1Eb.html#a1987aee2ae92c21a38ab39179a267db6">More...</a><br /></td></tr>
 <tr class="separator:a1987aee2ae92c21a38ab39179a267db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaafbfee88c8595a0cfed7435ce8a747c" id="r_aaafbfee88c8595a0cfed7435ce8a747c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747c">ResultType</a> { <a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747ca5adb77808262524196832afa0c4994ee">Base</a> =0
 , <a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21">Cube</a> =1
 , <a class="el" href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6">Window</a> =2
  }</td></tr>
+<tr class="memdesc:aaafbfee88c8595a0cfed7435ce8a747c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result type codes, described in the original comment as ConfigDgram specializations; CubeConfigDgram::resultType(char*) maps the strings Cube and Window to these codes.  <a href="namespacePds_1_1Eb.html#aaafbfee88c8595a0cfed7435ce8a747c">More...</a><br /></td></tr>
 <tr class="separator:aaafbfee88c8595a0cfed7435ce8a747c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a1511334769de9ec9a170963d154cfa6a" id="r_a1511334769de9ec9a170963d154cfa6a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a1511334769de9ec9a170963d154cfa6a"><td class="memTemplItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a1511334769de9ec9a170963d154cfa6a">latency</a> (const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> &amp;)</td></tr>
+<tr class="memdesc:a1511334769de9ec9a170963d154cfa6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T.  <br /></td></tr>
 <tr class="separator:a1511334769de9ec9a170963d154cfa6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac166136b2a2eb60750f702396e483a73" id="r_ac166136b2a2eb60750f702396e483a73"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73">linksConnect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfClient.html">EbLfClient</a> &amp;transport, std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, const std::vector&lt; std::string &gt; &amp;addrs, const std::vector&lt; std::string &gt; &amp;ports, unsigned id, const char *name)</td></tr>
+<tr class="memdesc:ac166136b2a2eb60750f702396e483a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link and store it in links at the index of the remote ID.  <br /></td></tr>
 <tr class="separator:ac166136b2a2eb60750f702396e483a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e83d4cbb36cbf5ef7f2e122f6a30621" id="r_a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0e83d4cbb36cbf5ef7f2e122f6a30621">linksConfigure</a> (std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, void *region, size_t regSize, const char *name)</td></tr>
+<tr class="memdesc:a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call linksConfigure(links, region, regSize, regSize, name).  <br /></td></tr>
 <tr class="separator:a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06490859cf5df1f2e820cb7b0f370024" id="r_a06490859cf5df1f2e820cb7b0f370024"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a06490859cf5df1f2e820cb7b0f370024">linksConfigure</a> (std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, void *region, size_t lclSize, size_t rmtSize, const char *name)</td></tr>
+<tr class="memdesc:a06490859cf5df1f2e820cb7b0f370024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call EbLfCltLink::prepare(region, lclSize, rmtSize, name) on every link and log the configured region.  <br /></td></tr>
 <tr class="separator:a06490859cf5df1f2e820cb7b0f370024"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06a77c3e603fac8b907385085c9e9b6e" id="r_a06a77c3e603fac8b907385085c9e9b6e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a06a77c3e603fac8b907385085c9e9b6e">setupMr</a> (<a class="el" href="classPds_1_1Fabrics_1_1Fabric.html">Fabrics::Fabric</a> *fabric, void *region, size_t size, <a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html">Fabrics::MemoryRegion</a> **mr, const unsigned &amp;verbose)</td></tr>
+<tr class="memdesc:a06a77c3e603fac8b907385085c9e9b6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make *mr a memory region on fabric that covers size bytes at region.  <br /></td></tr>
 <tr class="separator:a06a77c3e603fac8b907385085c9e9b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ddb2b32ab8e73a04bed86d408fdf214" id="r_a0ddb2b32ab8e73a04bed86d408fdf214"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0ddb2b32ab8e73a04bed86d408fdf214">linksStart</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">EbLfServer</a> &amp;transport, const std::string &amp;ifAddr, std::string &amp;port, unsigned nLinks, const char *name)</td></tr>
+<tr class="memdesc:a0ddb2b32ab8e73a04bed86d408fdf214"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call transport.listen(ifAddr, port, nLinks) and log an error naming name on failure; returns 0 or the error.  <br /></td></tr>
 <tr class="separator:a0ddb2b32ab8e73a04bed86d408fdf214"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aada37b0d35517bbb9732338a8dbe01f4" id="r_aada37b0d35517bbb9732338a8dbe01f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#aada37b0d35517bbb9732338a8dbe01f4">linksConnect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfServer.html">EbLfServer</a> &amp;transport, std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfSvrLink.html">EbLfSvrLink</a> * &gt; &amp;links, unsigned id, const char *name)</td></tr>
+<tr class="memdesc:aada37b0d35517bbb9732338a8dbe01f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accept links.size() connections (14750 ms timeout each), then exchange IDs on each and store each link at the index of its remote ID.  <br /></td></tr>
 <tr class="separator:aada37b0d35517bbb9732338a8dbe01f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a501b39526427ce550401960b52b816b4" id="r_a501b39526427ce550401960b52b816b4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a501b39526427ce550401960b52b816b4">roundUpSize</a> (size_t size)</td></tr>
+<tr class="memdesc:a501b39526427ce550401960b52b816b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return size rounded up to a whole number of system pages (sysconf(_SC_PAGESIZE)).  <br /></td></tr>
 <tr class="separator:a501b39526427ce550401960b52b816b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a467639a05b50eda36133bc11ec5c8287" id="r_a467639a05b50eda36133bc11ec5c8287"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a467639a05b50eda36133bc11ec5c8287">allocRegion</a> (size_t size)</td></tr>
+<tr class="memdesc:a467639a05b50eda36133bc11ec5c8287"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate a page-aligned block of roundUpSize(size) bytes with posix_memalign().  <br /></td></tr>
 <tr class="separator:a467639a05b50eda36133bc11ec5c8287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f44719cc8353d9a3a3c0ef45f448c5c" id="r_a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a8f44719cc8353d9a3a3c0ef45f448c5c">pinThread</a> (const pthread_t &amp;th, int cpu)</td></tr>
+<tr class="memdesc:a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin thread th to the single CPU cpu with pthread_setaffinity_np() and return its result.  <br /></td></tr>
 <tr class="separator:a8f44719cc8353d9a3a3c0ef45f448c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a0e50427de00b89286a94bd115987d4e9" id="r_a0e50427de00b89286a94bd115987d4e9"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0e50427de00b89286a94bd115987d4e9">MAX_DRPS</a> = 64</td></tr>
+<tr class="memdesc:a0e50427de00b89286a94bd115987d4e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of contributors (64; the original comment says these limits come from the bits of a uint64_t).  <br /></td></tr>
 <tr class="separator:a0e50427de00b89286a94bd115987d4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ca55af33916a24d9cfec10287478c5b" id="r_a1ca55af33916a24d9cfec10287478c5b"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a1ca55af33916a24d9cfec10287478c5b">MAX_TEBS</a> = 4</td></tr>
+<tr class="memdesc:a1ca55af33916a24d9cfec10287478c5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of trigger event builders (4).  <br /></td></tr>
 <tr class="separator:a1ca55af33916a24d9cfec10287478c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a331bc6561d717d901291d64544d784e5" id="r_a331bc6561d717d901291d64544d784e5"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a331bc6561d717d901291d64544d784e5">MAX_MEBS</a> = 4</td></tr>
+<tr class="memdesc:a331bc6561d717d901291d64544d784e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of monitor event builders (4).  <br /></td></tr>
 <tr class="separator:a331bc6561d717d901291d64544d784e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24dfa9385b8ff6e9ee29ece64f1b6f30" id="r_a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a24dfa9385b8ff6e9ee29ece64f1b6f30">MAX_MRQS</a> = <a class="el" href="namespacePds_1_1Eb.html#a331bc6561d717d901291d64544d784e5">MAX_MEBS</a></td></tr>
+<tr class="memdesc:a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of monitor requestors; equal to MAX_MEBS.  <br /></td></tr>
 <tr class="separator:a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a398891903183db5a5e910c0b139b0b" id="r_a9a398891903183db5a5e910c0b139b0b"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a9a398891903183db5a5e910c0b139b0b">NUM_READOUT_GROUPS</a> = 8</td></tr>
+<tr class="memdesc:a9a398891903183db5a5e910c0b139b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of readout groups supported (8).  <br /></td></tr>
 <tr class="separator:a9a398891903183db5a5e910c0b139b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e066174b1d702eebe4ff0ac8127873e" id="r_a6e066174b1d702eebe4ff0ac8127873e"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a6e066174b1d702eebe4ff0ac8127873e">TICK_RATE</a> = 1000000 * 13/14</td></tr>
+<tr class="memdesc:a6e066174b1d702eebe4ff0ac8127873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">System clock rate in Hz according to the original comment; computed in integer arithmetic as 1000000 * 13 / 14.  <br /></td></tr>
 <tr class="separator:a6e066174b1d702eebe4ff0ac8127873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64906832882260a5f4956187415e864e" id="r_a64906832882260a5f4956187415e864e"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a64906832882260a5f4956187415e864e">EB_TMO_MS</a> = 12000</td></tr>
+<tr class="memdesc:a64906832882260a5f4956187415e864e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event-builder event timeout in milliseconds (12000).  <br /></td></tr>
 <tr class="separator:a64906832882260a5f4956187415e864e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bcefe47691c81d6eb939fb9f398555c" id="r_a5bcefe47691c81d6eb939fb9f398555c"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a5bcefe47691c81d6eb939fb9f398555c">TEB_TR_BUFFERS</a> = 128</td></tr>
+<tr class="memdesc:a5bcefe47691c81d6eb939fb9f398555c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of TEB transition buffers (128); the original comment says it must exceed the timeout times the SlowUpdate rate.  <br /></td></tr>
 <tr class="separator:a5bcefe47691c81d6eb939fb9f398555c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaca597fd7bc40cf3663f76bb0253beb3" id="r_aaca597fd7bc40cf3663f76bb0253beb3"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#aaca597fd7bc40cf3663f76bb0253beb3">MEB_TR_BUFFERS</a> = 24</td></tr>
+<tr class="memdesc:aaca597fd7bc40cf3663f76bb0253beb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of MEB transition buffers (24); the original comment says it must exceed the timeout times the SlowUpdate rate.  <br /></td></tr>
 <tr class="separator:aaca597fd7bc40cf3663f76bb0253beb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d8d809f7ccf151f52afc76b7a8f5fd3" id="r_a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">MAX_ENTRIES</a> = 64</td></tr>
+<tr class="memdesc:a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of entries (events) per batch (64).  <br /></td></tr>
 <tr class="separator:a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a993b1ec1d716f8b1937f265994758683" id="r_a993b1ec1d716f8b1937f265994758683"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a993b1ec1d716f8b1937f265994758683">BATCH_DURATION</a> = <a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">MAX_ENTRIES</a></td></tr>
+<tr class="memdesc:a993b1ec1d716f8b1937f265994758683"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1Batch.html" title="One batch of fixed-size entries in an RDMA region: its start pulse ID, its buffer (chosen from the pu...">Batch</a> duration in pulse-ID ticks; equal to MAX_ENTRIES and checked by a static_assert to be a power of 2.  <br /></td></tr>
 <tr class="separator:a993b1ec1d716f8b1937f265994758683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9841dd14ffba7d28511de0d404503000" id="r_a9841dd14ffba7d28511de0d404503000"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a9841dd14ffba7d28511de0d404503000">MAX_LATENCY</a> = 16 * 1024 * 1024</td></tr>
+<tr class="memdesc:a9841dd14ffba7d28511de0d404503000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffering range in pulse-ID ticks (16 * 1024 * 1024).  <br /></td></tr>
 <tr class="separator:a9841dd14ffba7d28511de0d404503000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e7b10c0b8d56c9928212101033079d4" id="r_a3e7b10c0b8d56c9928212101033079d4"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a3e7b10c0b8d56c9928212101033079d4">MAX_BATCHES</a> = <a class="el" href="namespacePds_1_1Eb.html#a9841dd14ffba7d28511de0d404503000">MAX_LATENCY</a> / <a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">MAX_ENTRIES</a></td></tr>
+<tr class="memdesc:a3e7b10c0b8d56c9928212101033079d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of batches in circulation, MAX_LATENCY / MAX_ENTRIES; checked by a static_assert to be a power of 2.  <br /></td></tr>
 <tr class="separator:a3e7b10c0b8d56c9928212101033079d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Namespace of the psdaq event-builder (eb) code. </p>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="a081780a153b63eb40d8809b26892bfb7" name="a081780a153b63eb40d8809b26892bfb7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a081780a153b63eb40d8809b26892bfb7">&#9670;&#160;</a></span>BatchQueue</h2>
 
@@ -247,6 +306,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Single-producer single-consumer queue of <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> pointers. </p>
+<p><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a6d72251f3e0d9866c49dbe2bce01b56e" title="Return the time-ordered queue of posted batches and bypassed datagrams.">TebContributor::pending()</a> holds the first datagram of each posted batch, or a single datagram that bypassed the TEBs. </p>
 
 </div>
 </div>
@@ -262,6 +324,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Map from a raw libfabric endpoint to its server link. </p>
+
 </div>
 </div>
 <a id="a4efbd91740986fa13e99eabc349b0610" name="a4efbd91740986fa13e99eabc349b0610"></a>
@@ -275,6 +339,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time point of <a class="el" href="classPds_1_1fast__monotonic__clock.html" title="std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_CO...">fast_monotonic_clock</a>. </p>
 
 </div>
 </div>
@@ -290,12 +356,19 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Verbosity levels, from none to most detailed. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a1de6336ae62f69c03058740c95eef1c2" name="a1987aee2ae92c21a38ab39179a267db6a1de6336ae62f69c03058740c95eef1c2"></a>VL_NONE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6ac2498fc80e9da5dcb66626b2df969d85" name="a1987aee2ae92c21a38ab39179a267db6ac2498fc80e9da5dcb66626b2df969d85"></a>VL_DEFAULT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a839e8171d8dbd97440fa55d4ffa2cb1c" name="a1987aee2ae92c21a38ab39179a267db6a839e8171d8dbd97440fa55d4ffa2cb1c"></a>VL_BATCH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6ae06db471405c64f6754c5603fda855a1" name="a1987aee2ae92c21a38ab39179a267db6ae06db471405c64f6754c5603fda855a1"></a>VL_EVENT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76" name="a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76"></a>VL_DETAILED&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a1de6336ae62f69c03058740c95eef1c2" name="a1987aee2ae92c21a38ab39179a267db6a1de6336ae62f69c03058740c95eef1c2"></a>VL_NONE&#160;</td><td class="fielddoc"><p>Level 0. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6ac2498fc80e9da5dcb66626b2df969d85" name="a1987aee2ae92c21a38ab39179a267db6ac2498fc80e9da5dcb66626b2df969d85"></a>VL_DEFAULT&#160;</td><td class="fielddoc"><p>Level 1. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a839e8171d8dbd97440fa55d4ffa2cb1c" name="a1987aee2ae92c21a38ab39179a267db6a839e8171d8dbd97440fa55d4ffa2cb1c"></a>VL_BATCH&#160;</td><td class="fielddoc"><p>Level 2. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6ae06db471405c64f6754c5603fda855a1" name="a1987aee2ae92c21a38ab39179a267db6ae06db471405c64f6754c5603fda855a1"></a>VL_EVENT&#160;</td><td class="fielddoc"><p>Level 3. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76" name="a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76"></a>VL_DETAILED&#160;</td><td class="fielddoc"><p>Level 4. </p>
+</td></tr>
 </table>
 
 </div>
@@ -311,10 +384,15 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Result type codes, described in the original comment as ConfigDgram specializations; <a class="el" href="classPds_1_1Eb_1_1CubeConfigDgram.html#a6bbac32f4ec2bfa309dc13de71d1ee4d" title="Store Cube if rtype is the string Cube, Window if it is Window, otherwise Base, in the monitor buffer...">CubeConfigDgram::resultType(char*)</a> maps the strings Cube and Window to these codes. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747ca5adb77808262524196832afa0c4994ee" name="aaafbfee88c8595a0cfed7435ce8a747ca5adb77808262524196832afa0c4994ee"></a>Base&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21" name="aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21"></a>Cube&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6" name="aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6"></a>Window&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747ca5adb77808262524196832afa0c4994ee" name="aaafbfee88c8595a0cfed7435ce8a747ca5adb77808262524196832afa0c4994ee"></a>Base&#160;</td><td class="fielddoc"><p>Default type (0); also used for unrecognized strings. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21" name="aaafbfee88c8595a0cfed7435ce8a747caeb44c74f43d4f1f0be1943f2d25a4e21"></a>Cube&#160;</td><td class="fielddoc"><p>Cube result type (1). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6" name="aaafbfee88c8595a0cfed7435ce8a747ca9fd42993ba32bfc863734d3fb875eef6"></a>Window&#160;</td><td class="fielddoc"><p>Window result type (2). </p>
+</td></tr>
 </table>
 
 </div>
@@ -336,6 +414,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Allocate a page-aligned block of roundUpSize(size) bytes with posix_memalign(). </p>
+<p>Returns nullptr (after printing the error to stderr) on failure; the memory is not zeroed unless built with VALGRIND defined. </p>
+
 </div>
 </div>
 <a id="a1511334769de9ec9a170963d154cfa6a" name="a1511334769de9ec9a170963d154cfa6a"></a>
@@ -355,6 +436,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T. </p>
+<p>The timestamp is moved to the POSIX epoch by adding a function-static offset that starts at POSIX_TIME_AT_EPICS_EPOCH; if the difference still exceeds that many seconds, the offset is increased by the difference and the computation is repeated. </p>
 
 </div>
 </div>
@@ -402,6 +486,9 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Call EbLfCltLink::prepare(region, lclSize, rmtSize, name) on every link and log the configured region. </p>
+<p>Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="a0e83d4cbb36cbf5ef7f2e122f6a30621" name="a0e83d4cbb36cbf5ef7f2e122f6a30621"></a>
@@ -441,6 +528,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call linksConfigure(links, region, regSize, regSize, name). </p>
 
 </div>
 </div>
@@ -494,6 +583,9 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link and store it in links at the index of the remote ID. </p>
+<p>name labels the peers in messages. Returns 0 or the first error. </p>
+
 </div>
 </div>
 <a id="aada37b0d35517bbb9732338a8dbe01f4" name="aada37b0d35517bbb9732338a8dbe01f4"></a>
@@ -533,6 +625,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Accept links.size() connections (14750 ms timeout each), then exchange IDs on each and store each link at the index of its remote ID. </p>
+<p>name labels the peers in messages. Returns 0 or the first error. </p>
 
 </div>
 </div>
@@ -580,6 +675,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Call transport.listen(ifAddr, port, nLinks) and log an error naming name on failure; returns 0 or the error. </p>
+
 </div>
 </div>
 <a id="a8f44719cc8353d9a3a3c0ef45f448c5c" name="a8f44719cc8353d9a3a3c0ef45f448c5c"></a>
@@ -608,6 +705,9 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Pin thread th to the single CPU cpu with pthread_setaffinity_np() and return its result. </p>
+<p>Does nothing and returns 0 when cpu is not greater than 0 (so CPU 0 cannot be selected). </p>
+
 </div>
 </div>
 <a id="a501b39526427ce550401960b52b816b4" name="a501b39526427ce550401960b52b816b4"></a>
@@ -625,6 +725,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return size rounded up to a whole number of system pages (sysconf(_SC_PAGESIZE)). </p>
 
 </div>
 </div>
@@ -672,6 +774,9 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Make *mr a memory region on fabric that covers size bytes at region. </p>
+<p>An existing *mr that starts at region and is at least size bytes long is reused; otherwise it is deregistered and a new region is registered and stored in *mr (even on failure). Returns 0 or the fabric error number. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -687,6 +792,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classPds_1_1Eb_1_1Batch.html" title="One batch of fixed-size entries in an RDMA region: its start pulse ID, its buffer (chosen from the pu...">Batch</a> duration in pulse-ID ticks; equal to MAX_ENTRIES and checked by a static_assert to be a power of 2. </p>
+
 </div>
 </div>
 <a id="a64906832882260a5f4956187415e864e" name="a64906832882260a5f4956187415e864e"></a>
@@ -700,6 +807,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Event-builder event timeout in milliseconds (12000). </p>
+<p>A static_assert below requires it to be at most 1000 * MAX_LATENCY / TICK_RATE. </p>
 
 </div>
 </div>
@@ -715,6 +825,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Maximum number of batches in circulation, MAX_LATENCY / MAX_ENTRIES; checked by a static_assert to be a power of 2. </p>
+
 </div>
 </div>
 <a id="a0e50427de00b89286a94bd115987d4e9" name="a0e50427de00b89286a94bd115987d4e9"></a>
@@ -728,6 +840,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Maximum number of contributors (64; the original comment says these limits come from the bits of a uint64_t). </p>
 
 </div>
 </div>
@@ -743,6 +857,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Maximum number of entries (events) per batch (64). </p>
+
 </div>
 </div>
 <a id="a9841dd14ffba7d28511de0d404503000" name="a9841dd14ffba7d28511de0d404503000"></a>
@@ -756,6 +872,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Buffering range in pulse-ID ticks (16 * 1024 * 1024). </p>
 
 </div>
 </div>
@@ -771,6 +889,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Maximum number of monitor event builders (4). </p>
+
 </div>
 </div>
 <a id="a24dfa9385b8ff6e9ee29ece64f1b6f30" name="a24dfa9385b8ff6e9ee29ece64f1b6f30"></a>
@@ -784,6 +904,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Maximum number of monitor requestors; equal to MAX_MEBS. </p>
 
 </div>
 </div>
@@ -799,6 +921,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Maximum number of trigger event builders (4). </p>
+
 </div>
 </div>
 <a id="aaca597fd7bc40cf3663f76bb0253beb3" name="aaca597fd7bc40cf3663f76bb0253beb3"></a>
@@ -812,6 +936,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of MEB transition buffers (24); the original comment says it must exceed the timeout times the SlowUpdate rate. </p>
 
 </div>
 </div>
@@ -827,6 +953,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Number of readout groups supported (8). </p>
+
 </div>
 </div>
 <a id="a5bcefe47691c81d6eb939fb9f398555c" name="a5bcefe47691c81d6eb939fb9f398555c"></a>
@@ -841,6 +969,8 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Number of TEB transition buffers (128); the original comment says it must exceed the timeout times the SlowUpdate rate. </p>
+
 </div>
 </div>
 <a id="a6e066174b1d702eebe4ff0ac8127873e" name="a6e066174b1d702eebe4ff0ac8127873e"></a>
@@ -854,6 +984,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>System clock rate in Hz according to the original comment; computed in integer arithmetic as 1000000 * 13 / 14. </p>
 
 </div>
 </div>

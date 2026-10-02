@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('BldDetector_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">BldDetector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>BLD DRP: receivers for beam-line data multicast streams (<a class="el" href="namespaceBld.html" title="Namespace of the HPS BLD packet decoding classes (HpsEvent, HpsEventIterator).">Bld</a>), their configuration from built-in tables or EPICS PVs (BldPVA, BldFactory), and the BLD Pgp reader, BldDrp and BldApp.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -110,18 +113,25 @@ $(document).ready(function(){initNavTree('BldDetector_8hh.html',''); initResizab
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldDescriptor.html">Drp::BldDescriptor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">PVA channel whose structure describes the payload of a BLD source; used by <a class="el" href="classDrp_1_1BldPVA.html" title="Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BL...">BldPVA</a>.  <a href="classDrp_1_1BldDescriptor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Bld.html">Drp::Bld</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a header, then entries carrying timestamp and pulse ID offsets); can also simulate packets.  <a href="classDrp_1_1Bld.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldPVA.html">Drp::BldPVA</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BLD1_MULT_ADDR and ID:BLD1_MULT_PORT (ca) and ID:BLD_PAYLOAD (pva).  <a href="classDrp_1_1BldPVA.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldFactory.html">Drp::BldFactory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates the <a class="el" href="classDrp_1_1Bld.html" title="Receives a BLD multicast stream on a UDP socket and steps through the events packed in each packet (a...">Bld</a> receiver and the XTC names of one BLD source, either from a built-in table or from EPICS PVs (<a class="el" href="classDrp_1_1BldPVA.html" title="Looks up the multicast address, port and payload description of a BLD source through EPICS PVs: ID:BL...">BldPVA</a>).  <a href="classDrp_1_1BldFactory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Pgp.html">Drp::Pgp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1PgpReader.html" title="Reads DMA buffers from the PGP driver in bulk and assembles them into PGPEvents (one buffer per lane)...">PgpReader</a> for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to its <a class="el" href="classDrp_1_1PGPDrp.html" title="DrpBase for PGP-card detectors: reader() groups DMA events into batches that are processed by nworker...">PGPDrp</a>.  <a href="classDrp_1_1Pgp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldDrp.html">Drp::BldDrp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1DrpBase.html" title="Common machinery of a DRP process: TEB and MEB contributors, the TEB result receiver,...">DrpBase</a> of the BLD process; runs the BLD <a class="el" href="classDrp_1_1Pgp.html" title="PgpReader for the PGP-card DRP that forwards broken-event and event-counter-reset notifications to it...">Pgp</a> worker thread.  <a href="classDrp_1_1BldDrp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BldApp.html">Drp::BldApp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCollectionApp.html" title="Base of processes that join a DAQ collection: checks resource limits, connects a PUSH socket to tcp:/...">CollectionApp</a> of the BLD DRP process: owns the <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a>, a BLD detector and the <a class="el" href="classDrp_1_1BldDrp.html" title="DrpBase of the BLD process; runs the BLD Pgp worker thread.">BldDrp</a>.  <a href="classDrp_1_1BldApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -133,9 +143,12 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:acef51b06458ea543a45288d49ae83042" id="r_acef51b06458ea543a45288d49ae83042"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BldDetector_8hh.html#acef51b06458ea543a45288d49ae83042">MAX_BLD</a> = 16</td></tr>
+<tr class="memdesc:acef51b06458ea543a45288d49ae83042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of BLD sources in one process (16); sizes the per-source counters and metric exporters.  <br /></td></tr>
 <tr class="separator:acef51b06458ea543a45288d49ae83042"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>BLD DRP: receivers for beam-line data multicast streams (<a class="el" href="namespaceBld.html" title="Namespace of the HPS BLD packet decoding classes (HpsEvent, HpsEventIterator).">Bld</a>), their configuration from built-in tables or EPICS PVs (BldPVA, BldFactory), and the BLD Pgp reader, BldDrp and BldApp. </p>
+</div><h2 class="groupheader">Variable Documentation</h2>
 <a id="acef51b06458ea543a45288d49ae83042" name="acef51b06458ea543a45288d49ae83042"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acef51b06458ea543a45288d49ae83042">&#9670;&#160;</a></span>MAX_BLD</h2>
 
@@ -155,6 +168,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Maximum number of BLD sources in one process (16); sizes the per-source counters and metric exporters. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('psdaq_2drp_2Detector_8hh.html',''); in
   <div class="headertitle"><div class="title">Detector.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Detector, the abstract base of the DRP detector classes, and Factory, which creates detectors by type name.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="drp_8hh.html">drp.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DescData_8hh.html">xtcdata/xtc/DescData.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NamesId_8hh.html">xtcdata/xtc/NamesId.hh</a>&quot;</code><br />
@@ -111,8 +114,10 @@ $(document).ready(function(){initNavTree('psdaq_2drp_2Detector_8hh.html',''); in
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Detector.html">Drp::Detector</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and returning 0), event handlers, cube binning hooks and a buffer for building transition XTC.  <a href="classDrp_1_1Detector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Factory.html">Drp::Factory&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates objects derived from T by detector type name (<a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454" title="Detector type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.">Parameters::detType</a>).  <a href="classDrp_1_1Factory.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -121,19 +126,24 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp" id="r_namespaceDrp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html">Drp</a></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceDrp_1_1Gpu" id="r_namespaceDrp_1_1Gpu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp_1_1Gpu.html">Drp::Gpu</a></td></tr>
+<tr class="memdesc:namespaceDrp_1_1Gpu"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the GPU DRP code (psdaq/drpGpu); only <a class="el" href="classDrp_1_1Gpu_1_1Detector.html" title="Base of the GPU DRP detectors (Drp::Gpu::Detector).">Gpu::Detector</a> is forward-declared here. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:adb32fccc1569da27020763be98cef66e" id="r_adb32fccc1569da27020763be98cef66e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classXtcData_1_1NameIndex.html">XtcData::NameIndex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="psdaq_2drp_2Detector_8hh.html#adb32fccc1569da27020763be98cef66e">_noName</a></td></tr>
+<tr class="memdesc:adb32fccc1569da27020763be98cef66e"><td class="mdescLeft">&#160;</td><td class="mdescRight">File-static, default-constructed NameIndex (each including translation unit gets its own copy); no use was found in psdaq.  <br /></td></tr>
 <tr class="separator:adb32fccc1569da27020763be98cef66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Detector, the abstract base of the DRP detector classes, and Factory, which creates detectors by type name. </p>
+</div><h2 class="groupheader">Variable Documentation</h2>
 <a id="adb32fccc1569da27020763be98cef66e" name="adb32fccc1569da27020763be98cef66e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb32fccc1569da27020763be98cef66e">&#9670;&#160;</a></span>_noName</h2>
 
@@ -153,6 +163,8 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>File-static, default-constructed NameIndex (each including translation unit gets its own copy); no use was found in psdaq. </p>
 
 </div>
 </div>

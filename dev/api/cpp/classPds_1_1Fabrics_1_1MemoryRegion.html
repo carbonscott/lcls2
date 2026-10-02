@@ -97,28 +97,41 @@ $(document).ready(function(){initNavTree('classPds_1_1Fabrics_1_1MemoryRegion.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Owns a registered libfabric memory region (fid_mr) together with its start address and length.  
+ <a href="classPds_1_1Fabrics_1_1MemoryRegion.html#details">More...</a></p>
+
 <p><code>#include &lt;Endpoint.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a982f9e5a12cb827b72798ed6600d45dd" id="r_a982f9e5a12cb827b72798ed6600d45dd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a982f9e5a12cb827b72798ed6600d45dd">MemoryRegion</a> (struct fid_mr *mr, void *<a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a02b3b005b771f78fe94afa7a3a447b94">start</a>, size_t len)</td></tr>
+<tr class="memdesc:a982f9e5a12cb827b72798ed6600d45dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrap an already registered fid_mr that covers len bytes from start; the destructor closes mr.  <br /></td></tr>
 <tr class="separator:a982f9e5a12cb827b72798ed6600d45dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b707a404f9fdf302a732fec4ccb3681" id="r_a3b707a404f9fdf302a732fec4ccb3681"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a3b707a404f9fdf302a732fec4ccb3681">~MemoryRegion</a> ()</td></tr>
+<tr class="memdesc:a3b707a404f9fdf302a732fec4ccb3681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the fid_mr with fi_close() if it is non-null.  <br /></td></tr>
 <tr class="separator:a3b707a404f9fdf302a732fec4ccb3681"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37b88c6f5669ae37ee0c06f206176103" id="r_a37b88c6f5669ae37ee0c06f206176103"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a37b88c6f5669ae37ee0c06f206176103">rkey</a> () const</td></tr>
+<tr class="memdesc:a37b88c6f5669ae37ee0c06f206176103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the remote key of the region, from fi_mr_key().  <br /></td></tr>
 <tr class="separator:a37b88c6f5669ae37ee0c06f206176103"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7cdf18ff65ffc30da307fb59e565d9e" id="r_ae7cdf18ff65ffc30da307fb59e565d9e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#ae7cdf18ff65ffc30da307fb59e565d9e">desc</a> () const</td></tr>
+<tr class="memdesc:ae7cdf18ff65ffc30da307fb59e565d9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the local descriptor of the region, from fi_mr_desc().  <br /></td></tr>
 <tr class="separator:ae7cdf18ff65ffc30da307fb59e565d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02b3b005b771f78fe94afa7a3a447b94" id="r_a02b3b005b771f78fe94afa7a3a447b94"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a02b3b005b771f78fe94afa7a3a447b94">start</a> () const</td></tr>
+<tr class="memdesc:a02b3b005b771f78fe94afa7a3a447b94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start address given at construction.  <br /></td></tr>
 <tr class="separator:a02b3b005b771f78fe94afa7a3a447b94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba77e67b3a648b777bf90e2a7f70e627" id="r_aba77e67b3a648b777bf90e2a7f70e627"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#aba77e67b3a648b777bf90e2a7f70e627">length</a> () const</td></tr>
+<tr class="memdesc:aba77e67b3a648b777bf90e2a7f70e627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the length given at construction.  <br /></td></tr>
 <tr class="separator:aba77e67b3a648b777bf90e2a7f70e627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0422db7a67e056e03815aa5fd4d75e73" id="r_a0422db7a67e056e03815aa5fd4d75e73"><td class="memItemLeft" align="right" valign="top">struct fid_mr *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a0422db7a67e056e03815aa5fd4d75e73">fid</a> () const</td></tr>
+<tr class="memdesc:a0422db7a67e056e03815aa5fd4d75e73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the underlying fid_mr pointer.  <br /></td></tr>
 <tr class="separator:a0422db7a67e056e03815aa5fd4d75e73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7edce03fb35a8f4ac739e0a2481d4185" id="r_a7edce03fb35a8f4ac739e0a2481d4185"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a7edce03fb35a8f4ac739e0a2481d4185">contains</a> (const void *<a class="el" href="classPds_1_1Fabrics_1_1MemoryRegion.html#a02b3b005b771f78fe94afa7a3a447b94">start</a>, size_t len) const</td></tr>
+<tr class="memdesc:a7edce03fb35a8f4ac739e0a2481d4185"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the range [start, start + len) lies entirely inside this region.  <br /></td></tr>
 <tr class="separator:a7edce03fb35a8f4ac739e0a2481d4185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Owns a registered libfabric memory region (fid_mr) together with its start address and length. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a982f9e5a12cb827b72798ed6600d45dd" name="a982f9e5a12cb827b72798ed6600d45dd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a982f9e5a12cb827b72798ed6600d45dd">&#9670;&#160;</a></span>MemoryRegion()</h2>
 
@@ -151,6 +164,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Wrap an already registered fid_mr that covers len bytes from start; the destructor closes mr. </p>
+
 </div>
 </div>
 <a id="a3b707a404f9fdf302a732fec4ccb3681" name="a3b707a404f9fdf302a732fec4ccb3681"></a>
@@ -167,6 +182,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Close the fid_mr with fi_close() if it is non-null. </p>
 
 </div>
 </div>
@@ -197,6 +214,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return true if the range [start, start + len) lies entirely inside this region. </p>
+
 </div>
 </div>
 <a id="ae7cdf18ff65ffc30da307fb59e565d9e" name="ae7cdf18ff65ffc30da307fb59e565d9e"></a>
@@ -213,6 +232,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the local descriptor of the region, from fi_mr_desc(). </p>
 
 </div>
 </div>
@@ -231,6 +252,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the underlying fid_mr pointer. </p>
+
 </div>
 </div>
 <a id="aba77e67b3a648b777bf90e2a7f70e627" name="aba77e67b3a648b777bf90e2a7f70e627"></a>
@@ -247,6 +270,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the length given at construction. </p>
 
 </div>
 </div>
@@ -265,6 +290,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Return the remote key of the region, from fi_mr_key(). </p>
+
 </div>
 </div>
 <a id="a02b3b005b771f78fe94afa7a3a447b94" name="a02b3b005b771f78fe94afa7a3a447b94"></a>
@@ -281,6 +308,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the start address given at construction. </p>
 
 </div>
 </div>

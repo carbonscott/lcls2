@@ -98,47 +98,69 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1TebContributor.html'
 </div><!--header-->
 <div class="contents">
 
+<p>Builds batches of input datagrams in a <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> region and posts them over libfabric links to the TEBs.  
+ <a href="classPds_1_1Eb_1_1TebContributor.html#details">More...</a></p>
+
 <p><code>#include &lt;TebContributor.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:af28c0b9654ca2a82b82d5fe946515022" id="r_af28c0b9654ca2a82b82d5fe946515022"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#af28c0b9654ca2a82b82d5fe946515022">listU32_t</a> = std::list&lt; uint32_t &gt;</td></tr>
+<tr class="memdesc:af28c0b9654ca2a82b82d5fe946515022"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> of free transition buffer indices (one list per TEB link).  <br /></td></tr>
 <tr class="separator:af28c0b9654ca2a82b82d5fe946515022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:afc29f992f77b63db165800a705a673a2" id="r_afc29f992f77b63db165800a705a673a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#afc29f992f77b63db165800a705a673a2">TebContributor</a> (const <a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html">TebCtrbParams</a> &amp;, unsigned numBuffers)</td></tr>
+<tr class="memdesc:afc29f992f77b63db165800a705a673a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keep a reference to prms, create the libfabric client and size the pending queue for numBuffers entries.  <br /></td></tr>
 <tr class="separator:afc29f992f77b63db165800a705a673a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1adb79c7e7bea29918784a83750a248" id="r_ac1adb79c7e7bea29918784a83750a248"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ac1adb79c7e7bea29918784a83750a248">~TebContributor</a> ()</td></tr>
+<tr class="memdesc:ac1adb79c7e7bea29918784a83750a248"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a710e7309f747c107545786271278d6af" title="Call disconnect() (harmless if already done).">shutdown()</a>.  <br /></td></tr>
 <tr class="separator:ac1adb79c7e7bea29918784a83750a248"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab41cfbaf95646bf530f336da4bdeb8f9" id="r_ab41cfbaf95646bf530f336da4bdeb8f9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ab41cfbaf95646bf530f336da4bdeb8f9">resetCounters</a> ()</td></tr>
+<tr class="memdesc:ab41cfbaf95646bf530f336da4bdeb8f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the event and batch counters; returns 0.  <br /></td></tr>
 <tr class="separator:ab41cfbaf95646bf530f336da4bdeb8f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfe7d9dfe1bc356856b3655efe164a13" id="r_abfe7d9dfe1bc356856b3655efe164a13"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#abfe7d9dfe1bc356856b3655efe164a13">connect</a> (const std::shared_ptr&lt; <a class="el" href="classPds_1_1MetricExporter.html">MetricExporter</a> &gt; exporter)</td></tr>
+<tr class="memdesc:abfe7d9dfe1bc356856b3655efe164a13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register metrics with exporter (if non-null), size the link list from prms.addrs, count the builders in prms.builders and connect to all TEBs with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>.  <br /></td></tr>
 <tr class="separator:abfe7d9dfe1bc356856b3655efe164a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad003d5af3ba0e86dacd1cb3ff0c1dbd6" id="r_ad003d5af3ba0e86dacd1cb3ff0c1dbd6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ad003d5af3ba0e86dacd1cb3ff0c1dbd6">configure</a> ()</td></tr>
+<tr class="memdesc:ad003d5af3ba0e86dacd1cb3ff0c1dbd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Drain and restart the pending queue, reinitialize the <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> for maxInputSize and maxEntries (aborts if maxEntries does not divide the pending queue size evenly), exchange memory-region information with the TEBs via <a class="el" href="namespacePds_1_1Eb.html#a0e83d4cbb36cbf5ef7f2e122f6a30621" title="Call linksConfigure(links, region, regSize, regSize, name).">linksConfigure()</a> and refill each link's list of TEB_TR_BUFFERS transition buffer indices.  <br /></td></tr>
 <tr class="separator:ad003d5af3ba0e86dacd1cb3ff0c1dbd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52d9fc131b15097cfb9bfcd9c416757b" id="r_a52d9fc131b15097cfb9bfcd9c416757b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a52d9fc131b15097cfb9bfcd9c416757b">unconfigure</a> ()</td></tr>
+<tr class="memdesc:a52d9fc131b15097cfb9bfcd9c416757b"><td class="mdescLeft">&#160;</td><td class="mdescRight">If running, clear the running flag, join the receiver thread, and dump and shut down the <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> and the pending queue; otherwise does nothing.  <br /></td></tr>
 <tr class="separator:a52d9fc131b15097cfb9bfcd9c416757b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a334759514c042f1171dd91d6a81380b4" id="r_a334759514c042f1171dd91d6a81380b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a334759514c042f1171dd91d6a81380b4">disconnect</a> ()</td></tr>
+<tr class="memdesc:a334759514c042f1171dd91d6a81380b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a52d9fc131b15097cfb9bfcd9c416757b" title="If running, clear the running flag, join the receiver thread, and dump and shut down the BatchManager...">unconfigure()</a>, disconnect and drop all links, and set the ID to -1.  <br /></td></tr>
 <tr class="separator:a334759514c042f1171dd91d6a81380b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4925b065e57bee8cd9a1effc3bd7006" id="r_af4925b065e57bee8cd9a1effc3bd7006"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#af4925b065e57bee8cd9a1effc3bd7006">startup</a> (<a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html">EbCtrbInBase</a> &amp;)</td></tr>
+<tr class="memdesc:af4925b065e57bee8cd9a1effc3bd7006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the current batch, reset the counters of this object and of in, set the running flag and start a thread that runs in.receiver(*this, running flag).  <br /></td></tr>
 <tr class="separator:af4925b065e57bee8cd9a1effc3bd7006"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a710e7309f747c107545786271278d6af" id="r_a710e7309f747c107545786271278d6af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a710e7309f747c107545786271278d6af">shutdown</a> ()</td></tr>
+<tr class="memdesc:a710e7309f747c107545786271278d6af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a334759514c042f1171dd91d6a81380b4" title="Call unconfigure(), disconnect and drop all links, and set the ID to -1.">disconnect()</a> (harmless if already done).  <br /></td></tr>
 <tr class="separator:a710e7309f747c107545786271278d6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b7b582ddd336dfe262dfd855d7d2f2a" id="r_a4b7b582ddd336dfe262dfd855d7d2f2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a4b7b582ddd336dfe262dfd855d7d2f2a">process</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *datagram)</td></tr>
+<tr class="memdesc:a4b7b582ddd336dfe262dfd855d7d2f2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle one input datagram.  <br /></td></tr>
 <tr class="separator:a4b7b582ddd336dfe262dfd855d7d2f2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab28d3fc58a0727ba67c91f3280b1f979" id="r_ab28d3fc58a0727ba67c91f3280b1f979"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ab28d3fc58a0727ba67c91f3280b1f979">index</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *datagram) const</td></tr>
+<tr class="memdesc:ab28d3fc58a0727ba67c91f3280b1f979"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the buffer index of dgram: its byte offset from the start of the batch region divided by prms.maxInputSize.  <br /></td></tr>
 <tr class="separator:ab28d3fc58a0727ba67c91f3280b1f979"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fcc464598ce0cd24cc78bd4d20f2e78" id="r_a7fcc464598ce0cd24cc78bd4d20f2e78"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a7fcc464598ce0cd24cc78bd4d20f2e78">fetch</a> (unsigned <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ab28d3fc58a0727ba67c91f3280b1f979">index</a>) const</td></tr>
+<tr class="memdesc:a7fcc464598ce0cd24cc78bd4d20f2e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the buffer address for index, from <a class="el" href="classPds_1_1Eb_1_1BatchManager.html#abf299e35e0dd2a9350be03816486c5f9" title="Return the address of entry idx: the region start plus idx times the entry size.">BatchManager::fetch()</a>.  <br /></td></tr>
 <tr class="separator:a7fcc464598ce0cd24cc78bd4d20f2e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bf56440ff932c3464857c9451249e2b" id="r_a8bf56440ff932c3464857c9451249e2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a8bf56440ff932c3464857c9451249e2b">process</a> (unsigned <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#ab28d3fc58a0727ba67c91f3280b1f979">index</a>)</td></tr>
+<tr class="memdesc:a8bf56440ff932c3464857c9451249e2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a4b7b582ddd336dfe262dfd855d7d2f2a" title="Handle one input datagram.">process()</a> on the datagram at buffer index (found with <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a7fcc464598ce0cd24cc78bd4d20f2e78" title="Return the buffer address for index, from BatchManager::fetch().">fetch()</a>).  <br /></td></tr>
 <tr class="separator:a8bf56440ff932c3464857c9451249e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d378c616b6b08132730a7a39306e298" id="r_a5d378c616b6b08132730a7a39306e298"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a5d378c616b6b08132730a7a39306e298">timeout</a> ()</td></tr>
+<tr class="memdesc:a5d378c616b6b08132730a7a39306e298"><td class="mdescLeft">&#160;</td><td class="mdescRight">If at least BATCH_TIMEOUT (1 ms) has passed since the start time of the current batch, post the batch if one is open and return true; otherwise return false.  <br /></td></tr>
 <tr class="separator:a5d378c616b6b08132730a7a39306e298"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d72251f3e0d9866c49dbe2bce01b56e" id="r_a6d72251f3e0d9866c49dbe2bce01b56e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacePds_1_1Eb.html#a081780a153b63eb40d8809b26892bfb7">BatchQueue</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a6d72251f3e0d9866c49dbe2bce01b56e">pending</a> ()</td></tr>
+<tr class="memdesc:a6d72251f3e0d9866c49dbe2bce01b56e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the time-ordered queue of posted batches and bypassed datagrams.  <br /></td></tr>
 <tr class="separator:a6d72251f3e0d9866c49dbe2bce01b56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Builds batches of input datagrams in a <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> region and posts them over libfabric links to the TEBs. </p>
+<p>A receiver thread runs <a class="el" href="classPds_1_1Eb_1_1EbCtrbInBase.html#a12809db77f8efdd73ece1342d93327ad" title="Thread body: pin to prms.core[1], name the thread drp/TEBreceiver and repeatedly wait (100 ms each) f...">EbCtrbInBase::receiver()</a> for the results. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="af28c0b9654ca2a82b82d5fe946515022" name="af28c0b9654ca2a82b82d5fe946515022"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af28c0b9654ca2a82b82d5fe946515022">&#9670;&#160;</a></span>listU32_t</h2>
 
@@ -150,6 +172,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> of free transition buffer indices (one list per TEB link). </p>
 
 </div>
 </div>
@@ -180,6 +204,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Keep a reference to prms, create the libfabric client and size the pending queue for numBuffers entries. </p>
+
 </div>
 </div>
 <a id="ac1adb79c7e7bea29918784a83750a248" name="ac1adb79c7e7bea29918784a83750a248"></a>
@@ -196,6 +222,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a710e7309f747c107545786271278d6af" title="Call disconnect() (harmless if already done).">shutdown()</a>. </p>
 
 </div>
 </div>
@@ -215,6 +243,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Drain and restart the pending queue, reinitialize the <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> for maxInputSize and maxEntries (aborts if maxEntries does not divide the pending queue size evenly), exchange memory-region information with the TEBs via <a class="el" href="namespacePds_1_1Eb.html#a0e83d4cbb36cbf5ef7f2e122f6a30621" title="Call linksConfigure(links, region, regSize, regSize, name).">linksConfigure()</a> and refill each link's list of TEB_TR_BUFFERS transition buffer indices. </p>
+<p>Returns 0 or the <a class="el" href="namespacePds_1_1Eb.html#a0e83d4cbb36cbf5ef7f2e122f6a30621" title="Call linksConfigure(links, region, regSize, regSize, name).">linksConfigure()</a> error. </p>
+
 </div>
 </div>
 <a id="abfe7d9dfe1bc356856b3655efe164a13" name="abfe7d9dfe1bc356856b3655efe164a13"></a>
@@ -233,6 +264,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register metrics with exporter (if non-null), size the link list from prms.addrs, count the builders in prms.builders and connect to all TEBs with <a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73" title="Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link ...">linksConnect()</a>. </p>
+<p>Returns 0 or the first non-zero error code. </p>
+
 </div>
 </div>
 <a id="a334759514c042f1171dd91d6a81380b4" name="a334759514c042f1171dd91d6a81380b4"></a>
@@ -249,6 +283,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a52d9fc131b15097cfb9bfcd9c416757b" title="If running, clear the running flag, join the receiver thread, and dump and shut down the BatchManager...">unconfigure()</a>, disconnect and drop all links, and set the ID to -1. </p>
 
 </div>
 </div>
@@ -276,6 +312,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the buffer address for index, from <a class="el" href="classPds_1_1Eb_1_1BatchManager.html#abf299e35e0dd2a9350be03816486c5f9" title="Return the address of entry idx: the region start plus idx times the entry size.">BatchManager::fetch()</a>. </p>
+
 </div>
 </div>
 <a id="ab28d3fc58a0727ba67c91f3280b1f979" name="ab28d3fc58a0727ba67c91f3280b1f979"></a>
@@ -302,6 +340,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the buffer index of dgram: its byte offset from the start of the batch region divided by prms.maxInputSize. </p>
+
 </div>
 </div>
 <a id="a6d72251f3e0d9866c49dbe2bce01b56e" name="a6d72251f3e0d9866c49dbe2bce01b56e"></a>
@@ -327,6 +367,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the time-ordered queue of posted batches and bypassed datagrams. </p>
+
 </div>
 </div>
 <a id="a4b7b582ddd336dfe262dfd855d7d2f2a" name="a4b7b582ddd336dfe262dfd855d7d2f2a"></a>
@@ -344,6 +386,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Handle one input datagram. </p>
+<p>If its readout groups include bit prms.partition (the common group, per the code comment), it is appended to the open batch; the batch is posted when it has expired or the datagram is a transition other than SlowUpdate, and non-event datagrams of contractor groups are also sent to the TEBs that did not get the batch. Otherwise the open batch is posted and the datagram is marked EOL and pushed straight onto the pending queue. Aborts if the pending queue overflows. Must not be called concurrently with <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a5d378c616b6b08132730a7a39306e298" title="If at least BATCH_TIMEOUT (1 ms) has passed since the start time of the current batch,...">timeout()</a>. </p>
 
 </div>
 </div>
@@ -371,6 +416,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a4b7b582ddd336dfe262dfd855d7d2f2a" title="Handle one input datagram.">process()</a> on the datagram at buffer index (found with <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a7fcc464598ce0cd24cc78bd4d20f2e78" title="Return the buffer address for index, from BatchManager::fetch().">fetch()</a>). </p>
+
 </div>
 </div>
 <a id="ab41cfbaf95646bf530f336da4bdeb8f9" name="ab41cfbaf95646bf530f336da4bdeb8f9"></a>
@@ -388,6 +435,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reset the event and batch counters; returns 0. </p>
+
 </div>
 </div>
 <a id="a710e7309f747c107545786271278d6af" name="a710e7309f747c107545786271278d6af"></a>
@@ -404,6 +453,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Call <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a334759514c042f1171dd91d6a81380b4" title="Call unconfigure(), disconnect and drop all links, and set the ID to -1.">disconnect()</a> (harmless if already done). </p>
 
 </div>
 </div>
@@ -423,6 +474,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Clear the current batch, reset the counters of this object and of in, set the running flag and start a thread that runs in.receiver(*this, running flag). </p>
+
 </div>
 </div>
 <a id="a5d378c616b6b08132730a7a39306e298" name="a5d378c616b6b08132730a7a39306e298"></a>
@@ -440,6 +493,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>If at least BATCH_TIMEOUT (1 ms) has passed since the start time of the current batch, post the batch if one is open and return true; otherwise return false. </p>
+<p>Must not be called concurrently with <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a4b7b582ddd336dfe262dfd855d7d2f2a" title="Handle one input datagram.">process()</a>. </p>
+
 </div>
 </div>
 <a id="a52d9fc131b15097cfb9bfcd9c416757b" name="a52d9fc131b15097cfb9bfcd9c416757b"></a>
@@ -456,6 +512,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>If running, clear the running flag, join the receiver thread, and dump and shut down the <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> and the pending queue; otherwise does nothing. </p>
 
 </div>
 </div>

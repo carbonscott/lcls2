@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('Digitizer_8hh.html',''); initResizable
   <div class="headertitle"><div class="title">Digitizer.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Digitizer, the DRP detector class for the high-speed digitizer, configured through the Python module psdaq.configdb.hsd_config.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="drp_8hh.html">drp.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="psdaq_2drp_2Detector_8hh.html">Detector.hh</a>&quot;</code><br />
@@ -108,6 +111,7 @@ $(document).ready(function(){initNavTree('Digitizer_8hh.html',''); initResizable
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Digitizer.html">Drp::Digitizer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> for the high-speed digitizer (detType hsd per drp.cc), configured through the Python module psdaq.configdb.hsd_config with the EPICS prefix from the hsd_epics_prefix kwarg.  <a href="classDrp_1_1Digitizer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -116,7 +120,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceDrp"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class services detectors whose event data is formatted from the AxiStreamBatcherEventBuilder firmware module This class depends upon the existence of a python module "psdaq.configdb.&lt;detType&gt;_config.py", which contains the following functions: &lt;detType&gt;_init (str) - returns a handle (PyObject) for interacting with the device configuration &lt;detType&gt;_connect (handle) - returns a dictionary with "paddr" element for Xpm link ID. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Digitizer, the DRP detector class for the high-speed digitizer, configured through the Python module psdaq.configdb.hsd_config. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

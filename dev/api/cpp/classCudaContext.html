@@ -106,6 +106,7 @@ $(document).ready(function(){initNavTree('classCudaContext.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a952918bddb4856965a5edbf9218e81ad" id="r_a952918bddb4856965a5edbf9218e81ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a952918bddb4856965a5edbf9218e81ad">CudaContext</a> ()</td></tr>
+<tr class="memdesc:a952918bddb4856965a5edbf9218e81ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the CUDA driver API (cuInit()), aborting on failure.  <br /></td></tr>
 <tr class="separator:a952918bddb4856965a5edbf9218e81ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6617f96441e3fa811844cd5d758b39ad" id="r_a6617f96441e3fa811844cd5d758b39ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad">init</a> (int <a class="el" href="classCudaContext.html#af8eeeafcd203bfe0c8d3e43b1ef5d76b">device</a>=-1, bool quiet=false)</td></tr>
 <tr class="memdesc:a6617f96441e3fa811844cd5d758b39ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a CUDA context, selects a device and ensures that stream memory ops are available.  <br /></td></tr>
@@ -114,19 +115,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a28f648244b8289234ebcad2dc43cf6bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dumps a list of devices to stdout.  <br /></td></tr>
 <tr class="separator:a28f648244b8289234ebcad2dc43cf6bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e4ed6609c99ebf2b34549a497bdb0cd" id="r_a4e4ed6609c99ebf2b34549a497bdb0cd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a4e4ed6609c99ebf2b34549a497bdb0cd">getAttribute</a> (CUdevice_attribute attr)</td></tr>
+<tr class="memdesc:a4e4ed6609c99ebf2b34549a497bdb0cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value of device attribute attr for the selected device, or 0 if the query fails.  <br /></td></tr>
 <tr class="separator:a4e4ed6609c99ebf2b34549a497bdb0cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8eeeafcd203bfe0c8d3e43b1ef5d76b" id="r_af8eeeafcd203bfe0c8d3e43b1ef5d76b"><td class="memItemLeft" align="right" valign="top">CUdevice&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#af8eeeafcd203bfe0c8d3e43b1ef5d76b">device</a> () const</td></tr>
+<tr class="memdesc:af8eeeafcd203bfe0c8d3e43b1ef5d76b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device handle selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>.  <br /></td></tr>
 <tr class="separator:af8eeeafcd203bfe0c8d3e43b1ef5d76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a92fba8f5b1d14ac19e51d04441bde6" id="r_a3a92fba8f5b1d14ac19e51d04441bde6"><td class="memItemLeft" align="right" valign="top">CUcontext&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a3a92fba8f5b1d14ac19e51d04441bde6">context</a> () const</td></tr>
+<tr class="memdesc:a3a92fba8f5b1d14ac19e51d04441bde6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the context created by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>.  <br /></td></tr>
 <tr class="separator:a3a92fba8f5b1d14ac19e51d04441bde6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a979e27c1f58a4123a2d965bdc614f56c" id="r_a979e27c1f58a4123a2d965bdc614f56c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a979e27c1f58a4123a2d965bdc614f56c">deviceNo</a> () const</td></tr>
+<tr class="memdesc:a979e27c1f58a4123a2d965bdc614f56c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the device number selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>.  <br /></td></tr>
 <tr class="separator:a979e27c1f58a4123a2d965bdc614f56c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a23e610ee503f94149c53a264f75d2c59" id="r_a23e610ee503f94149c53a264f75d2c59"><td class="memItemLeft" align="right" valign="top">CUcontext&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a23e610ee503f94149c53a264f75d2c59">context_</a></td></tr>
+<tr class="memdesc:a23e610ee503f94149c53a264f75d2c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Context created by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>.  <br /></td></tr>
 <tr class="separator:a23e610ee503f94149c53a264f75d2c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19cec8821c71aaef8ef9862899f1b84b" id="r_a19cec8821c71aaef8ef9862899f1b84b"><td class="memItemLeft" align="right" valign="top">CUdevice&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCudaContext.html#a19cec8821c71aaef8ef9862899f1b84b">device_</a></td></tr>
+<tr class="memdesc:a19cec8821c71aaef8ef9862899f1b84b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device handle selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>.  <br /></td></tr>
 <tr class="separator:a19cec8821c71aaef8ef9862899f1b84b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -155,6 +162,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Initialize the CUDA driver API (cuInit()), aborting on failure. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -181,6 +190,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the context created by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>. </p>
+
 </div>
 </div>
 <a id="af8eeeafcd203bfe0c8d3e43b1ef5d76b" name="af8eeeafcd203bfe0c8d3e43b1ef5d76b"></a>
@@ -205,6 +216,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the device handle selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>. </p>
 
 </div>
 </div>
@@ -231,6 +244,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the device number selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>. </p>
+
 </div>
 </div>
 <a id="a4e4ed6609c99ebf2b34549a497bdb0cd" name="a4e4ed6609c99ebf2b34549a497bdb0cd"></a>
@@ -248,6 +263,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the value of device attribute attr for the selected device, or 0 if the query fails. </p>
 
 </div>
 </div>
@@ -321,6 +338,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Context created by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>. </p>
+
 </div>
 </div>
 <a id="a19cec8821c71aaef8ef9862899f1b84b" name="a19cec8821c71aaef8ef9862899f1b84b"></a>
@@ -334,6 +353,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Device handle selected by <a class="el" href="classCudaContext.html#a6617f96441e3fa811844cd5d758b39ad" title="Creates a CUDA context, selects a device and ensures that stream memory ops are available.">init()</a>. </p>
 
 </div>
 </div>

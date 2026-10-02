@@ -99,28 +99,39 @@ $(document).ready(function(){initNavTree('classDrp_1_1EvtBatcherHeader.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Packed header at the start of an AxiStream batcher event: two 4-bit fields (version, width code) and an 8-bit sequence count.  
+ <a href="classDrp_1_1EvtBatcherHeader.html#details">More...</a></p>
+
 <p><code>#include &lt;EventBatcher.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8bf30324dec739dec180714cb137101a" id="r_a8bf30324dec739dec180714cb137101a"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html#a8bf30324dec739dec180714cb137101a">next</a> () const</td></tr>
+<tr class="memdesc:a8bf30324dec739dec180714cb137101a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the address one line (lineWidth(width) bytes) after this header, where the first subframe starts.  <br /></td></tr>
 <tr class="separator:a8bf30324dec739dec180714cb137101a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a68e04bbdc1caba0db3e216d2564f0a37" id="r_a68e04bbdc1caba0db3e216d2564f0a37"><td class="memItemLeft" align="right" valign="top">static unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html#a68e04bbdc1caba0db3e216d2564f0a37">lineWidth</a> (unsigned w)</td></tr>
+<tr class="memdesc:a68e04bbdc1caba0db3e216d2564f0a37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the line width in bytes for width code w: 2 shifted left by w.  <br /></td></tr>
 <tr class="separator:a68e04bbdc1caba0db3e216d2564f0a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ae80207bc39badad1c80a83cf86366f36" id="r_ae80207bc39badad1c80a83cf86366f36"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html#ae80207bc39badad1c80a83cf86366f36">version</a>:4</td></tr>
+<tr class="memdesc:ae80207bc39badad1c80a83cf86366f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">4-bit version field; not read by the code in this header.  <br /></td></tr>
 <tr class="separator:ae80207bc39badad1c80a83cf86366f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1ac960c760766c701cb7b5e4b7764a7" id="r_ae1ac960c760766c701cb7b5e4b7764a7"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html#ae1ac960c760766c701cb7b5e4b7764a7">width</a>:4</td></tr>
+<tr class="memdesc:ae1ac960c760766c701cb7b5e4b7764a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">4-bit width code; lineWidth(width) is the line size used by <a class="el" href="classDrp_1_1EvtBatcherHeader.html#a8bf30324dec739dec180714cb137101a" title="Return the address one line (lineWidth(width) bytes) after this header, where the first subframe star...">next()</a> and <a class="el" href="classDrp_1_1EvtBatcherIterator.html" title="Iterates backwards over the subframe tails of a batcher event, from the end of the buffer to the firs...">EvtBatcherIterator</a>.  <br /></td></tr>
 <tr class="separator:ae1ac960c760766c701cb7b5e4b7764a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48f8dc0a8247cbe5808aa0a0cc46af01" id="r_a48f8dc0a8247cbe5808aa0a0cc46af01"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherHeader.html#a48f8dc0a8247cbe5808aa0a0cc46af01">sequence_count</a></td></tr>
+<tr class="memdesc:a48f8dc0a8247cbe5808aa0a0cc46af01"><td class="mdescLeft">&#160;</td><td class="mdescRight">8-bit sequence count; not read by the code in this header.  <br /></td></tr>
 <tr class="separator:a48f8dc0a8247cbe5808aa0a0cc46af01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packed header at the start of an AxiStream batcher event: two 4-bit fields (version, width code) and an 8-bit sequence count. </p>
+<p>It occupies one line of lineWidth(width) bytes. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a68e04bbdc1caba0db3e216d2564f0a37" name="a68e04bbdc1caba0db3e216d2564f0a37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68e04bbdc1caba0db3e216d2564f0a37">&#9670;&#160;</a></span>lineWidth()</h2>
 
@@ -144,6 +155,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the line width in bytes for width code w: 2 shifted left by w. </p>
 
 </div>
 </div>
@@ -170,6 +183,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the address one line (lineWidth(width) bytes) after this header, where the first subframe starts. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -185,6 +200,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>8-bit sequence count; not read by the code in this header. </p>
+
 </div>
 </div>
 <a id="ae80207bc39badad1c80a83cf86366f36" name="ae80207bc39badad1c80a83cf86366f36"></a>
@@ -199,6 +216,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>4-bit version field; not read by the code in this header. </p>
+
 </div>
 </div>
 <a id="ae1ac960c760766c701cb7b5e4b7764a7" name="ae1ac960c760766c701cb7b5e4b7764a7"></a>
@@ -212,6 +231,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>4-bit width code; lineWidth(width) is the line size used by <a class="el" href="classDrp_1_1EvtBatcherHeader.html#a8bf30324dec739dec180714cb137101a" title="Return the address one line (lineWidth(width) bytes) after this header, where the first subframe star...">next()</a> and <a class="el" href="classDrp_1_1EvtBatcherIterator.html" title="Iterates backwards over the subframe tails of a batcher event, from the end of the buffer to the firs...">EvtBatcherIterator</a>. </p>
 
 </div>
 </div>

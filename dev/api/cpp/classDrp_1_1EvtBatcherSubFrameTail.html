@@ -98,17 +98,24 @@ $(document).ready(function(){initNavTree('classDrp_1_1EvtBatcherSubFrameTail.htm
 </div><!--header-->
 <div class="contents">
 
+<p>Packed tail that follows each subframe: payload size, tdest, first and last tuser bytes and a width code.  
+ <a href="classDrp_1_1EvtBatcherSubFrameTail.html#details">More...</a></p>
+
 <p><code>#include &lt;EventBatcher.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4a97e0c2ca5fb085146fe3588b3fef31" id="r_a4a97e0c2ca5fb085146fe3588b3fef31"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html#a4a97e0c2ca5fb085146fe3588b3fef31">data</a> ()</td></tr>
+<tr class="memdesc:a4a97e0c2ca5fb085146fe3588b3fef31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the start of the subframe data: this tail address minus the size rounded up to a whole line (a size of 0 is logged as corrupt).  <br /></td></tr>
 <tr class="separator:a4a97e0c2ca5fb085146fe3588b3fef31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaea6df1277c3e4ca741738b26c239fb3" id="r_aaea6df1277c3e4ca741738b26c239fb3"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html#aaea6df1277c3e4ca741738b26c239fb3">width</a> ()</td></tr>
+<tr class="memdesc:aaea6df1277c3e4ca741738b26c239fb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the width code of the subframe.  <br /></td></tr>
 <tr class="separator:aaea6df1277c3e4ca741738b26c239fb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9b8d86187cf1b6ba3997345abe1aa2d" id="r_ad9b8d86187cf1b6ba3997345abe1aa2d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html#ad9b8d86187cf1b6ba3997345abe1aa2d">tdest</a> ()</td></tr>
+<tr class="memdesc:ad9b8d86187cf1b6ba3997345abe1aa2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the tdest of the subframe; <a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> uses it as the subframe index.  <br /></td></tr>
 <tr class="separator:ad9b8d86187cf1b6ba3997345abe1aa2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81085dac6d4d8d6005ddd154eb371f11" id="r_a81085dac6d4d8d6005ddd154eb371f11"><td class="memItemLeft" align="right" valign="top">unsigned &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html#a81085dac6d4d8d6005ddd154eb371f11">size</a> ()</td></tr>
+<tr class="memdesc:a81085dac6d4d8d6005ddd154eb371f11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the payload size in bytes.  <br /></td></tr>
 <tr class="separator:a81085dac6d4d8d6005ddd154eb371f11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
@@ -116,7 +123,10 @@ Friends</h2></td></tr>
 <tr class="memitem:a26f7227b9eeb82a9d754a8c97a18baa8" id="r_a26f7227b9eeb82a9d754a8c97a18baa8"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1EvtBatcherSubFrameTail.html#a26f7227b9eeb82a9d754a8c97a18baa8">EvtBatcherIterator</a></td></tr>
 <tr class="separator:a26f7227b9eeb82a9d754a8c97a18baa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packed tail that follows each subframe: payload size, tdest, first and last tuser bytes and a width code. </p>
+<p>The subframe data precedes the tail, padded to a whole line. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4a97e0c2ca5fb085146fe3588b3fef31" name="a4a97e0c2ca5fb085146fe3588b3fef31"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4a97e0c2ca5fb085146fe3588b3fef31">&#9670;&#160;</a></span>data()</h2>
 
@@ -139,6 +149,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the start of the subframe data: this tail address minus the size rounded up to a whole line (a size of 0 is logged as corrupt). </p>
 
 </div>
 </div>
@@ -165,6 +177,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the payload size in bytes. </p>
+
 </div>
 </div>
 <a id="ad9b8d86187cf1b6ba3997345abe1aa2d" name="ad9b8d86187cf1b6ba3997345abe1aa2d"></a>
@@ -190,6 +204,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the tdest of the subframe; <a class="el" href="classDrp_1_1BEBDetector.html" title="Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware ...">BEBDetector</a> uses it as the subframe index. </p>
+
 </div>
 </div>
 <a id="aaea6df1277c3e4ca741738b26c239fb3" name="aaea6df1277c3e4ca741738b26c239fb3"></a>
@@ -214,6 +230,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the width code of the subframe. </p>
 
 </div>
 </div>

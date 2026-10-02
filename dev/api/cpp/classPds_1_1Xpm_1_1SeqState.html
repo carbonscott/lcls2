@@ -98,25 +98,35 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1SeqState.html','');
 </div><!--header-->
 <div class="contents">
 
+<p>State registers of one sequence engine, printed by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>.  
+ <a href="classPds_1_1Xpm_1_1SeqState.html#details">More...</a></p>
+
 <p><code>#include &lt;SeqState.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a177311043ee8a441abd953bf26dafc92" id="r_a177311043ee8a441abd953bf26dafc92"><td class="memItemLeft" align="right" valign="top">const uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqState.html#a177311043ee8a441abd953bf26dafc92">condCount</a> () const</td></tr>
+<tr class="memdesc:a177311043ee8a441abd953bf26dafc92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the value of condcnt converted to a pointer (the register value itself, not the address of the register).  <br /></td></tr>
 <tr class="separator:a177311043ee8a441abd953bf26dafc92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3de4248094c617e506893fd5c1e1fa2f" id="r_a3de4248094c617e506893fd5c1e1fa2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqState.html#a3de4248094c617e506893fd5c1e1fa2f">countRequests</a></td></tr>
+<tr class="memdesc:a3de4248094c617e506893fd5c1e1fa2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register printed as Req by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>.  <br /></td></tr>
 <tr class="separator:a3de4248094c617e506893fd5c1e1fa2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abba5ec5b26bf42bf5f6f23ead7ea063d" id="r_abba5ec5b26bf42bf5f6f23ead7ea063d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqState.html#abba5ec5b26bf42bf5f6f23ead7ea063d">countInvalid</a></td></tr>
+<tr class="memdesc:abba5ec5b26bf42bf5f6f23ead7ea063d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register printed as Inv by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>.  <br /></td></tr>
 <tr class="separator:abba5ec5b26bf42bf5f6f23ead7ea063d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65a339cedb8956d642d91e3c952a562d" id="r_a65a339cedb8956d642d91e3c952a562d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqState.html#a65a339cedb8956d642d91e3c952a562d">address</a></td></tr>
+<tr class="memdesc:a65a339cedb8956d642d91e3c952a562d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register printed as Addr by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>.  <br /></td></tr>
 <tr class="separator:a65a339cedb8956d642d91e3c952a562d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c0ca46e991a3365827813e22e8a783b" id="r_a2c0ca46e991a3365827813e22e8a783b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPds_1_1Cphw_1_1Reg.html">Cphw::Reg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1SeqState.html#a2c0ca46e991a3365827813e22e8a783b">condcnt</a></td></tr>
+<tr class="memdesc:a2c0ca46e991a3365827813e22e8a783b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register printed as Cond by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>.  <br /></td></tr>
 <tr class="separator:a2c0ca46e991a3365827813e22e8a783b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>State registers of one sequence engine, printed by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a177311043ee8a441abd953bf26dafc92" name="a177311043ee8a441abd953bf26dafc92"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a177311043ee8a441abd953bf26dafc92">&#9670;&#160;</a></span>condCount()</h2>
 
@@ -140,6 +150,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the value of condcnt converted to a pointer (the register value itself, not the address of the register). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -155,6 +167,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register printed as Addr by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>. </p>
+
 </div>
 </div>
 <a id="a2c0ca46e991a3365827813e22e8a783b" name="a2c0ca46e991a3365827813e22e8a783b"></a>
@@ -168,6 +182,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register printed as Cond by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>. </p>
 
 </div>
 </div>
@@ -183,6 +199,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Register printed as Inv by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>. </p>
+
 </div>
 </div>
 <a id="a3de4248094c617e506893fd5c1e1fa2f" name="a3de4248094c617e506893fd5c1e1fa2f"></a>
@@ -196,6 +214,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register printed as Req by <a class="el" href="classPds_1_1Xpm_1_1XpmSequenceEngine.html#a5a245ba3b5309bfc9eb2f709d882dd3e" title="Print the request, invalid, address and condition registers of this engine and the RAM words of every...">XpmSequenceEngine::dump()</a>. </p>
 
 </div>
 </div>

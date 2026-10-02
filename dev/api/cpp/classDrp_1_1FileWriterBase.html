@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1FileWriterBase.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementations in FileWriter.cc raise while a write() call is in progress.  
+ <a href="classDrp_1_1FileWriterBase.html#details">More...</a></p>
+
 <p><code>#include &lt;FileWriterBase.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classDrp_1_1BufferedFileWriter.html">Drp::BufferedFileWriter</a>, <a class="el" href="classDrp_1_1BufferedFileWriterMT.html">Drp::BufferedFileWriterMT</a>, <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html">Drp::BufferedMultiFileWriterMT</a>, <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html">Drp::Gpu::FileWriter</a>, and <a class="el" href="classDrp_1_1SmdWriterBase.html">Drp::SmdWriterBase</a>.</p>
@@ -105,16 +108,22 @@ $(document).ready(function(){initNavTree('classDrp_1_1FileWriterBase.html',''); 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:a602de45aa17bf1649732ed5a15afc88e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with the writing counter at 0.  <br /></td></tr>
 <tr class="separator:a602de45aa17bf1649732ed5a15afc88e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05e5eacde9fb730bf4abc2b362c402e" id="r_ac05e5eacde9fb730bf4abc2b362c402e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac05e5eacde9fb730bf4abc2b362c402e">~FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:ac05e5eacde9fb730bf4abc2b362c402e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac05e5eacde9fb730bf4abc2b362c402e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac82a7a44cc34200010e85f553d89f8db" id="r_ac82a7a44cc34200010e85f553d89f8db"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac82a7a44cc34200010e85f553d89f8db">open</a> (const std::string &amp;fileName)=0</td></tr>
+<tr class="memdesc:ac82a7a44cc34200010e85f553d89f8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: open fileName for writing; the implementations in FileWriter.cc return 0 on success.  <br /></td></tr>
 <tr class="separator:ac82a7a44cc34200010e85f553d89f8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a318270a36a20e28499d517847a5499fa" id="r_a318270a36a20e28499d517847a5499fa"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a318270a36a20e28499d517847a5499fa">close</a> ()=0</td></tr>
+<tr class="memdesc:a318270a36a20e28499d517847a5499fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: flush buffered data and close the current file.  <br /></td></tr>
 <tr class="separator:a318270a36a20e28499d517847a5499fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3cb61987edf71770e9c710e4c70f0e1" id="r_af3cb61987edf71770e9c710e4c70f0e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#af3cb61987edf71770e9c710e4c70f0e1">writeEvent</a> (const void *data, size_t size, <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> ts)=0</td></tr>
+<tr class="memdesc:af3cb61987edf71770e9c710e4c70f0e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: write size bytes from data; the implementations use the seconds of ts to age their batches.  <br /></td></tr>
 <tr class="separator:af3cb61987edf71770e9c710e4c70f0e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dced26d62dabc46b112f3821e54848" id="r_ab3dced26d62dabc46b112f3821e54848"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848">writing</a> () const</td></tr>
+<tr class="memdesc:ab3dced26d62dabc46b112f3821e54848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the writing counter (non-zero while an implementation is inside a write).  <br /></td></tr>
 <tr class="separator:ab3dced26d62dabc46b112f3821e54848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -122,7 +131,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a015874f88c3a5c3cad1c96415375746d" id="r_a015874f88c3a5c3cad1c96415375746d"><td class="memItemLeft" align="right" valign="top">volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a015874f88c3a5c3cad1c96415375746d">m_writing</a></td></tr>
 <tr class="separator:a015874f88c3a5c3cad1c96415375746d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementations in FileWriter.cc raise while a write() call is in progress. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a602de45aa17bf1649732ed5a15afc88e" name="a602de45aa17bf1649732ed5a15afc88e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a602de45aa17bf1649732ed5a15afc88e">&#9670;&#160;</a></span>FileWriterBase()</h2>
 
@@ -145,6 +156,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Start with the writing counter at 0. </p>
 
 </div>
 </div>
@@ -171,6 +184,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Does nothing; empty body. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -196,6 +211,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: flush buffered data and close the current file. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1BufferedFileWriter.html#a107b9f1ecec5750ee62d62b8aff2d308">Drp::BufferedFileWriter</a>, <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a888158fbf741ee9452868ec2b0106707">Drp::BufferedFileWriterMT</a>, <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a8bea5f4dc0fdfc5ad8e3bdd910d60b65">Drp::BufferedMultiFileWriterMT</a>, <a class="el" href="classDrp_1_1SmdWriter.html#aea92b982364eb34e09c123eaba54d846">Drp::SmdWriter</a>, and <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#a185dabab18fc2531ef5d53e443dbc321">Drp::Gpu::FileWriter</a>.</p>
 
@@ -224,6 +241,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Pure virtual: open fileName for writing; the implementations in FileWriter.cc return 0 on success. </p>
 
 <p>Implemented in <a class="el" href="classDrp_1_1BufferedFileWriter.html#ac4d6378c29d52dec4acf003f12c85927">Drp::BufferedFileWriter</a>, <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#ab64fc20b593c34623ad6a2d6715a62f2">Drp::BufferedFileWriterMT</a>, <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#a3934de02ad46317eaf696e61abc47f0a">Drp::BufferedMultiFileWriterMT</a>, <a class="el" href="classDrp_1_1SmdWriter.html#a10dbed1f61d8ec6c6f291cc4d02473c1">Drp::SmdWriter</a>, and <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#a863d55159bcb04c92e9208107a1462c3">Drp::Gpu::FileWriter</a>.</p>
 
@@ -269,6 +288,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: write size bytes from data; the implementations use the seconds of ts to age their batches. </p>
+
 <p>Implemented in <a class="el" href="classDrp_1_1BufferedFileWriter.html#af3b37ccfd3fe8f6e665f1ca105ea4080">Drp::BufferedFileWriter</a>, <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13">Drp::BufferedFileWriterMT</a>, <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#abb1137cd6e71905c27303c3161cc4514">Drp::BufferedMultiFileWriterMT</a>, <a class="el" href="classDrp_1_1SmdWriter.html#a1213c8466b3aa5b969cd77fdf39eaadf">Drp::SmdWriter</a>, <a class="el" href="classDrp_1_1Gpu_1_1FileWriter.html#af6b418c5ec2d52eae0b58b3a60e0d29b">Drp::Gpu::FileWriter</a>, and <a class="el" href="classDrp_1_1Gpu_1_1FileWriterAsync.html#ad86b128d8d9a430900c17b27d8b0defa">Drp::Gpu::FileWriterAsync</a>.</p>
 
 </div>
@@ -295,6 +316,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the writing counter (non-zero while an implementation is inside a write). </p>
 
 <p>Reimplemented in <a class="el" href="classDrp_1_1BufferedMultiFileWriterMT.html#ab3dced26d62dabc46b112f3821e54848">Drp::BufferedMultiFileWriterMT</a>.</p>
 

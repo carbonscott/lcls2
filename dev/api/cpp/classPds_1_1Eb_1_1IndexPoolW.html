@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1IndexPoolW.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>Typed index pool over <code>IndexPoolBaseW&lt;L&gt;</code>, so <a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#a0e50f7c32f26b4e6edec0fc6079a9157" title="Return IndexPoolBaseW&lt;L&gt;::allocate(key), the waiting allocation, cast to T*.">allocate()</a> waits for busy slots.  
+ <a href="classPds_1_1Eb_1_1IndexPoolW.html#details">More...</a></p>
+
 <p><code>#include &lt;IndexPool.hh&gt;</code></p>
 
 <p>Inherits Pds::Eb::IndexPool&lt; T, IPB &gt;.</p>
@@ -104,13 +107,19 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1IndexPoolW.html','')
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a353253107f45cda008bb9d5c8ce82fd5" id="r_a353253107f45cda008bb9d5c8ce82fd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#a353253107f45cda008bb9d5c8ce82fd5">IndexPoolW</a> (unsigned <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#a9f82ccea429abe6b52ee21d898f32f03">numberofObjects</a>, size_t <a class="el" href="classPds_1_1Eb_1_1IndexPoolBase.html#aa7d105e9cec2d57faa8c2a4591864445">size</a>=0)</td></tr>
+<tr class="memdesc:a353253107f45cda008bb9d5c8ce82fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the base pool with numberofObjects slots of sizeof(T) + size bytes.  <br /></td></tr>
 <tr class="separator:a353253107f45cda008bb9d5c8ce82fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1f947c7c33cb6a07345673771ff67f3" id="r_aa1f947c7c33cb6a07345673771ff67f3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#aa1f947c7c33cb6a07345673771ff67f3">~IndexPoolW</a> ()</td></tr>
+<tr class="memdesc:aa1f947c7c33cb6a07345673771ff67f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:aa1f947c7c33cb6a07345673771ff67f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e50f7c32f26b4e6edec0fc6079a9157" id="r_a0e50f7c32f26b4e6edec0fc6079a9157"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#a0e50f7c32f26b4e6edec0fc6079a9157">allocate</a> (unsigned key)</td></tr>
+<tr class="memdesc:a0e50f7c32f26b4e6edec0fc6079a9157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <code>IndexPoolBaseW&lt;L&gt;::allocate(key)</code>, the waiting allocation, cast to T*.  <br /></td></tr>
 <tr class="separator:a0e50f7c32f26b4e6edec0fc6079a9157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class T, class L = std::mutex&gt;<br />
+class Pds::Eb::IndexPoolW&lt; T, L &gt;</div><p>Typed index pool over <code>IndexPoolBaseW&lt;L&gt;</code>, so <a class="el" href="classPds_1_1Eb_1_1IndexPoolW.html#a0e50f7c32f26b4e6edec0fc6079a9157" title="Return IndexPoolBaseW&lt;L&gt;::allocate(key), the waiting allocation, cast to T*.">allocate()</a> waits for busy slots. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a353253107f45cda008bb9d5c8ce82fd5" name="a353253107f45cda008bb9d5c8ce82fd5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a353253107f45cda008bb9d5c8ce82fd5">&#9670;&#160;</a></span>IndexPoolW()</h2>
 
@@ -147,6 +156,8 @@ template&lt;class T , class L  = std::mutex&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Construct the base pool with numberofObjects slots of sizeof(T) + size bytes. </p>
+
 </div>
 </div>
 <a id="aa1f947c7c33cb6a07345673771ff67f3" name="aa1f947c7c33cb6a07345673771ff67f3"></a>
@@ -173,6 +184,8 @@ template&lt;class T , class L  = std::mutex&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -202,6 +215,8 @@ template&lt;class T , class L  = std::mutex&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return <code>IndexPoolBaseW&lt;L&gt;::allocate(key)</code>, the waiting allocation, cast to T*. </p>
 
 </div>
 </div>

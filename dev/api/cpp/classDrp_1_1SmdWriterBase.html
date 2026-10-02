@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1SmdWriterBase.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classDrp_1_1FileWriterBase.html" title="Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementati...">FileWriterBase</a> for small-data files, with a scratch buffer of transition size and a NamesLookup.  
+ <a href="classDrp_1_1SmdWriterBase.html#details">More...</a></p>
+
 <p><code>#include &lt;FileWriterBase.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a>.</p>
@@ -107,30 +110,41 @@ $(document).ready(function(){initNavTree('classDrp_1_1SmdWriterBase.html',''); i
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abca1a34fd0f27f4a6649df36ed29a0a6" id="r_abca1a34fd0f27f4a6649df36ed29a0a6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html#abca1a34fd0f27f4a6649df36ed29a0a6">SmdWriterBase</a> (size_t maxTrSize)</td></tr>
+<tr class="memdesc:abca1a34fd0f27f4a6649df36ed29a0a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate buffer with maxTrSize bytes.  <br /></td></tr>
 <tr class="separator:abca1a34fd0f27f4a6649df36ed29a0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a836fdb09cbc8f969b95d530cf23c0063" id="r_a836fdb09cbc8f969b95d530cf23c0063"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html#a836fdb09cbc8f969b95d530cf23c0063">~SmdWriterBase</a> ()</td></tr>
+<tr class="memdesc:a836fdb09cbc8f969b95d530cf23c0063"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a836fdb09cbc8f969b95d530cf23c0063"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed38586216bbd3474757ed384a53aa28" id="r_aed38586216bbd3474757ed384a53aa28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html#aed38586216bbd3474757ed384a53aa28">addNames</a> (<a class="el" href="classXtcData_1_1Xtc.html">XtcData::Xtc</a> &amp;parent, const void *bufEnd, unsigned nodeId)</td></tr>
+<tr class="memdesc:aed38586216bbd3474757ed384a53aa28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Declared here, but no definition is compiled: FileWriterBase.cc defines <a class="el" href="classDrp_1_1SmdWriterBase.html#aed38586216bbd3474757ed384a53aa28" title="Declared here, but no definition is compiled: FileWriterBase.cc defines SmdWriter::addNames() with th...">SmdWriter::addNames()</a> with this signature and is not listed in drp/CMakeLists.txt.  <br /></td></tr>
 <tr class="separator:aed38586216bbd3474757ed384a53aa28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1FileWriterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1FileWriterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with the writing counter at 0.  <br /></td></tr>
 <tr class="separator:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ac05e5eacde9fb730bf4abc2b362c402e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac05e5eacde9fb730bf4abc2b362c402e">~FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac82a7a44cc34200010e85f553d89f8db inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ac82a7a44cc34200010e85f553d89f8db"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac82a7a44cc34200010e85f553d89f8db">open</a> (const std::string &amp;fileName)=0</td></tr>
+<tr class="memdesc:ac82a7a44cc34200010e85f553d89f8db inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: open fileName for writing; the implementations in FileWriter.cc return 0 on success.  <br /></td></tr>
 <tr class="separator:ac82a7a44cc34200010e85f553d89f8db inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a318270a36a20e28499d517847a5499fa inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a318270a36a20e28499d517847a5499fa"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a318270a36a20e28499d517847a5499fa">close</a> ()=0</td></tr>
+<tr class="memdesc:a318270a36a20e28499d517847a5499fa inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: flush buffered data and close the current file.  <br /></td></tr>
 <tr class="separator:a318270a36a20e28499d517847a5499fa inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3cb61987edf71770e9c710e4c70f0e1 inherit pub_methods_classDrp_1_1FileWriterBase" id="r_af3cb61987edf71770e9c710e4c70f0e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#af3cb61987edf71770e9c710e4c70f0e1">writeEvent</a> (const void *data, size_t size, <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> ts)=0</td></tr>
+<tr class="memdesc:af3cb61987edf71770e9c710e4c70f0e1 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: write size bytes from data; the implementations use the seconds of ts to age their batches.  <br /></td></tr>
 <tr class="separator:af3cb61987edf71770e9c710e4c70f0e1 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ab3dced26d62dabc46b112f3821e54848"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848">writing</a> () const</td></tr>
+<tr class="memdesc:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the writing counter (non-zero while an implementation is inside a write).  <br /></td></tr>
 <tr class="separator:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:afe02357d856b12fd53c07a467cbb26fc" id="r_afe02357d856b12fd53c07a467cbb26fc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html#afe02357d856b12fd53c07a467cbb26fc">buffer</a></td></tr>
+<tr class="memdesc:afe02357d856b12fd53c07a467cbb26fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scratch buffer of maxTrSize bytes, sized by the constructor.  <br /></td></tr>
 <tr class="separator:afe02357d856b12fd53c07a467cbb26fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81f1de5da0d1ec6c4ebc2755b6eb36f5" id="r_a81f1de5da0d1ec6c4ebc2755b6eb36f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceXtcData.html#a8db7c9c711cf81c6ef4145e9dac9ef32">XtcData::NamesLookup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1SmdWriterBase.html#a81f1de5da0d1ec6c4ebc2755b6eb36f5">namesLookup</a></td></tr>
+<tr class="memdesc:a81f1de5da0d1ec6c4ebc2755b6eb36f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Names lookup table for the small-data datagrams.  <br /></td></tr>
 <tr class="separator:a81f1de5da0d1ec6c4ebc2755b6eb36f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -139,7 +153,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase" id="r_a015874f88c3a5c3cad1c96415375746d"><td class="memItemLeft" align="right" valign="top">volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a015874f88c3a5c3cad1c96415375746d">m_writing</a></td></tr>
 <tr class="separator:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classDrp_1_1FileWriterBase.html" title="Abstract file writer interface (open, close, writeEvent) with a writing counter that the implementati...">FileWriterBase</a> for small-data files, with a scratch buffer of transition size and a NamesLookup. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abca1a34fd0f27f4a6649df36ed29a0a6" name="abca1a34fd0f27f4a6649df36ed29a0a6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abca1a34fd0f27f4a6649df36ed29a0a6">&#9670;&#160;</a></span>SmdWriterBase()</h2>
 
@@ -163,6 +179,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Allocate buffer with maxTrSize bytes. </p>
 
 </div>
 </div>
@@ -188,6 +206,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -224,6 +244,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Declared here, but no definition is compiled: FileWriterBase.cc defines <a class="el" href="classDrp_1_1SmdWriterBase.html#aed38586216bbd3474757ed384a53aa28" title="Declared here, but no definition is compiled: FileWriterBase.cc defines SmdWriter::addNames() with th...">SmdWriter::addNames()</a> with this signature and is not listed in drp/CMakeLists.txt. </p>
+<p>No caller was found in psdaq. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -239,6 +262,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Scratch buffer of maxTrSize bytes, sized by the constructor. </p>
+
 </div>
 </div>
 <a id="a81f1de5da0d1ec6c4ebc2755b6eb36f5" name="a81f1de5da0d1ec6c4ebc2755b6eb36f5"></a>
@@ -252,6 +277,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Names lookup table for the small-data datagrams. </p>
 
 </div>
 </div>

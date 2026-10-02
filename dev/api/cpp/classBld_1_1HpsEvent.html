@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('classBld_1_1HpsEvent.html',''); initRe
 </div><!--header-->
 <div class="contents">
 
+<p>One event decoded from an HPS BLD packet; the channel values follow the object in memory (see <a class="el" href="classBld_1_1HpsEvent.html#a2063de7a3a713d19aa69cb54511476be" title="Return the channel values stored right after this object.">channelData()</a>).  
+ <a href="classBld_1_1HpsEvent.html#details">More...</a></p>
+
 <p><code>#include &lt;HpsEvent.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2063de7a3a713d19aa69cb54511476be" id="r_a2063de7a3a713d19aa69cb54511476be"><td class="memItemLeft" align="right" valign="top">const uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#a2063de7a3a713d19aa69cb54511476be">channelData</a> () const</td></tr>
+<tr class="memdesc:a2063de7a3a713d19aa69cb54511476be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the channel values stored right after this object.  <br /></td></tr>
 <tr class="separator:a2063de7a3a713d19aa69cb54511476be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a71d339cb4b25c3fb93200929eb17a94a" id="r_a71d339cb4b25c3fb93200929eb17a94a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#a71d339cb4b25c3fb93200929eb17a94a">timeStamp</a></td></tr>
+<tr class="memdesc:a71d339cb4b25c3fb93200929eb17a94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time stamp; <a class="el" href="classBld_1_1HpsEventIterator.html" title="Decodes the events of an HPS BLD packet into one HpsEvent, which can hold up to 31 channel values aft...">HpsEventIterator</a> adds the 20-bit offset of later events to that of the first.  <br /></td></tr>
 <tr class="separator:a71d339cb4b25c3fb93200929eb17a94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dce5058d4e8c4709b46025ae877b142" id="r_a7dce5058d4e8c4709b46025ae877b142"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#a7dce5058d4e8c4709b46025ae877b142">pulseId</a></td></tr>
+<tr class="memdesc:a7dce5058d4e8c4709b46025ae877b142"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pulse ID; <a class="el" href="classBld_1_1HpsEventIterator.html" title="Decodes the events of an HPS BLD packet into one HpsEvent, which can hold up to 31 channel values aft...">HpsEventIterator</a> adds the 12-bit offset of later events to that of the first.  <br /></td></tr>
 <tr class="separator:a7dce5058d4e8c4709b46025ae877b142"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a173373131a74b61eae5311aab25f42eb" id="r_a173373131a74b61eae5311aab25f42eb"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#a173373131a74b61eae5311aab25f42eb">beam</a></td></tr>
+<tr class="memdesc:a173373131a74b61eae5311aab25f42eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">32-bit beam word of the event, copied from the packet. Inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:a173373131a74b61eae5311aab25f42eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e8cf27d611931367fc3cf6e56ace5ce" id="r_a8e8cf27d611931367fc3cf6e56ace5ce"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#a8e8cf27d611931367fc3cf6e56ace5ce">channels</a></td></tr>
+<tr class="memdesc:a8e8cf27d611931367fc3cf6e56ace5ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channel mask from the first event of the packet; one value follows for each set bit.  <br /></td></tr>
 <tr class="separator:a8e8cf27d611931367fc3cf6e56ace5ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe28650b5a4efbc5778d30ee305b92e6" id="r_abe28650b5a4efbc5778d30ee305b92e6"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBld_1_1HpsEvent.html#abe28650b5a4efbc5778d30ee305b92e6">sevr</a></td></tr>
+<tr class="memdesc:abe28650b5a4efbc5778d30ee305b92e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit severity word of the event, copied from the packet. Inferred from the name; not verified.  <br /></td></tr>
 <tr class="separator:abe28650b5a4efbc5778d30ee305b92e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>One event decoded from an HPS BLD packet; the channel values follow the object in memory (see <a class="el" href="classBld_1_1HpsEvent.html#a2063de7a3a713d19aa69cb54511476be" title="Return the channel values stored right after this object.">channelData()</a>). </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2063de7a3a713d19aa69cb54511476be" name="a2063de7a3a713d19aa69cb54511476be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2063de7a3a713d19aa69cb54511476be">&#9670;&#160;</a></span>channelData()</h2>
 
@@ -142,6 +153,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the channel values stored right after this object. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -157,6 +170,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>32-bit beam word of the event, copied from the packet. Inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a8e8cf27d611931367fc3cf6e56ace5ce" name="a8e8cf27d611931367fc3cf6e56ace5ce"></a>
@@ -170,6 +185,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Channel mask from the first event of the packet; one value follows for each set bit. </p>
 
 </div>
 </div>
@@ -185,6 +202,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pulse ID; <a class="el" href="classBld_1_1HpsEventIterator.html" title="Decodes the events of an HPS BLD packet into one HpsEvent, which can hold up to 31 channel values aft...">HpsEventIterator</a> adds the 12-bit offset of later events to that of the first. </p>
+
 </div>
 </div>
 <a id="abe28650b5a4efbc5778d30ee305b92e6" name="abe28650b5a4efbc5778d30ee305b92e6"></a>
@@ -199,6 +218,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>64-bit severity word of the event, copied from the packet. Inferred from the name; not verified. </p>
+
 </div>
 </div>
 <a id="a71d339cb4b25c3fb93200929eb17a94a" name="a71d339cb4b25c3fb93200929eb17a94a"></a>
@@ -212,6 +233,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time stamp; <a class="el" href="classBld_1_1HpsEventIterator.html" title="Decodes the events of an HPS BLD packet into one HpsEvent, which can hold up to 31 channel values aft...">HpsEventIterator</a> adds the 20-bit offset of later events to that of the first. </p>
 
 </div>
 </div>

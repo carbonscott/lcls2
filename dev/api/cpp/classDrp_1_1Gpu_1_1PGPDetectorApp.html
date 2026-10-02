@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1PGPDetectorApp.html
 </div><!--header-->
 <div class="contents">
 
+<p>Collection application of the GPU DRP: handles the control transitions and drives a <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">Drp::Gpu::PGPDrp</a> and the GPU detector.  
+ <a href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#details">More...</a></p>
+
 <p><code>#include &lt;PGPDetectorApp.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classCollectionApp.html">CollectionApp</a>.</p>
@@ -104,17 +107,23 @@ $(document).ready(function(){initNavTree('classDrp_1_1Gpu_1_1PGPDetectorApp.html
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2e1057b8b9e2fcd9dae8134761cf53c8" id="r_a2e1057b8b9e2fcd9dae8134761cf53c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#a2e1057b8b9e2fcd9dae8134761cf53c8">PGPDetectorApp</a> (<a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para)</td></tr>
+<tr class="memdesc:a2e1057b8b9e2fcd9dae8134761cf53c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Join the collection as a drp process, create the GPU memory pool from para, initialize Python and release the GIL.  <br /></td></tr>
 <tr class="separator:a2e1057b8b9e2fcd9dae8134761cf53c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab16244c1d7684cc546d3c1527bbdb090" id="r_ab16244c1d7684cc546d3c1527bbdb090"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#ab16244c1d7684cc546d3c1527bbdb090">~PGPDetectorApp</a> ()</td></tr>
+<tr class="memdesc:ab16244c1d7684cc546d3c1527bbdb090"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset as handleReset() does, delete the detector and finalize Python.  <br /></td></tr>
 <tr class="separator:ab16244c1d7684cc546d3c1527bbdb090"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93240edb8d454cd31e48d51127f7b19e" id="r_a93240edb8d454cd31e48d51127f7b19e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#a93240edb8d454cd31e48d51127f7b19e">initialize</a> ()</td></tr>
+<tr class="memdesc:a93240edb8d454cd31e48d51127f7b19e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register the GPU detector types (fakecam, epixuhremu, epixuhrsim) with their libraries, create the detector for detType (throwing a std::string if that fails) and create the <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">PGPDrp</a>.  <br /></td></tr>
 <tr class="separator:a93240edb8d454cd31e48d51127f7b19e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp" id="r_adc697792b5bb454148b34f1f1b1d90ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#adc697792b5bb454148b34f1f1b1d90ed">CollectionApp</a> (const std::string &amp;managerHostname, int platform, const std::string &amp;level, const std::string &amp;alias, const std::string &amp;device=std::string())</td></tr>
+<tr class="memdesc:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check the resource limits (throwing a C string if they are inadequate), connect the PUSH and SUB sockets to managerHostname for platform, bind inproc://drp, and register handlers for rollcall, alloc, dealloc, connect, disconnect, reset and the phase-1 transitions (configure, unconfigure, beginrun, endrun, beginstep, endstep, enable, disable).  <br /></td></tr>
 <tr class="separator:adc697792b5bb454148b34f1f1b1d90ed inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp" id="r_ad85f56b0061369d28f7371948fba8947"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#ad85f56b0061369d28f7371948fba8947">~CollectionApp</a> ()</td></tr>
+<tr class="memdesc:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ad85f56b0061369d28f7371948fba8947 inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp" id="r_a5333e0f78c49e83e0b2ffa0d7628c98e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a5333e0f78c49e83e0b2ffa0d7628c98e">run</a> ()</td></tr>
+<tr class="memdesc:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp"><td class="mdescLeft">&#160;</td><td class="mdescRight">Message loop: dispatch collection messages from the SUB socket to their handlers by header key, and forward pulseId, fileReport, error and chunkRequest messages from inproc://drp to the manager.  <br /></td></tr>
 <tr class="separator:a5333e0f78c49e83e0b2ffa0d7628c98e inherit pub_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -122,6 +131,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:a72e7f6bc6f81065a58017d52190f58d7 inherit pub_types_classCollectionApp" id="r_a72e7f6bc6f81065a58017d52190f58d7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7aa44f60b095f3c6fa741f864ad86225db">zmq_base_port</a> = 29980
  }</td></tr>
+<tr class="memdesc:a72e7f6bc6f81065a58017d52190f58d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base TCP port of the collection sockets.  <a href="classCollectionApp.html#a72e7f6bc6f81065a58017d52190f58d7">More...</a><br /></td></tr>
 <tr class="separator:a72e7f6bc6f81065a58017d52190f58d7 inherit pub_types_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classCollectionApp"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classCollectionApp')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classCollectionApp.html">CollectionApp</a></td></tr>
 <tr class="memitem:afdc346ac91bf9ec7d31417be9317dca3 inherit pro_methods_classCollectionApp" id="r_afdc346ac91bf9ec7d31417be9317dca3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#afdc346ac91bf9ec7d31417be9317dca3">handleRollcall</a> (const nlohmann::json &amp;msg)</td></tr>
@@ -143,7 +153,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a4c67537e683b2439ed17369252a85862 inherit pro_methods_classCollectionApp" id="r_a4c67537e683b2439ed17369252a85862"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCollectionApp.html#a4c67537e683b2439ed17369252a85862">unsubscribePartition</a> ()</td></tr>
 <tr class="separator:a4c67537e683b2439ed17369252a85862 inherit pro_methods_classCollectionApp"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Collection application of the GPU DRP: handles the control transitions and drives a <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">Drp::Gpu::PGPDrp</a> and the GPU detector. </p>
+<p>In simulator mode (device /dev/null) it also starts phase 2 of each transition with <a class="el" href="classDrp_1_1Gpu_1_1Detector.html#a6d00c5a88ac1e647b1d14e1e7dd9707c" title="Start phase 2 of a transition; PGPDetectorApp calls it after phase 1 only in simulator mode (device /...">Detector::issuePhase2()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2e1057b8b9e2fcd9dae8134761cf53c8" name="a2e1057b8b9e2fcd9dae8134761cf53c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2e1057b8b9e2fcd9dae8134761cf53c8">&#9670;&#160;</a></span>PGPDetectorApp()</h2>
 
@@ -159,6 +172,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Join the collection as a drp process, create the GPU memory pool from para, initialize Python and release the GIL. </p>
+<p><a class="el" href="classDrp_1_1Gpu_1_1PGPDetectorApp.html#a93240edb8d454cd31e48d51127f7b19e" title="Register the GPU detector types (fakecam, epixuhremu, epixuhrsim) with their libraries,...">initialize()</a> must be called next. </p>
 
 </div>
 </div>
@@ -185,6 +201,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Reset as handleReset() does, delete the detector and finalize Python. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -202,6 +220,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Register the GPU detector types (fakecam, epixuhremu, epixuhrsim) with their libraries, create the detector for detType (throwing a std::string if that fails) and create the <a class="el" href="classDrp_1_1Gpu_1_1PGPDrp.html" title="DRP for the GPU detectors (Drp::Gpu::PGPDrp).">PGPDrp</a>. </p>
+<p>It is separate from the constructor so that the destructor, which finalizes Python, runs if it throws (per the code comment). </p>
 
 </div>
 </div>

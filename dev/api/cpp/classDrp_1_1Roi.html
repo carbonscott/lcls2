@@ -97,20 +97,29 @@ $(document).ready(function(){initNavTree('classDrp_1_1Roi.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
+<p>Rectangular region of interest with inclusive corners; OpalTTFex.cc reads it from the configuration entries name.x0, name.y0, name.x1 and name.y1 and uses it for projections.  
+ <a href="classDrp_1_1Roi.html#details">More...</a></p>
+
 <p><code>#include &lt;TTFex.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:adb8ef125ac4b5e5f73354636b336012e" id="r_adb8ef125ac4b5e5f73354636b336012e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html#adb8ef125ac4b5e5f73354636b336012e">x0</a></td></tr>
+<tr class="memdesc:adb8ef125ac4b5e5f73354636b336012e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inclusive bounds: columns x0 to x1 and rows y0 to y1 (OpalTTFex.cc truncates x1 and y1 to the frame size).  <br /></td></tr>
 <tr class="separator:adb8ef125ac4b5e5f73354636b336012e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6360411eaa77979c798ad27ed9e4931d" id="r_a6360411eaa77979c798ad27ed9e4931d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html#a6360411eaa77979c798ad27ed9e4931d">y0</a></td></tr>
+<tr class="memdesc:a6360411eaa77979c798ad27ed9e4931d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Top row of the region (inclusive).  <br /></td></tr>
 <tr class="separator:a6360411eaa77979c798ad27ed9e4931d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff17dcce51737e36b74c11ffa398cca1" id="r_aff17dcce51737e36b74c11ffa398cca1"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html#aff17dcce51737e36b74c11ffa398cca1">x1</a></td></tr>
+<tr class="memdesc:aff17dcce51737e36b74c11ffa398cca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right column of the region (inclusive; truncated to the frame width by OpalTTFex.cc).  <br /></td></tr>
 <tr class="separator:aff17dcce51737e36b74c11ffa398cca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01895983a6cd7aae845c322ea5d38403" id="r_a01895983a6cd7aae845c322ea5d38403"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1Roi.html#a01895983a6cd7aae845c322ea5d38403">y1</a></td></tr>
+<tr class="memdesc:a01895983a6cd7aae845c322ea5d38403"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bottom row of the region (inclusive; truncated to the frame height by OpalTTFex.cc).  <br /></td></tr>
 <tr class="separator:a01895983a6cd7aae845c322ea5d38403"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Rectangular region of interest with inclusive corners; OpalTTFex.cc reads it from the configuration entries name.x0, name.y0, name.x1 and name.y1 and uses it for projections. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="adb8ef125ac4b5e5f73354636b336012e" name="adb8ef125ac4b5e5f73354636b336012e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb8ef125ac4b5e5f73354636b336012e">&#9670;&#160;</a></span>x0</h2>
 
@@ -122,6 +131,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Inclusive bounds: columns x0 to x1 and rows y0 to y1 (OpalTTFex.cc truncates x1 and y1 to the frame size). </p>
 
 </div>
 </div>
@@ -137,6 +148,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Right column of the region (inclusive; truncated to the frame width by OpalTTFex.cc). </p>
+
 </div>
 </div>
 <a id="a6360411eaa77979c798ad27ed9e4931d" name="a6360411eaa77979c798ad27ed9e4931d"></a>
@@ -151,6 +164,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Top row of the region (inclusive). </p>
+
 </div>
 </div>
 <a id="a01895983a6cd7aae845c322ea5d38403" name="a01895983a6cd7aae845c322ea5d38403"></a>
@@ -164,6 +179,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bottom row of the region (inclusive; truncated to the frame height by OpalTTFex.cc). </p>
 
 </div>
 </div>

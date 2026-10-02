@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedFileWriterMT.html'
 </div><!--header-->
 <div class="contents">
 
+<p>File writer with a pool of page-aligned buffers and a writer thread: <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> fills buffers and queues full ones, and the thread writes them to the file.  
+ <a href="classDrp_1_1BufferedFileWriterMT.html#details">More...</a></p>
+
 <p><code>#include &lt;FileWriter.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a>.</p>
@@ -105,35 +108,50 @@ $(document).ready(function(){initNavTree('classDrp_1_1BufferedFileWriterMT.html'
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9b8898470b30741a94f499caaa0d89d8" id="r_a9b8898470b30741a94f499caaa0d89d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a9b8898470b30741a94f499caaa0d89d8">BufferedFileWriterMT</a> (size_t bufferSize)</td></tr>
+<tr class="memdesc:a9b8898470b30741a94f499caaa0d89d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create 64 buffers of bufferSize bytes rounded up to whole pages and start the writer thread.  <br /></td></tr>
 <tr class="separator:a9b8898470b30741a94f499caaa0d89d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af98b58a26dafc5892e56a16428a099dd" id="r_af98b58a26dafc5892e56a16428a099dd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#af98b58a26dafc5892e56a16428a099dd">BufferedFileWriterMT</a> (size_t bufferSize, bool dio)</td></tr>
+<tr class="memdesc:af98b58a26dafc5892e56a16428a099dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like BufferedFileWriterMT(bufferSize).  <br /></td></tr>
 <tr class="separator:af98b58a26dafc5892e56a16428a099dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a370fffbfef768e50f560298ff8a69eea" id="r_a370fffbfef768e50f560298ff8a69eea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a370fffbfef768e50f560298ff8a69eea">~BufferedFileWriterMT</a> () override</td></tr>
+<tr class="memdesc:a370fffbfef768e50f560298ff8a69eea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the file, stop and join the writer thread, and free the buffers in the free queue.  <br /></td></tr>
 <tr class="separator:a370fffbfef768e50f560298ff8a69eea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab64fc20b593c34623ad6a2d6715a62f2" id="r_ab64fc20b593c34623ad6a2d6715a62f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#ab64fc20b593c34623ad6a2d6715a62f2">open</a> (const std::string &amp;fileName) override</td></tr>
+<tr class="memdesc:ab64fc20b593c34623ad6a2d6715a62f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like <a class="el" href="classDrp_1_1BufferedFileWriter.html#ac4d6378c29d52dec4acf003f12c85927" title="Close any open file (with a warning), create or truncate fileName with read permission for owner and ...">BufferedFileWriter::open()</a>, adding O_DIRECT when direct I/O was requested.  <br /></td></tr>
 <tr class="separator:ab64fc20b593c34623ad6a2d6715a62f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a888158fbf741ee9452868ec2b0106707" id="r_a888158fbf741ee9452868ec2b0106707"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a888158fbf741ee9452868ec2b0106707">close</a> () override</td></tr>
+<tr class="memdesc:a888158fbf741ee9452868ec2b0106707"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a file is open, call <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a29223c17a6408c61dfa703e1e01aa4c1" title="Queue the current buffer if it holds data, then block until the writer thread has written everything ...">flush()</a> (which waits until all queued buffers are written) and close the file.  <br /></td></tr>
 <tr class="separator:a888158fbf741ee9452868ec2b0106707"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29223c17a6408c61dfa703e1e01aa4c1" id="r_a29223c17a6408c61dfa703e1e01aa4c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a29223c17a6408c61dfa703e1e01aa4c1">flush</a> ()</td></tr>
+<tr class="memdesc:a29223c17a6408c61dfa703e1e01aa4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue the current buffer if it holds data, then block until the writer thread has written everything queued.  <br /></td></tr>
 <tr class="separator:a29223c17a6408c61dfa703e1e01aa4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a528f6394b09be4c34e9432a87f66cf13" id="r_a528f6394b09be4c34e9432a87f66cf13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13">writeEvent</a> (const void *data, size_t <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a3a58d050fdf91fbeb823417ea4e3fd69">size</a>, <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> ts) override</td></tr>
+<tr class="memdesc:a528f6394b09be4c34e9432a87f66cf13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy size bytes from data into the current free buffer, first queueing that buffer if data does not fit or the batch is more than 2 s old; a datagram larger than the free space is split across buffers.  <br /></td></tr>
 <tr class="separator:a528f6394b09be4c34e9432a87f66cf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab65b86a1902199b76a323b8afffbea70" id="r_ab65b86a1902199b76a323b8afffbea70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#ab65b86a1902199b76a323b8afffbea70">run</a> ()</td></tr>
+<tr class="memdesc:ab65b86a1902199b76a323b8afffbea70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writer thread body started by the constructor: name the thread drp/FileWriter, write each queued buffer to the file and return it to the free queue, until terminated with nothing queued.  <br /></td></tr>
 <tr class="separator:ab65b86a1902199b76a323b8afffbea70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a2bbc9e218ba4c81909b26ad0ff8f33" id="r_a3a2bbc9e218ba4c81909b26ad0ff8f33"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a3a2bbc9e218ba4c81909b26ad0ff8f33">depth</a> () const</td></tr>
+<tr class="memdesc:a3a2bbc9e218ba4c81909b26ad0ff8f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of free buffers recorded at the last queue operation.  <br /></td></tr>
 <tr class="separator:a3a2bbc9e218ba4c81909b26ad0ff8f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a58d050fdf91fbeb823417ea4e3fd69" id="r_a3a58d050fdf91fbeb823417ea4e3fd69"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a3a58d050fdf91fbeb823417ea4e3fd69">size</a> () const</td></tr>
+<tr class="memdesc:a3a58d050fdf91fbeb823417ea4e3fd69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of buffers in the pool.  <br /></td></tr>
 <tr class="separator:a3a58d050fdf91fbeb823417ea4e3fd69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaccd08527348368d392ed4e484015028" id="r_aaccd08527348368d392ed4e484015028"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#aaccd08527348368d392ed4e484015028">freeBlocked</a> () const</td></tr>
+<tr class="memdesc:aaccd08527348368d392ed4e484015028"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the counter that is raised while <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> waits for a free buffer.  <br /></td></tr>
 <tr class="separator:aaccd08527348368d392ed4e484015028"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f3581f169145fa296a4226cc30fd840" id="r_a7f3581f169145fa296a4226cc30fd840"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a7f3581f169145fa296a4226cc30fd840">pendBlocked</a> () const</td></tr>
+<tr class="memdesc:a7f3581f169145fa296a4226cc30fd840"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the counter that is raised while <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a29223c17a6408c61dfa703e1e01aa4c1" title="Queue the current buffer if it holds data, then block until the writer thread has written everything ...">flush()</a> or the writer thread waits on the pending queue.  <br /></td></tr>
 <tr class="separator:a7f3581f169145fa296a4226cc30fd840"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classDrp_1_1FileWriterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classDrp_1_1FileWriterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classDrp_1_1FileWriterBase.html">Drp::FileWriterBase</a></td></tr>
 <tr class="memitem:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_a602de45aa17bf1649732ed5a15afc88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a602de45aa17bf1649732ed5a15afc88e">FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start with the writing counter at 0.  <br /></td></tr>
 <tr class="separator:a602de45aa17bf1649732ed5a15afc88e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ac05e5eacde9fb730bf4abc2b362c402e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ac05e5eacde9fb730bf4abc2b362c402e">~FileWriterBase</a> ()</td></tr>
+<tr class="memdesc:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:ac05e5eacde9fb730bf4abc2b362c402e inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase" id="r_ab3dced26d62dabc46b112f3821e54848"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#ab3dced26d62dabc46b112f3821e54848">writing</a> () const</td></tr>
+<tr class="memdesc:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the writing counter (non-zero while an implementation is inside a write).  <br /></td></tr>
 <tr class="separator:ab3dced26d62dabc46b112f3821e54848 inherit pub_methods_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
@@ -142,7 +160,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase" id="r_a015874f88c3a5c3cad1c96415375746d"><td class="memItemLeft" align="right" valign="top">volatile uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileWriterBase.html#a015874f88c3a5c3cad1c96415375746d">m_writing</a></td></tr>
 <tr class="separator:a015874f88c3a5c3cad1c96415375746d inherit pro_attribs_classDrp_1_1FileWriterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>File writer with a pool of page-aligned buffers and a writer thread: <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> fills buffers and queues full ones, and the thread writes them to the file. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9b8898470b30741a94f499caaa0d89d8" name="a9b8898470b30741a94f499caaa0d89d8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b8898470b30741a94f499caaa0d89d8">&#9670;&#160;</a></span>BufferedFileWriterMT() <span class="overload">[1/2]</span></h2>
 
@@ -158,6 +178,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Create 64 buffers of bufferSize bytes rounded up to whole pages and start the writer thread. </p>
 
 </div>
 </div>
@@ -187,6 +209,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Like BufferedFileWriterMT(bufferSize). </p>
+<p>With dio true there are 2 buffers, each the smallest multiple of bufferSize that is at least 512 MiB (then rounded up to whole pages), and files are opened with O_DIRECT. </p>
+
 </div>
 </div>
 <a id="a370fffbfef768e50f560298ff8a69eea" name="a370fffbfef768e50f560298ff8a69eea"></a>
@@ -211,6 +236,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Close the file, stop and join the writer thread, and free the buffers in the free queue. </p>
 
 </div>
 </div>
@@ -237,6 +264,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>If a file is open, call <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a29223c17a6408c61dfa703e1e01aa4c1" title="Queue the current buffer if it holds data, then block until the writer thread has written everything ...">flush()</a> (which waits until all queued buffers are written) and close the file. </p>
+<p>Returns the <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a888158fbf741ee9452868ec2b0106707" title="If a file is open, call flush() (which waits until all queued buffers are written) and close the file...">close()</a> result, or 0 if no file was open. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#a318270a36a20e28499d517847a5499fa">Drp::FileWriterBase</a>.</p>
 
@@ -265,6 +295,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of free buffers recorded at the last queue operation. </p>
+
 </div>
 </div>
 <a id="a29223c17a6408c61dfa703e1e01aa4c1" name="a29223c17a6408c61dfa703e1e01aa4c1"></a>
@@ -281,6 +313,8 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Queue the current buffer if it holds data, then block until the writer thread has written everything queued. </p>
 
 </div>
 </div>
@@ -307,6 +341,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the counter that is raised while <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a528f6394b09be4c34e9432a87f66cf13" title="Copy size bytes from data into the current free buffer, first queueing that buffer if data does not f...">writeEvent()</a> waits for a free buffer. </p>
+
 </div>
 </div>
 <a id="ab64fc20b593c34623ad6a2d6715a62f2" name="ab64fc20b593c34623ad6a2d6715a62f2"></a>
@@ -332,6 +368,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Like <a class="el" href="classDrp_1_1BufferedFileWriter.html#ac4d6378c29d52dec4acf003f12c85927" title="Close any open file (with a warning), create or truncate fileName with read permission for owner and ...">BufferedFileWriter::open()</a>, adding O_DIRECT when direct I/O was requested. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#ac82a7a44cc34200010e85f553d89f8db">Drp::FileWriterBase</a>.</p>
 
@@ -360,6 +398,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the counter that is raised while <a class="el" href="classDrp_1_1BufferedFileWriterMT.html#a29223c17a6408c61dfa703e1e01aa4c1" title="Queue the current buffer if it holds data, then block until the writer thread has written everything ...">flush()</a> or the writer thread waits on the pending queue. </p>
+
 </div>
 </div>
 <a id="ab65b86a1902199b76a323b8afffbea70" name="ab65b86a1902199b76a323b8afffbea70"></a>
@@ -376,6 +416,9 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Writer thread body started by the constructor: name the thread drp/FileWriter, write each queued buffer to the file and return it to the free queue, until terminated with nothing queued. </p>
+<p>Aborts if a write fails. </p>
 
 </div>
 </div>
@@ -401,6 +444,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of buffers in the pool. </p>
 
 </div>
 </div>
@@ -443,6 +488,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Copy size bytes from data into the current free buffer, first queueing that buffer if data does not fit or the batch is more than 2 s old; a datagram larger than the free space is split across buffers. </p>
+<p>Blocks while no free buffer is available. </p>
 
 <p>Implements <a class="el" href="classDrp_1_1FileWriterBase.html#af3cb61987edf71770e9c710e4c70f0e1">Drp::FileWriterBase</a>.</p>
 

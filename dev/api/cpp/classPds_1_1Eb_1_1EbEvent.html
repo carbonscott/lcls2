@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbEvent.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>One event being built by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a>: its contributions (a variable-length array that follows the object), the bit list of contributors still missing, accumulated damage and payload size.  
+ <a href="classPds_1_1Eb_1_1EbEvent.html#details">More...</a></p>
+
 <p><code>#include &lt;EbEvent.hh&gt;</code></p>
 
 <p>Inherits Pds::LinkedList&lt; T &gt;.</p>
@@ -106,35 +109,49 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbEvent.html',''); i
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac0aa5bdb4dc02510dabb370757950ca3" id="r_ac0aa5bdb4dc02510dabb370757950ca3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#ac0aa5bdb4dc02510dabb370757950ca3">EbEvent</a> (uint64_t <a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a677dd07181cf190f9c5814405d6b8c51">contract</a>, <a class="el" href="classPds_1_1Eb_1_1EbEvent.html">EbEvent</a> *after, const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *ctrb, unsigned <a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a874e2d9f5e25c30b2fbe9c229627b74c">immData</a>, const time_point_t &amp;t0)</td></tr>
+<tr class="memdesc:ac0aa5bdb4dc02510dabb370757950ca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start an event with the first contribution ctrb, remove its source bit from contract to form the remaining list, and insert the event into the list after after.  <br /></td></tr>
 <tr class="separator:ac0aa5bdb4dc02510dabb370757950ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80cf48de61118d7bb7435e7350e6e0a2" id="r_a80cf48de61118d7bb7435e7350e6e0a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a80cf48de61118d7bb7435e7350e6e0a2">~EbEvent</a> ()</td></tr>
+<tr class="memdesc:a80cf48de61118d7bb7435e7350e6e0a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:a80cf48de61118d7bb7435e7350e6e0a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a874e2d9f5e25c30b2fbe9c229627b74c" id="r_a874e2d9f5e25c30b2fbe9c229627b74c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a874e2d9f5e25c30b2fbe9c229627b74c">immData</a> () const</td></tr>
+<tr class="memdesc:a874e2d9f5e25c30b2fbe9c229627b74c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the immediate data kept for this event (from the first contribution, replaced by a later contribution whose value is greater than MAX_ENTRIES).  <br /></td></tr>
 <tr class="separator:a874e2d9f5e25c30b2fbe9c229627b74c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a3f9cdff510c4334aae4967e07cb77d" id="r_a4a3f9cdff510c4334aae4967e07cb77d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a4a3f9cdff510c4334aae4967e07cb77d">sequence</a> () const</td></tr>
+<tr class="memdesc:a4a3f9cdff510c4334aae4967e07cb77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the pulse ID of the first contribution.  <br /></td></tr>
 <tr class="separator:a4a3f9cdff510c4334aae4967e07cb77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c88a45b66ca173d68ef0863e05c0160" id="r_a3c88a45b66ca173d68ef0863e05c0160"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a3c88a45b66ca173d68ef0863e05c0160">size</a> () const</td></tr>
+<tr class="memdesc:a3c88a45b66ca173d68ef0863e05c0160"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the sum of the XTC payload sizes of all contributions, in bytes.  <br /></td></tr>
 <tr class="separator:a3c88a45b66ca173d68ef0863e05c0160"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9cc5f541a12b3438a697404828b90cf" id="r_ac9cc5f541a12b3438a697404828b90cf"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#ac9cc5f541a12b3438a697404828b90cf">remaining</a> () const</td></tr>
+<tr class="memdesc:ac9cc5f541a12b3438a697404828b90cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the bit list of contributors that have not yet contributed; 0 means complete.  <br /></td></tr>
 <tr class="separator:ac9cc5f541a12b3438a697404828b90cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a677dd07181cf190f9c5814405d6b8c51" id="r_a677dd07181cf190f9c5814405d6b8c51"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a677dd07181cf190f9c5814405d6b8c51">contract</a> () const</td></tr>
+<tr class="memdesc:a677dd07181cf190f9c5814405d6b8c51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the bit list of contributors expected for this event.  <br /></td></tr>
 <tr class="separator:a677dd07181cf190f9c5814405d6b8c51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad054ea22f43ecc23e0c9d37cf1ec59ac" id="r_ad054ea22f43ecc23e0c9d37cf1ec59ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classXtcData_1_1Damage.html">XtcData::Damage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#ad054ea22f43ecc23e0c9d37cf1ec59ac">damage</a> () const</td></tr>
+<tr class="memdesc:ad054ea22f43ecc23e0c9d37cf1ec59ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the accumulated damage.  <br /></td></tr>
 <tr class="separator:ad054ea22f43ecc23e0c9d37cf1ec59ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada7c19e6c3845969e5db602cab8fac10" id="r_ada7c19e6c3845969e5db602cab8fac10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#ada7c19e6c3845969e5db602cab8fac10">damage</a> (<a class="el" href="classXtcData_1_1Damage.html#adc5accec552a6a8687b3689f6496319a">XtcData::Damage::Value</a>)</td></tr>
+<tr class="memdesc:ada7c19e6c3845969e5db602cab8fac10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increase the accumulated damage by value (<a class="el" href="classXtcData_1_1Damage.html#ae77a91716759716ccde893920de9cabe" title="OR bit (1 &lt;&lt; v), masked with ValueBitMask, into the damage word.">XtcData::Damage::increase()</a>).  <br /></td></tr>
 <tr class="separator:ada7c19e6c3845969e5db602cab8fac10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06ec8e7ae9860edd4f4f2fdc2f4b6425" id="r_a06ec8e7ae9860edd4f4f2fdc2f4b6425"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a06ec8e7ae9860edd4f4f2fdc2f4b6425">creator</a> () const</td></tr>
+<tr class="memdesc:a06ec8e7ae9860edd4f4f2fdc2f4b6425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the first contribution, which created the event.  <br /></td></tr>
 <tr class="separator:a06ec8e7ae9860edd4f4f2fdc2f4b6425"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80a8f4a2fb039af0d4b2779f3eaf43be" id="r_a80a8f4a2fb039af0d4b2779f3eaf43be"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *const *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a80a8f4a2fb039af0d4b2779f3eaf43be">begin</a> () const</td></tr>
+<tr class="memdesc:a80a8f4a2fb039af0d4b2779f3eaf43be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer to the first element of the contributions array.  <br /></td></tr>
 <tr class="separator:a80a8f4a2fb039af0d4b2779f3eaf43be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a554a1eae50b050608661a0a28d90a584" id="r_a554a1eae50b050608661a0a28d90a584"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> **const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a554a1eae50b050608661a0a28d90a584">end</a> () const</td></tr>
+<tr class="memdesc:a554a1eae50b050608661a0a28d90a584"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a pointer one past the last contribution.  <br /></td></tr>
 <tr class="separator:a554a1eae50b050608661a0a28d90a584"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7ac5f958b6070d80a5d2efe752a51b8" id="r_ac7ac5f958b6070d80a5d2efe752a51b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#ac7ac5f958b6070d80a5d2efe752a51b8">dump</a> (unsigned detail, int number)</td></tr>
+<tr class="memdesc:ac7ac5f958b6070d80a5d2efe752a51b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print one line about the event (pulse ID, control, env, size, source, remaining and contract bits, age and latency) to stderr; with non-zero detail, also number and the list pointers.  <br /></td></tr>
 <tr class="separator:ac7ac5f958b6070d80a5d2efe752a51b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aa745097bd68e6470a93c8e5a4dd26088" id="r_aa745097bd68e6470a93c8e5a4dd26088"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#aa745097bd68e6470a93c8e5a4dd26088">PoolDeclare</a></td></tr>
+<tr class="memdesc:aa745097bd68e6470a93c8e5a4dd26088"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro from <a class="el" href="Pool_8hh.html" title="Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class&#39;s n...">Pool.hh</a> that declares an operator new allocating from a <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pds::Pool</a> and an operator delete that returns the buffer to its pool.  <br /></td></tr>
 <tr class="separator:aa745097bd68e6470a93c8e5a4dd26088"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
@@ -142,7 +159,10 @@ Friends</h2></td></tr>
 <tr class="memitem:a03eb4f6f986199fd19019c80fa6a63ce" id="r_a03eb4f6f986199fd19019c80fa6a63ce"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEvent.html#a03eb4f6f986199fd19019c80fa6a63ce">EventBuilder</a></td></tr>
 <tr class="separator:a03eb4f6f986199fd19019c80fa6a63ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>One event being built by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a>: its contributions (a variable-length array that follows the object), the bit list of contributors still missing, accumulated damage and payload size. </p>
+<p>Allocated from a pool sized by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html" title="Abstract event builder.">EventBuilder</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac0aa5bdb4dc02510dabb370757950ca3" name="ac0aa5bdb4dc02510dabb370757950ca3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac0aa5bdb4dc02510dabb370757950ca3">&#9670;&#160;</a></span>EbEvent()</h2>
 
@@ -187,6 +207,9 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start an event with the first contribution ctrb, remove its source bit from contract to form the remaining list, and insert the event into the list after after. </p>
+<p>Throws a C string if the source is not in contract. </p>
+
 </div>
 </div>
 <a id="a80cf48de61118d7bb7435e7350e6e0a2" name="a80cf48de61118d7bb7435e7350e6e0a2"></a>
@@ -211,6 +234,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -238,6 +263,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a pointer to the first element of the contributions array. </p>
+
 </div>
 </div>
 <a id="a677dd07181cf190f9c5814405d6b8c51" name="a677dd07181cf190f9c5814405d6b8c51"></a>
@@ -262,6 +289,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the bit list of contributors expected for this event. </p>
 
 </div>
 </div>
@@ -288,6 +317,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the first contribution, which created the event. </p>
+
 </div>
 </div>
 <a id="ad054ea22f43ecc23e0c9d37cf1ec59ac" name="ad054ea22f43ecc23e0c9d37cf1ec59ac"></a>
@@ -312,6 +343,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the accumulated damage. </p>
 
 </div>
 </div>
@@ -338,6 +371,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Increase the accumulated damage by value (<a class="el" href="classXtcData_1_1Damage.html#ae77a91716759716ccde893920de9cabe" title="OR bit (1 &lt;&lt; v), masked with ValueBitMask, into the damage word.">XtcData::Damage::increase()</a>). </p>
 
 </div>
 </div>
@@ -367,6 +402,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print one line about the event (pulse ID, control, env, size, source, remaining and contract bits, age and latency) to stderr; with non-zero detail, also number and the list pointers. </p>
+
 </div>
 </div>
 <a id="a554a1eae50b050608661a0a28d90a584" name="a554a1eae50b050608661a0a28d90a584"></a>
@@ -391,6 +428,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return a pointer one past the last contribution. </p>
 
 </div>
 </div>
@@ -417,6 +456,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the immediate data kept for this event (from the first contribution, replaced by a later contribution whose value is greater than MAX_ENTRIES). </p>
+
 </div>
 </div>
 <a id="ac9cc5f541a12b3438a697404828b90cf" name="ac9cc5f541a12b3438a697404828b90cf"></a>
@@ -441,6 +482,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the bit list of contributors that have not yet contributed; 0 means complete. </p>
 
 </div>
 </div>
@@ -467,6 +510,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the pulse ID of the first contribution. </p>
+
 </div>
 </div>
 <a id="a3c88a45b66ca173d68ef0863e05c0160" name="a3c88a45b66ca173d68ef0863e05c0160"></a>
@@ -491,6 +536,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the sum of the XTC payload sizes of all contributions, in bytes. </p>
 
 </div>
 </div>
@@ -529,6 +576,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Macro from <a class="el" href="Pool_8hh.html" title="Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class&#39;s n...">Pool.hh</a> that declares an operator new allocating from a <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pds::Pool</a> and an operator delete that returns the buffer to its pool. </p>
 
 </div>
 </div>

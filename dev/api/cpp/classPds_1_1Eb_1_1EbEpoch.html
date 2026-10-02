@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbEpoch.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> element for one epoch of the event builder; holds the list of events pending in that epoch.  
+ <a href="classPds_1_1Eb_1_1EbEpoch.html#details">More...</a></p>
+
 <p><code>#include &lt;EbEpoch.hh&gt;</code></p>
 
 <p>Inherits Pds::LinkedList&lt; T &gt;.</p>
@@ -105,22 +108,30 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EbEpoch.html',''); i
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab854ecaf139066e4f71629f2b3a12704" id="r_ab854ecaf139066e4f71629f2b3a12704"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#ab854ecaf139066e4f71629f2b3a12704">EbEpoch</a> (uint64_t <a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#addd8f4f26535fc6806203d99977969b5">key</a>, <a class="el" href="classPds_1_1Eb_1_1EbEpoch.html">EbEpoch</a> *after)</td></tr>
+<tr class="memdesc:ab854ecaf139066e4f71629f2b3a12704"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with an empty pending list and the given key, and insert this epoch into the list after after.  <br /></td></tr>
 <tr class="separator:ab854ecaf139066e4f71629f2b3a12704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee1ee0787e17699688549d7f0fdb222e" id="r_aee1ee0787e17699688549d7f0fdb222e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#aee1ee0787e17699688549d7f0fdb222e">~EbEpoch</a> ()</td></tr>
+<tr class="memdesc:aee1ee0787e17699688549d7f0fdb222e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove this epoch from its list.  <br /></td></tr>
 <tr class="separator:aee1ee0787e17699688549d7f0fdb222e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37f573f26e8f861ba319a50941858b45" id="r_a37f573f26e8f861ba319a50941858b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#a37f573f26e8f861ba319a50941858b45">dump</a> (unsigned detail, int number)</td></tr>
+<tr class="memdesc:a37f573f26e8f861ba319a50941858b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print this epoch (with its list pointers when detail is non-zero) and its pending events (all of them when detail is non-zero, otherwise only the first) to stderr; number labels the epoch.  <br /></td></tr>
 <tr class="separator:a37f573f26e8f861ba319a50941858b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ab88b1bb9076c1053542efe8a648595e4" id="r_ab88b1bb9076c1053542efe8a648595e4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#ab88b1bb9076c1053542efe8a648595e4">PoolDeclare</a></td></tr>
+<tr class="memdesc:ab88b1bb9076c1053542efe8a648595e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro from <a class="el" href="Pool_8hh.html" title="Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class&#39;s n...">Pool.hh</a> that declares an operator new allocating from a <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pds::Pool</a> and an operator delete that returns the buffer to its pool.  <br /></td></tr>
 <tr class="separator:ab88b1bb9076c1053542efe8a648595e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af70e534008b2f6a9ccb705e84e38b738" id="r_af70e534008b2f6a9ccb705e84e38b738"><td class="memItemLeft" align="right" valign="top">LinkedList&lt; <a class="el" href="classPds_1_1Eb_1_1EbEvent.html">EbEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#af70e534008b2f6a9ccb705e84e38b738">pending</a></td></tr>
+<tr class="memdesc:af70e534008b2f6a9ccb705e84e38b738"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> head of the events pending in this epoch.  <br /></td></tr>
 <tr class="separator:af70e534008b2f6a9ccb705e84e38b738"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addd8f4f26535fc6806203d99977969b5" id="r_addd8f4f26535fc6806203d99977969b5"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbEpoch.html#addd8f4f26535fc6806203d99977969b5">key</a></td></tr>
+<tr class="memdesc:addd8f4f26535fc6806203d99977969b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Epoch sequence number (key).  <br /></td></tr>
 <tr class="separator:addd8f4f26535fc6806203d99977969b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> element for one epoch of the event builder; holds the list of events pending in that epoch. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab854ecaf139066e4f71629f2b3a12704" name="ab854ecaf139066e4f71629f2b3a12704"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab854ecaf139066e4f71629f2b3a12704">&#9670;&#160;</a></span>EbEpoch()</h2>
 
@@ -155,6 +166,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct with an empty pending list and the given key, and insert this epoch into the list after after. </p>
+
 </div>
 </div>
 <a id="aee1ee0787e17699688549d7f0fdb222e" name="aee1ee0787e17699688549d7f0fdb222e"></a>
@@ -179,6 +192,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Remove this epoch from its list. </p>
 
 </div>
 </div>
@@ -209,6 +224,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Print this epoch (with its list pointers when detail is non-zero) and its pending events (all of them when detail is non-zero, otherwise only the first) to stderr; number labels the epoch. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -224,6 +241,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Epoch sequence number (key). </p>
+
 </div>
 </div>
 <a id="af70e534008b2f6a9ccb705e84e38b738" name="af70e534008b2f6a9ccb705e84e38b738"></a>
@@ -238,6 +257,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classPds_1_1List.html" title="Head (label) of an intrusive doubly linked list of Entry objects; insert, jam and remove hold a spin ...">List</a> head of the events pending in this epoch. </p>
+
 </div>
 </div>
 <a id="ab88b1bb9076c1053542efe8a648595e4" name="ab88b1bb9076c1053542efe8a648595e4"></a>
@@ -251,6 +272,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Macro from <a class="el" href="Pool_8hh.html" title="Pool, the abstract base of fixed-size buffer pools, and the PoolDeclare macro that routes a class&#39;s n...">Pool.hh</a> that declares an operator new allocating from a <a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pds::Pool</a> and an operator delete that returns the buffer to its pool. </p>
 
 </div>
 </div>

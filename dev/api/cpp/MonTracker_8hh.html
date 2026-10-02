@@ -96,6 +96,9 @@ $(document).ready(function(){initNavTree('MonTracker_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">MonTracker.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>MonTracker, a PV monitor whose events are handled on a shared worker thread, with its WorkQueue and Worker interface.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;deque&gt;</code><br />
 <code>#include &quot;epicsEvent.h&quot;</code><br />
@@ -107,18 +110,24 @@ $(document).ready(function(){initNavTree('MonTracker_8hh.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds__Epics_1_1Worker.html">Pds_Epics::Worker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface for objects whose monitor events are processed on the <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  <a href="structPds__Epics_1_1Worker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1WorkQueue.html">Pds_Epics::WorkQueue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).  <a href="classPds__Epics_1_1WorkQueue.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds__Epics_1_1MonTracker.html">Pds_Epics::MonTracker</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitor of one PV whose events are handled on the shared <a class="el" href="classPds__Epics_1_1WorkQueue.html" title="Queue and thread that move monitor event handling off the pvAccess threads (per the code comment).">WorkQueue</a> thread.  <a href="classPds__Epics_1_1MonTracker.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacePds__Epics" id="r_namespacePds__Epics"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds__Epics.html">Pds_Epics</a></td></tr>
+<tr class="memdesc:namespacePds__Epics"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq EPICS client helpers (pvAccess and Channel Access). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>MonTracker, a PV monitor whose events are handled on a shared worker thread, with its WorkQueue and Worker interface. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

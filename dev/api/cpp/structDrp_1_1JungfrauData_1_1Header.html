@@ -97,38 +97,56 @@ $(document).ready(function(){initNavTree('structDrp_1_1JungfrauData_1_1Header.ht
 </div><!--header-->
 <div class="contents">
 
+<p>Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet.  
+ <a href="structDrp_1_1JungfrauData_1_1Header.html#details">More...</a></p>
+
 <p><code>#include &lt;JungfrauData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ab54279a0f03ad0dcf556703df92da857" id="r_ab54279a0f03ad0dcf556703df92da857"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#ab54279a0f03ad0dcf556703df92da857">framenum</a></td></tr>
+<tr class="memdesc:ab54279a0f03ad0dcf556703df92da857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frame number; Jungfrau.cc requires all packets of a frame to carry the same value.  <br /></td></tr>
 <tr class="separator:ab54279a0f03ad0dcf556703df92da857"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadbf5e3626452fc731f9ebc728ca681b" id="r_aadbf5e3626452fc731f9ebc728ca681b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#aadbf5e3626452fc731f9ebc728ca681b">exptime</a></td></tr>
+<tr class="memdesc:aadbf5e3626452fc731f9ebc728ca681b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exposure time. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:aadbf5e3626452fc731f9ebc728ca681b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa41562b1208f7548bbc2e26591f65f" id="r_afaa41562b1208f7548bbc2e26591f65f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#afaa41562b1208f7548bbc2e26591f65f">packetnum</a></td></tr>
+<tr class="memdesc:afaa41562b1208f7548bbc2e26591f65f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packet index within the frame; Jungfrau.cc copies the payload to offset packetnum * PayloadSize.  <br /></td></tr>
 <tr class="separator:afaa41562b1208f7548bbc2e26591f65f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08129568bd47ab76173bf4aa8bbb1c3d" id="r_a08129568bd47ab76173bf4aa8bbb1c3d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#a08129568bd47ab76173bf4aa8bbb1c3d">bunchid</a></td></tr>
+<tr class="memdesc:a08129568bd47ab76173bf4aa8bbb1c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bunch ID. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a08129568bd47ab76173bf4aa8bbb1c3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5114a624f9d4ab9ab8e756ee2530ee13" id="r_a5114a624f9d4ab9ab8e756ee2530ee13"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#a5114a624f9d4ab9ab8e756ee2530ee13">timestamp</a></td></tr>
+<tr class="memdesc:a5114a624f9d4ab9ab8e756ee2530ee13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp; Jungfrau.cc requires all packets of a frame to carry the same value.  <br /></td></tr>
 <tr class="separator:a5114a624f9d4ab9ab8e756ee2530ee13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab42ac203fe739d13c967e13d9820a65f" id="r_ab42ac203fe739d13c967e13d9820a65f"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#ab42ac203fe739d13c967e13d9820a65f">moduleID</a></td></tr>
+<tr class="memdesc:ab42ac203fe739d13c967e13d9820a65f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Module ID; Jungfrau.cc checks it against the expected module.  <br /></td></tr>
 <tr class="separator:ab42ac203fe739d13c967e13d9820a65f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2fe447316c8e8894f9b2d26a0dfd262" id="r_af2fe447316c8e8894f9b2d26a0dfd262"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#af2fe447316c8e8894f9b2d26a0dfd262">xCoord</a></td></tr>
+<tr class="memdesc:af2fe447316c8e8894f9b2d26a0dfd262"><td class="mdescLeft">&#160;</td><td class="mdescRight">X coordinate. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:af2fe447316c8e8894f9b2d26a0dfd262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3bf69c4eceb69c92ee9784f6f81e7b9" id="r_ab3bf69c4eceb69c92ee9784f6f81e7b9"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#ab3bf69c4eceb69c92ee9784f6f81e7b9">yCoord</a></td></tr>
+<tr class="memdesc:ab3bf69c4eceb69c92ee9784f6f81e7b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Y coordinate. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:ab3bf69c4eceb69c92ee9784f6f81e7b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af08b3eaf87c42377e24a0d53d7f92def" id="r_af08b3eaf87c42377e24a0d53d7f92def"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#af08b3eaf87c42377e24a0d53d7f92def">zCoord</a></td></tr>
+<tr class="memdesc:af08b3eaf87c42377e24a0d53d7f92def"><td class="mdescLeft">&#160;</td><td class="mdescRight">Z coordinate. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:af08b3eaf87c42377e24a0d53d7f92def"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72643041ae1fbb1392cd83fcd0724c4c" id="r_a72643041ae1fbb1392cd83fcd0724c4c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#a72643041ae1fbb1392cd83fcd0724c4c">debug</a></td></tr>
+<tr class="memdesc:a72643041ae1fbb1392cd83fcd0724c4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug word. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a72643041ae1fbb1392cd83fcd0724c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa550d28b09414dbcae484aafd00b04a7" id="r_aa550d28b09414dbcae484aafd00b04a7"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#aa550d28b09414dbcae484aafd00b04a7">roundRobin</a></td></tr>
+<tr class="memdesc:aa550d28b09414dbcae484aafd00b04a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Round-robin value. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:aa550d28b09414dbcae484aafd00b04a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78b26ecb02a6bebf9359747c34d088c0" id="r_a78b26ecb02a6bebf9359747c34d088c0"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#a78b26ecb02a6bebf9359747c34d088c0">detectortype</a></td></tr>
+<tr class="memdesc:a78b26ecb02a6bebf9359747c34d088c0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> type code. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a78b26ecb02a6bebf9359747c34d088c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bef43f2729f7e546fa2d6b5d74dc456" id="r_a2bef43f2729f7e546fa2d6b5d74dc456"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html#a2bef43f2729f7e546fa2d6b5d74dc456">headerVersion</a></td></tr>
+<tr class="memdesc:a2bef43f2729f7e546fa2d6b5d74dc456"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html" title="Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet.">Header</a> version. Inferred from the name; not verified in code.  <br /></td></tr>
 <tr class="separator:a2bef43f2729f7e546fa2d6b5d74dc456"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a08129568bd47ab76173bf4aa8bbb1c3d" name="a08129568bd47ab76173bf4aa8bbb1c3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a08129568bd47ab76173bf4aa8bbb1c3d">&#9670;&#160;</a></span>bunchid</h2>
 
@@ -140,6 +158,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Bunch ID. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -155,6 +175,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Debug word. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="a78b26ecb02a6bebf9359747c34d088c0" name="a78b26ecb02a6bebf9359747c34d088c0"></a>
@@ -168,6 +190,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> type code. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -183,6 +207,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Exposure time. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="ab54279a0f03ad0dcf556703df92da857" name="ab54279a0f03ad0dcf556703df92da857"></a>
@@ -196,6 +222,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Frame number; Jungfrau.cc requires all packets of a frame to carry the same value. </p>
 
 </div>
 </div>
@@ -211,6 +239,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="structDrp_1_1JungfrauData_1_1Header.html" title="Packet header, packed to 2-byte alignment, that precedes the pixel data of each packet.">Header</a> version. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="ab42ac203fe739d13c967e13d9820a65f" name="ab42ac203fe739d13c967e13d9820a65f"></a>
@@ -224,6 +254,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Module ID; Jungfrau.cc checks it against the expected module. </p>
 
 </div>
 </div>
@@ -239,6 +271,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Packet index within the frame; Jungfrau.cc copies the payload to offset packetnum * PayloadSize. </p>
+
 </div>
 </div>
 <a id="aa550d28b09414dbcae484aafd00b04a7" name="aa550d28b09414dbcae484aafd00b04a7"></a>
@@ -252,6 +286,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Round-robin value. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -267,6 +303,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Timestamp; Jungfrau.cc requires all packets of a frame to carry the same value. </p>
+
 </div>
 </div>
 <a id="af2fe447316c8e8894f9b2d26a0dfd262" name="af2fe447316c8e8894f9b2d26a0dfd262"></a>
@@ -280,6 +318,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>X coordinate. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>
@@ -295,6 +335,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Y coordinate. Inferred from the name; not verified in code. </p>
+
 </div>
 </div>
 <a id="af08b3eaf87c42377e24a0d53d7f92def" name="af08b3eaf87c42377e24a0d53d7f92def"></a>
@@ -308,6 +350,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Z coordinate. Inferred from the name; not verified in code. </p>
 
 </div>
 </div>

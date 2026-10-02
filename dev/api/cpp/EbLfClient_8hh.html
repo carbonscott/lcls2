@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('EbLfClient_8hh.html',''); initResizabl
   <div class="headertitle"><div class="title">EbLfClient.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>EbLfClient, which opens client-side libfabric links (EbLfCltLink) to event-builder servers, and helpers that connect and configure a set of such links.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="EbLfLink_8hh.html">EbLfLink.hh</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -104,6 +107,7 @@ $(document).ready(function(){initNavTree('EbLfClient_8hh.html',''); initResizabl
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EbLfClient.html">Pds::Eb::EbLfClient</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and tears down client-side <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html" title="Client side of an EbLfLink; writes data into the server&#39;s registered memory with RDMA.">EbLfCltLink</a> connections; all its links share one pending word and one posting word.  <a href="classPds_1_1Eb_1_1EbLfClient.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -112,18 +116,24 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ac166136b2a2eb60750f702396e483a73" id="r_ac166136b2a2eb60750f702396e483a73"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#ac166136b2a2eb60750f702396e483a73">Pds::Eb::linksConnect</a> (<a class="el" href="classPds_1_1Eb_1_1EbLfClient.html">EbLfClient</a> &amp;transport, std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, const std::vector&lt; std::string &gt; &amp;addrs, const std::vector&lt; std::string &gt; &amp;ports, unsigned id, const char *name)</td></tr>
+<tr class="memdesc:ac166136b2a2eb60750f702396e483a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect transport to every addrs[i]:ports[i] (14750 ms timeout each), then exchange IDs on each link and store it in links at the index of the remote ID.  <br /></td></tr>
 <tr class="separator:ac166136b2a2eb60750f702396e483a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e83d4cbb36cbf5ef7f2e122f6a30621" id="r_a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0e83d4cbb36cbf5ef7f2e122f6a30621">Pds::Eb::linksConfigure</a> (std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, void *region, size_t regSize, const char *name)</td></tr>
+<tr class="memdesc:a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call linksConfigure(links, region, regSize, regSize, name).  <br /></td></tr>
 <tr class="separator:a0e83d4cbb36cbf5ef7f2e122f6a30621"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06490859cf5df1f2e820cb7b0f370024" id="r_a06490859cf5df1f2e820cb7b0f370024"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a06490859cf5df1f2e820cb7b0f370024">Pds::Eb::linksConfigure</a> (std::vector&lt; <a class="el" href="classPds_1_1Eb_1_1EbLfCltLink.html">EbLfCltLink</a> * &gt; &amp;links, void *region, size_t lclSize, size_t rmtSize, const char *name)</td></tr>
+<tr class="memdesc:a06490859cf5df1f2e820cb7b0f370024"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call EbLfCltLink::prepare(region, lclSize, rmtSize, name) on every link and log the configured region.  <br /></td></tr>
 <tr class="separator:a06490859cf5df1f2e820cb7b0f370024"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>EbLfClient, which opens client-side libfabric links (EbLfCltLink) to event-builder servers, and helpers that connect and configure a set of such links. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

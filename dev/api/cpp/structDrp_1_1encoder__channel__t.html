@@ -102,22 +102,31 @@ $(document).ready(function(){initNavTree('structDrp_1_1encoder__channel__t.html'
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a412a10dd13a807827e8811ab02a84c8e" id="r_a412a10dd13a807827e8811ab02a84c8e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#a412a10dd13a807827e8811ab02a84c8e">encoderValue</a></td></tr>
+<tr class="memdesc:a412a10dd13a807827e8811ab02a84c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoder value, in network byte order on the wire; converted by <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> and recorded as encoderValue.  <br /></td></tr>
 <tr class="separator:a412a10dd13a807827e8811ab02a84c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc475473b5853d1840c46cb832840c71" id="r_acc475473b5853d1840c46cb832840c71"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#acc475473b5853d1840c46cb832840c71">timing</a></td></tr>
+<tr class="memdesc:acc475473b5853d1840c46cb832840c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timing value, in network byte order on the wire; converted and recorded as timing.  <br /></td></tr>
 <tr class="separator:acc475473b5853d1840c46cb832840c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87d41effaaa685f26863121eea86d8ac" id="r_a87d41effaaa685f26863121eea86d8ac"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#a87d41effaaa685f26863121eea86d8ac">scale</a></td></tr>
+<tr class="memdesc:a87d41effaaa685f26863121eea86d8ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale, in network byte order on the wire; converted and recorded as scale.  <br /></td></tr>
 <tr class="separator:a87d41effaaa685f26863121eea86d8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92f7533d6c63718426569b8e108a7579" id="r_a92f7533d6c63718426569b8e108a7579"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#a92f7533d6c63718426569b8e108a7579">hardwareID</a> [16]</td></tr>
+<tr class="memdesc:a92f7533d6c63718426569b8e108a7579"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channel hardware ID text (16 bytes); not read in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:a92f7533d6c63718426569b8e108a7579"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad04bc4c567f10bbb62cb60df66dc9e4a" id="r_ad04bc4c567f10bbb62cb60df66dc9e4a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#ad04bc4c567f10bbb62cb60df66dc9e4a">reserved1</a></td></tr>
+<tr class="memdesc:ad04bc4c567f10bbb62cb60df66dc9e4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">One byte named reserved1; not used in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:ad04bc4c567f10bbb62cb60df66dc9e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1c8b1eccacc0fc6902022b2b22f4b9" id="r_aff1c8b1eccacc0fc6902022b2b22f4b9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#aff1c8b1eccacc0fc6902022b2b22f4b9">channel</a></td></tr>
+<tr class="memdesc:aff1c8b1eccacc0fc6902022b2b22f4b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Channel number; not read in UdpEncoder.cc.  <br /></td></tr>
 <tr class="separator:aff1c8b1eccacc0fc6902022b2b22f4b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4285495add36525c3e342bae591c29a" id="r_ae4285495add36525c3e342bae591c29a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#ae4285495add36525c3e342bae591c29a">error</a></td></tr>
+<tr class="memdesc:ae4285495add36525c3e342bae591c29a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error byte; recorded as error.  <br /></td></tr>
 <tr class="separator:ae4285495add36525c3e342bae591c29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1177a266f53f18a01701ddf4144eb645" id="r_a1177a266f53f18a01701ddf4144eb645"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#a1177a266f53f18a01701ddf4144eb645">mode</a></td></tr>
+<tr class="memdesc:a1177a266f53f18a01701ddf4144eb645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mode byte; recorded as mode.  <br /></td></tr>
 <tr class="separator:a1177a266f53f18a01701ddf4144eb645"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee4661766321dbbb147e99f2e63121ba" id="r_aee4661766321dbbb147e99f2e63121ba"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1encoder__channel__t.html#aee4661766321dbbb147e99f2e63121ba">scaleDenom</a></td></tr>
+<tr class="memdesc:aee4661766321dbbb147e99f2e63121ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scale denominator, in network byte order on the wire; converted and recorded as scaleDenom.  <br /></td></tr>
 <tr class="separator:aee4661766321dbbb147e99f2e63121ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -133,6 +142,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Channel number; not read in UdpEncoder.cc. </p>
+
 </div>
 </div>
 <a id="a412a10dd13a807827e8811ab02a84c8e" name="a412a10dd13a807827e8811ab02a84c8e"></a>
@@ -146,6 +157,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Encoder value, in network byte order on the wire; converted by <a class="el" href="classDrp_1_1UdpReceiver.html" title="Receives encoder frames on a UDP socket in its own thread, stores each one as a Dgram in a queue,...">UdpReceiver</a> and recorded as encoderValue. </p>
 
 </div>
 </div>
@@ -161,6 +174,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Error byte; recorded as error. </p>
+
 </div>
 </div>
 <a id="a92f7533d6c63718426569b8e108a7579" name="a92f7533d6c63718426569b8e108a7579"></a>
@@ -174,6 +189,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Channel hardware ID text (16 bytes); not read in UdpEncoder.cc. </p>
 
 </div>
 </div>
@@ -189,6 +206,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Mode byte; recorded as mode. </p>
+
 </div>
 </div>
 <a id="ad04bc4c567f10bbb62cb60df66dc9e4a" name="ad04bc4c567f10bbb62cb60df66dc9e4a"></a>
@@ -202,6 +221,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>One byte named reserved1; not used in UdpEncoder.cc. </p>
 
 </div>
 </div>
@@ -217,6 +238,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Scale, in network byte order on the wire; converted and recorded as scale. </p>
+
 </div>
 </div>
 <a id="aee4661766321dbbb147e99f2e63121ba" name="aee4661766321dbbb147e99f2e63121ba"></a>
@@ -231,6 +254,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Scale denominator, in network byte order on the wire; converted and recorded as scaleDenom. </p>
+
 </div>
 </div>
 <a id="acc475473b5853d1840c46cb832840c71" name="acc475473b5853d1840c46cb832840c71"></a>
@@ -244,6 +269,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Timing value, in network byte order on the wire; converted and recorded as timing. </p>
 
 </div>
 </div>

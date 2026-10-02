@@ -97,34 +97,50 @@ $(document).ready(function(){initNavTree('classDrp_1_1FileParameters.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Values needed to build data file names for a run: output directory, instrument, run number, experiment name, host name, node ID and chunk ID.  
+ <a href="classDrp_1_1FileParameters.html#details">More...</a></p>
+
 <p><code>#include &lt;DrpBase.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a24d91414e67b5e15cafb2b0ce61e7b1f" id="r_a24d91414e67b5e15cafb2b0ce61e7b1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a24d91414e67b5e15cafb2b0ce61e7b1f">FileParameters</a> ()</td></tr>
+<tr class="memdesc:a24d91414e67b5e15cafb2b0ce61e7b1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set every member to the placeholder value 777 (strings to the text 777).  <br /></td></tr>
 <tr class="separator:a24d91414e67b5e15cafb2b0ce61e7b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56a0ace98f2fbeca049c4c8709e00ad4" id="r_a56a0ace98f2fbeca049c4c8709e00ad4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a56a0ace98f2fbeca049c4c8709e00ad4">FileParameters</a> (const <a class="el" href="structDrp_1_1Parameters.html">Parameters</a> &amp;para, const <a class="el" href="structDrp_1_1RunInfo.html">RunInfo</a> &amp;runInfo, std::string <a class="el" href="classDrp_1_1FileParameters.html#ae069598952165404dac768e97a859422">hostname</a>, unsigned <a class="el" href="classDrp_1_1FileParameters.html#a487a353247f1a6f7bd74d33707f55b58">nodeId</a>)</td></tr>
+<tr class="memdesc:a56a0ace98f2fbeca049c4c8709e00ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take the output directory and instrument from para and the run number and experiment name from runInfo, and store hostname and nodeId; the chunk ID starts at 0.  <br /></td></tr>
 <tr class="separator:a56a0ace98f2fbeca049c4c8709e00ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e76ce326cdde7202cbe5d4e9982dd35" id="r_a9e76ce326cdde7202cbe5d4e9982dd35"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a9e76ce326cdde7202cbe5d4e9982dd35">advanceChunkId</a> ()</td></tr>
+<tr class="memdesc:a9e76ce326cdde7202cbe5d4e9982dd35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increment the chunk ID; always returns true.  <br /></td></tr>
 <tr class="separator:a9e76ce326cdde7202cbe5d4e9982dd35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b1d0145234db20b67f684854ed35ac4" id="r_a6b1d0145234db20b67f684854ed35ac4"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a6b1d0145234db20b67f684854ed35ac4">outputDir</a> () const</td></tr>
+<tr class="memdesc:a6b1d0145234db20b67f684854ed35ac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the output directory.  <br /></td></tr>
 <tr class="separator:a6b1d0145234db20b67f684854ed35ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68a8438739c96f31b4aafba51ab4028a" id="r_a68a8438739c96f31b4aafba51ab4028a"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a68a8438739c96f31b4aafba51ab4028a">instrument</a> () const</td></tr>
+<tr class="memdesc:a68a8438739c96f31b4aafba51ab4028a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the instrument name.  <br /></td></tr>
 <tr class="separator:a68a8438739c96f31b4aafba51ab4028a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9b16defac676488f956bda831d24d14" id="r_ad9b16defac676488f956bda831d24d14"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#ad9b16defac676488f956bda831d24d14">runNumber</a> () const</td></tr>
+<tr class="memdesc:ad9b16defac676488f956bda831d24d14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the run number.  <br /></td></tr>
 <tr class="separator:ad9b16defac676488f956bda831d24d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3acbd167e519037b89d34869a11d8ccc" id="r_a3acbd167e519037b89d34869a11d8ccc"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a3acbd167e519037b89d34869a11d8ccc">experimentName</a> () const</td></tr>
+<tr class="memdesc:a3acbd167e519037b89d34869a11d8ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the experiment name.  <br /></td></tr>
 <tr class="separator:a3acbd167e519037b89d34869a11d8ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae069598952165404dac768e97a859422" id="r_ae069598952165404dac768e97a859422"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#ae069598952165404dac768e97a859422">hostname</a> () const</td></tr>
+<tr class="memdesc:ae069598952165404dac768e97a859422"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the host name given to the constructor.  <br /></td></tr>
 <tr class="separator:ae069598952165404dac768e97a859422"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a487a353247f1a6f7bd74d33707f55b58" id="r_a487a353247f1a6f7bd74d33707f55b58"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a487a353247f1a6f7bd74d33707f55b58">nodeId</a> () const</td></tr>
+<tr class="memdesc:a487a353247f1a6f7bd74d33707f55b58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the node ID given to the constructor.  <br /></td></tr>
 <tr class="separator:a487a353247f1a6f7bd74d33707f55b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f8ece0fd597c204cd83f7e3a381b409" id="r_a2f8ece0fd597c204cd83f7e3a381b409"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#a2f8ece0fd597c204cd83f7e3a381b409">chunkId</a> () const</td></tr>
+<tr class="memdesc:a2f8ece0fd597c204cd83f7e3a381b409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current chunk ID.  <br /></td></tr>
 <tr class="separator:a2f8ece0fd597c204cd83f7e3a381b409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6af2ea6cfbc63ca862b49f4a9952d9b" id="r_af6af2ea6cfbc63ca862b49f4a9952d9b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1FileParameters.html#af6af2ea6cfbc63ca862b49f4a9952d9b">runName</a> () const</td></tr>
+<tr class="memdesc:af6af2ea6cfbc63ca862b49f4a9952d9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the run name experiment-rNNNN-sNNN-cNNN, built from the experiment name, run number (4 digits), node ID (3 digits) and chunk ID (3 digits), zero-padded.  <br /></td></tr>
 <tr class="separator:af6af2ea6cfbc63ca862b49f4a9952d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Values needed to build data file names for a run: output directory, instrument, run number, experiment name, host name, node ID and chunk ID. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a24d91414e67b5e15cafb2b0ce61e7b1f" name="a24d91414e67b5e15cafb2b0ce61e7b1f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a24d91414e67b5e15cafb2b0ce61e7b1f">&#9670;&#160;</a></span>FileParameters() <span class="overload">[1/2]</span></h2>
 
@@ -147,6 +163,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set every member to the placeholder value 777 (strings to the text 777). </p>
 
 </div>
 </div>
@@ -196,6 +214,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Take the output directory and instrument from para and the run number and experiment name from runInfo, and store hostname and nodeId; the chunk ID starts at 0. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -222,6 +242,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Increment the chunk ID; always returns true. </p>
+
 </div>
 </div>
 <a id="a2f8ece0fd597c204cd83f7e3a381b409" name="a2f8ece0fd597c204cd83f7e3a381b409"></a>
@@ -246,6 +268,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the current chunk ID. </p>
 
 </div>
 </div>
@@ -272,6 +296,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the experiment name. </p>
+
 </div>
 </div>
 <a id="ae069598952165404dac768e97a859422" name="ae069598952165404dac768e97a859422"></a>
@@ -296,6 +322,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the host name given to the constructor. </p>
 
 </div>
 </div>
@@ -322,6 +350,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the instrument name. </p>
+
 </div>
 </div>
 <a id="a487a353247f1a6f7bd74d33707f55b58" name="a487a353247f1a6f7bd74d33707f55b58"></a>
@@ -346,6 +376,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the node ID given to the constructor. </p>
 
 </div>
 </div>
@@ -372,6 +404,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the output directory. </p>
+
 </div>
 </div>
 <a id="af6af2ea6cfbc63ca862b49f4a9952d9b" name="af6af2ea6cfbc63ca862b49f4a9952d9b"></a>
@@ -388,6 +422,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Return the run name experiment-rNNNN-sNNN-cNNN, built from the experiment name, run number (4 digits), node ID (3 digits) and chunk ID (3 digits), zero-padded. </p>
 
 </div>
 </div>
@@ -413,6 +449,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the run number. </p>
 
 </div>
 </div>

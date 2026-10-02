@@ -98,59 +98,86 @@ $(document).ready(function(){initNavTree('structDrp_1_1Parameters.html',''); ini
 </div><!--header-->
 <div class="contents">
 
+<p>Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executables) and from the connect information.  
+ <a href="structDrp_1_1Parameters.html#details">More...</a></p>
+
 <p><code>#include &lt;drp.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7b976c1fd1dad5ad2f8c067234908f94" id="r_a7b976c1fd1dad5ad2f8c067234908f94"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a7b976c1fd1dad5ad2f8c067234908f94">Parameters</a> ()</td></tr>
+<tr class="memdesc:a7b976c1fd1dad5ad2f8c067234908f94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set partition to -1u (unset), nworkers to 10, nCubeWorkers to 0, detSegment to 0, laneMask to 0x1, loopbackPort to 0 and verbose to 0.  <br /></td></tr>
 <tr class="separator:a7b976c1fd1dad5ad2f8c067234908f94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a2f292a35cbe1a1913b4fbbad8a48b7ed" id="r_a2f292a35cbe1a1913b4fbbad8a48b7ed"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a2f292a35cbe1a1913b4fbbad8a48b7ed">partition</a></td></tr>
+<tr class="memdesc:a2f292a35cbe1a1913b4fbbad8a48b7ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partition number (-p option in drp.cc; -1u means unset). DrpBase.cc also treats bit (1 &lt;&lt; partition) of the readout groups as the common readout group.  <br /></td></tr>
 <tr class="separator:a2f292a35cbe1a1913b4fbbad8a48b7ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae3f74f9f09b44c1d514a400ffcd885a" id="r_aae3f74f9f09b44c1d514a400ffcd885a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#aae3f74f9f09b44c1d514a400ffcd885a">nworkers</a></td></tr>
+<tr class="memdesc:aae3f74f9f09b44c1d514a400ffcd885a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of workers (-W option in drp.cc; default 10).  <br /></td></tr>
 <tr class="separator:aae3f74f9f09b44c1d514a400ffcd885a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adaea3aa8a30b8c70e03dfacef776cf23" id="r_adaea3aa8a30b8c70e03dfacef776cf23"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#adaea3aa8a30b8c70e03dfacef776cf23">nCubeWorkers</a></td></tr>
+<tr class="memdesc:adaea3aa8a30b8c70e03dfacef776cf23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of cube workers (-Q option in drp.cc; default 0).  <br /></td></tr>
 <tr class="separator:adaea3aa8a30b8c70e03dfacef776cf23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3030dc2cb44b23e30981679c3ca88e8a" id="r_a3030dc2cb44b23e30981679c3ca88e8a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a3030dc2cb44b23e30981679c3ca88e8a">batchSize</a></td></tr>
+<tr class="memdesc:a3030dc2cb44b23e30981679c3ca88e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structDrp_1_1Batch.html" title="A run of consecutive events (by event counter) handed to one worker.">Batch</a> size; drp.cc sets it to 32 (its comment says it must be a power of 2).  <br /></td></tr>
 <tr class="separator:a3030dc2cb44b23e30981679c3ca88e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8b11b9b5e780af23d3d3cbacb8f957d" id="r_ae8b11b9b5e780af23d3d3cbacb8f957d"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#ae8b11b9b5e780af23d3d3cbacb8f957d">detSegment</a></td></tr>
+<tr class="memdesc:ae8b11b9b5e780af23d3d3cbacb8f957d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> segment number; drp.cc parses it from the _N suffix of alias.  <br /></td></tr>
 <tr class="separator:ae8b11b9b5e780af23d3d3cbacb8f957d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01525899cf413a0b116ad2075877b154" id="r_a01525899cf413a0b116ad2075877b154"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a01525899cf413a0b116ad2075877b154">laneMask</a></td></tr>
+<tr class="memdesc:a01525899cf413a0b116ad2075877b154"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit mask of the PGP lanes in use (-l option in drp.cc, hexadecimal; default 0x1).  <br /></td></tr>
 <tr class="separator:a01525899cf413a0b116ad2075877b154"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbd6a8ef3ea1231787a73ff76f93330b" id="r_adbd6a8ef3ea1231787a73ff76f93330b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#adbd6a8ef3ea1231787a73ff76f93330b">alias</a></td></tr>
+<tr class="memdesc:adbd6a8ef3ea1231787a73ff76f93330b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique name of the form detName_N (-u option in drp.cc).  <br /></td></tr>
 <tr class="separator:adbd6a8ef3ea1231787a73ff76f93330b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedb06d39579fd57e3cdf1d1827ccf68e" id="r_aedb06d39579fd57e3cdf1d1827ccf68e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#aedb06d39579fd57e3cdf1d1827ccf68e">detName</a></td></tr>
+<tr class="memdesc:aedb06d39579fd57e3cdf1d1827ccf68e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> name; drp.cc takes it from alias without the _N suffix.  <br /></td></tr>
 <tr class="separator:aedb06d39579fd57e3cdf1d1827ccf68e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66758605f4b17fb52591b02d0bc9dd78" id="r_a66758605f4b17fb52591b02d0bc9dd78"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a66758605f4b17fb52591b02d0bc9dd78">device</a></td></tr>
+<tr class="memdesc:a66758605f4b17fb52591b02d0bc9dd78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Device file to open, for example by <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a> (-d option in drp.cc).  <br /></td></tr>
 <tr class="separator:a66758605f4b17fb52591b02d0bc9dd78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d09625cad17b111f1e11b67552cb0f5" id="r_a7d09625cad17b111f1e11b67552cb0f5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a7d09625cad17b111f1e11b67552cb0f5">outputDir</a></td></tr>
+<tr class="memdesc:a7d09625cad17b111f1e11b67552cb0f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output directory (-o option in drp.cc).  <br /></td></tr>
 <tr class="separator:a7d09625cad17b111f1e11b67552cb0f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32f1f8e4a9ead3f62411e5b00ea8e604" id="r_a32f1f8e4a9ead3f62411e5b00ea8e604"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a32f1f8e4a9ead3f62411e5b00ea8e604">instrument</a></td></tr>
+<tr class="memdesc:a32f1f8e4a9ead3f62411e5b00ea8e604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instrument name with any :station suffix removed (-P option in drp.cc).  <br /></td></tr>
 <tr class="separator:a32f1f8e4a9ead3f62411e5b00ea8e604"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78857bd975ac6a87cb3e9eb5e04f6454" id="r_a78857bd975ac6a87cb3e9eb5e04f6454"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a78857bd975ac6a87cb3e9eb5e04f6454">detType</a></td></tr>
+<tr class="memdesc:a78857bd975ac6a87cb3e9eb5e04f6454"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted.  <br /></td></tr>
 <tr class="separator:a78857bd975ac6a87cb3e9eb5e04f6454"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7f70e402f0d2b83746770234be47a9f" id="r_af7f70e402f0d2b83746770234be47a9f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#af7f70e402f0d2b83746770234be47a9f">serNo</a></td></tr>
+<tr class="memdesc:af7f70e402f0d2b83746770234be47a9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serial number string (-S option in drp.cc).  <br /></td></tr>
 <tr class="separator:af7f70e402f0d2b83746770234be47a9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa38726805bbe315c6d0a14586a281405" id="r_aa38726805bbe315c6d0a14586a281405"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#aa38726805bbe315c6d0a14586a281405">collectionHost</a></td></tr>
+<tr class="memdesc:aa38726805bbe315c6d0a14586a281405"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host of the collection server (-C option in drp.cc).  <br /></td></tr>
 <tr class="separator:aa38726805bbe315c6d0a14586a281405"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb69142cffff70466289214a4f5d7b3d" id="r_adb69142cffff70466289214a4f5d7b3d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#adb69142cffff70466289214a4f5d7b3d">prometheusDir</a></td></tr>
+<tr class="memdesc:adb69142cffff70466289214a4f5d7b3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prometheus configuration directory (-M option in drp.cc).  <br /></td></tr>
 <tr class="separator:adb69142cffff70466289214a4f5d7b3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad780a1bb7605bdfce5cbd5ae2ac75e22" id="r_ad780a1bb7605bdfce5cbd5ae2ac75e22"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#ad780a1bb7605bdfce5cbd5ae2ac75e22">kwargs</a></td></tr>
+<tr class="memdesc:ad780a1bb7605bdfce5cbd5ae2ac75e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyword arguments parsed from the -k options.  <br /></td></tr>
 <tr class="separator:ad780a1bb7605bdfce5cbd5ae2ac75e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc2f97e23e010c17faaed0c9b8caa62e" id="r_afc2f97e23e010c17faaed0c9b8caa62e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#afc2f97e23e010c17faaed0c9b8caa62e">rogMask</a></td></tr>
+<tr class="memdesc:afc2f97e23e010c17faaed0c9b8caa62e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Readout group mask built by DrpBase.cc from the connect information (0x00ff0000 plus one bit per readout group in use); SlowUpdates missing any of these groups are dropped.  <br /></td></tr>
 <tr class="separator:afc2f97e23e010c17faaed0c9b8caa62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8318f30aa9100b7dba6071ab1e3e9013" id="r_a8318f30aa9100b7dba6071ab1e3e9013"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a8318f30aa9100b7dba6071ab1e3e9013">loopbackPort</a></td></tr>
+<tr class="memdesc:a8318f30aa9100b7dba6071ab1e3e9013"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loopback data port used by <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> when non-zero (default 0).  <br /></td></tr>
 <tr class="separator:a8318f30aa9100b7dba6071ab1e3e9013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6301cb500c666752c4e38e9d9fceb10" id="r_ac6301cb500c666752c4e38e9d9fceb10"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#ac6301cb500c666752c4e38e9d9fceb10">verbose</a></td></tr>
+<tr class="memdesc:ac6301cb500c666752c4e38e9d9fceb10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verbosity level (each -v in drp.cc adds one; default 0).  <br /></td></tr>
 <tr class="separator:ac6301cb500c666752c4e38e9d9fceb10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad18186f81f94d98bb62ca3a809758832" id="r_ad18186f81f94d98bb62ca3a809758832"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#ad18186f81f94d98bb62ca3a809758832">maxTrSize</a></td></tr>
+<tr class="memdesc:ad18186f81f94d98bb62ca3a809758832"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum transition datagram size in bytes; drp.cc sets 8 MiB and several other executables 256 KiB.  <br /></td></tr>
 <tr class="separator:ad18186f81f94d98bb62ca3a809758832"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79d9e8247fec5b104020e264eb1f8326" id="r_a79d9e8247fec5b104020e264eb1f8326"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Parameters.html#a79d9e8247fec5b104020e264eb1f8326">cubeKeepRaw</a></td></tr>
+<tr class="memdesc:a79d9e8247fec5b104020e264eb1f8326"><td class="mdescLeft">&#160;</td><td class="mdescRight">True when the -Q value in drp.cc is followed by a plus sign.  <br /></td></tr>
 <tr class="separator:a79d9e8247fec5b104020e264eb1f8326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Settings of a DRP process, filled mostly from command-line options (drp.cc and the other DRP executables) and from the connect information. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7b976c1fd1dad5ad2f8c067234908f94" name="a7b976c1fd1dad5ad2f8c067234908f94"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7b976c1fd1dad5ad2f8c067234908f94">&#9670;&#160;</a></span>Parameters()</h2>
 
@@ -174,6 +201,9 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set partition to -1u (unset), nworkers to 10, nCubeWorkers to 0, detSegment to 0, laneMask to 0x1, loopbackPort to 0 and verbose to 0. </p>
+<p>batchSize, rogMask, maxTrSize and cubeKeepRaw are not initialized here. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -189,6 +219,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Unique name of the form detName_N (-u option in drp.cc). </p>
+
 </div>
 </div>
 <a id="a3030dc2cb44b23e30981679c3ca88e8a" name="a3030dc2cb44b23e30981679c3ca88e8a"></a>
@@ -202,6 +234,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="structDrp_1_1Batch.html" title="A run of consecutive events (by event counter) handed to one worker.">Batch</a> size; drp.cc sets it to 32 (its comment says it must be a power of 2). </p>
 
 </div>
 </div>
@@ -217,6 +251,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Host of the collection server (-C option in drp.cc). </p>
+
 </div>
 </div>
 <a id="a79d9e8247fec5b104020e264eb1f8326" name="a79d9e8247fec5b104020e264eb1f8326"></a>
@@ -230,6 +266,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>True when the -Q value in drp.cc is followed by a plus sign. </p>
 
 </div>
 </div>
@@ -245,6 +283,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> name; drp.cc takes it from alias without the _N suffix. </p>
+
 </div>
 </div>
 <a id="ae8b11b9b5e780af23d3d3cbacb8f957d" name="ae8b11b9b5e780af23d3d3cbacb8f957d"></a>
@@ -258,6 +298,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> segment number; drp.cc parses it from the _N suffix of alias. </p>
 
 </div>
 </div>
@@ -273,6 +315,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p><a class="el" href="classDrp_1_1Detector.html" title="Abstract base of the DRP detector classes: transition hooks (most default to doing nothing and return...">Detector</a> type string (-D option in drp.cc); drp.cc uses it to decide which kwargs are accepted. </p>
+
 </div>
 </div>
 <a id="a66758605f4b17fb52591b02d0bc9dd78" name="a66758605f4b17fb52591b02d0bc9dd78"></a>
@@ -286,6 +330,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Device file to open, for example by <a class="el" href="classDrp_1_1MemPoolCpu.html" title="MemPool for a PGP card accessed from the CPU: opens the device and maps its DMA buffers.">MemPoolCpu</a> (-d option in drp.cc). </p>
 
 </div>
 </div>
@@ -301,6 +347,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Instrument name with any :station suffix removed (-P option in drp.cc). </p>
+
 </div>
 </div>
 <a id="ad780a1bb7605bdfce5cbd5ae2ac75e22" name="ad780a1bb7605bdfce5cbd5ae2ac75e22"></a>
@@ -314,6 +362,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Keyword arguments parsed from the -k options. </p>
 
 </div>
 </div>
@@ -329,6 +379,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Bit mask of the PGP lanes in use (-l option in drp.cc, hexadecimal; default 0x1). </p>
+
 </div>
 </div>
 <a id="a8318f30aa9100b7dba6071ab1e3e9013" name="a8318f30aa9100b7dba6071ab1e3e9013"></a>
@@ -342,6 +394,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Loopback data port used by <a class="el" href="classDrp_1_1UdpEncoder.html" title="XpmDetector for a UDP encoder: owns the UdpReceiver and records each frame as raw and,...">UdpEncoder</a> when non-zero (default 0). </p>
 
 </div>
 </div>
@@ -357,6 +411,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Maximum transition datagram size in bytes; drp.cc sets 8 MiB and several other executables 256 KiB. </p>
+
 </div>
 </div>
 <a id="adaea3aa8a30b8c70e03dfacef776cf23" name="adaea3aa8a30b8c70e03dfacef776cf23"></a>
@@ -370,6 +426,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of cube workers (-Q option in drp.cc; default 0). </p>
 
 </div>
 </div>
@@ -385,6 +443,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Number of workers (-W option in drp.cc; default 10). </p>
+
 </div>
 </div>
 <a id="a7d09625cad17b111f1e11b67552cb0f5" name="a7d09625cad17b111f1e11b67552cb0f5"></a>
@@ -398,6 +458,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Output directory (-o option in drp.cc). </p>
 
 </div>
 </div>
@@ -413,6 +475,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Partition number (-p option in drp.cc; -1u means unset). DrpBase.cc also treats bit (1 &lt;&lt; partition) of the readout groups as the common readout group. </p>
+
 </div>
 </div>
 <a id="adb69142cffff70466289214a4f5d7b3d" name="adb69142cffff70466289214a4f5d7b3d"></a>
@@ -426,6 +490,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Prometheus configuration directory (-M option in drp.cc). </p>
 
 </div>
 </div>
@@ -441,6 +507,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Readout group mask built by DrpBase.cc from the connect information (0x00ff0000 plus one bit per readout group in use); SlowUpdates missing any of these groups are dropped. </p>
+
 </div>
 </div>
 <a id="af7f70e402f0d2b83746770234be47a9f" name="af7f70e402f0d2b83746770234be47a9f"></a>
@@ -455,6 +523,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Serial number string (-S option in drp.cc). </p>
+
 </div>
 </div>
 <a id="ac6301cb500c666752c4e38e9d9fceb10" name="ac6301cb500c666752c4e38e9d9fceb10"></a>
@@ -468,6 +538,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Verbosity level (each -v in drp.cc adds one; default 0). </p>
 
 </div>
 </div>

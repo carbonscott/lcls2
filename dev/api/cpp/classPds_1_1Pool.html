@@ -99,6 +99,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Pool.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract pool of numberofObjects equal buffers, each preceded by a <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a>, with allocation and free counters.  
+ <a href="classPds_1_1Pool.html#details">More...</a></p>
+
 <p><code>#include &lt;Pool.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1GenericPool.html">Pds::GenericPool</a>.</p>
@@ -106,35 +109,49 @@ $(document).ready(function(){initNavTree('classPds_1_1Pool.html',''); initResiza
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a66adf856fcf4b3895e0bc7b5d2509da7" id="r_a66adf856fcf4b3895e0bc7b5d2509da7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a66adf856fcf4b3895e0bc7b5d2509da7">~Pool</a> ()</td></tr>
+<tr class="memdesc:a66adf856fcf4b3895e0bc7b5d2509da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a66adf856fcf4b3895e0bc7b5d2509da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91007c139e8fdc26fa20e88748a512df" id="r_a91007c139e8fdc26fa20e88748a512df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a91007c139e8fdc26fa20e88748a512df">Pool</a> (size_t <a class="el" href="classPds_1_1Pool.html#a04fd756e56c2e0f2127225cb209fa9c4">sizeofObject</a>, int numberofOfObjects)</td></tr>
+<tr class="memdesc:a91007c139e8fdc26fa20e88748a512df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the object size and count and round each allocation (object plus <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header) up to a multiple of the <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> size; the subclass calls <a class="el" href="classPds_1_1Pool.html#a939580792ee6372d4a3e547c9f7d4651">populate()</a> to create the buffers.  <br /></td></tr>
 <tr class="separator:a91007c139e8fdc26fa20e88748a512df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2736f4ab7894cf038aa0563b90743be1" id="r_a2736f4ab7894cf038aa0563b90743be1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a2736f4ab7894cf038aa0563b90743be1">Pool</a> (size_t <a class="el" href="classPds_1_1Pool.html#a04fd756e56c2e0f2127225cb209fa9c4">sizeofObject</a>, int numberofOfObjects, unsigned alignBoundary)</td></tr>
+<tr class="memdesc:a2736f4ab7894cf038aa0563b90743be1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like Pool(sizeofObject, numberofOfObjects), but rounds each allocation up to a multiple of alignBoundary.  <br /></td></tr>
 <tr class="separator:a2736f4ab7894cf038aa0563b90743be1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8618efaa62c60a5bc55503039a456b0b" id="r_a8618efaa62c60a5bc55503039a456b0b"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a8618efaa62c60a5bc55503039a456b0b">alloc</a> (size_t size)</td></tr>
+<tr class="memdesc:a8618efaa62c60a5bc55503039a456b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take a buffer from the free list and count the allocation; returns nullptr if size exceeds the object size or none is available.  <br /></td></tr>
 <tr class="separator:a8618efaa62c60a5bc55503039a456b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ba5e00ae33420f02063510dd340051c" id="r_a5ba5e00ae33420f02063510dd340051c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a5ba5e00ae33420f02063510dd340051c">free</a> (<a class="el" href="classPds_1_1PoolEntry.html">PoolEntry</a> *)</td></tr>
+<tr class="memdesc:a5ba5e00ae33420f02063510dd340051c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return entry to the free list (<a class="el" href="classPds_1_1Pool.html#a235f7cb2dcb4821dbdcd77f5a48669b7">enque()</a>).  <br /></td></tr>
 <tr class="separator:a5ba5e00ae33420f02063510dd340051c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd939b1bb6d1babf1e0e442a487bb7f" id="r_a5bd939b1bb6d1babf1e0e442a487bb7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a5bd939b1bb6d1babf1e0e442a487bb7f">clearCounters</a> ()</td></tr>
+<tr class="memdesc:a5bd939b1bb6d1babf1e0e442a487bb7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the allocation and free counters.  <br /></td></tr>
 <tr class="separator:a5bd939b1bb6d1babf1e0e442a487bb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04fd756e56c2e0f2127225cb209fa9c4" id="r_a04fd756e56c2e0f2127225cb209fa9c4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a04fd756e56c2e0f2127225cb209fa9c4">sizeofObject</a> () const</td></tr>
+<tr class="memdesc:a04fd756e56c2e0f2127225cb209fa9c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the object size given to the constructor.  <br /></td></tr>
 <tr class="separator:a04fd756e56c2e0f2127225cb209fa9c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0973fb9b578a6cc581e37cd8f28a40d7" id="r_a0973fb9b578a6cc581e37cd8f28a40d7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a0973fb9b578a6cc581e37cd8f28a40d7">numberofObjects</a> () const</td></tr>
+<tr class="memdesc:a0973fb9b578a6cc581e37cd8f28a40d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of buffers.  <br /></td></tr>
 <tr class="separator:a0973fb9b578a6cc581e37cd8f28a40d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa54f7951127183ff14c3f4ee6eb4c095" id="r_aa54f7951127183ff14c3f4ee6eb4c095"><td class="memItemLeft" align="right" valign="top">const uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#aa54f7951127183ff14c3f4ee6eb4c095">numberofAllocs</a> () const</td></tr>
+<tr class="memdesc:aa54f7951127183ff14c3f4ee6eb4c095"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the allocation counter.  <br /></td></tr>
 <tr class="separator:aa54f7951127183ff14c3f4ee6eb4c095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac12ad3602f88ee68e5d0a19c281d2541" id="r_ac12ad3602f88ee68e5d0a19c281d2541"><td class="memItemLeft" align="right" valign="top">const uint64_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#ac12ad3602f88ee68e5d0a19c281d2541">numberofFrees</a> () const</td></tr>
+<tr class="memdesc:ac12ad3602f88ee68e5d0a19c281d2541"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a reference to the free counter.  <br /></td></tr>
 <tr class="separator:ac12ad3602f88ee68e5d0a19c281d2541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36e110aacce43b4765a1012f8f699ca2" id="r_a36e110aacce43b4765a1012f8f699ca2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a36e110aacce43b4765a1012f8f699ca2">numberOfAllocatedObjects</a> () const</td></tr>
+<tr class="memdesc:a36e110aacce43b4765a1012f8f699ca2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return allocations minus frees.  <br /></td></tr>
 <tr class="separator:a36e110aacce43b4765a1012f8f699ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc5b1d533795024bb4ea4765d1ac9a36" id="r_abc5b1d533795024bb4ea4765d1ac9a36"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#abc5b1d533795024bb4ea4765d1ac9a36">numberOfFreeObjects</a> () const</td></tr>
+<tr class="memdesc:abc5b1d533795024bb4ea4765d1ac9a36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of buffers minus <a class="el" href="classPds_1_1Pool.html#a36e110aacce43b4765a1012f8f699ca2" title="Return allocations minus frees.">numberOfAllocatedObjects()</a>.  <br /></td></tr>
 <tr class="separator:abc5b1d533795024bb4ea4765d1ac9a36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aed3d2bbb85d64e9b91e51f33e2a36640" id="r_aed3d2bbb85d64e9b91e51f33e2a36640"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#aed3d2bbb85d64e9b91e51f33e2a36640">free</a> (void *buffer)</td></tr>
+<tr class="memdesc:aed3d2bbb85d64e9b91e51f33e2a36640"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the user buffer buffer to the pool recorded in its <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header and count the free.  <br /></td></tr>
 <tr class="separator:aed3d2bbb85d64e9b91e51f33e2a36640"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b09785c948e5f1a0dd6d34e9fb54d8f" id="r_a2b09785c948e5f1a0dd6d34e9fb54d8f"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a2b09785c948e5f1a0dd6d34e9fb54d8f">numberOfFreeObjects</a> (void *buffer)</td></tr>
+<tr class="memdesc:a2b09785c948e5f1a0dd6d34e9fb54d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return <a class="el" href="classPds_1_1Pool.html#abc5b1d533795024bb4ea4765d1ac9a36" title="Return the number of buffers minus numberOfAllocatedObjects().">numberOfFreeObjects()</a> of the pool that owns buffer.  <br /></td></tr>
 <tr class="separator:a2b09785c948e5f1a0dd6d34e9fb54d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -150,7 +167,10 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a939580792ee6372d4a3e547c9f7d4651" id="r_a939580792ee6372d4a3e547c9f7d4651"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Pool.html#a939580792ee6372d4a3e547c9f7d4651">populate</a> ()</td></tr>
 <tr class="separator:a939580792ee6372d4a3e547c9f7d4651"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract pool of numberofObjects equal buffers, each preceded by a <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a>, with allocation and free counters. </p>
+<p>Subclasses provide the storage and the free list. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a66adf856fcf4b3895e0bc7b5d2509da7" name="a66adf856fcf4b3895e0bc7b5d2509da7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a66adf856fcf4b3895e0bc7b5d2509da7">&#9670;&#160;</a></span>~Pool()</h2>
 
@@ -173,6 +193,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -201,6 +223,8 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Set the object size and count and round each allocation (object plus <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header) up to a multiple of the <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> size; the subclass calls <a class="el" href="classPds_1_1Pool.html#a939580792ee6372d4a3e547c9f7d4651">populate()</a> to create the buffers. </p>
 
 </div>
 </div>
@@ -236,6 +260,8 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Like Pool(sizeofObject, numberofOfObjects), but rounds each allocation up to a multiple of alignBoundary. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -262,6 +288,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Take a buffer from the free list and count the allocation; returns nullptr if size exceeds the object size or none is available. </p>
 
 </div>
 </div>
@@ -307,6 +335,8 @@ Protected Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero the allocation and free counters. </p>
 
 </div>
 </div>
@@ -389,6 +419,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return entry to the free list (<a class="el" href="classPds_1_1Pool.html#a235f7cb2dcb4821dbdcd77f5a48669b7">enque()</a>). </p>
+
 </div>
 </div>
 <a id="aed3d2bbb85d64e9b91e51f33e2a36640" name="aed3d2bbb85d64e9b91e51f33e2a36640"></a>
@@ -415,6 +447,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the user buffer buffer to the pool recorded in its <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> header and count the free. </p>
+
 </div>
 </div>
 <a id="a36e110aacce43b4765a1012f8f699ca2" name="a36e110aacce43b4765a1012f8f699ca2"></a>
@@ -439,6 +473,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return allocations minus frees. </p>
 
 </div>
 </div>
@@ -465,6 +501,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the allocation counter. </p>
+
 </div>
 </div>
 <a id="abc5b1d533795024bb4ea4765d1ac9a36" name="abc5b1d533795024bb4ea4765d1ac9a36"></a>
@@ -489,6 +527,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of buffers minus <a class="el" href="classPds_1_1Pool.html#a36e110aacce43b4765a1012f8f699ca2" title="Return allocations minus frees.">numberOfAllocatedObjects()</a>. </p>
 
 </div>
 </div>
@@ -516,6 +556,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return <a class="el" href="classPds_1_1Pool.html#abc5b1d533795024bb4ea4765d1ac9a36" title="Return the number of buffers minus numberOfAllocatedObjects().">numberOfFreeObjects()</a> of the pool that owns buffer. </p>
+
 </div>
 </div>
 <a id="ac12ad3602f88ee68e5d0a19c281d2541" name="ac12ad3602f88ee68e5d0a19c281d2541"></a>
@@ -541,6 +583,8 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return a reference to the free counter. </p>
+
 </div>
 </div>
 <a id="a0973fb9b578a6cc581e37cd8f28a40d7" name="a0973fb9b578a6cc581e37cd8f28a40d7"></a>
@@ -565,6 +609,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of buffers. </p>
 
 </div>
 </div>
@@ -640,6 +686,8 @@ Protected Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the object size given to the constructor. </p>
 
 </div>
 </div>

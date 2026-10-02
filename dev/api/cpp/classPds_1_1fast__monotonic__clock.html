@@ -99,32 +99,44 @@ $(document).ready(function(){initNavTree('classPds_1_1fast__monotonic__clock.htm
 </div><!--header-->
 <div class="contents">
 
+<p>std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_COARSE if it works on this system, otherwise CLOCK_MONOTONIC (chosen once on first use).  
+ <a href="classPds_1_1fast__monotonic__clock.html#details">More...</a></p>
+
 <p><code>#include &lt;fast_monotonic_clock.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ae4544d2f1e8e66a9dde6c87331d36cb0" id="r_ae4544d2f1e8e66a9dde6c87331d36cb0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#ae4544d2f1e8e66a9dde6c87331d36cb0">duration</a> = std::chrono::nanoseconds</td></tr>
+<tr class="memdesc:ae4544d2f1e8e66a9dde6c87331d36cb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Duration type: std::chrono::nanoseconds.  <br /></td></tr>
 <tr class="separator:ae4544d2f1e8e66a9dde6c87331d36cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec847376baaf943936f3b7adebdf945" id="r_a7ec847376baaf943936f3b7adebdf945"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#a7ec847376baaf943936f3b7adebdf945">rep</a> = duration::rep</td></tr>
+<tr class="memdesc:a7ec847376baaf943936f3b7adebdf945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tick count type of duration.  <br /></td></tr>
 <tr class="separator:a7ec847376baaf943936f3b7adebdf945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada2d1978c5c7437df82641f7d166a0ad" id="r_ada2d1978c5c7437df82641f7d166a0ad"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#ada2d1978c5c7437df82641f7d166a0ad">period</a> = duration::period</td></tr>
+<tr class="memdesc:ada2d1978c5c7437df82641f7d166a0ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tick period of duration (nanoseconds).  <br /></td></tr>
 <tr class="separator:ada2d1978c5c7437df82641f7d166a0ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae090cd690d63b16b3c16298355ee9239" id="r_ae090cd690d63b16b3c16298355ee9239"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#ae090cd690d63b16b3c16298355ee9239">time_point</a> = std::chrono::time_point&lt; <a class="el" href="classPds_1_1fast__monotonic__clock.html">fast_monotonic_clock</a> &gt;</td></tr>
+<tr class="memdesc:ae090cd690d63b16b3c16298355ee9239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time point of this clock.  <br /></td></tr>
 <tr class="separator:ae090cd690d63b16b3c16298355ee9239"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a488ae51c9816164273231e477977cc39" id="r_a488ae51c9816164273231e477977cc39"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPds_1_1fast__monotonic__clock.html#ae090cd690d63b16b3c16298355ee9239">time_point</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#a488ae51c9816164273231e477977cc39">now</a> (clockid_t clkId=clock_id()) noexcept</td></tr>
+<tr class="memdesc:a488ae51c9816164273231e477977cc39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the current time of clock clkId (the selected default clock unless given), via clock_gettime(); the result is only checked by assert().  <br /></td></tr>
 <tr class="separator:a488ae51c9816164273231e477977cc39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb209ec27457cb40dc1f13abb8c23cd2" id="r_adb209ec27457cb40dc1f13abb8c23cd2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classPds_1_1fast__monotonic__clock.html#ae4544d2f1e8e66a9dde6c87331d36cb0">duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#adb209ec27457cb40dc1f13abb8c23cd2">get_resolution</a> (clockid_t clkId=clock_id()) noexcept</td></tr>
+<tr class="memdesc:adb209ec27457cb40dc1f13abb8c23cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the resolution of clock clkId (the selected default clock unless given), via clock_getres().  <br /></td></tr>
 <tr class="separator:adb209ec27457cb40dc1f13abb8c23cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a313bd660f123e4aec3296ad8c38cbf51" id="r_a313bd660f123e4aec3296ad8c38cbf51"><td class="memItemLeft" align="right" valign="top">static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1fast__monotonic__clock.html#a313bd660f123e4aec3296ad8c38cbf51">is_steady</a> = true</td></tr>
+<tr class="memdesc:a313bd660f123e4aec3296ad8c38cbf51"><td class="mdescLeft">&#160;</td><td class="mdescRight">True: the clock is monotonic.  <br /></td></tr>
 <tr class="separator:a313bd660f123e4aec3296ad8c38cbf51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_COARSE if it works on this system, otherwise CLOCK_MONOTONIC (chosen once on first use). </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ae4544d2f1e8e66a9dde6c87331d36cb0" name="ae4544d2f1e8e66a9dde6c87331d36cb0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4544d2f1e8e66a9dde6c87331d36cb0">&#9670;&#160;</a></span>duration</h2>
 
@@ -136,6 +148,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Duration type: std::chrono::nanoseconds. </p>
 
 </div>
 </div>
@@ -151,6 +165,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Tick period of duration (nanoseconds). </p>
+
 </div>
 </div>
 <a id="a7ec847376baaf943936f3b7adebdf945" name="a7ec847376baaf943936f3b7adebdf945"></a>
@@ -165,6 +181,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Tick count type of duration. </p>
+
 </div>
 </div>
 <a id="ae090cd690d63b16b3c16298355ee9239" name="ae090cd690d63b16b3c16298355ee9239"></a>
@@ -178,6 +196,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time point of this clock. </p>
 
 </div>
 </div>
@@ -206,6 +226,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the resolution of clock clkId (the selected default clock unless given), via clock_getres(). </p>
+
 </div>
 </div>
 <a id="a488ae51c9816164273231e477977cc39" name="a488ae51c9816164273231e477977cc39"></a>
@@ -232,6 +254,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the current time of clock clkId (the selected default clock unless given), via clock_gettime(); the result is only checked by assert(). </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -254,6 +278,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>True: the clock is monotonic. </p>
 
 </div>
 </div>

@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1ResultDgram.html',''
 </div><!--header-->
 <div class="contents">
 
+<p>Trigger result datagram: an <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> followed by a 32-bit result word and a 32-bit monitor buffer number word.  
+ <a href="classPds_1_1Eb_1_1ResultDgram.html#details">More...</a></p>
+
 <p><code>#include &lt;ResultDgram.hh&gt;</code></p>
 
 <p>Inherits <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a>.</p>
@@ -106,44 +109,63 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1ResultDgram.html',''
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a55cfd8982fdb5b60ad161f02bbc232b3" id="r_a55cfd8982fdb5b60ad161f02bbc232b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a55cfd8982fdb5b60ad161f02bbc232b3">ResultDgram</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> &amp;dgram, unsigned id)</td></tr>
+<tr class="memdesc:a55cfd8982fdb5b60ad161f02bbc232b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the pulse ID and transition header of dgram, use a new Xtc of TypeId::Data (version 0) with source Src(id, Level::Event), zero both words, and add their size to the Xtc extent.  <br /></td></tr>
 <tr class="separator:a55cfd8982fdb5b60ad161f02bbc232b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a623df18e071d38f0d61b45491fde9468" id="r_a623df18e071d38f0d61b45491fde9468"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a623df18e071d38f0d61b45491fde9468">prescale</a> (bool value)</td></tr>
+<tr class="memdesc:a623df18e071d38f0d61b45491fde9468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set or clear the prescale bit (bit 0) of the result word.  <br /></td></tr>
 <tr class="separator:a623df18e071d38f0d61b45491fde9468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ab85a06f378a501dfb8c9a535b1ae09" id="r_a2ab85a06f378a501dfb8c9a535b1ae09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a2ab85a06f378a501dfb8c9a535b1ae09">persist</a> (bool value)</td></tr>
+<tr class="memdesc:a2ab85a06f378a501dfb8c9a535b1ae09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set or clear the persist bit (bit 1) of the result word.  <br /></td></tr>
 <tr class="separator:a2ab85a06f378a501dfb8c9a535b1ae09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5caa552202f2e0b9f76863b96de68604" id="r_a5caa552202f2e0b9f76863b96de68604"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a5caa552202f2e0b9f76863b96de68604">monitor</a> (uint32_t value)</td></tr>
+<tr class="memdesc:a5caa552202f2e0b9f76863b96de68604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the monitor field (MAX_MRQS bits starting at bit 2) of the result word to value, masked to the field width.  <br /></td></tr>
 <tr class="separator:a5caa552202f2e0b9f76863b96de68604"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca5e7af20456def683137118ef636ce4" id="r_aca5e7af20456def683137118ef636ce4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#aca5e7af20456def683137118ef636ce4">auxdata</a> (uint32_t value)</td></tr>
+<tr class="memdesc:aca5e7af20456def683137118ef636ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the auxdata field (bits 31-8) of the result word to value, masked to 24 bits.  <br /></td></tr>
 <tr class="separator:aca5e7af20456def683137118ef636ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ca28fd31f05c5cce95dba5ecdaf99f" id="r_a14ca28fd31f05c5cce95dba5ecdaf99f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a14ca28fd31f05c5cce95dba5ecdaf99f">prescale</a> () const</td></tr>
+<tr class="memdesc:a14ca28fd31f05c5cce95dba5ecdaf99f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the prescale bit (bit 0) is set.  <br /></td></tr>
 <tr class="separator:a14ca28fd31f05c5cce95dba5ecdaf99f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a127f4794bf5b861db392472a802e7a3f" id="r_a127f4794bf5b861db392472a802e7a3f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a127f4794bf5b861db392472a802e7a3f">persist</a> () const</td></tr>
+<tr class="memdesc:a127f4794bf5b861db392472a802e7a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if the persist bit (bit 1) is set.  <br /></td></tr>
 <tr class="separator:a127f4794bf5b861db392472a802e7a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc58c98afbcef924abaf65d8b2922be3" id="r_acc58c98afbcef924abaf65d8b2922be3"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#acc58c98afbcef924abaf65d8b2922be3">monitor</a> () const</td></tr>
+<tr class="memdesc:acc58c98afbcef924abaf65d8b2922be3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the monitor field (MAX_MRQS bits starting at bit 2), shifted down.  <br /></td></tr>
 <tr class="separator:acc58c98afbcef924abaf65d8b2922be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0daaf57027317385bb9ee0c929954790" id="r_a0daaf57027317385bb9ee0c929954790"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a0daaf57027317385bb9ee0c929954790">auxdata</a> () const</td></tr>
+<tr class="memdesc:a0daaf57027317385bb9ee0c929954790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the auxdata field (bits 31-8), shifted down.  <br /></td></tr>
 <tr class="separator:a0daaf57027317385bb9ee0c929954790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77a0d48e4beadc523cc82972420593aa" id="r_a77a0d48e4beadc523cc82972420593aa"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a77a0d48e4beadc523cc82972420593aa">data</a> () const</td></tr>
+<tr class="memdesc:a77a0d48e4beadc523cc82972420593aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the whole 32-bit result word.  <br /></td></tr>
 <tr class="separator:a77a0d48e4beadc523cc82972420593aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae242b238a023718d41e9ec8bd007ea22" id="r_ae242b238a023718d41e9ec8bd007ea22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#ae242b238a023718d41e9ec8bd007ea22">monBufNo</a> (uint32_t monBufNo_)</td></tr>
+<tr class="memdesc:ae242b238a023718d41e9ec8bd007ea22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the monitor buffer number word (<a class="el" href="classPds_1_1Eb_1_1CubeConfigDgram.html" title="ResultDgram that stores a ResultType in the monitor buffer number word, a bin count in the auxdata fi...">CubeConfigDgram</a> stores its ResultType in this word).  <br /></td></tr>
 <tr class="separator:ae242b238a023718d41e9ec8bd007ea22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a71ea792592bb056d3ea106b6962f7e" id="r_a1a71ea792592bb056d3ea106b6962f7e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1ResultDgram.html#a1a71ea792592bb056d3ea106b6962f7e">monBufNo</a> () const</td></tr>
+<tr class="memdesc:a1a71ea792592bb056d3ea106b6962f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the monitor buffer number word.  <br /></td></tr>
 <tr class="separator:a1a71ea792592bb056d3ea106b6962f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1EbDgram"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1EbDgram')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a></td></tr>
 <tr class="memitem:aebdf9e3c40e7cca4b09f7a798dc1dc5c inherit pub_methods_classPds_1_1EbDgram" id="r_aebdf9e3c40e7cca4b09f7a798dc1dc5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#aebdf9e3c40e7cca4b09f7a798dc1dc5c">EbDgram</a> (const <a class="el" href="classPds_1_1PulseId.html">PulseId</a> &amp;<a class="el" href="classPds_1_1PulseId.html#acea7efb7104dd4753e4ed3da4b6026e7">pulseId</a>, const <a class="el" href="classXtcData_1_1Dgram.html#ab42197ad5701bc8e5dd1510b26041f69">Dgram</a> &amp;dgram)</td></tr>
+<tr class="memdesc:aebdf9e3c40e7cca4b09f7a798dc1dc5c inherit pub_methods_classPds_1_1EbDgram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from the pulse ID of pulseId (control bits dropped) and a copy of dgram.  <br /></td></tr>
 <tr class="separator:aebdf9e3c40e7cca4b09f7a798dc1dc5c inherit pub_methods_classPds_1_1EbDgram"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e02e9e72386aebd3637d1021e2a469f inherit pub_methods_classPds_1_1EbDgram" id="r_a0e02e9e72386aebd3637d1021e2a469f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a0e02e9e72386aebd3637d1021e2a469f">EbDgram</a> (const <a class="el" href="classPds_1_1TimingHeader.html">TimingHeader</a> &amp;th, const <a class="el" href="classXtcData_1_1Src.html">XtcData::Src</a> src, uint32_t envRogMask)</td></tr>
+<tr class="memdesc:a0e02e9e72386aebd3637d1021e2a469f inherit pub_methods_classPds_1_1EbDgram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from a timing header: pulse ID (control bits dropped), time, env set to the control bits in bits 31-24 plus th.env masked by envRogMask, and an empty Parent Xtc with source src.  <br /></td></tr>
 <tr class="separator:a0e02e9e72386aebd3637d1021e2a469f inherit pub_methods_classPds_1_1EbDgram"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65ffeef6534ea06da639ace68a58e394 inherit pub_methods_classPds_1_1EbDgram" id="r_a65ffeef6534ea06da639ace68a58e394"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a65ffeef6534ea06da639ace68a58e394">setEOL</a> () const</td></tr>
+<tr class="memdesc:a65ffeef6534ea06da639ace68a58e394 inherit pub_methods_classPds_1_1EbDgram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set bit 62 of the pulse ID word, marking the last entry of a batch (callable on const objects).  <br /></td></tr>
 <tr class="separator:a65ffeef6534ea06da639ace68a58e394 inherit pub_methods_classPds_1_1EbDgram"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bee9db903860e8082e3d181c439dbbb inherit pub_methods_classPds_1_1EbDgram" id="r_a8bee9db903860e8082e3d181c439dbbb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#a8bee9db903860e8082e3d181c439dbbb">isEOL</a> () const</td></tr>
+<tr class="memdesc:a8bee9db903860e8082e3d181c439dbbb inherit pub_methods_classPds_1_1EbDgram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if bit 62 of the pulse ID word is set.  <br /></td></tr>
 <tr class="separator:a8bee9db903860e8082e3d181c439dbbb inherit pub_methods_classPds_1_1EbDgram"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3cf52000956e493c0a496f0b870c789 inherit pub_methods_classPds_1_1EbDgram" id="r_ad3cf52000956e493c0a496f0b870c789"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1EbDgram.html#ad3cf52000956e493c0a496f0b870c789">keepRaw</a> () const</td></tr>
+<tr class="memdesc:ad3cf52000956e493c0a496f0b870c789 inherit pub_methods_classPds_1_1EbDgram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return bit 22 of env.  <br /></td></tr>
 <tr class="separator:ad3cf52000956e493c0a496f0b870c789 inherit pub_methods_classPds_1_1EbDgram"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPds_1_1PulseId"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPds_1_1PulseId')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPds_1_1PulseId.html">Pds::PulseId</a></td></tr>
 <tr class="memitem:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId" id="r_aa1df914e45bd85fe08d91efedda68cc8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#aa1df914e45bd85fe08d91efedda68cc8">PulseId</a> (uint64_t value)</td></tr>
+<tr class="memdesc:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store value as the whole 64-bit word, control bits included.  <br /></td></tr>
 <tr class="separator:aa1df914e45bd85fe08d91efedda68cc8 inherit pub_methods_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId" id="r_acea7efb7104dd4753e4ed3da4b6026e7"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#acea7efb7104dd4753e4ed3da4b6026e7">pulseId</a> () const</td></tr>
+<tr class="memdesc:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the low 56 bits of the word (the pulse ID without the control bits).  <br /></td></tr>
 <tr class="separator:acea7efb7104dd4753e4ed3da4b6026e7 inherit pub_methods_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classXtcData_1_1Dgram"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classXtcData_1_1Dgram')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classXtcData_1_1Dgram.html">XtcData::Dgram</a></td></tr>
 <tr class="memitem:ab42197ad5701bc8e5dd1510b26041f69 inherit pub_methods_classXtcData_1_1Dgram" id="r_ab42197ad5701bc8e5dd1510b26041f69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXtcData_1_1Dgram.html#ab42197ad5701bc8e5dd1510b26041f69">Dgram</a> ()</td></tr>
@@ -220,7 +242,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a6814b0b8dcbce0fe76bb267596e0af68 inherit pro_attribs_classPds_1_1PulseId" id="r_a6814b0b8dcbce0fe76bb267596e0af68"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1PulseId.html#a6814b0b8dcbce0fe76bb267596e0af68">_pulseIdAndControl</a></td></tr>
 <tr class="separator:a6814b0b8dcbce0fe76bb267596e0af68 inherit pro_attribs_classPds_1_1PulseId"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Trigger result datagram: an <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> followed by a 32-bit result word and a 32-bit monitor buffer number word. </p>
+<p>The result word holds the prescale bit (bit 0), the persist bit (bit 1), a MAX_MRQS-bit monitor field starting at bit 2 and a 24-bit auxdata field (bits 31-8). </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a55cfd8982fdb5b60ad161f02bbc232b3" name="a55cfd8982fdb5b60ad161f02bbc232b3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55cfd8982fdb5b60ad161f02bbc232b3">&#9670;&#160;</a></span>ResultDgram()</h2>
 
@@ -255,6 +280,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Copy the pulse ID and transition header of dgram, use a new Xtc of TypeId::Data (version 0) with source Src(id, Level::Event), zero both words, and add their size to the Xtc extent. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -280,6 +307,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the auxdata field (bits 31-8), shifted down. </p>
 
 </div>
 </div>
@@ -307,6 +336,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the auxdata field (bits 31-8) of the result word to value, masked to 24 bits. </p>
+
 </div>
 </div>
 <a id="a77a0d48e4beadc523cc82972420593aa" name="a77a0d48e4beadc523cc82972420593aa"></a>
@@ -332,6 +363,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the whole 32-bit result word. </p>
+
 </div>
 </div>
 <a id="a1a71ea792592bb056d3ea106b6962f7e" name="a1a71ea792592bb056d3ea106b6962f7e"></a>
@@ -356,6 +389,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the monitor buffer number word. </p>
 
 </div>
 </div>
@@ -383,6 +418,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the monitor buffer number word (<a class="el" href="classPds_1_1Eb_1_1CubeConfigDgram.html" title="ResultDgram that stores a ResultType in the monitor buffer number word, a bin count in the auxdata fi...">CubeConfigDgram</a> stores its ResultType in this word). </p>
+
 </div>
 </div>
 <a id="acc58c98afbcef924abaf65d8b2922be3" name="acc58c98afbcef924abaf65d8b2922be3"></a>
@@ -407,6 +444,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the monitor field (MAX_MRQS bits starting at bit 2), shifted down. </p>
 
 </div>
 </div>
@@ -434,6 +473,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the monitor field (MAX_MRQS bits starting at bit 2) of the result word to value, masked to the field width. </p>
+
 </div>
 </div>
 <a id="a127f4794bf5b861db392472a802e7a3f" name="a127f4794bf5b861db392472a802e7a3f"></a>
@@ -458,6 +499,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if the persist bit (bit 1) is set. </p>
 
 </div>
 </div>
@@ -485,6 +528,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set or clear the persist bit (bit 1) of the result word. </p>
+
 </div>
 </div>
 <a id="a14ca28fd31f05c5cce95dba5ecdaf99f" name="a14ca28fd31f05c5cce95dba5ecdaf99f"></a>
@@ -509,6 +554,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return true if the prescale bit (bit 0) is set. </p>
 
 </div>
 </div>
@@ -535,6 +582,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set or clear the prescale bit (bit 0) of the result word. </p>
 
 </div>
 </div>

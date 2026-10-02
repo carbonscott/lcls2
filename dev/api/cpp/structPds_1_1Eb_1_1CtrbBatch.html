@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('structPds_1_1Eb_1_1CtrbBatch.html','')
 </div><!--header-->
 <div class="contents">
 
+<p>A batch of contiguous input datagrams being built by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html" title="Builds batches of input datagrams in a BatchManager region and posts them over libfabric links to the...">TebContributor</a>.  
+ <a href="structPds_1_1Eb_1_1CtrbBatch.html#details">More...</a></p>
+
 <p><code>#include &lt;TebContributor.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5a385f7fe1fed5d0338a3182f180a5c8" id="r_a5a385f7fe1fed5d0338a3182f180a5c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#a5a385f7fe1fed5d0338a3182f180a5c8">CtrbBatch</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dgram, bool contractor_)</td></tr>
+<tr class="memdesc:a5a385f7fe1fed5d0338a3182f180a5c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start a batch at dgram: entries is 1 (0 if dgram is null), start and end are dgram, tStart is now and contractor is contractor_.  <br /></td></tr>
 <tr class="separator:a5a385f7fe1fed5d0338a3182f180a5c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a0e6123c1b5d2d6eedfab34b4664273e5" id="r_a0e6123c1b5d2d6eedfab34b4664273e5"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#a0e6123c1b5d2d6eedfab34b4664273e5">entries</a></td></tr>
+<tr class="memdesc:a0e6123c1b5d2d6eedfab34b4664273e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of datagrams in the batch.  <br /></td></tr>
 <tr class="separator:a0e6123c1b5d2d6eedfab34b4664273e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fa7edced54c38940fd370eb8cf0c124" id="r_a4fa7edced54c38940fd370eb8cf0c124"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacePds_1_1Eb.html#a4efbd91740986fa13e99eabc349b0610">time_point_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#a4fa7edced54c38940fd370eb8cf0c124">tStart</a></td></tr>
+<tr class="memdesc:a4fa7edced54c38940fd370eb8cf0c124"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time at which the batch was started; used by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a5d378c616b6b08132730a7a39306e298" title="If at least BATCH_TIMEOUT (1 ms) has passed since the start time of the current batch,...">TebContributor::timeout()</a> and for the batch age metric.  <br /></td></tr>
 <tr class="separator:a4fa7edced54c38940fd370eb8cf0c124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e9c182c8f39598c56f222c7dba0d3f6" id="r_a6e9c182c8f39598c56f222c7dba0d3f6"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#a6e9c182c8f39598c56f222c7dba0d3f6">start</a></td></tr>
+<tr class="memdesc:a6e9c182c8f39598c56f222c7dba0d3f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">First datagram of the batch, or nullptr when no batch is open.  <br /></td></tr>
 <tr class="separator:a6e9c182c8f39598c56f222c7dba0d3f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa605915aea052aae194754d536248bea" id="r_aa605915aea052aae194754d536248bea"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#aa605915aea052aae194754d536248bea">end</a></td></tr>
+<tr class="memdesc:aa605915aea052aae194754d536248bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last datagram of the batch.  <br /></td></tr>
 <tr class="separator:aa605915aea052aae194754d536248bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cbbbe0142c6c8c0b850b24c77448219" id="r_a2cbbbe0142c6c8c0b850b24c77448219"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html#a2cbbbe0142c6c8c0b850b24c77448219">contractor</a></td></tr>
+<tr class="memdesc:a2cbbbe0142c6c8c0b850b24c77448219"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if any datagram in the batch is in a readout group listed in <a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html#a721c54883d5aee6c696bf07d31a548c3" title="Readout group that supplies trigger input data.">TebCtrbParams::contractor</a> (provides trigger input).  <br /></td></tr>
 <tr class="separator:a2cbbbe0142c6c8c0b850b24c77448219"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A batch of contiguous input datagrams being built by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html" title="Builds batches of input datagrams in a BatchManager region and posts them over libfabric links to the...">TebContributor</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5a385f7fe1fed5d0338a3182f180a5c8" name="a5a385f7fe1fed5d0338a3182f180a5c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5a385f7fe1fed5d0338a3182f180a5c8">&#9670;&#160;</a></span>CtrbBatch()</h2>
 
@@ -145,6 +156,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Start a batch at dgram: entries is 1 (0 if dgram is null), start and end are dgram, tStart is now and contractor is contractor_. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -160,6 +173,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>True if any datagram in the batch is in a readout group listed in <a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html#a721c54883d5aee6c696bf07d31a548c3" title="Readout group that supplies trigger input data.">TebCtrbParams::contractor</a> (provides trigger input). </p>
+
 </div>
 </div>
 <a id="aa605915aea052aae194754d536248bea" name="aa605915aea052aae194754d536248bea"></a>
@@ -173,6 +188,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Last datagram of the batch. </p>
 
 </div>
 </div>
@@ -188,6 +205,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Number of datagrams in the batch. </p>
+
 </div>
 </div>
 <a id="a6e9c182c8f39598c56f222c7dba0d3f6" name="a6e9c182c8f39598c56f222c7dba0d3f6"></a>
@@ -202,6 +221,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>First datagram of the batch, or nullptr when no batch is open. </p>
+
 </div>
 </div>
 <a id="a4fa7edced54c38940fd370eb8cf0c124" name="a4fa7edced54c38940fd370eb8cf0c124"></a>
@@ -215,6 +236,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time at which the batch was started; used by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html#a5d378c616b6b08132730a7a39306e298" title="If at least BATCH_TIMEOUT (1 ms) has passed since the start time of the current batch,...">TebContributor::timeout()</a> and for the batch age metric. </p>
 
 </div>
 </div>

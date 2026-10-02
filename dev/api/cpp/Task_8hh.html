@@ -98,6 +98,9 @@ $(document).ready(function(){initNavTree('Task_8hh.html',''); initResizable(); }
   <div class="headertitle"><div class="title">Task.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Task, a thread with a queue of Routine jobs, and its helpers.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="QueueSlowSafe_8hh.html">QueueSlowSafe.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Semaphore_8hh.html">Semaphore.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TaskObject_8hh.html">TaskObject.hh</a>&quot;</code><br />
@@ -106,8 +109,10 @@ $(document).ready(function(){initNavTree('Task_8hh.html',''); initResizable(); }
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1TaskDelete.html">Pds::TaskDelete</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> queued by <a class="el" href="classPds_1_1Task.html#a0c2f0d2f9c93774539161e265a2a746a" title="Decrement the shared reference count; if others remain, delete this handle, and if it reaches 0,...">Task::destroy()</a> so that the task deletes itself from its own thread (per the code comment).  <a href="classPds_1_1TaskDelete.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Task.html">Pds::Task</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread that runs <a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a> jobs from a queue in order (TaskMainLoop).  <a href="classPds_1_1Task.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -119,14 +124,18 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a5814cdbbbd586ada39867d527c083ce8" id="r_a5814cdbbbd586ada39867d527c083ce8"><td class="memItemLeft" align="right" valign="top">typedef void *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a5814cdbbbd586ada39867d527c083ce8">Pds::TaskFunction</a>) (void *)</td></tr>
+<tr class="memdesc:a5814cdbbbd586ada39867d527c083ce8"><td class="mdescLeft">&#160;</td><td class="mdescRight">C-linkage thread entry function type: takes and returns a void pointer.  <br /></td></tr>
 <tr class="separator:a5814cdbbbd586ada39867d527c083ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a29c415a0523bda75c78ea272fb0d2671" id="r_a29c415a0523bda75c78ea272fb0d2671"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds.html#a29c415a0523bda75c78ea272fb0d2671">Pds::TaskMainLoop</a> (void *)</td></tr>
+<tr class="memdesc:a29c415a0523bda75c78ea272fb0d2671"><td class="mdescLeft">&#160;</td><td class="mdescRight">Thread body of a <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a> (task is the <a class="el" href="classPds_1_1Task.html" title="Thread that runs Routine jobs from a queue in order (TaskMainLoop).">Task</a>): run every queued <a class="el" href="classPds_1_1Routine.html" title="Job that can be queued to a Task with Task::call() (a queue Entry); the task thread calls routine().">Routine</a>, then wait on the pending semaphore for more, forever.  <br /></td></tr>
 <tr class="separator:a29c415a0523bda75c78ea272fb0d2671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Task, a thread with a queue of Routine jobs, and its helpers. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

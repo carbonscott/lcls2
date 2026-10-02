@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('JungfrauDetectorId_8hh.html',''); init
   <div class="headertitle"><div class="title">JungfrauDetectorId.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>JungfrauId, a 64-bit board-plus-module identifier, and JungfrauIdLookup, which finds the MAC address of a Jungfrau host.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
@@ -104,8 +107,10 @@ $(document).ready(function(){initNavTree('JungfrauDetectorId_8hh.html',''); init
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauId.html">Drp::JungfrauId</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">64-bit <a class="el" href="classDrp_1_1Jungfrau.html" title="BEBDetector for one or more Jungfrau modules (one per PGP lane), controlled through sls::Detector and...">Jungfrau</a> ID: a board value in the upper bits and a 16-bit module number in the low 16 bits.  <a href="classDrp_1_1JungfrauId.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrp_1_1JungfrauIdLookup.html">Drp::JungfrauIdLookup</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet and reading the eth0 HWaddr from its ifconfig output.  <a href="classDrp_1_1JungfrauIdLookup.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -117,11 +122,15 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a96bd38c3de2a46d672461aa3af474a93" id="r_a96bd38c3de2a46d672461aa3af474a93"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::string, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#a96bd38c3de2a46d672461aa3af474a93">Drp::ArpCache</a></td></tr>
+<tr class="memdesc:a96bd38c3de2a46d672461aa3af474a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from IP address string to MAC address string, filled by <a class="el" href="classDrp_1_1JungfrauIdLookup.html" title="Finds the MAC address of a host: first in /proc/net/arp, then by logging in to the device with telnet...">JungfrauIdLookup</a> from /proc/net/arp or from the device.  <br /></td></tr>
 <tr class="separator:a96bd38c3de2a46d672461aa3af474a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4a699b7335f7256ea831dcec1458e0e" id="r_aa4a699b7335f7256ea831dcec1458e0e"><td class="memItemLeft" align="right" valign="top">typedef ArpCache::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceDrp.html#aa4a699b7335f7256ea831dcec1458e0e">Drp::ArpCacheIter</a></td></tr>
+<tr class="memdesc:aa4a699b7335f7256ea831dcec1458e0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const iterator over an ArpCache.  <br /></td></tr>
 <tr class="separator:aa4a699b7335f7256ea831dcec1458e0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>JungfrauId, a 64-bit board-plus-module identifier, and JungfrauIdLookup, which finds the MAC address of a Jungfrau host. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

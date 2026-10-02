@@ -97,22 +97,33 @@ $(document).ready(function(){initNavTree('classPds_1_1Lock.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract lock on a binary <a class="el" href="classPds_1_1Semaphore.html" title="Unnamed POSIX semaphore (sem_t) shared between threads of one process.">Semaphore</a> (the VxWorks variant is not supported).  
+ <a href="classPds_1_1Lock.html#details">More...</a></p>
+
 <p><code>#include &lt;Lock.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8dbe5c9f3853af354521b897dad98fcf" id="r_a8dbe5c9f3853af354521b897dad98fcf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Lock.html#a8dbe5c9f3853af354521b897dad98fcf">Lock</a> (unsigned retries)</td></tr>
+<tr class="memdesc:a8dbe5c9f3853af354521b897dad98fcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the lock free (semaphore full) and keep the retry count retries.  <br /></td></tr>
 <tr class="separator:a8dbe5c9f3853af354521b897dad98fcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cae140c12ebeb4a2ba7959e44c0dd50" id="r_a7cae140c12ebeb4a2ba7959e44c0dd50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Lock.html#a7cae140c12ebeb4a2ba7959e44c0dd50">release</a> ()</td></tr>
+<tr class="memdesc:a7cae140c12ebeb4a2ba7959e44c0dd50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release the lock (give the semaphore).  <br /></td></tr>
 <tr class="separator:a7cae140c12ebeb4a2ba7959e44c0dd50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a367dec3fbcc2c0426bb2650b33059181" id="r_a367dec3fbcc2c0426bb2650b33059181"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Lock.html#a367dec3fbcc2c0426bb2650b33059181">get</a> ()</td></tr>
+<tr class="memdesc:a367dec3fbcc2c0426bb2650b33059181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take the lock, blocking on the semaphore.  <br /></td></tr>
 <tr class="separator:a367dec3fbcc2c0426bb2650b33059181"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fed6788147050e7040bcccdc135d405" id="r_a7fed6788147050e7040bcccdc135d405"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Lock.html#a7fed6788147050e7040bcccdc135d405">cantLock</a> ()=0</td></tr>
+<tr class="memdesc:a7fed6788147050e7040bcccdc135d405"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: meant to be called when the lock cannot be obtained after the retries.  <br /></td></tr>
 <tr class="separator:a7fed6788147050e7040bcccdc135d405"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d4c2ccac4cb1cf4b2cbb37244754e28" id="r_a3d4c2ccac4cb1cf4b2cbb37244754e28"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Lock.html#a3d4c2ccac4cb1cf4b2cbb37244754e28">~Lock</a> ()</td></tr>
+<tr class="memdesc:a3d4c2ccac4cb1cf4b2cbb37244754e28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty virtual destructor.  <br /></td></tr>
 <tr class="separator:a3d4c2ccac4cb1cf4b2cbb37244754e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract lock on a binary <a class="el" href="classPds_1_1Semaphore.html" title="Unnamed POSIX semaphore (sem_t) shared between threads of one process.">Semaphore</a> (the VxWorks variant is not supported). </p>
+<p>Subclasses implement <a class="el" href="classPds_1_1Lock.html#a7fed6788147050e7040bcccdc135d405" title="Pure virtual: meant to be called when the lock cannot be obtained after the retries.">cantLock()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8dbe5c9f3853af354521b897dad98fcf" name="a8dbe5c9f3853af354521b897dad98fcf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8dbe5c9f3853af354521b897dad98fcf">&#9670;&#160;</a></span>Lock()</h2>
 
@@ -128,6 +139,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Create the lock free (semaphore full) and keep the retry count retries. </p>
 
 </div>
 </div>
@@ -153,6 +166,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty virtual destructor. </p>
 
 </div>
 </div>
@@ -180,6 +195,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: meant to be called when the lock cannot be obtained after the retries. </p>
+
 </div>
 </div>
 <a id="a367dec3fbcc2c0426bb2650b33059181" name="a367dec3fbcc2c0426bb2650b33059181"></a>
@@ -197,6 +214,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Take the lock, blocking on the semaphore. </p>
+<p>On non-VxWorks builds the retry loop and <a class="el" href="classPds_1_1Lock.html#a7fed6788147050e7040bcccdc135d405" title="Pure virtual: meant to be called when the lock cannot be obtained after the retries.">cantLock()</a> are never reached, because each attempt blocks until it succeeds. </p>
+
 </div>
 </div>
 <a id="a7cae140c12ebeb4a2ba7959e44c0dd50" name="a7cae140c12ebeb4a2ba7959e44c0dd50"></a>
@@ -213,6 +233,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Release the lock (give the semaphore). </p>
 
 </div>
 </div>

@@ -97,22 +97,32 @@ $(document).ready(function(){initNavTree('classPds_1_1Xpm_1_1PVStats.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p>Module-wide EPICS statistics PVs of an XPM; <a class="el" href="classPds_1_1Xpm_1_1PVStats.html#a1838913c49953c7d30b6ff52aae4a92e" title="Sample the time, Module counters, link status, PLL status and the three monitor clocks,...">update()</a> publishes rates computed from the change of the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> counters since the previous call.  
+ <a href="classPds_1_1Xpm_1_1PVStats.html#details">More...</a></p>
+
 <p><code>#include &lt;PVStats.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a03e41d0a9021563d22f7900802df1cd3" id="r_a03e41d0a9021563d22f7900802df1cd3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVStats.html#a03e41d0a9021563d22f7900802df1cd3">PVStats</a> (<a class="el" href="classPds_1_1Xpm_1_1Module.html">Module</a> &amp;, <a class="el" href="classPds_1_1Semaphore.html">Semaphore</a> &amp;)</td></tr>
+<tr class="memdesc:a03e41d0a9021563d22f7900802df1cd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store the module and semaphore and take the current time, <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4" title="Select the link and return its status (see LinkStatus).">Module::linkStatus()</a> as the first reference sample.  <br /></td></tr>
 <tr class="separator:a03e41d0a9021563d22f7900802df1cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd37ca4cb66756b288a7f5a1771bb85" id="r_a5bd37ca4cb66756b288a7f5a1771bb85"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVStats.html#a5bd37ca4cb66756b288a7f5a1771bb85">~PVStats</a> ()</td></tr>
+<tr class="memdesc:a5bd37ca4cb66756b288a7f5a1771bb85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; the PVs are not deleted.  <br /></td></tr>
 <tr class="separator:a5bd37ca4cb66756b288a7f5a1771bb85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab317b4cd8cffbaeeefff1ca52e5fac1b" id="r_ab317b4cd8cffbaeeefff1ca52e5fac1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVStats.html#ab317b4cd8cffbaeeefff1ca52e5fac1b">allocate</a> (const std::string &amp;title)</td></tr>
+<tr class="memdesc:ab317b4cd8cffbaeeefff1ca52e5fac1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete earlier PVs and create, under title: the timing counter PVs for Us and Cu, the PLL PVs of each AMC, the XTPG TimeStamp, <a class="el" href="classPds_1_1PulseId.html" title="64-bit word whose low 56 bits are the pulse ID and whose upper 8 bits carry control bits from the tim...">PulseId</a>, FiducialIntv and FiducialErr PVs, eight status PVs per link for 32 links, and RecClk, FbClk and BpClk.  <br /></td></tr>
 <tr class="separator:ab317b4cd8cffbaeeefff1ca52e5fac1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1838913c49953c7d30b6ff52aae4a92e" id="r_a1838913c49953c7d30b6ff52aae4a92e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVStats.html#a1838913c49953c7d30b6ff52aae4a92e">update</a> ()</td></tr>
+<tr class="memdesc:a1838913c49953c7d30b6ff52aae4a92e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample the time, <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> counters, link status, PLL status and the three monitor clocks, publish them with the overload below while holding the semaphore, and keep the samples for the next call.  <br /></td></tr>
 <tr class="separator:a1838913c49953c7d30b6ff52aae4a92e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd991a0c98a2034df074dc755225e1c7" id="r_acd991a0c98a2034df074dc755225e1c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Xpm_1_1PVStats.html#acd991a0c98a2034df074dc755225e1c7">update</a> (const <a class="el" href="classPds_1_1Xpm_1_1CoreCounts.html">CoreCounts</a> &amp;nc, const <a class="el" href="classPds_1_1Xpm_1_1CoreCounts.html">CoreCounts</a> &amp;oc, const <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html">LinkStatus</a> *nl, const <a class="el" href="classPds_1_1Xpm_1_1LinkStatus.html">LinkStatus</a> *ol, const <a class="el" href="classPds_1_1Xpm_1_1PllStats.html">PllStats</a> *pll, unsigned recClk, unsigned fbClk, unsigned bpClk, double dt)</td></tr>
+<tr class="memdesc:acd991a0c98a2034df074dc755225e1c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publish the PVs in the order <a class="el" href="classPds_1_1Xpm_1_1PVStats.html#ab317b4cd8cffbaeeefff1ca52e5fac1b" title="Delete earlier PVs and create, under title: the timing counter PVs for Us and Cu, the PLL PVs of each...">allocate()</a> created them: timing counter rates (clock counts scaled by 16e-6), PLL status, the XTPG time stamp, pulse ID and fiducial interval and error bit, per-link status and count changes, and the clocks scaled by 1e-6.  <br /></td></tr>
 <tr class="separator:acd991a0c98a2034df074dc755225e1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Module-wide EPICS statistics PVs of an XPM; <a class="el" href="classPds_1_1Xpm_1_1PVStats.html#a1838913c49953c7d30b6ff52aae4a92e" title="Sample the time, Module counters, link status, PLL status and the three monitor clocks,...">update()</a> publishes rates computed from the change of the <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> counters since the previous call. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a03e41d0a9021563d22f7900802df1cd3" name="a03e41d0a9021563d22f7900802df1cd3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a03e41d0a9021563d22f7900802df1cd3">&#9670;&#160;</a></span>PVStats()</h2>
 
@@ -139,6 +149,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Store the module and semaphore and take the current time, <a class="el" href="classPds_1_1Xpm_1_1Module.html#ade1b585fe6e02ecf401d5e94fd8b9245" title="Return the counters of the us and cu timing receivers.">Module::counts()</a> and <a class="el" href="classPds_1_1Xpm_1_1Module.html#a23026ae7d61471ce51ca4685f0f0dcb4" title="Select the link and return its status (see LinkStatus).">Module::linkStatus()</a> as the first reference sample. </p>
+
 </div>
 </div>
 <a id="a5bd37ca4cb66756b288a7f5a1771bb85" name="a5bd37ca4cb66756b288a7f5a1771bb85"></a>
@@ -155,6 +167,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Does nothing; the PVs are not deleted. </p>
 
 </div>
 </div>
@@ -175,6 +189,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Delete earlier PVs and create, under title: the timing counter PVs for Us and Cu, the PLL PVs of each AMC, the XTPG TimeStamp, <a class="el" href="classPds_1_1PulseId.html" title="64-bit word whose low 56 bits are the pulse ID and whose upper 8 bits carry control bits from the tim...">PulseId</a>, FiducialIntv and FiducialErr PVs, eight status PVs per link for 32 links, and RecClk, FbClk and BpClk. </p>
+
 </div>
 </div>
 <a id="a1838913c49953c7d30b6ff52aae4a92e" name="a1838913c49953c7d30b6ff52aae4a92e"></a>
@@ -191,6 +207,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sample the time, <a class="el" href="classPds_1_1Xpm_1_1Module.html" title="Register map of an XPM, laid out so that member addresses equal register offsets (see locate()),...">Module</a> counters, link status, PLL status and the three monitor clocks, publish them with the overload below while holding the semaphore, and keep the samples for the next call. </p>
+<p>CPSW exceptions from the publishing step are caught and printed. </p>
 
 </div>
 </div>
@@ -261,6 +280,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Publish the PVs in the order <a class="el" href="classPds_1_1Xpm_1_1PVStats.html#ab317b4cd8cffbaeeefff1ca52e5fac1b" title="Delete earlier PVs and create, under title: the timing counter PVs for Us and Cu, the PLL PVs of each...">allocate()</a> created them: timing counter rates (clock counts scaled by 16e-6), PLL status, the XTPG time stamp, pulse ID and fiducial interval and error bit, per-link status and count changes, and the clocks scaled by 1e-6. </p>
+<p>Each value is written only if its PV is connected. </p>
 
 </div>
 </div>

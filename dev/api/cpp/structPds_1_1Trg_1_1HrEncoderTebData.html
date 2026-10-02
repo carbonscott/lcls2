@@ -98,27 +98,38 @@ $(document).ready(function(){initNavTree('structPds_1_1Trg_1_1HrEncoderTebData.h
 </div><!--header-->
 <div class="contents">
 
+<p>TEB input record made by hrEncoderTebPrimitive.cc from the start of the encoder data payload.  
+ <a href="structPds_1_1Trg_1_1HrEncoderTebData.html#details">More...</a></p>
+
 <p><code>#include &lt;HrEncoderTebData.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a443599fc59442374a4dd00cc2bd7dbb4" id="r_a443599fc59442374a4dd00cc2bd7dbb4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#a443599fc59442374a4dd00cc2bd7dbb4">HrEncoderTebData</a> (uint8_t *payload)</td></tr>
+<tr class="memdesc:a443599fc59442374a4dd00cc2bd7dbb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the 32-bit position from payload bytes 0-3 and the counters from bytes 4, 5 and 6; m_reserved is not set.  <br /></td></tr>
 <tr class="separator:a443599fc59442374a4dd00cc2bd7dbb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad46d4a1e9ee3e0fb7f8b57852a72e24f" id="r_ad46d4a1e9ee3e0fb7f8b57852a72e24f"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#ad46d4a1e9ee3e0fb7f8b57852a72e24f">m_position</a></td></tr>
+<tr class="memdesc:ad46d4a1e9ee3e0fb7f8b57852a72e24f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoder position (payload bytes 0-3).  <br /></td></tr>
 <tr class="separator:ad46d4a1e9ee3e0fb7f8b57852a72e24f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9698864574da557e4e4013c0ed7b59d8" id="r_a9698864574da557e4e4013c0ed7b59d8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#a9698864574da557e4e4013c0ed7b59d8">m_encErrCnt</a></td></tr>
+<tr class="memdesc:a9698864574da557e4e4013c0ed7b59d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encoder error count (payload byte 4).  <br /></td></tr>
 <tr class="separator:a9698864574da557e4e4013c0ed7b59d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f92e55375175b3a38c0a3eab49948c8" id="r_a3f92e55375175b3a38c0a3eab49948c8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#a3f92e55375175b3a38c0a3eab49948c8">m_missedTrigCnt</a></td></tr>
+<tr class="memdesc:a3f92e55375175b3a38c0a3eab49948c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Missed trigger count (payload byte 5).  <br /></td></tr>
 <tr class="separator:a3f92e55375175b3a38c0a3eab49948c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac108d50cff48592825ba834502e57f69" id="r_ac108d50cff48592825ba834502e57f69"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#ac108d50cff48592825ba834502e57f69">m_latches</a></td></tr>
+<tr class="memdesc:ac108d50cff48592825ba834502e57f69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Latch byte (payload byte 6); the code comment says the upper 3 bits are the 3 latch bits.  <br /></td></tr>
 <tr class="separator:ac108d50cff48592825ba834502e57f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d13e4f61569f96fff9fdd7c207c76eb" id="r_a2d13e4f61569f96fff9fdd7c207c76eb"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Trg_1_1HrEncoderTebData.html#a2d13e4f61569f96fff9fdd7c207c76eb">m_reserved</a></td></tr>
+<tr class="memdesc:a2d13e4f61569f96fff9fdd7c207c76eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not set by the constructor; the code comment says it is actually 13 bits.  <br /></td></tr>
 <tr class="separator:a2d13e4f61569f96fff9fdd7c207c76eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TEB input record made by hrEncoderTebPrimitive.cc from the start of the encoder data payload. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a443599fc59442374a4dd00cc2bd7dbb4" name="a443599fc59442374a4dd00cc2bd7dbb4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a443599fc59442374a4dd00cc2bd7dbb4">&#9670;&#160;</a></span>HrEncoderTebData()</h2>
 
@@ -143,6 +154,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Copy the 32-bit position from payload bytes 0-3 and the counters from bytes 4, 5 and 6; m_reserved is not set. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -158,6 +171,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Encoder error count (payload byte 4). </p>
+
 </div>
 </div>
 <a id="ac108d50cff48592825ba834502e57f69" name="ac108d50cff48592825ba834502e57f69"></a>
@@ -171,6 +186,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Latch byte (payload byte 6); the code comment says the upper 3 bits are the 3 latch bits. </p>
 
 </div>
 </div>
@@ -186,6 +203,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Missed trigger count (payload byte 5). </p>
+
 </div>
 </div>
 <a id="ad46d4a1e9ee3e0fb7f8b57852a72e24f" name="ad46d4a1e9ee3e0fb7f8b57852a72e24f"></a>
@@ -200,6 +219,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Encoder position (payload bytes 0-3). </p>
+
 </div>
 </div>
 <a id="a2d13e4f61569f96fff9fdd7c207c76eb" name="a2d13e4f61569f96fff9fdd7c207c76eb"></a>
@@ -213,6 +234,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Not set by the constructor; the code comment says it is actually 13 bits. </p>
 
 </div>
 </div>

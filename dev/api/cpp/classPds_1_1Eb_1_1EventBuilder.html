@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EventBuilder.html','
 </div><!--header-->
 <div class="contents">
 
+<p>Abstract event builder.  
+ <a href="classPds_1_1Eb_1_1EventBuilder.html#details">More...</a></p>
+
 <p><code>#include &lt;EventBuilder.hh&gt;</code></p>
 
 <p>Inherited by <a class="el" href="classPds_1_1Eb_1_1EbAppBase.html">Pds::Eb::EbAppBase</a>.</p>
@@ -107,59 +110,85 @@ $(document).ready(function(){initNavTree('classPds_1_1Eb_1_1EventBuilder.html','
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:abd0fe8fac9a924ba772cfb318871f02e" id="r_abd0fe8fac9a924ba772cfb318871f02e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#abd0fe8fac9a924ba772cfb318871f02e">time_point_t</a> = std::chrono::time_point&lt; <a class="el" href="classPds_1_1fast__monotonic__clock.html">fast_monotonic_clock</a> &gt;</td></tr>
+<tr class="memdesc:abd0fe8fac9a924ba772cfb318871f02e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time point of <a class="el" href="classPds_1_1fast__monotonic__clock.html" title="std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_CO...">fast_monotonic_clock</a>.  <br /></td></tr>
 <tr class="separator:abd0fe8fac9a924ba772cfb318871f02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a887b448b8ef1d5a5c642a5421c6d66b6" id="r_a887b448b8ef1d5a5c642a5421c6d66b6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a887b448b8ef1d5a5c642a5421c6d66b6">ns_t</a> = std::chrono::nanoseconds</td></tr>
+<tr class="memdesc:a887b448b8ef1d5a5c642a5421c6d66b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for std::chrono::nanoseconds.  <br /></td></tr>
 <tr class="separator:a887b448b8ef1d5a5c642a5421c6d66b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a585354c8d00723f8d22479cf42994e7c" id="r_a585354c8d00723f8d22479cf42994e7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a585354c8d00723f8d22479cf42994e7c">EventBuilder</a> (unsigned timeout, const unsigned &amp;verbose)</td></tr>
+<tr class="memdesc:a585354c8d00723f8d22479cf42994e7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the event timeout to timeout milliseconds (0 means effectively no timeout) and keep verbose by reference; prints the timeout to stderr.  <br /></td></tr>
 <tr class="separator:a585354c8d00723f8d22479cf42994e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc1119b4fd3f52b082c738ea8f6e2b8b" id="r_abc1119b4fd3f52b082c738ea8f6e2b8b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#abc1119b4fd3f52b082c738ea8f6e2b8b">~EventBuilder</a> ()</td></tr>
+<tr class="memdesc:abc1119b4fd3f52b082c738ea8f6e2b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does nothing; empty body.  <br /></td></tr>
 <tr class="separator:abc1119b4fd3f52b082c738ea8f6e2b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2222170b9da11a78545ae34374772bfd" id="r_a2222170b9da11a78545ae34374772bfd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a2222170b9da11a78545ae34374772bfd">flush</a> ()</td></tr>
+<tr class="memdesc:a2222170b9da11a78545ae34374772bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hook called by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3c0b184b69ae63e9122250459bff14e8" title="Periodic timeout handler.">expired()</a> when nothing is pending; the default does nothing.  <br /></td></tr>
 <tr class="separator:a2222170b9da11a78545ae34374772bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4508b9afd7eaf48d03cd1ceafeddf21e" id="r_a4508b9afd7eaf48d03cd1ceafeddf21e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a4508b9afd7eaf48d03cd1ceafeddf21e">fixup</a> (<a class="el" href="classPds_1_1Eb_1_1EbEvent.html">EbEvent</a> *, unsigned srcId)=0</td></tr>
+<tr class="memdesc:a4508b9afd7eaf48d03cd1ceafeddf21e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: called once for each missing contributor srcId of an event that is being forced out (timed out or flushed by a newer complete event).  <br /></td></tr>
 <tr class="separator:a4508b9afd7eaf48d03cd1ceafeddf21e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7be8bf77b49ef48e20231fe3be090dc9" id="r_a7be8bf77b49ef48e20231fe3be090dc9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a7be8bf77b49ef48e20231fe3be090dc9">process</a> (<a class="el" href="classPds_1_1Eb_1_1EbEvent.html">EbEvent</a> *)=0</td></tr>
+<tr class="memdesc:a7be8bf77b49ef48e20231fe3be090dc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: handle a completed or fixed-up event; called in pulse ID order just before the event is freed.  <br /></td></tr>
 <tr class="separator:a7be8bf77b49ef48e20231fe3be090dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80870f8ce210a38b8edf12278534dac4" id="r_a80870f8ce210a38b8edf12278534dac4"><td class="memItemLeft" align="right" valign="top">virtual uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a80870f8ce210a38b8edf12278534dac4">contract</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *) const =0</td></tr>
+<tr class="memdesc:a80870f8ce210a38b8edf12278534dac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pure virtual: return the bit list of contributors expected for the event that this contribution starts.  <br /></td></tr>
 <tr class="separator:a80870f8ce210a38b8edf12278534dac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c0b184b69ae63e9122250459bff14e8" id="r_a3c0b184b69ae63e9122250459bff14e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3c0b184b69ae63e9122250459bff14e8">expired</a> ()</td></tr>
+<tr class="memdesc:a3c0b184b69ae63e9122250459bff14e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Periodic timeout handler.  <br /></td></tr>
 <tr class="separator:a3c0b184b69ae63e9122250459bff14e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af869b8d63a3ebc995df1d6a5c7de2b62" id="r_af869b8d63a3ebc995df1d6a5c7de2b62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#af869b8d63a3ebc995df1d6a5c7de2b62">process</a> (const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> *dgrams, const size_t bufSize, unsigned imm, const void *const end)</td></tr>
+<tr class="memdesc:af869b8d63a3ebc995df1d6a5c7de2b62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a batch of contributions starting at dgrams (entries bufSize bytes apart, ending at the EOL entry or after the maximum number of entries) into their events, with immediate data imm incremented per entry; end is only used to report a missing EOL.  <br /></td></tr>
 <tr class="separator:af869b8d63a3ebc995df1d6a5c7de2b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb8c47e50552bf179243ee0446026ce7" id="r_acb8c47e50552bf179243ee0446026ce7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#acb8c47e50552bf179243ee0446026ce7">resetCounters</a> ()</td></tr>
+<tr class="memdesc:acb8c47e50552bf179243ee0446026ce7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zero the pool counters, the timeout and fixup counts, the missing bit list, the occupancy counts, the event age, the processing time and the arrival times.  <br /></td></tr>
 <tr class="separator:acb8c47e50552bf179243ee0446026ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacd2d8a697c005738fb0c03c6d66d9ce" id="r_aacd2d8a697c005738fb0c03c6d66d9ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#aacd2d8a697c005738fb0c03c6d66d9ce">clear</a> ()</td></tr>
+<tr class="memdesc:aacd2d8a697c005738fb0c03c6d66d9ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete all pending events, discard the now-empty epochs, reset the counters and clear the epoch and event lookup tables.  <br /></td></tr>
 <tr class="separator:aacd2d8a697c005738fb0c03c6d66d9ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c1754022cefd7d1714c4759372a3c4c" id="r_a4c1754022cefd7d1714c4759372a3c4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a4c1754022cefd7d1714c4759372a3c4c">dump</a> (unsigned detail) const</td></tr>
+<tr class="memdesc:a4c1754022cefd7d1714c4759372a3c4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the pending epochs (and their events, depending on detail) and the state of both object pools to stderr.  <br /></td></tr>
 <tr class="separator:a4c1754022cefd7d1714c4759372a3c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef4bcc98a10bf4c182c78c7c5857f394" id="r_aef4bcc98a10bf4c182c78c7c5857f394"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#aef4bcc98a10bf4c182c78c7c5857f394">epochAllocCnt</a> () const</td></tr>
+<tr class="memdesc:aef4bcc98a10bf4c182c78c7c5857f394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of allocations from the epoch pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>).  <br /></td></tr>
 <tr class="separator:aef4bcc98a10bf4c182c78c7c5857f394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9979fc90e12ba1a82f21ae947288545f" id="r_a9979fc90e12ba1a82f21ae947288545f"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a9979fc90e12ba1a82f21ae947288545f">epochFreeCnt</a> () const</td></tr>
+<tr class="memdesc:a9979fc90e12ba1a82f21ae947288545f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of frees to the epoch pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>).  <br /></td></tr>
 <tr class="separator:a9979fc90e12ba1a82f21ae947288545f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dbf3b508092386c8febda869a2a10c0" id="r_a5dbf3b508092386c8febda869a2a10c0"><td class="memItemLeft" align="right" valign="top">const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a5dbf3b508092386c8febda869a2a10c0">epochOccCnt</a> () const</td></tr>
+<tr class="memdesc:a5dbf3b508092386c8febda869a2a10c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of epochs in use (allocations minus frees), also caching it.  <br /></td></tr>
 <tr class="separator:a5dbf3b508092386c8febda869a2a10c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecfe595a5f95350c298e9a4cbbd5c12b" id="r_aecfe595a5f95350c298e9a4cbbd5c12b"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#aecfe595a5f95350c298e9a4cbbd5c12b">eventAllocCnt</a> () const</td></tr>
+<tr class="memdesc:aecfe595a5f95350c298e9a4cbbd5c12b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of allocations from the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>).  <br /></td></tr>
 <tr class="separator:aecfe595a5f95350c298e9a4cbbd5c12b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57582f66257e062286f73605740c5ee3" id="r_a57582f66257e062286f73605740c5ee3"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a57582f66257e062286f73605740c5ee3">eventFreeCnt</a> () const</td></tr>
+<tr class="memdesc:a57582f66257e062286f73605740c5ee3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of frees to the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>).  <br /></td></tr>
 <tr class="separator:a57582f66257e062286f73605740c5ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eff6fce9d66319b36b698dfef58936b" id="r_a7eff6fce9d66319b36b698dfef58936b"><td class="memItemLeft" align="right" valign="top">const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a7eff6fce9d66319b36b698dfef58936b">eventOccCnt</a> () const</td></tr>
+<tr class="memdesc:a7eff6fce9d66319b36b698dfef58936b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of events in use (allocations minus frees), also caching it.  <br /></td></tr>
 <tr class="separator:a7eff6fce9d66319b36b698dfef58936b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf29ec77d6b47f1a829ec380095f387f" id="r_aaf29ec77d6b47f1a829ec380095f387f"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#aaf29ec77d6b47f1a829ec380095f387f">eventPoolDepth</a> () const</td></tr>
+<tr class="memdesc:aaf29ec77d6b47f1a829ec380095f387f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of objects in the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>); returned by value.  <br /></td></tr>
 <tr class="separator:aaf29ec77d6b47f1a829ec380095f387f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaf55a85d23e2ed9d040f8bc88b79d2e" id="r_aaaf55a85d23e2ed9d040f8bc88b79d2e"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#aaaf55a85d23e2ed9d040f8bc88b79d2e">timeoutCnt</a> () const</td></tr>
+<tr class="memdesc:aaaf55a85d23e2ed9d040f8bc88b79d2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of incomplete events forced out because they were older than the timeout.  <br /></td></tr>
 <tr class="separator:aaaf55a85d23e2ed9d040f8bc88b79d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c12f5be5727e3f752526f1009321016" id="r_a1c12f5be5727e3f752526f1009321016"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a1c12f5be5727e3f752526f1009321016">fixupCnt</a> () const</td></tr>
+<tr class="memdesc:a1c12f5be5727e3f752526f1009321016"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of incomplete events forced out before reaching the timeout.  <br /></td></tr>
 <tr class="separator:a1c12f5be5727e3f752526f1009321016"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48b8fca5d6831f76ef4ecfca1b4a82f5" id="r_a48b8fca5d6831f76ef4ecfca1b4a82f5"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a48b8fca5d6831f76ef4ecfca1b4a82f5">missing</a> () const</td></tr>
+<tr class="memdesc:a48b8fca5d6831f76ef4ecfca1b4a82f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the bit list of contributors still missing from the most recently fixed-up event.  <br /></td></tr>
 <tr class="separator:a48b8fca5d6831f76ef4ecfca1b4a82f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1b89081213d898ed7976c8ca21eaae6" id="r_ac1b89081213d898ed7976c8ca21eaae6"><td class="memItemLeft" align="right" valign="top">const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#ac1b89081213d898ed7976c8ca21eaae6">eventAge</a> () const</td></tr>
+<tr class="memdesc:ac1b89081213d898ed7976c8ca21eaae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the most recently recorded event age in nanoseconds (updated while flushing and when an event is retired).  <br /></td></tr>
 <tr class="separator:ac1b89081213d898ed7976c8ca21eaae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85034b6eec315334edce4e0616f61947" id="r_a85034b6eec315334edce4e0616f61947"><td class="memItemLeft" align="right" valign="top">const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a85034b6eec315334edce4e0616f61947">ebTime</a> () const</td></tr>
+<tr class="memdesc:a85034b6eec315334edce4e0616f61947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the time spent in the most recent process(dgrams, ...) call, in nanoseconds.  <br /></td></tr>
 <tr class="separator:a85034b6eec315334edce4e0616f61947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b860c1390e4b901d9dcbf9bbf0a0b30" id="r_a7b860c1390e4b901d9dcbf9bbf0a0b30"><td class="memItemLeft" align="right" valign="top">const int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a7b860c1390e4b901d9dcbf9bbf0a0b30">arrTime</a> (unsigned src) const</td></tr>
+<tr class="memdesc:a7b860c1390e4b901d9dcbf9bbf0a0b30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return, for contributor src, the time in nanoseconds from the creation of the last event in its most recent batch to the start of processing that batch; 0 if src is out of range.  <br /></td></tr>
 <tr class="separator:a7b860c1390e4b901d9dcbf9bbf0a0b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -172,7 +201,10 @@ Friends</h2></td></tr>
 <tr class="memitem:ad8672c6fdcc3bf938bf65cdf4c1efa9c" id="r_ad8672c6fdcc3bf938bf65cdf4c1efa9c"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#ad8672c6fdcc3bf938bf65cdf4c1efa9c">EbEvent</a></td></tr>
 <tr class="separator:ad8672c6fdcc3bf938bf65cdf4c1efa9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstract event builder. </p>
+<p>Contributions with the same pulse ID are collected into an <a class="el" href="classPds_1_1Eb_1_1EbEvent.html" title="One event being built by EventBuilder: its contributions (a variable-length array that follows the ob...">EbEvent</a> (events are grouped into epochs of a fixed duration), and events are passed to <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a7be8bf77b49ef48e20231fe3be090dc9" title="Pure virtual: handle a completed or fixed-up event; called in pulse ID order just before the event is...">process(EbEvent*)</a> in pulse ID order once their contract is met or they are forced out. Subclasses supply <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a4508b9afd7eaf48d03cd1ceafeddf21e" title="Pure virtual: called once for each missing contributor srcId of an event that is being forced out (ti...">fixup()</a>, <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a7be8bf77b49ef48e20231fe3be090dc9" title="Pure virtual: handle a completed or fixed-up event; called in pulse ID order just before the event is...">process(EbEvent*)</a> and <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a80870f8ce210a38b8edf12278534dac4" title="Pure virtual: return the bit list of contributors expected for the event that this contribution start...">contract()</a>. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a887b448b8ef1d5a5c642a5421c6d66b6" name="a887b448b8ef1d5a5c642a5421c6d66b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a887b448b8ef1d5a5c642a5421c6d66b6">&#9670;&#160;</a></span>ns_t</h2>
 
@@ -184,6 +216,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Alias for std::chrono::nanoseconds. </p>
 
 </div>
 </div>
@@ -198,6 +232,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time point of <a class="el" href="classPds_1_1fast__monotonic__clock.html" title="std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_CO...">fast_monotonic_clock</a>. </p>
 
 </div>
 </div>
@@ -228,6 +264,9 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Set the event timeout to timeout milliseconds (0 means effectively no timeout) and keep verbose by reference; prints the timeout to stderr. </p>
+<p>The protected <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a> must be called before contributions are processed. </p>
+
 </div>
 </div>
 <a id="abc1119b4fd3f52b082c738ea8f6e2b8b" name="abc1119b4fd3f52b082c738ea8f6e2b8b"></a>
@@ -252,6 +291,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Does nothing; empty body. </p>
 
 </div>
 </div>
@@ -280,6 +321,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return, for contributor src, the time in nanoseconds from the creation of the last event in its most recent batch to the start of processing that batch; 0 if src is out of range. </p>
+
 </div>
 </div>
 <a id="aacd2d8a697c005738fb0c03c6d66d9ce" name="aacd2d8a697c005738fb0c03c6d66d9ce"></a>
@@ -296,6 +339,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Delete all pending events, discard the now-empty epochs, reset the counters and clear the epoch and event lookup tables. </p>
 
 </div>
 </div>
@@ -323,6 +368,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: return the bit list of contributors expected for the event that this contribution starts. </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Eb_1_1EbAppBase.html#a271e1dfe59add98201cfe9e8e8d7349b">Pds::Eb::EbAppBase</a>.</p>
 
 </div>
@@ -342,6 +389,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Print the pending epochs (and their events, depending on detail) and the state of both object pools to stderr. </p>
 
 </div>
 </div>
@@ -368,6 +417,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the time spent in the most recent process(dgrams, ...) call, in nanoseconds. </p>
+
 </div>
 </div>
 <a id="aef4bcc98a10bf4c182c78c7c5857f394" name="aef4bcc98a10bf4c182c78c7c5857f394"></a>
@@ -392,6 +443,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of allocations from the epoch pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>). </p>
 
 </div>
 </div>
@@ -418,6 +471,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of frees to the epoch pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>). </p>
+
 </div>
 </div>
 <a id="a5dbf3b508092386c8febda869a2a10c0" name="a5dbf3b508092386c8febda869a2a10c0"></a>
@@ -442,6 +497,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of epochs in use (allocations minus frees), also caching it. </p>
 
 </div>
 </div>
@@ -468,6 +525,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the most recently recorded event age in nanoseconds (updated while flushing and when an event is retired). </p>
+
 </div>
 </div>
 <a id="aecfe595a5f95350c298e9a4cbbd5c12b" name="aecfe595a5f95350c298e9a4cbbd5c12b"></a>
@@ -492,6 +551,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of allocations from the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>). </p>
 
 </div>
 </div>
@@ -518,6 +579,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of frees to the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>). </p>
+
 </div>
 </div>
 <a id="a7eff6fce9d66319b36b698dfef58936b" name="a7eff6fce9d66319b36b698dfef58936b"></a>
@@ -542,6 +605,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of events in use (allocations minus frees), also caching it. </p>
 
 </div>
 </div>
@@ -568,6 +633,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of objects in the event pool (0 before <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3bfaa7b793553b184d458136c9df1c6e">initialize()</a>); returned by value. </p>
+
 </div>
 </div>
 <a id="a3c0b184b69ae63e9122250459bff14e8" name="a3c0b184b69ae63e9122250459bff14e8"></a>
@@ -584,6 +651,9 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Periodic timeout handler. </p>
+<p>If no event is pending, call <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a2222170b9da11a78545ae34374772bfd" title="Hook called by expired() when nothing is pending; the default does nothing.">flush()</a>; otherwise flush pending events oldest first, fixing up incomplete events older than the timeout and stopping at the first incomplete event that may still complete. </p>
 
 </div>
 </div>
@@ -621,6 +691,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: called once for each missing contributor srcId of an event that is being forced out (timed out or flushed by a newer complete event). </p>
+
 <p>Implemented in <a class="el" href="classPds_1_1Eb_1_1EbAppBase.html#a654f3ad215b48c18d2365cd75893ad95">Pds::Eb::EbAppBase</a>.</p>
 
 </div>
@@ -648,6 +720,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the number of incomplete events forced out before reaching the timeout. </p>
+
 </div>
 </div>
 <a id="a2222170b9da11a78545ae34374772bfd" name="a2222170b9da11a78545ae34374772bfd"></a>
@@ -672,6 +746,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Hook called by <a class="el" href="classPds_1_1Eb_1_1EventBuilder.html#a3c0b184b69ae63e9122250459bff14e8" title="Periodic timeout handler.">expired()</a> when nothing is pending; the default does nothing. </p>
 
 </div>
 </div>
@@ -746,6 +822,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Return the bit list of contributors still missing from the most recently fixed-up event. </p>
+
 </div>
 </div>
 <a id="af869b8d63a3ebc995df1d6a5c7de2b62" name="af869b8d63a3ebc995df1d6a5c7de2b62"></a>
@@ -786,6 +864,9 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Insert a batch of contributions starting at dgrams (entries bufSize bytes apart, ending at the EOL entry or after the maximum number of entries) into their events, with immediate data imm incremented per entry; end is only used to report a missing EOL. </p>
+<p>Completed events, and older events subject to the timeout rules, are then delivered; if none completed, a flush is tried at most every 100 ms. Also updates the arrival-time and processing-time metrics. </p>
+
 </div>
 </div>
 <a id="a7be8bf77b49ef48e20231fe3be090dc9" name="a7be8bf77b49ef48e20231fe3be090dc9"></a>
@@ -812,6 +893,8 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pure virtual: handle a completed or fixed-up event; called in pulse ID order just before the event is freed. </p>
+
 </div>
 </div>
 <a id="acb8c47e50552bf179243ee0446026ce7" name="acb8c47e50552bf179243ee0446026ce7"></a>
@@ -828,6 +911,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Zero the pool counters, the timeout and fixup counts, the missing bit list, the occupancy counts, the event age, the processing time and the arrival times. </p>
 
 </div>
 </div>
@@ -853,6 +938,8 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the number of incomplete events forced out because they were older than the timeout. </p>
 
 </div>
 </div>

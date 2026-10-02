@@ -97,22 +97,33 @@ $(document).ready(function(){initNavTree('classPds_1_1Bld_1_1Client.html',''); i
 </div><!--header-->
 <div class="contents">
 
+<p>Receives BLD multicast packets and returns their payloads one entry at a time; a packet whose source ID differs from <a class="el" href="classPds_1_1Bld_1_1Client.html#a5a9e6ee62a93a1395a43f035dad0003c" title="Return the expected source ID.">getID()</a> is dropped.  
+ <a href="classPds_1_1Bld_1_1Client.html#details">More...</a></p>
+
 <p><code>#include &lt;Client.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6b2ac67293e4beeecfc8f876ae1f30d5" id="r_a6b2ac67293e4beeecfc8f876ae1f30d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Client.html#a6b2ac67293e4beeecfc8f876ae1f30d5">Client</a> (unsigned interface, unsigned mcaddr, unsigned port)</td></tr>
+<tr class="memdesc:a6b2ac67293e4beeecfc8f876ae1f30d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open a UDP socket with a 16 MiB receive buffer, bind it to mcaddr and port and join multicast group mcaddr on interface (addresses in host byte order).  <br /></td></tr>
 <tr class="separator:a6b2ac67293e4beeecfc8f876ae1f30d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a938a0a65c39d26b29f1c81071ca9e53c" id="r_a938a0a65c39d26b29f1c81071ca9e53c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Client.html#a938a0a65c39d26b29f1c81071ca9e53c">~Client</a> ()</td></tr>
+<tr class="memdesc:a938a0a65c39d26b29f1c81071ca9e53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the packet buffer and close the socket.  <br /></td></tr>
 <tr class="separator:a938a0a65c39d26b29f1c81071ca9e53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab458a561a1c108da8ae1a72f67e4b015" id="r_ab458a561a1c108da8ae1a72f67e4b015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Client.html#ab458a561a1c108da8ae1a72f67e4b015">setID</a> (unsigned v)</td></tr>
+<tr class="memdesc:ab458a561a1c108da8ae1a72f67e4b015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the expected source ID.  <br /></td></tr>
 <tr class="separator:ab458a561a1c108da8ae1a72f67e4b015"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9e6ee62a93a1395a43f035dad0003c" id="r_a5a9e6ee62a93a1395a43f035dad0003c"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Client.html#a5a9e6ee62a93a1395a43f035dad0003c">getID</a> () const</td></tr>
+<tr class="memdesc:a5a9e6ee62a93a1395a43f035dad0003c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the expected source ID.  <br /></td></tr>
 <tr class="separator:a5a9e6ee62a93a1395a43f035dad0003c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1abe98053d3479c108abbf1ac2e32fa9" id="r_a1abe98053d3479c108abbf1ac2e32fa9"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Bld_1_1Client.html#a1abe98053d3479c108abbf1ac2e32fa9">fetch</a> (char *payload, unsigned sizeofT)</td></tr>
+<tr class="memdesc:a1abe98053d3479c108abbf1ac2e32fa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy the next sizeofT-byte payload into payload and return its pulse ID (<a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef" title="Return 64-bit word 1 of the header.">Header::pulseId()</a> of the packet, plus the 12-bit offset for later entries).  <br /></td></tr>
 <tr class="separator:a1abe98053d3479c108abbf1ac2e32fa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Receives BLD multicast packets and returns their payloads one entry at a time; a packet whose source ID differs from <a class="el" href="classPds_1_1Bld_1_1Client.html#a5a9e6ee62a93a1395a43f035dad0003c" title="Return the expected source ID.">getID()</a> is dropped. </p>
+<p>Used by hpsBldClient, hpsBldStat and hpsBldCopy in psdaq/app. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6b2ac67293e4beeecfc8f876ae1f30d5" name="a6b2ac67293e4beeecfc8f876ae1f30d5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6b2ac67293e4beeecfc8f876ae1f30d5">&#9670;&#160;</a></span>Client()</h2>
 
@@ -145,6 +156,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Open a UDP socket with a 16 MiB receive buffer, bind it to mcaddr and port and join multicast group mcaddr on interface (addresses in host byte order). </p>
+<p>Throws a std::string on failure; the expected ID is not initialized. </p>
+
 </div>
 </div>
 <a id="a938a0a65c39d26b29f1c81071ca9e53c" name="a938a0a65c39d26b29f1c81071ca9e53c"></a>
@@ -161,6 +175,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Free the packet buffer and close the socket. </p>
 
 </div>
 </div>
@@ -191,6 +207,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Copy the next sizeofT-byte payload into payload and return its pulse ID (<a class="el" href="classPds_1_1Bld_1_1Header.html#a3fedde8fff33312e4aadaf80258773ef" title="Return 64-bit word 1 of the header.">Header::pulseId()</a> of the packet, plus the 12-bit offset for later entries). </p>
+<p>Receives a new packet when the current one has no complete entry left; returns 0 if that packet's ID differs from <a class="el" href="classPds_1_1Bld_1_1Client.html#a5a9e6ee62a93a1395a43f035dad0003c" title="Return the expected source ID.">getID()</a> and exits the process on a receive error. </p>
+
 </div>
 </div>
 <a id="a5a9e6ee62a93a1395a43f035dad0003c" name="a5a9e6ee62a93a1395a43f035dad0003c"></a>
@@ -215,6 +234,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Return the expected source ID. </p>
 
 </div>
 </div>
@@ -241,6 +262,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the expected source ID. </p>
 
 </div>
 </div>

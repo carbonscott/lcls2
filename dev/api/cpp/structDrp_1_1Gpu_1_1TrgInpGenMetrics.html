@@ -97,44 +97,66 @@ $(document).ready(function(){initNavTree('structDrp_1_1Gpu_1_1TrgInpGenMetrics.h
 </div><!--header-->
 <div class="contents">
 
+<p>Counters of <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html" title="Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph,...">TrgInpGen</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a1d8882887e2bd782ac415d784c00a9a8" title="Reset the counters and add the DRP_tigState, DRP_tigRcv, DRP_tigFwd, DRP_colRcv, DRP_pidWtCtr,...">TrgInpGen::setupMetrics()</a>.  
+ <a href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#details">More...</a></p>
+
 <p><code>#include &lt;TrgInpGen.hh&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aac4de32a0d9773c32d55347127edc625" id="r_aac4de32a0d9773c32d55347127edc625"><td class="memItemLeft" align="right" valign="top">uint64_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#aac4de32a0d9773c32d55347127edc625">state</a> {nullptr}</td></tr>
+<tr class="memdesc:aac4de32a0d9773c32d55347127edc625"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel state monitor (DRP_tigState).  <br /></td></tr>
 <tr class="separator:aac4de32a0d9773c32d55347127edc625"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0f18c8f11aea2756bc5a2f31156d934" id="r_af0f18c8f11aea2756bc5a2f31156d934"><td class="memItemLeft" align="right" valign="top">uint64_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#af0f18c8f11aea2756bc5a2f31156d934">rcvWtCtr</a> {nullptr}</td></tr>
+<tr class="memdesc:af0f18c8f11aea2756bc5a2f31156d934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers taken from the reader queues (DRP_tigRcv).  <br /></td></tr>
 <tr class="separator:af0f18c8f11aea2756bc5a2f31156d934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a596283ec0be30da80b977ccd0a366071" id="r_a596283ec0be30da80b977ccd0a366071"><td class="memItemLeft" align="right" valign="top">uint64_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a596283ec0be30da80b977ccd0a366071">fwdWtCtr</a> {nullptr}</td></tr>
+<tr class="memdesc:a596283ec0be30da80b977ccd0a366071"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers passed to the device-to-host queue (DRP_tigFwd).  <br /></td></tr>
 <tr class="separator:a596283ec0be30da80b977ccd0a366071"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bcdbc7109d73da2d2b4b656d52ca287" id="r_a9bcdbc7109d73da2d2b4b656d52ca287"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a9bcdbc7109d73da2d2b4b656d52ca287">pndWtCtr</a> {0}</td></tr>
+<tr class="memdesc:a9bcdbc7109d73da2d2b4b656d52ca287"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers popped by the receiver thread (DRP_colRcv).  <br /></td></tr>
 <tr class="separator:a9bcdbc7109d73da2d2b4b656d52ca287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae29e423201dec133fcc6d5391a295df6" id="r_ae29e423201dec133fcc6d5391a295df6"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#ae29e423201dec133fcc6d5391a295df6">pidWtCtr</a> {0}</td></tr>
+<tr class="memdesc:ae29e423201dec133fcc6d5391a295df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exported as DRP_pidWtCtr but never incremented.  <br /></td></tr>
 <tr class="separator:ae29e423201dec133fcc6d5391a295df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2dc0ef322a53f8a2975a7b494a844ec" id="r_ae2dc0ef322a53f8a2975a7b494a844ec"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#ae2dc0ef322a53f8a2975a7b494a844ec">nEvents</a> {0}</td></tr>
+<tr class="memdesc:ae2dc0ef322a53f8a2975a7b494a844ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers accepted by the receiver thread (DRP_evtCtr and drp_event_rate).  <br /></td></tr>
 <tr class="separator:ae2dc0ef322a53f8a2975a7b494a844ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b52cc8908e2e39802eb3bff978c292c" id="r_a0b52cc8908e2e39802eb3bff978c292c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a0b52cc8908e2e39802eb3bff978c292c">nDmaRet</a> {0}</td></tr>
+<tr class="memdesc:a0b52cc8908e2e39802eb3bff978c292c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers accepted in the last pass of the receiver loop (drp_num_dma_ret).  <br /></td></tr>
 <tr class="separator:a0b52cc8908e2e39802eb3bff978c292c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a562a1769a50c073ca068a52161dadd54" id="r_a562a1769a50c073ca068a52161dadd54"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a562a1769a50c073ca068a52161dadd54">nHdrMismatch</a> {0}</td></tr>
+<tr class="memdesc:a562a1769a50c073ca068a52161dadd54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Not used.  <br /></td></tr>
 <tr class="separator:a562a1769a50c073ca068a52161dadd54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6638e42aec9763b42f72ec977696b4f5" id="r_a6638e42aec9763b42f72ec977696b4f5"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a6638e42aec9763b42f72ec977696b4f5">dmaSize</a> {0}</td></tr>
+<tr class="memdesc:a6638e42aec9763b42f72ec977696b4f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size in bytes of the last DMA (drp_dma_size).  <br /></td></tr>
 <tr class="separator:a6638e42aec9763b42f72ec977696b4f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac85f02f4887598bd4e77a215171d3c22" id="r_ac85f02f4887598bd4e77a215171d3c22"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#ac85f02f4887598bd4e77a215171d3c22">dmaBytes</a> {0}</td></tr>
+<tr class="memdesc:ac85f02f4887598bd4e77a215171d3c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total DMA bytes (drp_pgp_byte_rate).  <br /></td></tr>
 <tr class="separator:ac85f02f4887598bd4e77a215171d3c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11b8f739895dec70ddd9afa149df2a3d" id="r_a11b8f739895dec70ddd9afa149df2a3d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a11b8f739895dec70ddd9afa149df2a3d">latency</a> {0}</td></tr>
+<tr class="memdesc:a11b8f739895dec70ddd9afa149df2a3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingHeader latency in microseconds, updated when the pulse ID has advanced by more than 1300000/14 (about 10 Hz, per the code comment) (drp_th_latency).  <br /></td></tr>
 <tr class="separator:a11b8f739895dec70ddd9afa149df2a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fc46eac4df258888bd5e2a800bd987d" id="r_a2fc46eac4df258888bd5e2a800bd987d"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a2fc46eac4df258888bd5e2a800bd987d">nDmaErrors</a> {0}</td></tr>
+<tr class="memdesc:a2fc46eac4df258888bd5e2a800bd987d"><td class="mdescLeft">&#160;</td><td class="mdescRight">DMAs with error bits set in the descriptor header (drp_num_dma_errors).  <br /></td></tr>
 <tr class="separator:a2fc46eac4df258888bd5e2a800bd987d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b60028d5d98c157a2d373d8f2e87aca" id="r_a2b60028d5d98c157a2d373d8f2e87aca"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a2b60028d5d98c157a2d373d8f2e87aca">nNoComRoG</a> {0}</td></tr>
+<tr class="memdesc:a2b60028d5d98c157a2d373d8f2e87aca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffers without this DRP's readout group (drp_num_no_common_rog).  <br /></td></tr>
 <tr class="separator:a2b60028d5d98c157a2d373d8f2e87aca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ca8508768cccba588c96cd1916f475b" id="r_a9ca8508768cccba588c96cd1916f475b"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a9ca8508768cccba588c96cd1916f475b">nMissingRoGs</a> {0}</td></tr>
+<tr class="memdesc:a9ca8508768cccba588c96cd1916f475b"><td class="mdescLeft">&#160;</td><td class="mdescRight">SlowUpdates missing readout groups of rogMask (drp_num_missing_rogs).  <br /></td></tr>
 <tr class="separator:a9ca8508768cccba588c96cd1916f475b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea9714afb24d98c7680dd76f5feed9d1" id="r_aea9714afb24d98c7680dd76f5feed9d1"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#aea9714afb24d98c7680dd76f5feed9d1">nTmgHdrError</a> {0}</td></tr>
+<tr class="memdesc:aea9714afb24d98c7680dd76f5feed9d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">TimingHeaders with the error bit set (drp_num_th_error).  <br /></td></tr>
 <tr class="separator:aea9714afb24d98c7680dd76f5feed9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a066f4b0399ea34f173984d1945631a4a" id="r_a066f4b0399ea34f173984d1945631a4a"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDrp_1_1Gpu_1_1TrgInpGenMetrics.html#a066f4b0399ea34f173984d1945631a4a">nPgpJumps</a> {0}</td></tr>
+<tr class="memdesc:a066f4b0399ea34f173984d1945631a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jumps in the TimingHeader event counter (drp_num_pgp_jump).  <br /></td></tr>
 <tr class="separator:a066f4b0399ea34f173984d1945631a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Counters of <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html" title="Runs the trigger primitive for each received buffer in a self-relaunching CUDA graph,...">TrgInpGen</a>, exported by <a class="el" href="classDrp_1_1Gpu_1_1TrgInpGen.html#a1d8882887e2bd782ac415d784c00a9a8" title="Reset the counters and add the DRP_tigState, DRP_tigRcv, DRP_tigFwd, DRP_colRcv, DRP_pidWtCtr,...">TrgInpGen::setupMetrics()</a>. </p>
+<p>The first three are in pinned host memory for the kernels, which update them only if DBG is enabled in TrgInpGen.cu. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="ac85f02f4887598bd4e77a215171d3c22" name="ac85f02f4887598bd4e77a215171d3c22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac85f02f4887598bd4e77a215171d3c22">&#9670;&#160;</a></span>dmaBytes</h2>
 
@@ -146,6 +168,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Total DMA bytes (drp_pgp_byte_rate). </p>
 
 </div>
 </div>
@@ -161,6 +185,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Size in bytes of the last DMA (drp_dma_size). </p>
+
 </div>
 </div>
 <a id="a596283ec0be30da80b977ccd0a366071" name="a596283ec0be30da80b977ccd0a366071"></a>
@@ -174,6 +200,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Buffers passed to the device-to-host queue (DRP_tigFwd). </p>
 
 </div>
 </div>
@@ -189,6 +217,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingHeader latency in microseconds, updated when the pulse ID has advanced by more than 1300000/14 (about 10 Hz, per the code comment) (drp_th_latency). </p>
+
 </div>
 </div>
 <a id="a2fc46eac4df258888bd5e2a800bd987d" name="a2fc46eac4df258888bd5e2a800bd987d"></a>
@@ -202,6 +232,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>DMAs with error bits set in the descriptor header (drp_num_dma_errors). </p>
 
 </div>
 </div>
@@ -217,6 +249,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffers accepted in the last pass of the receiver loop (drp_num_dma_ret). </p>
+
 </div>
 </div>
 <a id="ae2dc0ef322a53f8a2975a7b494a844ec" name="ae2dc0ef322a53f8a2975a7b494a844ec"></a>
@@ -230,6 +264,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Buffers accepted by the receiver thread (DRP_evtCtr and drp_event_rate). </p>
 
 </div>
 </div>
@@ -245,6 +281,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Not used. </p>
+
 </div>
 </div>
 <a id="a9ca8508768cccba588c96cd1916f475b" name="a9ca8508768cccba588c96cd1916f475b"></a>
@@ -258,6 +296,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>SlowUpdates missing readout groups of rogMask (drp_num_missing_rogs). </p>
 
 </div>
 </div>
@@ -273,6 +313,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffers without this DRP's readout group (drp_num_no_common_rog). </p>
+
 </div>
 </div>
 <a id="a066f4b0399ea34f173984d1945631a4a" name="a066f4b0399ea34f173984d1945631a4a"></a>
@@ -286,6 +328,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Jumps in the TimingHeader event counter (drp_num_pgp_jump). </p>
 
 </div>
 </div>
@@ -301,6 +345,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>TimingHeaders with the error bit set (drp_num_th_error). </p>
+
 </div>
 </div>
 <a id="ae29e423201dec133fcc6d5391a295df6" name="ae29e423201dec133fcc6d5391a295df6"></a>
@@ -314,6 +360,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Exported as DRP_pidWtCtr but never incremented. </p>
 
 </div>
 </div>
@@ -329,6 +377,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffers popped by the receiver thread (DRP_colRcv). </p>
+
 </div>
 </div>
 <a id="af0f18c8f11aea2756bc5a2f31156d934" name="af0f18c8f11aea2756bc5a2f31156d934"></a>
@@ -343,6 +393,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Buffers taken from the reader queues (DRP_tigRcv). </p>
+
 </div>
 </div>
 <a id="aac4de32a0d9773c32d55347127edc625" name="aac4de32a0d9773c32d55347127edc625"></a>
@@ -356,6 +408,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Kernel state monitor (DRP_tigState). </p>
 
 </div>
 </div>

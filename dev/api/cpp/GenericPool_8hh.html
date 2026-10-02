@@ -96,12 +96,16 @@ $(document).ready(function(){initNavTree('GenericPool_8hh.html',''); initResizab
   <div class="headertitle"><div class="title">GenericPool.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>GenericPool, a Pool whose buffers come from one contiguous allocation and whose free list is a locked Queue.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Pool_8hh.html">Pool.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Queue_8hh.html">Queue.hh</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1GenericPool.html">Pds::GenericPool</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Pool.html" title="Abstract pool of numberofObjects equal buffers, each preceded by a PoolEntry, with allocation and fre...">Pool</a> whose buffers are carved from one new[] block and kept on a Queue of <a class="el" href="classPds_1_1PoolEntry.html" title="Header in front of each pool buffer: two words used as queue links while the buffer is free,...">PoolEntry</a> (spin-locked); allocation returns nullptr when the queue is empty.  <a href="classPds_1_1GenericPool.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -110,7 +114,9 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>GenericPool, a Pool whose buffers come from one contiguous allocation and whose free list is a locked Queue. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

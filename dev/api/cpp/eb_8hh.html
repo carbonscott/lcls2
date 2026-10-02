@@ -100,6 +100,9 @@ $(document).ready(function(){initNavTree('eb_8hh.html',''); initResizable(); });
   <div class="headertitle"><div class="title">eb.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Event-builder constants (limits, timeouts, batch sizes), parameter structures for TEB/MEB contributors and builders, and the latency() helper.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -111,10 +114,13 @@ $(document).ready(function(){initNavTree('eb_8hh.html',''); initResizable(); });
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1TebCtrbParams.html">Pds::Eb::TebCtrbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters of a TEB contributor (a DRP), per the original comment.  <a href="structPds_1_1Eb_1_1TebCtrbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1MebCtrbParams.html">Pds::Eb::MebCtrbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters of an MEB contributor (a DRP), per the original comment.  <a href="structPds_1_1Eb_1_1MebCtrbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1EbParams.html">Pds::Eb::EbParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters used by both TEBs and MEBs, per the original comment.  <a href="structPds_1_1Eb_1_1EbParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -123,11 +129,13 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:acc877d41325e3d47df6343be4f50aa6d" id="r_acc877d41325e3d47df6343be4f50aa6d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="eb_8hh.html#acc877d41325e3d47df6343be4f50aa6d">POSIX_TIME_AT_EPICS_EPOCH</a>&#160;&#160;&#160;631152000u</td></tr>
+<tr class="memdesc:acc877d41325e3d47df6343be4f50aa6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seconds from the POSIX epoch (1970-01-01) to the EPICS epoch (1990-01-01): 631152000.  <br /></td></tr>
 <tr class="separator:acc877d41325e3d47df6343be4f50aa6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
@@ -141,44 +149,61 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespacePds_1_1Eb.html#a1987aee2ae92c21a38ab39179a267db6a0c823fa98f6538ae89c3b63fc8357b76">Pds::Eb::VL_DETAILED</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a1987aee2ae92c21a38ab39179a267db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verbosity levels, from none to most detailed.  <a href="namespacePds_1_1Eb.html#a1987aee2ae92c21a38ab39179a267db6">More...</a><br /></td></tr>
 <tr class="separator:a1987aee2ae92c21a38ab39179a267db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a1511334769de9ec9a170963d154cfa6a" id="r_a1511334769de9ec9a170963d154cfa6a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a1511334769de9ec9a170963d154cfa6a"><td class="memTemplItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a1511334769de9ec9a170963d154cfa6a">Pds::Eb::latency</a> (const <a class="el" href="classXtcData_1_1TimeStamp.html">XtcData::TimeStamp</a> &amp;)</td></tr>
+<tr class="memdesc:a1511334769de9ec9a170963d154cfa6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the time from timestamp time to now (std::chrono::system_clock) as a count of duration type T.  <br /></td></tr>
 <tr class="separator:a1511334769de9ec9a170963d154cfa6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a0e50427de00b89286a94bd115987d4e9" id="r_a0e50427de00b89286a94bd115987d4e9"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a0e50427de00b89286a94bd115987d4e9">Pds::Eb::MAX_DRPS</a> = 64</td></tr>
+<tr class="memdesc:a0e50427de00b89286a94bd115987d4e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of contributors (64; the original comment says these limits come from the bits of a uint64_t).  <br /></td></tr>
 <tr class="separator:a0e50427de00b89286a94bd115987d4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ca55af33916a24d9cfec10287478c5b" id="r_a1ca55af33916a24d9cfec10287478c5b"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a1ca55af33916a24d9cfec10287478c5b">Pds::Eb::MAX_TEBS</a> = 4</td></tr>
+<tr class="memdesc:a1ca55af33916a24d9cfec10287478c5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of trigger event builders (4).  <br /></td></tr>
 <tr class="separator:a1ca55af33916a24d9cfec10287478c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a331bc6561d717d901291d64544d784e5" id="r_a331bc6561d717d901291d64544d784e5"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a331bc6561d717d901291d64544d784e5">Pds::Eb::MAX_MEBS</a> = 4</td></tr>
+<tr class="memdesc:a331bc6561d717d901291d64544d784e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of monitor event builders (4).  <br /></td></tr>
 <tr class="separator:a331bc6561d717d901291d64544d784e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24dfa9385b8ff6e9ee29ece64f1b6f30" id="r_a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a24dfa9385b8ff6e9ee29ece64f1b6f30">Pds::Eb::MAX_MRQS</a> = <a class="el" href="namespacePds_1_1Eb.html#a331bc6561d717d901291d64544d784e5">MAX_MEBS</a></td></tr>
+<tr class="memdesc:a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of monitor requestors; equal to MAX_MEBS.  <br /></td></tr>
 <tr class="separator:a24dfa9385b8ff6e9ee29ece64f1b6f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a398891903183db5a5e910c0b139b0b" id="r_a9a398891903183db5a5e910c0b139b0b"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a9a398891903183db5a5e910c0b139b0b">Pds::Eb::NUM_READOUT_GROUPS</a> = 8</td></tr>
+<tr class="memdesc:a9a398891903183db5a5e910c0b139b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of readout groups supported (8).  <br /></td></tr>
 <tr class="separator:a9a398891903183db5a5e910c0b139b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e066174b1d702eebe4ff0ac8127873e" id="r_a6e066174b1d702eebe4ff0ac8127873e"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a6e066174b1d702eebe4ff0ac8127873e">Pds::Eb::TICK_RATE</a> = 1000000 * 13/14</td></tr>
+<tr class="memdesc:a6e066174b1d702eebe4ff0ac8127873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">System clock rate in Hz according to the original comment; computed in integer arithmetic as 1000000 * 13 / 14.  <br /></td></tr>
 <tr class="separator:a6e066174b1d702eebe4ff0ac8127873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64906832882260a5f4956187415e864e" id="r_a64906832882260a5f4956187415e864e"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a64906832882260a5f4956187415e864e">Pds::Eb::EB_TMO_MS</a> = 12000</td></tr>
+<tr class="memdesc:a64906832882260a5f4956187415e864e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event-builder event timeout in milliseconds (12000).  <br /></td></tr>
 <tr class="separator:a64906832882260a5f4956187415e864e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bcefe47691c81d6eb939fb9f398555c" id="r_a5bcefe47691c81d6eb939fb9f398555c"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a5bcefe47691c81d6eb939fb9f398555c">Pds::Eb::TEB_TR_BUFFERS</a> = 128</td></tr>
+<tr class="memdesc:a5bcefe47691c81d6eb939fb9f398555c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of TEB transition buffers (128); the original comment says it must exceed the timeout times the SlowUpdate rate.  <br /></td></tr>
 <tr class="separator:a5bcefe47691c81d6eb939fb9f398555c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaca597fd7bc40cf3663f76bb0253beb3" id="r_aaca597fd7bc40cf3663f76bb0253beb3"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#aaca597fd7bc40cf3663f76bb0253beb3">Pds::Eb::MEB_TR_BUFFERS</a> = 24</td></tr>
+<tr class="memdesc:aaca597fd7bc40cf3663f76bb0253beb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of MEB transition buffers (24); the original comment says it must exceed the timeout times the SlowUpdate rate.  <br /></td></tr>
 <tr class="separator:aaca597fd7bc40cf3663f76bb0253beb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d8d809f7ccf151f52afc76b7a8f5fd3" id="r_a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">Pds::Eb::MAX_ENTRIES</a> = 64</td></tr>
+<tr class="memdesc:a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of entries (events) per batch (64).  <br /></td></tr>
 <tr class="separator:a3d8d809f7ccf151f52afc76b7a8f5fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a993b1ec1d716f8b1937f265994758683" id="r_a993b1ec1d716f8b1937f265994758683"><td class="memItemLeft" align="right" valign="top">const uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a993b1ec1d716f8b1937f265994758683">Pds::Eb::BATCH_DURATION</a> = <a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">MAX_ENTRIES</a></td></tr>
+<tr class="memdesc:a993b1ec1d716f8b1937f265994758683"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classPds_1_1Eb_1_1Batch.html" title="One batch of fixed-size entries in an RDMA region: its start pulse ID, its buffer (chosen from the pu...">Batch</a> duration in pulse-ID ticks; equal to MAX_ENTRIES and checked by a static_assert to be a power of 2.  <br /></td></tr>
 <tr class="separator:a993b1ec1d716f8b1937f265994758683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9841dd14ffba7d28511de0d404503000" id="r_a9841dd14ffba7d28511de0d404503000"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a9841dd14ffba7d28511de0d404503000">Pds::Eb::MAX_LATENCY</a> = 16 * 1024 * 1024</td></tr>
+<tr class="memdesc:a9841dd14ffba7d28511de0d404503000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Buffering range in pulse-ID ticks (16 * 1024 * 1024).  <br /></td></tr>
 <tr class="separator:a9841dd14ffba7d28511de0d404503000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e7b10c0b8d56c9928212101033079d4" id="r_a3e7b10c0b8d56c9928212101033079d4"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a3e7b10c0b8d56c9928212101033079d4">Pds::Eb::MAX_BATCHES</a> = <a class="el" href="namespacePds_1_1Eb.html#a9841dd14ffba7d28511de0d404503000">MAX_LATENCY</a> / <a class="el" href="namespacePds_1_1Eb.html#a3d8d809f7ccf151f52afc76b7a8f5fd3">MAX_ENTRIES</a></td></tr>
+<tr class="memdesc:a3e7b10c0b8d56c9928212101033079d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of batches in circulation, MAX_LATENCY / MAX_ENTRIES; checked by a static_assert to be a power of 2.  <br /></td></tr>
 <tr class="separator:a3e7b10c0b8d56c9928212101033079d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Event-builder constants (limits, timeouts, batch sizes), parameter structures for TEB/MEB contributors and builders, and the latency() helper. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="acc877d41325e3d47df6343be4f50aa6d" name="acc877d41325e3d47df6343be4f50aa6d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acc877d41325e3d47df6343be4f50aa6d">&#9670;&#160;</a></span>POSIX_TIME_AT_EPICS_EPOCH</h2>
 
@@ -190,6 +215,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Seconds from the POSIX epoch (1970-01-01) to the EPICS epoch (1990-01-01): 631152000. </p>
+<p>Only defined if not already defined. </p>
 
 </div>
 </div>

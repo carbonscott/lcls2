@@ -97,6 +97,9 @@ $(document).ready(function(){initNavTree('TebContributor_8hh.html',''); initResi
   <div class="headertitle"><div class="title">TebContributor.hh File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>TebContributor, which batches input datagrams and posts them to the trigger event builders (TEBs), and its CtrbBatch helper.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="eb_8hh.html">eb.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EbDgram_8hh.html">psdaq/service/EbDgram.hh</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BatchManager_8hh.html">BatchManager.hh</a>&quot;</code><br />
@@ -113,8 +116,10 @@ $(document).ready(function(){initNavTree('TebContributor_8hh.html',''); initResi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPds_1_1Eb_1_1CtrbBatch.html">Pds::Eb::CtrbBatch</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A batch of contiguous input datagrams being built by <a class="el" href="classPds_1_1Eb_1_1TebContributor.html" title="Builds batches of input datagrams in a BatchManager region and posts them over libfabric links to the...">TebContributor</a>.  <a href="structPds_1_1Eb_1_1CtrbBatch.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPds_1_1Eb_1_1TebContributor.html">Pds::Eb::TebContributor</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds batches of input datagrams in a <a class="el" href="classPds_1_1Eb_1_1BatchManager.html" title="Owns the page-aligned region in which batches are built and decides when a batch has expired.">BatchManager</a> region and posts them over libfabric links to the TEBs.  <a href="classPds_1_1Eb_1_1TebContributor.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -123,16 +128,21 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespacePds"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outer namespace of the <a class="el" href="namespacePds_1_1HSD.html" title="HSD digitizer classes: stream and event header views and stream validators.">HSD</a> digitizer helpers. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacePds_1_1Eb" id="r_namespacePds_1_1Eb"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html">Pds::Eb</a></td></tr>
+<tr class="memdesc:namespacePds_1_1Eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Namespace of the psdaq event-builder (eb) code. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a081780a153b63eb40d8809b26892bfb7" id="r_a081780a153b63eb40d8809b26892bfb7"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a081780a153b63eb40d8809b26892bfb7">Pds::Eb::BatchQueue</a> = <a class="el" href="classSPSCQueue.html">SPSCQueue</a>&lt; const <a class="el" href="classPds_1_1EbDgram.html">Pds::EbDgram</a> * &gt;</td></tr>
+<tr class="memdesc:a081780a153b63eb40d8809b26892bfb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-producer single-consumer queue of <a class="el" href="classPds_1_1EbDgram.html" title="Dgram prefixed by the pulse ID word, as built by the DRPs and exchanged with the event builders.">EbDgram</a> pointers.  <br /></td></tr>
 <tr class="separator:a081780a153b63eb40d8809b26892bfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4efbd91740986fa13e99eabc349b0610" id="r_a4efbd91740986fa13e99eabc349b0610"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacePds_1_1Eb.html#a4efbd91740986fa13e99eabc349b0610">Pds::Eb::time_point_t</a> = std::chrono::time_point&lt; <a class="el" href="classPds_1_1fast__monotonic__clock.html">fast_monotonic_clock</a> &gt;</td></tr>
+<tr class="memdesc:a4efbd91740986fa13e99eabc349b0610"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time point of <a class="el" href="classPds_1_1fast__monotonic__clock.html" title="std::chrono-style steady clock with nanosecond duration read with clock_gettime(): CLOCK_MONOTONIC_CO...">fast_monotonic_clock</a>.  <br /></td></tr>
 <tr class="separator:a4efbd91740986fa13e99eabc349b0610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>TebContributor, which batches input datagrams and posts them to the trigger event builders (TEBs), and its CtrbBatch helper. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
