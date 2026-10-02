@@ -1,0 +1,2361 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for lcls2 (psana2 analysis, psdaq DAQ, xtcdata, psalg)">
+      
+      
+      
+        <link rel="canonical" href="https://carbonscott.github.io/lcls2/dev/design/editing-guide/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../api/python/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Editing the design model - lcls2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#editing-the-design-model" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="lcls2" class="md-header__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            lcls2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Editing the design model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="lcls2" class="md-nav__button md-logo" aria-label="lcls2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    lcls2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carbonscott/lcls2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carbonscott/lcls2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/xtc2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XTC2 data format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/datasource-run-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataSource, Run and the event loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/detector-interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Detector interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/calibration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Calibration constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/mpi-parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPI parallel analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/shmem-live/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared memory and live analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/psalg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psalg algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/daq-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAQ control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/drp-eventbuilding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRP and event building
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editing the design model
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editing the design model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-in-the-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is in the model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is in the model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parents-and-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parents and levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prose-markup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prose markup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code references
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sources-and-their-kinds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and their kinds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outside-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outside the repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-every-node-needs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What every node needs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-accuracy-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The accuracy rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tour-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tour steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-your-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check your change
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rules-in-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules in short
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/python/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Python API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/datasource/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.datasource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/ds_base/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.ds_base
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/serial_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.serial_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/singlefile_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.singlefile_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/step/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.event
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/transitionid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.transitionid
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/dgrammanager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.dgrammanager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/mpi_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.mpi_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/shmem_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/drp_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.drp_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/null_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.null_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/smalldata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.smalldata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/detector_impl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.detector_impl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/areadetector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.areadetector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/calibconstants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.calibconstants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/envstore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.detector.envstore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/daqcontrol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.DaqControl
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/timedrun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psdaq.control.TimedRun
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-in-the-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is in the model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is in the model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parents-and-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parents and levels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prose-markup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prose markup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code references
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sources-and-their-kinds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and their kinds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outside-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outside the repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-every-node-needs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What every node needs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-accuracy-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The accuracy rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tour-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tour steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-your-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check your change
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rules-in-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules in short
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="editing-the-design-model">Editing the design model<a class="headerlink" href="#editing-the-design-model" title="Permanent link">&para;</a></h1>
+<p>The design document <a href="../">How the DAQ works, detector to disk</a> is
+generated from one file: <code>docs/design/daq-model.json</code> (the <em>model</em>). The
+viewer (<code>index.html</code>, <code>viewer.js</code>, <code>viewer.css</code>) only draws the model; it
+contains no text about the DAQ. <strong>To change what the document says, edit
+only <code>daq-model.json</code>.</strong> Never edit the viewer files to change content.</p>
+<p>This guide is for people and for AI agents. With it and a checkout you can
+add a node with a code reference, add an edge, rewrite a node's prose,
+check your change and preview it.</p>
+<h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
+<p>You need a <strong>full clone</strong> of the repository (not <code>git clone --depth ...</code>).
+Every code reference is checked against one pinned commit
+(<code>code_base.commit</code> in the model); a shallow clone does not have that
+commit's files and the validator then fails with
+<code>commit "..." does not exist ... (is this a shallow clone?)</code>. To fix a
+shallow clone, run <code>git fetch --unshallow</code>.</p>
+<p>Check that the pinned commit is present:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">COMMIT</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json; print(json.load(open('docs/design/daq-model.json'))['code_base']['commit'])"</span><span class="k">)</span>
+git<span class="w"> </span>cat-file<span class="w"> </span>-e<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">^{commit}"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"pinned commit present"</span>
+</code></pre></div>
+<p>Install the tools (Python 3; the site build uses Python 3.12):</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt<span class="w">        </span><span class="c1"># includes jsonschema, used by the validator</span>
+pip<span class="w"> </span>install<span class="w"> </span>playwright<span class="w">                      </span><span class="c1"># only for the browser test</span>
+python<span class="w"> </span>-m<span class="w"> </span>playwright<span class="w"> </span>install<span class="w"> </span>chromium<span class="w">       </span><span class="c1"># only for the browser test</span>
+</code></pre></div>
+<h2 id="the-files">The files<a class="headerlink" href="#the-files" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+<th>Edit it?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/design/daq-model.json</code></td>
+<td>The model: all content.</td>
+<td>Yes, this is the only file you edit.</td>
+</tr>
+<tr>
+<td><a href="../daq-model.schema.json"><code>daq-model.schema.json</code></a></td>
+<td>JSON Schema of the model: every field, its type and limits.</td>
+<td>No (changes need agreement).</td>
+</tr>
+<tr>
+<td><code>index.html</code>, <code>viewer.js</code>, <code>viewer.css</code></td>
+<td>The viewer. No content.</td>
+<td>No, not for content.</td>
+</tr>
+<tr>
+<td><code>docs/design/tools/</code></td>
+<td>Validator and test scripts (see <code>docs/design/tools/README.md</code>).</td>
+<td>No.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-is-in-the-model">What is in the model<a class="headerlink" href="#what-is-in-the-model" title="Permanent link">&para;</a></h2>
+<p>The schema describes every field; this is the overview. Fields whose schema
+description starts with "PROSE" are text for readers and may use the prose
+markup below.</p>
+<ul>
+<li><code>title</code>, <code>question</code>, <code>summary</code>: shown on the overview (the top level).</li>
+<li><code>code_base</code>: <code>repo_url</code> and the full 40-character <code>commit</code> that every code
+  reference points into. Code links are built as
+  <code>&lt;repo_url&gt;/blob/&lt;commit&gt;/&lt;path&gt;#L&lt;start&gt;-L&lt;end&gt;</code>.</li>
+<li><code>sources</code>: every document the model cites, each with an <code>id</code>, <code>title</code>,
+  <code>url</code>, <code>kind</code> and an optional <code>note</code>. Nodes, decisions, edges and tour
+  steps refer to sources by id.</li>
+<li><code>nodes</code>: the components, as a flat list. Each node has:<ul>
+<li><code>id</code>, <code>parent</code> (the parent's id, or <code>null</code> for a top-level node),
+  <code>title</code> (at most 40 characters, shown on the box), <code>summary</code> (one
+  sentence, at most 160 characters, shown on the box), <code>prose</code> (the
+  concept, shown first);</li>
+<li>optional <code>dev_notes</code> (shown under "For developers"), <code>outside_repo</code>,
+  <code>decisions</code>, <code>code_refs</code>, <code>sources</code>.</li>
+</ul>
+</li>
+<li><code>edges</code>: flows between nodes: <code>id</code>, <code>from</code>, <code>to</code>, <code>label</code> (at most 30
+  characters, drawn on the arrow), <code>kind</code> (one of <code>data</code>, <code>trigger</code>,
+  <code>timing</code>, <code>control</code>, <code>monitoring</code>), optional <code>prose</code>, <code>code_refs</code>,
+  <code>sources</code>.</li>
+<li><code>tour</code>: <code>title</code>, <code>intro</code> and <code>steps</code> that follow one event. Each step has
+  an <code>id</code>, a <code>title</code>, the <code>node</code> it is about, <code>prose</code>, and optional <code>edges</code>
+  (edge ids to highlight), <code>code_refs</code> and <code>sources</code>.</li>
+</ul>
+<h3 id="ids">Ids<a class="headerlink" href="#ids" title="Permanent link">&para;</a></h3>
+<p>Ids are lowercase words joined by hyphens (<code>drp-file-writer</code>), at most 60
+characters. Nodes, edges, tour steps, sources and decisions (decisions may
+have an id) share <strong>one</strong> namespace: an id must be unique in the whole file.
+Ids appear in links (<code>#/node/&lt;id&gt;</code>), so do not rename an existing id.</p>
+<h3 id="parents-and-levels">Parents and levels<a class="headerlink" href="#parents-and-levels" title="Permanent link">&para;</a></h3>
+<p>A node with <code>"parent": null</code> is at level 1 (a box on the overview). Its
+children are level 2, their children level 3, and so on. The viewer shows
+the children of the node you click; a node without children (a leaf) is
+shown among its siblings. The model must reach level 3 somewhere. Parents
+must exist and must not form a cycle.</p>
+<p>An edge may connect any two nodes, at any levels, except a node and its own
+ancestor or descendant. The viewer draws an edge between the boxes that
+contain its ends at the current level ("lifted" to the visible ancestors);
+edges with one end outside the current view are listed in the detail panel
+under "Comes from" and "Goes to". Only <code>data</code>, <code>trigger</code> and <code>timing</code> edges
+decide the left-to-right order of the boxes. There are no layout hints:
+the order of nodes in the file is the tie-break.</p>
+<h3 id="prose-markup">Prose markup<a class="headerlink" href="#prose-markup" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A blank line (<code>\n\n</code> in the JSON string) starts a new paragraph.</li>
+<li><code>`code`</code> is inline code.</li>
+<li><code>[text](https://example.org/page)</code> is a link (http, https or a relative URL).</li>
+<li><code>[[node-id]]</code> links to another node (the link text is the node's title);
+  <code>[[node-id|some text]]</code> uses your text. The id must exist.</li>
+<li>Nothing else is markup: <code>**bold**</code>, lists and HTML are shown as typed.</li>
+</ul>
+<h3 id="code-references">Code references<a class="headerlink" href="#code-references" title="Permanent link">&para;</a></h3>
+<p>A code reference is
+<code>{"path": ..., "start": ..., "end": ..., "symbol": ..., "note": ...}</code>:</p>
+<ul>
+<li><code>path</code>: a file path relative to the repository root, at the pinned commit
+  (not under <code>docs/</code>).</li>
+<li><code>start</code>, <code>end</code>: line numbers, inclusive, at the pinned commit (not in your
+  working tree, which may differ). <code>end - start</code> must be at most 80; keep the
+  range to the function or block that shows the claim.</li>
+<li><code>symbol</code>: a name (function, class, variable or key, at least 4
+  characters) that appears <strong>verbatim</strong> inside lines <code>start</code> to <code>end</code>. It
+  proves that the range points at the right code.</li>
+<li><code>note</code>: optional, what to look for there.</li>
+</ul>
+<p>Find the line numbers at the pinned commit, never in your working tree:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-n<span class="w"> </span><span class="s2">"writeEvent"</span>
+git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'108,160p'</span>
+</code></pre></div>
+<h3 id="sources-and-their-kinds">Sources and their kinds<a class="headerlink" href="#sources-and-their-kinds" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>kind</th>
+<th>url</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site-page</code></td>
+<td><code>../&lt;path&gt;/</code>, optionally <code>#anchor</code>, relative to the viewer, for a page <code>docs/&lt;path&gt;.md</code> or <code>docs/&lt;path&gt;/index.md</code> of this site</td>
+<td>e.g. <code>../features/xtc2/</code></td>
+</tr>
+<tr>
+<td><code>confluence-public</code></td>
+<td><code>https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=&lt;digits&gt;</code></td>
+<td>public SLAC Confluence page</td>
+</tr>
+<tr>
+<td><code>confluence-internal</code></td>
+<td>same form</td>
+<td>needs a SLAC login; the viewer marks it "SLAC login required"</td>
+</tr>
+<tr>
+<td><code>web</code></td>
+<td>any <code>https://</code> URL</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Rules for sources:</p>
+<ul>
+<li>Internal Confluence pages: <strong>summarize in your own words and link; never
+  copy their text.</strong></li>
+<li>Never put credentials, hostnames, IP addresses, people's names or other
+  personal data in the model (the site is public).</li>
+<li>Everything except <code>site-page</code> counts as an <em>external</em> source.</li>
+</ul>
+<h3 id="outside-the-repository">Outside the repository<a class="headerlink" href="#outside-the-repository" title="Permanent link">&para;</a></h3>
+<p>Set <code>"outside_repo": true</code> on a node whose mechanism is not implemented in
+this repository (firmware, other repositories, facility services). Such a
+node needs at least one external source of its own (not a <code>site-page</code>). A
+missing <code>outside_repo</code> means <code>false</code>.</p>
+<h3 id="decisions">Decisions<a class="headerlink" href="#decisions" title="Permanent link">&para;</a></h3>
+<p>A design decision (<code>title</code>, <code>decision</code>, <code>rationale</code>, optional <code>id</code>) needs at
+least one source or code reference of its own: the basis for the
+rationale. If the sources do not say why, the rationale says so ("The code
+does X; the sources do not say why.").</p>
+<h3 id="what-every-node-needs">What every node needs<a class="headerlink" href="#what-every-node-needs" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Every node has non-empty <code>prose</code>.</li>
+<li>Every node below the top level has at least one code reference of its own,
+  or is <code>outside_repo</code> with at least one external source of its own.</li>
+</ul>
+<h3 id="the-accuracy-rule">The accuracy rule<a class="headerlink" href="#the-accuracy-rule" title="Permanent link">&para;</a></h3>
+<p>Describe what the cited code and sources show. Every factual sentence must
+be supported by a code reference or source attached to the same node (or the
+same decision, edge or tour step). Never guess intent; when you are not sure,
+say so in the prose. Give numbers (rates, sizes, counts) only when the code
+or a source states them. Expand acronyms the first time a node uses them: a
+reader may open any node first.</p>
+<h3 id="tour-steps">Tour steps<a class="headerlink" href="#tour-steps" title="Permanent link">&para;</a></h3>
+<p>Tour steps follow one event in order. A step's <code>node</code> is the box the viewer
+highlights (the map shows that node's level); its <code>edges</code> are highlighted
+too. Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1, so inserting a step
+changes the numbers of the steps after it.</p>
+<h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h2>
+<p>These snippets are made up for this guide: the ids and texts are examples
+only; do not paste them into the model as they are.</p>
+<p><strong>1. Add a node with a code reference.</strong> Append an object to the <code>nodes</code>
+list (the position in the list is the tie-break for layout):</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"drp"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Example: buffered file writer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Collects datagrams in memory and writes them to the file in large blocks."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"prose"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The `BufferedFileWriter` copies each datagram into a memory buffer.\n\nIt writes the buffer to the file when the next datagram does not fit, or when the batch in the buffer is more than 2 seconds old by event timestamp."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code_refs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"psdaq/drp/FileWriter.cc"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">108</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">160</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"symbol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BufferedFileWriter::writeEvent"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The age and buffer-size checks that trigger a write."</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Check the reference before you validate:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'108,160p'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-F<span class="w"> </span>--<span class="w"> </span><span class="s1">'BufferedFileWriter::writeEvent'</span>
+</code></pre></div>
+<p><strong>2. Add an edge.</strong> Append to the <code>edges</code> list:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer-to-files"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"files"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Datagram blocks"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>On the overview this edge is drawn between the boxes of <code>drp</code> and <code>files</code>
+(the parent of <code>example-buffered-writer</code> is <code>drp</code>). Inside <code>drp</code> it is listed
+under "Goes to" in the detail panel.</p>
+<p><strong>3. Rewrite a node's prose.</strong> Find the node by its <code>id</code> and replace its
+<code>prose</code> string. Keep every sentence supported by the node's own code
+references or sources; add a code reference or source if a new sentence
+needs one. Use <code>\n\n</code> between paragraphs and <code>[[other-node-id]]</code> to point
+to related nodes.</p>
+<h2 id="check-your-change">Check your change<a class="headerlink" href="#check-your-change" title="Permanent link">&para;</a></h2>
+<p><strong>Validate</strong> (always; the site build runs the same check):</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/validate.py
+</code></pre></div>
+<p>It prints one line per problem and a summary line last, for example:</p>
+<div class="highlight"><pre><span></span><code>ERROR: node example-buffered-writer.code_refs[0]: psdaq/drp/FileWriter.cc:108-160: symbol "writeEvnt" does not appear in lines 108-160
+nodes=41 edges=30 levels=3 tour_steps=11 code_refs=60 sources=14 errors=1
+</code></pre></div>
+<p>The exit status is 0 only when <code>errors=0</code>. Reading the errors:</p>
+<table>
+<thead>
+<tr>
+<th>Message (part)</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema: '...' is a required property</code></td>
+<td>Add the missing field. <code>$.nodes[12]</code> is the 13th node; the id in parentheses says which.</td>
+</tr>
+<tr>
+<td><code>schema: ... is too long</code> / <code>does not match</code></td>
+<td>Shorten the text or fix the format (ids, URLs).</td>
+</tr>
+<tr>
+<td><code>duplicate id</code></td>
+<td>Choose another id.</td>
+</tr>
+<tr>
+<td><code>parent "..." does not exist</code></td>
+<td>Fix the <code>parent</code> id.</td>
+</tr>
+<tr>
+<td><code>symbol "..." does not appear in lines a-b</code></td>
+<td>Fix the line numbers at the pinned commit, or the symbol.</td>
+</tr>
+<tr>
+<td><code>path does not exist at commit</code></td>
+<td>Fix the path; check it with <code>git cat-file -e "$COMMIT:&lt;path&gt;"</code>.</td>
+</tr>
+<tr>
+<td><code>the range spans ... lines</code></td>
+<td>Narrow the range to at most 80 lines.</td>
+</tr>
+<tr>
+<td><code>needs a code ref of its own, or outside_repo ...</code></td>
+<td>Add a code reference, or mark the node <code>outside_repo</code> and cite an external source.</td>
+</tr>
+<tr>
+<td><code>cross-link [[...]] names no existing node</code></td>
+<td>Fix the id inside <code>[[...]]</code>.</td>
+</tr>
+<tr>
+<td><code>a decision needs at least one source or code ref</code></td>
+<td>Cite the basis of the decision.</td>
+</tr>
+<tr>
+<td><code>site page ... has no docs/....md</code></td>
+<td>Fix the <code>../&lt;path&gt;/</code> URL of the site-page source.</td>
+</tr>
+</tbody>
+</table>
+<p><code>--outline</code> also prints the model's sha256, the top-level titles and the tour
+step titles.</p>
+<p><strong>Preview</strong> in a browser:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>docs/design<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+</code></pre></div>
+<p>Open <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>. Click a box to zoom in; "Zoom out", the
+breadcrumb, Escape or Backspace zoom out; "Tour" follows the event. Reload
+the page after each edit. (Links to other pages of the site work only on the
+published site.)</p>
+<p><strong>Browser test</strong> (with the preview server running, in a second terminal):</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/
+python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--check-node<span class="w"> </span>example-buffered-writer<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--expect-title<span class="w"> </span><span class="s2">"Example: buffered file writer"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--expect-prose<span class="w"> </span><span class="s2">"copies each datagram into a memory buffer"</span>
+</code></pre></div>
+<p>The first command clicks through every node and every tour step and prints
+<code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>; it passes when V = N,
+S = T and C = 0. The second opens one node (by link and by clicking down
+from the overview) and checks its title and prose.</p>
+<p><strong>Single-source check</strong> (that no model text was copied into the viewer):</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/check_single_source.py
+</code></pre></div>
+<p>It must print <code>found_in_viewer=0</code> and <code>titles_found_in_viewer=0</code>.</p>
+<p><strong>Site build</strong> (optional; the published site is built the same way):</p>
+<div class="highlight"><pre><span></span><code>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict<span class="w"> </span>-d<span class="w"> </span>/tmp/lcls2-site
+</code></pre></div>
+<h2 id="rules-in-short">Rules in short<a class="headerlink" href="#rules-in-short" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Edit only <code>docs/design/daq-model.json</code>.</li>
+<li>Every factual sentence is backed by a code reference or source on the same
+  node, decision, edge or step; say when the reason is not documented.</li>
+<li>Code references point at the pinned commit, with a symbol inside the range.</li>
+<li>Internal Confluence: summarize and link, never copy; no credentials or
+  personal data.</li>
+<li>Run the validator until it prints <code>errors=0</code>, then preview.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      lcls2 contributors, SLAC National Accelerator Laboratory
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.indexes", "content.code.copy", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

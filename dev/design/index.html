@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design model viewer</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="viewer.css">
+  <script src="viewer.js" defer></script>
+</head>
+<body>
+  <!--
+    Static viewer for daq-model.json. Every piece of text about the DAQ comes
+    from daq-model.json; this file, viewer.js and viewer.css hold only the
+    user interface. To change the content, edit daq-model.json (see the
+    editing guide), never these files.
+  -->
+  <header class="site-header">
+    <a class="header-link" href="../">&larr; Documentation home</a>
+    <h1 id="model-title">Loading the design model&hellip;</h1>
+    <a class="header-link" href="editing-guide/">Editing guide</a>
+  </header>
+
+  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+
+  <main class="layout">
+    <section class="map-pane" aria-label="Map">
+      <div class="toolbar">
+        <button id="zoom-out" type="button" title="Zoom out (Escape or Backspace)">&uarr; Zoom out</button>
+        <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
+        <button id="tour-start" type="button">Tour</button>
+      </div>
+      <div id="map" class="map" tabindex="-1"></div>
+      <div id="legend" class="legend" aria-label="Legend"></div>
+    </section>
+    <aside id="detail" class="detail-pane" aria-label="Details"></aside>
+  </main>
+
+  <noscript><p class="message error">This viewer needs JavaScript.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://carbonscott.github.io/lcls2/dev/design/daq-model.schema.json",
+  "title": "LCLS-II DAQ design model",
+  "description": "The single source of truth for the DAQ design document. The viewer (index.html, viewer.js, viewer.css) renders this file and contains no content of its own. Fields whose description starts with 'PROSE' are reader-facing text. Prose markup: paragraphs are separated by a blank line (\\n\\n); `code` is inline code; [text](https://...) is a link; [[some-id]] or [[some-id|text]] links to another node. Nothing else is markup: **bold**, lists and HTML are shown literally. All ids (nodes, edges, tour steps, sources, decisions) are unique across the whole file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "title", "question", "summary", "code_base", "sources", "nodes", "edges", "tour"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "title": {"type": "string", "minLength": 1, "maxLength": 80, "description": "Title shown at the top of the viewer."},
+    "question": {"type": "string", "minLength": 1, "description": "PROSE. The question this document answers."},
+    "summary": {"type": "string", "minLength": 1, "description": "PROSE. Shown in the top-level view, before any node is opened."},
+    "code_base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo_url", "commit"],
+      "properties": {
+        "repo_url": {"type": "string", "pattern": "^https://github\\.com/[^/]+/[^/]+$", "description": "Code links are built as <repo_url>/blob/<commit>/<path>#L<start>-L<end>."},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$", "description": "Full SHA that every code_ref is checked against."}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "edges": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/edge"}
+    },
+    "tour": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "intro", "steps"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1, "maxLength": 80},
+        "intro": {"type": "string", "minLength": 1, "description": "PROSE. What the tour follows (one event) and how to use it."},
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/step"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 60},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "url", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "title": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1, "description": "site-page: a relative URL from the viewer to a page of this site, ../<path>/ (optionally #anchor), where docs/<path>.md or docs/<path>/index.md exists. confluence-*: https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=<digits>. web: an absolute https URL."},
+        "kind": {
+          "enum": ["site-page", "confluence-public", "confluence-internal", "web"],
+          "description": "site-page = a page of this documentation site (in this repo). The other kinds are external sources (outside this repo). confluence-internal needs a SLAC login; it is summarized, never copied."
+        },
+        "note": {"type": "string", "description": "PROSE. Optional: what this source is used for."}
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "site-page"}}}, "then": {"properties": {"url": {"pattern": "^\\.\\./[a-z0-9_/-]+/(#[a-z0-9_-]+)?$"}}}},
+        {"if": {"properties": {"kind": {"enum": ["confluence-public", "confluence-internal"]}}}, "then": {"properties": {"url": {"pattern": "^https://confluence\\.slac\\.stanford\\.edu/pages/viewpage\\.action\\?pageId=[0-9]+$"}}}},
+        {"if": {"properties": {"kind": {"const": "web"}}}, "then": {"properties": {"url": {"pattern": "^https://"}}}}
+      ]
+    },
+    "code_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "start", "end", "symbol"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(?!docs/)(?!\\.{1,2}/)(?!.*/\\.{1,2}(/|$))[A-Za-z0-9_.+-]+(/[A-Za-z0-9_.+-]+)*$", "description": "Repository-relative path of a code file at code_base.commit (not under docs/; no '.' or '..' segments)."},
+        "start": {"type": "integer", "minimum": 1},
+        "end": {"type": "integer", "minimum": 1, "description": "Inclusive. start <= end <= number of lines in the file, and end - start <= 80 (checked by the validator)."},
+        "symbol": {"type": "string", "minLength": 4, "pattern": "[A-Za-z_][A-Za-z0-9_]{2,}", "description": "A string that appears verbatim inside lines start..end (a function, class, variable or key name)."},
+        "note": {"type": "string", "description": "PROSE. Optional: what to look for in this code."}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "decision", "rationale"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80},
+        "decision": {"type": "string", "minLength": 1, "description": "PROSE. What the design does."},
+        "rationale": {"type": "string", "minLength": 1, "description": "PROSE. Why, as stated by the cited sources or visible in the code. Never guessed intent; say so when the reason is not documented."},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "parent", "title", "summary", "prose"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "parent": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}], "description": "null for a top-level node; otherwise the id of the parent node."},
+        "title": {"type": "string", "minLength": 1, "maxLength": 40},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 160, "description": "PROSE. One sentence shown on the node's box."},
+        "prose": {"type": "string", "minLength": 1, "description": "PROSE. The concept, for scientists and developers alike. Comes first in the viewer."},
+        "dev_notes": {"type": "string", "description": "PROSE. Optional: details for developers (processes, classes, files). Shown after prose."},
+        "outside_repo": {"type": "boolean", "description": "true if the mechanism is not implemented in this repository (firmware, other repositories, facility services). Such nodes need at least one external source. Missing means false."},
+        "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
+        "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "from", "to", "label", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "from": {"$ref": "#/$defs/id"},
+        "to": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 30, "description": "Short text drawn on the arrow."},
+        "kind": {"enum": ["data", "trigger", "timing", "control", "monitoring"]},
+        "prose": {"type": "string", "description": "PROSE. Optional: what flows and how."},
+        "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "node", "prose"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80},
+        "node": {"$ref": "#/$defs/id", "description": "The node this step is about; the viewer zooms to it."},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/id"}, "description": "Optional edge ids to highlight in this step."},
+        "prose": {"type": "string", "minLength": 1, "description": "PROSE. What happens to the event at this step."},
+        "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+      }
+    }
+  }
+}
