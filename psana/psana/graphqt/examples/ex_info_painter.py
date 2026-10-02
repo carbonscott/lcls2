@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Example: show a QGraphicsView with marked scene and origin rects and print the shape, type, rect, position and bounding rect of a QGraphicsRectItem.
+
+The Qt application and event loop run at import time.
+"""
 import sys
 from PyQt5.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsRectItem
 from PyQt5.QtCore import Qt, QPoint, QSize, QRectF

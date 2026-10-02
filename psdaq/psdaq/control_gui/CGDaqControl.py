@@ -42,12 +42,14 @@ from psdaq.control.ControlDef import ControlDef
 from psdaq.control.DaqControl import DaqControl
 
 class Emulator :
+    """Placeholder class; its constructor and `set_buts_enable` do nothing."""
     def __init__(self) :
         #from psdaq.control_gui.CGConfigParameters import cp
         #self.wpart = self # cp.cgwmainpartition
         pass
 
     def set_buts_enable(self, s) :
+        """Do nothing; body is `pass`."""
         pass
 
 
@@ -56,19 +58,49 @@ class DaqControlEmulator:
     """
     def __init__(self) :
         self._name = 'DaqControlEmulator'
-    def msg(self, s) : logger.warning('TEST PURPOSE ONLY DaqControlEmulator.%s' % s)
-    def getInstrument(self) :     self.msg('getInstrument');  return 'EMU'
-    def setConfig(self, c) :      self.msg('setConfig %s'% str(c)); return None
-    def setState(self, s) :       self.msg('setState %s'%s);
-    def getState(self) :          self.msg('getState');       return 'emulator'
-    def getStatus(self) :         self.msg('getStatus');      return 'running', 'running', 'BEAM', False, {}, False, 'exp123456', 2, 1
-    def setTransition(self, s) :  self.msg('setTransition');  return 'emulator'
-    def selectPlatform(self, s) : self.msg('selectPlatform'); return
-    def getPlatform(self) :       self.msg('getPlatform');    return 'emulator'
-    def setRecord(self, v) :      self.msg('setRecord %s'%v); return
+    def msg(self, s) :
+        """Log a warning 'TEST PURPOSE ONLY DaqControlEmulator.<s>'."""
+        logger.warning('TEST PURPOSE ONLY DaqControlEmulator.%s' % s)
+    def getInstrument(self) :
+        """Log an emulator warning and return 'EMU'."""
+        self.msg('getInstrument');  return 'EMU'
+    def setConfig(self, c) :
+        """Log an emulator warning and return None."""
+        self.msg('setConfig %s'% str(c)); return None
+    def setState(self, s) :
+        """Log an emulator warning; returns None."""
+        self.msg('setState %s'%s);
+    def getState(self) :
+        """Log an emulator warning and return 'emulator'."""
+        self.msg('getState');       return 'emulator'
+    def getStatus(self) :
+        """Log an emulator warning and return a fixed status tuple.
+
+        Returns
+        -------
+        tuple
+            ('running', 'running', 'BEAM', False, {}, False, 'exp123456', 2, 1).
+        """
+        self.msg('getStatus');      return 'running', 'running', 'BEAM', False, {}, False, 'exp123456', 2, 1
+    def setTransition(self, s) :
+        """Log an emulator warning and return 'emulator'."""
+        self.msg('setTransition');  return 'emulator'
+    def selectPlatform(self, s) :
+        """Log an emulator warning; returns None."""
+        self.msg('selectPlatform'); return
+    def getPlatform(self) :
+        """Log an emulator warning and return 'emulator'."""
+        self.msg('getPlatform');    return 'emulator'
+    def setRecord(self, v) :
+        """Log an emulator warning; returns None."""
+        self.msg('setRecord %s'%v); return
 
 
 class DaqControlProxy:
+  """Holder for a DaqControl-like object; calling the proxy returns the held object.
+
+  The module-level instance `daq_control` is used as a singleton.
+  """
   def __init__(self, o=None) :
       """Creates proxy object, e.g. for singleton.
       """
@@ -92,20 +124,30 @@ daq_control = DaqControlProxy()  # SINGLETON
 
 
 def worker_set_state(dicio):
+    """Call ``daq_control().setState(state)`` with ``dicio.get('state_in', 'N/A')``."""
     state = dicio.get('state_in','N/A')
     logger.debug('worker_set_state %s' % state)
     daq_control().setState(state)
 
 def worker_get_state(dicio):
+    """Store ``daq_control().getState()`` in ``dicio['state_out']``."""
     dicio['state_out'] = daq_control().getState()
 
 def get_daq_control(cmt='') :
+    """Return the object held by `daq_control`, logging a warning (prefixed by `cmt`) if it is None."""
     daq_ctrl = daq_control()
     if daq_ctrl is None :
         logger.warning('%sdaq_control() is None' % cmt)
     return daq_ctrl
 
 def daq_control_set_state(s='configured') :
+    """Call ``setState(s)`` on the held DaqControl object.
+
+    Returns
+    -------
+    bool
+        False if no object is set, else True.
+    """
     daq_ctrl = get_daq_control('in daq_control_set_state ')
     if daq_ctrl is None : return False
     daq_ctrl.setState(s)
@@ -113,6 +155,7 @@ def daq_control_set_state(s='configured') :
     return True
 
 def daq_control_get_state() :
+    """Return ``getState()`` from the held DaqControl object, or None if no object is set."""
     daq_ctrl = get_daq_control('in daq_control_get_state ')
     if daq_ctrl is None : return None
     s = daq_ctrl.getState()
@@ -120,6 +163,7 @@ def daq_control_get_state() :
     return s
 
 def daq_control_get_instrument() :
+    """Return ``getInstrument()`` from the held DaqControl object, or None if no object is set."""
     daq_ctrl = get_daq_control('in daq_control_get_instrument ')
     if daq_ctrl is None : return None
     s = daq_ctrl.getInstrument()
@@ -129,6 +173,14 @@ def daq_control_get_instrument() :
 def daq_control_get_status() :
 
     #t0_sec = time()
+    """Return the held object's `getStatus()` tuple with transition and state lower-cased.
+
+    Returns
+    -------
+    tuple or None
+        (transition, state, cfgtype, recording, platform, bypass_activedet,
+        experiment_name, run_number, last_run_number), or None if no object is set.
+    """
     daq_ctrl = get_daq_control('in daq_control_get_status ')
     if daq_ctrl is None : return None
 
@@ -147,6 +199,13 @@ def daq_control_get_status() :
 
 
 def daq_control_set_record(do_record=True) :
+    """Call ``setRecord(do_record)`` on the held DaqControl object.
+
+    Returns
+    -------
+    bool
+        False if no object is set, else True.
+    """
     daq_ctrl = get_daq_control('in daq_control_set_record ')
     if daq_ctrl is None : return False
 
@@ -157,6 +216,11 @@ def daq_control_set_record(do_record=True) :
 
 if __name__ == "__main__" :
   def proc() :
+    """Test function: print transitions/states, connect a `DaqControl` to localhost platform 6 and print its state.
+
+    The code reads ``DaqControl.transitions``/``DaqControl.states``, which `DaqControl`
+    does not define (they are on `ControlDef`), so it raises AttributeError.
+    """
     print('DaqControl.transitions:', DaqControl.transitions)
     print('DaqControl.states  :', DaqControl.states)
 

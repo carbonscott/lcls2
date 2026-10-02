@@ -2,14 +2,24 @@
 # Copy of
 # https://github.com/lcls-psana/xtcav/blob/master/src/Constants.py
 
+"""Save and load objects whose attributes are dicts and simple values to/from HDF5 files with ``h5py``.
+
+Copy of ``xtcav/src/Constants.py`` from the lcls-psana xtcav repository (as stated in the header comment).
+"""
 import h5py
 import numpy
 import logging
 
 class Empty(object):
+    """Empty class used as an attribute container by ``ConstantsLoad``."""
     pass
 
 class ConstantsStore(object):
+    """Write the attributes of ``obj`` to a new HDF5 file ``file`` (opened with mode ``'w'``, closed at the end of the constructor).
+
+    Dict attributes become HDF5 groups (nested dicts become nested paths); values of type dict, int,
+    float, bool, str or ``numpy.ndarray`` become datasets; other types are skipped with a logged warning.
+    """
     def __init__(self,obj,file):
         self.f = h5py.File(file,'w')
         self.cwd = ''
@@ -54,6 +64,10 @@ class ConstantsStore(object):
                 logging.warning('XTCAV Constants.py: variable "'+name+'" of type "'+type(obj).__name__+'" not supported')
 
 class ConstantsLoad(object):
+    """Read every dataset of HDF5 file ``file`` into ``self.obj`` (an ``Empty`` instance).
+
+    Top-level dataset names become attributes; names with ``/`` become nested dicts.
+    """
     def __init__(self,file):
         self.obj = Empty()
         self.f = h5py.File(file,'r')
@@ -110,6 +124,7 @@ def Save(obj,file):
     c = ConstantsStore(obj,file)
 
 class ConstTest(object):
+    """Test object whose ``parameters`` attribute is a small nested dict, used by the ``__main__`` save/load test."""
     def __init__(self):
         self.parameters= {
             'version' : 0,

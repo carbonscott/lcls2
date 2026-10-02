@@ -23,6 +23,22 @@ logger = logging.getLogger(__name__)
 
 
 def image_from_ndarray(nda):
+    """Convert an array to a 2-d image array chosen by its total size.
+
+    Uses ``psu.table_nxn_epix10ka_from_ndarr`` if ``nda.size`` is a multiple of 352*384,
+    ``psu.table_nxm_jungfrau_from_ndarr`` for multiples of 512*1024, ``psu.table_nxm_cspad2x1_from_ndarr``
+    for multiples of 185*388, and ``reshape_to_2d`` otherwise (checked in that order).
+
+    Parameters
+    ----------
+    nda : numpy.ndarray or None
+        Input array.
+
+    Returns
+    -------
+    numpy.ndarray or None
+        The 2-d image; None (with a logged warning) if ``nda`` is None or not a ``numpy.ndarray``.
+    """
     if nda is None:
        logger.warning('nda is None - return None for image')
        return None
@@ -99,6 +115,11 @@ class IVControl(CMWControlBase):
 
 
     def on_spectrum_range_changed(self, d):
+        """Redraw the image pixmap with the intensity limits from :meth:`spectrum_parameters`.
+
+        Does nothing if ``cp.ivimageaxes`` is None. The current scene rect of the image view is
+        restored after ``set_pixmap_from_arr`` is called. The argument ``d`` is only logged.
+        """
         logger.debug('on_spectrum_range_changed: %s' % str(d))
         w = cp.ivimageaxes
         if w is not None:
@@ -110,6 +131,11 @@ class IVControl(CMWControlBase):
 
 
     def on_color_table_changed(self):
+        """Apply the color table from ``cp.ivspectrum.wcbar`` to the image view and redraw its pixmap.
+
+        Returns early if ``cp.ivspectrum`` is None; the image part is skipped if ``cp.ivimageaxes`` is
+        None. The current image scene rect is preserved.
+        """
         w = cp.ivspectrum
         if w is None:
             logger.debug('on_color_table_changed - do nothing here')
@@ -126,6 +152,7 @@ class IVControl(CMWControlBase):
 
 
     def set_tool_tips(self):
+        """Call the base-class ``set_tool_tips`` and set tool tips on the Reset, Buts and experiment buttons."""
         CMWControlBase.set_tool_tips(self)
         self.but_reset.setToolTip('Reset original image size')
         self.but_buts.setToolTip('Show/hide buttons')
@@ -133,6 +160,7 @@ class IVControl(CMWControlBase):
 
 
     def set_style(self):
+        """Call the base-class ``set_style``, fix button widths (Reset 50, Buts 50, experiment 80) and style the geometry label."""
         CMWControlBase.set_style(self)
         self.but_reset.setFixedWidth(50)
         self.but_buts.setFixedWidth(50)
@@ -141,21 +169,29 @@ class IVControl(CMWControlBase):
 
 
     def set_signal_fast(self, is_fast=True):
+        """Call ``set_signal_fast(is_fast)`` on ``cp.ivimageaxes`` and ``cp.ivspectrum`` where they are not None."""
         for w in (cp.ivimageaxes, cp.ivspectrum):
           if w is not None: w.set_signal_fast(is_fast)
 
 
     def connect_image_scene_rect_changed(self):
+        """Connect the image scene-rect-changed signal of ``cp.ivimageaxes`` (if not None) to :meth:`on_image_scene_rect_changed`."""
         w = cp.ivimageaxes
         if w is not None: w.connect_image_scene_rect_changed(self.on_image_scene_rect_changed)
 
 
     def disconnect_image_scene_rect_changed(self):
+        """Disconnect the image scene-rect-changed signal of ``cp.ivimageaxes`` (if not None) from :meth:`on_image_scene_rect_changed`."""
         w = cp.ivimageaxes
         if w is not None: w.disconnect_image_scene_rect_changed(self.on_image_scene_rect_changed)
 
 
     def on_image_scene_rect_changed(self, r):
+        """Update the spectrum from the image pixels inside rect ``r``.
+
+        Calls ``cp.ivimageaxes.wimg.array_in_rect(r)`` and passes the result to
+        :meth:`set_spectrum_from_arr` with ``update_hblimits=False``.
+        """
         wimg = cp.ivimageaxes.wimg
         a = wimg.array_in_rect(r)
         logger.debug('on_image_scene_rect_changed: %s' % qu.info_rect_xywh(r))
@@ -164,16 +200,19 @@ class IVControl(CMWControlBase):
 
 
     def connect_image_pixmap_changed(self):
+        """Connect the pixmap-changed signal of ``cp.ivimageaxes.wimg`` (if ``cp.ivimageaxes`` is not None) to :meth:`on_image_pixmap_changed`."""
         w = cp.ivimageaxes
         if w is not None: w.wimg.connect_image_pixmap_changed(self.on_image_pixmap_changed)
 
 
     def disconnect_image_pixmap_changed(self):
+        """Disconnect the pixmap-changed signal of ``cp.ivimageaxes.wimg`` (if ``cp.ivimageaxes`` is not None) from :meth:`on_image_pixmap_changed`."""
         w = cp.ivimageaxes
         if w is not None: w.wimg.disconnect_image_pixmap_changed(self.on_image_pixmap_changed)
 
 
     def on_image_pixmap_changed(self):
+        """Update the spectrum from ``cp.ivimageaxes.wimg.array_in_rect()`` with ``update_hblimits=False``."""
         logger.debug('on_image_pixmap_changed')
         wimg = cp.ivimageaxes.wimg
         arr = wimg.array_in_rect()
@@ -182,6 +221,21 @@ class IVControl(CMWControlBase):
 
 
     def set_spectrum_from_arr(self, arr, edgemode=0, update_hblimits=True): #, nbins=1000, amin=None, amax=None, frmin=0.001, frmax=0.999, edgemode=0):
+        """Fill the spectrum histogram of ``cp.ivspectrum`` from ``arr``.
+
+        Returns immediately if ``arr`` is the same object as the last array passed. Otherwise stores it
+        in ``arr_his_old`` and, if ``cp.ivspectrum`` is not None, calls
+        ``whis.set_histogram_from_arr`` with the bin/limit values from :meth:`spectrum_parameters`.
+
+        Parameters
+        ----------
+        arr : numpy.ndarray
+            Values to histogram.
+        edgemode : int
+            Passed to ``set_histogram_from_arr``.
+        update_hblimits : bool
+            Passed to ``set_histogram_from_arr``.
+        """
         if arr is self.arr_his_old: return
         self.arr_his_old = arr
         w = cp.ivspectrum
@@ -192,16 +246,22 @@ class IVControl(CMWControlBase):
 
 
     def connect_histogram_scene_rect_changed(self):
+        """Connect the histogram scene-rect-changed signal of ``cp.ivspectrum`` (if not None) to :meth:`on_histogram_scene_rect_changed`."""
         w = cp.ivspectrum
         if w is not None: w.connect_histogram_scene_rect_changed(self.on_histogram_scene_rect_changed)
 
 
     def disconnect_histogram_scene_rect_changed(self):
+        """Disconnect the histogram scene-rect-changed signal of ``cp.ivspectrum`` (if not None) from :meth:`on_histogram_scene_rect_changed`."""
         w = cp.ivspectrum
         if w is not None: w.disconnect_histogram_scene_rect_changed(self.on_histogram_scene_rect_changed)
 
 
     def on_histogram_scene_rect_changed(self, r):
+        """Redraw the image with intensity limits ``amin=y1``, ``amax=y2`` taken from the coordinates of rect ``r``.
+
+        Does nothing if ``cp.ivimageaxes`` is None; the current image scene rect is preserved.
+        """
         x1,y1,x2,y2 = r.getCoords()
         logger.debug('on_histogram_scene_rect_changed: %s reset image for spectal value in range %.3f:%.3f '%\
                      (qu.info_rect_xywh(r),y1,y2))
@@ -214,6 +274,11 @@ class IVControl(CMWControlBase):
 
 
     def on_but_exp(self):
+        """Open the instrument/experiment selection popup and apply the selection.
+
+        A non-empty instrument name is stored in ``cp.instr_name``; a non-empty experiment name is set
+        as the button text and in ``cp.exp_name``, and ``dirs_to_search()`` is passed to both file-name widgets.
+        """
         from psana.graphqt.PSPopupSelectExp import select_instrument_experiment
         dir_instr = cp.instr_dir.value()
         instr_name, exp_name = select_instrument_experiment(self.but_exp, dir_instr, show_frame=True)
@@ -230,6 +295,7 @@ class IVControl(CMWControlBase):
 
 
     def on_but_reset(self):
+        """Call ``reset_original_size()`` on ``cp.ivimageaxes`` and ``cp.ivspectrum`` where they are not None."""
         logger.debug('on_but_reset')
         if cp.ivimageaxes is not None:
            cp.ivimageaxes.reset_original_size()
@@ -239,6 +305,14 @@ class IVControl(CMWControlBase):
 
 
     def spectrum_parameters(self):
+        """Return the spectrum settings from ``wctl_spec.spectrum_parameters()`` with defaults.
+
+        Returns
+        -------
+        tuple
+            ``(mode, nbins, amin, amax, frmin, frmax)`` with defaults ``'fraction'``, 1000, None, None,
+            0.001 and 0.999 for missing keys.
+        """
         d = self.wctl_spec.spectrum_parameters()
         return\
           d.get('mode', 'fraction'),\
@@ -250,6 +324,12 @@ class IVControl(CMWControlBase):
 
 
     def on_changed_fname_nda(self, fname):
+        """Load an array from file ``fname`` and display it as an image in ``cp.ivimageaxes``.
+
+        Does nothing if ``cp.ivimageaxes`` is None. Stores ``fname`` in ``cp.last_selected_fname``, sets the
+        spectrum control default limits to the array min/max, and draws the pixmap; if the image aspect
+        ratio (width/height) is above 1.5 or below 0.7 a square scene rect of side ``max(h, w)`` is set.
+        """
         logger.debug('on_changed_fname_nda: %s' % fname)
         wia = cp.ivimageaxes
         if wia is not None:
@@ -271,10 +351,16 @@ class IVControl(CMWControlBase):
 
 
     def on_changed_fname_geo(self, s):
+        """Log the new geometry file name ``s`` at debug level; nothing else is done."""
         logger.debug('on_changed_fname_geo: %s' % s)
 
 
     def on_buts(self):
+        """Show a check-box popup of :meth:`buttons_dict` and apply the selection.
+
+        If the popup is cancelled (response 0) nothing changes; otherwise calls
+        :meth:`set_buttons_visiable` and :meth:`set_buttons_config_bitword` with the edited dict.
+        """
         logger.debug('on_buts')
         from psana.graphqt.QWUtils import change_check_box_dict_in_popup_menu
         d = self.buttons_dict()
@@ -292,6 +378,14 @@ class IVControl(CMWControlBase):
 
 
     def set_buttons_visiable(self, dic_buts=None):
+        """Set visibility of the control widgets from a dict of flags.
+
+        Parameters
+        ----------
+        dic_buts : dict or None
+            Keys as returned by :meth:`buttons_dict`; None uses :meth:`buttons_dict`. Also controls the
+            reset buttons and cursor info of ``cp.ivimageaxes`` / ``cp.ivspectrum`` when they are not None.
+        """
         d = self.buttons_dict() if dic_buts is None else dic_buts
         #logger.debug('dic_buts: %s' % str(d))
         self.wfnm_geo.setVisible(d['Geometry'])
@@ -306,6 +400,11 @@ class IVControl(CMWControlBase):
 
 
     def buttons_dict(self):
+        """Return a dict of button names mapped to bits of ``cp.iv_buttons.value()``.
+
+        Values are the masked integers (e.g. ``r & 4`` for ``'Reset'``), not booleans; bits 1..256 map to
+        Geometry, Tabs, Reset, Reset image, Reset spectrum, Cursor position, Control spectrum, Experiment, Save.
+        """
         r = cp.iv_buttons.value()
         return {'Geometry'        : r & 1,\
                 'Tabs'            : r & 2,\
@@ -320,6 +419,7 @@ class IVControl(CMWControlBase):
 
 
     def set_buttons_config_bitword(self, d):
+        """Encode the truthy entries of ``d`` as a bit word (inverse of :meth:`buttons_dict`) and store it in ``cp.iv_buttons``."""
         w = 0
         if d['Geometry']        : w |= 1
         if d['Tabs']            : w |= 2
@@ -334,6 +434,7 @@ class IVControl(CMWControlBase):
 
 
     def closeEvent(self, e):
+        """Call the base-class ``closeEvent`` and set ``cp.ivcontrol`` to None."""
         logger.debug('closeEvent')
         CMWControlBase.closeEvent(self, e)
         cp.ivcontrol = None

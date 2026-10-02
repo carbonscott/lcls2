@@ -1,3 +1,4 @@
+"""Scan of one EpixHR expert parameter chosen with -P, validated against the configdb entry 'epixhr_0'."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 from psdaq.configdb.get_config import cdb
 import json
@@ -5,6 +6,11 @@ import os
 import sys
 
 def listParams(d,name):
+    """Return dotted names of all leaf keys under dict `d`, prefixed by `name`.
+
+    Keys containing 'PacketRegisters' are skipped; of the 'Hr10kTAsic*' keys only
+    'Hr10kTAsic0' is descended, under the name 'Hr10kTAsic'.
+    """
     result = []
     name = '' if name is None else name+'.'
     for k,v in d.items():
@@ -24,6 +30,16 @@ def listParams(d,name):
 def main():
 
     # default command line arguments
+    """Look up the EpixHR expert parameters in the configdb, then run a --linear scan of parameter -P.
+
+    The configdb hutch is args.hutch for tmo/rix/asc/ued, else 'tst'. If -P is missing or
+    not valid, the parameter list is printed and it returns; an 'Hr10kTAsic' parameter
+    is written to all four ASICs. Without --linear it raises RuntimeError.
+
+    Notes
+    -----
+    The `steps` generator uses `np`, which this module does not import (NameError).
+    """
     defargs = {'--events'  :1000,
                '--hutch'   :'rix',
                '--detname' :'epixhr_0',

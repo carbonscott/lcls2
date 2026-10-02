@@ -11,6 +11,11 @@ from psana.graphqt.DragPoint import *
 
 class DragCirc(DragBase):
 
+    """Stub draggable-circle class derived from ``DragBase``.
+
+    The constructor calls ``DragBase.__init__(self, view, points)`` with names that are not defined in
+    this module, so instantiation raises NameError.
+    """
     def __init__(self):
         DragBase.__init__(self, view, points)
 

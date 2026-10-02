@@ -31,6 +31,11 @@ from psana.graphqt.CMWDBControl import CMWDBControl
 
 class CMWDBMain(QWidget):
 
+    """Calibman DB-tab widget: a control panel (``CMWDBControl``) above a horizontal splitter.
+
+    The splitter holds ``CMWDBTree``, ``CMWDBDocs`` and ``CMWDBDocEditor``. The constructor
+    registers the instance as ``cp.cmwdbmain``.
+    """
     _name = 'CMWDBMain'
 
     def __init__(self, parent=None):
@@ -64,14 +69,17 @@ class CMWDBMain(QWidget):
 
 
     def connect_signals_to_slots(self):
+        """Does nothing; body is ``pass``."""
         pass
 
 
     def on_but_tabs_clicked_test(self):
+        """Log ``'on_but_tabs_clicked'`` at debug level."""
         logger.debug('on_but_tabs_clicked')
 
 
     def proc_parser(self, parser=None):
+        """Store ``parser`` in ``self.parser`` and return None."""
         self.parser=parser
         if parser is None:
             return
@@ -79,11 +87,20 @@ class CMWDBMain(QWidget):
 
 
     def set_tool_tips(self):
+        """Does nothing; body is ``pass``."""
         pass
         #self.butStop.setToolTip('Not implemented yet...')
 
 
     def set_hsplitter_sizes(self, s0=None, s1=None, s2=None):
+        """Set the three horizontal splitter sizes.
+
+        Parameters
+        ----------
+        s0, s1, s2 : int or None
+            Sizes of the tree, docs and editor panes; None takes the value of
+            ``cp.cdb_hsplitter0``, ``cp.cdb_hsplitter1`` or ``cp.cdb_hsplitter2``.
+        """
         _s0 = cp.cdb_hsplitter0.value() if s0 is None else s0
         _s1 = cp.cdb_hsplitter1.value() if s1 is None else s1
         _s2 = cp.cdb_hsplitter2.value() if s2 is None else s2
@@ -91,11 +108,13 @@ class CMWDBMain(QWidget):
 
 
     def set_hsplitter_size2(self, s2=0):
+        """Set the third splitter pane to ``s2`` and give the freed or taken space to the second pane."""
         _s0, _s1, _s2 = self.hsplitter_sizes()
         self.set_hsplitter_sizes(_s0, _s1+_s2-s2, s2 )
 
 
     def hsplitter_sizes(self):
+        """Return ``self.hspl.sizes()``, the list of horizontal splitter pane sizes."""
         return self.hspl.sizes() #[0]
 
 
@@ -112,6 +131,7 @@ class CMWDBMain(QWidget):
 
 
     def set_style(self):
+        """Set zero layout margins, limit the tree width to 100-600 pixels and apply :meth:`set_hsplitter_sizes` with config defaults."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wtree.setMinimumWidth(100)
         self.wtree.setMaximumWidth(600)
@@ -119,6 +139,7 @@ class CMWDBMain(QWidget):
 
 
     def closeEvent(self, e):
+        """Log the event, call :meth:`on_save` and pass the event to ``QWidget.closeEvent``."""
         logger.debug('%s.closeEvent' % self._name)
         self.on_save()
         QWidget.closeEvent(self, e)
@@ -127,10 +148,12 @@ class CMWDBMain(QWidget):
     def view_hide_tabs(self):
         #self.set_tabs_visible(not self.tab_bar.isVisible())
         #self.wbuts.tab_bar.setVisible(not self.tab_bar.isVisible())
+        """Call ``self.wbuts.view_hide_tabs()``."""
         self.wbuts.view_hide_tabs()
 
 
     def key_usage(self):
+        """Return a help string listing the V key (view/hide tabs)."""
         return 'Keys:'\
                '\n  V - view/hide tabs'\
                '\n'
@@ -138,6 +161,10 @@ class CMWDBMain(QWidget):
     if __name__ == "__main__":
       def keyPressEvent(self, e):
         #logger.debug('keyPressEvent, key=', e.key())
+        """Handle keys: Escape closes the widget, V calls :meth:`view_hide_tabs`, others log :meth:`key_usage`.
+
+        This method is defined only when the module is run as ``__main__``.
+        """
         logger.info('%s.keyPressEvent, key=%d' % (self._name, e.key()))
         if   e.key() == Qt.Key_Escape:
             self.close()
@@ -150,11 +177,16 @@ class CMWDBMain(QWidget):
 
 
     def on_save(self):
+        """Call :meth:`save_hsplitter_sizes` to store the splitter sizes in the config parameters."""
         self.save_hsplitter_sizes()
 
 
 if __name__ == "__main__":
   def test_CMWDBMain():
+    """Create a ``QApplication``, show a ``CMWDBMain`` widget with minimum size 600x300 and run the event loop.
+
+    Defined only when the module is run as ``__main__``.
+    """
     import sys
     logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s: %(message)s', level=logging.DEBUG)
     app = QApplication(sys.argv)

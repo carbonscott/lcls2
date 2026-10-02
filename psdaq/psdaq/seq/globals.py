@@ -1,4 +1,5 @@
 #  maximum sub-sequences in one engine
+"""Constants for sequence generation: MAXSEQ 64, NALWSEQ 14, MAXDST 16, MAXCTL 72, TPGSEC 910000 and CTLBITS 16 (meanings as in the code comments)."""
 MAXSEQ = 64
 #  maximum number of allow table entries
 NALWSEQ = 14

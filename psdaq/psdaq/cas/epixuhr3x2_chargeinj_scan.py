@@ -1,3 +1,4 @@
+"""Charge-injection scan for ePixUHR3x2 segments over gain modes using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import numpy as np
 import json
@@ -10,6 +11,13 @@ nColumns = 384
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events, hutch 'tst', detname 'epixuhr3x2', record 0, config 'BEAM', nprocs 2, run_type 'CHARGE_INJ'.
+
+    For every segment it sets SetSameGain4All 1, UsePixelMap (1 if --skip_x or --skip_y is
+    non-zero), PixelBitMapSel 7, VINJ_DAC enable/dacEn/rampEn 1, SKIP_X/SKIP_Y and InjEn 1;
+    each step writes the mode's DAC start/stop/step and gain 'level' from a fixed table,
+    with metadata 'events' = int(stop/step).
+    """
     defargs = {
         "--events": 1000,
         "--hutch": "tst",

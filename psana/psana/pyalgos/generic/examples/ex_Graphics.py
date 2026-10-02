@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 #import psana.pyalgos.generic.Graphics as gr
+"""Example: exercise ``psana.pyalgos.generic.Graphics`` plotting helpers (images, histograms, color bars, r-phi projection) with random data; the test is selected by a command-line number."""
 from psana.pyalgos.generic.Graphics import *
 
 logger = logging.getLogger('ex_Graphics')
@@ -110,6 +111,7 @@ def test07():
 
 
 def usage():
+    """Print the list of available test numbers and their descriptions."""
     msg = 'Usage: python psalgos/examples/ex-02-localextrema.py <test-number>'\
           '\n  where <test-number> ='\
           '\n  1 - single 2d random image'\
@@ -123,6 +125,10 @@ def usage():
 
 
 def do_test():
+    """Run the test selected by ``sys.argv[1]`` ('1'-'7'), print the elapsed time, show the figures and exit.
+
+    Exits if no test number is given; an unknown number prints the usage and exits. Imports ``random_standard`` as a module global first.
+    """
     from time import time
     from psana.pyalgos.generic.NDArrGenerators import random_standard; global random_standard
 

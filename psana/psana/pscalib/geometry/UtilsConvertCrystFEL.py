@@ -46,10 +46,12 @@ import psana.detector.Utils as gu #  save_textfile, load_textfile, get_login, st
 
 
 def info_vector(v, msg='', fmt='%10.1f'):
+    """Return ``msg`` followed by the elements of ``v`` formatted with ``fmt`` and joined by ``', '``."""
     return msg + ', '.join([fmt%e for e in v])
 
 
 def str_to_int_or_float(s):
+    """Return ``float(s)``, converted to ``int`` if the value has no fractional part."""
     v = float(s)
     if v%1 == 0: v=int(v)
     return v
@@ -95,6 +97,11 @@ def vector_lab_to_psana(v):
 
 def tilt_xy(uf, us, i, k):
 
+    """Return ``(tilt_x, -tilt_y)`` computed from the pitch angles of the fast (``uf``) and slow (``us``) unit vectors.
+
+    ``(tilt_x, tilt_y)`` is ``(tilt_s, tilt_f)`` if the largest component of ``uf`` is x (index 0), else
+    ``(tilt_f, tilt_s)``; angles come from ``unit_vector_pitch_angle_max_ind``. ``i`` and ``k`` are only logged.
+    """
     tilt_f, imaxf = unit_vector_pitch_angle_max_ind(uf)
     tilt_s, imaxs = unit_vector_pitch_angle_max_ind(us)
     vmaxf = uf[imaxf]
@@ -122,6 +129,10 @@ def str_is_segment_and_asic(s):
 
 
 def header_psana(list_of_cmts=[], dettype='N/A'):
+    """Return the header text of a psana geometry file: title, date, user, cwd, host, command, ``CONDA_DEFAULT_ENV``, ``dettype``, comments and the column-name line.
+
+    Each entry of ``list_of_cmts`` becomes a ``# CFELCMT:NN`` line.
+    """
     comments = '\n'.join(['# CFELCMT:%02d %s'%(i,s) for i,s in enumerate(list_of_cmts)])
     return\
     '\n# TITLE      Geometry constants converted from CrystFEL by genuine psana'\
@@ -226,16 +237,19 @@ class CrystFELGeometryParser:
 
 
     def str_list_of_comments(self):
+        """Return ``'List of comments'`` followed by the stored comment lines, one per line."""
         return 'List of comments\n'\
             + '\n'.join(self.list_of_comments)
 
 
     def str_list_of_ignored_records(self):
+        """Return ``'List of ignored records'`` followed by the stored ignored lines, one per line."""
         return 'List of ignored records\n'\
             + '\n'.join(self.list_of_ignored_records)
 
 
     def str_dict_of_pars(self):
+        """Return a multi-line string of the parsed parameters sorted by top key; nested dicts are listed one item per line."""
         keys = sorted(self.dict_of_pars.keys())
         msg = 'dict of parameters with top keys: %s' % ' '.join(keys)
         for k in keys:
@@ -248,19 +262,27 @@ class CrystFELGeometryParser:
 
 
     def print_list_of_comments(self):
+        """Log :meth:`str_list_of_comments` at info level."""
         logger.info(self.str_list_of_comments())
 
 
     def print_list_of_ignored_records(self):
+        """Log :meth:`str_list_of_ignored_records` at info level."""
         logger.info(self.str_list_of_ignored_records())
 
 
     def print_dict_of_pars(self):
+        """Log :meth:`str_dict_of_pars` at debug level."""
         logger.debug(self.str_dict_of_pars())
 
 
     def load_crystfel_file(self, fname=None):
 
+        """Read the CrystFEL geometry file (``fname`` if given, else ``self.fname``) into comments, ignored records and ``dict_of_pars``.
+
+        Asserts the file exists. Blank lines are skipped, lines starting with ``;`` are stored as comments and
+        other lines are parsed by ``_parse_line_as_parameter``; ``self.valid`` is set True at the end.
+        """
         if fname is not None: self.fname = fname
         assert os.path.exists(self.fname), 'geometry file "%s" does not exist' % self.fname
 
@@ -361,12 +383,21 @@ class CrystFELGeometryParser:
 
 
     def convert_crystfel_to_geometry(self):
+        """Look up the segment name and panel list for ``self.dettype`` in ``DETTYPE_TO_PARS`` and call :meth:`crystfel_to_geometry`.
+
+        For an unknown detector type the exit message refers to an undefined name ``dettype``, so NameError
+        is raised instead of ``sys.exit``.
+        """
         pars = DETTYPE_TO_PARS.get(self.dettype.lower(), None)
         if pars is None: sys.exit('NON_IMPLEMENTED DETECTOR TYPE: %s' % dettype)
         self.crystfel_to_geometry(pars)
 
 
 def convert_crystfel_to_geometry(args):
+    """Parse the CrystFEL file given in ``args`` with ``CrystFELGeometryParser``, write the converted psana geometry, then call ``sys.exit('TEST EXIT')``.
+
+    ``args`` needs attributes ``fname``, ``ofname`` and ``dettype``.
+    """
     cgp = CrystFELGeometryParser(args)
     cgp.convert_crystfel_to_geometry()
     sys.exit('TEST EXIT')
@@ -375,6 +406,7 @@ def convert_crystfel_to_geometry(args):
 if __name__ == "__main__":
 
     class TestArguments:
+        """Argument container for tests with attributes ``tname``, ``dettype``, ``fname``, ``ofname``, ``loglev``; logs them on construction."""
         def __init__(self, tname, dettype, fname, ofname, loglev):
             self.tname   = tname
             self.dettype = dettype
@@ -384,15 +416,18 @@ if __name__ == "__main__":
             self.dump_test_arguments()
 
         def str_test_arguments(self):
+            """Return ``name: value`` lines for the public non-callable attributes."""
             return '\n'.join(['%10s: %s' % (name, str(getattr(self, name, None)))\
                    for name in dir(self) if name[0]!='_' and not callable(getattr(self, name, None))])
 
         def dump_test_arguments(self):
+            """Log ``dir(self)`` and :meth:`str_test_arguments` at info level."""
             logger.info('dir(TestArguments):' + ' '.join(dir(self)))
             logger.info('TestArguments:\n%s' % self.str_test_arguments())
 
 
     def test_converter(*args):
+        """Build ``TestArguments(*args)`` and pass it to :func:`convert_crystfel_to_geometry` (which exits)."""
         targs = TestArguments(*args)
         convert_crystfel_to_geometry(targs)
 

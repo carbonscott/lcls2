@@ -79,12 +79,14 @@ class CGWConfigEditorText(QWidget) :
 #--------------------
 
     def set_tool_tips(self) :
+        """Set the tool tip to 'Configuration editor GUI'."""
         self.setToolTip('Configuration editor GUI')
 
 #--------------------
 
     def set_style(self) :
 
+        """Set the window title 'Configuration Editor', minimum size 300x500 and zero margins."""
         from psdaq.control_gui.Styles import style
         #self.grb_read_nodes.setStyleSheet(style.qgrbox_title)
         #self.grb_proc_nodes.setStyleSheet(style.qgrbox_title)
@@ -121,6 +123,7 @@ class CGWConfigEditorText(QWidget) :
 #--------------------
 
     def closeEvent(self, e):
+        """Log a debug message and call `QWidget.closeEvent`."""
         logger.debug('CGWConfigEditorText.closeEvent')
         QWidget.closeEvent(self, e)
 

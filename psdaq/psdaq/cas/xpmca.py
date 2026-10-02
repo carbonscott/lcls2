@@ -1,3 +1,4 @@
+"""PyQt5 GUI for XPM PVs under a prefix: global, timing, front-panel/backplane link and PLL controls."""
 import sys
 import socket
 import argparse
@@ -33,6 +34,7 @@ linkType.append('DTI')
 linkType.append('XPM')
 
 class PvCString(QtWidgets.QWidget):
+    """Name label plus word-wrapping display of PV ``pvbase + name``; the widget adds itself to `parent`."""
     def __init__(self, parent, pvbase, name, dName=None):
         super(PvCString,self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -56,6 +58,7 @@ class PvCString(QtWidgets.QWidget):
 #        self.pv.add_monitor_callback(self.update)
 
     def update(self, err):
+        """Get the PV synchronously and emit its string form to the display; print `err` if set."""
         q = self.pv.get()
         if err is None:
             s = QString(q)
@@ -65,6 +68,7 @@ class PvCString(QtWidgets.QWidget):
 
 class PvPushButtonX(QtWidgets.QPushButton):
 
+    """QPushButton (max width 70) that puts 1 then 0 to PV `pvname` when clicked."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, pvname, label):
@@ -76,32 +80,39 @@ class PvPushButtonX(QtWidgets.QPushButton):
         self.pv = Pv(pvname, self.update)
 
     def update(self, err):
+        """Do nothing; body is `pass`."""
         pass
 
     def buttonClicked(self):
+        """Put 1 and then 0 to the PV."""
         self.pv.put(1)
         self.pv.put(0)
 
 class PvEditIntX(PvEditInt):
 
+    """`PvEditInt` with maximum width 70."""
     def __init__(self, pv, label):
         super(PvEditIntX, self).__init__(pv, label)
         self.setMaximumWidth(70)
 
 class PvCmb(PvEditCmb):
 
+    """Disabled (read-only) `PvEditCmb`."""
     def __init__(self, pvname, choices):
         super(PvCmb, self).__init__(pvname, choices)
         self.setEnabled(False)
 
 def LblPushButtonX(parent, pvbase, name, count=1, start=0, istart=0):
+    """Call `PvInput` with `PvPushButtonX`; returns None."""
     return PvInput(PvPushButtonX, parent, pvbase, name, count, start, istart)
 
 def LblEditIntX(parent, pvbase, name, count=1, start=0, istart=0, enable=True):
+    """Call `PvInput` with `PvEditIntX`; returns None."""
     return PvInput(PvEditIntX, parent, pvbase, name, count, start, istart, enable)
 
 class PvLinkId(QtWidgets.QWidget):
 
+    """Widget with two labels showing the type and source decoded from a link-ID PV."""
     def __init__(self,pvname,idx):
         super(PvLinkId, self).__init__()
         layout = QtWidgets.QVBoxLayout()
@@ -118,6 +129,12 @@ class PvLinkId(QtWidgets.QWidget):
         initPvMon(self,pvname)
 
     def update(self, err):
+        """Decode the link-ID value (synchronous get): type from the top byte via `linkType`, source as a host name or address.
+
+        Types 0xfb/0xfc with non-zero low 16 bits show the reverse-DNS short name of
+        172.21.x.y (0xfc may append '.<bits 16-23>'); types above 0xfc show '10.a.b.c';
+        others show the low 24 bits in hex.
+        """
         value = self.pv.get()
         itype = (int(value)>>24)&0xff
         self.linkType.setText(linkType[itype])
@@ -137,6 +154,7 @@ class PvLinkId(QtWidgets.QWidget):
                 
 
 def FrontPanelAMC(pvbase,iamc):
+        """Return an HBox with a 'Front Panel Links (AMC<iamc>)' group of per-link PV widgets for links ``iamc*7`` to ``iamc*7+6``."""
         dshbox = QtWidgets.QHBoxLayout()
         dsbox = QtWidgets.QGroupBox("Front Panel Links (AMC%d)"%iamc)
         dslo = QtWidgets.QVBoxLayout()
@@ -163,7 +181,13 @@ def FrontPanelAMC(pvbase,iamc):
         return dshbox
 
 class Ui_MainWindow(object):
+    """Builder for the xpmca window."""
     def setupUi(self, MainWindow, title):
+        """Build the scrollable window with Global, Timing, AMC0/AMC1 link, backplane link and PLL groups.
+
+        The code calls ``PvLabel(hl, pvbase, 'PAddr', isInt=True)``; `pvedit.PvLabel` takes
+        (owner, parent, pvbase, name, ...), so this call raises TypeError as written.
+        """
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -315,6 +339,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse the XPM PV base (and -v) and run the window."""
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

@@ -33,6 +33,10 @@ def calibman_gui():
 
 class Parameters:
 
+    """Class-level default values (``d_*``) and help strings (``h_*``) for the calibman command-line options.
+
+    Defaults for user, host and port come from ``psana.pscalib.calib.CalibConstants`` and the repository directory from ``psana.detector.dir_root.DIR_REPO_CALIBMAN``.
+    """
     from psana.detector.dir_root import DIR_REPO_CALIBMAN
     import psana.pscalib.calib.CalibConstants as cc
     d_user       = cc.USERLOGIN
@@ -61,6 +65,7 @@ class Parameters:
 
 
 def input_argument_parser():
+    """Build and return the ArgumentParser for calibman with options -d/--detector, -e/--experiment, -l/--loglevel, -o/--repodir, --host, --port, -u/--user, -p/--upwd, -S/--savecfg, -s/--savelog and -w/--webint (``store_false``, default True)."""
     from argparse import ArgumentParser
     parser = ArgumentParser(description='Calibration Management GUI')
     c = Parameters()

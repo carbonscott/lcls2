@@ -31,6 +31,12 @@ logger = logging.getLogger(__name__)
 
 class GWViewAxis(GWViewExt):
 
+    """``GWViewExt`` showing an axis ruler (``GWRuler``) along side ``side`` (``'U'``, ``'D'``, ``'L'`` or ``'R'``).
+
+    Keyword arguments include ``scale_ctl`` (True gives horizontal scaling for U/D, vertical for
+    L/R), ``wlength``, ``wwidth``, ``bgcolor``, ``fgcolor``, ``label_rot`` and ``signal_fast`` (overrides
+    ``move_fast``/``wheel_fast`` when given).
+    """
     def __init__(self, parent=None, rscene=QRectF(0, 0, 10, 10), origin='UL', side='U', **kwargs):
 
         self.bgcolor_def = 'black'
@@ -57,11 +63,16 @@ class GWViewAxis(GWViewExt):
         self.update_my_scene()
 
     def info_attributes(self):
+        """Return a multi-line string with the scale control, origin and side of the axis."""
         return 'scale_control: %s' % self.str_scale_control()\
            + '\norigin       : %s' % self.origin()\
            + '\nside         : %s' % self.side
 
     def set_axis_limits(self, vmin, vmax):
+        """Set the scene rect range to ``vmin``..``vmax`` along the axis direction, fit it in view and redraw the ruler.
+
+        For sides U/D the x range is changed, for L/R the y range.
+        """
         logger.debug('GWViewAxis.set_axis_limits vmin: %.1f vmax: %.1f' % (vmin, vmax))
         r = self.scene_rect()
         if self.side in ('U','D'):
@@ -74,6 +85,7 @@ class GWViewAxis(GWViewExt):
         self.update_my_scene()
 
     def set_style(self):
+        """Call ``GWViewExt.set_style`` and set axis color, font (Courier 10) and pen, plus fixed widget height (U/D) or width (L/R)."""
         GWViewExt.set_style(self)
 
         color = QColor(self.fgcolor)
@@ -90,6 +102,10 @@ class GWViewAxis(GWViewExt):
             self.setFixedWidth(self.wwidth)
 
     def update_ruler(self):
+        """Re-create the ``GWRuler`` for the current scene; draw a background rect first if ``bgcolor`` differs from the default.
+
+        Any previous ruler (``ruler.remove()``) and background rect item are removed.
+        """
         logging.debug('GWViewAxis.update_ruler for side: %s' % self.side)
         if self.bgcolor != self.bgcolor_def:
             s = self.scene()
@@ -111,16 +127,19 @@ class GWViewAxis(GWViewExt):
         self.update_ruler()
 
     def mouseReleaseEvent(self, e):
+        """Call :meth:`update_my_scene` and then ``GWViewExt.mouseReleaseEvent``."""
         logger.debug('GWViewAxis.mouseReleaseEvent')
         self.update_my_scene()
         GWViewExt.mouseReleaseEvent(self, e)
 
     def closeEvent(self, e):
+        """Remove the ruler and pass the event to ``GWViewExt.closeEvent``."""
         self.ruler.remove()
         GWViewExt.closeEvent(self, e)
         logger.debug('GWViewAxis.closeEvent')
 
     def reset_scene_rect(self, rs=None, mode=Qt.IgnoreAspectRatio):
+        """Call ``GWViewExt.reset_scene_rect`` with ``rs`` and ``mode`` and then :meth:`update_ruler`."""
         GWViewExt.reset_scene_rect(self, rs=rs, mode=mode)
         self.update_ruler()
 

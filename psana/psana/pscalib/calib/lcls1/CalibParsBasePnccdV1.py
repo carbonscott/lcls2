@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBasePnccdV1 :
 
+    """Class attributes only: ``ndim`` 3, ``shape = (4, 512, 512)``, ``size_cm`` 7 and ``cmod = (1, 50, 50, 100, 1, size, 1)``; the constructor does nothing."""
     ndim = 3 
     segs = 4
     rows = 512

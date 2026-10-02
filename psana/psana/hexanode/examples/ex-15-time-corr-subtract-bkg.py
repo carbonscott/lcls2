@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 ##----------
 
+"""Example: load the arrays 'ti_vs_tj.npy' and 't_all.npy' from the script directory and plot ti_vs_tj, the outer-product background ``outer(t_all, t_all)/sum(t_all)`` and a 1-d histogram of t_all, saving the figures."""
 import os
 import sys
 import numpy as np
@@ -13,6 +14,7 @@ import psana.pyalgos.generic.Utils as gu
 
 def do_work() :
 
+    """Create a dated output directory, load 'ti_vs_tj.npy' and 't_all.npy' from the script directory, print their sums, and plot and save three figures: ti_vs_tj, ``outer(t_all, t_all)/sum(t_all)`` and a log-scale histogram of t_all over (1400, 2900)."""
     prefix = './%s-figs-ti_vs_tj' % gu.str_tstamp(fmt='%Y-%m-%d', time_sec=None) # '%Y-%m-%dT%H:%M:%S%z'
     gu.create_directory(prefix, mode=0o775)
 

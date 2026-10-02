@@ -61,11 +61,13 @@ class CGWMainTabs(QWidget) :
     #--------------------------
 
     def show_tool_tips(self):
+        """Set the tool tip to 'Main tab window'."""
         self.setToolTip('Main tab window')
 
     #-------------------
 
     def sizeHint(self):
+        """Return QSize(300, 400) when the Expert tab is current, else QSize(300, 50)."""
         height = 400 if self.tab_bar.currentIndex()==self.tab_ind_expert else 50
         return QSize(300, height) 
 
@@ -73,6 +75,7 @@ class CGWMainTabs(QWidget) :
 
     def set_style(self):
 
+        """Set the window icon, background style, zero margins and size policy."""
         from psdaq.control_gui.Styles import style
         from psdaq.control_gui.QWIcons import icon
         icon.set_icons()
@@ -109,6 +112,7 @@ class CGWMainTabs(QWidget) :
     #-------------------
 
     def make_tab_bar(self, tab_index=0) :
+        """Create the 'User'/'Expert' tab bar, select `tab_index` and connect its signals."""
         self.tab_bar = QTabBar()
 
         #len(self.tab_names)
@@ -131,6 +135,11 @@ class CGWMainTabs(QWidget) :
 
     def gui_selector(self, tab_name):
 
+        """Close the current tab widget and show the one for `tab_name`.
+
+        'Expert' shows a `CGWMainTabExpert` (widget min height 400), 'User' shows a
+        `CGWMainTabUser` (widget fixed height 110); any other name shows a placeholder QTextEdit.
+        """
         if self.gui_win is not None :
             #self.box_layout.removeWidget(self.gui_win)
             #self.gui_win.setVisible(False)
@@ -167,6 +176,7 @@ class CGWMainTabs(QWidget) :
     #-------------------
 
     def current_tab_index_and_name(self):
+        """Return (index, text) of the current tab."""
         tab_ind  = self.tab_bar.currentIndex()
         tab_name = str(self.tab_bar.tabText(tab_ind))
         return tab_ind, tab_name
@@ -174,6 +184,7 @@ class CGWMainTabs(QWidget) :
     #-------------------
 
     def on_tab_bar(self, ind):
+        """Log the selected tab name and switch the shown widget with `gui_selector`."""
         tab_ind, tab_name = self.current_tab_index_and_name()
         logger.info('Selected tab "%s"' % tab_name)
         #cp.main_tab_name.setValue(tab_name)
@@ -182,6 +193,7 @@ class CGWMainTabs(QWidget) :
     #-------------------
 
     def on_tab_close_request(self, ind):
+        """Log the close request; the tab is not removed."""
         logger.debug('on_tab_close_request ind:%d' % ind)
         #self.tab_bar.removeTab(ind)
         #logger.debug('on_tab_close_request tab index:%d' % (itab))
@@ -189,6 +201,7 @@ class CGWMainTabs(QWidget) :
     #-------------------
 
     def on_tab_moved(self, inew, iold) :
+        """Log the old and new tab indexes at debug level."""
         logger.debug('on_tab_close_request tab index begin:%d -> end:%d' % (iold, inew))
 
     #-------------------
@@ -209,6 +222,7 @@ class CGWMainTabs(QWidget) :
 
 
     def closeEvent(self, e):
+        """Close the tab bar and current tab widget, then call `QWidget.closeEvent`."""
         logger.debug('CGWMainTabs.closeEvent')
 
         #try    : self.gui_win.close()
@@ -226,24 +240,29 @@ class CGWMainTabs(QWidget) :
 
 
     def onExit(self):
+        """Log a debug message and close the widget."""
         logger.debug('onExit')
         self.close()
 
 
     def set_tabs_visible(self, is_visible):
+        """Show or hide the tab bar."""
         logger.debug('set_tabs_visible: is_visible %s' % is_visible)
         self.tab_bar.setVisible(is_visible)
 
 
     def tab_bar_is_visible(self) :
+        """Return True if the tab bar is visible."""
         return self.tab_bar.isVisible()
 
 
     def view_hide_tabs(self) :
+        """Toggle tab bar visibility."""
         self.tab_bar.setVisible(not self.tab_bar.isVisible())
 
 
     def key_usage(self) :
+        """Return the key help text ('V - view/hide tabs')."""
         return 'Keys:'\
                '\n  V - view/hide tabs'\
                '\n'
@@ -251,6 +270,11 @@ class CGWMainTabs(QWidget) :
     if __name__ == "__main__" :
       def keyPressEvent(self, e) :
         #logger.debug('keyPressEvent, key=%s' % e.key())       
+        """Handle keys in the test window: Esc closes, V calls `self.view_hide_tab()`, others log `key_usage()`.
+
+        Defined only when the module is run as a script. The method actually defined is
+        `view_hide_tabs`, so V raises AttributeError.
+        """
         if   e.key() == Qt.Key_Escape :
             self.close()
 

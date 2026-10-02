@@ -36,6 +36,12 @@ logger = logging.getLogger(__name__)
 
 class GWViewHist(GWViewExt):
 
+    """``GWViewExt`` that draws a histogram (``GWHist``) of an ``HBins`` object in its scene.
+
+    Keyword arguments include ``fgcolor`` (``'blue'``), ``bgcolor``, ``hbins`` (default
+    ``test_histogram()``), ``auto_limits`` (``''``, ``'H'``, ``'V'`` or other), ``orient`` (``'H'``),
+    ``zvalue`` (10), ``scale_ctl`` (``'H'``) and ``signal_fast``.
+    """
     def __init__(self, parent=None, rscene=QRectF(0, 0, 10, 10), origin='DL', **kwargs):
 
         self.bgcolor_def = 'black'
@@ -61,13 +67,16 @@ class GWViewHist(GWViewExt):
         #self.rs_old = rscene
 
     def print_attributes(self):
+        """Log :meth:`info_attributes` at info level."""
         logger.info(self.info_attributes())
 
     def info_attributes(self):
+        """Return a string with the scale control and origin of the view."""
         return 'scale_control: %s' % self.str_scale_control()\
             +'\norigin       : %s' % self.origin()
 
     def set_style(self):
+        """Call ``GWViewExt.set_style`` and set the histogram color ``colhi`` and pen ``penhi`` from ``fgcolor``."""
         GWViewExt.set_style(self)
         self.colhi = QColor(self.fgcolor)
         self.penhi = QPen(self.colhi, 1, Qt.SolidLine)
@@ -76,6 +85,12 @@ class GWViewHist(GWViewExt):
         #qu.info_rect_xywh(r)
         #logger.debug('\nset_auto_limits - auto_limits: %s orientation: %s scale_ctl: %s'%\
         #       (self.auto_limits, self.hist.orient, self.str_scale_ctl))  # , end='\n')
+        """Set the scene rect from the bin range of ``hbins`` and/or quantile limits of its bin contents.
+
+        Content limits are the ``frac`` and ``1-frac`` quantiles of ``hbins.bin_data()``, extended by 10%
+        of their gap below and 50% above. For an ``'H'`` histogram, ``auto_limits='H'`` sets only x from the
+        bin range, ``'V'`` only y from the content limits, other values both; for ``'V'`` the axes are swapped.
+        """
         r = self.scene_rect()
         x, y, w, h = r.x(), r.y(), r.width(), r.height()
         hb = self.hbins
@@ -104,6 +119,12 @@ class GWViewHist(GWViewExt):
         self.set_scene_rect(QRectF(*rpars))
 
     def update_my_scene(self, hbins=None):
+        """Call ``GWViewExt.update_my_scene`` and, if ``hbins`` is given, redraw the histogram from it.
+
+        Removes the old ``GWHist``, redraws the background rect if ``bgcolor`` is not the default, creates a
+        new ``GWHist``, stores ``hbins``, applies :meth:`set_auto_limits` if ``auto_limits`` is set and
+        makes the current scene rect the default. Returns after the base call if ``hbins`` is None.
+        """
         GWViewExt.update_my_scene(self)
         if hbins is None: return
 
@@ -130,11 +151,13 @@ class GWViewHist(GWViewExt):
         self.reset_scene_rect_default()
 
     def mouseReleaseEvent(self, e):
+        """Call ``GWViewExt.update_my_scene`` (cursor rect only) and ``GWViewExt.mouseReleaseEvent``."""
         logger.debug('GWViewHist.mouseReleaseEvent')
         GWViewExt.update_my_scene(self)
         GWViewExt.mouseReleaseEvent(self, e)
 
     def closeEvent(self, e):
+        """Remove the histogram item and pass the event to ``GWViewExt.closeEvent``."""
         self.hist.remove()
         GWViewExt.closeEvent(self, e)
         #logger.debug('GWViewHist.closeEvent')
@@ -142,6 +165,23 @@ class GWViewHist(GWViewExt):
     def set_histogram_from_arr(self, arr, nbins=1000, amin=None, amax=None,\
                                frmin=0.00001, frmax=0.99999, edgemode=0, update_hblimits=True):
         #if np.array_equal(arr, self.arr_old): return
+        """Fill a new ``HBins`` histogram from ``arr``, set the scene rect and redraw.
+
+        Returns without change if ``arr`` is the same object as last time or is empty. Value limits are
+        kept from the current ``hbins`` unless it is None or ``update_hblimits`` is True; then ``amin``/``amax``
+        are used, else the ``frmin``/``frmax`` quantiles (min/max for 0/1 or None).
+
+        Parameters
+        ----------
+        arr : numpy.ndarray
+            Values to histogram (flattened).
+        nbins : int
+            Minimum number of bins; ``int(vmax) - int(vmin)`` is used if larger.
+        edgemode : int
+            Passed to ``HBins.set_bin_data_from_array``.
+        update_hblimits : bool
+            Also controls whether the scene rect y range follows the new bin range.
+        """
         logger.debug(info_ndarr(arr,'set_histogram_from_arr:'))
         if arr is self.arr_old:
             logger.debug('  arr is self.arr_old - HISTOGRAM NOT SET')

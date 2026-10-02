@@ -109,6 +109,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
 
     def set_tool_tips(self):
+        """Set the help tool tip on the widget and tool tips on the buttons and combo boxes."""
         self.setToolTip('Configuration editor GUI'\
                         '\n - Expand/Collapse button - expands/collapse entire dictionary content'\
                         '\n - Close button - closes editor window, all modifications'\
@@ -133,6 +134,11 @@ class CGWConfigEditor(QWidget):
 #--------------------
 
     def set_style(self):
+        """Set window title/size, Apply button style, and enable the serial-number check box only if a serial number is known.
+
+        The serial number comes from ``cp.get_serno(cp.cgwmainconfiguration.device_edit)``; it
+        is considered unavailable if missing or '-'.
+        """
         from psdaq.control_gui.Styles import style
         self.setWindowTitle('Configuration Editor')
         self.set_window_title()
@@ -164,6 +170,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
 
     def load_dict(self):
+        """Load `self.dictj` from the JSON file `ifname_json` with `load_json_from_file`."""
         ifname = self.ifname_json
         logger.info('CGWConfigEditor: load json from %s' % ifname)
         self.dictj = dj = load_json_from_file(ifname)
@@ -173,6 +180,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_load(self):
+        """Choose an input file and, unless cancelled, load it and show it in the editor."""
         logger.debug('on_but_load')
         if self.select_ifname():
            self.load_dict()
@@ -181,6 +189,13 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def select_ifname(self):
+        """Ask for an input JSON file with an open dialog.
+
+        Returns
+        -------
+        bool
+            False if cancelled; True after storing the chosen path in `ifname_json`.
+        """
         logger.info('select_ifname %s' % self.ifname_json)
         path, ftype = QFileDialog.getOpenFileName(self,
                       caption   = 'Select the file to load json',
@@ -197,6 +212,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_save(self):
+        """Choose an output file and, unless cancelled, save the editor content with `save_dict_in_file`."""
         logger.debug('on_but_save')
         if self.select_ofname():
            self.save_dict_in_file()
@@ -204,6 +220,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_help(self):
+        """Close any previous help box and show the widget's tool tip text in a new help dialog."""
         logger.debug('on_but_help')
         s = self.toolTip()
         if self.help_box is not None: self.help_box.close()
@@ -269,6 +286,13 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def select_ofname(self):
+        """Ask for an output JSON file with a save dialog.
+
+        Returns
+        -------
+        bool
+            False if cancelled; True after storing the chosen path in `ofname_json`.
+        """
         logger.info('select_ofname %s' % self.ofname_json)
         path, ftype = QFileDialog.getSaveFileName(self,
                       caption   = 'Select the file to save json',
@@ -285,12 +309,14 @@ class CGWConfigEditor(QWidget):
 #--------------------
 
     def get_content(self):
+        """Store and return the dict obtained from the editor widget's `get_content()`."""
         self.dictj = self.wedi.get_content()
         return self.dictj
 
 #--------------------
  
     def save_dict_in_file(self):
+        """Write the editor content as JSON text to `ofname_json` with `save_textfile`."""
         logger.info('save_dict_in_file %s' % self.ofname_json)
         dj = self.get_content()
         sj = str_json(dj)
@@ -299,6 +325,13 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_apply(self):
+        """Save the edited dict to the configdb through `cp.cgwmainconfiguration.save_dictj_in_db`.
+
+        With the serial-number box checked, an extra copy with 'detName:RO' set to the serial
+        number is saved first, but only when the serial number is missing or '-' (as the
+        condition is written); the alias config it then reads and modifies is not saved.
+        Logs a warning and returns if `cp.cgwmainconfiguration` is None.
+        """
         logger.debug('on_but_apply')
         dj = self.get_content()
         sj = str_json(dj)
@@ -342,6 +375,10 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_select(self):
+        """Ask `cp.cgwmainconfiguration` for another configuration to edit and show it.
+
+        Logs a warning if `cp.cgwmainconfiguration` is None; does nothing if the selection is cancelled.
+        """
         logger.debug('on_but_select')
 
         w = cp.cgwmainconfiguration
@@ -362,6 +399,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def set_window_title(self):
+        """Set the window title to 'Config Editor for <cfgtype_edit> <device_edit>' when `cp.cgwmainconfiguration` is set."""
         w = cp.cgwmainconfiguration
         if w is None: return
         self.setWindowTitle('Config Editor for %s %s'%(w.cfgtype_edit, w.device_edit))
@@ -369,12 +407,14 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_but_close(self):
+        """Log a debug message and close the widget."""
         logger.debug('on_but_close')
         self.close()
 
 #--------------------
  
     def on_box_more(self, ind):
+        """Run the selected 'More' option (1 Load, 2 Save, 3 Help) and reset the combo box to 'More'."""
         opt = self.MORE_OPTIONS[ind]
         logger.info('CGWConfigEditor selected option %s' % opt)
 
@@ -386,6 +426,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
  
     def on_box_type(self, ind):
+        """Replace the editor widget with a text or tree editor for the selected type."""
         type = self.EDITOR_TYPES[ind]
         logger.info('CGWConfigEditor set editor type %s' % type)
 
@@ -423,6 +464,7 @@ class CGWConfigEditor(QWidget):
  
     def on_but_expn(self):
         #logger.debug('on_but_expn')
+        """Toggle between expanding and collapsing the editor tree, updating the button text."""
         if self.but_expn.text()[:6] == 'Expand':
            self.wedi.process_expand()
            self.but_expn.setText('Collapse %s'%char_shrink)
@@ -433,6 +475,7 @@ class CGWConfigEditor(QWidget):
 #--------------------
 
     def closeEvent(self, e):
+        """Call `QWidget.closeEvent`, close the help box if open and set `cp.cgwconfigeditor` to None."""
         QWidget.closeEvent(self, e)
         logger.debug('closeEvent')
 

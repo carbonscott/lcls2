@@ -20,6 +20,10 @@ USAGE = 'command examples for app %s\n'%sys.argv[0]\
 
 
 def hdf5explorer_gui():
+    """Parse the command line and launch ``H5VMain.hdf5explorer``.
+
+    Prints the usage if there are no arguments. The first positional argument is the HDF5 file name (default ``FNAME_TEST``); options are passed as keyword arguments together with ``rec_at_start=True``.
+    """
     parser = input_option_parser()
 
     if len(sys.argv) == 1:
@@ -41,6 +45,7 @@ def hdf5explorer_gui():
 
 def input_option_parser():
 
+    """Build and return an optparse OptionParser with options -l/--loglevel, -L/--logdir and -S/--savelog."""
     from optparse import OptionParser
 
     d_loglevel   = 'INFO'

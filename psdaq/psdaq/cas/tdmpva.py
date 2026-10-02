@@ -1,3 +1,4 @@
+"""PyQt5 GUI showing (and partly editing) the structured PVs under a PV base, using structures from `psdaq.pytdm.pvdef`."""
 import sys
 import argparse
 import logging
@@ -20,6 +21,10 @@ except NameError:
     QChar = chr
 
 class PvScalarBox(QtWidgets.QGroupBox):
+    """QGroupBox with one row (label plus QLabel or, if `edit`, QLineEdit) per field of `struct`, bound to structured PV `pvname`.
+
+    With `edit` an 'Apply' button calls `put`.
+    """
     def __init__(self, pvname, title, struct, edit=False):
         super(PvScalarBox,self).__init__(title)
         self.struct = struct
@@ -46,12 +51,14 @@ class PvScalarBox(QtWidgets.QGroupBox):
         initPvMon(self,pvname,isStruct=True)
 
     def update(self,err):
+        """Set row i's widget to the string of the i-th field of the PV value dict."""
         if err is None:
             q = self.pv.__value__.todict()
             for i,v in enumerate(q):
                 self.widgets[i].setText(QString(q[v]))
 
     def put(self):
+        """Put a dict of the widget values to the PV, converted with int for fields of type 'i' and float otherwise."""
         v = {}
         w = self.widgets
         for i,ttl in enumerate(self.struct):
@@ -61,10 +68,16 @@ class PvScalarBox(QtWidgets.QGroupBox):
         self.pv.put(v)
 
 class PvBuf(PvScalarBox):
+    """`PvScalarBox` using the `monBuf` structure."""
     def __init__( self, pvname, title):
         super(PvBuf,self).__init__(pvname, title, monBuf)
 
 class PvArrayTable(QtWidgets.QGroupBox):
+    """QGroupBox grid with one row (or column if `vertical`) per array field of `struct`, bound to structured PV `pvname`.
+
+    With `edit` the cells are QLineEdits initialized from the struct defaults and an
+    'Apply' button calls `put`.
+    """
     def __init__( self, pvname, title, struct, vertical=False, edit=False):
         super(PvArrayTable,self).__init__(title)
         self.struct = struct
@@ -97,6 +110,7 @@ class PvArrayTable(QtWidgets.QGroupBox):
         initPvMon(self,pvname,isStruct=True)
 
     def update(self,err):
+        """Fill the cells from the PV's 'value' sub-structure; if it has no 'value' key the dict is printed and nothing changes."""
         if err is None:
             d = self.pv.__value__.todict()
             if not 'value' in d:
@@ -108,6 +122,7 @@ class PvArrayTable(QtWidgets.QGroupBox):
                     self.widgets[i][j].setText(QString(w))
 
     def put(self):
+        """Replace 'value' in the cached PV structure with the int contents of the cells and put it."""
         v = {}
         w = self.widgets
         for i,ttl in enumerate(self.struct):
@@ -122,6 +137,7 @@ class PvArrayTable(QtWidgets.QGroupBox):
         self.pv.put(q)
 
 class PLLBox(QtWidgets.QWidget):
+    """Widget stacking ':QPLLSTATUS', ':PLLSTATUS' (read-only) and ':PLLCTRL' (editable) `PvArrayTable` views under `title`."""
     def __init__(self,title):
         super().__init__()
         lo = QtWidgets.QVBoxLayout()
@@ -134,7 +150,9 @@ class PLLBox(QtWidgets.QWidget):
         self.setLayout(lo)
 
 class Ui_MainWindow(object):
+    """Builder for the tdmpva window."""
     def setupUi(self, MainWindow, title):
+        """Build tabs for ':TIMSTATUS', ':CLKSTATUS', ':LINKSTATUS', ':LINKCTRL' (editable), the PLL box and ':SFPSTATUS' under `title`."""
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -166,6 +184,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse the PV base (and -v) and run the window."""
     global NChannels
     global NLanes
     global Patterns

@@ -1,6 +1,12 @@
 #
 # sequence script must create 3 variables {title, descset, instrset}
 #
+"""Sequence description 'Burst' (defines `title`, `descset`, `instrset`).
+
+For i in 0-3 it adds four ControlRequest/FixedRateSync(marker=0, occ=i+1) groups with
+masks 0xf, 0xe, 0xc, 0x8 shifted by 4*i and conditional repeat counts 1, 1, 3, 7, then
+branches back to line 0.
+"""
 from psdaq.seq.seq import *
 
 title = 'Burst'

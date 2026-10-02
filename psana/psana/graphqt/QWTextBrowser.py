@@ -71,11 +71,13 @@ class QWTextBrowser(CMWControlBase):
 
 
     def set_tool_tips(self):
+        """Call the base-class ``set_tool_tips``."""
         CMWControlBase.set_tool_tips(self)
         #self.setToolTip('Text Browser')
 
 
     def set_style(self):
+        """Call the base-class ``set_style``, set background style, make the text box read-only unless ``is_editable`` and set zero margins."""
         CMWControlBase.set_style(self)
         self.setStyleSheet(style.styleBkgd)
         self.edi_txt.setReadOnly(not self.is_editable)
@@ -85,10 +87,16 @@ class QWTextBrowser(CMWControlBase):
 
 
     def set_text(self, txt):
+        """Set the text box content to ``txt``."""
         self.edi_txt.setText(txt)
 
 
     def on_changed_fname(self, fname):
+        """Load text file ``fname`` and update the file-name button text if it differs.
+
+        The final call ``self.set_text(self, txt)(txt)`` passes an extra argument and raises TypeError, so
+        the text is not shown.
+        """
         logger.debug('on_changed_fname: %s' % fname)
         txt = load_textfile(fname)
         logger.debug('loaded %d lines, %d chars from file %s' % (txt.count('\n'), len(txt), fname))
@@ -100,16 +108,22 @@ class QWTextBrowser(CMWControlBase):
 
 
     def closeEvent(self, e):
+        """Call the base-class ``closeEvent`` and set ``cp.qwtextbrowser`` to None."""
         logger.debug('closeEvent')
         CMWControlBase.closeEvent(self, e)
         cp.qwtextbrowser = None
 
 
     def on_but_view(self):
+        """Log a debug message only."""
         logger.debug('on_but_view should be re-implemented')
 
 
     def on_but_save(self):
+        """Ask for a file name via a save dialog (default ``'tmp.txt'``) and write the plain text of the text box to it.
+
+        Returns without writing if the dialog returns None or an empty path.
+        """
         logger.debug('re-implemented on_but_save')
         from psana.graphqt.QWUtils import get_save_fname_through_dialog_box
         fname = 'tmp.txt'

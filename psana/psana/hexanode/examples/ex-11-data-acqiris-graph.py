@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #--------------------
 
+"""Example: read Acqiris waveforms of detector 'tmo_hexanode' from a test xtc2 file and, for the first few events, plot five channels with the peaks found by ``wfpkfinder_cfd`` (compiled module ``ndarray``) marked; the figure and event loop run at import time."""
 import sys
 import psana
 from time import time
@@ -42,6 +43,7 @@ EVENTS = 5 + EVSKIP
 
 def draw_times(ax, wf, wt) :
     #wf -= wf[0:1000].mean()
+    """Run ``wfpkfinder_cfd`` on ``wf`` with the module CFD settings, print the peak count and time, and draw a vertical line at ``wt[index]`` from +amp to -amp on ``ax`` for every entry of the 100-element peak arrays (unused entries included)."""
     t0_sec = time()
     #wf  = np.array(WF, dtype=np.float64)
     pkvals = np.zeros((100,), dtype=np.float64)
@@ -84,6 +86,7 @@ ax = [gr.add_axes(fig, axwin=(x0, y0 + i*dy, w, h)) for i in range(naxes)]
 #--------------------
 
 def draw_waveforms(wf, wt) :
+    """For each of the five channels, plot the offset-subtracted samples ``BBEG:BEND`` of ``wf`` versus ``wt``, draw the threshold line and the peak markers from ``draw_times``, then redraw and show the figure without blocking."""
     for i in range(naxes) :
         ax[i].clear()
         ax[i].set_xlim(TIME_RANGE)

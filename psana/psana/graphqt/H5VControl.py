@@ -19,6 +19,20 @@ logger = logging.getLogger(__name__)
 def save_data_in_file(data, prefix, control={'txt': True, 'npy': True}, fmt='%.3f'):
     #elif data_type == 'any':
     #    gu.save_textfile(str(data), fname, mode='w', verb=verb)
+    """Save a numpy array to ``<prefix>.txt`` and/or ``<prefix>.npy``.
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Array to save; any other type is not saved and a warning is logged.
+    prefix : str
+        File name prefix.
+    control : dict
+        ``{'txt': bool, 'npy': bool}`` selecting the outputs; text uses ``NDArrIO.save_txt``, binary
+        uses ``numpy.save`` with ``allow_pickle=False``.
+    fmt : str
+        Number format for the text file.
+    """
     if isinstance(data, np.ndarray):
         if control['txt']:
             from psana.pscalib.calib.NDArrIO import save_txt # load_txt
@@ -74,6 +88,7 @@ class H5VControl(CMWControlBase):
 
 
     def set_tool_tips(self):
+        """Call the base-class ``set_tool_tips`` and set tool tips on the Save, Collapse/Expand and file-name buttons."""
         CMWControlBase.set_tool_tips(self)
         self.but_save.setToolTip('To save array in file\nclick on numpy.array in the tree\nthen click on this Save button')
         self.but_exp_col.setToolTip('Collapse/expand hdf5 tree')
@@ -81,6 +96,7 @@ class H5VControl(CMWControlBase):
 
 
     def set_style(self):
+        """Call the base-class ``set_style``, style the label, set the folder icon and disable Save/View via :meth:`enable_buts`."""
         CMWControlBase.set_style(self)
         self.lab_ctrl.setStyleSheet(style.styleLabel)
         self.but_exp_col.setIcon(icon.icon_folder_open)
@@ -88,6 +104,10 @@ class H5VControl(CMWControlBase):
 
 
     def on_but_exp_col(self):
+        """Toggle the HDF5 tree between expanded and collapsed and update the button text and icon.
+
+        Does nothing if ``cp.h5vmain`` is None.
+        """
         if cp.h5vmain is None: return
 
         wtree = cp.h5vmain.wtree
@@ -103,12 +123,18 @@ class H5VControl(CMWControlBase):
 
 
     def on_but_view(self):
+        """Log the selected data and pass it to ``cp.cmwmaintabs.view_data`` if that object exists."""
         logger.debug(info_ndarr(self.data, 'on_but_view data:'))
         if cp.cmwmaintabs is not None:
             cp.cmwmaintabs.view_data(data=self.data)
 
 
     def on_but_save(self):
+        """Ask (check-box popup) which formats to save and save the selected dataset with :func:`save_data_in_file`.
+
+        On confirmation (response 1) the prefix is the dataset path ``self.dname``, the format is ``'%d'``
+        for integer dtypes else ``'%.3f'``, and ``cp.last_selected_fname`` is set to ``<prefix>.npy``.
+        """
         logger.debug('on_but_save')
 
         prefix = self.dname
@@ -132,6 +158,7 @@ class H5VControl(CMWControlBase):
 
 
     def enable_buts(self, is_good=False):
+        """Enable and style the Save and View buttons if ``is_good``; otherwise disable them and reset ``dname`` and ``data`` to None."""
         for but in (self.but_save, self.but_view):
             but.setStyleSheet(style.styleButtonGood if is_good else style.styleButton)
             but.setFlat(not is_good)
@@ -142,6 +169,11 @@ class H5VControl(CMWControlBase):
 
 
     def on_item_selected(self, selected, deselected):
+        """Slot for tree selection: disable the buttons, then if the item holds an ``h5py.Dataset`` read its value into ``self.data``.
+
+        ``self.dname`` is set to the item's full path, and the buttons are enabled if the value is a
+        ``numpy.ndarray`` with more than one element.
+        """
         logger.debug('on_item_selected')
         wtree = cp.h5vmain.wtree
         self.enable_buts()

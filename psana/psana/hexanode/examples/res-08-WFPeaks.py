@@ -84,6 +84,7 @@ fig.canvas.set_window_title('Test WFUtils.peak_finder_v2 and WFPeaks', **kwargs)
 fig.clear()
 
 def axes_h(fig, naxes=2, x0=0.07, y0=0.05, width=0.87, ygap=0.04) :
+    """Add ``naxes`` horizontal axes stacked vertically on ``fig``, each of height ``(1-y0)/naxes - ygap`` starting at ``y0``, and return them as a list."""
     dy = (1-y0)/naxes
     return [gr.add_axes(fig, axwin=(x0, y0 + i*dy, width, dy-ygap)) for i in range(naxes)]
 

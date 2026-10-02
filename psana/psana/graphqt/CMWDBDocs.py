@@ -72,16 +72,19 @@ class CMWDBDocs(QWidget):
 
 
     def set_tool_tips(self):
+        """Do nothing; the body is ``pass``."""
         pass
 
 
     def set_style(self):
+        """Apply the background style sheet and zero the layout margins."""
         self.setStyleSheet(style.styleBkgd)
         self.layout().setContentsMargins(0,0,0,0)
 
 
     def set_docs_widget(self, docw=None):
 
+        """Replace the document widget with one made by ``docs_widget_selector`` for ``docw`` (default ``cp.cdb_docw.value()``), then call ``show_documents`` for the stored DB and collection."""
         if self.gui_win is not None:
             self.gui_win.close()
             del self.gui_win
@@ -96,6 +99,10 @@ class CMWDBDocs(QWidget):
 
     def show_documents(self, dbname, colname, force_update=False):
 
+        """Show the documents of collection ``colname`` in DB ``dbname`` in the current document widget.
+
+        Returns if either name is None. The document list is fetched with ``dbu.list_of_documents`` only when the names differ from the stored ones or ``force_update`` is true; otherwise the cached ``self.current_docs`` is reused.
+        """
         if None in (dbname, colname): return
 
         if ((dbname, colname) != (self.dbname, self.colname))\
@@ -107,6 +114,7 @@ class CMWDBDocs(QWidget):
 
 
     def closeEvent(self, e):
+        """Close the document widget, then call ``QWidget.close(self)``."""
         logger.debug('closeEvent')
         if self.gui_win is not None: self.gui_win.close()
         QWidget.close(self)
@@ -114,6 +122,10 @@ class CMWDBDocs(QWidget):
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return the key help text (Esc, 0, 1, 2).
+
+        Defined only when the module runs as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  0 - set widget'\
@@ -123,6 +135,10 @@ class CMWDBDocs(QWidget):
 
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes; keys 0-2 select a document widget type and rebuild the widget; others log the key help.
+
+        Defined only when the module runs as a script. It uses ``Qt``, which this module does not import, and indexes ``list_of_doc_widgets`` with the raw key code.
+        """
         logger.info('keyPressEvent, key=', e.key())
 
         if   e.key() == Qt.Key_Escape:

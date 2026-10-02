@@ -70,11 +70,16 @@ class GWImageAxesROI(QWidget):
         self.set_info_visible(True)
 
     def set_signal_fast(self, is_fast=False):
+        """Set the ``signal_fast`` attribute of the image view and both axis views to ``is_fast``."""
         self.wim.signal_fast = is_fast
         self.wax.signal_fast = is_fast
         self.way.signal_fast = is_fast
 
     def set_info_visible(self, is_visible=True):
+        """Show or hide the info text field ``edi_info``.
+
+        After ``setVisible(is_visible)``, if ``edi_info.isVisible()`` already equals ``is_visible`` it returns; otherwise it connects (``is_visible`` true) or disconnects ``on_mouse_move_event`` to the image view's mouse-move signal.
+        """
         self.edi_info.setVisible(is_visible)
         if self.edi_info.isVisible() and is_visible or\
            (not self.edi_info.isVisible()) and (not is_visible): return
@@ -82,16 +87,22 @@ class GWImageAxesROI(QWidget):
         else: self.wim.disconnect_mouse_move_event(self.on_mouse_move_event)
 
     def connect_scene_rect_changed(self):
+        """Connect the scene-rect-changed signals of the image view and the two axis views to ``on_wim_scene_rect_changed``, ``on_wax_scene_rect_changed`` and ``on_way_scene_rect_changed``."""
         self.wim.connect_scene_rect_changed(self.on_wim_scene_rect_changed)
         self.wax.connect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.connect_scene_rect_changed(self.on_way_scene_rect_changed)
 
     def disconnect_scene_rect_changed(self):
+        """Disconnect the three scene-rect-changed handlers connected by ``connect_scene_rect_changed``."""
         self.wim.disconnect_scene_rect_changed(self.on_wim_scene_rect_changed)
         self.wax.disconnect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.disconnect_scene_rect_changed(self.on_way_scene_rect_changed)
 
     def on_but_reset(self):
+        """Reset the scene rects of the image view and both axis views, then call ``on_wim_scene_rect_changed`` with the image scene rect.
+
+        Connected to the 'Reset' button.
+        """
         self.wim.reset_scene_rect()
         logger.debug('on_but_reset wim.scene_rect: %s' % qu.info_rect_xywh(self.wim.scene_rect()))
         self.wax.reset_scene_rect()
@@ -99,6 +110,7 @@ class GWImageAxesROI(QWidget):
         self.on_wim_scene_rect_changed(self.wim.scene_rect())
 
     def on_wim_scene_rect_changed(self, r):
+        """Set the x-axis limits to the x range and the y-axis limits to the y range of rect ``r``, then emit ``image_scene_rect_changed`` if the image scene rect changed."""
         self.wax.set_axis_limits(r.x(), r.x()+r.width())
         self.way.set_axis_limits(r.y(), r.y()+r.height())
         #self.wax.fit_in_view(QRectF(r.x(), 0, r.width(), 1))
@@ -107,12 +119,14 @@ class GWImageAxesROI(QWidget):
 
     def on_wax_scene_rect_changed(self, r):
         #logger.debug('on_wax_scene_rect_changed: %s'%str(r))
+        """Fit the image view to the x range of ``r`` while keeping its current y range, then emit ``image_scene_rect_changed`` if the image scene rect changed."""
         rs = self.wim.scene_rect()
         self.wim.fit_in_view(QRectF(r.x(), rs.y(), r.width(), rs.height()))
         self.emit_signal_if_image_scene_rect_changed()
 
     def on_way_scene_rect_changed(self, r):
         #logger.debug('on_way_scene_rect_changed: %s'%str(r))
+        """Fit the image view to the y range of ``r`` while keeping its current x range, then emit ``image_scene_rect_changed`` if the image scene rect changed."""
         rs = self.wim.scene_rect()  # scene().sceneRect()
         self.wim.fit_in_view(QRectF(rs.x(), r.y(), rs.width(), r.height()))
         self.emit_signal_if_image_scene_rect_changed()
@@ -125,21 +139,26 @@ class GWImageAxesROI(QWidget):
             self.image_scene_rect_changed.emit(rs)
 
     def connect_image_scene_rect_changed(self, recip):
+        """Connect ``recip`` to the ``image_scene_rect_changed`` signal."""
         self.image_scene_rect_changed.connect(recip)
 
     def disconnect_image_scene_rect_changed(self, recip):
+        """Disconnect ``recip`` from the ``image_scene_rect_changed`` signal."""
         self.image_scene_rect_changed.disconnect(recip)
 
     def test_image_scene_rect_changed(self, r):
+        """Print the method name and rect ``r`` (via ``qu.info_rect_xywh``) on one line ending with a carriage return."""
         print(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r), end='\r')
 
     def set_tool_tips(self):
+        """Set tool tips on the image view, the two axis views and the info field."""
         self.wim.setToolTip('Image\npixel map')
         self.wax.setToolTip('Image columns\nH-scale')
         self.way.setToolTip('Image rows\nV-scale')
         self.edi_info.setToolTip('Information field')
 
     def set_style(self):
+        """Zero the layout margins, fix the Reset button size to 60x30, limit the info field height to 20-25 px and apply ``self.wim.style_def`` to it."""
         self.layout().setContentsMargins(0,0,0,0)
         self.but_reset.setFixedSize(60,30)
         self.edi_info.setMinimumHeight(20)
@@ -166,6 +185,7 @@ class GWImageAxesROI(QWidget):
         self.edi_info.setText(s)
 
     def closeEvent(self, e):
+        """Log a debug message and forward the close event to ``QWidget.closeEvent``."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
 

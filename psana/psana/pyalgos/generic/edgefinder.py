@@ -1,3 +1,7 @@
+"""Defines ``EdgeFinder``, which locates peaks in a FIR-filtered 1-d signal, and ``EdgeFinderResult``, a plain record of the results.
+
+Filter coefficients and the delayed denominator are read from a calibration-constants dict.
+"""
 import numpy as np
 import json
 from scipy.linalg import toeplitz
@@ -6,12 +10,17 @@ from scipy.signal import chirp, find_peaks, peak_widths
 
 
 class EdgeFinderResult(object):
+    """Plain record object: every keyword argument given to the constructor becomes an attribute."""
     def __init__(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
 class EdgeFinder(object):
 
+    """Callable peak finder configured from ``calibconst``.
+
+    The FIR kernel is decoded from ``calibconst['fir_coefficients']`` (a JSON-like dict string of hex strings, read as 8-bit two's-complement values) and the divisor from ``calibconst['delayed_denom']``. Calling the object with ``(image, IIR)`` subtracts ``IIR`` (zeros if None), divides by the denominator (ones if None), convolves with the kernel, normalizes to the maximum and returns an ``EdgeFinderResult`` with the strongest peak position (``edge``), its amplitude, FWHM, the next peak amplitude (or None), ``mean(IIR)``, the convolved array and ``peak_widths`` of all peaks above 0.25 of the maximum; it returns None if ``image`` is None.
+    """
     height = 0.25 # factor from max - used in finding peaks
 
     def __init__(self, calibconst, good_image=None, bgs=None):

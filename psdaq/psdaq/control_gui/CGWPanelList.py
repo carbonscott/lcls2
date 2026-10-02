@@ -42,11 +42,17 @@ class CGWPanelList(QWList) :
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(50, 30)."""
         return QSize(50, 30)
 
 #--------------------
 
     def fill_list_model(self, **kwargs):
+        """Clear the model and add one item per string in 'list_str' with flags from 'list_flags'.
+
+        Flag bits: 1 checkable, 2 enabled, 4 editable, 8 selectable, 16 checked (used when
+        checkable). The default flag for every item is 2 (enabled only).
+        """
         self.clear_model()
 
         lst   = kwargs.get('list_str', [])

@@ -159,6 +159,7 @@ class DLDStatistics :
 #----------
 
     def fill_data(self, number_of_hits, tdc_sec) :
+        """Call ``fill_corrected_data()`` and, only if it returns True, ``fill_raw_data(number_of_hits, tdc_sec)``."""
         if self.fill_corrected_data() :
            self.fill_raw_data(number_of_hits, tdc_sec) 
 
@@ -166,6 +167,10 @@ class DLDStatistics :
 
     def fill_raw_data(self, number_of_hits, tdc_sec) :
 
+        """Append per-event values computed from the input hit counts and hit times to the statistics lists enabled by the STAT_* flags.
+
+        Times are converted from seconds to ns. Depending on the flags it stores the hit count and first-hit time of each channel, differences between the second hit of one channel end and the first hit of the other end, and the time sums ``t1 + t2 - 2*t_mcp`` for u, v (and w for hex sorters); channel indexes come from ``proc.sorter.channel_indexes``.
+        """
         tdc_ns = tdc_sec * SEC_TO_NS # sec -> ns
 
         sorter = self.proc.sorter
@@ -225,6 +230,10 @@ class DLDStatistics :
 
     def fill_corrected_data(self) :
 
+        """Append per-event values derived from the sorter state of ``self.proc`` to the statistics lists and histograms enabled by the STAT_* flags.
+
+        Returns False (after storing the particle count) if the sorter reports no output hits. Otherwise it computes u, v (and w for hex) differences scaled by ``fu``, ``fv``, ``fw``, the X/Y components, corrected time sums, a channel-consistency bit word, the reconstruction method of hit 0, fills the 2-d X-Y images and, if the MCP channel has more than one hit, the time and radius-time histograms from ``sorter.xyrt_list()`` and ``sorter.t_list()``; then returns True. Hit objects come from the compiled ``py_hit_class``.
+        """
         sorter = self.proc.sorter
         Cu1, Cu2, Cv1, Cv2, Cw1, Cw2, Cmcp = sorter.channel_indexes
         number_of_particles = sorter.output_number_of_hits

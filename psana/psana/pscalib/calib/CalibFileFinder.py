@@ -65,6 +65,11 @@ import tempfile
 
 class CalibFile :
 
+    """Calibration file descriptor parsed from a path whose base name is ``<begin>-<end>`` (``end`` may be ``'end'``, meaning 9999).
+
+    Sets ``begin``, ``end`` and ``valid``; invalid names print a warning if ``pbits`` is non-zero. Only
+    ``__cmp__`` is defined (no ``__lt__``), so sorting several ``CalibFile`` objects raises TypeError in Python 3.
+    """
     rnum_max = 9999
 
     def __init__(self, path='', pbits=1) :
@@ -108,15 +113,19 @@ class CalibFile :
         self.valid = True
 
     def get_path(self) :
+        """Return the file path given to the constructor."""
         return self.path
 
     def get_begin(self) :
+        """Return the begin run number (not set for some invalid names)."""
         return self.begin
 
     def get_end(self) :
+        """Return the end run number (9999 for ``'end'``; not set for some invalid names)."""
         return self.end
 
     def set_invalid(self, msg) :
+        """Print ``msg`` if ``pbits`` is non-zero and set ``valid`` to False."""
         if self.pbits : print(msg)
         self.valid = False
 
@@ -132,16 +141,23 @@ class CalibFile :
             else : return 0
 
     def str_attrs(self) : 
+        """Return a string with begin, end and path (uses ``%4d``, so begin and end must be set)."""
         return 'begin: %4d  end: %4d  path: %s' % (self.begin, self.end, self.path)
 
 #------------------------------
 
 def find_calib_file(cdir, src, type, rnum, pbits=1) :
+    """Return ``CalibFileFinder(cdir, pbits=pbits).findCalibFile(src, type, rnum)``: the calibration file path for run ``rnum``, ``''`` if none matches, or None if ``cdir`` is missing."""
     return CalibFileFinder(cdir, pbits=pbits).findCalibFile(src, type, rnum)
 
 #------------------------------
 
 def make_calib_file_name(cdir, src, type, run_start, run_end=None, pbits=1) :
+    """Return ``CalibFileFinder(cdir, pbits=pbits).makeCalibFileName(src, type, run_start, run_end=None)``.
+
+    The ``run_end`` argument is not passed on (always None), so the name is ``<run_start>-end.data``; the
+    called method also creates the group/source/type directories. Returns None on invalid input.
+    """
     return CalibFileFinder(cdir, pbits=pbits).makeCalibFileName(src, type, run_start, run_end=None)
 
 #------------------------------
@@ -265,6 +281,10 @@ def _history_record(dcmts) :
 
 class CalibFileFinder :
 
+    """Finds or builds LCLS1-style calibration file paths ``<cdir>/<group>/<src>/<type>/<begin>-<end>.data``.
+
+    ``group`` is derived from ``src`` when it is empty or None.
+    """
     def __init__(self, cdir='', group='', pbits=1) :
         self.cdir  = cdir
         self.group = group
@@ -403,6 +423,7 @@ def test01() :
 
     #cdir  = '/reg/d/psdm/CXI/cxid2714/calib/'
     #cdir  = '/reg/d/psdm/CXI/cxi80410/calib/'
+    """Search a hard-coded cxi83714 calib directory for CSPAD pedestals of run 134 and build a new file name under ``./calib``."""
     cdir  = '/reg/d/psdm/CXI/cxi83714/calib/'
 
     group = 'CsPad::CalibV1'
@@ -436,6 +457,7 @@ def test01() :
 #--------------------------
 
 def test_deploy_calib_array() :
+    """Deploy a (32, 185, 388) array of ones as CSPAD pedestals for run 9991 under ``./calib`` with :func:`deploy_calib_array`."""
     print(80*'_', '\nTest deploy_calib_array')
 
     cdir  = './calib'
@@ -453,6 +475,7 @@ def test_deploy_calib_array() :
 #--------------------------
 
 def test_deploy_calib_file() :
+    """Deploy a hard-coded geometry file as CSPAD geometry for run 9992 under ``./calib`` with :func:`deploy_calib_file`."""
     print(80*'_', '\nTest deploy_calib_file')
     cdir  = './calib'
     if not os.path.exists(cdir) : gu.create_directory(cdir, verb=True)

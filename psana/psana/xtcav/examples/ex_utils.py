@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-""" 
-"""
+"""Helper for the xtcav examples: ``data_file`` returns the path of one of several test xtc2 files."""
 import sys
 
 #----------
 
 def data_file(tname='0') :
+    """Return the path of a test xtc2 file in /reg/g/psdm/detector/data2_test/xtc/ selected by ``tname`` ('0', '1', '2', or any other value for the last file) and print it."""
     dname = '/reg/g/psdm/detector/data2_test/xtc/'
     fname = 'data-amox23616-r0104-e000010-xtcav.xtc2' if tname == '0' else\
             'data-amox23616-r0104-e000400-xtcav.xtc2' if tname == '1' else\

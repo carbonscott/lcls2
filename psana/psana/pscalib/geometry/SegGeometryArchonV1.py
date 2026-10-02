@@ -117,10 +117,17 @@ class SegGeometryArchonV1(SegGeometry):
         sp.define_shape_make_pixel_coord_arrs()
 
     def shape(sp):
+        """Shadowed by the later ``shape`` definition in this class, so this body is never used; it would return ``_shape`` after :meth:`define_shape_make_pixel_coord_arrs`."""
         sp.define_shape_make_pixel_coord_arrs()
         return sp._shape
 
     def define_shape_make_pixel_coord_arrs(sp):
+        """Determine the segment shape once and build the pixel coordinate arrays for it.
+
+        Does nothing if ``_shape`` is already set. The shape is taken from kwa ``shape``, else the detector's
+        ``_shape``, else the shape of ``det._calibconst['pedestals'][0]`` (asserted to exist when ``_calibconst``
+        is non-empty). If a shape is found, ``_shape`` and ``_rows`` are set and :meth:`make_pixel_coord_arrs` is called; the shape is logged.
+        """
         if sp._shape: return # is not None
 
         det = sp.det
@@ -180,14 +187,17 @@ class SegGeometryArchonV1(SegGeometry):
         return mask
 
     def get_seg_xy_maps_um(sp):
+        """Ensure the coordinate arrays exist and return ``(x_pix_arr_um, y_pix_arr_um)`` in um."""
         sp.define_shape_make_pixel_coord_arrs()
         return sp.x_pix_arr_um, sp.y_pix_arr_um
 
     def get_xyz_min_um(sp):
+        """Shadowed by the later ``get_xyz_min_um`` definition in this class, so this body is never used."""
         sp.define_shape_make_pixel_coord_arrs()
         return [sp.pixel_coord_min(a) for a in sp.AXIS]
 
     def get_xyz_max_um(sp):
+        """Shadowed by the later ``get_xyz_max_um`` definition in this class, so this body is never used."""
         sp.define_shape_make_pixel_coord_arrs()
         return [sp.pixel_coord_max(a) for a in sp.AXIS]
 
@@ -253,18 +263,24 @@ class SegGeometryArchonV1(SegGeometry):
         return sp.pix_area_arr
 
     def get_pixel_size_arrs_um(sp):
+        """Create the pixel-size maps if needed and return ``(x_pix_size_um, y_pix_size_um, z_pix_size_um)``; x sizes are NaN for the fake columns."""
         sp.make_pixel_size_arrs()
         return sp.x_pix_size_um,\
                sp.y_pix_size_um,\
                sp.z_pix_size_um
 
     def get_seg_xyz_maps_um(sp):
+        """Ensure the coordinate arrays exist and return ``(x_pix_arr_um, y_pix_arr_um, z_pix_arr_um)`` in um."""
         sp.define_shape_make_pixel_coord_arrs()
         return sp.x_pix_arr_um,\
                sp.y_pix_arr_um,\
                sp.z_pix_arr_um
 
     def get_xyz_min_um(sp):
+        """Ensure the coordinate arrays exist and return ``(x_arr_um[0], y_arr_um[-1], z_pix_arr_um[0, 0])``.
+
+        ``y_arr_um`` is descending, so this is the smallest x and y coordinate.
+        """
         sp.define_shape_make_pixel_coord_arrs()
         return sp.x_arr_um[0],\
                sp.y_arr_um[-1],\
@@ -307,16 +323,28 @@ class SegGeometryArchonV1(SegGeometry):
         return sp.return_switch(sp.get_xyz_max_um, axis)
 
     def pixel_ones_array(sp, dtype=DTYPE_MASK):
+        """Return an array of ones of shape ``(_rows, _cols)``.
+
+        The class does not define ``_cols``, so this raises AttributeError unless it is set elsewhere.
+        """
         sp.define_shape_make_pixel_coord_arrs()
         return np.ones((sp._rows, sp._cols), dtype=dtype)
 
 
 # for converter
 
-    def asic0indices(self): self.print_warning('asic0indices')
-    def asic_rows_cols(self): self.print_warning('asic_rows_cols')
-    def number_of_asics_in_rows_cols(self): self.print_warning('number_of_asics_in_rows_cols')
-    def name(self): self.print_warning('name')
+    def asic0indices(self):
+        """Not implemented: logs a warning through ``print_warning('asic0indices')`` and returns None."""
+        self.print_warning('asic0indices')
+    def asic_rows_cols(self):
+        """Not implemented: logs a warning through ``print_warning('asic_rows_cols')`` and returns None."""
+        self.print_warning('asic_rows_cols')
+    def number_of_asics_in_rows_cols(self):
+        """Not implemented: logs a warning through ``print_warning('number_of_asics_in_rows_cols')`` and returns None."""
+        self.print_warning('number_of_asics_in_rows_cols')
+    def name(self):
+        """Not implemented: logs a warning through ``print_warning('name')`` and returns None."""
+        self.print_warning('name')
 
 #archon_one = SegGeometryArchonV1(use_wide_pix_center=False)
 

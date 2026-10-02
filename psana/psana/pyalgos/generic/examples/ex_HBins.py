@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+"""Example: exercise ``HBins`` with equal and variable bins, invalid constructor arguments, bin-index lookup and bin data storage, printing the results."""
 from psana.pyalgos.generic.HBins import * #HBins
 
 def test_bin_indexes(o, vals, edgemode=0, cmt=''):
+    """Print the bin count, edges and equal-bins flag of ``o``, then the bin index of each value in ``vals`` from ``bin_index`` and from ``bin_indexes`` with ``edgemode``."""
     print('%s\n%s, edgemode=%d:' % (80*'_', cmt, edgemode))
     print('nbins = %d' % o.nbins())
     print('binedges',    o.binedges())
@@ -18,6 +20,7 @@ def test_bin_indexes(o, vals, edgemode=0, cmt=''):
 
 def test(o, cmt=''):
 
+    """Print the attributes, methods and the main bin properties (limits, edges, centers, widths, range string, equal-bins flag) of HBins object ``o``."""
     print('%s\n%s\n' % (80*'_', cmt))
 
     o.print_attrs_and_methods()
@@ -37,6 +40,7 @@ def test(o, cmt=''):
 
 
 def test_bin_data(o, cmt=''):
+    """Store ``np.arange(nbins)`` as int32 bin data in ``o`` with ``set_bin_data`` and print it together with the value returned by ``bin_data``."""
     print('%s\n%s' % (80*'_', cmt))
     data = np.arange(o.nbins())
     o.set_bin_data(data, dtype=np.int32)

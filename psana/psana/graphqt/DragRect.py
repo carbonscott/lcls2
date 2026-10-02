@@ -18,6 +18,10 @@ from PyQt5.QtWidgets import QGraphicsRectItem
 
 class DragRect(QGraphicsRectItem, DragBase):
                 # QRectF, QGraphicsItem, QGraphicsScene
+    """Selectable QGraphicsRectItem plus DragBase that can be drawn, resized, moved and rotated with the mouse.
+
+    ``obj`` may be a QRectF (drawn as is) or a QPointF (a 5x5 rect started in ADD mode that grabs the mouse so it can be dragged out). For any other type the constructor returns before the Qt item is initialized; its warning call passes an extra argument that the message has no placeholder for.
+    """
     def __init__(self, obj, parent=None, scene=None,\
                  brush=QBrush(), pen=QPen(Qt.blue, 0, Qt.SolidLine)):
         """Adds QGraphics(Rect)Item to the scene.
@@ -77,6 +81,10 @@ class DragRect(QGraphicsRectItem, DragBase):
 
 
     def set_control_points(self):
+        """Create ten DragPoint children of the rect: four corner squares, four edge-center rhombi, a yellow round point at 70% along the top edge (opens the control-point menu) and a round rotation point at 30%.
+
+        They are stored in ``self.lst_ctl_points``. The loop meant to raise their z value calls ``self.setZValue(100)`` on the rect itself.
+        """
         logger.debug('in DragRect.set_control_points')
 
         parent = self # None
@@ -113,6 +121,7 @@ class DragRect(QGraphicsRectItem, DragBase):
 
 
     def remove_control_points(self):
+        """Remove every item of ``self.lst_ctl_points`` from the scene."""
         logger.debug('DragRect.remove_control_points')
         scene=self.scene()
         for item in self.lst_ctl_points:
@@ -123,6 +132,7 @@ class DragRect(QGraphicsRectItem, DragBase):
 
     def move_control_points(self):
 
+        """Reposition the corner, edge-center, menu and rotation control points to follow the current normalized rect, relative to the rect and point positions saved at the start of editing."""
         r0 = self.rect0
         r = self.rect().normalized()
         #p = self.pos()
@@ -156,6 +166,7 @@ class DragRect(QGraphicsRectItem, DragBase):
 
     def itemChange(self, change, value):
         #print('%s.itemChange' % (self.__class__.__name__), ' change: %d, value:' % change, value)
+        """Call the base ``itemChange``; on ``ItemSelectedHasChanged`` show the control points only when the item is selected. Returns the base-class result."""
         valnew = QGraphicsRectItem.itemChange(self, change, value)
         if change == self.ItemSelectedHasChanged:
             #self.set_control_points_visible(visible=True)
@@ -164,6 +175,10 @@ class DragRect(QGraphicsRectItem, DragBase):
 
 
     def mousePressEvent(self, e):
+        """Forward the press, then, if the item under the cursor is one of the control points, switch to EDIT mode, remember that point and the current rect and corner positions.
+
+        Clicking the yellow menu point also opens ``control_point_menu``. Logs a warning and returns if ``lst_ctl_points`` is None.
+        """
         ps = e.scenePos()
         pe = e.pos()
 
@@ -201,6 +216,10 @@ class DragRect(QGraphicsRectItem, DragBase):
 
 
     def mouseMoveEvent(self, e):
+        """Update the rect from the mouse displacement according to the drag mode.
+
+        MOVE (when selected) moves the item; ADD moves the bottom-right corner; EDIT moves the corner or edge of the selected control point (displacement rotated by ``rotate_point``) or, for the rotation point, sets the item rotation to the angle of the cursor around the transform origin. In EDIT mode the rect is normalized and the control points follow.
+        """
         QGraphicsRectItem.mouseMoveEvent(self, e)
         #logger.debug('%s.mouseMoveEvent' % self.__class__.__name__)
         #print('%s.mouseMoveEvent, at point: ' % self.__class__.__name__, e.pos(), ' scenePos: ', e.scenePos())
@@ -248,6 +267,10 @@ class DragRect(QGraphicsRectItem, DragBase):
 
     def mouseReleaseEvent(self, e):
         #logger.debug('DragRect.mouseReleaseEvent') # % self.__class__.__name__)
+        """Finish the current drag.
+
+        After ADD it releases the mouse grab, normalizes the rect, resets the transform origin, calls ``redefine_rect`` and creates the control points; after EDIT it clears the selected point, calls ``redefine_rect`` and moves the points. Finally it calls ``set_drag_mode()``.
+        """
         QGraphicsRectItem.mouseReleaseEvent(self, e)
 
         if self._drag_mode == ADD:

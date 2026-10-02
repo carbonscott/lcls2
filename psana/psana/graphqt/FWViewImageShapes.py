@@ -31,6 +31,10 @@ from psana.graphqt.DragBase import FROZEN, ADD, MOVE, EDIT, DELETE
 
 class FWViewImageShapes(FWViewImage):
 
+    """``FWViewImage`` that lets the user add, select and delete draggable shapes (from ``DragFactory``) on the image.
+
+    Set ``add_request`` to a drag type (POINT, LINE, RECT, ...) to add that shape at the next mouse press.
+    """
     def __init__(self, parent=None, arr=None,\
                  coltab=ct.color_table_rainbow(ncolors=1000, hang1=250, hang2=-20),\
                  origin='UL', scale_ctl='HV'):
@@ -56,22 +60,31 @@ class FWViewImageShapes(FWViewImage):
 
 
     def setShapesEnabled(self, is_enabled=True):
+        """Enable or disable all items in ``lst_drag_items``."""
         for item in self.lst_drag_items: item.setEnabled(is_enabled)
 
 
     def selected_item(self):
+        """Return the first item in ``lst_drag_items`` that is selected, or None."""
         for item in self.lst_drag_items:
             if item.isSelected(): return item
         return None
 
 
     def item_marked_to_delete(self):
+        """Return the first item in ``lst_drag_items`` whose mode is ``DELETE``, or None."""
         for item in self.lst_drag_items:
             if item.mode() == DELETE: return item
         return None
 
 
     def mousePressEvent(self, e):
+        """Handle a mouse press: add a requested shape, delete a marked shape, or set the scale control.
+
+        After the base-class handling, if ``add_request`` is set a new item is created with ``add_item``
+        at the scene point, selected and appended to ``lst_drag_items``. Otherwise a DELETE-marked item is
+        deleted, or scale control is disabled while an item is selected and restored when none is.
+        """
         scpoint = self.mapToScene(e.pos())
         print('==== click')
         logger.debug('FWViewImageShapes.mousePressEvent but=%d %s scene x=%.1f y=%.1f'%\
@@ -109,6 +122,7 @@ class FWViewImageShapes(FWViewImage):
 
     def mouseReleaseEvent(self, e):
         #logger.debug('%s.mouseReleaseEvent pos: %s' % (self.__class__.__name__, str(e.pos())))
+        """Pass the event to the base class; if a shape was being added, re-enable all shapes and clear ``add_request``."""
         FWViewImage.mouseReleaseEvent(self, e)
 
         if self.add_request is not None:
@@ -117,11 +131,16 @@ class FWViewImageShapes(FWViewImage):
 
 
     def closeEvent(self, e):
+        """Pass the event to ``FWViewImage.closeEvent``."""
         FWViewImage.closeEvent(self, e)
         #print('FWViewImage.closeEvent' # % self._name)
 
 
     def delete_item(self, item):
+        """Remove ``item`` from the scene and from ``lst_drag_items``, disable scale control and re-enable shapes.
+
+        Does nothing if ``item`` is None.
+        """
         if item is None: return
 
         self.set_scale_control('')

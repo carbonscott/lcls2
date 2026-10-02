@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryMatrixAnyV1``; each test creates the object and calls ``init_matrix_parameters``.
+
+Run with test number ``'1'``-``'7'``; without an argument a "non-expected test name" warning with the
+usage is logged. All code, including the import, runs only when the module is executed as a script.
+"""
 if __name__ == "__main__":
 
   from psana.pscalib.geometry.SegGeometryMatrixAnyV1 import *
@@ -11,6 +16,7 @@ if __name__ == "__main__":
   FIGSIZE_INCH = (14,6)
 
   def test_xyz_min_max():
+    """For a (512, 1024) matrix with 75 um pixels, print the min/max coordinates in um and log the min/max X, Y and Z pixel coordinates."""
     w = SegGeometryMatrixAnyV1()
     w.init_matrix_parameters(shape=(512,1024), pix_size_rcsd_um=(75,75,75,400))
     w.print_xyz_min_max_um()
@@ -27,6 +33,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
+    """For a (512, 512) matrix, print the coordinate maps in um and plot the X and Y pixel-index maps."""
     w = SegGeometryMatrixAnyV1()
     w.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
     w.print_maps_seg_um()
@@ -41,6 +48,7 @@ if __name__ == "__main__":
 
   def test_img():
 
+    """For a (512, 512) matrix, histogram the pixel coordinates with weights ``X + Y`` using ``numpy.histogram2d`` (passing ``normed=False``), log shapes and edges, and plot the result."""
     w = SegGeometryMatrixAnyV1()
     w.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
 
@@ -76,6 +84,7 @@ if __name__ == "__main__":
 
 
   def test_img_easy():
+    """For a (512, 512) matrix, plot an image built from pixel index maps shifted to start at 0, using weights ``X + 2*Y``."""
     o = SegGeometryMatrixAnyV1()
     o.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
     X, Y = o.get_seg_xy_maps_pix()
@@ -89,6 +98,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """For a (512, 512) matrix, print the pixel-size arrays and log slices [0:10, 190:198] and shapes of the area and X-size arrays."""
     w = SegGeometryMatrixAnyV1()
     w.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
     w.print_pixel_size_arrs()
@@ -103,6 +113,7 @@ if __name__ == "__main__":
 
 
   def test_mask(width=0, edge_rows=5, edge_cols=5):
+    """For a (512, 512) matrix, plot ``pixel_mask_array(width=width, edge_rows=edge_rows, edge_cols=edge_cols)`` placed by the pixel index maps."""
     o = SegGeometryMatrixAnyV1()
     o.init_matrix_parameters(shape=(512,512), pix_size_rcsd_um=(75,75,75,400))
     X, Y = o.get_seg_xy_maps_pix_with_offset()
@@ -114,6 +125,7 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``."""
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0','1'): s+='\n 1 - test_xyz_min_max'

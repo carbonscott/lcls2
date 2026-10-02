@@ -7,6 +7,7 @@
 #My simple ?simulation script? is below.  Thanks for thinking about it...
 #chris
 
+"""Script: stack short test arrays, sum their outer products (``cov``) and the arrays themselves (``avg``), and print ``cov``, the background ``outer(avg, avg)/sum(avg)``, ``cov/bkg`` and ``cov-bkg``."""
 from psana.pyalgos.generic.NDArrUtils import np, print_ndarr
 #import numpy as np
 

@@ -1,10 +1,16 @@
 
+"""Example: draw ``FWHist`` histograms in a plain QGraphicsView for several orientation, pen and brush settings selected by a test number."""
 from psana.graphqt.FWHist import *
 
 class TestFWHist(FWHist):
 
+    """FWHist subclass with an extra ``add_test`` method that draws a test path."""
     def add_test(self):
 
+        """Replace the histogram path item with a test path through corner and mid points of the scene rect and add it to the scene at ``self.zvalue``.
+
+        Stores the path item in ``self.path_item`` and ``self.lst_of_items`` and prints a message. Not called in this module.
+        """
         r = self.scene.sceneRect()
         w,h = r.width(), r.height()
         v = self.view
@@ -48,6 +54,10 @@ if __name__ == "__main__":
 
   def test_fwhist(tname):
 
+    """Create a QApplication, a QGraphicsView with marked scene and origin rects, and a ``TestFWHist`` configured by ``tname`` ('0'-'4'), then run the event loop.
+
+    Defined only when the module runs as a script; for other ``tname`` values it prints a message and returns.
+    """
     from PyQt5.QtWidgets import QApplication, QGraphicsScene, QGraphicsView
     from PyQt5.QtCore import QRectF
 

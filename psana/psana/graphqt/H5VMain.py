@@ -30,6 +30,11 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 class H5VMain(QWidget):
 
+    """HDF5-explorer main widget: ``H5VControl`` above a splitter holding ``H5VQWTree`` and, if ``cp.wlog`` is None, a logger widget.
+
+    The constructor registers itself as ``cp.h5vmain``, uses ``kwargs['wlog']`` or ``cp.wlog`` (else a
+    new ``QWLoggerStd``), and saves a start record with ``RepoManager`` if ``rec_at_start`` is True.
+    """
     def __init__(self, **kwargs):
         QWidget.__init__(self, parent=None)
 
@@ -67,6 +72,12 @@ class H5VMain(QWidget):
 
 
     def proc_kwargs(self, **kwargs):
+        """Print the keyword arguments and copy logging options into the config parameters.
+
+        Sets ``cp.log_prefix`` from ``logdir`` (default ``'./'``) and ``cp.save_log_at_exit`` from
+        ``savelog`` (default False); ``cp.log_level`` is set from ``loglevel`` only if ``-l``/``--loglevel``
+        is on the command line.
+        """
         print_kwargs(kwargs)
         loglevel   = kwargs.get('loglevel', 'DEBUG').upper()
         logdir     = kwargs.get('logdir', './')
@@ -77,27 +88,32 @@ class H5VMain(QWidget):
 
 
     def connect_signals_to_slots(self):
+        """Does nothing; body is ``pass``."""
         pass
         #self.connect(self.wbut.but_reset, QtCore.SIGNAL('clicked()'), self.on_but_reset)
         #self.connect(self.wbut.but_save,  QtCore.SIGNAL('clicked()'), self.on_but_save)
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to ``'hdf5 explorer'``."""
         self.setToolTip('hdf5 explorer')
 
 
     def set_style(self):
+        """Set geometry (50, 50, 500, 600), zero layout margins and a fixed control-panel height of 50."""
         self.setGeometry(50, 50, 500, 600)
         self.layout().setContentsMargins(0,0,0,0)
 
         self.wctrl.setFixedHeight(50)
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent`` and set ``cp.h5vmain`` to None."""
         QWidget.closeEvent(self, e)
         cp.h5vmain = None
 
 
 def hdf5explorer(**kwargs):
+    """Set ``LIBGL_ALWAYS_INDIRECT=1``, create a ``QApplication`` and show an ``H5VMain`` titled ``'HDF5 explorer'``."""
     import os
     os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'
     #fmt = '%(asctime)s %(name)s %(levelname)s: %(message)s'

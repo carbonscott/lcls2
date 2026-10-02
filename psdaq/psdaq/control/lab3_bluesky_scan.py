@@ -1,5 +1,12 @@
 # lab3_bluesky_scan.py
 
+"""Script (runs at import) that scans `ophyd.sim.motor1` from -10 to 10 in 15 points with `BlueskyScan`.
+
+It parses arguments (defaults: platform 1, host 'drp-tst-dev008', 10 events per step,
+config alias 'BEAM'), checks the DAQ connection and state, sets the config alias and
+runs the scan with a bluesky `RunEngine`. The code reads ``args.g``, but no -g option is
+defined, so as written it raises AttributeError.
+"""
 from bluesky import RunEngine
 import sys
 import logging

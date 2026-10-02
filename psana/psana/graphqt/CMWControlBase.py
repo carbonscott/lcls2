@@ -71,6 +71,7 @@ class CMWControlBase(QWidget):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the file-name widget and the Tabs, Save and View buttons."""
         self.wfnm.setToolTip('Select file')
         self.but_tabs.setToolTip('Show/hide tabs')
         self.but_save.setToolTip('Save button')
@@ -78,6 +79,7 @@ class CMWControlBase(QWidget):
 
 
     def set_style(self):
+        """Set the Save icon, the Tabs button style, fixed widths of 60 for the three buttons and the file-name label style."""
         icon.set_icons()
         self.but_save.setIcon(icon.icon_save)
         self.but_tabs.setStyleSheet(style.styleButtonGood)
@@ -88,23 +90,31 @@ class CMWControlBase(QWidget):
 
 
     def on_changed_fname(self, fname):
+        """Log the new file name ``fname`` at debug level."""
         logger.debug('on_changed_fname: %s' % fname)
 
 
     def on_but_tabs(self):
+        """Slot for the Tabs button: call :meth:`view_hide_tabs`."""
         logger.debug('on_but_tabs switch between visible and invisible tabs')
         self.view_hide_tabs()
 
 
     def on_but_save(self):
+        """Log a debug message only; meant to be re-implemented in subclasses."""
         logger.debug('on_but_save - NEEDS TO BE RE_IMPLEMENTED')
 
 
     def on_but_view(self):
+        """Log a debug message only; meant to be re-implemented in subclasses."""
         logger.debug('on_but_view - NEEDS TO BE RE_IMPLEMENTED')
 
 
     def view_hide_tabs(self):
+        """Toggle the tab bar of ``cp.cmwmaintabs`` and update the Tabs button text.
+
+        Does nothing if ``cp.cmwmaintabs`` is None.
+        """
         wtabs = cp.cmwmaintabs
         if wtabs is None: return
         is_visible = wtabs.tab_bar_is_visible()
@@ -113,6 +123,7 @@ class CMWControlBase(QWidget):
 
 
     def but_tabs_is_visible(self, isvisible=True):
+        """Set the visibility of the Tabs button to ``isvisible``; returns None."""
         self.but_tabs.setVisible(isvisible)
 
 

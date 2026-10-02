@@ -176,10 +176,12 @@ class HBins():
 
 
     def equalbins(self):
+        """Return the stored flag ``self._equalbins`` (set in the constructor), which selects the equal-width bin code paths."""
         return self._equalbins
 
 
     def ascending(self):
+        """Return the stored flag ``self._ascending`` (set in the constructor), which tells whether the edges increase."""
         return self._ascending
 
 
@@ -267,6 +269,10 @@ class HBins():
 
     def bin_indexes(self, arr, edgemode=0):
 
+        """Return a numpy int32 array with the bin index of each value in ``arr``.
+
+        Values below or above the range get index 0 and nbins-1 when ``edgemode`` is 0, or -1 and nbins when it is 1. Equal bins are computed with ``floor``; variable bins are selected by comparing with the bin edges via ``np.select``.
+        """
         indmin, indmax = self._set_limit_indexes(edgemode)
 
         if self._equalbins:
@@ -295,11 +301,13 @@ class HBins():
 
 
     def bin_count(self, arr, edgemode=0, weights=None):
+        """Return ``np.bincount`` of the bin indexes of ``arr`` (flattened), with optional ``weights`` and ``minlength`` equal to the number of bins."""
         indarr = self.bin_indexes(arr.ravel(), edgemode)
         return np.bincount(indarr, weights, self.nbins())
 
 
     def set_bin_data(self, data, dtype=np.float64):
+        """Store ``data`` as a numpy array of ``dtype`` in ``self._bin_data``; asserts that its length equals the number of bins."""
         assert len(data)==self.nbins()
             #self._bin_data = None
             #return
@@ -307,18 +315,22 @@ class HBins():
 
 
     def bin_data(self, dtype=np.float64):
+        """Return the stored bin data converted to ``dtype``, or None if no data were set."""
         return self._bin_data.astype(dtype) if self._bin_data is not None else None
 
 
     def bin_data_max(self):
+        """Return the maximum of the stored bin data, or None if no data were set."""
         return self._bin_data.max() if self._bin_data is not None else None
 
 
     def bin_data_min(self):
+        """Return the minimum of the stored bin data, or None if no data were set."""
         return self._bin_data.min() if self._bin_data is not None else None
 
 
     def set_bin_data_from_array(self, arr, dtype=np.float64, edgemode=0):
+        """Histogram the values of ``arr`` with ``bin_count`` (using ``edgemode``) and store the counts as bin data of ``dtype``."""
         aravel = arr.ravel()
         hisarr = self.bin_count(aravel, edgemode=edgemode)
         self.set_bin_data(hisarr, dtype=dtype)
@@ -333,12 +345,14 @@ class HBins():
 
 
     def print_attrs(self):
+        """Print every instance attribute name and value."""
         print('Attributes of the %s object' % self._name)
         for k,v in self.__dict__.items():
             print('  %s: %s' % (k.ljust(16), str(v)))
 
 
     def print_attrs_defined(self):
+        """Print the instance attributes whose value is not None."""
         print('Attributes (not None) of the %s object' % self._name)
         for k,v in self.__dict__.items():
             if v is None: continue
@@ -346,12 +360,22 @@ class HBins():
 
 
     def print_attrs_and_methods(self):
+        """Print every name returned by ``dir(self)``."""
         print('Methods & attributes of the %s object' % self._name)
         for m in dir(self):
             print('  %s' % (str(m).ljust(16)))
 
 
     def histogram_statistics(self, vmin=None, vmax=None):
+        """Compute weighted statistics of the stored bin data between the bins of ``vmin`` and ``vmax``.
+
+        The bin range is ``bin_indexes((vmin, vmax))`` with the end bin excluded; weights are the stored bin data in that range.
+
+        Returns
+        -------
+        tuple
+            ``(mean, rms, err_mean, err_rms, neff, skew, kurt, err_err, sum_w, ibeg, iend)``, or eleven zeros if the weight sum is not positive.
+        """
         ibeg, iend = self.bin_indexes((vmin,vmax), edgemode=0)
         #logger.debug('histogram_statistics between bins %d : %d'%(ibeg, iend))
         center = self.bincenters()[ibeg:iend]

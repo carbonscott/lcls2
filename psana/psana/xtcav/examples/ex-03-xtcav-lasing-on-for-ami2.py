@@ -4,6 +4,7 @@
 #----------
 
 class Arguments:
+    """Class-level settings for the example: input file name, experiment, run number and number of images to process."""
     fname      = '/reg/g/psdm/detector/data2_test/xtc/data-amox23616-r0137-e000100-xtcav-v2.xtc2'
     experiment = 'amox23616'
     run        = 137
@@ -11,6 +12,10 @@ class Arguments:
 
 def test_xtcav_lasing_on(args=Arguments()):
 
+    """Run ``LasingOnCharacterization`` on events of ``args.fname`` and print, for each processed image, the agreement, maximum power and pulse delay from ``resultsProcessImage``.
+
+    Events without a camera image or for which ``processEvent`` returns false are skipped; the loop stops after ``args.events`` processed images.
+    """
     from psana import DataSource
     from psana.xtcav.LasingOnCharacterization import LasingOnCharacterization, setDetectors
     from psana.pyalgos.generic.NDArrUtils import info_ndarr, np

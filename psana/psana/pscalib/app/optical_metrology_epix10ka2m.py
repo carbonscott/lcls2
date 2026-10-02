@@ -28,6 +28,12 @@ usage = '\nCommand to run:'+\
 
 def option_parser():
 
+    """Return an ``optparse.OptionParser`` for the epix10ka2m optical-metrology command.
+
+    Options: input/output file names (``-i``, ``-o``), log level (``-l``), camera-center offsets
+    (``-x``, ``-y``), center relative to IP (``-X``, ``-Y``, ``-Z``, ``-A``), rotation ``-r``, quad offset ``-q``,
+    version ``-v``, and the ``store_false`` flags ``-N/--usez`` and ``-C/--docorr`` (both default True).
+    """
     from optparse import OptionParser
 
     d_ifn = './optical_metrology.txt'
@@ -80,6 +86,10 @@ def option_parser():
 
 
 def proc_optical_metrology_epix10ka2m():
+    """Parse the command line, configure logging at the requested level and run ``OpticalMetrologyEpix10ka2M(parser)``.
+
+    The processing itself is done in ``UtilsOpticAlignment``; not visible here.
+    """
     parser = option_parser()
     (popts, pargs) = parser.parse_args()
     print('optional loglevel: %s' % popts.log)
@@ -92,6 +102,7 @@ def proc_optical_metrology_epix10ka2m():
     OpticalMetrologyEpix10ka2M(parser)
 
 def do_main():
+    """Call :func:`proc_optical_metrology_epix10ka2m` and exit via ``sys.exit()``."""
     proc_optical_metrology_epix10ka2m()
     sys.exit()
 

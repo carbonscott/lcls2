@@ -69,11 +69,13 @@ class QWInfoPanel(QWidget):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the Save and Clear buttons."""
         self.but_save.setToolTip('Save info panel content in file')
         self.but_clear.setToolTip('Clean info panel')
 
 
     def set_style(self):
+        """Set the Save icon and 60 px button widths, adjust margins, and make the text box read-only with a monospace font."""
         icon.set_icons()
         self.but_save.setIcon(icon.icon_save)
         self.but_save.setFixedWidth(60)
@@ -87,10 +89,12 @@ class QWInfoPanel(QWidget):
 
 
     def set_info_filename(self, fname=FNAME_INFO_DEF):
+        """Set ``self.fname``, the file name used by ``on_but_save``."""
         self.fname = fname
 
 
     def on_but_save(self):
+        """Ask for confirmation and, if confirmed, write the text box content to ``self.fname`` (mode 'w')."""
         logger.debug('on_but_save')
         fname = self.fname
         s = self.winfo.toPlainText()
@@ -100,6 +104,7 @@ class QWInfoPanel(QWidget):
 
 
     def on_but_clear(self):
+        """Clear the text box and reset the empty-record counter."""
         logger.debug('on_but_clear')
         self.winfo.clear()
         self.count_empty = 0
@@ -118,6 +123,10 @@ class QWInfoPanel(QWidget):
 
 
     def append(self, s, fname=FNAME_INFO_DEF):
+        """Append ``s`` to the text box, scroll to the end, repaint, and set ``self.fname`` to ``fname``.
+
+        An empty ``s`` increments ``count_empty`` and is replaced by a 'buffer is empty' message; after more than five such records the last line is removed before appending.
+        """
         is_empty_record = not s
         if is_empty_record:
            self.count_empty += 1
@@ -137,12 +146,20 @@ class QWInfoPanel(QWidget):
     if __name__ == "__main__":
 
       def test_append(self, nlines=5):
+          """Append a test record with ``nlines`` numbered lines.
+
+          Defined only when the module runs as a script.
+          """
           s = '== test_append'
           for i in range(nlines): s += '\n  line %04d' % i
           self.append(s)
 
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes, A appends a test record, other keys log the key help.
+
+        Defined only when the module runs as a script.
+        """
         logger.info('keyPressEvent, key=%s' % e.key())
         from PyQt5.QtCore import Qt
         if   e.key() == Qt.Key_Escape: self.close()

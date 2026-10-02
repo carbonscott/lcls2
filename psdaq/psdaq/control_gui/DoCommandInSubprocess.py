@@ -36,15 +36,22 @@ class DoCommandInSubprocess :
         #self.proc.wait() # DO NOT WAIT FOR RESPONSE
 
     def get_stderr(self) :
+        """Return the command string.
+
+        This definition is overridden by the later `get_stderr` in the same class and is never used.
+        """
         return self.cmd
 
     def process_is_running(self) :
+        """Return True while the subprocess has not exited (``poll()`` is None)."""
         return self.proc.poll() is None 
 
     def get_stdout(self) :
+        """Read and return the subprocess's entire stdout (bytes); blocks until EOF."""
         return self.proc.stdout.read() # reads entire file
 
     def get_stderr(self) :
+        """Read and return the subprocess's entire stderr (bytes); blocks until EOF."""
         return self.proc.stderr.read() # reads entire file
 
 #----------
@@ -56,6 +63,7 @@ if __name__ == "__main__" :
   
   def test_DoCommandInSubprocess() :
 
+      """Run 'ls -l' in a `DoCommandInSubprocess` and poll once per second (up to 10 times), printing stdout/stderr when done."""
       from time import time, sleep
 
       cmd = 'ls -l'

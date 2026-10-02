@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseAcqirisV1 :
 
+    """Class attributes only: ``ndim`` 2, ``rows`` and ``cols`` 0 (comment: taken from file metadata), ``size_cm`` 16 and an all-zero 16-element ``cmod`` tuple; the constructor does nothing."""
     ndim = 2 
     rows = 0 # VARIABLE SHAPE DATA PARAMETERS WILL BE TAKEN FROM FILE METADATA
     cols = 0 # VARIABLE SHAPE DATA PARAMETERS WILL BE TAKEN FROM FILE METADATA

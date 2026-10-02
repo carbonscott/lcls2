@@ -6,11 +6,14 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+"""Qt Designer-generated UI class for the daqstat window (header: generated from 'procStat.ui'; changes will be lost)."""
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_mainWindow(object):
+    """Generated UI: a 'Process Status' group with the process table and Open Console / View Logfile / Restart buttons, an 'Output File Status' group and a status bar."""
     def setupUi(self, mainWindow):
+        """Create and lay out the widgets on `mainWindow` (size 370x1100), call `retranslateUi` and auto-connect slots by name."""
         mainWindow.setObjectName("mainWindow")
         mainWindow.resize(370, 1100)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
@@ -111,6 +114,7 @@ class Ui_mainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
     def retranslateUi(self, mainWindow):
+        """Set the window title 'daqstat', group titles, button texts and tool tips."""
         _translate = QtCore.QCoreApplication.translate
         mainWindow.setWindowTitle(_translate("mainWindow", "daqstat"))
         self.groupBoxProcessStatus.setTitle(_translate("mainWindow", "Process Status"))

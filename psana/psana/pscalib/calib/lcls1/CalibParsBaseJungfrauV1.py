@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseJungfrauV1 :
 
+    """Class attributes only: ``ndim`` 3, ``segs`` 1, ``rows`` and ``cols`` 0 (comment: variable number of panels), ``size_cm`` 16 and ``cmod = (7, 1, 100, 0, ...)``; the constructor does nothing."""
     ndim = 3 
     segs = 1 # (1, 512, 1024)
     rows = 0 # - variable size array due to variable number of panels

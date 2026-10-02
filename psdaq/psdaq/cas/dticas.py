@@ -1,3 +1,4 @@
+"""PVA server hosting a fixed set of DTI PVs for slots 3-7 under a common prefix."""
 import sys
 import logging
 
@@ -12,6 +13,7 @@ numUsLinks = 7
 numPartitions = 8
 
 def printDb():
+    """Print the number of PVs in the module-global `pvdb` and each name prefixed by the global `prefix`."""
     global pvdb
     global prefix
 
@@ -22,6 +24,10 @@ def printDb():
     return
 
 def main():
+    """Parse -P (prefix), -R and -v, define the per-slot PVs ('<P>:<slot>:...') and serve them until KeyboardInterrupt.
+
+    The set built from -R is not used when naming the PVs.
+    """
     global pvdb
     pvdb = {}     # start with empty dictionary
     global prefix

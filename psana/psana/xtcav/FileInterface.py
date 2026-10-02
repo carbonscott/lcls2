@@ -1,12 +1,18 @@
+"""Save and load objects whose attributes are dicts and simple values to and from HDF5 files with h5py (``Save``, ``Load``)."""
 import h5py
 import numpy
 import logging
 logger = logging.getLogger(__name__)
 
 class Default():
+    """Empty class used as the attribute container returned by ``Load``; the body is ``pass``."""
     pass
 
 class ConstantsStore():
+    """Write the attributes of ``obj`` to the new HDF5 file ``file`` (opened with mode 'w') in the constructor.
+
+    Dict attributes become groups (recursively) and values of type dict, int, float, bool, str, list, tuple or numpy array become datasets; other types are skipped with a warning. The file is closed at the end of the constructor.
+    """
     def __init__(self,obj,file):
         self.f = h5py.File(file,'w')
         self.cwd = ''
@@ -79,6 +85,10 @@ class ConstantsStore():
                 logging.warning('XTCAV FileInterface.py: variable "'+name+'" of type "'+type(obj).__name__+'" not supported')
 
 class ConstantsLoad():
+    """Read every dataset of HDF5 file ``file`` into attributes of a new ``Default`` object ``self.obj`` in the constructor.
+
+    Path components become nested dicts. Values are read with the dataset ``.value`` attribute, which newer h5py versions (3.x) no longer provide.
+    """
     def __init__(self,file):
         self.obj = Default()
         self.f = h5py.File(file,'r')
@@ -135,6 +145,7 @@ def Save(obj,file):
     c = ConstantsStore(obj,file)
 
 class ConstTest():
+    """Test object whose ``parameters`` attribute is a small dict including a nested dict."""
     def __init__(self):
         self.parameters= {
             'version' : 0,

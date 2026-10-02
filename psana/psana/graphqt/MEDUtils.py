@@ -66,11 +66,16 @@ collection_names, find_doc, find_docs, get_data_for_doc =\
     mdbwu.collection_names, mdbwu.find_doc, mdbwu.find_docs, mdbwu.get_data_for_doc
 
 def is_none(v, msg='value is None', meth=logger.debug):
+    """Return True if ``v`` is None, calling ``meth(msg)`` in that case; otherwise return False."""
     r = v is None
     if r: meth(msg)
     return r # True or False
 
 def image_from_ndarray(nda):
+    """Return a 2-d image array made from ``nda``, or None if ``nda`` is None or not a numpy array.
+
+    Arrays whose size is a multiple of 352*384, 512*1024 or 185*388 are tiled with ``psu.table_nxn_epix10ka_from_ndarr``, ``psu.table_nxm_jungfrau_from_ndarr`` or ``psu.table_nxm_cspad2x1_from_ndarr``; other arrays use ``reshape_to_2d``.
+    """
     if nda is None:
        logger.debug('nda is None - return None for image')
        return None
@@ -87,6 +92,7 @@ def image_from_ndarray(nda):
     return img
 
 def random_image(shape=(64,64)):
+    """Return a random array of ``shape`` from ``NDArrGenerators.random_standard`` with mu=0 and sigma=10."""
     import psana.pyalgos.generic.NDArrGenerators as ag
     return ag.random_standard(shape, mu=0, sigma=10)
 
@@ -110,6 +116,15 @@ def dbname_colname(**kwa):
     return dbname, colname
 
 def geo_text_and_meta_from_db(**kwa):
+    """Fetch the geometry constants text and its document from the calibration DB.
+
+    Uses ``kwa['dskwargs']`` (experiment and run) and ``kwa['detname']`` to build the DB and collection names, then queries ctype 'geometry' with run <= the run number (default 9999) via ``mdbwu.find_doc`` and ``get_data_for_doc``.
+
+    Returns
+    -------
+    tuple
+        ``(geo_txt, doc)``, or ``(None, None)`` if dskwargs, DB name, collection name or document is missing.
+    """
     s = kwa.get('dskwargs', None)
     if is_none(s, msg='str dskwargs is None'): return None, None
     dskwa = datasource_kwargs_from_string(s)
@@ -183,6 +198,10 @@ def image_from_geo_and_nda(geo, nda, vbase=0):
         return img_from_pixel_arrays(irows, icols, W=nda, vbase=vbase)
 
 def mask_ndarray_from_2d(mask2d, geo):
+    """Convert a 2-d image mask to a per-pixel mask array using the pixel indexes of ``geo``.
+
+    Asserts that ``geo`` is a GeometryAccess; uses ``convert_mask2d_to_ndarray`` and returns the result reshaped to the 3-d shape of the pixel row-index array.
+    """
     from psana.pscalib.geometry.GeometryAccess import GeometryAccess, convert_mask2d_to_ndarray # GeometryAccess, img_from_pixel_arrays
     assert isinstance(geo, GeometryAccess)
     irows, icols = geo.get_pixel_coord_indexes(do_tilt=True, cframe=0)
@@ -197,11 +216,16 @@ def mask_ndarray_from_2d(mask2d, geo):
     return mask_nda
 
 def color_table(ict=2):
+    """Return ``ColorTable.next_color_table(ict)``."""
     import psana.graphqt.ColorTable as ct
     return ct.next_color_table(ict)  # OR ct.color_table_monochr256()
 
 def list_of_instruments():
     #logger.debug(sys._getframe().f_code.co_name)
+    """Return sorted lower-case names of the 3-character entries in ``DIR_DATA``.
+
+    If ``DIR_DATA`` does not exist, log a warning and return a fixed default list of instrument names.
+    """
     dirins = DIR_DATA
     logger.debug('list_of_instruments in %s' % dirins)
     if os.path.lexists(dirins):
@@ -211,6 +235,7 @@ def list_of_instruments():
         return ['cxi', 'dia', 'mec', 'mfx', 'rix', 'tmo', 'tst', 'txi', 'ued', 'xcs', 'xpp']
 
 def list_of_experiments(instr): #  fltr='cdb_'
+    """Return ``psu.list_of_experiments`` for directory '<DIR_DATA>/<instr>', or an empty list (with a warning) if it does not exist."""
     direxp = '%s/%s' % (DIR_DATA, instr)
     logger.debug('list_of_experiments in %s' % direxp)
     if os.path.lexists(direxp):
@@ -220,28 +245,44 @@ def list_of_experiments(instr): #  fltr='cdb_'
         return []
 
 def db_names(fltr=None):
+    """Return the calibration DB names from ``mdbwu.database_names()``, keeping only names containing ``fltr`` if it is given."""
     dbnames = mdbwu.database_names()
     return dbnames if fltr is None else\
            [n for n in mdbwu.database_names() if fltr in n]
 
 def db_namesroot(dbnames=None, fltr=None):
+    """Return DB names with ``str.strip('cdb_')`` applied, optionally filtered by substring ``fltr``.
+
+    ``strip`` removes any of the characters 'c', 'd', 'b', '_' from both ends, not only a 'cdb_' prefix. ``dbnames`` defaults to ``db_names()``.
+    """
     _dbnames = [n.strip('cdb_') for n in (db_names() if dbnames is None else dbnames)]
     return _dbnames if fltr is None else\
           [n for n in _dbnames if fltr in n]
 
 def db_expnames(dbnames=None, fltr=None):
+    """Return names from ``db_namesroot(dbnames, fltr)`` that contain no '_' and have 8 to 11 characters."""
     return [n for n in db_namesroot(dbnames, fltr) if not '_' in n and (len(n)>7) and (len(n)<12)]
 
 def db_detnames(dbnames=None, fltr=None):
+    """Return names from ``db_namesroot(dbnames, fltr)`` that contain '_'."""
     return [n for n in db_namesroot(dbnames, fltr) if '_' in n]
 
 def db_instruments(dbnames=None):
+    """Return the sorted set of the first three characters of the names from ``db_expnames(dbnames)``."""
     return sorted(set([n[:3] for n in db_expnames(dbnames)]))
 
 def db_dettypes(dbnames=None):
+    """Return the sorted set of the parts before the first '_' of the names from ``db_detnames(dbnames)``."""
     return sorted(set([n.split('_')[0] for n in db_detnames(dbnames)]))
 
 def ds_run_from_str_dskwargs(dskwargs='exp=uedcom103,run=812'):
+    """Create a psana ``DataSource`` from the string ``dskwargs`` and return it with its first run.
+
+    Returns
+    -------
+    tuple
+        ``(ods, orun)``: the DataSource and ``next(ods.runs())``.
+    """
     from psana import DataSource # dt(sec)=0.000004
     from psana.detector.utils_psana import datasource_kwargs_from_string # dt(sec)=0.000612
     kwargs = datasource_kwargs_from_string(dskwargs)
@@ -253,6 +294,7 @@ def ds_run_from_str_dskwargs(dskwargs='exp=uedcom103,run=812'):
     return ods, orun
 
 def data_detnames(dskwargs='exp=tmoc00321,run=3'): #,dir=/sdf/data/lcls/ds/ued/uedcom103/xtc/
+    """Open the DataSource for ``dskwargs`` and return ``orun.detnames`` of its first run."""
     ods, orun = ds_run_from_str_dskwargs(dskwargs)
     return orun.detnames
 
@@ -270,10 +312,12 @@ def detector_uniqueid_namedb(dskwargs='exp=uedcom103,run=812', detname_daq='epix
     return uniqueid, mdbwu.pro_detector_name(uniqueid)
 
 def datasource_kwargs_from_string(s):
+    """Return ``psana.psexp.utils.datasource_kwargs_from_string(s)``."""
     from psana.psexp.utils import datasource_kwargs_from_string
     return datasource_kwargs_from_string(s)
 
 def datasource_kwargs_to_string(**kwargs):
+    """Return ``psana.psexp.utils.datasource_kwargs_to_string(**kwargs)``."""
     from psana.psexp.utils import datasource_kwargs_to_string
     return datasource_kwargs_to_string(**kwargs)
 

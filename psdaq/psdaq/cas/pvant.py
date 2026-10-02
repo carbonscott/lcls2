@@ -1,3 +1,4 @@
+"""PyQt5 table of integer PVs '<base>:<field>' for several bases (columns) and fields (rows)."""
 import sys
 import argparse
 import logging
@@ -8,6 +9,7 @@ from psdaq.cas.pvedit import *
 from p4p.client.thread import Context
 
 class PvScalarTable(QtWidgets.QGroupBox):
+    """QGroupBox grid of read-only `PvInt` widgets: columns are bases (common prefix removed), rows are field names (last ':' part)."""
     def __init__(self, bases, fields, edit=False):
         super(PvScalarTable,self).__init__('PvScalarTable')
 
@@ -60,7 +62,9 @@ class PvScalarTable(QtWidgets.QGroupBox):
         self.setLayout(glo)
 
 class Ui_MainWindow(object):
+    """Builder for the window."""
     def setupUi(self, MainWindow, bases, fields):
+        """Put a `PvScalarTable(bases, fields)` in the window and set the title 'pvatable'."""
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -76,6 +80,11 @@ class Ui_MainWindow(object):
 
 def main():
 
+    """Parse --bases, --fields and -v, then run the window.
+
+    The defaults for --bases and --fields are plain strings, not lists, so without those
+    options the table code iterates over characters.
+    """
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

@@ -25,6 +25,12 @@ from psana.graphqt.CMConfigParameters import cp
 
 class QWTable(QTableView):
 
+    """``QTableView`` backed by a ``QStandardItemModel`` stored in ``self.model``.
+
+    The constructor fills the model with demo items (:meth:`fill_table_model`), connects
+    ``currentChanged`` to :meth:`on_item_selected`, ``clicked`` to :meth:`on_click` and
+    ``doubleClicked`` to :meth:`on_double_click`. Subclasses override the fill and slot methods.
+    """
     def __init__(self, parent=None):
         QTableView.__init__(self, parent)
         self._name = self.__class__.__name__
@@ -51,34 +57,55 @@ class QWTable(QTableView):
 
 
     def set_selection_mode(self, smode=QAbstractItemView.ExtendedSelection):
+        """Log and set the view selection mode.
+
+        Parameters
+        ----------
+        smode : QAbstractItemView.SelectionMode
+            Selection mode passed to ``setSelectionMode``; default ``ExtendedSelection``.
+        """
         logger.debug('Set selection mode: %s'%smode)
         self.setSelectionMode(smode)
 
 
     def connect_item_changed(self, recipient):
+        """Connect ``self.model.itemChanged`` to ``recipient`` and set ``is_connected_item_changed`` to True."""
         self.model.itemChanged.connect(recipient)
         self.is_connected_item_changed = True
 
 
     def disconnect_item_changed(self, recipient):
+        """Disconnect ``self.model.itemChanged`` from ``recipient`` if connected and reset the flag.
+
+        Does nothing if ``is_connected_item_changed`` is False.
+        """
         if self.is_connected_item_changed:
             self.model.itemChanged.disconnect(recipient)
             self.is_connected_item_changed = False
 
 
     def connect_item_selected(self, recipient):
+        """Connect the selection model's ``currentChanged(QModelIndex, QModelIndex)`` signal to ``recipient``."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(recipient)
 
 
     def disconnect_item_selected(self, recipient):
+        """Disconnect the selection model's ``currentChanged(QModelIndex, QModelIndex)`` signal from ``recipient``."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].disconnect(recipient)
 
 
     def set_style(self):
+        """Set a style sheet giving hovered table items a ``#00FFAA`` background."""
         self.setStyleSheet("QTableView::item:hover{background-color:#00FFAA;}")
 
 
     def fill_table_model(self):
+        """Clear the model and fill it with demo content.
+
+        Sets 5 horizontal and 4 vertical header labels, then creates checkable ``QStandardItem``
+        objects for 4 rows by 6 columns with a table icon (folder icon in column 2, text
+        ``'Some text'`` in column 3).
+        """
         self.clear_model()
         self.model.setHorizontalHeaderLabels(['col0', 'col1', 'col2', 'col3', 'col4'])
         self.model.setVerticalHeaderLabels(['row0', 'row1', 'row2', 'row3'])
@@ -94,27 +121,44 @@ class QWTable(QTableView):
 
 
     def clear_model(self):
+        """Remove all rows and columns from ``self.model``."""
         rows,cols = self.model.rowCount(), self.model.columnCount()
         self.model.removeRows(0, rows)
         self.model.removeColumns(0, cols)
 
 
     def selected_indexes(self):
+        """Return ``self.selectedIndexes()``, the list of selected ``QModelIndex`` objects."""
         return self.selectedIndexes()
 
 
     def selected_items(self):
+        """Return the list of ``QStandardItem`` objects for the currently selected indexes."""
         indexes =  self.selectedIndexes()
         return [self.model.itemFromIndex(i) for i in self.selectedIndexes()]
 
 
     def getFullNameFromItem(self, item):
         #item = self.model.itemFromIndex(ind)
+        """Return :meth:`getFullNameFromIndex` for the model index of ``item``."""
         ind   = self.model.indexFromItem(item)
         return self.getFullNameFromIndex(ind)
 
 
     def getFullNameFromIndex(self, ind):
+        """Build a slash-joined name of the item at ``ind`` and its ancestors.
+
+        Parameters
+        ----------
+        ind : QModelIndex
+            Model index of the item.
+
+        Returns
+        -------
+        str or None
+            Parent texts joined with ``'/'`` ending with the item text (also stored in
+            ``self._full_name``); None if no item exists at ``ind``.
+        """
         item = self.model.itemFromIndex(ind)
         if item is None: return None
         self._full_name = item.text()
@@ -136,32 +180,46 @@ class QWTable(QTableView):
 
 
     def closeEvent(self, event): # if the x is clicked
+        """Log ``'closeEvent'`` at debug level; the event is not otherwise handled here."""
         logger.debug('closeEvent')
 
 
     def on_click(self, index):
+        """Slot for ``clicked``: log the row and text of the clicked item at debug level."""
         item = self.model.itemFromIndex(index)
         msg = 'on_click: item in row:%02d text: %s' % (index.row(), item.text())
         logger.debug(msg)
 
 
     def on_double_click(self, index):
+        """Slot for ``doubleClicked``: log the row and text of the double-clicked item at debug level."""
         item = self.model.itemFromIndex(index)
         msg = 'on_double_click: item in row:%02d text: %s' % (index.row(), item.text())
         logger.debug(msg)
 
 
     def on_item_selected(self, ind_sel, ind_desel):
+        """Slot for ``currentChanged``: log the text of the newly current item (or None) at debug level.
+
+        Parameters
+        ----------
+        ind_sel : QModelIndex
+            Newly current index.
+        ind_desel : QModelIndex
+            Previous index; not used.
+        """
         item = self.model.itemFromIndex(ind_sel)
         logger.debug('on_item_selected: "%s" is selected' % (item.text() if item is not None else None))
 
 
     def on_item_changed(self, item):
+        """Log the full name of ``item`` and its check state ('UNCHECKED', 'TRISTATE' or 'CHECKED') at debug level."""
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         logger.debug('abstract on_item_changed: "%s" at state %s' % (self.getFullNameFromItem(item), state))
 
 
     def process_selected_items(self):
+        """Log at info level the number of selected items followed by the text of each."""
         selitems = self.selected_items()
         msg = '%d Selected items:' % len(selitems)
         for i in selitems:
@@ -170,6 +228,7 @@ class QWTable(QTableView):
 
 
     def key_usage(self):
+        """Return a help string listing the keys handled by :meth:`keyPressEvent` (ESC, S)."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  S - show selected items'\
@@ -177,6 +236,11 @@ class QWTable(QTableView):
 
 
     def keyPressEvent(self, e):
+        """Handle key presses: Escape closes the widget, S calls :meth:`process_selected_items`.
+
+        Any other key logs :meth:`key_usage` at info level. The first ``logger.info`` call passes
+        ``e.key()`` as an extra argument without a format placeholder.
+        """
         logger.info('keyPressEvent, key=', e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()

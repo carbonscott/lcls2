@@ -18,6 +18,10 @@ from PyQt5.QtWidgets import QGraphicsEllipseItem, QGraphicsItem
 
 class DragEllipse(QGraphicsEllipseItem, DragBase):
                 # QRectF, QGraphicsItem, QGraphicsScene
+    """Selectable QGraphicsEllipseItem plus DragBase that can be drawn, resized, rotated and have its start/span angles edited with the mouse.
+
+    ``obj`` may be a QRectF (drawn as is) or a QPointF (a 5x5 rect started in ADD mode that grabs the mouse). For any other type the constructor returns before the Qt item is initialized; its warning call passes an extra argument that the message has no placeholder for.
+    """
     def __init__(self, obj, parent=None, scene=None,\
                  brush=QBrush(), pen=QPen(Qt.blue, 0, Qt.SolidLine)):
         """Adds QGraphics(Rect)Item to the scene.
@@ -77,6 +81,10 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
 
     def set_control_points(self):
+        """Create twelve DragPoint children: four corner squares, four edge-center rhombi, a yellow menu point, a rotation point above the top edge, and two points marking the start and end angles of the arc.
+
+        They are stored in ``self.lst_ctl_points``. The loop meant to raise their z value calls ``self.setZValue(100)`` on the ellipse itself.
+        """
         parent = self # None
         r = self.rect()
         scene=self.scene()
@@ -120,6 +128,10 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
     def move_control_points(self):
 
+        """Reposition all control points to follow the current normalized rect and the start/span angles, relative to positions saved at the start of editing.
+
+        Prints several debug lines ('XXX ...') to stdout on every call.
+        """
         r = self.rect().normalized()
         r0 = self.rect0
 
@@ -179,6 +191,7 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
     def itemChange(self, change, value):
         #print('%s.itemChange' % (self.__class__.__name__), ' change: %d, value:' % change, value)
+        """Call the base ``itemChange``; on ``ItemSelectedHasChanged`` show the control points only when the item is selected. Returns the base-class result."""
         valnew = QGraphicsEllipseItem.itemChange(self, change, value)
         if change == self.ItemSelectedHasChanged:
             self.set_control_points_visible(visible=self.isSelected())
@@ -186,6 +199,10 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
 
     def mousePressEvent(self, e):
+        """Forward the press, then, if the item under the cursor is one of the control points, switch to EDIT mode and remember that point, the current rect and the corner positions.
+
+        Clicking the yellow menu point also opens ``control_point_menu``. Logs a warning and returns if ``lst_ctl_points`` is None.
+        """
         logger.debug('DragEllipse.mousePressEvent, at point: %s on scene: %s '%\
                      (str(e.pos()), str(e.scenePos()))) # self.__class__.__name__
         QGraphicsEllipseItem.mousePressEvent(self, e) # points would not show up w/o this line
@@ -218,6 +235,10 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
 
     def mouseMoveEvent(self, e):
+        """Update the ellipse from the mouse displacement according to the drag mode.
+
+        MOVE (when selected) moves the item; ADD moves the bottom-right corner. In EDIT mode the corner and edge points resize the rect symmetrically about its center, the rotation point sets the rotation, and the arc points set the start and span angles; then the rect is normalized, the transform origin is set to its center (except when rotating) and the control points follow.
+        """
         QGraphicsEllipseItem.mouseMoveEvent(self, e)
         #logger.debug('%s.mouseMoveEvent' % self.__class__.__name__)
         #print('%s.mouseMoveEvent, at point: ' % self.__class__.__name__, e.pos(), ' scenePos: ', e.scenePos())
@@ -302,6 +323,10 @@ class DragEllipse(QGraphicsEllipseItem, DragBase):
 
     def mouseReleaseEvent(self, e):
         #logger.debug('DragEllipse.mouseReleaseEvent') # % self.__class__.__name__)
+        """Finish the current drag.
+
+        After ADD it releases the mouse grab, normalizes the rect, sets start angle 60 and span 240 degrees, calls ``redefine_rect`` and creates the control points; after EDIT it clears the selected point. Then it calls ``set_drag_mode()`` and sets the transform origin to the rect center.
+        """
         QGraphicsEllipseItem.mouseReleaseEvent(self, e)
 
         if self._drag_mode == ADD:

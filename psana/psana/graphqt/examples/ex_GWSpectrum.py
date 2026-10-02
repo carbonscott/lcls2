@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
+"""Example: show a ``GWSpectrum`` test widget with keyboard controls.
+
+When run as a script it connects the histogram scene-rect and color-table test receivers and starts the Qt event loop.
+"""
 from psana.graphqt.GWSpectrum import *
 
 class TestGWSpectrum(GWSpectrum):
 
+    """GWSpectrum subclass that prints its key usage at construction and handles keys in ``keyPressEvent``."""
     KEY_USAGE = 'Keys:'\
              '\n  ESC - exit'\
              '\n  R - reset original size'\
@@ -15,6 +20,7 @@ class TestGWSpectrum(GWSpectrum):
         print(self.KEY_USAGE)
 
     def keyPressEvent(self, e):
+      """Handle key presses: Esc closes, R resets the view with ``on_but_reset``, N sets a spectrum from a new random test image, other keys print the key usage."""
       logger.debug('==  keyPressEvent key=%s' % e.key())
       if   e.key() == Qt.Key_Escape:
           print('Close app')

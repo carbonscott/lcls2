@@ -39,6 +39,7 @@ import psana.pyalgos.generic.Utils as gu
 import psana.hexanode_ext as hexanode
 
 def print_tdc_ns(tdc_ns, cmt='  tdc_ns ', fmt=' %7.2f', offset='    '):
+    """Print the shape of ``tdc_ns`` and, for each row (channel), up to the first 10 values formatted with ``fmt``."""
     sh = tdc_ns.shape
     print('%sshape=%s %s' % (offset, str(sh), cmt), end='')
     for r in range(sh[0]):
@@ -49,7 +50,9 @@ def print_tdc_ns(tdc_ns, cmt='  tdc_ns ', fmt=' %7.2f', offset='    '):
     print('\n%sexit print_tdc_ns\n' % offset)
 
 class DLDProcessor:
-    """
+    """Run the compiled ``hexanode_ext.py_sort_class`` sorter on per-event hit times and give access to its reconstructed lists.
+
+    The constructor gets configuration and calibration text from 'consts' (or 'detobj'.calibconst) entries 'calibcfg'/'calibtab', or else from the files 'calibcfg'/'calibtab', loads them with ``load_config_pars``, configures the sorter with 'tdc_resolution' (default 0.250), 'numchs' and 'numhits' arrays, and calls ``sys.exit(0)`` if the configuration cannot be loaded, the command is -1 or sorter initialization fails. The sorting itself is done in the extension and is not visible here.
     """
     OSQRT3 = 1./sqrt(3.)
     CTYPE_CALIBCFG = 'calibcfg'
@@ -183,6 +186,10 @@ class DLDProcessor:
         self.evnum_old = None
 
     def set_data_arrays(self, nhits, pktsec):
+        """Copy hit counts ``nhits`` and peak times ``pktsec`` (converted to ns) into the sorter input arrays.
+
+        Returns False without copying if any channel has zero hits, otherwise True.
+        """
         NUM_CHANNELS, NUM_HITS = self.tdc_ns.shape
         conds = nhits[:NUM_CHANNELS]==0
         if conds.any():
@@ -262,10 +269,12 @@ class DLDProcessor:
         #logger.info('    XXX sorter.time_list', sorter.t_list())
 
     def xyrt_list(self, evnum, nhits, pktsec):
+        """Process event ``evnum`` with ``event_proc`` if it was not the last processed event, then return ``self.sorter.xyrt_list()`` from the extension."""
         if evnum != self.evnum_old: self.event_proc(evnum, nhits, pktsec)
         return self.sorter.xyrt_list()
 
     def xyt_list(self, evnum, nhits, pktsec):
+        """Process event ``evnum`` with ``event_proc`` if it was not the last processed event, then return ``self.sorter.xyt_list()`` from the extension."""
         if evnum != self.evnum_old: self.event_proc(evnum, nhits, pktsec)
         return self.sorter.xyt_list()
 
@@ -302,6 +311,7 @@ class DLDProcessor:
 
 
     def end_proc(self):
+        """Log the end of the event loop and run the end-of-job steps for command 2 (``sorter.do_calibration()``) and command 3 (create calibration tables)."""
         logger.info('end_proc - end of the event loop... \n')
         self._on_command_2_end()
         self._on_command_3_end()

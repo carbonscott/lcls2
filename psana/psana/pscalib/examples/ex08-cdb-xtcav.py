@@ -17,12 +17,18 @@ from psana.pscalib.calib.MDBConvertUtils import compare_dicts
 #------------------------------
 
 def usage() :
+    """Print the usage line for this script; returns None."""
     msg = 'Usage: python lcls2/psana/psana/pscalib/examples/ex08-cdb-xtcav.py [<test-number>]'
     print(msg)
 
 #------------------------------
 
 def compare_for(tname) :
+    """Return ``(fname, exp, det, run, ctype, cvers)`` for one of four hard-coded LCLS1 Xtcav calibration files.
+
+    ``tname`` ``'0'``/``'1'``: xcsm9816 lasingoffreference/pedestals; ``'2'``: xpptut15 lasingoffreference;
+    any other value: xpptut15 pedestals. ``cvers`` is always None.
+    """
     fname0 = '/reg/d/psdm/XCS/xcsm9816/calib/Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/lasingoffreference/500-end.data'
     fname1 = '/reg/d/psdm/XCS/xcsm9816/calib/Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/pedestals/499-end.data'
     fname2 = '/reg/d/psdm/XPP/xpptut15/calib/Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/lasingoffreference/300-302.data'
@@ -35,6 +41,7 @@ def compare_for(tname) :
 #------------------------------
 
 def test_xtcav_calib_constants(tname) :
+    """Load an Xtcav calibration file as a dict, fetch the same ctype with ``calib_constants_all_types`` (web service) and print both and their comparison with ``compare_dicts``."""
     fname, exp, det, run, ctype, cvers = compare_for(tname)
     print('LCLS1 Xtcav calibration file: %s' % fname)
     print('Parameters form path: exp:%s det:%s ctype:%s run:%s'%\

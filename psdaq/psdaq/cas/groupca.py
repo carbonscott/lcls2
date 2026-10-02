@@ -1,3 +1,4 @@
+"""PyQt5 GUI for readout-group control and monitoring on an XPM (group triggers/inhibits, transitions, event statistics)."""
 import sys
 import time
 import argparse
@@ -16,6 +17,10 @@ Transitions = [('ClearReadout',0),
                ('Unconfigure',3)]
 
 class PvStateMachine(QtWidgets.QWidget):
+    """Grid of transition buttons (ClearReadout, Ping, Configure, BeginRun, Enable, Disable, EndRun, Unconfigure) with an 'Env' value each.
+
+    Pressing a button inserts that transition for `groups` via the XPM message PVs.
+    """
     def __init__(self, base, pvbase, xpm, groups, prod):
         super(PvStateMachine,self).__init__()
 
@@ -58,6 +63,7 @@ class PvStateMachine(QtWidgets.QWidget):
         self.setLayout(trlo)
 
     def transition(self,state):
+        """For the checked button: uncheck it, put its transition ID to each group's ':MsgHeader' and its Env value to ':MsgPayload', then put the group mask and 0 to ':GroupMsgInsert'."""
         for i,b in enumerate(self.btn):
             if b.isChecked():
                 b.setChecked(False)
@@ -70,14 +76,21 @@ class PvStateMachine(QtWidgets.QWidget):
 
 #  this routine is needed so self.pv.__value__ holds the current result
 class PvMonNoCb(object):
+    """Monitor a PV only to keep ``self.pv.__value__`` current (code comment: "this routine is needed so self.pv.__value__ holds the current result")."""
     def __init__(self,pvname,isStruct=False):
         initPvMon(self,pvname)
 
     def update(self,err):
+        """Do nothing; body is `pass`."""
         pass
 
 #  Monitor link group masks and link deadtimes to determine lead bottlenecks
 class XpmDeadTime(object):
+    """Track, per group, the link with the largest 'PART:<g>:DeadFLnk' value among links whose group mask is only that group.
+
+    Code comment: "Monitor link group masks and link deadtimes to determine lead
+    bottlenecks". Monitors 'RemoteLinkId<i>' and 'LinkGroupMask<i>' for 14 links.
+    """
     def __init__(self,pvbase,xpm,groups,callback):
         self.xpm      = xpm
         self.groups   = groups
@@ -94,6 +107,7 @@ class XpmDeadTime(object):
             self._pv_deadFLink[g] = Pv(xpmbase+'PART:%d:DeadFLnk'%g,update)
 
     def update(self,group):
+        """Recompute ``dtmax[group]`` as (remote link ID, value) of the largest DeadFLnk entry among links with mask ``1 << group``, then call the callback."""
         v = self._pv_deadFLink[group].__value__
         dtmax = (None,-1.)
         for i in range(14):
@@ -104,6 +118,11 @@ class XpmDeadTime(object):
         self.callback(group)
 
 def xpmTree(base,xpm):
+    """Return `xpm` followed by all XPMs reached through its downstream links, recursively.
+
+    Reads ':FwBuild' (retrying forever on failure; 8 links for 'Kcu' builds, else 14) and
+    follows 'RemoteLinkId<i>' values whose top byte is 0xff (child XPM = bits 16-23).
+    """
     result = [xpm]
     pvbase = f'{base}:XPM:{xpm}'
     retry = True
@@ -124,6 +143,7 @@ def xpmTree(base,xpm):
     return result
 
 class DeadTime(object):
+    """Combine `XpmDeadTime` results from all XPMs in the tree below `xpm` and show the worst link per group in `det` labels."""
     def __init__(self,pvbase,xpm,groups,det):
         self.xpm = []
         self.det = det        # dictionary of QLabel widget tuples
@@ -135,6 +155,7 @@ class DeadTime(object):
 
     def update(self,group):
         # Loop through the results from all xpms for this group and update the widget
+        """Show the link names (via `xpmLinkId`) and value of the largest dead-time entry across XPMs for `group`, or clear the labels if none."""
         dtmax = (None,-1.)
         for xpm in self.xpm:
             if xpm.dtmax[group][1] > dtmax[1]:
@@ -148,6 +169,7 @@ class DeadTime(object):
             self.det[group][1].setText('')
 
 class PvPatternStats(QtWidgets.QWidget):
+    """Grid of `PvDbl` values L0InpFirst, L0InpLast, L0InpMinIntv, L0InpMaxIntv per group."""
     def __init__(self, base, pvbase, groups):
         super(PvPatternStats,self).__init__()
 
@@ -167,6 +189,10 @@ class PvPatternStats(QtWidgets.QWidget):
         self.setLayout(lo)
 
 class PvGroupStats(QtWidgets.QWidget):
+    """Event statistics per group plus Clear/Run controls (disabled in `prod` mode) and dead-time labels.
+
+    Statistics shown: L0InpRate, L0AccRate, RunTime, NumL0Inp, NumL0Acc, DeadFrac, DeadTime.
+    """
     def __init__(self, base, pvbase, xpm, groups, prod=False):
         super(PvGroupStats,self).__init__()
 
@@ -220,10 +246,12 @@ class PvGroupStats(QtWidgets.QWidget):
         self.setLayout(lo)
 
     def clear(self):
+        """Put the group mask and then 0 to ':GroupL0Reset'."""
         self.pvClear.put(self.groups)
         self.pvClear.put(0)
 
     def run(self,checked):
+        """Put the group mask, then 0 after 0.1 s, to ':GroupL0Enable' if `checked`, else to ':GroupL0Disable'."""
         if checked:
             self.pvL0Enable.put(self.groups)
             time.sleep(0.1)
@@ -234,16 +262,22 @@ class PvGroupStats(QtWidgets.QWidget):
             self.pvL0Disable.put(0)
 
     def monEnable(self, err):
+        """Check the Run box if the cached ':GroupL0Enable' value equals the group mask."""
         value = self.pvL0Enable.__value__
         if value==self.groups:
             self.runb.setChecked(True)
 
     def monDisable(self, err):
+        """Uncheck the Run box if the cached ':GroupL0Disable' value equals the group mask."""
         value = self.pvL0Disable.__value__
         if value==self.groups:
             self.runb.setChecked(False)
 
 def addGroup(tw, base, group, xpm, mon):
+    """Add a 'Group <group>' tab with trigger (L0Select, DstSelect, L0RawUpdate) and inhibit (4x InhEnable/InhInterval/InhLimit) editors.
+
+    Unless `mon`, also puts 1 to '<base><group>:Master'.
+    """
     pvbase = base+'%d:'%group
     wlo    = QtWidgets.QVBoxLayout()
 
@@ -273,6 +307,7 @@ def addGroup(tw, base, group, xpm, mon):
         pvXpm.put(1)
 
 class GroupMaster(QtWidgets.QWidget):
+    """Row of `PvCheckBox` widgets for '<pvbase><g>:Master' of each group."""
     def __init__(self, pvbase, groups):
         super(GroupMaster,self).__init__()
         hlo = QtWidgets.QHBoxLayout()
@@ -285,7 +320,14 @@ class GroupMaster(QtWidgets.QWidget):
         self.setLayout(hlo)
 
 class Ui_MainWindow(object):
+    """Builder for the group control window."""
     def setupUi(self, MainWindow, base, xpm, groups, common, prod, mon):
+        """Build the window for XPM `xpm` under `base`.
+
+        In non-prod mode: master check boxes, group tabs, 'Transitions' and 'Events' tabs; if
+        `common` is set and not `mon`, puts the group mask to the common group's ':L0Groups'
+        and 2 to its ':Master'. In prod mode only `PvGroupStats` is shown.
+        """
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -337,6 +379,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse --prod, --mon, --common, pvbase, xpmroot and groups, then run the window."""
     parser = argparse.ArgumentParser(description='Readout group control and monitoring')
     parser.add_argument('--prod', help='Production Mode', action='store_true', default=False)
     parser.add_argument('--mon', help='Monitor only.  Master disabled', action='store_true')

@@ -15,6 +15,11 @@ from psana.pscalib.geometry.SegGeometryStore import sgs # SegGeometryStore
 from psana.pscalib.geometry.test_SegGeometryArchonV1 import detector_simulator, np
 
 def test_mask(sg, width=6, wcenter=4):
+    """Plot the ``pixel_mask_array()`` of segment geometry ``sg`` placed by its pixel index maps (weights ``mask + 1``).
+
+    For ``SegGeometryArchonV1`` the mask is also passed as ``mask_arr``; other segments use indices rounded
+    with +0.25. ``width`` and ``wcenter`` are not used.
+    """
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
     import psana.pyalgos.generic.Graphics as gg
     iX, iY = sg.get_seg_xy_maps_pix_with_offset()
@@ -33,6 +38,10 @@ def test_mask(sg, width=6, wcenter=4):
     gg.show()
 
 def test_segname(segname, **kwa):
+    """Create the segment geometry ``segname`` with ``sgs.Create(segname=segname, **kwa)``, print its info, log the creation time and call :func:`test_mask`.
+
+    For ``'MTRXANY:V1'`` ``init_matrix_parameters(shape=(512, 1024), ...)`` is called after creation. Returns None.
+    """
     t0_sec = time()
     #sgs1 = SegGeometryStore()
     sg = sgs.Create(segname=segname, **kwa)
@@ -44,11 +53,13 @@ def test_segname(segname, **kwa):
     test_mask(sg)
 
 def usage():
+    """Return a usage string with the ``tname==`` lines taken from the source of :func:`selector`."""
     import inspect
     return '\n Usage: %s <tname>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "tname==" in s])
 
 def selector():
+    """Run the segment test chosen by ``sys.argv[1]`` (``'1'``-``'16'``, ``'99'`` for a non-existent name), or only log the usage with no argument, then call ``sys.exit('END OF TEST')``."""
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'
     if len(sys.argv)==1: logger.info(usage())
     elif(tname=='1'): sg = test_segname('SENS2X1:V1')

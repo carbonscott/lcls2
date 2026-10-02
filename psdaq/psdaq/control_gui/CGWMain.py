@@ -46,6 +46,12 @@ from psdaq.control_gui.CGWMainTabExpert     import CGWMainTabExpert
 
 class CGWMain(QWZMQListener):
 
+    """Main DAQ control GUI window: configuration, expert tab, info and logger widgets in a vertical splitter.
+
+    Outside test mode it creates a `DaqControl` for the host/platform/timeout from the
+    parser, sets it in `daq_control` and subscribes to ZMQ status messages; status is
+    cached in `cp` and the window registers itself as `cp.cgwmain`.
+    """
     _name = 'CGWMain'
 
     def __init__(self, parser=None):
@@ -97,12 +103,19 @@ class CGWMain(QWZMQListener):
 
 
     def connect_signals_to_slots(self):
+        """Do nothing; body is `pass`."""
         pass
         #self.connect(self.wbut.but_reset, QtCore.SIGNAL('clicked()'), self.on_but_reset)
         #self.connect(self.wbut.but_save,  QtCore.SIGNAL('clicked()'), self.on_but_save)
 
 
     def proc_parser(self, parser=None):
+        """Read options from an optparse-style `parser` into attributes.
+
+        With no parser, sets loglevel 'DEBUG', logdir 'logdir' and expert None. Otherwise
+        stores logdir, loglevel (upper-cased), host, platform, timeout, expname, uris, expert,
+        user and password from ``parser.parse_args()``.
+        """
         self.parser=parser
 
         if parser is None:
@@ -149,6 +162,7 @@ class CGWMain(QWZMQListener):
 
 
     def init_daq_control_parameters(self):
+        """Cache the `daq_control_get_status()` fields and the instrument name in `cp`; warn if the instrument is None."""
         cp.s_transition, cp.s_state, cp.s_cfgtype, cp.s_recording, _platform, \
             cp.s_bypass_activedet, cp.s_experiment_name, cp.s_run_number, cp.s_last_run_number = daq_control_get_status()
         cp.instr = daq_control_get_instrument()
@@ -157,6 +171,7 @@ class CGWMain(QWZMQListener):
 
 
     def set_tool_tips(self):
+        """Do nothing; body is `pass`."""
         pass
         #self.setToolTip('DAQ control')
 
@@ -167,6 +182,7 @@ class CGWMain(QWZMQListener):
 
 
     def set_style(self):
+        """Set the window title 'DAQ Control', margins, minimum size 300x700, configuration widget height 80 and the window icon."""
         self.setWindowTitle("DAQ Control")
         #self.layout().setContentsMargins(0,0,0,0)
         self.layout().setContentsMargins(3,0,3,0)
@@ -224,6 +240,7 @@ class CGWMain(QWZMQListener):
 
 
     def closeEvent(self, e):
+        """Close the tab, configuration and logger widgets, call the base closeEvent and set `cp.cgwmain` to None."""
         logger.debug('%s.closeEvent' % self._name)
 
         # Ric commented this out 6/24/25
@@ -266,6 +283,7 @@ class CGWMain(QWZMQListener):
 
     def on_save(self):
 
+        """Store the window position/size in the `cp` parameters, print/log them and save the parameters file."""
         point, size = self.mapToGlobal(QPoint(-5,-22)), self.size() # Offset (-5,-22) for frame size.
         x,y,w,h = point.x(), point.y(), size.width(), size.height()
         msg = 'Save main window x,y,w,h: %d, %d, %d, %d' % (x,y,w,h)
@@ -296,6 +314,7 @@ class CGWMain(QWZMQListener):
 
 
     def wcontrol(self):
+        """Return `cp.cgwmaincontrol`."""
         return cp.cgwmaincontrol
         #return cp.cgwmaintabuser if cp.cgwmaintabuser is not None else cp.cgwmaincontrol
 
@@ -346,6 +365,13 @@ class CGWMain(QWZMQListener):
     def process_zmq_message(self, msg):
         #print('==== msg: %s' % str(msg))
 
+        """Decode each JSON part of a ZMQ message and update the GUI.
+
+        'status' updates the `cp.s_*` cache, the config type and the collection table;
+        'error'/'warning' are logged; 'progress' updates the control widget's progress bar
+        and returns without refreshing buttons; other keys are logged at debug level.
+        Exceptions are logged as warnings.
+        """
         try:
             for rec in msg:
                 jo = json.loads(rec)
@@ -406,11 +432,19 @@ class CGWMain(QWZMQListener):
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return the key help text ('V - view/hide tabs').
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  V - view/hide tabs'\
                '\n'
 
       def keyPressEvent(self, e):
+        """Handle keys in the test window: Esc closes, V calls ``self.wtab.view_hide_tabs()``, others log `key_usage()`.
+
+        Defined only when the module is run as a script; `wtab` is not an attribute of this class (it has `wtabs`), so V raises AttributeError.
+        """
         print('keyPressEvent, key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()
@@ -421,6 +455,7 @@ class CGWMain(QWZMQListener):
 
 
 def proc_control_gui(parser=None):
+    """Create a QApplication, show a `CGWMain` built from `parser` and run the event loop."""
     import sys
     from PyQt5.QtWidgets import QApplication, QDesktopWidget
     #sys.stdout = sys.stderr = open('/dev/null', 'w') # open('%s-stdout-stderr' % cp.log_file.value(), 'w')

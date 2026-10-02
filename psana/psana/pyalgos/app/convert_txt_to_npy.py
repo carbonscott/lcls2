@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+"""Command-line script: convert a text array file to a numpy .npy file, optionally reshaping it.
+
+Usage: ``convert_txt_to_npy.py fname.txt fname.npy [<shape>]`` where shape is like '32,185,388'.
+"""
 import numpy as np
 import sys
 import os
 import string
 
 def print_exit(case, p1=None, p2=None) :
+    """Exit via ``sys.exit`` with the used command and a message for ``case`` (1: wrong number of arguments, 2: output extension is not '.npy', 3: shape size ``p1`` differs from array size ``p2``)."""
     proc  = './%s' % os.path.basename(sys.argv[0])
     usg = 'Usage  :  %s fname.txt fname.npy\n' \
           '     or:  %s fname.txt fname.npy <shape>\n' \
@@ -29,6 +34,10 @@ def shape_and_size_from_string(s) :
 
 def parse_input_pars() :
 
+    """Return ``(finp, fout, shape, size)`` from ``sys.argv``.
+
+    Exits via ``print_exit`` if there are not 2 or 3 arguments or the output does not end with '.npy'; ``shape`` and ``size`` are None when no shape argument is given.
+    """
     if len(sys.argv)<3 : print_exit(1)
     if len(sys.argv)>4 : print_exit(1)
 
@@ -44,6 +53,7 @@ def parse_input_pars() :
 
 def do_main() :
 
+    """Load the text array with ``np.loadtxt``, reshape it if a shape was given (exit if the sizes differ) and save it with ``np.save``."""
     finp, fout, shape, size = parse_input_pars()
 
     nda =  np.loadtxt(finp)

@@ -16,6 +16,7 @@ import psana.pyalgos.generic.NDArrGenerators as ag
 
 class TestQGraphicsView(QGraphicsView):
 
+    """``QGraphicsView`` subclass that moves, rotates or scales the module-level pixmap items ``itpm1``/``itpm2`` from keys and mouse clicks."""
     KEY_USAGE = 'Keys:'\
             '\n  ESC - exit'\
             '\n  P - position'\
@@ -26,6 +27,10 @@ class TestQGraphicsView(QGraphicsView):
 
     def keyPressEvent(self, e):
 
+        """Handle keys: Escape closes, P shifts ``itpm2`` by (-50, -50) or (10, 10), R rotates ``itpm1`` by +10 degrees, S scales ``itpm1`` by 1.2 (back to 1 above 2).
+
+        ``KEY_USAGE`` is printed after every key press.
+        """
         if e.key() == Qt.Key_Escape:
             self.close()
 
@@ -51,6 +56,7 @@ class TestQGraphicsView(QGraphicsView):
         print(self.KEY_USAGE)
 
     def mousePressEvent(self, e):
+        """Call the base handler and set the rotation of ``itpm1`` to the angle from its bounding-rect center to the clicked scene point."""
         item = itpm1
         QGraphicsView.mousePressEvent(self, e)
         scpoint = self.mapToScene(e.pos())

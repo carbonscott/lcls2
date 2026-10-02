@@ -160,6 +160,10 @@ if __name__ == "__main__":
 
 
   def collection_names_pro(db):
+     """Return ``collection_names(db)``, or an empty list (with a printed message) if that call raises.
+
+     ``collection_names`` is not defined in ``MDBUtils``, so the resulting NameError is caught and ``[]`` is returned.
+     """
      try:
        cnames = collection_names(db)
      except Exception as err:
@@ -182,6 +186,10 @@ if __name__ == "__main__":
 
 
   def test_calib_constants_nda():
+    """Call ``calib_constants('cspad_0001', exp='cxic0415', ctype='pedestals', run=50, ...)`` and print the document and part of the array.
+
+    ``calib_constants`` is not defined in ``MDBUtils`` (imported with ``*``), so this raises NameError.
+    """
     det = 'cspad_0001'
     data, doc = calib_constants('cspad_0001', exp='cxic0415', ctype='pedestals', run=50, time_sec=None, vers=None)
     print('== doc: %s' % str(doc))
@@ -194,6 +202,10 @@ if __name__ == "__main__":
     #print('==== test_calib_constants_text data:', data)
     #print('==== doc: %s' % str(doc))
 
+    """Call ``calib_constants`` for ``tmo_quadanode`` ctype ``'calibcfg'`` and print data and document.
+
+    ``calib_constants`` is not defined in ``MDBUtils`` (imported with ``*``), so this raises NameError.
+    """
     det = 'tmo_quadanode'
     data, doc = calib_constants(det, exp='amox27716', ctype='calibcfg', run=100)
     print('==== test_calib_constants_text data:\n', data)
@@ -212,6 +224,10 @@ if __name__ == "__main__":
 
 
   def test_calib_constants_dict():
+    """Call ``calib_constants`` for ``opal1000_0059`` ctype ``'lasingoffreference'`` and print the data with ``test_print_dict``.
+
+    ``calib_constants`` is not defined in ``MDBUtils`` (imported with ``*``), so this raises NameError.
+    """
     det = 'opal1000_0059'
     data, doc = calib_constants(det, exp=None, ctype='lasingoffreference', run=60, time_sec=None, vers=None)
     #print('==== test_calib_constants_dict data:', data)
@@ -221,6 +237,10 @@ if __name__ == "__main__":
 
 
   def test_pro_detector_name(shortname='testdet_1234'):
+    """Print the result of ``pro_detector_name`` for a short or long test name chosen by ``sys.argv[2]``.
+
+    ``pro_detector_name`` is not defined in ``MDBUtils`` (only ``_pro_detector_name``, which ``*`` does not import), so this raises NameError.
+    """
     longname = shortname + '_this_is_insane_long_detector_name_exceeding_55_characters_in_length_or_longer'
     tmode = sys.argv[2] if len(sys.argv) > 2 else '0'
     dname = shortname if tmode=='0' else\
@@ -232,6 +252,7 @@ if __name__ == "__main__":
 
 
   def dict_usage(tname=None):
+      """Return the dict of test numbers to descriptions, or the description for ``tname`` (``'NON IMPEMENTED TEST'`` if unknown)."""
       d = {'0': 'test_connect <do not forget server password after each command>',
            '1': 'test_insert_one txt',
            '2': 'test_insert_one nda',
@@ -253,6 +274,7 @@ if __name__ == "__main__":
 
 
   def usage(tname=None):
+    """Print the list of tests from :func:`dict_usage` framed by separator lines; ``tname`` is not used."""
     s = '%s\nUsage:' % (50*'_')
     for k,v in dict_usage().items(): s += '\n  %2s: %s' % (k,v)
     print('%s\n%s'%(s,50*'_'))

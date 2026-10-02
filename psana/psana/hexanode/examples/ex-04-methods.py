@@ -1,23 +1,29 @@
 #!/usr/bin/env python
 
+"""Example: call methods of the compiled extension ``psana.hexanode_ext`` (test functions, the ``lmf_io`` file reader and ``py_sort_class``) and print their results; the extension code is not visible here."""
 import psana.hexanode_ext as hexanode
 
 def test_01():
+    """Print 'call pure python'; no other action."""
     print('call pure python')
 
 def test_02():
+    """Print a message and call ``hexanode_ext.met1()``."""
     print('call cython hexanode.met1()')
     hexanode.met1()
 
 def test_03():
+    """Print the result of ``hexanode_ext.fib(90)``."""
     print('call hexanode.fib(90)')
     print(hexanode.fib(90))
 
 def test_04():
+    """Print a message and call ``hexanode_ext.ctest_resort()``."""
     print('call ctest_resort()')
     hexanode.ctest_resort()
 
 def test_05():
+    """Open a fixed LMF file with ``hexanode_ext.lmf_io(32, 16)`` and print its times, error texts, header attributes and, for up to 10 events, the hit counts and TDC data arrays."""
     import numpy as np
 
     print('test LMF_IO')
@@ -71,6 +77,7 @@ def test_05():
              print('   TDC data:\n', dtdc[0:8,0:5])
 
 def test_06():
+    """Create a ``hexanode_ext.py_sort_class``, read a fixed sorter configuration file and 'calibration_table.txt' into it, print its attributes and error texts, then call ``do_calibration``, ``feed_calibration_data`` and ``create_scalefactors_calibrator``."""
     import numpy as np
     print('test sort_class')
     o = hexanode.py_sort_class()
@@ -136,6 +143,7 @@ def test_06():
     #print('best_w_offset', sfo.best_w_offset)
 
 def usage(tname):
+    """Return the usage text, listing all tests for ``tname`` '0' or only the selected one."""
     s = '\nUsage: python psana/psana/hexanode/examples/ex-04-methods.py <test-number>'
     if tname in ('0',)    : s+='\n 0 - test ALL'
     if tname in ('0','1') : s+='\n 1 - call pure python'

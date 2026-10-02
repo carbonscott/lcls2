@@ -22,6 +22,7 @@ from psana.graphqt.QWTree import Qt, QWTree, icon, QStandardItem
 from psana.detector.dir_root import DIR_ROOT
 
 def name_in_path(path,sep='/'):
+    """Return the part of ``path`` after the last ``sep`` (the whole string if ``sep`` is absent)."""
     return path.rsplit(sep,1)[-1]
 
 
@@ -41,6 +42,7 @@ class H5VQWTree(QWTree):
 
 
     def set_file(self, fname):
+        """Collapse the tree, set ``self.fname``, rebuild the model from that HDF5 file and expand all items."""
         self.collapseAll()
         self.fname = fname
         self.fill_tree_model()
@@ -49,6 +51,10 @@ class H5VQWTree(QWTree):
 
     def fill_tree_model(self, g=None, parent_item=None):
 
+        """Fill the tree model from the HDF5 file ``self.fname``, recursing through groups.
+
+        On the first call (``g`` None) it clears the model, sets the header to the file directory, opens the file read-only with h5py and recurses. The file and groups become folder items and datasets become checkable items labelled 'name: shape dtype'; each item stores its h5py object via ``setData``. An object of any other type prints a warning and calls ``sys.exit``.
+        """
         item = None
 
         # initialization at 1-st call
@@ -97,16 +103,22 @@ class H5VQWTree(QWTree):
 
 
     def show_tool_tips(self):
+        """Set the widget tool tip to 'HDF5 tree'."""
         self.setToolTip('HDF5 tree')
 
 
     def set_style(self):
+        """Apply ``QWTree.set_style`` and then show the header again."""
         QWTree.set_style(self)
         #self.header().hide()
         self.header().show()
 
 
     def full_path(self, item, path=''):
+        """Return a dash-separated name built from ``item`` and its ancestors, prefixed with 'fd-' at the file item.
+
+        Each item text has spaces removed and parentheses, commas, '|' and '/' replaced by '-', and ':' removed. Returns ``path`` unchanged if ``item`` is None.
+        """
         if item is None: return path
         if isinstance(item.data(), h5py.File): return 'fd-%s' % path
         else:
@@ -120,6 +132,7 @@ class H5VQWTree(QWTree):
 
 
     def on_item_selected(self, selected, deselected):
+        """Log the selected item text, row, parent text and data type; for a dataset item also log its full value read with ``data[()]``."""
         itemsel = self.model.itemFromIndex(selected)
         if itemsel is not None:
             parent = itemsel.parent()
@@ -132,6 +145,7 @@ class H5VQWTree(QWTree):
 
 
     def closeEvent(self, e):
+        """Log a debug message and forward the event to ``QWTree.closeEvent``."""
         logger.debug('closeEvent')
         QWTree.closeEvent(self, e)
 
@@ -139,6 +153,10 @@ class H5VQWTree(QWTree):
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return the key help text (Esc, E, C).
+
+        Defined only when the module runs as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  E - expand'\
@@ -146,6 +164,10 @@ class H5VQWTree(QWTree):
                '\n'
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes, E expands all, C collapses all, other keys log the key help.
+
+        Defined only when the module runs as a script.
+        """
         logger.debug('keyPressEvent, key = %s'%e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()

@@ -152,6 +152,7 @@ def add_random_peaks(arr2d, npeaks=10, amean=100, arms=50, wmean=2, wrms=0.1):
 
 
 def arr2dincr(sh2d=(512,1024), dtype=np.int32):
+    """Return a 2-d array of shape ``sh2d`` and ``dtype`` whose element (r, c) equals r + c."""
     rows, cols = sh2d
     ix, iy = np.meshgrid(np.arange(rows), np.arange(cols))
     a = np.empty((rows,cols), dtype)
@@ -160,6 +161,7 @@ def arr2dincr(sh2d=(512,1024), dtype=np.int32):
 
 
 def arr3dincr(sh3d=(32,512,1024), dtype=np.int32):
+    """Return a 3-d array of shape ``sh3d`` made of ``nsegs`` identical copies of ``arr2dincr((rows, cols), dtype)``."""
     nsegs, rows, cols = sh3d
     a1 = arr2dincr((rows, cols), dtype)
     a = np.vstack([a1 for s in range(nsegs)])

@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Example/test for ``GWViewAxis``: axis views for all sides and origins on scene rect (0, 0, 1000, 100).
+
+Run as a script with a test name (``'0'``-``'3'``, ``'10'``-``'13'``, ``'20'``-``'23'``, ``'30'``-``'33'``,
+``'40'``-``'43'``). Configures root logging at INFO level at import time.
+"""
 from psana.graphqt.GWViewAxis import *
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='[%(levelname).1s] %(filename)s L:%(lineno)03d %(message)s', datefmt='%Y-%m-%dT%H:%M:%S', level=logging.INFO)
@@ -10,13 +15,19 @@ import psana.pyalgos.generic.NDArrGenerators as ag
 
 class TestGWViewAxis(GWViewAxis):
 
+    """``GWViewAxis`` subclass with key handling: Escape closes, R sets random axis limits."""
     def key_usage(self):
+        """Return a help string listing keys ESC and R."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - set random axis limits'\
                '\n'
 
     def keyPressEvent(self, e):
+        """Handle keys: Escape closes, R sets axis limits ``v..v+100`` with random ``v``; others print :meth:`key_usage`.
+
+        The first ``logger.debug`` call passes ``e.key()`` without a format placeholder.
+        """
         logger.debug('keyPressEvent, key=', e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()
@@ -32,6 +43,11 @@ class TestGWViewAxis(GWViewAxis):
 
 
 def test_GWViewAxis(tname):
+    """Create a ``QApplication`` and show a ``TestGWViewAxis`` chosen by ``tname``.
+
+    The tens digit selects origin UL/DL/DR/UR (or UL with red-on-yellow colors for 4x), the units
+    digit the side D/U/L/R. Unknown names print a message and return.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     app = QApplication(sys.argv)
     w = None

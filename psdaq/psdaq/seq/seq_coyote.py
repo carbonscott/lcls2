@@ -48,6 +48,10 @@ args = None
 #  Check how many levels of looping are required
 #
 def loop_levels(cycles, level_limit=4):
+    """Return how many nested loops of at most maxocc+1 iterations are needed for `cycles`.
+
+    Returns None for 0 cycles; raises RuntimeError if more than `level_limit` levels are needed.
+    """
     nlevels = 0
     lcycles = cycles
     while lcycles:
@@ -63,6 +67,12 @@ def loop_levels(cycles, level_limit=4):
 #  Make a generic loop of event code requests and time steps
 #
 def loop(instr, codes_list, step, cycles, level_limit=4):
+    """Append source lines for a loop issuing ControlRequest(`codes_list`) and `step` `cycles` times.
+
+    One level uses Branch.conditional(line, 0, cycles-1); more levels add maxocc-iteration
+    branches on counters 0.. and recurse for the rest. With 0 cycles `loop_levels`
+    returns None and the comparison/range code raises TypeError.
+    """
     nlevels = loop_levels(cycles, level_limit)
     instr.append(f'line = len(instrset)')                             # Set the anchor for the loop
     instr.append(f'instrset.append( ControlRequest({codes_list}) )')  # Generate the event codes
@@ -84,6 +94,7 @@ def loop(instr, codes_list, step, cycles, level_limit=4):
 #
 def write_seq(instr, seqcodes, filename):
 
+    """Write `instr` lines with a header and `seqcodes` to `filename`, then `validate` it."""
     with open(filename,"w") as f:
         f.write('# {} instructions\n'.format(len(instr)))
 
@@ -116,6 +127,12 @@ def generate_engine(engine):
     #       0..3:  WindowIndex[4..7]
     #
 
+    """Write '<path>/engine<engine>.py' for the scan pattern described in the module docstring.
+
+    Engine 0 requests codes 0 (motion), 1 (pulse picker) and 2 (DAQ); engines 1 and 2
+    request the low and high nibbles of the window codes. Steps use ACRateSync(0x9, '60H', 1)
+    (FixedRateSync('100H', 1) with --fixed_test) after a global sync, ending with a CheckPoint.
+    """
     global_sync = 'ACRateSync(0x1, "10H", 1)'    #  Start all engines on the same marker, so they are in-sync
     motion_step = 'ACRateSync(0x9, "60H", 1)'    #  Always 120H period between motion triggers (60Hz timeslots 1,4)
 
@@ -208,6 +225,11 @@ def generate_engine(engine):
     write_seq(instr, seqcodes, f'{args.path}/engine{engine}.py')
 
 def main():
+    """Parse the scan options and generate engines 0, 1 and 2.
+
+    Raises ValueError if --rows_per_window is odd or the number of --codes differs from
+    windows_per_line * lines_of_windows.
+    """
     global args
     parser = argparse.ArgumentParser(description='coyote experiment sequencer',formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--start_steps", default=7, type=int, help='Motion steps before the first exposure')

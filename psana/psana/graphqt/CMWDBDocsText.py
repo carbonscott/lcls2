@@ -20,6 +20,10 @@ logger = logging.getLogger(__name__)
 
 
 class CMWDBDocsText(CMWDBDocsBase, QTextEdit):
+    """QTextEdit document widget that shows ``dbu.collection_info`` text for the selected DB collection.
+
+    Combines CMWDBDocsBase (stored DB, collection and document list) with QTextEdit; the initial text is ``text``.
+    """
     def __init__(self, text='Select collection in the DB pannel'):
         QTextEdit.__init__(self, text)
         CMWDBDocsBase.__init__(self)

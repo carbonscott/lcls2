@@ -20,6 +20,10 @@ Created on 2019-02-04 by Mikhail Dubrovin
 #----------
 
 class CGParameters :
+    """Holder for `thread_set_state` and `thread_get_state`, both initialized to None.
+
+    The module-level instance `cp` is used as a singleton.
+    """
     def __init__(self) :
         self.thread_set_state = None
         self.thread_get_state = None

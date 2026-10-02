@@ -32,6 +32,11 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 class CMWMain(QWidget):
 
+    """Calibman main window (stays on top): ``CMWMainTabs`` above a ``QWLoggerStd`` in a vertical splitter.
+
+    The constructor requires kwa ``repodir`` (KeyError otherwise), creates a ``RepoManager`` for the
+    log-file name and start record, stores the logger widget in ``cp.wlog`` and registers ``cp.cmwmain``.
+    """
     def __init__(self, **kwargs):
         QWidget.__init__(self, parent=None, flags=Qt.WindowStaysOnTopHint)
 
@@ -65,6 +70,12 @@ class CMWMain(QWidget):
 
     def set_input_pars(self, **kwa):
 
+        """Store ``kwa`` in ``cp.kwargs``, restore the saved window geometry and copy options into config parameters.
+
+        Always sets ``cp.save_log_at_exit``, ``cp.log_level``, ``cp.log_prefix``, ``cp.save_cp_at_exit``,
+        ``cp.user`` and ``cp.upwd``; host, port, experiment and detector are set only if the matching
+        option is on the command line. Prints the kwargs when the level is DEBUG.
+        """
         cp.kwargs = kwa
 
         self.xywh = cp.main_win_pos_x .value(),\
@@ -113,10 +124,12 @@ class CMWMain(QWidget):
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to ``'Calibration Management GUI'``."""
         self.setToolTip('Calibration Management GUI')
 
 
     def set_style(self):
+        """Set minimum size 500x400, zero margins and the vertical splitter position from ``cp.main_vsplitter``."""
         self.setMinimumSize(500, 400)
         self.layout().setContentsMargins(0,0,0,0)
         spl_pos = cp.main_vsplitter.value()
@@ -125,6 +138,7 @@ class CMWMain(QWidget):
 
 
     def closeEvent(self, e):
+        """Close the tab widget, call :meth:`on_save`, pass the event to ``QWidget.closeEvent`` and set ``cp.wlog`` to None."""
         logger.debug('closeEvent')
         #try: self.wspe.close()
         #except: pass
@@ -135,6 +149,7 @@ class CMWMain(QWidget):
 
 
     def key_usage(self):
+        """Return a help string listing the V key (view/hide tabs)."""
         return 'Keys:'\
                '\n  V - view/hide tabs'\
                '\n'
@@ -142,6 +157,7 @@ class CMWMain(QWidget):
 
     if __name__ == "__main__":
       def keyPressEvent(self, e):
+        """Handle keys: Escape closes, V toggles the tabs, others log :meth:`key_usage`; defined only when run as ``__main__``."""
         logger.debug('keyPressEvent, key=%s' % e.key())
         if   e.key() == Qt.Key_Escape: self.close()
         elif e.key() == Qt.Key_V: self.wtab.view_hide_tabs()
@@ -150,6 +166,10 @@ class CMWMain(QWidget):
 
     def on_save(self):
 
+        """Store window position/size and splitter position in the config parameters; save the parameters to file if ``cp.save_cp_at_exit`` is set.
+
+        The position is ``mapToGlobal(QPoint(-5, -22))``; the geometry message is also printed.
+        """
         point, size = self.mapToGlobal(QPoint(-5,-22)), self.size() # Offset (-5,-22) for frame size.
         x,y,w,h = point.x(), point.y(), size.width(), size.height()
         msg = 'save window geometry x,y,w,h: %d,%d,%d,%d' % (x,y,w,h)
@@ -178,6 +198,7 @@ def calibman(**kwargs):
     #sys.stdout = sys.stderr = open('/dev/null', 'w') # open('%s-stdout-stderr' % cp.log_file.value(), 'w')
     #logging.basicConfig(format='[%(levelname).1s] %(asctime)s L:%(lineno)03d %(message)s', datefmt='%Y-%m-%dT%H:%M:%S', level=logging.DEBUG)
 
+    """Create a global ``QApplication``, show a ``CMWMain`` built from ``**kwargs`` and run the event loop."""
     global app # to prevent crash on exit
     app = QApplication([]) #sys.argv
     w = CMWMain(**kwargs)

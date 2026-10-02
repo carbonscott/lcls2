@@ -25,12 +25,18 @@ logger = logging.getLogger(__name__)
 t_base = calendar.timegm((1990, 1, 1, 0, 0, 0, 0, 0, -1))
 
 class DefaultPVHandler(object):
+    """p4p put handler that takes the timestamp from the first four words of the written array before posting it."""
     type = None
 
     def __init__(self,callback=None):
         self.callback = callback
 
     def put(self, pv, op):
+        """Set the timestamp from the written array, post it, complete the operation and call `callback` if set.
+
+        Seconds are ``image[2] + (image[3] << 16)`` plus `t_base` (1990-01-01 UTC);
+        nanoseconds are ``image[0] + (image[1] << 16)``.
+        """
         postedval = op.value()
         image = postedval['value']
         postedval['timeStamp.secondsPastEpoch'] = float(int(image[2]) + (int(image[3])<<16)) + t_base
@@ -45,6 +51,7 @@ class DefaultPVHandler(object):
             self.callback(postedval)
 
 class PVAServer(object):
+    """StaticProvider with one PV named `prefix`: an NTScalar int array ('ai') of 128 zeros."""
     def __init__(self, provider_name, prefix):
         self.provider = StaticProvider(provider_name)
         self.prefix = prefix
@@ -56,6 +63,7 @@ class PVAServer(object):
         self.provider.add(prefix, self.image)
 
     def forever(self):
+        """Serve the provider with `p4p.server.Server.forever` (blocks)."""
         Server.forever(providers=[self.provider])
 
 
@@ -63,6 +71,7 @@ import argparse
 
 def main():
 
+    """Parse -P (PV name, required) and -v, create a `PVAServer` and serve until KeyboardInterrupt."""
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='host PVs for PVCAM example')
 
     parser.add_argument('-P', required=True, help='DAQ:LAB2:PVCAM', metavar='PREFIX')

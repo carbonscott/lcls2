@@ -1,3 +1,8 @@
+"""Sequence description 'LoopTest' with a 22-step loop (code comment: "Setup a 22 pulse sequence to repeat 40000 times each second").
+
+Step i requests bit j when ``i*(j+1) % 22 < j+1``, each followed by FixedRateSync(marker=0,
+occ=1); descriptions are '40 kHz'..'640 kHz'. The instructions are printed at import.
+"""
 from psdaq.seq.seq import *
 
 sync_marker = 6

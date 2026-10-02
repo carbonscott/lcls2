@@ -74,10 +74,12 @@ class QWDialog(QDialog) :
 #-----------------------------  
 
     def set_tool_tips(self):
+        """Set tool tips on the Apply and Cancel buttons."""
         self.but_apply .setToolTip('Apply changes to the list')
         self.but_cancel.setToolTip('Use default list')
         
     def set_style(self):
+        """Make the dialog frameless if requested, set margins and minimum width 200, and clear style sheets."""
         self.setStyleSheet("background-color: rgb(250, 250, 250);")
         if self.is_frameless : self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         #if self.is_frameless : self.setWindowFlags(Qt.FramelessWindowHint)
@@ -101,6 +103,7 @@ class QWDialog(QDialog) :
 
 
     def set_icons(self):
+        """Set cancel/ok icons from `QWIcons` on the Cancel and Apply buttons."""
         from psdaq.control_gui.QWIcons import icon
         icon.set_icons()
         self.but_cancel.setIcon(icon.icon_button_cancel)
@@ -121,10 +124,12 @@ class QWDialog(QDialog) :
         #logger.debug('Event happens...: %s' % str(event))
 
     def onCancel(self):
+        """Log a debug message and reject the dialog."""
         logger.debug('onCancel')
         self.reject()
 
     def onApply(self):
+        """Log a debug message and accept the dialog."""
         logger.debug('onApply')  
         self.accept()
 

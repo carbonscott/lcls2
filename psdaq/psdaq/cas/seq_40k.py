@@ -1,4 +1,10 @@
 #from evtsel import *
+"""Script that programs a 22-step sequence with `sequser.SeqUser` on PV base --pv (default 'DAQ:LAB2:XPM:2:SEQENG:0').
+
+Code comment: "Setup a 22 pulse sequence to repeat 40000 times each second". Step i
+issues ControlRequest bits with bit j set when ``i*(j+1) % 22 < j+1``, each followed by
+FixedRateSync(marker=6, occ=1); the instructions are printed and executed as 'LoopTest'.
+"""
 import sys
 import argparse
 from sequser import *

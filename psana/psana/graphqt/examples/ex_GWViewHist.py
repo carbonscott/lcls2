@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Example: show a ``GWViewHist`` test widget with origin, scale-control, color and orientation settings selected by a test number.
+
+Importing the module configures logging at INFO level.
+"""
 import sys
 import inspect
 from psana.graphqt.GWViewHist import *
@@ -9,6 +13,7 @@ logging.basicConfig(format='[%(levelname).1s] %(filename)s L:%(lineno)03d %(mess
 
 class TestGWViewHist(GWViewHist):
 
+    """GWViewHist subclass with keyboard controls for resetting the view, setting a new histogram and changing the scene rect."""
     KEY_USAGE = 'Keys:'\
             '\n  ESC - exit'\
             '\n  R - reset original/default size'\
@@ -19,6 +24,7 @@ class TestGWViewHist(GWViewHist):
 
     def keyPressEvent(self, e):
         #logger.debug('keyPressEvent, key=', e.key())
+        """Handle key presses: Esc closes, R resets the scene rect, H sets a new test histogram, W fits a random scene rect into the view and D also makes it the default, other keys print the key usage."""
         if   e.key() == Qt.Key_Escape:
             self.close()
 
@@ -48,6 +54,10 @@ class TestGWViewHist(GWViewHist):
 
 
 def test_gwviewhist(tname):
+    """Create a QApplication and a ``TestGWViewHist`` configured by ``tname`` ('0'-'5'), connect its test receivers and run the event loop.
+
+    For any other ``tname`` it logs a message and returns.
+    """
     logger.info('%s:' % sys._getframe().f_code.co_name)
     app = QApplication(sys.argv)
     w = None

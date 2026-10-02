@@ -72,6 +72,7 @@ class PSConfigParameters(ConfigParameters):
 
 
 def test_PSConfigParameters():
+    """Create a ``PSConfigParameters`` object, read its parameter file, log all parameters and save them back to the file."""
     cpb = PSConfigParameters()
     cpb.readParametersFromFile()
     cpb.printParameters()

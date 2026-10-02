@@ -1,5 +1,9 @@
 ####!/usr/bin/env python
 
+"""Command-line script: merge text arrays by element-wise maximum.
+
+Usage: ``merge_max_ndarrays.py f1.txt f2.txt ... fout``; the result is written to '<fout>.txt' with format '%f'.
+"""
 import numpy as np
 import sys
 import os
@@ -7,6 +11,7 @@ import os
 
 def print_exit(case, p1=None, p2=None) :
 
+    """Exit via ``sys.exit`` with the used command and, for ``case`` 1, a usage message; ``p1`` and ``p2`` are unused."""
     msg = 'Used command: %s' % ' '.join(sys.argv)
     usg = 'Usage:  %s f1.txt f2.txt ... fout.txt  (At least 3 file names should be specified!)\n' % os.path.basename(sys.argv[0])
 
@@ -20,6 +25,10 @@ def parse_input_pars() :
     #print('len(sys.argv)', len(sys.argv))
     #print(sys.argv)
 
+    """Return ``(list_of_files, ofname)``: all arguments except the last, and the last argument.
+
+    Exits via ``print_exit(1)`` if fewer than three file names are given.
+    """
     if len(sys.argv)<4 : print_exit(1)
 
     list_of_files = [fname for fname in sys.argv[1:-1]]
@@ -34,6 +43,10 @@ def parse_input_pars() :
 
 def do_main() :
 
+    """Load each input text file as float32, combine them with ``np.maximum`` and save the result to '<ofname>.txt' with format '%f'.
+
+    The hard-coded file list at the top is overwritten by the command-line arguments. The printed message also names '<ofname>.npy', but only the .txt file is written.
+    """
     list_of_files = ['cspad-ndarr-max-cxii5615-r0024.dat' \
                     ,'cspad-ndarr-max-cxii5615-r0025.dat' \
                     ,'cspad-ndarr-max-cxii5615-r0026.dat' \

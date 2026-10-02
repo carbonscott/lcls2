@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 class CMWDBDocsList(CMWDBDocsBase, QWList):
 
+    """``QWList`` view of the documents of one DB collection, one row per document plus a header row.
+
+    Defines ``document_clicked(dbname, colname, doc)``, emitted from ``on_click`` and connected to
+    :meth:`on_document_clicked`.
+    """
     document_clicked = pyqtSignal('QString','QString', dict)
 
     def __init__(self):
@@ -86,6 +91,7 @@ class CMWDBDocsList(CMWDBDocsBase, QWList):
 
 
     def on_item_selected(self, selected, deselected):
+        """Log the text of the selected row (truncated to 50 characters) if any, and set ``cp.last_selection`` to ``cp.DOCS``."""
         itemsel = self.model.itemFromIndex(selected)
         if itemsel is not None:
             txt = itemsel.text()
@@ -118,6 +124,10 @@ class CMWDBDocsList(CMWDBDocsBase, QWList):
 
 
     def on_document_clicked(self, dbname, colname, doc):
+        """Show the clicked document in ``cp.cmwdbdoceditor`` and widen the editor pane to 300 if it is narrower than 10.
+
+        Does nothing if ``cp.cmwdbdoceditor`` is None.
+        """
         msg = 'on_document_clicked: DB: %s coll: %s doc: %s' % (dbname, colname, str(doc))
         logger.debug(msg)
         wdoce = cp.cmwdbdoceditor

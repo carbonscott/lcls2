@@ -1,8 +1,13 @@
+"""Command-line tool that removes the 'f' prefix from string literals in a file, keeping a .bak backup."""
 import re
 import sys
 from pathlib import Path
 
 def strip_fstring_prefixes(file_path):
+    """Rewrite `file_path` with f'...' / f"..." literals turned into plain literals (regex-based, line by line).
+
+    The original is renamed to the same path with suffix '.bak' and a message is printed.
+    """
     with open(file_path) as f:
         lines = f.readlines()
 

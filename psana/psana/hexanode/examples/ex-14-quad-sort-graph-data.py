@@ -10,6 +10,7 @@ import sys
 #------------------------------
 
 def usage():
+    """Return a tuple of two strings: the command to run and the configuration file path the example needs."""
     return 'Use command: python psana/psana/hexanode/examples/ex-14-quad-sort-graph-data.py',\
            '\n  needs in /reg/d/psdm/amo/amox27716/calib/Acqiris::CalibV1/AmoEndstation.0:Acqiris.1/hex_config/0-end.data'
 

@@ -32,6 +32,7 @@ from PyQt5.QtGui import QCursor
 
 
 def msg_on_exit():
+    """Return a hint string 'run test > python <dir>/examples/ex_<script> <test-number>' built from ``sys.argv[0]``."""
     import sys
     lst = sys.argv[0].rsplit('/',1)
     path = '%s/examples/ex_%s' % tuple(lst) if len(lst) == 2 else 'examples/ex_%s' % lst[0]
@@ -119,23 +120,31 @@ def select_radio_button_in_popup_menu(dict_of_pars, win_title='Select option', d
 
 
 def info_rect_xywh(r, cmt='', fmt='%sx=%8.2f  y=%8.2f  w=%8.2f  h=%8.2f'):
+    """Return a string with ``cmt`` and the x, y, width and height of rect ``r`` formatted by ``fmt``."""
     return fmt % (cmt, r.x(), r.y(), r.width(), r.height())
 
 
 def info_rect_lbrt(r, cmt='', fmt='%sL=%8.2f  B=%8.2f  R=%8.2f  T=%8.2f'):
+    """Return a string with the left, right, top and bottom of rect ``r`` formatted by ``fmt``.
+
+    ``cmt`` is replaced by the same number of spaces. The values are passed in the order left, right, top, bottom while the default labels read L, B, R, T, so the B, R and T labels do not match their values.
+    """
     return fmt % (len(cmt)*' ', r.left(), r.right(), r.top(), r.bottom())
 
 
 def print_rect(r, cmt=''):
+    """Log at debug level ``cmt`` followed by ``info_rect_xywh(r)`` and ``info_rect_lbrt(r)``."""
     logger.debug('%s %s %s'% (cmt, info_rect_xywh(r), info_rect_lbrt(r)))
 
 
 def info_point(p, cmt='', fmt='%sx=%.2f y=%.2f'):
+    """Return a string with ``cmt`` and the x and y of point ``p`` formatted by ``fmt``."""
     return fmt % (cmt, p.x(), p.y())
 
 
 def get_save_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
+    """Open a save-file dialog with caption ``title`` starting at ``path0`` and return the chosen path, or None if cancelled."""
     path, fext = QFileDialog.getSaveFileName(parent,
                                              caption   = title,
                                              directory = path0,
@@ -149,6 +158,10 @@ def get_save_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
 def get_open_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
+    """Open an open-file dialog with caption ``title`` starting at ``path0`` and return the chosen path.
+
+    Returns None if the directory or file part of the result is empty (for example when cancelled).
+    """
     path, fext = QFileDialog.getOpenFileName(parent, title, path0, filter=filter)
 
     dname, fname = os.path.split(path)
@@ -161,6 +174,7 @@ def get_open_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
 def get_existing_directory_through_dialog_box(parent, path0, title, options = QFileDialog.ShowDirsOnly):
 
+    """Open a directory dialog and return the chosen directory (also logged), or None if cancelled."""
     path = QFileDialog.getExistingDirectory(parent, title, path0, options)
 
     dname = path #, fname = os.path.split(path)
@@ -185,6 +199,13 @@ def confirm_dialog_box(parent=None, text='Please confirm that you aware!', title
 
 
 def edit_and_confirm_or_cancel_dialog_box(parent=None, text='Text confirm or cancel', title='Edit and confirm or cancel'):
+    """Show a ``QWPopupEditConfirm`` dialog with editable ``text`` and Confirm/Cancel buttons.
+
+    Returns
+    -------
+    str or None
+        The edited text if confirmed, otherwise None.
+    """
     from psana.graphqt.QWPopupEditConfirm import QWPopupEditConfirm
     w = QWPopupEditConfirm(parent=parent, msg=text, win_title=title, but_title_apply='Confirm', but_title_cancel='Cancel')
     #w.setGeometry(20, 40, 500, 200)
@@ -223,12 +244,17 @@ def help_dialog_box(parent=None, text='Help message goes here', title='Help'):
 
 
 def widget_from_layout(l):
+    """Create a QWidget, set layout ``l`` on it and return it.
+
+    The code calls ``QWigget`` (a misspelling that is not defined), so it raises NameError.
+    """
     w = QWigget()
     w.setLayout(l)
     return w
 
 
 def layout_from_widget(w, layout=QVBoxLayout):
+    """Create a layout of class ``layout`` (default QVBoxLayout), add widget ``w`` to it and return the layout."""
     l = layout()
     l.addWidget(w)
     return l

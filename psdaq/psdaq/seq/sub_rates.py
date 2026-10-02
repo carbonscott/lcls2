@@ -1,3 +1,4 @@
+"""Print the sub-harmonic rates of 1300e6/1400 Hz available for a given divisor."""
 import argparse
 import sys
 import itertools
@@ -5,6 +6,16 @@ import numpy as np
 from collections import Counter
 
 def sub_rates(factor):
+    """List the rates obtainable as multiples of `factor` built from the factors of 910000.
+
+    The factors of `factor` are removed from [2,2,2,2,5,5,5,5,7,13]; each combination of
+    the remaining ones times `factor` gives a divisor q.
+
+    Returns
+    -------
+    list of tuple
+        (int(1300e6/1400 / q), q // factor, q, factors) sorted by q.
+    """
     factors = [2,2,2,2,5,5,5,5,7,13]  # product is 910,000
     subfactors = []
     remfactors = []
@@ -40,6 +51,7 @@ def sub_rates(factor):
     return result
 
 def main():
+    """Parse -f/--factor (and unused -a/-x) and print the `sub_rates` table."""
     parser = argparse.ArgumentParser(description='simple validation printing')
     parser.add_argument("-f", "--factor", required=False , type=int, default=1, help="only show Nth sub-harmonics")
     parser.add_argument("-a", "--ac", action='store_true', help="format for AC coincidence tabl")

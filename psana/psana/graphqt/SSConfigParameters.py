@@ -31,6 +31,10 @@ class SSConfigParameters(PSConfigParameters):
 
     def declareParameters(self):
         # Possible typs for declaration: 'str', 'int', 'long', 'float', 'bool'
+        """Declare the persistent parameters: log level, log directory, log file name, save-log-at-exit flag and a list of ``number_of_sources_max`` (200) ``DET_SRC`` string parameters.
+
+        Each is created with ``declareParameter``/``declareListOfPars`` inherited from ``expmon.PSConfigParameters``.
+        """
         self.log_level = self.declareParameter(name='LOG_LEVEL_OF_MSGS', val_def='info', type='str')
         self.dir_log_repo     = self.declareParameter(name='DIR_LOG_REPO', val_def='/reg/g/psdm/logs/sourse-selector', type='str')
         self.log_file         = self.declareParameter(name='LOG_FILE_NAME', val_def='sourse-selector-log.txt', type='str')
@@ -49,6 +53,7 @@ class SSConfigParameters(PSConfigParameters):
 cp = SSConfigParameters()
 
 def test_SSConfigParameters():
+    """Read the parameters from file, print them, set ``log_level`` to ``'debug'`` and save them back to file."""
     from expmon.Logger import log
 
     log.setPrintBits(0o377)

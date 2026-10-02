@@ -1,3 +1,8 @@
+"""Example config script: select, add, rename and extend processes from `main_cnf` with `psdaq.slurm.config.Config`, then show the result.
+
+Uses `procmgr_config`, `procmgr_ami` and the key names (host, id, flags, cmd) imported
+from the non-package module `main_cnf`.
+"""
 from main_cnf import *
 from psdaq.slurm.config import Config
 

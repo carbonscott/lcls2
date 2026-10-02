@@ -68,6 +68,10 @@ def rotation(X, Y, C, S):
 
 
 class SegGeometry:
+    """Base class defining the segment-geometry interface; its interface methods only log a "re-implement in derived class" warning.
+
+    The constructor stores keyword arguments in ``self.kwa``. ``return_switch`` selects one of three x, y, z results by axis name.
+    """
     AXIS = ('X', 'Y', 'Z')
     DIC_AXIS = {'X':0, 'Y':1, 'Z':2}
     wmsg = 'WARNING! %s - interface method from the base class \nneeds to be re-implemented in the derived class'
@@ -76,6 +80,7 @@ class SegGeometry:
         self.kwa = kwa
 
     def print_warning(self, s):
+        """Log the ``wmsg`` warning that interface method ``s`` must be re-implemented in a derived class."""
         logger.warning(self.wmsg % s)
 
     def print_seg_info(self, pbits=0):
@@ -134,10 +139,18 @@ class SegGeometry:
 
 # 2020-07 added for converter
 
-    def asic0indices(self): self.print_warning('asic0indices')
-    def asic_rows_cols(self): self.print_warning('asic_rows_cols')
-    def number_of_asics_in_rows_cols(self): self.print_warning('number_of_asics_in_rows_cols')
-    def name(self): self.print_warning('name')
+    def asic0indices(self):
+        """Base implementation: logs a warning through ``print_warning('asic0indices')`` and returns None."""
+        self.print_warning('asic0indices')
+    def asic_rows_cols(self):
+        """Base implementation: logs a warning through ``print_warning('asic_rows_cols')`` and returns None."""
+        self.print_warning('asic_rows_cols')
+    def number_of_asics_in_rows_cols(self):
+        """Base implementation: logs a warning through ``print_warning('number_of_asics_in_rows_cols')`` and returns None."""
+        self.print_warning('number_of_asics_in_rows_cols')
+    def name(self):
+        """Base implementation: logs a warning through ``print_warning('name')`` and returns None."""
+        self.print_warning('name')
 
 
 if __name__ == "__main__":

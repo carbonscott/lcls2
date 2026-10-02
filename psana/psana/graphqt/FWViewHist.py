@@ -64,6 +64,10 @@ logger = logging.getLogger(__name__)
 
 class FWViewHist(FWView):
 
+    """FWView that draws a histogram (``FWHist``) of an ``HBins`` object in its scene.
+
+    Keyword arguments set scale control, orientation ('H' or 'V'), z value, widget size, background and foreground colors, the initial ``hbins`` (default ``test_histogram()``) and ``signal_fast``.
+    """
     def __init__(self, parent=None, rscene=QRectF(0, 0, 10, 10), origin='DL', **kwargs):
 
         self.bgcolor_def = 'black'
@@ -92,11 +96,13 @@ class FWViewHist(FWView):
 
 
     def print_attributes(self):
+        """Print the scale-control string and the origin."""
         print('scale_control: ', self.str_scale_control())
         print('origin       : ', self.origin())
 
 
     def set_style(self):
+        """Apply ``FWView.set_style`` and create the histogram color ``colhi`` and pen ``penhi`` from ``self.fgcolor``."""
         FWView.set_style(self)
         color = QColor(self.fgcolor)
         self.colhi = QColor(color)
@@ -104,6 +110,10 @@ class FWViewHist(FWView):
 
 
     def update_my_scene(self, hbins=None):
+        """Refresh the scene-rect item and, if ``hbins`` is given, redraw the histogram.
+
+        The previous ``FWHist`` is removed; if ``bgcolor`` differs from the default, a background rect filling the scene rect is added (earlier ones are not removed). A new ``FWHist`` is created for ``hbins``.
+        """
         FWView.update_my_scene(self)
         if hbins is None: return
 
@@ -120,6 +130,7 @@ class FWViewHist(FWView):
 
     def reset_original_image_size(self):
          # def in FWView.py with overloaded update_my_scene()
+         """Call ``reset_original_size()`` to restore the default scene rect and emit the change signal."""
          self.reset_original_size()
 
 #    def reset_original_image_size(self):
@@ -128,12 +139,14 @@ class FWViewHist(FWView):
 #        self.check_axes_limits_changed()
 
     def mouseReleaseEvent(self, e):
+        """Log a debug message, refresh the scene-rect item with ``FWView.update_my_scene`` and forward the event to ``FWView.mouseReleaseEvent``."""
         logger.debug('mouseReleaseEvent')
         FWView.update_my_scene(self)
         FWView.mouseReleaseEvent(self, e)
 
 
     def closeEvent(self, e):
+        """Remove the histogram items and forward the event to ``FWView.closeEvent``."""
         self.hist.remove()
         FWView.closeEvent(self, e)
         #print('FWViewHist.closeEvent')
@@ -141,6 +154,10 @@ class FWViewHist(FWView):
 
     def set_histogram_from_arr(self, arr, nbins=1000, amin=None, amax=None, frmin=0.001, frmax=0.999, edgemode=0, update_hblimits=True):
         #if np.array_equal(arr, self.arr_old): return
+        """Build a histogram of ``arr`` with ``nbins`` bins and display it.
+
+        Returns early if ``arr`` is the same object as last time or is empty. When ``update_hblimits`` is true (or there are no bins yet) the range is ``amin``/``amax`` or the ``frmin``/``frmax`` quantiles of the data; otherwise the current bin limits are kept. The scene rect spans 0 to the maximum bin content with 5% margins in x and the bin range in y (or the current y range when ``update_hblimits`` is false); the new ``HBins`` is stored in ``self.hbins``.
+        """
         if arr is self.arr_old: return
         self.arr_old = arr
         if arr.size<1: return

@@ -66,6 +66,10 @@ class QWPopupCheckList(QDialog):
 
 
     def make_gui_checkbox(self):
+        """Create one ``QCheckBox`` per ``[name, state]`` in ``list_in_out`` with the given check state and add it to the layout.
+
+        Each box's ``stateChanged`` is connected to :meth:`onCBox`; ``dict_of_items`` maps box to ``[index, name, state]``.
+        """
         self.dict_of_items = {}
         for k,[name,state] in enumerate(self.list_in_out):
             cbx = QCheckBox(name)
@@ -79,11 +83,13 @@ class QWPopupCheckList(QDialog):
 
 
     def showToolTips(self):
+        """Set tool tips on the Apply and Cancel buttons."""
         self.but_apply.setToolTip('Apply changes to the list')
         self.but_cancel.setToolTip('Use default list')
 
 
     def setStyle(self):
+        """Set minimum width 200 and a gray style on the Cancel and Apply buttons."""
         self.setMinimumWidth(200)
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
@@ -94,6 +100,7 @@ class QWPopupCheckList(QDialog):
 
 
     def setIcons(self):
+        """Set the cancel and OK icons on the Cancel and Apply buttons."""
         from psana.graphqt.QWIcons import icon
         icon.set_icons()
         self.but_cancel.setIcon(icon.icon_button_cancel)
@@ -101,6 +108,10 @@ class QWPopupCheckList(QDialog):
 
 
     def onCBox(self, tristate):
+        """Record the new checked state of the check box that has focus in ``dict_of_items``.
+
+        Boxes without focus are not updated; ``tristate`` is only logged.
+        """
         for cbx in self.dict_of_items.keys():
             if cbx.hasFocus():
                 k,name,state = self.dict_of_items[cbx]
@@ -111,11 +122,13 @@ class QWPopupCheckList(QDialog):
 
 
     def onCancel(self):
+        """Reject the dialog; ``list_in_out`` is not changed."""
         logger.debug('onCancel')
         self.reject()
 
 
     def onApply(self):
+        """Copy the recorded states back into ``list_in_out`` via ``fill_output_list`` and accept the dialog."""
         logger.debug('onApply')
         self.fill_output_list()
         self.accept()

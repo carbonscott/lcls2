@@ -43,6 +43,7 @@ TSFORMAT = '%Y-%m-%dT%H:%M:%S' #%z'
 
 def init_logger(loglev_name='DEBUG', fmt='[%(levelname).1s] L%(lineno)04d : %(message)s', datefmt=TSFORMAT) :
     #fmt='%(asctime)s %(name)s %(lineno)d %(levelname)s: %(message)s' # '%(message)s'
+    """Call ``logging.basicConfig`` with format ``fmt``, ``datefmt`` and the level named ``loglev_name`` (KeyError for an unknown name), then log a debug message."""
     logging.basicConfig(format=fmt, datefmt=datefmt, level=DICT_NAME_TO_LEVEL[loglev_name])
     logging.debug('Logger is initialized for level %s' % loglev_name)
 
@@ -53,6 +54,10 @@ def config_logger(loglevel='DEBUG',\
                   filename='',\
                   filemode='w') :
 
+    """Call ``logging.basicConfig`` with ``fmt``, ``datefmt``, ``filename``, ``filemode`` and the level named ``loglevel`` (case-insensitive; unknown names give INFO).
+
+    With the default empty ``filename`` basicConfig writes to a stream instead of a file.
+    """
     level = DICT_NAME_TO_LEVEL.get(loglevel.upper(), logging.INFO)
 
     logging.basicConfig(format=fmt, datefmt=datefmt,\
@@ -70,6 +75,7 @@ class MyLogFilter(logging.Filter):
     """Can be used to intercept all messages.
     """
     def filter(self, record):
+        """Return True for every record; for WARNING records without arguments it also prints the record fields and several ``logging.Formatter`` renderings of it."""
         if not record.args:
             if record.levelno == logging.WARNING:
                 print('LogFilter: ', record.name, record.levelname, record.created, record.msg) #record.__dict__)
@@ -90,6 +96,10 @@ if __name__ == "__main__" :
 
     #from psana.pyalgos.generic.logger import logging, config_logger
 
+    """Configure logging at ``level``, add ``MyLogFilter`` to a logger and emit one test message per level plus ``exception`` and ``log`` calls.
+
+    Defined only when the module runs as a script.
+    """
     config_logger(loglevel=level)#, filename='log.txt')
 
     logger = logging.getLogger(__name__)

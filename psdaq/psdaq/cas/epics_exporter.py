@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Prometheus exporter that reads PVA PVs on each scrape and publishes them as gauges labelled by instrument and id."""
 import os
 import sys
 import time
@@ -14,18 +15,22 @@ PROM_PORT_BASE = 9200
 MAX_PROM_PORTS = 100
 
 class GroupCollector():
+    """Collector that chains the metrics of several collectors."""
     def __init__(self):
         self._collectors = []
 
     def add(self,c):
+        """Append collector `c`."""
         self._collectors.append(c)
 
     def collect(self):
+        """Yield every metric family from each added collector in turn."""
         for c in self._collectors:
             for d in c.collect():
                 yield d
 
 class CustomCollector():
+    """Collector reading PVs through a p4p `Context` for provider `provider`, labelled with `hutch` and `identifier`."""
     def __init__(self, provider, hutch, identifier):
         self.ctx    = Context(provider)
         self._hutch = hutch
@@ -34,15 +39,22 @@ class CustomCollector():
         self._pvs   = {}
 
     def registerGlobalPV(self, name, pv):
+        """Register PV `pv` to be published as gauge `name`."""
         self._glob[name] = pv
 
     def registerPV(self, name, pv):
+        """Register a per-partition gauge `name` for PVs ``pv % i`` with i in 0-7."""
         pvs = []
         for i in range(8):
             pvs.append( pv%i )
         self._pvs[name] = pvs
 
     def collect(self):
+        """Get the registered PVs and yield gauge families; timeouts are logged and skipped.
+
+        Global PVs carry labels (instrument, id). Per-partition gauges carry (instrument,
+        partition, id); the same family object is yielded once per partition as it is filled.
+        """
         for name,pvs in self._glob.items():
             g = GaugeMetricFamily(name, documentation='', labels=['instrument','id'])
             try:
@@ -65,6 +77,14 @@ class CustomCollector():
                 logging.debug("collect %s: TimeoutError" % (pvs))
 
 def createExposer(prometheusDir):
+    """Start the Prometheus HTTP server on the first free port from 9200 and write '<dir>/drpmon_<host>_<i>.yaml'.
+
+    Returns
+    -------
+    str or None
+        The written file name, or None if `prometheusDir` is '', writing fails or no port
+        in 9200-9299 is free.
+    """
     if prometheusDir == '':
         logging.warning('Unable to update Prometheus configuration: directory not provided')
         return None
@@ -93,6 +113,16 @@ def createExposer(prometheusDir):
     return None
 
 def main():
+    """Parse arguments, register collectors for the given PV prefixes and serve metrics, touching the yaml file daily.
+
+    -D takes ','-separated 'hutch/id/PV' triplets; otherwise one collector is made from
+    -H, -I and -P. -G names are added as global PVs and positional names as
+    '<PV>:PART:%d:<name>' (first collector only). With --test nothing is served.
+
+    Notes
+    -----
+    The error message on a failed `os.utime` uses `fileName`, which is undefined here (NameError).
+    """
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='host PVs for XPM')
 
     parser.add_argument('-H', required=False, help='e.g. tst', metavar='HUTCH', default='tst')

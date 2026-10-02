@@ -43,6 +43,12 @@ import sip
 
 class FWRuler():
 
+    """Adds an axis line, tick marks and text labels along side ``'U'``, ``'D'``, ``'L'`` or ``'R'`` of the scene rect of ``view``.
+
+    Tick values are computed once in the constructor with ``AxisLabeling.best_label_locs``. Keyword
+    arguments include ``font``, ``pen``, ``brush``, ``color``, ``tick_fr`` (0.15), ``size_inches`` (3),
+    ``zvalue`` (10), ``fmt`` (``'%g'``) and ``label_rot`` (0); ``view`` must have ``_origin_u``/``_origin_l``.
+    """
     def __init__(self, view, side='U', **kwargs):
 
         self.view   = view
@@ -79,6 +85,10 @@ class FWRuler():
 
 
     def set_pars(self):
+        """Set end points ``p1``/``p2``, tick vector ``dt1``, label offsets ``dtxt``/``dtxt0`` and axis coordinate ``vort`` from the side and the view origin flags.
+
+        An unknown side prints an error and leaves these attributes unset.
+        """
         r = self.rect
         w,h = r.width(), r.height()
         v = self.view
@@ -142,6 +152,11 @@ class FWRuler():
 
     def add(self):
         # add ruller to the path of the scene
+        """Add a path item with the axis line and ticks, and a text item per tick value, to the scene; keep them in ``lst_of_items``.
+
+        A previous path item is removed first. Labels are rotated only if ``label_rot`` is non-zero and
+        ignore view transformations.
+        """
         if self.path_item is not None: self.scene.removeItem(self.path_item)
 
         self.path = QPainterPath(self.p1)
@@ -202,6 +217,7 @@ class FWRuler():
 
 
     def remove(self):
+        """Remove the items in ``lst_of_items`` from the scene if the scene is not deleted, then empty the list."""
         if not sip.isdeleted(self.scene):
           for item in self.lst_of_items:
             self.scene.removeItem(item)
@@ -211,6 +227,7 @@ class FWRuler():
 
 
     def update(self):
+        """Call :meth:`remove`, :meth:`set_pars` and :meth:`add`; tick values are not recomputed."""
         self.remove()
         self.set_pars()
         self.add()

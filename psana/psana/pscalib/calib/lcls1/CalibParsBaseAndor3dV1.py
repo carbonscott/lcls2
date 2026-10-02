@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseAndor3dV1 :
 
+    """Class attributes only: ``ndim`` 3, ``segs`` 2, ``rows`` and ``cols`` 0 (comment: variable size), ``size_cm`` 16 and ``cmod = (2, 10, 10, cols, 0, ...)``; the constructor does nothing."""
     ndim = 3 
     segs = 2
     rows = 0 # 512, 2048 - variable size array due to re-binning

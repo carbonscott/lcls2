@@ -51,12 +51,14 @@ class FMWTabs(QWidget):
 
 
     def set_tool_tips(self):
+        """Set the tool tip of each tab from ``tool_tips``."""
         for t,s in zip(self.tab_names, self.tool_tips):
           self.tab_bar.setTabToolTip(self.tab_names.index(t), s)
         #self.setToolTip('Main tab window')
 
 
     def set_style(self):
+        """Set the window icon (``icon.icon_monitor``), the background style sheet and zero layout margins."""
         from psana.graphqt.Styles import style
         from psana.graphqt.QWIcons import icon
         icon.set_icons()
@@ -66,6 +68,12 @@ class FMWTabs(QWidget):
 
 
     def make_tab_bar(self, start_tab_name):
+        """Create ``self.tab_bar`` with one blue-text tab per name in ``tab_names`` and select ``start_tab_name``.
+
+        Connects ``currentChanged`` to :meth:`on_tab_bar`, ``tabCloseRequested`` to
+        :meth:`on_tab_close_request` and ``tabMoved`` to :meth:`on_tab_moved`. Raises ValueError if
+        ``start_tab_name`` is not in ``tab_names``.
+        """
         self.tab_bar = QTabBar()
 
         for tab_name in self.tab_names:
@@ -85,6 +93,11 @@ class FMWTabs(QWidget):
 
     def gui_selector(self, tab_name):
 
+        """Close the current tab widget and add a new one for ``tab_name`` to ``box_layout``.
+
+        ``'LCLS1'`` creates an ``FMW1Main`` widget; any other name creates a ``QTextEdit`` showing the
+        selected tab name. The new widget is stored in ``self.gui_win``.
+        """
         if self.gui_win is not None:
             self.gui_win.close()
             del self.gui_win
@@ -112,12 +125,14 @@ class FMWTabs(QWidget):
 
 
     def current_tab_index_and_name(self):
+        """Return ``(index, text)`` of the current tab."""
         tab_ind  = self.tab_bar.currentIndex()
         tab_name = str(self.tab_bar.tabText(tab_ind))
         return tab_ind, tab_name
 
 
     def on_tab_bar(self, ind):
+        """Slot for ``currentChanged``: store the current tab name in ``cp.fmwtab_tab_name`` and call :meth:`gui_selector`."""
         tab_ind, tab_name = self.current_tab_index_and_name()
         logger.info('Selected tab "%s"' % tab_name)
         cp.fmwtab_tab_name.setValue(tab_name)
@@ -125,16 +140,19 @@ class FMWTabs(QWidget):
 
 
     def on_tab_close_request(self, ind):
+        """Log the index of the tab whose close was requested; the tab is not removed."""
         logger.debug('on_tab_close_request ind:%d' % ind)
         #self.tab_bar.removeTab(ind)
         #logger.debug('on_tab_close_request tab index:%d' % (itab))
 
 
     def on_tab_moved(self, inew, iold):
+        """Log the old and new tab indexes at debug level."""
         logger.debug('on_tab_close_request tab index begin:%d -> end:%d' % (iold, inew))
 
 
     def closeEvent(self, e):
+        """Close ``gui_win`` if present, pass the event to ``QWidget.closeEvent`` and set ``cp.fmwtabs`` to None."""
         logger.debug('closeEvent')
 
         if self.gui_win is not None:
@@ -146,25 +164,33 @@ class FMWTabs(QWidget):
 
 
     def onExit(self):
+        """Log and close the widget."""
         logger.debug('onExit')
         self.close()
 
 
     def set_tabs_visible(self, is_visible):
+        """Show or hide the tab bar according to ``is_visible``."""
         logger.debug('set_tabs_visible: is_visible %s' % is_visible)
         self.tab_bar.setVisible(is_visible)
 
 
     def tab_bar_is_visible(self):
+        """Return True if the tab bar is visible."""
         return self.tab_bar.isVisible()
 
 
     def view_hide_tabs(self):
+        """Toggle the visibility of the tab bar."""
         self.tab_bar.setVisible(not self.tab_bar.isVisible())
 
 
     if __name__ == "__main__":
       def keyPressEvent(self, e):
+        """Handle keys: Escape closes the widget, V toggles the tab bar, other keys log a key list.
+
+        Defined only when the module is run as ``__main__``.
+        """
         logger.debug('keyPressEvent, key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()

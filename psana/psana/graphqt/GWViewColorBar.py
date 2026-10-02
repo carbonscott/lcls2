@@ -57,6 +57,10 @@ import numpy as np
 
 class GWViewColorBar(GWViewImage):
 
+    """GWViewImage that displays a color table as a color bar and lets the user pick another table.
+
+    The bar image is built with ``ct.array_for_color_bar(coltab, orient)``. Declares signals ``new_color_table()`` and ``new_color_table_index_is_selected(int)``; ``change_mode & 2`` enables the selection popup on mouse press.
+    """
     new_color_table = pyqtSignal()
     new_color_table_index_is_selected = pyqtSignal('int')
 
@@ -90,10 +94,15 @@ class GWViewColorBar(GWViewImage):
         #self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
 
     def mousePressEvent(self, e):
+        """Open the color table popup via ``on_colorbar`` if ``self.change_mode & 2`` is set; otherwise forward the event to ``GWViewImage.mousePressEvent``."""
         if self.change_mode & 2: self.on_colorbar(e)
         else: GWViewImage.mousePressEvent(self, e)
 
     def on_colorbar(self, e):
+        """Show the color table selection popup and apply the selected table if it differs from the current index.
+
+        Returns without change if the popup returns None; ``e`` is unused.
+        """
         ctab_ind = popup_select_color_table(None)
         #logger.debug('on_colorbar - selected index %s'% str(ctab_ind))
         if ctab_ind is None: return
@@ -120,30 +129,42 @@ class GWViewColorBar(GWViewImage):
         self.new_color_table.emit()
 
     def color_table(self):
+        """Return the current color table array ``self._ctab``."""
         return self._ctab
 
     def color_table_index(self):
+        """Return the current color table index ``self._ctab_ind`` (None until a table is selected by index)."""
         return self._ctab_ind
 
     def connect_new_color_table_index_is_selected(self, recip):
+        """Connect ``recip`` to the ``new_color_table_index_is_selected['int']`` signal."""
         self.new_color_table_index_is_selected['int'].connect(recip)
 
     def disconnect_new_color_table_index_is_selected(self, recip):
+        """Disconnect ``recip`` from the ``new_color_table_index_is_selected['int']`` signal."""
         self.new_color_table_index_is_selected['int'].disconnect(recip)
 
     def test_new_color_table_index_is_selected_reception(self, ind):
+        """Log the method name and ``self._ctab_ind``; the received ``ind`` is not used."""
         logger.info(sys._getframe().f_code.co_name + ' color table index %s' % str(self._ctab_ind))
 
     def connect_new_color_table(self, recip):
+        """Connect ``recip`` to a color-table signal.
+
+        The code connects to ``new_color_table_index_is_selected``, not to ``new_color_table`` as the name suggests.
+        """
         self.new_color_table_index_is_selected.connect(recip)
 
     def disconnect_new_color_table(self, recip):
+        """Disconnect ``recip`` from ``new_color_table_index_is_selected`` (not from ``new_color_table``)."""
         self.new_color_table_index_is_selected.disconnect(recip)
 
     def test_new_color_table_reception(self):
+        """Log the method name and the first five entries of ``self._ctab``."""
         logger.info(sys._getframe().f_code.co_name + ': %s' % str(self._ctab[:5]))
 
     def closeEvent(self, e):
+        """Do nothing; the body is ``pass`` and the base-class closeEvent is not called."""
         pass
         #print('%s.closeEvent' % self._name)
         #QWidget.closeEvent(self, e)

@@ -1,6 +1,7 @@
 #####!/usr/bin/env python
 #------------------------------
 
+"""Command ``proc_control``: submit one dataset-processing batch job with ``bsub``, poll its status and keep a log file."""
 import os
 import sys
 from time import time, sleep
@@ -107,6 +108,7 @@ def proc_control(parser) :
 #------------------------------
 
 def usage() : 
+    """Return the usage text with ``%prog`` placeholders and an example."""
     return "\n%prog -e <experiment> -r <run-number> [-p <process-name> -q <queue-name> -t <wait-sec> -s <sources>]"\
            "\n  Ex.: %prog -e xpptut15 -r 0260 -p pixel_status -q psnehq -t 5 -s cspad,pnccd"
 
@@ -114,6 +116,7 @@ def usage() :
 
 def input_option_parser() :
 
+    """Return an ``optparse.OptionParser`` with options ``-e/--exp``, ``-r/--run``, ``-p/--pro``, ``-q/--que``, ``-t/--dts`` (60) and ``-s/--srs``."""
     from optparse import OptionParser
     d_exp = 'xpptut15'
     d_run = '0260'
@@ -143,6 +146,7 @@ def input_option_parser() :
 
 def do_main() :
 
+    """Exit with a warning after printing help if fewer than four command-line arguments are given; otherwise call ``proc_control`` and exit with status 0."""
     parser = input_option_parser()
 
     if len(sys.argv) < 5 : 

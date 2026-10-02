@@ -29,6 +29,10 @@ from psana.graphqt.Styles import style
 
 
 class QWLogger(QWidget):
+    """QWidget that shows the records of a logger object ``log`` in a read-only text box, with level selector and Save/Close buttons.
+
+    Log file name and level come from ``cp.log_file`` and ``cp.log_level``; the widget registers itself with ``log.setGUILogger`` and as ``cp.qwlogger``. With ``show_buttons`` false the buttons, labels and level box are hidden and their signals are not connected.
+    """
     _name = 'QWLogger'
 
     def __init__(self, log, cp, show_buttons=True):
@@ -83,6 +87,7 @@ class QWLogger(QWidget):
 
     def set_tool_tips(self):
         #self           .setToolTip('This GUI is for browsing log messages')
+        """Set tool tips on the text box, buttons, status label and level combo box."""
         self.box_txt    .setToolTip('Window for log messages')
         self.but_close  .setToolTip('Close this window')
         self.but_save   .setToolTip('Save current content of the GUI Logger\nin work directory file: '+os.path.basename(self.fname_log))
@@ -91,6 +96,7 @@ class QWLogger(QWidget):
 
 
     def set_style(self):
+        """Set geometry and style sheets, make the text box read-only, show or hide the controls according to ``self.show_buttons``, zero margins and set minimum size 300x50."""
         self.setGeometry(200, 400, 500, 300)
         self.           setStyleSheet(style.styleBkgd)
         #self.tit_title.setStyleSheet(style.styleTitleBold)
@@ -115,6 +121,7 @@ class QWLogger(QWidget):
 
 
     def closeEvent(self, e):
+        """Log a debug message through ``self.log`` and forward the event to ``QWidget.closeEvent``."""
         self.log.debug('closeEvent', self._name)
         #self.log.info('%s.closeEvent' % self._name)
         #self.saveLogTotalInFile() # It will be saved at closing of GUIMain
@@ -122,16 +129,19 @@ class QWLogger(QWidget):
 
 
     def onClose(self):
+        """Log a debug message and close the widget."""
         self.log.debug('onClose', self._name)
         self.close()
 
 
     def onSave(self):
+        """Log a debug message and call ``saveLogInFile``."""
         self.log.debug('onSave:', self._name)
         self.saveLogInFile()
 
 
     def onBox(self):
+        """Apply the level selected in the combo box: store it in ``cp.log_level``, set it on ``self.log`` and reload the text box with ``log.getLogContent()``."""
         level_selected = self.box_level.currentText()
         self.cp.log_level.setValue(level_selected)
         self.log.info('onBox - selected ' + self.tit_level.text() + ' ' + self.cp.log_level.value(), self._name)
@@ -140,6 +150,10 @@ class QWLogger(QWidget):
 
 
     def saveLogInFile(self):
+        """Ask for a file name and save the log with ``log.saveLogInFile``, then update ``self.fname_log`` and ``cp.log_file``.
+
+        The PyQt5 dialog result (a tuple) is passed through ``str()``, so the cancel check ``path == ''`` never matches and the path used is the text of that tuple.
+        """
         self.log.info('saveLogInFile ' + self.fname_log, self._name)
         path = str(QFileDialog.getSaveFileName(self,
                                                caption   = 'Select the file to save log',
@@ -156,6 +170,10 @@ class QWLogger(QWidget):
 
 
     def saveLogTotalInFile(self):
+        """Save all log records with ``log.saveLogTotalInFile(self.fname_log_total)``.
+
+        ``fname_log_total`` is never assigned in this class, so this raises AttributeError unless it is set externally.
+        """
         self.log.info('saveLogTotalInFile' + self.fname_log_total, self._name)
         self.log.saveLogTotalInFile(self.fname_log_total)
 
@@ -179,10 +197,12 @@ class QWLogger(QWidget):
 
 
     def onShow(self):
+        """Log that the method is not implemented; does nothing else."""
         self.log.info('onShow - is not implemented yet...', self._name)
 
 
     def startGUILog(self):
+        """Initialize the view: take ``self.fname_log`` from ``cp.log_file``, show it in the status label, apply ``cp.log_level`` to the logger, fill the text box and register this widget with ``log.setGUILogger``."""
         self.fname_log = self.cp.log_file.value()
         #self.fname_log_total = self.cp.log_file_total.value()
         self.setStatus(0, 'Log-file: ' + os.path.basename(self.fname_log))
@@ -196,6 +216,7 @@ class QWLogger(QWidget):
 
 
     def appendGUILog(self, msg='...'):
+        """Append ``msg`` to the text box and scroll to the end."""
         self.box_txt.append(msg)
         self.scrollDown()
 
@@ -203,6 +224,7 @@ class QWLogger(QWidget):
     def scrollDown(self):
         #scrol_bar_v = self.box_txt.verticalScrollBar() # QScrollBar
         #scrol_bar_v.setValue(scrol_bar_v.maximum())
+        """Move the text box cursor to the end and repaint it."""
         self.box_txt.moveCursor(QTextCursor.End)
         self.box_txt.repaint()
         #self.raise_()
@@ -210,6 +232,7 @@ class QWLogger(QWidget):
 
 
     def setStatus(self, status_index=0, msg=''):
+        """Set the status label text to ``msg`` and its style by ``status_index`` (0 good, 1 warning, 2 alarm; other values keep the style)."""
         list_of_states = ['Good','Warning','Alarm']
         if status_index == 0: self.tit_status.setStyleSheet(style.styleStatusGood)
         if status_index == 1: self.tit_status.setStyleSheet(style.styleStatusWarning)

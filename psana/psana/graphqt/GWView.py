@@ -57,9 +57,14 @@ class GWView(QGraphicsView):
         if show_mode > 0: self.add_test_items_to_scene(show_mode)
 
     def scene_rect(self):
+        """Return the scene's ``sceneRect()``."""
         return self.scene().sceneRect()
 
     def set_scene_rect(self, r):
+        """Set the scene rect to ``r`` if it is not None.
+
+        When the root logger level is DEBUG the rect is also printed on one line ending with a carriage return.
+        """
         if r is not None:
             self.scene().setSceneRect(r)  # self.setSceneRect(r)  # WORKS DIFFERENTLY!
             if logging.root.level == logging.DEBUG:
@@ -74,10 +79,12 @@ class GWView(QGraphicsView):
         self.fitInView(r, mode)
 
     def set_style(self):
+        """Log a debug message and set the background brush."""
         logger.debug('GWView.set_style')
         self.set_background_brush()
 
     def set_background_brush(self):
+        """Set the view background brush from ``kwa['bkg_color']`` (default QColor(50,5,50)) and ``kwa['bkg_pattern']`` (default Qt.SolidPattern)."""
         self.setBackgroundBrush(QBrush(\
             self.kwa.get('bkg_color', QColor(50,5,50)),\
             self.kwa.get('bkg_pattern', Qt.SolidPattern)))
@@ -108,6 +115,7 @@ class GWView(QGraphicsView):
         self.update_my_scene()
 
     def mousePressEvent(self, e):
+        """On a left-button press, store the click position and the scene-rect center for panning; then forward the event to the base class."""
         if e.button() == Qt.LeftButton:  # and e.modifiers() & Qt.ControlModifier
             logger.debug('GWView.mousePressEvent on LeftButton')
             #self.click_pos = self.mapToScene(e.pos())
@@ -133,6 +141,7 @@ class GWView(QGraphicsView):
         self._move_scene_rect_by_mouse(e)
 
     def mouseReleaseEvent(self, e):
+        """Forward the event, apply the final pan move if a click position is stored, and clear the click position."""
         QGraphicsView.mouseReleaseEvent(self, e)
         logger.debug('mouseReleaseEvent')
         if self.click_pos is not None:
@@ -140,6 +149,10 @@ class GWView(QGraphicsView):
         self.click_pos = None
 
     def wheelEvent(self, e):
+        """Zoom the scene rect around the mouse position along the interactive axes.
+
+        The rect is scaled by 1.3 for a positive angle delta and by 0.7 otherwise and fitted into the view ignoring the aspect ratio. A change of wheel direction is logged; nothing is zoomed if scale control is 0.
+        """
         ang = e.angleDelta().x() + e.angleDelta().y()
 
         if ang != self.ang_wheel_old:
@@ -171,6 +184,7 @@ class GWView(QGraphicsView):
         return self.scene().addRect(rect, pen, brush)
 
     def add_test_items_to_scene(self, show_mode=3, colori=Qt.red, colfld=Qt.magenta):
+        """Add marker rectangles: a 10x10 rect at the origin filled with ``colfld`` if ``show_mode & 1`` and a 2x2 rect centered on the origin filled with ``colori`` if ``show_mode & 2``."""
         if show_mode & 1:
             rs=QRectF(0, 0, 10, 10)
             self.rsi = self.add_rect_to_scene_v1(rs, pen=QPen(Qt.NoPen), brush=QBrush(colfld))

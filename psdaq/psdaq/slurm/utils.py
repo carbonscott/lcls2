@@ -1,3 +1,4 @@
+"""Slurm helpers for the DAQ manager: environment filtering, Slurm command retries and `SbatchManager`, which builds sbatch scripts and srun job-step commands."""
 import os
 import sys
 import socket
@@ -41,12 +42,14 @@ logger = logging.getLogger(__name__)
 
 
 class PSbatchSubCommand:
+    """Integer constants START (0), STOP (1) and RESTART (2)."""
     START = 0
     STOP = 1
     RESTART = 2
 
 def build_sbatch_env(source_env=None):
     # Build a clean environment for sbatch submission, only including necessary variables.
+    """Return a dict with only the variables of `source_env` (default `os.environ`) whose names are in `DAQMGR_SUBMIT_ENV_KEYS`."""
     if source_env is None:
         source_env = os.environ
 
@@ -59,6 +62,7 @@ def build_sbatch_env(source_env=None):
 
 
 def daqmgr_debug_env_enabled(source_env=None):
+    """Return True if $DAQMGR_DEBUG_ENV (in `source_env`, default `os.environ`) is '1', 'true', 'yes' or 'on' (case-insensitive)."""
     if source_env is None:
         source_env = os.environ
     return source_env.get(DAQMGR_DEBUG_ENV, "").lower() in DAQMGR_DEBUG_ENV_TRUE_VALUES
@@ -116,6 +120,11 @@ def run_slurm_with_retries(*args, max_retries=3, retry_delay=5):
 
 
 class SbatchManager:
+    """Build sbatch scripts for the processes of a DAQ config file.
+
+    The hutch is the part of $USER before 'opr'; log files go under `output` (default
+    '$HOME/daq/logs') in a YYYY/MM subdirectory, which is created if missing.
+    """
     def __init__(
         self, configfilename, xpm_id, platform, station, as_step, verbose, output=None
     ):
@@ -141,17 +150,21 @@ class SbatchManager:
         self.scripts_dir = os.path.join(SCRIPTS_ROOTDIR, self.hutch, "scripts")
 
     def get_default_log_root(self):
+        """Return '$HOME/daq/logs' (HOME taken from the environment, '' if unset)."""
         home_dir = os.environ.get("HOME", "")
         return os.path.join(home_dir, "daq", "logs")
 
     def set_attr(self, attr, val):
+        """Set attribute `attr` to `val` on this object."""
         setattr(self, attr, val)
 
     def get_comment(self, config_id):
+        """Return the job comment 'x<xpm_id>_p<platform>_s<station>_<config_id>'."""
         comment = f"x{self.xpm_id}_p{self.platform}_s{self.station}_{config_id}"
         return comment
 
     def get_node_features(self):
+        """Return {node: {feature: 0, ...}} parsed from ``sinfo -N -h -o '"%N %f"'``."""
         lines = run_slurm_with_retries("sinfo", "-N", "-h", "-o", '"%N %f"').splitlines()
         node_features = {}
         for line in lines:
@@ -262,6 +275,7 @@ class SbatchManager:
         return job_details
 
     def get_output_filepath(self, node, job_name):
+        """Return '<output_path>/<DD_HH:MM:SS>_<node>:<job_name>.log' using the time stamp taken at construction."""
         output_filepath = os.path.join(
             self.output_path,
             self.output_prefix_datetime + "_" + node + ":" + job_name + ".log",
@@ -269,6 +283,12 @@ class SbatchManager:
         return output_filepath
 
     def get_daq_cmd(self, details, job_name):
+        """Return the command from `details` with options added.
+
+        ' -p <platform>' if flags contain 'p', ' -u <job_name>' if they contain 'u', the config
+        file name for 'daqstat', and for 'drp ' commands without ' -W ' a worker count of cores
+        minus -Q workers minus `DRP_N_RSV_CORES` (at least 1).
+        """
         cmd = details["cmd"]
         if "flags" in details:
             if details["flags"].find("p") > -1:
@@ -290,9 +310,11 @@ class SbatchManager:
         return cmd
 
     def is_drp(self, cmd):
+        """Return True if `cmd` (stripped) starts with 'drp '."""
         return cmd.strip().startswith("drp ")
 
     def get_n_cores(self, details):
+        """Return ``int(details['cores'])``, or 1 if 'cores' is absent."""
         n_cores = 1
         if "cores" in details:
             n_cores = int(details["cores"])
@@ -315,6 +337,14 @@ class SbatchManager:
     def get_jobstep_cmd(
         self, node, job_name, details, het_group=-1, with_output=False, as_step=False
     ):
+        """Return the srun command line that runs one config entry under bash.
+
+        The command exports a fixed variable list (TESTRELDIR/CONDA_* chosen from the
+        'DAQ_'/'AMI_' prefixed variables per 'env_group'), PATH/PYTHONPATH built from
+        TESTRELDIR and CONDA_PREFIX, entries from 'env' and a default LD_LIBRARY_PATH. The bash
+        command runs `daqlog_header` then the DAQ command (with chrt for 'rtprio', and conda
+        activation for 'conda_env'); `as_step` uses --exclusive and appends '&'.
+        """
         output_opt = ""
         if with_output:
             output = self.get_output_filepath(node, job_name)
@@ -463,6 +493,11 @@ class SbatchManager:
         return jobstep_cmd
 
     def generate_as_step(self, sbjob, node_features):
+        """Build in `sb_script` one heterogeneous sbatch script with a job step per process of `sbjob` ({node: {job_name: details}}).
+
+        Each node gets --nodelist (or --constraint with its features) and --ntasks; the
+        script ends with 'wait'.
+        """
         sb_script = "#!/bin/bash\n"
         sb_script += f"#SBATCH --partition={SLURM_PARTITION}" + "\n"
         sb_script += "#SBATCH --job-name=main" + "\n"
@@ -502,6 +537,10 @@ class SbatchManager:
         self.sb_script = sb_script
 
     def generate(self, node, job_name, details, node_features):
+        """Build in `sb_script` an sbatch script for one process: partition, job name, output file, comment, node list (or constraint) and cores.
+
+        Adds a GPU request if flags contain 'g' and prints the script if `verbose`.
+        """
         sb_script = "#!/bin/bash\n"
         sb_script += f"#SBATCH --partition={SLURM_PARTITION}" + "\n"
         sb_script += f"#SBATCH --job-name={job_name}" + "\n"

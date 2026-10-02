@@ -1,11 +1,13 @@
 
 #------------------------------
 
+"""Example: call test functions exported by ``psana.hexanode`` (from its compiled extension) with numpy arrays and print the results; the functions themselves are not visible here."""
 import numpy as np
 
 #------------------------------
 
 def test_01() :
+    """Call ``met1()`` and print ``fib(9)`` from ``psana.hexanode``."""
     print(50*'_', '\nTest of include psana.hexanode')
     from psana.hexanode import fib, met1
     met1()
@@ -14,6 +16,7 @@ def test_01() :
 #------------------------------
 
 def test_templ(nda) :
+    """Call ``psana.hexanode.test_nda(nda)`` and print ``nda`` afterwards."""
     from psana.hexanode import test_nda
     test_nda(nda)
     print('Returned array:\n', nda)
@@ -21,6 +24,7 @@ def test_templ(nda) :
 #------------------------------
 
 def test_02() :
+    """Call ``test_templ`` with arrays of ones (times 1, 2, 3) of dtypes float64, int16 and uint16."""
     print(50*'_', '\nTest of templated function test_nda')
     test_templ(1*np.ones((2,3), dtype=np.float64))
     test_templ(2*np.ones((2,4), dtype=np.int16))
@@ -29,6 +33,7 @@ def test_02() :
 #------------------------------
 
 def test_03() :
+    """Call ``test_nda_f8``, ``test_nda_i2`` and ``test_nda_u2`` from ``psana.hexanode`` with float64, int16 and uint16 arrays and print each array afterwards."""
     from psana.hexanode import test_nda_f8, test_nda_i2, test_nda_u2
 
     print(50*'_', '\nTest of specialized methods test_nda_f8(nda), test_nda_i2(nda), test_nda_u2(nda)')
@@ -47,12 +52,14 @@ def test_03() :
 #------------------------------
 
 def test_09() :
+    """Import ``psana.hexanode`` and print a separator line."""
     import psana.hexanode
     print(50*'_', '\nTest print')
 
 #------------------------------
 
 def usage(tname):
+    """Return the usage text, listing all tests for ``tname`` '0' or only the selected one."""
     s = '\nUsage: python psana/psana/hexanode/examples/ex-01-np-to-cpp.py <test-number>'
     if tname in ('0',)    : s+='\n 0 - test ALL'
     if tname in ('0','1') : s+='\n 1 - met1(), fib(9)'

@@ -43,6 +43,10 @@ from psana.hexanode.PyCFD import PyCFD
 
 class WFPeaks :
 
+    """Find peaks in multi-channel waveforms and keep per-channel hit counts, peak indexes, values and times.
+
+    The algorithm is chosen by keyword 'version': 1 uses ``wfpkfinder_cfd`` from the compiled module ``ndarray`` (not visible here), 2 and 3 use ``peak_finder_v2``/``peak_finder_v3`` from ``WFUtils``, and 4 uses one ``PyCFD`` object per channel. Results are stored in arrays of shape (numchs, numhits).
+    """
     def __init__(self, **kwargs) :
         """Waveform peak finder wrapper.
            - wf digitizer channels (0,1,2,3,4) should be ordered for u1,u2,v1,v2[,w1,w2],mcp, respectively
@@ -57,6 +61,10 @@ class WFPeaks :
 
     def set_wf_peak_finder_parameters(self, **kwargs) :
 
+        """Store peak-finder parameters from ``kwargs`` as attributes.
+
+        Always reads 'numchs' (5), 'numhits' (16), 'version' (1), 'DLD' (False) and the 'cfd_*' parameters; version 2 and 3 read their 'pf2_*'/'pf3_*' parameters, overriding the offset and bin-range values. Version 4 builds ``self.PyCFDs`` from 'paramsCFD' (list or dict); with 'DLD' the entries are mapped by channel name and an unknown name raises NameError.
+        """
         self.NUM_CHANNELS= kwargs.get('numchs',  5)
         self.NUM_HITS    = kwargs.get('numhits',16)
         self.VERSION     = kwargs.get('version', 1)
@@ -132,7 +140,9 @@ class WFPeaks :
 
 
     def proc_waveforms(self, wfs, wts) :
-        """
+        """Find peaks in waveforms ``wfs`` with sample times ``wts`` (both shaped (channels, samples)) and store the results.
+
+        Returns immediately if ``wfs`` is the same object as in the previous call. Asserts the channel count, cuts samples ``WFBINBEG:WFBINEND`` (subtracting the mean of ``IOFFSETBEG:IOFFSETEND`` except in version 4), runs the selected finder per channel, limits the hit count to ``NUM_HITS`` and stores peak times. In version 4 a channel with no samples in the range is skipped.
         """
         # if waveforms are already processed
         if wfs is self._wfs_old : return
@@ -202,18 +212,28 @@ class WFPeaks :
 
 
     def number_of_hits(self, wfs, wts) :
+        """Process ``wfs``, ``wts`` with ``proc_waveforms`` and return the per-channel hit-count array."""
         self.proc_waveforms(wfs, wts)
         return self._number_of_hits
 
     def peak_times_sec(self, wfs, wts) :
+        """Process ``wfs``, ``wts`` with ``proc_waveforms`` and return the (channels, hits) array of peak times taken from ``wts``."""
         self.proc_waveforms(wfs, wts)
         return self._pktsec
 
     def peak_indexes(self, wfs, wts) :
+        """Process ``wfs``, ``wts`` with ``proc_waveforms`` and return the (channels, hits) array of peak sample indexes.
+
+        In version 4 these are filled only by ``peak_indexes_values``.
+        """
         self.proc_waveforms(wfs, wts)
         return self._pkinds
 
     def peak_values(self, wfs, wts) :
+        """Process ``wfs``, ``wts`` with ``proc_waveforms`` and return the (channels, hits) array of peak values.
+
+        In version 4 these are filled only by ``peak_indexes_values``.
+        """
         self.proc_waveforms(wfs, wts)
         return self._pkvals
 
@@ -243,6 +263,10 @@ class WFPeaks :
 
 if __name__ == "__main__" :
   def test_WFPeaks() :
+    """Create a ``WFPeaks`` object with version-1 settings plus pf2/pf3 parameters; no waveforms are processed.
+
+    Defined only when the module runs as a script.
+    """
     print(50*'_')
     kwargs = {'numchs'   : 5,
               'numhits'  : 16,
@@ -282,6 +306,10 @@ if __name__ == "__main__" :
 
 
   def usage(tname):
+    """Return the usage text for the tests.
+
+    Defined only when the module runs as a script.
+    """
     s = '\nUsage: python %s <test-number>' % sys.argv[0]
     if tname in ('0',)    : s+='\n 0 - test ALL'
     if tname in ('0','1') : s+='\n 1 - test_WFPeaks()'

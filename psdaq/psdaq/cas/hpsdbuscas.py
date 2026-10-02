@@ -15,12 +15,14 @@ from p4p import Value, Type
 logger = logging.getLogger(__name__)
 
 class DefaultPVHandler(object):
+    """p4p put handler that timestamps and posts the written value, then calls ``parent.update()``."""
     type = None
 
     def __init__(self, parent):
         self.parent = parent
 
     def put(self, pv, op):
+        """Post the written value with the current timestamp, complete the operation and call ``self.parent.update()``."""
         postedval = op.value()
         postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time()), 1.0)
         pv.post(postedval)
@@ -28,6 +30,10 @@ class DefaultPVHandler(object):
         self.parent.update()
 
 class PVAServer(object):
+    """StaticProvider with '<prefix>HPS:FIELDNAMES', 'HPS:FIELDTYPES', 'HPS:FIELDMASK' and a 'PAYLOAD' structure PV rebuilt from them.
+
+    Defaults: 31 names 'pid00'..'pid1e', all types 'i', mask 0x8000.
+    """
     def __init__(self, provider_name, prefix):
         self.provider = StaticProvider(provider_name)
         self.prefix = prefix
@@ -54,6 +60,11 @@ class PVAServer(object):
         self.update()
 
     def update(self):
+        """Replace the 'PAYLOAD' PV with a structure holding 'valid' plus one field per set bit of the mask.
+
+        Field names and type characters come from FIELDNAMES/FIELDTYPES; the structure ID is
+        the mask as a string (with 'a' appended if equal to the old ID). The new ID is printed.
+        """
         mask  = self.fieldMask .current().get('value')
         names = self.fieldNames.current().get('value')
         types = self.fieldTypes.current().get('value')
@@ -79,12 +90,14 @@ class PVAServer(object):
         self.provider.add(pvname,self.payload)
 
     def forever(self):
+        """Serve the provider with `p4p.server.Server.forever` (blocks)."""
         Server.forever(providers=[self.provider])
 
 
 import argparse
 
 def main():
+    """Parse -P (prefix, required) and -v, create a `PVAServer` for '<prefix>:' and serve until KeyboardInterrupt."""
     global prefix
     prefix = ''
 

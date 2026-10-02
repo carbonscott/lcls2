@@ -35,6 +35,10 @@ from PyQt5.QtGui import QCursor  # , QColor, QBrush
 
 class QWPopupEditConfirm(QDialog):
 
+    """QDialog with an editable text box and Cancel/Apply buttons.
+
+    Keyword arguments 'parent', 'win_title', 'msg', 'but_title_apply' and 'but_title_cancel' set the parent, title, initial text and button labels; Apply accepts and Cancel rejects the dialog.
+    """
     def __init__(self, **kwa):
         QDialog.__init__(self, kwa.get('parent', None))
         win_title = kwa.get('win_title', 'Edit and confirm or cancel')
@@ -59,6 +63,7 @@ class QWPopupEditConfirm(QDialog):
         self.set_style()
 
     def set_style(self):
+        """Set small layout margins and a gray style sheet on both buttons."""
         self.layout().setContentsMargins(2,2,2,2)
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);"
         self.but_cancel.setStyleSheet(styleGray)
@@ -68,19 +73,31 @@ class QWPopupEditConfirm(QDialog):
         #self.setMinimumHeight(30)
 
     def on_cancel(self):
+        """Log a debug message and reject the dialog."""
         logger.debug('on_cancel')
         self.reject()
 
     def on_apply(self):
+        """Log a debug message and accept the dialog."""
         logger.debug('on_apply')
         self.accept()
 
     def message(self):
+        """Return the current plain text of the edit box as str."""
         return str(self.edi_msg.toPlainText())
 
 def popup_edit_and_confirm(parent, dx=0, dy=0, height=60, width=150, is_frameless=False,\
                            msg='text to edit',\
                            win_title='Edit & confirm or cancel'):
+    """Show a modal ``QWPopupEditConfirm`` at the cursor position plus (``dx``, ``dy``) and return the result.
+
+    ``width`` and ``height`` fix the dialog size when not None; ``is_frameless`` adds the frameless window flag.
+
+    Returns
+    -------
+    tuple
+        ``(resp, s)``: the ``exec_()`` result (QDialog.Accepted or Rejected) and the edited text.
+    """
     w = QWPopupEditConfirm(parent=parent, msg=msg, win_title=win_title)
     if width  is not None: w.setFixedWidth(width)
     if height is not None: w.setFixedHeight(height)

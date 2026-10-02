@@ -35,11 +35,13 @@ class Storage:
         self.ictab = 0
 
     def color_table_index(self):
+        """Return the stored color table index ``self.ictab``."""
         return self.ictab
 
 STOR = Storage()
 
 def print_colors(arr):
+    """Print the red component (0-255) of every value of 2-d array ``arr``, one value per line, with an empty line after each row."""
     sh = arr.shape
     for row in arr:
       for v in row:
@@ -70,6 +72,7 @@ def apply_color_table(arr, ctable=None, amin=None, amax=None, frmin=0.00001, frm
     return ctab[ict]
 
 def color_table_default():
+    """Return :func:`color_table_interpolated` with its default points and colors."""
     return color_table_interpolated()
     #return color_table_rainbow(ncolors=1000, hang1=0, hang2=360)
 
@@ -125,6 +128,10 @@ def color_table_interpolated(points=[0,      50,      200,      300,      500,  
     return ctab
 
 def color_table_rainbow(ncolors=1000, hang1=250, hang2=-20):
+    """Return a ``numpy.uint32`` array of ``ncolors`` ARGB colors with hue going linearly from ``hang1`` to ``hang2`` degrees.
+
+    Built with :class:`ColorTable` (full saturation and value).
+    """
     ct = ColorTable(ncolors, hang1, hang2)
     return ct.np_ctable()
 
@@ -145,6 +152,10 @@ def next_color_table(ict=None):
         return color_table_rainbow()
 
 def get_pixmap(ind, orient='H', size=(200,30)):
+    """Return a ``QPixmap`` of color bar ``ind`` (from :func:`next_color_table`) scaled to ``size`` (width, height).
+
+    Calling it also sets the shared index ``STOR.ictab`` through ``next_color_table``.
+    """
     ctab = next_color_table(ict=ind)
     arr  = array_for_color_bar(ctab, orient=orient)#, width = 10)
     (h,w) = arr.shape
@@ -185,6 +196,10 @@ def pixmap_channel(pixmap, channel=3):
     return pixmap_to_arrcolors(pixmap)[:,:,channel]
 
 def test_mask(arr):
+    """Return a uint32 mask of ``arr``'s shape with all bits set, except alpha cleared (``0x00ffffff``) in rows h/4..h/2 and columns w/4..w/2.
+
+    Also prints info about ``arr`` and the mask.
+    """
     from psana.pyalgos.generic.NDArrUtils import info_ndarr
     print(info_ndarr(arr, 'XXX test_mask.arr:'))
     h, w = arr.shape                        #   AARRGGBB
@@ -221,6 +236,7 @@ class ColorTable():
         return [c.rgba() for c in self.ctable]
 
     def np_ctable(self):
+        """Return the color table as a ``numpy.uint32`` array of RGBA integers (from :meth:`int_ctable`)."""
         return np.array(self.int_ctable(), dtype=np.uint32)
 
     def set_ncolors(self, ncolors):
@@ -246,11 +262,13 @@ class ColorTable():
         else              : return self.ctable[-1]
 
     def info_color_table(self):
+        """Return a multi-line string with the index and R, G, B components of every color in the table."""
         return '\n'.join(['i:%4d  R:%3d  G:%3d  B:%3d' %\
                          (ic, qc.red(), qc.green(), qc.blue())\
                          for ic, qc in enumerate(self.ctable)])
 
     def print_color_table(self):
+        """Print :meth:`info_color_table`."""
         print(self.info_color_table())
 
 if __name__ == '__main__':

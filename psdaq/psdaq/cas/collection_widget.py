@@ -1,3 +1,4 @@
+"""PyQt5 widget that sends collection requests (rollcall/alloc/connect, reset, getstate) over ZMQ and lists the processes."""
 import sys
 import zmq
 from datetime import datetime, timezone
@@ -7,6 +8,7 @@ PORT_BASE = 29980
 POSIX_TIME_AT_EPICS_EPOCH = 631152000
 
 def timestampStr():
+    """Return the current UTC time as ``'%010d-%09d' % (sec, nsec)`` with seconds since the EPICS epoch."""
     current = datetime.now(timezone.utc)
     nsec = 1000 * current.microsecond
     sec = int(current.timestamp()) - POSIX_TIME_AT_EPICS_EPOCH
@@ -14,6 +16,11 @@ def timestampStr():
 
 
 def create_msg(key, msg_id=None, sender_id=None, body={}):
+    """Build a ``{'header': {...}, 'body': body}`` message with key `key`.
+
+    The dict is only built when `msg_id` is None (a timestamp is then used); passing a
+    `msg_id` leaves `msg` unassigned and raises UnboundLocalError.
+    """
     if msg_id is None:
         msg_id = timestampStr()
         msg = {'header': {
@@ -24,10 +31,15 @@ def create_msg(key, msg_id=None, sender_id=None, body={}):
     return msg
 
 def rep_port(platform):
+    """Return ``PORT_BASE + platform + 20`` (PORT_BASE is 29980)."""
     return PORT_BASE + platform + 20
 
 
 class CollectionWidget(QtWidgets.QWidget):
+    """Widget with 'Auto connect' and 'Reset' buttons and drp/teb/meb host lists.
+
+    A ZMQ REQ socket is connected to 'tcp://drp-tst-acc06:<rep_port(partition)>'.
+    """
     def __init__(self, partition, parent=None):
         super().__init__(parent)
         self.context = zmq.Context(1)
@@ -60,6 +72,10 @@ class CollectionWidget(QtWidgets.QWidget):
         self.setMaximumWidth(300)
 
     def auto_connect(self):
+        """Send 'rollcall', 'alloc' and 'connect' requests in turn, then refresh the lists with `get_state`.
+
+        Each reply is printed; if one has ``body['err_info']`` it is shown in the label and the sequence stops.
+        """
         self.label.clear()
         for w in self.listWidgets.values():
             w.clear()
@@ -74,6 +90,7 @@ class CollectionWidget(QtWidgets.QWidget):
 
 
     def reset(self):
+        """Clear the label and lists, send a 'reset' request and print the reply."""
         self.label.clear()
         for w in self.listWidgets.values():
             w.clear()
@@ -82,6 +99,7 @@ class CollectionWidget(QtWidgets.QWidget):
 
 
     def get_state(self):
+        """Send 'getstate' and fill the drp/teb/meb lists with each entry's ``proc_info['host']``; unknown groups are printed."""
         msg = create_msg('getstate')
         self.socket.send_json(msg)
         reply = self.socket.recv_json()

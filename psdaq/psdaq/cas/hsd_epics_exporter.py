@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Prometheus exporter that reads digitizer status PVs ('MONPGP', 'MONJESD', 'MONTRIG', 'FEXOOR') for a hutch on each scrape."""
 import os
 import sys
 import time
@@ -20,6 +21,7 @@ bases = {'tmo':[f'DAQ:TMO:HSD:1_{dev[0]}:{dev[1]}' for dev in itertools.product(
          'xpp':[f'DAQ:XPP:HSD:1_{dev[0]}:{dev[1]}' for dev in itertools.product(('01','11'),('A','B'))],}
 
 class CustomCollector():
+    """Collector for the PV bases listed in the module dict `bases` for `hutch` ('tmo', 'rix' or 'xpp'; other names raise KeyError)."""
     def __init__(self, provider, hutch, identifier):
         self.ctx    = Context(provider)
         self._hutch = hutch
@@ -38,6 +40,13 @@ class CustomCollector():
 
     def collect(self):
 
+        """Get the status PVs and yield gauge families labelled (instrument, channel, id).
+
+        Metrics: 'loclinkrdy' and 'remlinkrdy' (MONPGP arrays packed into bitmasks),
+        'RxDataNAlign' (bit 2 of each of 8 lanes from MONJESD stat), 'earlytrig'/'latetrig'
+        (MONTRIG) and 'fexoor' (FEXOOR). Timeouts are logged and that group skipped; the family
+        is yielded once per channel as it is filled.
+        """
         def monpgp_field(pv,field):
             v = getattr(pv,field)
             r = 0
@@ -125,6 +134,14 @@ class CustomCollector():
 
 
 def createExposer(prometheusDir):
+    """Start the Prometheus HTTP server on the first free port from 9200 and write '<dir>/drpmon_<host>_<i>.yaml'.
+
+    Returns
+    -------
+    bool or None
+        True on success; False if writing the file fails or no port 9200-9299 is free;
+        None (after a warning) if `prometheusDir` is ''.
+    """
     if prometheusDir == '':
         logging.warning('Unable to update Prometheus configuration: directory not provided')
         return
@@ -153,6 +170,10 @@ def createExposer(prometheusDir):
     return False
 
 def main():
+    """Parse -H, -M and -v, register a `CustomCollector` and keep the process alive while `createExposer` returned True.
+
+    The default -H 'tst' is not a key of `bases`, so it raises KeyError.
+    """
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='host PVs for HSDs')
 
     parser.add_argument('-H', required=False, help='e.g. tst', metavar='HUTCH', default='tst')

@@ -1,3 +1,4 @@
+"""Example DAQ config file (platform '4', hutch 'tst', collect host 'drp-srcf-cmp035') defining command strings and the `procmgr_config` and `procmgr_ami` process lists."""
 platform = "4"
 
 import os

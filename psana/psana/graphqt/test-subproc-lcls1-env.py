@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Run ``detnames exp=xppx44719:run=11`` in a login bash shell after sourcing /reg/g/psdm/etc/psconda.sh, and print the output.
+
+The command also echoes PATH and CONDA_DEFAULT_ENV; the subprocess gets an empty environment and its stderr is merged into stdout.
+"""
 cmd_seq = ['/bin/bash', '-l', '-c', '. /reg/g/psdm/etc/psconda.sh; echo "PATH: $PATH"; echo "CONDA_DEFAULT_ENV: $CONDA_DEFAULT_ENV"; detnames exp=xppx44719:run=11']
 #cmd = '/bin/bash -l -c "source /reg/g/psdm/etc/psconda.sh; echo $PATH"' # works with shell=True
 

@@ -36,23 +36,28 @@ import ast
 #--------------------
 
 def str_is_int(s):
+    """Return True if `s` is all digits, optionally preceded by '-'."""
     return s.isdigit() or (s.startswith('-') and s[1:].isdigit())
     #return re.match(r"[-+]?\d+$", s) is not None
     #return re.match(r"^[-+]?[0-9]+$", s) is not None
     #return re.match("^([+-]?[1-9]\d*|0)$", s) is not None
 
 def str_is_hex(s):
+    """Return True if '0x' occurs anywhere in `s`."""
     return '0x' in s 
     #return re.fullmatch(r"^[0-9a-fA-F]$", s or "") is not None
 
 def str_is_oct(s):
+    """Return True if '0o' occurs anywhere in `s`."""
     return '0o' in s 
     #return re.match(r"\b0o[0-7]+\b", s) is not None
 
 def str_is_bin(s):
+    """Return True if '0b' occurs anywhere in `s`."""
     return '0b' in s 
 
 def str_is_any_int(s):
+    """Return True if any of `str_is_int`, `str_is_hex`, `str_is_oct` or `str_is_bin` is True for `s`."""
     return str_is_int(s)\
         or str_is_hex(s)\
         or str_is_oct(s)\
@@ -60,6 +65,7 @@ def str_is_any_int(s):
 
 def path_to_item(item):
     #if item is None : return None
+    """Return the dotted path of `item` built from the first word of its and its ancestors' texts."""
     parent = item.parent()
     s = item.text().split(' ')[0]
     return s if parent is None else '%s.%s'%(path_to_item(parent), s)
@@ -89,6 +95,10 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def set_tool_tips(self) :
+        """Call `QWTree.set_tool_tips` and set the tool tip to 'Tree-like configuration editor'.
+
+        `QWTree` defines `show_tool_tips`, not `set_tool_tips`, so this raises AttributeError if called.
+        """
         QWTree.set_tool_tips(self)
         self.setToolTip('Tree-like configuration editor')
 
@@ -102,6 +112,10 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def fill_tree_model_from_dict(self):
+        """Clear the model and build the tree from `self.dictj` with `tree_model_from_dict`.
+
+        Logs a warning and leaves the model empty if `dictj` is not a dict.
+        """
         self.clear_model()
         dj = self.dictj
         if not isinstance(dj, dict) :
@@ -112,6 +126,7 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def str_object_type(self, o) :
+        """Return a short type name for `o`: 'str', 'int', 'float', 'list [<type of first element>, <len>]', or ``str(type(o))``."""
         return 'str'    if isinstance(o, str) else\
                'int'    if isinstance(o, int) else\
                'float'  if isinstance(o, float) else\
@@ -121,6 +136,11 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def data_type(self, item, o):
+        """Return ``str(getType(self.dictj, path_to_item(item)))``.
+
+        Returns None if `item` is None; if `getType` raises, the result is the string 'None'.
+        The argument `o` is unused.
+        """
         if item is None : return None
         path = path_to_item(item)
         if path is None : return None
@@ -135,6 +155,13 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def enum_dicts(self, dtype) :
+        """Parse `dtype` as an enum dict if it is a string starting with '{'.
+
+        Returns
+        -------
+        tuple
+            (True, dict, inverted dict) if the JSON parses to a dict, else (False, None, None).
+        """
         d = json_from_str(dtype) if (isinstance(dtype,str) and len(dtype) and(dtype[0] == '{')) else None
         if isinstance(d, dict) : return True, d, {v:k for k,v in d.items()}
         return False, None, None
@@ -262,6 +289,7 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def fill_tree_model_test(self):
+        """Clear the model and fill it with a nested demo tree of 'itemA k i' and 'itemB k i' items."""
         self.clear_model()
         for k in range(0, 4):
             parentItem = self.model.invisibleRootItem()
@@ -301,7 +329,11 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
  
     def iterate_over_children(self, item, gap='  '):
-        """
+        """Walk the tree and write each leaf value back into `self.dictj` with `updateValue`.
+
+        The value is the accessible (full) text for 'trimmed' lists, the enum value for enum
+        items, otherwise the displayed text; a non-zero status from `updateValue` is logged
+        as a warning.
         """
         #print('%s%s ==== %s ==== %s' % (gap, item.text(), item.accessibleText(), item.accessibleDescription()))
 
@@ -336,6 +368,12 @@ class CGWConfigEditorTree(QWTree) :
 
     def on_item_changed(self, item):
 
+        """Cycle an integer leaf's text through hex, oct, bin and decimal when its check box becomes checked.
+
+        Ignores items with children or check state other than 2. Decimal becomes hex, hex
+        becomes oct, oct becomes bin and bin becomes decimal; the check state is set to 0 for
+        the binary input and 1 otherwise, with the signal disconnected meanwhile.
+        """
         if item.hasChildren() : return
 
         s = item.text()
@@ -364,6 +402,7 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def on_click(self, index):
+        """Log dec/hex/oct/bin forms of a decimal item text, then start a special editor or the default editor."""
         item = self.model.itemFromIndex(index)
         parent = item.parent()
         spar = parent.text() if parent is not None else None
@@ -384,6 +423,7 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def on_double_click(self, index):
+        """Do nothing; body is `pass`."""
         pass
         #self.start_special_editor(index)
 
@@ -435,6 +475,7 @@ class CGWConfigEditorTree(QWTree) :
 #--------------------
 
     def closeEvent(self, e):
+        """Log a debug message and call `QWTree.closeEvent`."""
         logger.debug('CGWConfigEditorTree.closeEvent')
         QWTree.closeEvent(self, e)
 
@@ -443,6 +484,10 @@ class CGWConfigEditorTree(QWTree) :
     if __name__ == "__main__" :
 
       def key_usage(self) :
+        """Return the key help text (ESC, E, C).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  E - expand'\
@@ -451,6 +496,10 @@ class CGWConfigEditorTree(QWTree) :
 
       def keyPressEvent(self, e) :
         #logger.debug('keyPressEvent, key = %s'%e.key())       
+        """Handle keys in the test window: Esc closes, E expands all, C collapses all, others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape :
             self.close()
 

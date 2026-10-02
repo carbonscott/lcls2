@@ -44,6 +44,10 @@ USAGE = 'Usage: python %s' % sys.argv[0]
 
 def proc_data(**kwargs):
 
+    """Process the selected events of ``kwargs['dsname']``: find waveform peaks with ``WFPeaks`` and print every (x, y, t, r) entry returned by ``DLDProcessor.xyrt_list`` for the event.
+
+    ``det.calibconst`` (or None if empty) is added to ``kwargs`` as 'consts' before both objects are created; with 'verbose' per-event arrays and timing are printed.
+    """
     logger.info(str_kwargs(kwargs, title='Input parameters:'))
 
     DSNAME       = kwargs.get('dsname', FNAME) # '/sdf/group/lcls/ds/ana/detector/data2_test/xtc/data-amox27716-r0100-acqiris-e000100.xtc2')

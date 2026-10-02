@@ -86,10 +86,12 @@ class CMWConfigPars(QWidget):
         self.set_style()
 
     def set_tool_tips(self):
+        """Set tool tips on the DB host and port combo boxes."""
         self.cmb_host.setToolTip('Select DB host')
         self.cmb_port.setToolTip('Select DB port')
 
     def set_style(self):
+        """Apply background and label style sheets and set the maximum widget size to 400x600."""
         self.         setStyleSheet(style.styleBkgd)
         self.lab_exp.setStyleSheet(style.styleLabel)
         self.lab_host.setStyleSheet(style.styleLabel)
@@ -101,32 +103,41 @@ class CMWConfigPars(QWidget):
 
 
     def closeEvent(self, event):
+        """Log ``'closeEvent'`` at debug level; the event is not passed to the base class."""
         logger.debug('closeEvent')
 
 
     def on_cmb_host_changed(self):
+        """Store the selected host text in ``cp.cdb_host`` and log it."""
         selected = self.cmb_host.currentText()
         cp.cdb_host.setValue(selected)
         logger.info('Set DB host: %s' % selected)
 
     def on_cmb_port_changed(self):
+        """Store the selected port (converted to int) in ``cp.cdb_port`` and log it."""
         selected = self.cmb_port.currentText()
         cp.cdb_port.setValue(int(selected))
         logger.info('Set DB port: %s' % selected)
 
     def on_cmb_level_changed(self):
+        """Store the selected log-level name in ``cp.log_level`` and log it; the logger level itself is not changed here."""
         selected = self.cmb_level.currentText()
         cp.log_level.setValue(selected)
         logger.info('Set logger level %s' % selected)
 
 
     def on_fld(self,s):
+        """Store path ``s`` in ``cp.log_prefix`` or ``cp.instr_dir`` depending on which directory field has focus.
+
+        If neither field has focus nothing is stored.
+        """
         logger.debug('on_fld selected:%s'%s)
         if self.fld_log_file.hasFocus(): cp.log_prefix.setValue(s)
         elif self.fld_dir_ins.hasFocus(): cp.instr_dir.setValue(s)
 
 
     def on_but_exp(self):
+        """Open the instrument/experiment popup; store a non-empty experiment in the button text and ``cp.exp_name`` and a non-empty instrument in ``cp.instr_name``."""
         from psana.graphqt.PSPopupSelectExp import select_instrument_experiment
         dir_instr = cp.instr_dir.value()
         instr_name, exp_name = select_instrument_experiment(self.but_exp, dir_instr)

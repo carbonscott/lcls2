@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Example: draw ``GWRuler`` rulers on all four sides ('L' with label rotation 30, 'D', 'U', 'R') of a plain QGraphicsView with a marked scene rect; runs only as a script."""
 from psana.graphqt.GWRuler import *
 
 if __name__ == "__main__":

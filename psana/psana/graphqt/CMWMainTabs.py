@@ -60,11 +60,13 @@ class CMWMainTabs(QWidget):
 
 
     def set_tool_tips(self):
+        """Set the tool tip of each tab from the class-level ``tool_tips`` list."""
         for t,s in zip(self.tab_names, self.tool_tips):
           self.tab_bar.setTabToolTip(self.tab_names.index(t), s)
 
 
     def set_style(self):
+        """Set the window icon and background style sheet and zero the layout margins."""
         from psana.graphqt.Styles import style
         from psana.graphqt.QWIcons import icon
         icon.set_icons()
@@ -74,6 +76,10 @@ class CMWMainTabs(QWidget):
 
 
     def make_tab_bar(self, start_tab_name):
+        """Create ``self.tab_bar`` with one blue-text tab per name in ``tab_names`` and select ``start_tab_name``.
+
+        Connects ``currentChanged`` to ``on_tab_bar``, ``tabCloseRequested`` to ``on_tab_close_request`` and ``tabMoved`` to ``on_tab_moved``. Raises ValueError if ``start_tab_name`` is not in ``tab_names``.
+        """
         self.tab_bar = QTabBar()
 
         for tab_name in self.tab_names:
@@ -93,6 +99,10 @@ class CMWMainTabs(QWidget):
 
     def gui_selector(self, tab_name):
 
+        """Close the current tab widget and create the widget for ``tab_name``, adding it to the layout.
+
+        The widget class is imported on demand: CMWDBMain, CMWConfig, QWDateTimeSec, H5VMain, FMW1Main, IVMain, QWTextBrowser or DMQWMain; 'Mask' and unknown names get a placeholder QTextEdit. Also makes ``cp.cmwmain.wlog`` visible if ``cp.cmwmain`` is set.
+        """
         if self.gui_win is not None:
             self.gui_win.close()
             del self.gui_win
@@ -152,12 +162,17 @@ class CMWMainTabs(QWidget):
 
 
     def current_tab_index_and_name(self):
+        """Return a tuple (index, text) of the current tab."""
         tab_ind  = self.tab_bar.currentIndex()
         tab_name = str(self.tab_bar.tabText(tab_ind))
         return tab_ind, tab_name
 
 
     def on_tab_bar(self, ind):
+        """Store the current tab name in ``cp.main_tab_name`` and switch the displayed widget with ``gui_selector``.
+
+        Connected to ``tab_bar.currentChanged``; ``ind`` is not used.
+        """
         tab_ind, tab_name = self.current_tab_index_and_name()
         logger.info('Selected tab "%s"' % tab_name)
         cp.main_tab_name.setValue(tab_name)
@@ -165,15 +180,18 @@ class CMWMainTabs(QWidget):
 
 
     def on_tab_close_request(self, ind):
+        """Log at debug level the index of the tab whose close was requested; no tab is removed."""
         logger.debug('on_tab_close_request ind:%d' % ind)
         #self.tab_bar.removeTab(ind)
 
 
     def on_tab_moved(self, inew, iold):
+        """Log at debug level the old and new index of a moved tab."""
         logger.debug('on_tab_close_request tab index begin:%d -> end:%d' % (iold, inew))
 
 
     def closeEvent(self, e):
+        """Close the current tab widget, forward the event to the base class and set ``cp.cmwmaintabs`` to None."""
         logger.debug('closeEvent')
 
         if self.gui_win is not None:
@@ -185,24 +203,32 @@ class CMWMainTabs(QWidget):
 
 
     def onExit(self):
+        """Log a debug message and close the widget."""
         logger.debug('onExit')
         self.close()
 
 
     def set_tabs_visible(self, is_visible):
+        """Show or hide the tab bar according to ``is_visible``."""
         logger.debug('set_tabs_visible: is_visible %s' % is_visible)
         self.tab_bar.setVisible(is_visible)
 
 
     def tab_bar_is_visible(self):
+        """Return True if the tab bar is visible."""
         return self.tab_bar.isVisible()
 
 
     def view_hide_tabs(self):
+        """Toggle the visibility of the tab bar."""
         self.tab_bar.setVisible(not self.tab_bar.isVisible())
 
 
     def view_data(self, data=None, fname=None):
+        """Store ``data`` and ``fname`` in ``cp`` and switch to a viewer tab suitable for them.
+
+        With only ``fname``: 'Text' if it contains 'geometry' or 'common_mode', else 'Image'. A numpy array selects 'Image', a str selects 'Text', and a dict is converted with ``info_dict`` and shown in 'Text'; any other type resets ``cp.last_selected_data`` to None without switching.
+        """
         from psana.pyalgos.generic.NDArrUtils import info_ndarr, np
         cp.last_selected_data = data
         cp.last_selected_fname.setValue(fname)
@@ -228,11 +254,13 @@ class CMWMainTabs(QWidget):
 
 
     def set_tab(self, tabname='Image'):
+        """Make the tab named ``tabname`` current; raises ValueError for an unknown name."""
         logger.debug('switch tab to %s' % str(tabname))
         self.tab_bar.setCurrentIndex(self.tab_names.index(tabname))
 
 
     def key_usage(self):
+        """Return the key help text ('V - view/hide tabs')."""
         return 'Keys:'\
                '\n  V - view/hide tabs'\
                '\n'
@@ -240,6 +268,10 @@ class CMWMainTabs(QWidget):
     if __name__ == "__main__":
       def keyPressEvent(self, e):
         #logger.debug('keyPressEvent, key=%s' % e.key())
+        """Handle key presses: Esc closes, V toggles the tab bar, other keys log the key help.
+
+        Defined only when the module runs as a script.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 

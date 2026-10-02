@@ -1,3 +1,4 @@
+"""PVA server hosting '<prefix>:<service>:ADDR' and ':PORT' PVs for a list of BLD service names."""
 import sys
 import logging
 import struct
@@ -7,6 +8,7 @@ from psdaq.epicstools.PVAServer import PVAServer
 import argparse
 
 def printDb():
+    """Print the number of PVs in the module-global `pvdb` and each name prefixed by the global `prefix`."""
     global pvdb
     global prefix
 
@@ -17,6 +19,11 @@ def printDb():
     return
 
 def main():
+    """Parse service names, -P prefix and -A start address, fill `pvdb` and serve the PVs until KeyboardInterrupt.
+
+    Service i gets ADDR = (start address as an int via inet_aton/struct 'I'/ntohl) + i
+    and PORT = 11001.
+    """
     global pvdb
     pvdb = {}     # start with empty dictionary
     global prefix

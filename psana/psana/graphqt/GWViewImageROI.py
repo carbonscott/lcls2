@@ -78,13 +78,16 @@ FNAME_MASK = 'mask.npy'
 
 
 def info_dict(d, sep='\n  ', indent='  '):
+    """Return a string listing ``key: value`` pairs of ``d`` (keys right-justified to 4), joined by ``sep`` and prefixed by ``indent``."""
     return indent + sep.join(['%s: %s'%(str(k).rjust(4),v) for k,v in d.items()])
 
 def save_dict_in_json_file(d, fname=FNAME_DEF):
+    """Write dict ``d`` as JSON to file ``fname`` (default ``'roi_parameters.json'``)."""
     import json
     with open(fname, 'w') as f: json.dump(d, f)
 
 def load_dict_from_json_file(fname=FNAME_DEF):
+    """Read file ``fname`` (default ``'roi_parameters.json'``) and return the parsed JSON object."""
     import json
     with open(fname, 'r') as f: data = f.read()
     return json.loads(data)
@@ -92,6 +95,12 @@ def load_dict_from_json_file(fname=FNAME_DEF):
 
 class GWViewImageROI(GWViewImage):
 
+    """``GWViewImage`` that lets the user add, select, invert, edit and delete ROIs (from ``GWROIUtils``) on the image.
+
+    The current ROI type and mode are set by :meth:`set_roi_and_mode`; mouse events are dispatched to
+    ``on_press_*``, ``on_move_*`` and ``on_release_add`` according to the mode bits. ROIs are kept in
+    ``list_of_rois`` and can be saved to / loaded from JSON.
+    """
     image_pixmap_changed = pyqtSignal()
 
     def __init__(self, parent=None, arr=None,\
@@ -113,12 +122,22 @@ class GWViewImageROI(GWViewImage):
         #self.set_style_focus()
 
     def set_roi_and_mode(self, roi_type=roiu.NONE, mode_type=roiu.NONE):
+        """Set ``roi_type``/``mode_type`` and their names (default NONE for both).
+
+        Both names are looked up in ``roiu.dict_mode_type_name``, so a ``roi_type`` value that is not a
+        mode constant (e.g. PIXEL=1) raises KeyError here.
+        """
         self.roi_type = roi_type
         self.roi_name = roiu.dict_mode_type_name[roi_type]
         self.mode_type = mode_type
         self.mode_name = roiu.dict_mode_type_name[mode_type]
 
     def mousePressEvent(self, e):
+        """Call the base handler and dispatch a left-button press to the handler for the current mode.
+
+        A non-left button calls :meth:`finish` and returns. Dispatch order: ADD, REMOVE, SELECT, INVERT,
+        EDIT; modes below ADD do nothing.
+        """
         GWViewImage.mousePressEvent(self, e)
         #logger.info('GWViewImageROI.mousePressEvent but=%d (1/2/4 = L/R/M) screen x=%.1f y=%.1f'%(e.button(), e.pos().x(), e.pos().y()))
         self.left_is_pressed  = e.button() == Qt.LeftButton
@@ -136,6 +155,7 @@ class GWViewImageROI(GWViewImage):
 
     def mouseMoveEvent(self, e):
         #logging.debug('mouseMoveEvent')
+        """Call the base handler and dispatch to ``on_move_add``, ``on_move_remove`` or :meth:`on_move_edit` by mode."""
         GWViewImage.mouseMoveEvent(self, e)
         if   self.mode_type < roiu.ADD: return
         elif self.mode_type & roiu.ADD:    self.on_move_add(e)
@@ -144,6 +164,7 @@ class GWViewImageROI(GWViewImage):
         #elif self.mode_type & roiu.SELECT: self.on_move_select(e)
 
     def mouseReleaseEvent(self, e):
+        """Call the base handler, clear the pressed-button flags, then call ``on_release_add`` (ADD mode) or clear ``handle_active`` (EDIT mode)."""
         GWViewImage.mouseReleaseEvent(self, e)
         logger.debug('mouseReleaseEvent mode_type: %s mode_name: %s' % (str(self.mode_type), str(self.mode_name)))
         self.left_is_pressed = False
@@ -167,11 +188,13 @@ class GWViewImageROI(GWViewImage):
                 o.scitem.setBrush(_brush)
 
     def reset_color_all_rois(self, color=QCOLOR_DEF):
+        """Set ``color`` on every ROI in ``list_of_rois`` whose pen color differs from it."""
         for o in self.list_of_rois:
             if o.scitem.pen().color() != color:
                 self.set_roi_color(roi=o, color=color)
 
     def finish(self):
+        """Finish the current action: ``finish_add_roi`` in ADD mode and :meth:`finish_edit_roi` in EDIT mode."""
         if self.mode_type & roiu.ADD:  self.finish_add_roi()
         if self.mode_type & roiu.EDIT: self.finish_edit_roi()
 
@@ -183,6 +206,7 @@ class GWViewImageROI(GWViewImage):
         self.roi_active = None
 
     def finish_edit_roi(self):
+        """Leave edit mode for all ROIs (:meth:`deselect_any_edit`), reset the active ROI color and clear ``roi_active``."""
         logger.debug('finish_edit_roi')
         self.deselect_any_edit()
         self.set_roi_color()
@@ -196,6 +220,7 @@ class GWViewImageROI(GWViewImage):
         return rois
 
     def one_roi_at_point(self, p):
+        """Return the first ROI from ``rois_at_point(p)``, or None if there is none."""
         o = rois = self.rois_at_point(p)
         logger.debug('one_roi_at_point - list of ROIs at point, returns nearest or [0]: %s' % str(rois))
         s = len(rois) if rois is not None else 0
@@ -232,6 +257,7 @@ class GWViewImageROI(GWViewImage):
         self.set_roi_color(roi=o, color=QCOLOR_INV if o.is_mode(INVERT) else QCOLOR_DEF)
 
     def deselect_any_edit(self):
+        """Hide handles and clear the EDIT bit of every ROI in edit mode, reset all ROI colors and clear the active ROI and handle."""
         for o in self.list_of_rois:
             if o.is_mode(EDIT): #scitem.pen().color() == QCOLOR_EDI:
                 o.hide_handles()
@@ -241,6 +267,11 @@ class GWViewImageROI(GWViewImage):
         self.roi_active = None
 
     def on_press_edit(self, e):
+        """Pick a handle of the active ROI at the click, or else select the ROI at the click for editing.
+
+        If a handle is found it becomes ``handle_active``. Otherwise edit mode is cleared, the ROI at the
+        point (if any) gets the EDIT bit, the edit color and its handles are shown; a warning is logged if none.
+        """
         logger.debug('GWViewImageROI.on_press_edit at scene pos: %s' % str(self.scene_pos(e)))
         if self.roi_active is not None: # try to find handle
             h = self.handle_active = self.roi_active.handle_at_point(self.scene_pos(e))
@@ -259,6 +290,10 @@ class GWViewImageROI(GWViewImage):
 
     def on_move_edit(self, e):
         #print('XXX on_move_edit', self.left_is_pressed, self.roi_active, self.handle_active)
+        """Move the active handle to the mouse scene position (``handle_active.on_move``) while the left button is pressed.
+
+        Does nothing if no ROI or handle is active.
+        """
         if not self.left_is_pressed\
         or self.roi_active is None\
         or self.handle_active is None: return
@@ -310,9 +345,15 @@ class GWViewImageROI(GWViewImage):
         self.roi_active = None
 
     def on_press_remove(self, e):
+        """Log that this action is deprecated; nothing else is done."""
         logger.info('GWViewImageROI.on_press_remove DEPRICATED - use SELECT then DELETE')
 
     def on_press_add(self, e):
+        """Handle a click in ADD mode: the first click creates a new ROI, later clicks add points to the active ROI.
+
+        Stores the integer press position; after each later click, ``finish_add_roi`` is called if the ROI's
+        ``is_last_point`` returns True.
+        """
         scpos = self.scene_pos(e)
         self._iscpos_press = roiu.int_scpos(scpos)
 
@@ -330,6 +371,7 @@ class GWViewImageROI(GWViewImage):
 
     def pixel_is_removed(self, iscpos):
         #if self.mode_type & roiu.REMOVE:
+        """For ROI type PIXEL, remove the first ROI whose position equals ``iscpos`` and return True; otherwise return False."""
         if self.roi_type == roiu.PIXEL:
             for o in self.list_of_rois.copy():
                 if iscpos == o.pos:
@@ -338,6 +380,11 @@ class GWViewImageROI(GWViewImage):
         return False
 
     def add_roi(self, e):
+        """Create an ROI of the current type at the mouse scene position, add it to the scene and make it active.
+
+        For PIXEL type, clicking an occupied pixel removes that pixel ROI instead. The ROI is appended to
+        ``list_of_rois`` if its scene item was created, and finished at once if ``is_last_point`` is True.
+        """
         scpos = self.scene_pos(e)
         iscpos = roiu.int_scpos(scpos)
         is_busy = any([iscpos == o.pos for o in self.list_of_rois])
@@ -358,6 +405,7 @@ class GWViewImageROI(GWViewImage):
             self.finish_add_roi()
 
     def on_move_select(self, e):
+        """Log a debug message only; not implemented."""
         logger.debug('on_move_select TBD if needed')
 
     def on_move_add(self, e):
@@ -394,6 +442,10 @@ class GWViewImageROI(GWViewImage):
         self._iscpos_press = None
 
     def save_parameters_in_file(self, fname=FNAME_DEF):
+        """Finish the current action, reset type/mode to NONE and save ``roi_pars()`` of all ROIs as JSON to ``fname``.
+
+        Keys are ``'ROI_0000'``, ``'ROI_0001'``, ...
+        """
         self.finish()
         self.set_roi_and_mode()
         d = {'ROI_%04d'%i:o.roi_pars() for i,o in enumerate(self.list_of_rois)}
@@ -401,6 +453,7 @@ class GWViewImageROI(GWViewImage):
         logger.info('GWViewImageROI.save_parameters_in_file %s\n%s' % (fname, info_dict(d)))
 
     def load_parameters_from_file(self, fname=FNAME_DEF):
+        """Finish the current action, reset type/mode to NONE, load the JSON dict from ``fname`` and pass it to :meth:`set_rois_from_dict`."""
         self.finish()
         self.set_roi_and_mode()
         d = load_dict_from_json_file(fname)
@@ -408,6 +461,11 @@ class GWViewImageROI(GWViewImage):
         self.set_rois_from_dict(d)
 
     def set_rois_from_dict(self, dtot):
+        """Delete all ROIs and re-create them from a dict of ROI parameter dicts (as written by :meth:`save_parameters_in_file`).
+
+        Each ROI is created with ``create_roi`` and filled by ``set_from_roi_pars``; it is added and colored
+        (inverted or default color) only if that returns True.
+        """
         logger.debug('GWViewImageROI.set_rois_from_dict\n%s' % info_dict(dtot))
         self.delete_all_roi()
         for k,d in dtot.items():

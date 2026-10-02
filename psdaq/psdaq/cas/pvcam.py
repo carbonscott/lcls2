@@ -21,12 +21,14 @@ logger = logging.getLogger(__name__)
 # pv_fieldname, pv_fieldtype, default_value, mmap_address, bit_size, bit_shift
 
 class DefaultPVHandler(object):
+    """p4p put handler that posts the written value and then calls `callback` (if given) with it."""
     type = None
 
     def __init__(self,callback=None):
         self.callback = callback
 
     def put(self, pv, op):
+        """Post the written value (no new timestamp), complete the operation, then call ``callback(value)`` if set."""
         postedval = op.value()
 #        postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time()), 1.0)
         pv.post(postedval)
@@ -35,6 +37,7 @@ class DefaultPVHandler(object):
             self.callback(postedval)
 
 class PVAServer(object):
+    """StaticProvider with one PV named `prefix`: an NTScalar int array ('ai') of 1024*1024 zeros."""
     def __init__(self, provider_name, prefix):
         self.provider = StaticProvider(provider_name)
         self.prefix = prefix
@@ -46,6 +49,7 @@ class PVAServer(object):
         self.provider.add(prefix, self.image)
 
     def forever(self):
+        """Serve the provider with `p4p.server.Server.forever` (blocks)."""
         Server.forever(providers=[self.provider])
 
 
@@ -53,6 +57,7 @@ import argparse
 
 def main():
 
+    """Parse -P (PV name, required) and -v, create a `PVAServer` and serve until KeyboardInterrupt."""
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='host PVs for High Speed Digitizer')
 
     parser.add_argument('-P', required=True, help='DAQ:LAB2:HSD:DEV06_3E:A', metavar='PREFIX')

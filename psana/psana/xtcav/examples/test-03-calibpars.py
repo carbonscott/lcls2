@@ -14,6 +14,7 @@ logging.basicConfig(format=fmt, datefmt='%Y-%m-%dT%H:%M:%S', level=logging.DEBUG
 
 def test_01() :
 
+    """Read the 'xtcav_pedestals' constants of detector 'xtcav' from a test xtc2 file via ``calibconst``, convert them with ``Utils.xtcav_calib_object_from_dict`` and print the object attributes, its ROI, image and the metadata."""
     from psana import DataSource
     import psana.xtcav.Utils as xtu
 
@@ -37,6 +38,7 @@ def test_01() :
 #----------
 
 def test_02() :
+    """Fetch the 'xtcav_pedestals' constants of 'xtcav' for experiment amox23616 run 131 with ``MDBWebUtils.calib_constants`` and print the data and each metadata item."""
     from psana.pscalib.calib.MDBWebUtils import calib_constants
     data, doc = calib_constants('xtcav', exp='amox23616', ctype='xtcav_pedestals', run=131) #, time_sec=t0_sec, vers=None)
 

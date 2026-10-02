@@ -76,6 +76,7 @@ class QWEditText(QWidget) :
 #-----------------------------  
 
     def set_tool_tips(self):
+        """Set tool tips on the widget and the 'More' combo box."""
         self.setToolTip('Text editor')
         self.box_more.setToolTip('More options:'\
                                 +'\n * Load content from file'\
@@ -83,6 +84,7 @@ class QWEditText(QWidget) :
 
     def set_style(self):
         #self.setFixedWidth(200)
+        """Set minimum width 200, zero margins and an empty style sheet; `set_style_msg` is a no-op."""
         self.setMinimumWidth(200)
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
@@ -104,9 +106,11 @@ class QWEditText(QWidget) :
         #print('XXX:document().size()', s.width(), s.height())
         #self.edi_msg.setMinimumSize(200,50)
         #self.edi_msg.setFixedSize(180,50)
+        """Do nothing; body is `pass` (all statements are commented out)."""
         pass
 
     def set_icons(self):
+        """Call `icon.set_icons()` from `QWIcons`, ignoring any exception."""
         try :
           from psdaq.control_gui.QWIcons import icon
           #from psana.graphqt.QWIcons import icon
@@ -130,14 +134,23 @@ class QWEditText(QWidget) :
 #--------------------
 
     def get_content(self):
+        """Return the editor's plain text as str."""
         return str(self.edi_text.toPlainText())
 
     def set_content(self, text='N/A'):
+        """Replace the editor's text with `text` (default 'N/A')."""
         self.edi_text.setPlainText(text)
 
 #--------------------
 
     def select_ifname(self):
+        """Ask for an input file with an open dialog.
+
+        Returns
+        -------
+        bool
+            False if cancelled; True after storing the chosen path in `ifname`.
+        """
         logger.info('select_ifname %s' % self.ifname)
         path, ftype = QFileDialog.getOpenFileName(self,
                         caption   = 'Select the file to load json',
@@ -154,6 +167,7 @@ class QWEditText(QWidget) :
 #--------------------
  
     def load_content_from_numpy_file(self, fname):
+        """Load a .npy array and return it as text from `np.array2string` with outer brackets stripped."""
         logger.debug('TBD: load_content_from_numpy_file %s' % fname)
         import numpy as np
         nda = np.load(fname)              # array([0, 1, 2, 3, 4, 5])
@@ -166,6 +180,7 @@ class QWEditText(QWidget) :
 #--------------------
  
     def save_content_in_numpy_file(self, fname):
+        """Parse the editor text as space-separated numbers with `np.fromstring` and save the array to `fname` with `np.save`."""
         logger.warning('save_content_in_numpy_file %s' % fname)
         txt = self.get_content()
         import numpy as np
@@ -180,6 +195,7 @@ class QWEditText(QWidget) :
 #--------------------
  
     def on_but_load(self):
+        """Choose an input file and load it into the editor (.npy via `load_content_from_numpy_file`, else as text)."""
         logger.debug('on_but_load')
         if self.select_ifname() :
            root, ext = os.path.splitext(self.ifname)
@@ -192,12 +208,20 @@ class QWEditText(QWidget) :
  
     def save_text_in_file(self):
         #logger.info('save_text_in_file %s' % self.ofname)
+        """Write the editor text to `ofname` with `save_textfile` (mode 'w')."""
         txt = self.get_content()
         save_textfile(txt, self.ofname, mode='w', verb=False)
 
 #--------------------
  
     def select_ofname(self):
+        """Ask for an output file with a save dialog.
+
+        Returns
+        -------
+        bool
+            False if cancelled; True after storing the chosen path in `ofname`.
+        """
         logger.info('select_ofname %s' % self.ofname)
         path, ftype = QFileDialog.getSaveFileName(self,
                         caption   = 'Select the file to save',
@@ -214,6 +238,7 @@ class QWEditText(QWidget) :
 #--------------------
  
     def on_but_save(self):
+        """Choose an output file and save the editor text (.npy via `save_content_in_numpy_file`, else as text)."""
         logger.debug('on_but_save')
         if self.select_ofname() : 
            root, ext = os.path.splitext(self.ofname)
@@ -223,6 +248,7 @@ class QWEditText(QWidget) :
 #--------------------
  
     def on_box_more(self, ind) :
+        """Run the selected 'More' option (index 1 Load, 2 Save) and reset the combo box to 'More'."""
         opt = self.MORE_OPTIONS[ind]
         logger.info('CGWConfigEditor selected option %s' % opt)
         if   ind==1 : self.on_but_load()

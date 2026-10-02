@@ -84,20 +84,25 @@ DESCENDING =-1
 TSFORMAT = cc.TSFORMAT #'%Y-%m-%dT%H:%M:%S%z' # e.g. 2018-02-07T09:11:09-0800
 
 def is_valid_type(pname, o, otype):
+    """Return True if ``o`` is an instance of ``otype``; otherwise log a warning naming ``pname`` and return False."""
     if isinstance(o, otype): return True
     logger.warning('parameter "%s" type "%s" IS NOT %s' % (pname, str(o), str(otype)))
     return False
 
 def is_valid_dbname(dbname):
+    """Return :func:`is_valid_type` for ``dbname`` and ``str``."""
     return is_valid_type('dbname', dbname, str)
 
 def is_valid_cname(cname):
+    """Return :func:`is_valid_type` for ``cname`` and ``str``."""
     return is_valid_type('cname', cname, str)
 
 def is_valid_objectid(id):
+    """Return :func:`is_valid_type` for ``id`` and ``bson.ObjectId``."""
     return is_valid_type('id', id, ObjectId)
 
 def is_valid_time_sec(time_sec):
+    """Return :func:`is_valid_type` for ``time_sec`` and ``int``."""
     return is_valid_type('time_sec', time_sec, int)
 
 def db_prefixed_name(name, prefix=cc.DBNAME_PREFIX):
@@ -257,20 +262,24 @@ def doc_add_id_ts(doc):
         if v is not None: doc['%s_ts'%k] = timestamp_id(v)
 
 def doc_info(doc, fmt='\n  %16s: %s'):
+    """Return ``'Data document attributes'`` followed by one ``fmt`` line per key/value of ``doc``, or a "document is None" note if ``doc`` is None."""
     s = 'Data document attributes'
     if doc is None: return '%s\n   doc_info: Data document is None...' % s
     for k,v in doc.items(): s += fmt % (k,v)
     return s
 
 def doc_keys_info(doc, keys=('run', 'time_stamp', 'data_size', 'id_data', 'extpars'), fmt='  %s: %s'):
+    """Return the concatenation of ``fmt % (key, doc.get(key, 'N/A'))`` for each key in ``keys``."""
     s = ''
     for k in keys: s += fmt % (k, doc.get(k,'N/A'))
     return s
 
 def print_doc(doc):
+    """Print :func:`doc_info` of ``doc``."""
     print(doc_info(doc))
 
 def print_doc_keys(doc, keys=('run', 'time_stamp', 'data_size', 'id_data', 'extpars')):
+    """Print :func:`doc_keys_info` of ``doc`` for ``keys``."""
     print(doc_keys_info(doc, keys))
 
 def encode_data(data):
@@ -288,33 +297,44 @@ def _error_msg(msg):
     return 'wrong parameter %s' % msg
 
 def valid_experiment(experiment):
+    """Assert that ``experiment`` is a str of length 8 or 9 (AssertionError otherwise); returns None."""
     assert isinstance(experiment,str), _error_msg('type')
     assert 7 < len(experiment) < 10, _error_msg('length')
 
 def valid_detector(detector):
+    """Assert that ``detector`` is a str of length 2 to 64 (AssertionError otherwise); returns None."""
     assert isinstance(detector,str), _error_msg('type')
     assert 1 < len(detector) < 65, _error_msg('length')
 
 def valid_ctype(ctype):
+    """Assert that ``ctype`` is a str of length 5 to 31 (AssertionError otherwise); returns None."""
     assert isinstance(ctype,str), _error_msg('type')
     assert 4 < len(ctype) < 32, _error_msg('length')
 
 def valid_run(run):
+    """Assert that ``run`` is an int in 0..9999 (AssertionError otherwise); returns None."""
     assert isinstance(run,int), _error_msg('type')
     assert -1 < run < 10000, _error_msg('value')
 
 def valid_version(version):
+    """Assert that ``version`` is a str shorter than 128 characters (AssertionError otherwise); returns None."""
     assert isinstance(version,str), _error_msg('type')
     assert len(version) < 128, _error_msg('length')
 
 def valid_comment(comment):
+    """Assert that ``comment`` is a str shorter than 1000000 characters (AssertionError otherwise); returns None."""
     assert isinstance(comment,str), _error_msg('type')
     assert len(comment) < 1000000, _error_msg('length')
 
 def valid_data(data, detector, ctype):
+    """Does nothing; body is ``pass``."""
     pass
 
 def exec_command(cmd):
+    """Run shell command ``cmd`` with ``SubprocUtils.subproc`` and log its stdout/stderr as a warning if either is non-empty.
+
+    Returns None without running if the first word of ``cmd`` is not an available shell command.
+    """
     from psana.pscalib.proc.SubprocUtils import subproc
     logger.debug('Execute shell command: %s' % cmd)
     if not gu.shell_command_is_available(cmd.split()[0], verb=True): return
@@ -323,6 +343,10 @@ def exec_command(cmd):
         logger.warning('err: %s\nout: %s' % (err,out))
 
 def dict_from_data_string(s):
+    """Parse ``s`` with ``ast.literal_eval`` and return the result after ``deserialize_dict``, or None if parsing fails or the result is not a dict.
+
+    A parse error is logged at error level.
+    """
     import ast
     try:
         d = ast.literal_eval(s) # retreive dict from str

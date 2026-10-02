@@ -1,3 +1,4 @@
+"""Example config scan: step 'tmoopal_0:user.black_level' through 15, 31, 47 using `ConfigScan`."""
 import sys
 import logging
 import threading
@@ -7,6 +8,18 @@ from psdaq.control.ConfigScan import ConfigScan
 import argparse
 
 def main():
+    """Parse arguments and run a three-step configuration scan with `ConfigScan`.
+
+    Validates -g (1-255, default ``1 << platform``) and -c (>= 1), exits if the instrument
+    or initial state cannot be read, optionally sets the config alias, then for each
+    black_level value triggers a step whose phase-1 info carries 'step_keys',
+    'step_values', the Names/ShapesData blocks and 'readout_count'/'group_mask'.
+
+    Notes
+    -----
+    The argument parser defines no 'run_type', but `ConfigScan.daq_communicator_thread`
+    reads ``args.run_type`` when phase-1 info is given, which would raise AttributeError.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', type=int, choices=range(0, 8), default=0,
                         help='platform (default 0)')

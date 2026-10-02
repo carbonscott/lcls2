@@ -34,6 +34,7 @@ class SLConfigEditor(CGWConfigEditor) :
 #--------------------
  
     def on_but_apply(self):
+        """Log the editor content as JSON and log a 'TBD' warning; nothing is saved."""
         logger.debug('on_but_apply')
         dj = self.get_content()
         sj = str_json(dj)
@@ -49,6 +50,7 @@ class SLConfigEditor(CGWConfigEditor) :
 #--------------------
  
     def closeEvent(self, e):
+        """Call `CGWConfigEditor.closeEvent` and close the help box if open."""
         CGWConfigEditor.closeEvent(self, e)
         logger.debug('closeEvent')
         if self.help_box is not None : self.help_box.close()

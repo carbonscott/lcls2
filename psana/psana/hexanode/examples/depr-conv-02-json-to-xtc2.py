@@ -5,6 +5,7 @@
 
 #import numpy as np
 #import dgramCreate as dc
+"""Script: convert a JSON file of base64-encoded event arrays into an xtc2 file with the compiled ``dgramCreate`` module; the test number selects one of several hard-coded input files."""
 import numpy as np
 import dgramCreate as dc
 import os, pickle, json, base64
@@ -15,6 +16,14 @@ from psana import DataSource
 #--------------------
 
 def load_json(filename):
+    """Load a JSON list of event dicts from ``filename`` and decode array values.
+
+    Each value given as [base64 data, shape, dtype] is replaced by the decoded numpy array; values that raise TypeError when decoded are left unchanged.
+
+    Returns
+    -------
+    list of dict
+    """
     with open(filename, 'r') as f:
         data = json.load(f)
 
@@ -31,6 +40,10 @@ def load_json(filename):
 #--------------------
 
 def translate_xtc_demo(ifname, det_type='cspad', offset=1):
+    """Write the events of JSON file ``ifname`` to an xtc2 file using ``dgramCreate.CyDgram``.
+
+    The output name is ``ifname.rstrip('.json')`` + '.xtc2' (``rstrip`` removes trailing characters from the set '.json', not only the suffix); an existing output file is removed first. Event 0 is added as 'cfg' and event ``offset`` as 'raw' in the first datagram, then every event from ``offset`` on is written as a further datagram (so event ``offset`` appears twice).
+    """
     xtcfile = '%s.xtc2' % ifname.rstrip('.json')
     print('Get data from file: %s' % ifname)
     print('Save data  in file: %s' % xtcfile)

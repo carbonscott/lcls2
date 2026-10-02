@@ -45,6 +45,7 @@ class QWIcons():
 
 
     def path_to_icons(self):
+        """Return the path of the 'data/icons' directory next to this module file."""
         _ROOT = os.path.abspath(os.path.dirname(__file__))
         #path_icon = 'psana/psana/graphqt/data/icons'
         path_icon = '%s/data/icons' % _ROOT
@@ -125,6 +126,10 @@ icon = QWIcons()
 if __name__ == "__main__":
 
   def test_QWIcons():
+    """Log at debug level the icon file paths set by ``icon.set_icons()``.
+
+    Defined only when the module runs as a script.
+    """
     logger.debug('Icon pathes:')
     logger.debug(icon.path_icon_contents)
     logger.debug(icon.path_icon_mail_forward)

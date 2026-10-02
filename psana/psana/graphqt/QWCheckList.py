@@ -52,6 +52,7 @@ class QWCheckList(QtWidgets.QListView):
 
 
     def set_style(self):
+        """Set width limits 150-500, minimum height 200 and zero contents margins."""
         self.setMinimumWidth(150)
         self.setMaximumWidth(500)
         self.setMinimumHeight(200)
@@ -59,6 +60,10 @@ class QWCheckList(QtWidgets.QListView):
 
 
     def set_test_model(self):
+        """Replace the model with 20 checkable demo items 'Item NN', each randomly checked or unchecked.
+
+        Unlike ``set_model``, ``itemChanged`` is not connected.
+        """
         from random import randint
         model = QStandardItemModel()
         for n in range(20):
@@ -75,14 +80,20 @@ class QWCheckList(QtWidgets.QListView):
 
 
     def get_dic_item_state(self):
+        """Return the dict {item text: checked bool} that the widget edits in place."""
         return self.dic_item_state
 
 
     def set_dic_item_state(self, dic_item_state):
+        """Rebuild the model from ``dic_item_state`` by calling ``set_model``."""
         self.set_model(dic_item_state)
 
 
     def set_model(self, dic_item_state):
+        """Build a new model with one checkable item per key of ``dic_item_state``, checked when its value is truthy.
+
+        Stores the dict in ``self.dic_item_state``, disconnects ``on_item_changed`` from any previous model's ``itemChanged`` and connects it to the new model.
+        """
         self.dic_item_state = dic_item_state
         #logger.debug('self.model()', self.model())
         if self.model() is not None:
@@ -100,10 +111,12 @@ class QWCheckList(QtWidgets.QListView):
 
 
     def on_clicked_test(self, item):
+        """Log at debug level the row and column of ``item``; not connected in this module."""
         logger.debug("Clicked on item row:'%d' col:%d" % (item.row(), item.column()))
 
 
     def on_item_changed(self, item):
+        """Update ``self.dic_item_state`` for the changed item: False when unchecked, True when partially or fully checked."""
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         item_txt = str(item.text())
         #logger.debug("Item with text '%s', is at state %s" % (item_txt, state))
@@ -111,6 +124,10 @@ class QWCheckList(QtWidgets.QListView):
 
 
     def on_item_changed_test(self, item):
+        """Log the item state and the dict; clicking 'Opal1' or 'Opal2' replaces the model with a fixed test dict.
+
+        Not connected in this module.
+        """
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         item_txt = str(item.text())
         logger.debug("Item with text '%s', is at state %s" % (item_txt, state))
@@ -126,6 +143,7 @@ class QWCheckList(QtWidgets.QListView):
 
 
 def print_dic(d, fmt='%s: %s'):
+    """Log at debug level one line per key/value of ``d`` using format ``fmt`` with padded columns."""
     for k,v in d.items():
         logger.debug(fmt % (k.ljust(32),str(v).ljust(32)))
 

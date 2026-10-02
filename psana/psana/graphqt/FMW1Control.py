@@ -95,6 +95,7 @@ class FMW1Control(CMWControlBase):
 
 
     def set_tool_tips(self):
+        """Set the base-class tool tips and those of the experiment, deploy, stop, collapse and command widgets."""
         CMWControlBase.set_tool_tips(self)
         self.but_exp.setToolTip('Select experiment')
         self.but_expto.setToolTip('Select destination experiment')
@@ -106,6 +107,7 @@ class FMW1Control(CMWControlBase):
 
 
     def set_style(self):
+        """Apply the base style and set label styles, fixed widths of the buttons and combo box, the folder icon and layout margins."""
         CMWControlBase.set_style(self)
         self.lab_exp.setStyleSheet(style.styleLabel)
         self.lab_exp.setFixedWidth(25)
@@ -122,6 +124,10 @@ class FMW1Control(CMWControlBase):
 
 
     def on_but_expto(self):
+        """Let the user pick an instrument and experiment and show the experiment name on the destination ('Select') button.
+
+        Nothing changes if the name equals the current button text.
+        """
         dir_instr = cp.instr_dir.value()
         instr_name, exp_name = select_instrument_experiment(None, dir_instr, show_frame=True) # parent=self.but_exp
         logger.debug('selected experiment: %s' % exp_name)
@@ -130,10 +136,15 @@ class FMW1Control(CMWControlBase):
 
 
     def on_cmb_cmd(self, ind):
+        """Log at debug level the selected command index and name."""
         logger.debug('on_cmb_cmd selected index %d: %s' % (ind, self.cmd_list[ind]))
 
 
     def on_but_deploy(self):
+        """Build deploy commands for the calib files selected in the file tree and run them after user confirmation.
+
+        For each selected path parsed by ``instr_exp_cvers_detname_ctype_runrange_from_calibpath`` it appends a 'calibfile deploy', 'dcs add' or 'cdb add' command (per the combo box) for the destination experiment. The edited command string is run with ``subprocess_command``: through a login bash with ``COMMAND_SET_ENV_LCLS1`` for 'calibfile' and 'dcs', or with ``shell=True`` for 'cdb'. Returns early if no main window, no selection, an unknown command, or the dialog is cancelled.
+        """
         logger.debug('on_but_deploy')
 
         if cp.fmw1main is None: return
@@ -197,6 +208,10 @@ class FMW1Control(CMWControlBase):
 
 
     def subprocess_command(self, cmd, **kwa):
+        """Start ``cmd`` in a ``UtilsSubproc.SubProcess`` with stdout piped (stderr merged) and poll its output every ``dt_msec`` ms via ``on_timeout``.
+
+        The command is logged and appended to the main window info panel; keyword arguments 'env', 'shell' and 'executable' are passed on. Resets ``self.force_stop`` to False.
+        """
         logger.warning('subprocess_command\n%s' % cmd)
         cp.fmw1main.append_info(cmd)
         self.force_stop = False
@@ -214,6 +229,10 @@ class FMW1Control(CMWControlBase):
 
 
     def on_timeout(self):
+        """Append new subprocess output to the info panel (or print it if there is no main window) and reschedule itself until the process completes or a stop is forced.
+
+        If ``force_stop`` is set the process is killed first.
+        """
         if self.force_stop:
            if self.osp: self.osp.kill()
         s = self.osp.stdout_incriment().rstrip('\n')
@@ -231,12 +250,14 @@ class FMW1Control(CMWControlBase):
 
 
     def on_but_stop(self):
+        """Set ``self.force_stop`` to True so that ``on_timeout`` kills the subprocess."""
         logger.debug('on_but_stop')
         self.force_stop = True
 
 
     def on_but_exp(self):
 
+        """Let the user pick an instrument and experiment; if it differs from ``cp.exp_name``, update the button, ``cp.instr_name``, ``cp.exp_name`` and the file tree root (``dir_calib(exp_name)``)."""
         dir_instr = cp.instr_dir.value()
         instr_name, exp_name = select_instrument_experiment(None, dir_instr, show_frame=True) # parent=self.but_exp
         logger.debug('selected experiment: %s' % exp_name)
@@ -250,6 +271,10 @@ class FMW1Control(CMWControlBase):
 
 
     def on_but_exp_col(self):
+        """Toggle the file tree between expanded and collapsed, updating the button text and icon.
+
+        Returns if there is no main window.
+        """
         logger.debug('on_but_exp_col')
         if cp.fmw1main is None: return
         wtree = cp.fmw1main.wfstree
@@ -292,6 +317,7 @@ class FMW1Control(CMWControlBase):
 
 
     def view_hide_tabs(self):
+        """Toggle tab visibility via the base class and also toggle the tabs of ``cp.fmwtabs`` if it exists."""
         CMWControlBase.view_hide_tabs(self)
         # set file manager tabs in/visible too
         wtabs = cp.fmwtabs
@@ -301,6 +327,10 @@ class FMW1Control(CMWControlBase):
 
 
     def save_item_path(self, index):
+        """Store the path of the tree item at ``index`` in ``cp.last_selected_fname`` if it is an existing non-directory file.
+
+        If there is no item, ``cp.last_selected_fname`` is set to None; ``cp.last_selected_data`` is reset to None in both of these cases.
+        """
         i = cp.fmw1main.wfstree.model.itemFromIndex(index)
         if i is None:
            logger.info('on_item_selected: item is None')
@@ -315,14 +345,17 @@ class FMW1Control(CMWControlBase):
 
 
     def on_item_selected(self, selected, deselected):
+        """Call ``save_item_path(selected)``; ``deselected`` is unused."""
         self.save_item_path(selected)
 
 
     def on_click(self, index):
+        """Call ``save_item_path(index)``."""
         self.save_item_path(index)
 
 
     def closeEvent(self, e):
+        """Forward the event to ``CMWControlBase.closeEvent`` and set ``cp.fmw1control`` to None."""
         logger.debug('closeEvent')
         CMWControlBase.closeEvent(self, e)
         cp.fmw1control = None

@@ -29,6 +29,12 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 class IVMain(QWidget):
 
+    """Image-viewer main widget: ``IVControl`` above a splitter with ``IVImageAxes`` and ``IVSpectrum``.
+
+    The image comes from kwa ``image``, else from ``cp.last_selected_data``, else a 32x32 test image;
+    if a file name (kwa ``fname`` or ``cp.last_selected_fname``) applies, it is loaded through
+    ``IVControl.on_changed_fname_nda``. Registers the instance as ``cp.ivmain``.
+    """
     def __init__(self, **kwargs):
         QWidget.__init__(self, parent=None)
 
@@ -71,6 +77,7 @@ class IVMain(QWidget):
 
     def proc_kwargs(self, **kwargs):
         #print_kwargs(kwargs)
+        """Store kwa ``wlog`` (None) in ``self.wlog`` and ``signal_fast`` (True) in ``self.signal_fast``; ``loglevel``, ``logdir`` and ``savelog`` are read but unused."""
         loglevel   = kwargs.get('loglevel', 'DEBUG').upper()
         logdir     = kwargs.get('logdir', './')
         savelog    = kwargs.get('savelog', False)
@@ -79,22 +86,34 @@ class IVMain(QWidget):
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to ``'Image Viewer'``."""
         self.setToolTip('Image Viewer')
 
 
     def set_style(self):
+        """Set zero layout margins, control-panel height 80 and spectrum maximum width 300."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wctrl.setFixedHeight(80)
         self.wspec.setMaximumWidth(300)
 
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent`` and set ``cp.ivmain`` to None."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
         cp.ivmain = None
 
 
 def image_viewer(**kwargs):
+    """Configure logging, optionally save a start record, and run a ``QApplication`` showing ``IVMain``.
+
+    Parameters
+    ----------
+    **kwargs
+        ``loglevel`` (default ``'DEBUG'``), ``rec_at_start`` (default True: call
+        ``RepoManager(dirrepo=repodir).save_record_at_start``), ``repodir`` (default ``'./work'``);
+        all are also passed to ``IVMain``.
+    """
     repodir = kwargs.get('repodir', './work')
     loglevel = kwargs.get('loglevel', 'DEBUG').upper()
     intlevel = logging._nameToLevel[loglevel]
@@ -116,10 +135,12 @@ def image_viewer(**kwargs):
 
 
 def do_main(**kwargs):
+    """Call :func:`image_viewer` with ``**kwargs``."""
     image_viewer(**kwargs)
 
 
 def do_work(dt_sec=1, nloops=20):
+    """Print a loop counter ``nloops`` times, sleeping ``dt_sec`` seconds after each print."""
     from time import sleep
     for i in range(nloops):
         print('do_work loop: %3d' % i)

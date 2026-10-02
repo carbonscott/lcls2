@@ -46,6 +46,7 @@ class QWList(QListView) :
 
 
     def connect_signals(self) :
+        """Connect model itemChanged, current-changed, clicked and doubleClicked signals to the `on_*` handlers."""
         self.model.itemChanged.connect(self.on_item_changed)
         self.connect_item_selected_to(self.on_item_selected)
         self.clicked[QModelIndex].connect(self.on_click)
@@ -53,6 +54,7 @@ class QWList(QListView) :
 
 
     def disconnect_signals(self) :
+        """Disconnect the signals connected by `connect_signals`."""
         self.model.itemChanged.disconnect(self.on_item_changed)
         self.disconnect_item_selected_from(self.on_item_selected)
         self.clicked[QModelIndex].disconnect(self.on_click)
@@ -60,6 +62,14 @@ class QWList(QListView) :
  
 
     def set_selection_mode(self, smode='extended') :
+        """Set the selection mode by name.
+
+        Parameters
+        ----------
+        smode : str, optional
+            One of 'single', 'contiguous', 'extended' (default), 'multi', 'no selection';
+            other values raise KeyError.
+        """
         logger.debug('Set selection mode: %s'%smode)
         mode = {'single'      : QAbstractItemView.SingleSelection,
                 'contiguous'  : QAbstractItemView.ContiguousSelection,
@@ -70,28 +80,34 @@ class QWList(QListView) :
 
 
     def connect_item_selected_to(self, recipient) :
+        """Connect the selection model's currentChanged signal to `recipient`."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(recipient)
 
 
     def disconnect_item_selected_from(self, recipient) :
+        """Disconnect `recipient` from the selection model's currentChanged signal."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].disconnect(recipient)
 
 
     def selected_indexes(self):
+        """Return ``self.selectedIndexes()``."""
         return self.selectedIndexes()
 
 
     def selected_items(self):
+        """Return the model items for the selected indexes."""
         indexes =  self.selectedIndexes()
         return [self.model.itemFromIndex(i) for i in self.selectedIndexes()]
 
 
     def clear_model(self):
+        """Remove all rows from the model."""
         rows = self.model.rowCount()
         self.model.removeRows(0, rows)
 
 
     def fill_list_model(self, **kwargs):
+        """Clear the model and append 20 checkable demo items ('00 item text' ... '19 item text'); kwargs are unused."""
         self.clear_model()
         for i in range(20):
             item = QStandardItem('%02d item text'%(i))
@@ -101,6 +117,7 @@ class QWList(QListView) :
 
 
     def on_item_selected(self, selected, deselected):
+        """Log the row and text of the newly current item at info level, if there is one."""
         itemsel = self.model.itemFromIndex(selected)
         if itemsel is not None :
             msg = 'on_item_selected row:%02d selected: %s' % (selected.row(), itemsel.text()) 
@@ -113,12 +130,14 @@ class QWList(QListView) :
 
 
     def on_item_changed(self, item):
+        """Log the item's text and check state at info level."""
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         msg = 'on_item_changed: item "%s", is at state %s' % (item.text(), state)
         logger.info(msg)
 
 
     def on_click(self, index):
+        """Log the clicked row and its text (truncated to 50 characters) at info level."""
         item = self.model.itemFromIndex(index)
         txt = item.text()
         txtshow = txt if len(txt)<50 else '%s...'%txt[:50]
@@ -127,6 +146,7 @@ class QWList(QListView) :
 
 
     def on_double_click(self, index):
+        """Log the double-clicked row and text at debug level."""
         item = self.model.itemFromIndex(index)
         msg = 'on_double_click item in row:%02d text: %s' % (index.row(), item.text())
         logger.debug(msg)
@@ -136,6 +156,7 @@ class QWList(QListView) :
     #--------------------------
 
     def show_tool_tips(self):
+        """Set the tool tip to 'List model'."""
         self.setToolTip('List model') 
 
 
@@ -144,6 +165,7 @@ class QWList(QListView) :
         #self.setWindowIcon(icon.icon_monitor)
         #self.layout().setContentsMargins(0,0,0,0)
 
+        """Set an item-hover style sheet and a minimum size of 50x100."""
         self.setStyleSheet("QListView::item:hover{background-color:#00FFAA;}")
 
         #self.palette = QPalette()
@@ -175,6 +197,7 @@ class QWList(QListView) :
 
 
     def closeEvent(self, e):
+        """Log a debug message and call `QListView.closeEvent`."""
         logger.debug('closeEvent')
         QListView.closeEvent(self, e)
 
@@ -186,11 +209,13 @@ class QWList(QListView) :
 
 
     def on_exit(self):
+        """Log a debug message and close the widget."""
         logger.debug('on_exit')
         self.close()
 
 
     def process_selected_items(self) :
+        """Log the number and texts of the selected items at info level."""
         selitems = self.selected_items()
         msg = '%d Selected items:' % len(selitems)
         for i in selitems :
@@ -200,6 +225,10 @@ class QWList(QListView) :
     if __name__ == "__main__" :
 
       def key_usage(self) :
+        """Return the key help text (ESC exits, S shows selected items).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  S - show selected items'\
@@ -208,6 +237,10 @@ class QWList(QListView) :
 
       def keyPressEvent(self, e) :
         #logger.info('keyPressEvent, key=', e.key())       
+        """Handle keys in the test window: Esc closes, S logs selected items, others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape :
             self.close()
 

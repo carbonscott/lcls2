@@ -27,6 +27,10 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class CMQThreadClient(QThread):
+    """QThread that creates a database client in its ``run`` method.
+
+    ``run`` calls ``dbu.connect_client(host, port)`` (from ``psana.graphqt.CMDBUtils``), stores the result and emits the ``client_is_ready`` signal.
+    """
     client_is_ready = pyqtSignal()
 
     def __init__(self, parent=None, host=None, port=None):
@@ -47,14 +51,20 @@ class CMQThreadClient(QThread):
 
 
     def connect_client_is_ready(self, recip):
+        """Connect ``recip`` to the ``client_is_ready`` signal."""
         self.client_is_ready.connect(recip)
 
 
     def disconnect_client_is_ready(self, recip):
+        """Disconnect ``recip`` from the ``client_is_ready`` signal."""
         self.client_is_ready.disconnect(recip)
 
 
     def receive_client_is_ready(self):
+        """Print the database names returned by ``dbu.database_names(self._client)``.
+
+        If the client is None it first prints a 'Can't connect to server' message, but still calls ``database_names``.
+        """
         if self._client is None:
             print("Can't connect to server")
 
@@ -64,14 +74,17 @@ class CMQThreadClient(QThread):
 
 
     def client(self):
+        """Return the client object created in ``run`` (None before the thread has run)."""
         return self._client
 
 
     def is_running(self):
+        """Return ``self.isRunning()``."""
         return self.isRunning()
 
 
     def is_finished(self):
+        """Return ``self.isFinished()``."""
         return self.isFinished()
 
 
@@ -84,9 +97,11 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(levelname)s %(name)s: %(message)s', level=logging.DEBUG)
 
     def on_but_play():
+        """Log a debug message; test button handler defined in the ``__main__`` block."""
         logger.debug('XXX: on_but_play')
 
     def on_but_exit():
+        """Log a debug message and call ``sys.exit()``; test button handler defined in the ``__main__`` block."""
         logger.debug('XXX: on_but_exit')
         sys.exit()
 

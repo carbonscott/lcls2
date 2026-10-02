@@ -1,9 +1,15 @@
 
+"""Example/test for ``FWViewImageShapes``: add, delete and switch editing of shapes with keyboard keys.
+
+Running as a script shows a 1000x1000 random image.
+"""
 from psana.graphqt.FWViewImageShapes import *
 
 class TestFWViewImageShapes(FWViewImageShapes):
 
+      """``FWViewImageShapes`` subclass with keyboard control of shape creation and deletion."""
       def key_usage(self):
+        """Return a help string listing the shape and control keys."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  M - add point'\
@@ -23,6 +29,11 @@ class TestFWViewImageShapes(FWViewImageShapes):
         # POINT,   LINE,   RECT,   CIRC,   POLY,   WEDG
         #FWViewImage.keyPressEvent(self, e) # uses Key_R and Key_N
 
+        """Handle keys: M/A/L/C/P/W/E request a new shape, D deletes the selected one, S toggles scene versus shape editing.
+
+        A shape request sets ``add_request`` and disables existing shapes; Escape closes; other keys log
+        :meth:`key_usage`.
+        """
         d = {Qt.Key_M: POINT, Qt.Key_A: RECT, Qt.Key_L: LINE,\
              Qt.Key_C: CIRC,  Qt.Key_P: POLY, Qt.Key_W: WEDG, Qt.Key_E: ELLIPSE}
 

@@ -1,3 +1,4 @@
+"""PyQt5 status window ('daqstat') that periodically shows the status of the processes in a DAQ config file using `psdaq.slurm.main.Runner`."""
 import sys
 import os
 import platform
@@ -34,10 +35,12 @@ sErrorOutDirNotExist = "Output Dir Not Exist"
 
 
 class CustomIOError(Exception):
+    """Exception subclass with no added behavior."""
     pass
 
 
 def printStackTrace():
+    """Print the current exception's traceback to stdout between separator lines."""
     print("---- Printing program call stacks for debug ----")
     traceback.print_exc(file=sys.stdout)
     print("------------------------------------------------")
@@ -50,6 +53,7 @@ def daqmgrThreadWrapper(
     fQueryInterval,
     evgProcMgr,
 ):
+    """Run `daqmgrThread`; on any exception print an error and traceback and emit ``win.UnknownError`` with the error text."""
     try:
         daqmgrThread(
             win,
@@ -78,6 +82,13 @@ def daqmgrThread(
     evgProcMgr,
 ):
 
+    """Loop forever: get process status with ``Runner(sConfigFile).show_status(quiet=True)`` and emit ``win.Updated`` every `fQueryInterval` seconds.
+
+    The Runner is created once and stored as ``win.runner``; status goes to
+    ``win.ldProcStatus``. On IOError or other errors an empty list is used and
+    ``ProcMgrIOError``/``ProcMgrGeneralError`` is emitted with only the file name, although
+    those signals are declared with (str, int).
+    """
     locale.setlocale(
         locale.LC_ALL, ""
     )  # set locale for printing formatted numbers later
@@ -120,6 +131,11 @@ def daqmgrThread(
 class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     # define 'Updated' signal
+    """Main window (from `ui_procStat.Ui_mainWindow`) with a process ID/status table and Console, Logfile and Restart toggle buttons.
+
+    Defines the Updated, UnknownError, ProcMgrIOError, ProcMgrGeneralError,
+    ThreadGeneralError and OutputDirError signals.
+    """
     Updated = pyqtSignal(list, list, int, str)
 
     # define 'UnknownError' signal
@@ -175,10 +191,17 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
         return
 
     def closeEvent(self, event):
+        """Close the warning message box (the event is otherwise not handled here)."""
         self.msgBox.close()
         return
 
     def onProcMgrUpdated(self, ldProcStatus, ldOutputFileStatus):
+        """Refill the table with each process's 'showId' and 'status', coloring the status cell by state.
+
+        COMPLETED/COMPLETING are blue, RUNNING green, PENDING yellow, FAILED/PREEMPTED/
+        SUSPENDED/STOPPED red; other states raise KeyError. The table is sorted by status the
+        first time and the previously current row is reselected.
+        """
         self.statusbar.showMessage("Refreshing ProcMgr status...")
 
         self.tableProcStat.clear()
@@ -247,6 +270,10 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(int, int)
     def onProcCellClicked(self, iRow, iCol):
+        """For the clicked row's ID, spawn a console, open the log file or restart it, depending on which toggle is active.
+
+        Does nothing if no runner exists yet or no toggle is active.
+        """
         if self.runner == None:
             return
         if self.iShowConsole == 0:
@@ -267,6 +294,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
         return
 
     def onClickConsole(self, bChecked):
+        """Make Console the active toggle (mode 1) or clear the mode, unchecking the other buttons."""
         self.pushButtonLogfile.setChecked(False)
         self.pushButtonRestart.setChecked(False)
         if bChecked:
@@ -275,6 +303,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
             self.iShowConsole = 0
 
     def onClickLogfile(self, bChecked):
+        """Make Logfile the active toggle (mode 2) or clear the mode, unchecking the other buttons."""
         self.pushButtonConsole.setChecked(False)
         self.pushButtonRestart.setChecked(False)
         if bChecked:
@@ -283,6 +312,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
             self.iShowConsole = 0
 
     def onClickRestart(self, bChecked):
+        """Make Restart the active toggle (mode 3) or clear the mode, unchecking the other buttons."""
         self.pushButtonConsole.setChecked(False)
         self.pushButtonLogfile.setChecked(False)
         if bChecked:
@@ -292,6 +322,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(str, int)
     def onProcMgrIOError(self, sConfigFile):
+        """Show an 'IO Error' warning about config file `sConfigFile`."""
         self.showWarningWindow(
             "IO Error",
             "<p>config file <b>%s</b> cannot be processed correctly, due to an IO Error.<p>"
@@ -302,6 +333,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(str, int)
     def onProcMgrGeneralError(self, sConfigFile):
+        """Show a 'General Error' warning about config file `sConfigFile`."""
         self.showWarningWindow(
             "General Error",
             "<p>config file <b>%s</b> cannot be processed correctly, due to a general Error.<p>"
@@ -312,6 +344,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(str)
     def onProcMgrOutputDirError(self, sOutDirPrefix1):
+        """Show a warning that output directory `sOutDirPrefix1` is not accessible."""
         self.showWarningWindow(
             "Output Directory Does Not Exist",
             "<p>Please check if the system has access to output directory <i>%s</i>.<p>"
@@ -321,6 +354,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(str)
     def onThreadGeneralError(self, sErrorReport):
+        """Show a 'Thread General Error' warning containing `sErrorReport`."""
         self.showWarningWindow(
             "Thread General Error",
             "<p><i>%s</i><p>" % (sErrorReport)
@@ -330,6 +364,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(str)
     def onProcMgrUnknownError(self, sErrorReport):
+        """Show a critical 'Unknown Error' dialog with `sErrorReport`, then close the window."""
         QMessageBox.critical(
             self,
             "Unknown Error",
@@ -340,6 +375,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
         return
 
     def showWarningWindow(self, title, text):
+        """Show the non-modal warning box with `title` and `text`."""
         self.msgBox.setWindowTitle(title)
         self.msgBox.setText(text)
         self.msgBox.show()
@@ -347,6 +383,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot(int, int, int, int)
     def on_tableProcStat_currentCellChanged(self, iCurRow, iCurCol, iPrevRow, iPrevCol):
+        """Remember the ID of the newly current row in `sCurKey` (ignored for invalid rows)."""
         if iCurRow < 0:
             return
 
@@ -359,6 +396,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot()
     def on_actionOpen_triggered(self):
+        """Show an open-file dialog for a .py config file; the chosen name is not used."""
         sFnConfig = str(
             QFileDialog.getOpenFileName(self, "Config File", ".", "config files (*.py)")
         )
@@ -366,11 +404,13 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
     @pyqtSlot()
     def on_actionQuit_triggered(self):
+        """Close the window."""
         self.close()
         return
 
     @pyqtSlot()
     def on_actionAbout_triggered(self):
+        """Show the About dialog with the version and Python/Qt/PyQt/platform versions."""
         QMessageBox.about(
             self,
             "About daqstat",
@@ -390,6 +430,7 @@ class WinProcStat(QtWidgets.QMainWindow, ui_procStat.Ui_mainWindow):
 
 
 def showUsage():
+    """Print the command-line usage and program version."""
     print(
         """\
 Usage: %s  [-i | --interval <Query Interval>]  <Config file>
@@ -403,6 +444,14 @@ Program Version %s\
 
 
 def main():
+    """Parse -i/--interval (default 5 s) and the config file, show `WinProcStat` and start `daqmgrThreadWrapper` in a thread.
+
+    Returns
+    -------
+    int or None
+        0 after printing usage for -v/-h, 1 if no config file is given, else None after
+        the event loop exits.
+    """
     fProcmgrQueryInterval = 5.0
 
     (llsOptions, lsRemainder) = getopt.getopt(

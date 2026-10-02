@@ -23,6 +23,7 @@ def gauss(x, x0=0, sig=1) :
 
 
 def step(x) :
+    """Return an array that is 1 where ``x > 0`` and 0 elsewhere (``np.select``)."""
     return np.select([x>0,], [1,], default=0)
 
 
@@ -71,6 +72,7 @@ def linear_rise(x, x0=1) :
 
 
 def exp_desc_step(x) :
+    """Return ``exp(-x)`` where ``x > 0`` and 0 elsewhere (``np.select``)."""
     return np.select([x>0,], [np.exp(-x),], default=0)
 
 #----------
@@ -88,6 +90,10 @@ if __name__ == "__main__" :
   #                    level=logging.DEBUG)
 
   def test_plot(fun, x=np.arange(-2, 2, 0.1), **kwargs) :
+    """Plot ``fun(x)`` versus ``x`` in a new matplotlib figure and show it; ``kwargs`` are passed to the figure, title, axes and plot calls.
+
+    Defined only when the module runs as a script.
+    """
     fig = plt.figure(figsize=(12,5), dpi=80, facecolor='w', edgecolor='w', frameon=True, **kwargs)
     fig.canvas.set_window_title('Waveform dwt decomposition', **kwargs)
     ax = fig.add_axes((0.05, 0.05, 0.87, 0.9), **kwargs)

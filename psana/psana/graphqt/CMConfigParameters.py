@@ -104,6 +104,12 @@ class CMConfigParameters(PSConfigParameters):
 
     def declareParameters(self):
         # Possible typs for declaration: 'str', 'int', 'long', 'float', 'bool'
+        """Declare the persistent configuration parameters (log, window geometry, DB host/port, splitter sizes, buttons, instrument/experiment, last file).
+
+        Each is created with ``declareParameter`` and stored as an attribute (e.g. ``log_level``,
+        ``cdb_host``, ``exp_name``); defaults include ``cc.HOST``/``cc.PORT`` for the DB and ``'xpptut21'``
+        for the experiment. Also sets the non-persistent ``last_selected_data`` and ``last_selected_run`` to None.
+        """
         self.log_level = self.declareParameter(name='LOG_LEVEL', val_def='DEBUG', type='str') # val_def='NOTSET'
 
         #self.log_file - DEPRICATED
@@ -144,20 +150,41 @@ cp = CMConfigParameters()
 
 
 def expname_def():
+    """Return ``'xpptut21'`` if ``cp.exp_name`` has its default value, otherwise ``cp.exp_name.value()``."""
     return 'xpptut21' if cp.exp_name.is_default() else\
            cp.exp_name.value()
 
-def dir_exp(expname=expname_def()): return psu.dir_exp(expname)
-def dir_xtc(expname=expname_def()): return psu.dir_xtc(expname)
-def dir_calib(expname=expname_def()): return psu.dir_calib(expname)
+def dir_exp(expname=expname_def()):
+    """Return ``psu.dir_exp(expname)``.
+
+    The default ``expname`` is evaluated once, at import time, from :func:`expname_def`.
+    """
+    return psu.dir_exp(expname)
+def dir_xtc(expname=expname_def()):
+    """Return ``psu.dir_xtc(expname)``.
+
+    The default ``expname`` is evaluated once, at import time, from :func:`expname_def`.
+    """
+    return psu.dir_xtc(expname)
+def dir_calib(expname=expname_def()):
+    """Return ``psu.dir_calib(expname)``.
+
+    The default ``expname`` is evaluated once, at import time, from :func:`expname_def`.
+    """
+    return psu.dir_calib(expname)
 
 def dirs_to_search(expname=expname_def()):
+    """Return ``[dir_calib(expname), os.getcwd()]``.
+
+    The default ``expname`` is evaluated once, at import time, from :func:`expname_def`.
+    """
     return [dir_calib(expname), os.getcwd()]# os.path.expanduser('~')
 
 
 if __name__ == "__main__":
   def test_CMConfigParameters():
 
+    """Read the parameters from file, print them, set ``log_level`` to ``'DEBUG'`` and save them back to file (defined only when run as a script)."""
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     cp.readParametersFromFile()

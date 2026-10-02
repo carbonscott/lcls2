@@ -12,6 +12,7 @@
 #----------
 
 def usage() :
+    """Return the usage text with the optional positional arguments IFNAME OFNAME DIRTMP DETNAME EXPNAME RUNNUM DETTYPE SERNUM NAMESID."""
     return '\nUsage:'\
       + '\n  in LCLS2 environment after'\
       + '\n  cd .../lcls2; . setup_env.sh'\
@@ -42,6 +43,10 @@ FNAME_XTC2 = DIRTMP + OFNAME
 
 def convert_hdf5_to_xtc2_with_runinfo() :
 
+    """Read datasets 'waveforms' and 'times' from the HDF5 file ``FNAME_HDF5`` and write one xtc2 datagram per event to ``FNAME_XTC2`` with ``dgramCreate.CyDgram``.
+
+    Events 0 and 1 also get a 'runinfo' entry with ``EXPNAME`` and ``RUNNUM``. The transition id is 2 for event 0, 4 for event 1 and 12 otherwise (commented as Configure, BeginRun, L1Accept), and the event index is used as the timestamp.
+    """
     import dgramCreate as dc
     import numpy as np
     import os
@@ -102,6 +107,7 @@ def convert_hdf5_to_xtc2_with_runinfo() :
 #----------
 
 def test_xtc2_runinfo() :
+    """Open ``FNAME_XTC2`` with ``DataSource`` and print the run info and, for up to 101 events, ``det.raw.times`` and ``det.raw.waveforms`` of ``DETNAME``."""
     from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
     from psana import DataSource

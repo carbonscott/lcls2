@@ -11,6 +11,10 @@ from psana.pyalgos.generic.NDArrUtils import *
 if __name__ == "__main__":
 
   def test_01():
+    """Call ``subtract_bkgd`` on random (32,185,388) data and background arrays with windows on segments 0 and 1; the result is not printed.
+
+    Defined only when the module runs as a script, as are the other tests here.
+    """
     from psana.pyalgos.generic.NDArrGenerators import random_standard
 
     print('%s\n%s\n' % (80*'_','Test method subtract_bkgd(...):'))
@@ -22,6 +26,7 @@ if __name__ == "__main__":
 
 
   def test_02():
+    """Print ``info_ndarr`` for a random (32,185,388) array and for the shape tuple itself."""
     from psana.pyalgos.generic.NDArrGenerators import random_standard
     shape1 = (32,185,388)
     data = random_standard(shape=shape1, mu=300, sigma=50)
@@ -30,6 +35,7 @@ if __name__ == "__main__":
 
 
   def test_08():
+    """Run ``locxymax`` on a random (2,185,388) array, print the elapsed time and plot the data and the resulting local-maximum mask with ``Graphics.plotImageLarge``."""
     import psana.pyalgos.generic.Graphics as gg
     from psana.pyalgos.generic.NDArrGenerators import random_standard
     from psana.pyalgos.generic.NDArrUtils import reshape_to_2d
@@ -54,6 +60,7 @@ if __name__ == "__main__":
 
   def test_mask_neighbors_2d(allnbrs=True):
 
+    """Build a random 40x60 mask (0 where a random exponential value exceeds 6), apply ``mask_neighbors(mask, allnbrs)`` and show both masks side by side with color bars."""
     randexp = random_exponential(shape=(40,60), a0=1)
     fig  = gr.figure(figsize=(16,7), title='Random 2-d mask')
     axim1 = gr.add_axes(fig, axwin=(0.05,  0.05, 0.40, 0.91))
@@ -75,6 +82,7 @@ if __name__ == "__main__":
   def test_mask_neighbors_3d(allnbrs=True):
 
     #randexp = random_exponential(shape=(2,2,30,80), a0=1)
+    """Same as ``test_mask_neighbors_2d`` for a (2,30,80) mask, reshaped to 2-d for display."""
     randexp = random_exponential(shape=(2,30,80), a0=1)
 
     fig  = gr.figure(figsize=(16,7), title='Random > 2-d mask')
@@ -97,6 +105,7 @@ if __name__ == "__main__":
 
   def test_mask_edges_2d(mrows=1, mcols=1):
 
+    """Apply ``mask_edges`` with ``mrows`` and ``mcols`` to a 20x30 array of ones and show the result with a color bar."""
     fig  = gr.figure(figsize=(8,7), title='Mask edges 2-d')
     axim1 = gr.add_axes(fig, axwin=(0.05,  0.05, 0.87, 0.91))
     axcb1 = gr.add_axes(fig, axwin=(0.922, 0.05, 0.01, 0.91))
@@ -111,6 +120,7 @@ if __name__ == "__main__":
 
   def test_mask_edges_3d(mrows=1, mcols=1):
 
+    """Apply ``mask_edges`` with ``mrows`` and ``mcols`` to a (2,20,30) array of ones and show the result, reshaped to 2-d, with a color bar."""
     fig  = gr.figure(figsize=(8,7), title='Mask edges 2-d')
     axim1 = gr.add_axes(fig, axwin=(0.05,  0.05, 0.87, 0.91))
     axcb1 = gr.add_axes(fig, axwin=(0.922, 0.05, 0.01, 0.91))
@@ -126,6 +136,7 @@ if __name__ == "__main__":
 
   def do_test():
 
+    """Import ``random_exponential`` and ``Graphics`` as module globals and run the test selected by ``sys.argv[1]`` ('1'-'8' or '12', default '1'); exit for other names."""
     from psana.pyalgos.generic.NDArrGenerators import random_exponential; global random_exponential 
     import psana.pyalgos.generic.Graphics as gr; global gr
 

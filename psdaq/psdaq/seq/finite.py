@@ -1,3 +1,9 @@
+"""Sequence description 'BurstTest' that runs the burst groups once, then a CheckPoint and a branch to itself.
+
+For i in 0-3: ControlRequest masks 0xf, 0xe, 0xc, 0x8 shifted by 4*i, each with
+FixedRateSync(marker=0, occ=i+1) and conditional repeats 1, 1, 3, 7. The instructions are
+printed at import.
+"""
 from psdaq.seq.seq import *
 
 sync_marker = 6

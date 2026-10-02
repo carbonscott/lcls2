@@ -1,3 +1,4 @@
+"""PyQt5 table of structure fields read from several PVA PVs ('<base>:<PV>.<field>[index]')."""
 import sys
 import argparse
 import logging
@@ -20,24 +21,29 @@ except NameError:
     QChar = chr
 
 class PvBase(object):
+    """Monitor one structured PV and pass each update to all registered `PvField` widgets."""
     def __init__(self, name, field):
         self.fields = [field]
         initPvMon(self,name,isStruct=True)
 
     def add(self, field):
+        """Register another field widget for this PV."""
         self.fields.append(field)
 
     def update(self, err):
+        """Convert the cached value to a dict and call ``f.update(q, err)`` on each field; does nothing if `err` is set."""
         if err is None:
             q = self.pv.__value__.todict()
             for f in self.fields:
                 f.update(q,err)
 
 class PvManager(object):
+    """Registry mapping PV names to `PvBase` monitors so that each PV is monitored once."""
     def __init__(self):
         self.names = {}
     
     def add(self,pvname,field):
+        """Add `field` to the `PvBase` for `pvname`, creating it on first use."""
         if pvname in self.names:
             self.names[pvname].add(field)
         else:
@@ -46,6 +52,10 @@ class PvManager(object):
 pvmanager = PvManager()
 
 class PvField(QtWidgets.QLabel):
+    """QLabel showing one field of a structured PV, given as '<PV>.<field>' or '<PV>.<field>[index]'.
+
+    The widget registers itself with the module-level `pvmanager` for PV '<base>:<PV>'.
+    """
     def __init__(self, base, field):
         super(QtWidgets.QLabel,self).__init__('-')
         args = field.split('.')[1].split('[')
@@ -58,6 +68,7 @@ class PvField(QtWidgets.QLabel):
         pvmanager.add(pvname,self)
 
     def update(self,q,err):
+        """Set the label to the field value (element `index` if given) as an int, or to one element per line if that fails."""
         if err is None:
             if self.index>=0:
                 f = q[self.field][self.index]
@@ -76,6 +87,7 @@ class PvField(QtWidgets.QLabel):
             self.setText(s)
 
 class PvScalarTable(QtWidgets.QGroupBox):
+    """QGroupBox grid of `PvField` labels: one column per base (titled with the common prefix removed) and one row per field."""
     def __init__(self, bases, fields, edit=False):
         super(PvScalarTable,self).__init__('PvScalarTable')
 
@@ -128,7 +140,9 @@ class PvScalarTable(QtWidgets.QGroupBox):
         self.setLayout(glo)
 
 class Ui_MainWindow(object):
+    """Builder for the pvatable window."""
     def setupUi(self, MainWindow, bases, fields):
+        """Put a `PvScalarTable(bases, fields)` in the window and set the title 'pvatable'."""
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -144,6 +158,11 @@ class Ui_MainWindow(object):
 
 def main():
 
+    """Parse --bases, --fields and -v, then run the window.
+
+    The defaults for --bases and --fields are plain strings, not lists, so without those
+    options the table code iterates over characters.
+    """
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

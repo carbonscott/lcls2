@@ -31,6 +31,11 @@ from PyQt5.QtGui import QCursor
 
 class QWPopupSelectItem(QDialog) :
 
+    """Frameless popup QDialog listing strings; clicking one stores it and accepts the dialog.
+
+    The list is sorted unless `do_sort` is False. Losing window focus or closing rejects
+    the dialog.
+    """
     def __init__(self, parent=None, lst=[], do_sort=True):
 
         QDialog.__init__(self, parent)
@@ -50,6 +55,11 @@ class QWPopupSelectItem(QDialog) :
 
 
     def fill_list(self, lst) :
+        """Fill the list widget from `lst` (sorted if `do_sort`), recording the longest length and row count.
+
+        Does nothing if `lst` is empty, in which case `nchars`/`nrows` stay undefined and
+        `set_style` would raise AttributeError.
+        """
         if not lst : return
         self.nchars = max([len(s) for s in lst])
         self.nrows  = len(lst)
@@ -63,6 +73,7 @@ class QWPopupSelectItem(QDialog) :
 
 
     def set_style(self):
+        """Set title 'Select', make the window frameless, zero margins and fix the size from `nchars` and `nrows`."""
         self.setWindowTitle('Select')
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.layout().setContentsMargins(0,0,0,0)
@@ -76,12 +87,14 @@ class QWPopupSelectItem(QDialog) :
 
 
     def show_tool_tips(self):
+        """Set the tool tip to 'Select item from the list.'."""
         self.setToolTip('Select item from the list.')
 
 
     def on_item_click(self, item):
         #widg = self._list.itemWidget(item)
         #item.checkState()
+        """Store the clicked item's text in `name_sel` and accept the dialog."""
         self.name_sel = item.text()
         #logger.debug('on_item_click: selected %s' % self.name_sel)
         self.accept()
@@ -93,28 +106,43 @@ class QWPopupSelectItem(QDialog) :
 
     def event(self, e):
         #logger.debug('event.type', e.type())
+        """Reject the dialog on QEvent.WindowDeactivate, then return `QDialog.event(self, e)`."""
         if e.type() == QEvent.WindowDeactivate :
             self.reject()
         return QDialog.event(self, e)
 
 
     def closeEvent(self, e) :
+        """Reject the dialog."""
         self.reject()
 
 
     def selectedName(self):
+        """Return the selected item text, or None if nothing was clicked."""
         return self.name_sel
 
 
     def onCancel(self):
+        """Reject the dialog."""
         self.reject()
 
 
     def onApply(self):
+        """Accept the dialog."""
         self.accept()
 
 
 def popup_select_item_from_list(parent, lst, dx=-46, dy=-33, use_cursor_pos=False, do_sort=True) :
+    """Show a `QWPopupSelectItem` modally and return the selected string.
+
+    The popup is moved to the cursor position plus (dx, dy) if `use_cursor_pos`, else to
+    the parent's global position plus (dx, dy) when a parent is given.
+
+    Returns
+    -------
+    str or None
+        Selected item text, or None if the dialog was dismissed without a click.
+    """
     w = QWPopupSelectItem(parent, lst, do_sort)
     if use_cursor_pos: w.move(QCursor.pos().__add__(QPoint(dx,dy)))
     elif parent is not None: w.move(parent.mapToGlobal(parent.pos()) + QPoint(dx, dy))
@@ -139,6 +167,7 @@ if __name__ == "__main__" :
   from PyQt5.QtWidgets import QApplication
 
   def test_select_exp(tname) :
+    """Test: pop up a selection list of the entries in '/reg/d/psdm/CXI/' and log the choice."""
     lst = sorted(os.listdir('/reg/d/psdm/CXI/'))
     logger.debug('lst:', lst)
     app = QApplication(sys.argv)

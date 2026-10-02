@@ -2,10 +2,16 @@
 #import logging
 #logger = logging.getLogger(__name__)
 
+"""Interactive test script for ``SegGeometryArchonV2`` using a simulated detector object.
+
+Run as a script with test name ``'1'``-``'6'`` (see :func:`selector`); plots use ``psana.pyalgos.generic.Graphics``.
+The test functions are defined only when the module is run as a script.
+"""
 from psana.pscalib.geometry.SegGeometryArchonV2 import *
 logger = logging.getLogger(__name__)
 
 class detector_simulator():
+    """Minimal detector stand-in whose ``_calibconst`` holds an uninitialized (``numpy.empty``) ``'pedestals'`` array of ``shape`` and ``dtype``."""
     def __init__(self, shape=(150,4800), dtype=np.uint8):
         self._calibconst={'pedestals': [np.empty(shape, dtype=dtype), 'metadata for pedestals'],}
 
@@ -19,6 +25,7 @@ if __name__ == "__main__":
   WINDOW = (0.03, 0.06, 0.97, 0.92)
 
   def test_xyz_min_max():
+    """Create the geometry for a (300, 4800) detector, print the segment info and log the min/max pixel coordinates along X, Y and Z."""
     w = SegGeometryArchonV2(detector=detector_simulator(shape=(300,4800)))
     w.print_seg_info()
     #w.print_xyz_min_max_um()
@@ -31,6 +38,7 @@ if __name__ == "__main__":
 
 
   def test_xyz_maps():
+    """Plot the X and Y pixel-coordinate maps (um, multiplied by ``mask_fake``) for a (150, 4800) detector, save them as ``img_map_x``/``img_map_y`` and show the plots."""
     w = SegGeometryArchonV2(detector=detector_simulator(shape=(150,4800)))
     #w.print_seg_info()
     titles = ['X map','Y map']
@@ -49,6 +57,7 @@ if __name__ == "__main__":
 
   def test_archon_img():
 
+    """Create the geometry, log the construction time, the X index-map shape and the image size derived from the min/max coordinates divided by the pixel scale sizes."""
     t0_sec = time()
     w = SegGeometryArchonV2(detector=detector_simulator())
     #w = SegGeometryArchonV2(use_wide_pix_center=True)
@@ -74,6 +83,7 @@ if __name__ == "__main__":
 
 
   def test_archon_img_easy():
+    """Build an image from the pixel index maps of non-fake pixels with weights ``iX + 10*iY``, print index ranges and plot it."""
     from psana.detector.NDArrUtils import info_ndarr
     w = SegGeometryArchonV2(detector=detector_simulator())
 
@@ -92,6 +102,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Log slices [68:76, 380:388] and shapes of the pixel area array and the X and Y pixel-size arrays."""
     w = SegGeometryArchonV2(detector=detector_simulator())
     #w.print_pixel_size_arrs(rowslice=slice(68,76))
     size_arrX = w.pixel_size_array('X')
@@ -107,6 +118,7 @@ if __name__ == "__main__":
 
 
   def test_archon_mask(width=4, wcenter=2, edge_rows=3, edge_cols=6, center_rows=2, center_cols=4):
+    """Plot the array from ``pixel_mask_array()``; the keyword parameters are not used."""
     w = SegGeometryArchonV2(detector=detector_simulator())
     iX, iY = w.get_seg_xy_maps_pix_with_offset()
     mask = w.pixel_mask_array() #, dtype=DTYPE_MASK, **kwa)
@@ -117,6 +129,7 @@ if __name__ == "__main__":
 
 
 def usage():
+    """Return a usage string with the test-name lines taken from the source of :func:`selector`."""
     import inspect
     return '\n Usage: %s <tname>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "tname in" in s])
@@ -124,6 +137,7 @@ def usage():
 
 def selector():
 
+    """Run the test chosen by ``sys.argv[1]`` (``'1'``-``'6'``), or only log the usage if no argument is given, then call ``sys.exit('END OF TEST')``."""
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'

@@ -1,6 +1,8 @@
+"""Example that prints a small instruction list before and after macro expansion with `preproc`."""
 from psdaq.seq.seq import *
 
 def main():
+    """Build a list of Wait/ControlRequest/Branch instructions, print it, run `preproc` and print the result."""
     instrset = [Wait('1H',1),  
                 ControlRequest([0]), 
                 Wait('910kH',20000), 

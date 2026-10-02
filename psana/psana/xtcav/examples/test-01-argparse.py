@@ -9,6 +9,7 @@ import argparse
 
 def test_argparse() :
 
+    """Parse the command line (positional exp and run, options --nevts, -c and -a) with argparse and print the parsed values, the ``vars`` dict and the default of each option."""
     parser = argparse.ArgumentParser()
     parser.add_argument('exp', type=str, help='psana experiment string (e.g. amox23616)')
     parser.add_argument('run', type=int, help='run number')

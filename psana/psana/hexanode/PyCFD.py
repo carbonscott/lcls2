@@ -1,12 +1,17 @@
 #xiangli@slac.stanford.edu 02/20/2018
 
 
+"""Defines ``PyCFD``, a numpy/scipy implementation that finds signal times in a waveform from zero crossings of the waveform minus a fraction of its shifted copy."""
 import numpy as np
 from scipy.optimize import bisect
 
 
 class PyCFD:
 
+    """Find signal times in a waveform using parameters from the dict ``params``.
+
+    Required keys: 'sample_interval', 'delay' (converted to samples), 'fraction', 'threshold', 'walk', 'polarity' ('Positive' or anything else for negative), 'timerange_low', 'timerange_high' and 'offset'. The bisection tolerance is 0.1 sample interval.
+    """
     def __init__(self, params):
         self.sample_interval = params['sample_interval']
         self.delay = int(params['delay']/self.sample_interval)
@@ -22,6 +27,7 @@ class PyCFD:
         
     def NewtonPolynomial3(self,x,x_arr,y_arr):
     
+        """Return the value at ``x`` of the cubic Newton interpolation polynomial through the four points ``(x_arr[i], y_arr[i])``."""
         d_0_1 = (y_arr[1] - y_arr[0])/(x_arr[1] - x_arr[0])
         d_1_2 = (y_arr[2] - y_arr[1])/(x_arr[2] - x_arr[1])
         d_2_3 = (y_arr[3] - y_arr[2])/(x_arr[3] - x_arr[2])
@@ -40,6 +46,10 @@ class PyCFD:
             
     def CFD(self,wf, wt):        
         
+        """Return a numpy array of signal times found in waveform ``wf`` with sample times ``wt``.
+
+        Only samples inside (timerange_low, timerange_high) are used. The signal ``wf[:-delay] - fraction*wf[delay:]`` (with polarity, walk and offset applied) is searched for rising sign changes where the original waveform exceeds the threshold; each time is found by bisection of a cubic Newton polynomial through 4 neighbouring samples (points without 4 distinct samples are skipped). If an exception occurs, the sample time at the current crossing is appended and the remaining crossings are not processed.
+        """
         wf = wf[(wt>self.timerange_low)&(wt<self.timerange_high)] 
         wt = wt[(wt>self.timerange_low)&(wt<self.timerange_high)] #choose the time window of interest        
         

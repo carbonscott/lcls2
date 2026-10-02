@@ -1,3 +1,4 @@
+"""Defines ``CalibrationPaths``, which finds existing and builds new calibration file paths '<calibdir>/<calib group>/<detector>/<type>/<begin>-<end>.data'."""
 from psana import *
 #from PSCalib.CalibFileFinder import CalibFile, CalibFileFinder
 from psana.pscalib.calib.CalibFileFinder import CalibFile, CalibFileFinder
@@ -5,6 +6,10 @@ import os
 import psana.xtcav.Constants as cons
 
 class CalibrationPaths:
+    """Find and create calibration file paths for the calib group ``Constants.CALIB_GROUP`` and source ``Constants.DETNAME``.
+
+    The calib directory is ``calibdir`` if given, otherwise ``env.calibDir()``.
+    """
     def __init__(self,env,calibdir=''):
         self.env = env
         self.calibgroup = cons.CALIB_GROUP

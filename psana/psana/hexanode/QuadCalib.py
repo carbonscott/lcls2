@@ -19,7 +19,9 @@ Created on 2017-12-08 by Mikhail Dubrovin
 """
 #------------------------------
 
-def usage(): return 'Use command: python .../psana/hexanode/xxx.py'
+def usage():
+    """Return the placeholder usage string 'Use command: python .../psana/hexanode/xxx.py'."""
+    return 'Use command: python .../psana/hexanode/xxx.py'
 
 #------------------------------
 
@@ -46,6 +48,7 @@ class Store :
     """
 
     def set_parameters(self, **kwargs) :
+        """Print ``kwargs`` and set the PLOT_* flags (PLOT_NHITS, PLOT_TIME_CH, PLOT_UVW, PLOT_TIME_SUMS, PLOT_CORRELATIONS, PLOT_XY_COMPONENTS, PLOT_XY_2D, PLOT_MISC, PLOT_REFLECTIONS, PLOT_PHYSICS) from it, each defaulting to True."""
         print('In set_parameters, **kwargs: %s' % str(kwargs))
         self.PLOT_NHITS         = kwargs.get('PLOT_NHITS'        , True)
         self.PLOT_TIME_CH       = kwargs.get('PLOT_TIME_CH'      , True)
@@ -164,6 +167,7 @@ sp = Store()
 #------------------------------
 
 def create_output_directory(prefix) :
+    """Create the directory part of ``prefix`` with mode 0o775 via ``Utils.create_directory``; does nothing if it is '', './' or None. Prints the directory name."""
     dirname = os.path.dirname(prefix)
     print('Output directory: "%s"' % dirname)
     if dirname in ('', './', None) : return
@@ -173,7 +177,9 @@ def create_output_directory(prefix) :
 
 def plot_image(img, figsize=(11,10), axwin=(0.10, 0.08, 0.88, 0.88), cmap='inferno',\
                title='x-y image', xlabel='x', ylabel='y', titwin=None, fnm='img.png', amp_range=None, img_range=None, origin='upper') : #'gray_r'
-    """
+    """Plot ``img`` with ``plotImageLarge``, set axis labels and title, move the window to ``sp.hwin_x0y0`` and save it as '<sp.prefix>-<fnm>' if ``sp.do_save``.
+
+    Without ``img_range`` the extent is the image shape; without ``amp_range`` the color range is 0 to mean + 4 std of the image without its border rows/columns.
     """
     s = img.shape
     _img_range = (0, s[1], s[0], 0) if img_range is None else img_range
@@ -206,6 +212,7 @@ def h1d(hlst, bins=None, amp_range=None, weights=None, color=None, show_stat=Tru
 
 def plot_graph(x, y, figsize=(7,6), pfmt='r-', lw=2, xlimits=None, ylimits=None, \
                title='py vs. px', xlabel='px', ylabel='py', fnm='graph.png') :
+    """Plot ``y`` versus ``x`` with ``plotGraph``, set limits, labels and title, move the window to ``sp.hwin_x0y0`` and save it as '<sp.prefix>-<fnm>' if ``sp.do_save``."""
     fig, ax = plotGraph(x, y, figsize=figsize, pfmt=pfmt, lw=lw)
     ax.set_xlim(xlimits)
     ax.set_ylim(ylimits)
@@ -564,6 +571,7 @@ def plot_histograms(prefix='plot', do_save=True, hwin_x0y0=(0,400)) :
 #------------------------------
 
 def print_tdc_ns(tdc_ns, cmt='  tdc_ns ', fmt=' %7.2f', offset='    ') :
+    """Print the shape of ``tdc_ns`` and, for each row (channel), up to the first 10 values formatted with ``fmt``."""
     sh = tdc_ns.shape
     print('%sshape=%s %s' % (offset, str(sh), cmt), end='')
     for r in range(sh[0]) :
@@ -577,6 +585,10 @@ def print_tdc_ns(tdc_ns, cmt='  tdc_ns ', fmt=' %7.2f', offset='    ') :
 
 def calib_on_data(**kwargs) :
 
+    """Run the compiled hexanode sorter over the events of an HDF5 file of peak times and fill the module store ``sp`` with statistics, optionally plotting them.
+
+    Reads 'ifname', 'calibcfg', 'calibtab', 'evskip', 'events', 'numchs', 'numhits', 'ofprefix', 'plot_his', 'save_his' and 'verbose' from ``kwargs``; the configuration file sets the command (sort when 1, calibration for 2 and 3). Events with a channel without hits are skipped; ``sys.exit(0)`` is called on configuration, initialization or file errors. The sorting is done in ``psana.hexanode_ext`` and is not visible here.
+    """
     OSQRT3 = 1./sqrt(3.)
     CTYPE_HEX_CONFIG = 'hex_config'
     CTYPE_HEX_TABLE  = 'hex_table'

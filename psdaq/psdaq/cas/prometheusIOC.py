@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+"""pythonSoftIOC server that publishes Prometheus query results as aIn/longIn records, updated at a fixed interval."""
 import os
 import sys
 import time
@@ -18,11 +19,13 @@ _log = logging.getLogger(__name__)
 
 
 class PromMetric(object):
+    """One Prometheus query `query` against server `srvurl`."""
     def __init__(self, srvurl, query):
         self._srvurl = srvurl
         self._query  = query
 
     def query(self):
+        """GET '<srvurl>/api/v1/query' with the query and return the decoded JSON, or None (logged) on a non-200 status."""
         payload = {'query': self._query}
         url = f'{self._srvurl}/api/v1/query'
         response = requests.get(url, params=payload)
@@ -38,6 +41,19 @@ class PromMetric(object):
         return data
 
     def get(self):
+        """Run the query and return its single result.
+
+        Returns
+        -------
+        list or tuple
+            The vector result's ``value`` pair (timestamp, value string), or ``result['value']``
+            for 'scalar'/'string' types; (None, None) if the request failed or the vector is empty.
+
+        Raises
+        ------
+        RuntimeError
+            For more than one vector item, an unsupported result type, or a non-success status.
+        """
         result = self.query()
         if result is None:
             return None, None
@@ -64,6 +80,10 @@ class PromMetric(object):
             raise RuntimeError(f"Error from query {self._query}")
 
 class Handler(object):
+    """Soft-IOC record for one metric: `builder.aIn` for type codes 'd'/'f' (default 'd'), `builder.longIn` for integer codes.
+
+    Alarm settings are initialized from `valueAlarm`; other type codes raise RuntimeError.
+    """
     def __init__(self, name, metric, typeCode, valueAlarm):
         # See p4p documentation for type definitions
         self._typeCode = typeCode if typeCode is not None else 'd'
@@ -122,6 +142,10 @@ class Handler(object):
         return alarm.NO_ALARM, alarm.UDF_ALARM
 
     def process(self):
+        """Query the metric and set the record value (converted to float or int) with its timestamp and the evaluated alarm.
+
+        Does nothing if the query returned no timestamp.
+        """
         timestamp, value = self._metric.get()
         if timestamp is None:  return
         if self._typeCode in 'df':
@@ -135,6 +159,10 @@ class Handler(object):
 
 
 def main():
+    """Load the JSON metric file (with %J, %I, %X, %P substituted), create one record per named metric under '<P>:<inst>:<part>', start the IOC and update every -I seconds.
+
+    The Prometheus server is $DM_PROM_SERVER if set, else -S.
+    """
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='Prometheus metric PV server')
 
     srv = 'http://psmetric03:9090'

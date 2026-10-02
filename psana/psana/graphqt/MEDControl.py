@@ -140,6 +140,7 @@ class MEDControl(QWidget):
 
 
     def set_style(self):
+        """Set layout margins, label styles, maximum button widths and button styles, then call :meth:`set_style_buts`."""
         self.layout().setContentsMargins(5,5,5,5)
         for lab in (self.lab_dsk, self.lab_det, self.lab_dbg, self.lab_dba, self.lab_nda, self.lab_geo):
             lab.setStyleSheet(style.styleLabel)
@@ -156,11 +157,13 @@ class MEDControl(QWidget):
         self.set_style_buts()
 
     def set_style_buts(self):
+        """Style the array-DB, array-file and geometry-file buttons as default when their text is ``'Select'``, otherwise as left/right-aligned buttons."""
         self.but_dba.setStyleSheet(style.styleButton if self.but_dba.text() == self.def_dba else style.styleButtonLeft)
         self.but_nda.setStyleSheet(style.styleButton if self.but_nda.text() == self.def_nda else style.styleButtonRight)
         self.but_geo.setStyleSheet(style.styleButton if self.but_geo.text() == self.def_geo else style.styleButtonRight)
 
     def set_tool_tips(self):
+        """Set tool tips on the array-file, geometry, Settings, geo-DB, array-DB and Test buttons."""
         self.but_nda.setToolTip('image N-d array file name')
         self.but_geo.setToolTip('Geometry file name')
         self.but_set.setToolTip('Set parameters of this app')
@@ -169,6 +172,10 @@ class MEDControl(QWidget):
         self.but_tst.setToolTip('Test for development only')
 
     def on_but_geo(self):
+        """Select a geometry file in a popup, show it on the geometry button, reset the geo-DB button and ``geo_txt``, and redraw the image.
+
+        Does nothing if the popup returns None.
+        """
         path0 = DIR_DATA_TEST+'/geometry' if self.geofname == self.def_nda else self.geofname
         path = popup_file_name(parent=self, mode='r', path=path0, dirs=[], fltr='*.txt *.data\n*')
         logger.debug('Selected: %s' % str(path))
@@ -182,6 +189,10 @@ class MEDControl(QWidget):
         self.set_image()
 
     def on_but_nda(self):
+        """Select an array file in a popup and redraw the image with it (and the current ``geo_txt``).
+
+        An empty or None selection resets the button text to ``'Select'`` and returns.
+        """
         path0 = DIR_DATA_TEST+'/misc' if self.ndafname == self.def_nda else self.ndafname
         path = popup_file_name(parent=self, mode='r', path=path0, dirs=[DIR_DATA_TEST,], fltr='*.npy *.txt *.data\n*')
         logger.debug('Selected: %s' % str(path))
@@ -194,6 +205,10 @@ class MEDControl(QWidget):
         self.set_image(geo_txt=self.geo_txt)
 
     def set_image(self, nda=None, geo_txt=None):
+        """Build the image with ``MEDUtils.image_from_kwargs`` from the file names on the buttons, ``nda`` and ``geo_txt``, and display it.
+
+        Stores the returned geometry object in ``self.geo`` and calls ``self.wim.set_pixmap_from_arr(img, set_def=True)``.
+        """
         logger.debug('set_image')
         geofname=self.but_geo.text()
         ndafname=self.but_nda.text()
@@ -208,6 +223,7 @@ class MEDControl(QWidget):
         self.wim.set_pixmap_from_arr(img, set_def=True)
 
     def set_visible(self, is_visible=True):
+        """Show or hide the array-DB label/button, Test button, geometry label/button and Settings button."""
         for f in (self.lab_dba, self.but_dba, self.but_tst, self.lab_geo, self.but_geo, self.but_set):
             f.setVisible(is_visible)
 
@@ -229,6 +245,7 @@ class MEDControl(QWidget):
         return dbname, colname
 
     def on_but_dbg(self):
+        """Get DB and collection names from the buttons (:meth:`dbname_colname`) and call :meth:`set_geometry_from_db`."""
         logger.info('on_but_dbg')
         dbname, colname = self.dbname_colname()
         self.set_geometry_from_db(dbname, colname)
@@ -270,6 +287,7 @@ class MEDControl(QWidget):
             self.but_dbg.setText(self.def_dbg)
 
     def experiment_from_dskwargs(self):
+        """Return the experiment name parsed from the DataSource button text by ``MEDUtils.experiment_from_dskwargs`` (None if absent)."""
         return mu.experiment_from_dskwargs(self.but_dsk.text())
         #dskwa = mu.datasource_kwargs_from_string(self.but_dsk.text())
         #logger.info('dskwargs: %s' % str(dskwa))
@@ -277,6 +295,11 @@ class MEDControl(QWidget):
         #return dskwa.get('exp', None)
 
     def select_detector_in_db(self, dbname):
+        """Return a detector (collection) name from database ``dbname``, asking the user in a popup if there are several.
+
+        Collections ``'fs.chunks'`` and ``'fs.files'`` are excluded (the code assumes both are present). Returns None
+        if no collection remains or the popup is cancelled. The collection list comes from the calibration DB web service.
+        """
         logger.info('select from detectors for exp-db: %s' % dbname)
         colls = mu.collection_names(dbname)
         for n in ('fs.chunks', 'fs.files'): colls.remove(n)
@@ -292,6 +315,11 @@ class MEDControl(QWidget):
         return detname
 
     def on_but_det(self):
+        """Select a detector, either from the experiment DB ``cdb_<exp>`` or by detector type from the detector DBs, then load its geometry.
+
+        Sets the detector button text, resets the DB buttons if the detector changed, and calls
+        :meth:`set_geometry_from_db` with ``cdb_<detname>``. Returns early if any selection is cancelled.
+        """
         self.txt_det_old = self.but_dsk.text()
         exp = self.experiment_from_dskwargs()
         detname = None
@@ -330,6 +358,10 @@ class MEDControl(QWidget):
         self.set_geometry_from_db(dbname, detname)
 
     def set_geometry_from_kwargs(self):
+        """Query the DB for the geometry document with ``run <= run`` (run from ``self.dskwargs``, default 9999), load its text into ``geo_txt`` and redraw the image.
+
+        Returns early if the DB name is None. Queries go through ``MEDUtils``/``MDBWebUtils`` (web service).
+        """
         s = self.dskwargs
         dskwa = {} if s=='Select' else mu.datasource_kwargs_from_string(s)
         dbname, colname = self.dbname_colname()
@@ -346,6 +378,11 @@ class MEDControl(QWidget):
         self.set_image(geo_txt=self.geo_txt)
 
     def set_geometry_from_db(self, dbname, colname):
+        """Let the user choose a ``'geometry'`` document of ``dbname``/``colname``, load its text into ``geo_txt`` and redraw the image.
+
+        If no geometry documents exist the geo-DB button is reset; with several a popup is shown. After
+        loading, the geometry-file button is reset to ``'Select'``. Documents and data come from the DB web service.
+        """
         logger.info('set_geometry_from_db for dbname: %s colname: %s' % (dbname, colname))
         doc = None
         docs = mu.find_docs(dbname, colname)
@@ -386,12 +423,18 @@ class MEDControl(QWidget):
         self.set_style_buts()
 
     def set_but_dbg_text_for_doc(self, doc):
+        """Set the geo-DB button text to ``'run:<run> <time_stamp>'`` of ``doc`` and restyle the buttons."""
         logger.debug('doc: %s' % str(doc))
         s = 'run:%d %s' % (doc['run'], doc['time_stamp'])
         self.but_dbg.setText(s)
         self.set_style_buts()
 
     def set_ndarray(self, dbname, colname):
+        """Let the user choose a pedestals/pixel_status/pixel_rms document of ``dbname``/``colname`` and show its array as the image.
+
+        With several candidates a popup is shown; with exactly one, ``docs[0]`` (first of all documents,
+        not of the filtered list) is used. Returns early if none are found or the popup is cancelled.
+        """
         logger.debug('set_ndarray: set ndarray from dbname: %s colname: %s' % (dbname, colname))
         doc = None
         docs = mu.find_docs(dbname, colname)
@@ -426,6 +469,7 @@ class MEDControl(QWidget):
         self.set_image(nda=nda, geo_txt=self.geo_txt)
 
     def on_but_tst(self):
+        """Print the calibration DB names, the collections of the current DB and up to about 100 documents of the current collection (web service queries)."""
         dbnames = mu.db_names()
         print('\n==== %d cdb_* dbnames: %s\n' % (len(dbnames), str(dbnames)))
         dbname, colname = self.dbname_colname()
@@ -447,9 +491,11 @@ class MEDControl(QWidget):
               break
 
     def on_but_set(self):
+        """Log ``'on_but_set - TBD'``; nothing else is done."""
         logger.info('on_but_set - TBD')
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent``."""
         QWidget.closeEvent(self, e)
 
 #    def on_but_clicked(self):

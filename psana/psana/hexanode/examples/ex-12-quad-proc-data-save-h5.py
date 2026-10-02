@@ -25,12 +25,17 @@ from psana.pyalgos.generic.Utils import str_kwargs
 #----------
 
 def usage():
+    """Return 'Use command: python <script> [test-number]'."""
     return 'Use command: python %s [test-number]' % sys.argv[0]
 
 #----------
 
 def proc_data(**kwargs):
 
+    """Find waveform peaks with ``WFPeaks`` for events of ``kwargs['dsname']`` and write them to an HDF5 file with ``WFHDF5IO``.
+
+    The output name is '<ofprefix><exp>-rNNNN-eNNNNNN-single-node.h5'. For each selected event it prints waveforms, hit counts, times and peak times and calls ``add_event_to_h5file``; it ends with ``sys.exit``. For a test number other than '1' it calls ``peaks.peak_times_ns``, which ``WFPeaks`` does not define.
+    """
     DSNAME       = kwargs.get('dsname', '/reg/g/psdm/detector/data2_test/xtc/data-amox27716-r0100-acqiris-e000100.xtc2')
     DETNAME      = kwargs.get('detname','tmo_hexanode')
     NUM_CHANNELS = kwargs.get('numchs', 5)

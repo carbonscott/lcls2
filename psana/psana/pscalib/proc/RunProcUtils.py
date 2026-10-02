@@ -372,6 +372,10 @@ def dict_exp_run_old(ins='CXI', procname='pixel_status') :
 #------------------------------
 
 def print_new_runs(exp='xpptut15', procname='pixel_status', verb=1) :
+    """Print the new (not yet logged) runs of experiment ``exp`` for process ``procname`` and append them to the process log file.
+
+    If there are no new runs, only a "no new runs" message is printed and the log is not changed.
+    """
     runs_new = runs_new_in_exp(exp, procname, verb)
     if len(runs_new) :
         print('New runs found in %s for process %s:' % (exp, procname))
@@ -389,6 +393,7 @@ def print_new_runs(exp='xpptut15', procname='pixel_status', verb=1) :
 #------------------------------
 
 def print_experiments_under_control(procname='pixel_status') :
+    """Shadowed by the later ``print_experiments_under_control`` in this module, so this body is never used; it would call :func:`print_new_runs` for each experiment under control."""
     for exp in experiments_under_control(procname) :
         print('%s\nProcess new runs for %s' % (50*'=', exp))
         print_new_runs(exp, procname)
@@ -396,6 +401,7 @@ def print_experiments_under_control(procname='pixel_status') :
 #------------------------------
 
 def print_experiments_all(procname='pixel_status', ins=None) :
+    """For each experiment of instrument ``ins`` (all instruments if None) print a header and call :func:`print_new_runs` (which appends new runs to the log)."""
     for exp in experiments(ins) :
         print('%s\nProcess new runs for %s' % (50*'=', exp))
         print_new_runs(exp, procname)
@@ -406,6 +412,7 @@ def print_experiments_all(procname='pixel_status', ins=None) :
 #------------------------------
 
 def print_experiments(ins='CXI') :
+    """Print the experiment names found for instrument ``ins`` (all instruments if None) and their count."""
     exps = experiments(ins)
     for exp in exps :
         print(exp)
@@ -415,6 +422,7 @@ def print_experiments(ins='CXI') :
 #------------------------------
 
 def print_experiments_count_runs() : # ins='CXI'
+    """Print the number of runs in the xtc directory of every experiment of every instrument in ``INSTRUMENTS``, then per-instrument and total summaries."""
     d_ins_nruns = {}
     d_ins_nexps = {}
     nruns_tot = 0
@@ -442,6 +450,7 @@ def print_experiments_count_runs() : # ins='CXI'
 #------------------------------
 
 def print_explogs_under_control(procname='pixel_status') :
+    """Print a numbered list of the experiments under control for ``procname`` with their log-file paths."""
     print('%s\nExperiments under control:' % (110*'_'))
     for i, exp in enumerate(experiments_under_control(procname)) :
         print('%4d %s %s'%(i+1, exp.ljust(10), log_file(exp, procname)))
@@ -449,12 +458,14 @@ def print_explogs_under_control(procname='pixel_status') :
 #------------------------------
 
 def print_experiments_under_control(procname='pixel_status') :
+    """Print the name of each experiment under control for ``procname``."""
     for exp in experiments_under_control(procname) :
         print(exp)
 
 #------------------------------
 
 def print_all_experiments() :
+    """Print the experiments of every instrument in ``INSTRUMENTS`` with per-instrument and total counts."""
     tot_nexps=0
     ins_nexps={}
     for ins in INSTRUMENTS : 
@@ -476,6 +487,10 @@ def print_all_experiments() :
 #------------------------------
 
 def print_exp_runs(exp_runs, procname='pixel_status', add_to_log=False) :
+    """Print one line per ``(exp, run)`` pair with its dataset name and log file, and the total count.
+
+    If ``add_to_log`` is True each run is appended to the experiment's log file for ``procname``.
+    """
     for i,(exp,run) in enumerate(exp_runs) :
         dsname = 'exp=%s:run=%s'%(exp, run.lstrip('0'))
         logname = log_file(exp, procname)
@@ -488,18 +503,24 @@ def print_exp_runs(exp_runs, procname='pixel_status', add_to_log=False) :
 #------------------------------
 
 def print_datasets_new(ins='CXI', procname='pixel_status', add_to_log=False) :
+    """Print the new ``(exp, run)`` pairs from ``exp_run_new(ins, procname)`` with :func:`print_exp_runs`, optionally appending them to the logs."""
     exp_runs = exp_run_new(ins, procname)
     print_exp_runs(exp_runs, procname, add_to_log)
 
 #------------------------------
 
 def print_datasets_new_under_control(procname='pixel_status', add_to_log=False) :
+    """Print the new ``(exp, run)`` pairs from ``exp_run_new_under_control(procname)`` with :func:`print_exp_runs`, optionally appending them to the logs."""
     exp_runs = exp_run_new_under_control(procname)
     print_exp_runs(exp_runs, procname, add_to_log)
 
 #------------------------------
 
 def print_exp_runs_old(dic_exp_runs, procname='pixel_status', move_to_archive=False) :
+    """Print, per experiment in ``dic_exp_runs``, the log-file path and the listed runs (10 per line) and the total count.
+
+    If ``move_to_archive`` is True the run records are moved to the archive with ``move_recs_to_archive``.
+    """
     nruns = 0
     for exp,runs in dic_exp_runs.items() :
         #dsname = 'exp=%s:run=%s'%(exp, run.lstrip('0'))
@@ -518,6 +539,7 @@ def print_exp_runs_old(dic_exp_runs, procname='pixel_status', move_to_archive=Fa
 #------------------------------
 
 def print_datasets_old(ins='CXI', procname='pixel_status', move_to_archive=False) :
+    """Print runs listed in the logs but missing from xtc directories (``dict_exp_run_old``) with :func:`print_exp_runs_old`, optionally moving them to the archive."""
     dic_exp_runs = dict_exp_run_old(ins, procname)
     print_exp_runs_old(dic_exp_runs, procname, move_to_archive)
 
@@ -526,6 +548,7 @@ def print_datasets_old(ins='CXI', procname='pixel_status', move_to_archive=False
 #------------------------------
 
 def usage() :
+    """Return the usage text listing the test names of this module."""
     return  'python PSCalib/src/RunProcUtils.py <test_name>\n'\
            +'       <test_name> = 1  - print new files in experiments listed in control file\n'\
            +'                   = 10 - the same as 1 and save record for each new run in log file\n'\

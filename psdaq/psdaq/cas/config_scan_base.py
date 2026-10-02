@@ -1,3 +1,4 @@
+"""`ConfigScanBase`: common command-line handling and run loop for DAQ configuration scans built on `ConfigScan`."""
 import sys
 import logging
 import threading
@@ -24,6 +25,13 @@ hutch_cnf = {'tmo':'tmo_sc.py',
             }
 
 class ConfigScanBase(object):
+    """Parse scan command-line options and resolve the platform (-p) and collection host (-C).
+
+    `defargs` overrides option defaults (making them optional) and `userargs` adds
+    (name, kwargs) options. -p/-C come from the command line or from the 'platform' and
+    'collect_host' variables of a --cnf file; if either is still missing, or --events < 1,
+    it logs an error and calls `exit(1)`.
+    """
     def __init__(self, userargs=[], defargs={}):
 
         
@@ -205,6 +213,14 @@ class ConfigScanBase(object):
             return result
         
     def run(self,keys,steps):
+        """Run the scan: connect to the DAQ, go to 'connected', optionally set recording, then trigger one step per item from `steps()`.
+
+        Each item is (step values dict, step number, metadata JSON). Configure/Enable phase-1
+        info carry `keys`, the group mask of active DRPs, the step group (readout group of the
+        DRP whose alias contains --detname, else -p) and --events (overridden by a metadata
+        'events'); exits if no instrument, an 'error' state or no DRP. Afterwards it unstages,
+        shuts down the communicator thread and, if --record was 1, sets recording back to False.
+        """
         args = self.args
         # instantiate DaqControl object
         control = DaqControl(host=args.C, platform=args.p, timeout=args.t)

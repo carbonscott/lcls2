@@ -12,21 +12,26 @@ from time import time, gmtime, localtime, strftime
 
 def dict_filter(d, keys=('experiment', 'detname', 'detector', 'shortname', 'ctype', 'run', 'run_orig',\
                          'run_beg', 'run_end', 'time_stamp', 'tstamp_orig', 'dettype', 'version', 'longname'), ordered=False):
+    """Return ``utils_psana.dict_filter(d, list_keys=keys, ordered=ordered)``, i.e. ``d`` reduced to the listed metadata keys."""
     import psana.detector.utils_psana as ups # seconds, data_source_kwargs
     return ups.dict_filter(d, list_keys=keys, ordered=ordered)
 
 def tstamp_from_sec(tsec, fmt='%Y%m%d_%H%M%S', gmt=False):
+    """Return ``tsec`` formatted with ``strftime(fmt)`` in GMT if ``gmt`` is True, else in local time."""
     return strftime(fmt, gmtime(tsec) if gmt else localtime(tsec))
 
 def add_run_from_doc(runs, d, irun_max=9999):
+    """Add ``d['run']`` and ``d['run_end']`` to set ``runs``, replacing ``'end'`` by ``irun_max`` (9999)."""
     for r in (d['run'], d['run_end']):
         runs.add(r if r != 'end' else irun_max)
 
 def add_time_from_doc(times_sec, time_stamps, d):
+    """Add ``d['time_sec']`` to set ``times_sec`` and ``d['time_stamp']`` to set ``time_stamps``."""
     times_sec.add(d['time_sec'])
     time_stamps.add(d['time_stamp'])
 
 def select_doc_for_tsec(sorted_docs, tsec, key='time_sec'):
+    """Return the first document in ``sorted_docs`` whose ``key`` value is >= ``tsec``, or None if there is none."""
     for i,d in enumerate(sorted_docs):
         if d[key] >= tsec:
             #print('XXX selected sorted document #%d' % i)
@@ -87,6 +92,7 @@ def info_time_validity_ranges(shortname, ctype='pedestals', fmt='%Y%m%d_%H%M%S',
 
 
 def print_calib_constants_for_ctype(expname, detlongname, ctype='pedestals', run=None, time_sec=None):
+    """Query ``MDBWebUtils.calib_constants_for_ctype`` (web service) and, if a result is returned, print the filtered metadata of the selected document."""
     resp = wu.calib_constants_for_ctype(detlongname, exp=expname, ctype=ctype, run=run, time_sec=time_sec, vers=None, dbsuffix='')
     if resp is not None:
         d = dict_filter(resp[1])
@@ -119,6 +125,13 @@ def dict_from_str(s):
 
 def calib_validity_ranges(**kwa):
 
+    """Print the validity ranges of calibration constants of type ``ctype`` for one detector.
+
+    Without kwa ``allargs`` the experiment and detector short name are obtained by opening a psana
+    ``DataSource`` and ``Detector(kwa['detname'])`` (exits if the detector is unavailable); if ``'d'`` is in
+    ``show`` the currently selected constants are printed too. With ``allargs`` they are parsed from that
+    string. Time ranges (``'t'`` in ``show``) and run ranges (``'r'``) are printed from DB queries.
+    """
     print('parameters: %s' % str(kwa))
 
     exp = None

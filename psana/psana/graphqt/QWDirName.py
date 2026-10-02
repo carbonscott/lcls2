@@ -36,6 +36,10 @@ class QWDirName(QWFileName): # QtGui.QWidget
 
 
     def on_but(self):
+        """Open a directory dialog starting at the current text; if a new directory is chosen, store it in ``self.path``, show it and emit ``path_is_changed``.
+
+        Does nothing if the dialog is cancelled (empty result) or returns the unchanged path.
+        """
         logger.debug('on_but')
         path0 = self.edi.text()
         path1 = str(QFileDialog.getExistingDirectory(self,'Select directory', path0, self.fltr))

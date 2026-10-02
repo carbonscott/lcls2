@@ -1,3 +1,4 @@
+"""Timing scan of '<detname>:user.start_ns' using `ConfigScanBase` (no default hutch)."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import numpy as np
 import json
@@ -5,6 +6,11 @@ import json
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events per step, hutch None, detname 'epixhr_0', scantype 'timing', record 1.
+
+    Values come from ``np.arange(*args.linear)`` (default (107700., 1107700., 100000.));
+    each step writes ``int(value)`` to the key and uses the value as the step value.
+    """
     defargs = {'--events'  :1000,
                '--hutch'   :None,
                '--detname' :'epixhr_0',

@@ -1,3 +1,7 @@
+"""Module-level aliases to calibration DB web-service helpers.
+
+Each name (``database_names``, ``collection_names``, ``list_of_documents``, ``delete_documents``, ``insert_document_and_data``, ...) is bound to the function of the same name in ``psana.pscalib.calib.MDBWebUtils`` or its ``mu`` module; no code of its own.
+"""
 import logging
 logger = logging.getLogger(__name__)
 #_name = 'DCMDBUtilsWeb'

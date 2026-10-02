@@ -1,4 +1,5 @@
 #from evtsel import *
+"""Build (and optionally program, save or plot) a sequence of run/DAQ/parent triggers repeating at each 120 Hz (or 360 Hz) AC marker."""
 import sys
 import math
 import json
@@ -12,10 +13,18 @@ import psdaq.seq.seqplot as seqp
 import numpy as np
 
 def auto_int(val):
+    """Return ``int(val, 0)`` (accepts decimal, 0x, 0o or 0b strings)."""
     return int(val,0)
 
 def main():
 
+    """Compute trigger buckets from --rate, --tgt and --minAC, build the instruction list and use it.
+
+    Event codes: 0 run, 1 DAQ, 2 parent group, 3 target. With --ofile the relocated words
+    are saved as JSON; unless --test it is loaded with `SeqUser(--pv)` (up to 10 tries on
+    TimeoutError); --plot simulates 10 ms with `seqplot`. More than one of --full/--daq/
+    --f360 references the undefined name `RunTimeError` (NameError).
+    """
     parser = argparse.ArgumentParser(description='Sequence for EpixHR DAQ/Run triggering')
     parser.add_argument('--rate', help="Run trigger rate (Hz)", type=float, default=4.9e3)
     parser.add_argument('--tgt' , help="DAQ trigger time (sec)", type=float, default=0.834e-3)

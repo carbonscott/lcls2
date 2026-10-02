@@ -33,6 +33,7 @@ class DMQWList(QWList):
 
 
     def list_runs_fs(self, expname, dirinstr=psu.INSTRUMENT_DIR):
+        """Return the run numbers (as ints) of the '.xtc' files found in the xtc directory of ``expname`` under ``dirinstr``, using ``psu.dir_xtc`` and ``psu.list_of_runs_in_xtc_dir``."""
         dir_xtc = psu.dir_xtc(expname, dirinstr)
         return  psu.list_of_int_from_list_of_str(\
                   psu.list_of_runs_in_xtc_dir(dir_xtc, ext='.xtc'))
@@ -47,6 +48,10 @@ class DMQWList(QWList):
 
     def fill_list_model(self, **kwa):
 
+        """Fill the list with one item per run known to the logbook for an experiment.
+
+        The experiment ('experiment', default ``expname_def()``), 'location' and 'dirinstr' come from ``kwa``. Run info comes from ``uws.run_info_selected`` and tags from ``uws.runs_to_tags``; each item shows run number, begin time, '|FS' when the run's xtc files are on disk, and its tags, and is selectable only when on disk. If no run info is returned a warning is logged and the list stays empty.
+        """
         expname = self.expname = kwa.get('experiment', expname_def())
         location = kwa.get('location', 'SLAC')
         dirinstr = kwa.get('dirinstr', psu.INSTRUMENT_DIR)
@@ -128,6 +133,7 @@ class DMQWList(QWList):
 
 
     def closeEvent(self, e):
+        """Forward the event to ``QWList.closeEvent`` and reset ``cp.dmqwlist`` and ``cp.last_selected_run`` to None."""
         QWList.closeEvent(self, e)
         cp.dmqwlist = None
         cp.last_selected_run = None
@@ -136,6 +142,10 @@ class DMQWList(QWList):
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return the key help text (Esc, S).
+
+        Defined only when the module runs as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  S - show selected items'\
@@ -143,6 +153,10 @@ class DMQWList(QWList):
 
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes, S logs the selected items, other keys log the key help.
+
+        Defined only when the module runs as a script.
+        """
         logger.info('keyPressEvent, key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()

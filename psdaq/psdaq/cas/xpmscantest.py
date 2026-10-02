@@ -1,3 +1,4 @@
+"""XPM step-scan test script written against an older `DaqPVA` interface."""
 import sys
 import socket
 import argparse
@@ -7,6 +8,12 @@ import logging
 
 class ScanControl(object):
 
+    """Set up step-scan PVs, a repeating message-insert timer and a StepDone monitor through `DaqPVA`.
+
+    It calls ``DaqPVA(platform=..., xpm_master=..., pv_base=...)`` and uses attributes such
+    as `pvStepGroups`; the current `DaqPVA` in `psdaq.control.control` takes only
+    `report_error`, so construction raises TypeError.
+    """
     def __init__(self,args):
 
         self.args = args
@@ -33,6 +40,7 @@ class ScanControl(object):
         self.pva.monitor_StepDone(callback=callback)
 
     def run(self):
+        """Reset L0 for the group, then for each of `args.s` steps set StepEnd to ``(i+1)*args.e``, clear StepDone, enable L0 and wait for the step-done event."""
         self.pva.pv_put(self.pva.pvGroupL0Reset,self.groups)
         for i in range(self.args.s):
             logging.debug(f'begin step {i}')
@@ -45,6 +53,7 @@ class ScanControl(object):
 
 def main():
 
+    """Parse -x, -p, -e, -s, -r, -t, -n, enable DEBUG logging and call `ScanControl.run` `n` times."""
     parser = argparse.ArgumentParser(description='xpm scan test')
     parser.add_argument('-x', metavar='XPM', type=int, default=3,
                         help='master XPM')

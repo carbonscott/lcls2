@@ -51,6 +51,10 @@ USAGE = 'Use command: python %s' % sys.argv[0]
 
 def proc_data(**kwargs):
 
+    """Read hit counts and peak times per event from the HDF5 file ``kwargs['ifname']`` (via ``open_input_h5file``), run ``DLDProcessor.event_proc`` and ``DLDStatistics.fill_data`` for the selected events, print the processing rate and draw and save the statistics plots with ``DLDGraphics.draw_plots``.
+
+    With 'verbose' the per-event arrays and (x, y, t, r) hits are printed.
+    """
     logger.info(str_kwargs(kwargs, title='Input parameters:'))
 
     IFNAME       = kwargs.get('ifname', FNAME)

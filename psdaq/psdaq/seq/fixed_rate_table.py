@@ -1,9 +1,15 @@
+"""Print a table of fixed rates obtained by dividing a base rate by products of its prime factors."""
 import sys
 import argparse
 import itertools
 import numpy as np
 
 def main():
+    """Print rate (Hz), divisor and factors for every combination of the factor list.
+
+    With --ued the factors multiply to 500000 and the base is 500e3 Hz; otherwise they
+    multiply to 1400000 and the base is 1300e6/(7*130) Hz.
+    """
     parser = argparse.ArgumentParser(description='sequence pva programming')
     parser.add_argument("--ued", action='store_true', help="verbose output")
     args = parser.parse_args()

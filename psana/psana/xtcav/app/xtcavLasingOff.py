@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Command-line script: parse experiment, run number, --max_shots, --num_bunches, --num_groups, --snr_filter, --roi_expand, -p/--plot_image and -l/--loglev, initialize logging and run ``LasingOffReference(args)`` from ``psana.xtcav.LasingOffReference``."""
 import sys
 import argparse
 import logging

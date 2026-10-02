@@ -150,7 +150,7 @@ namespace Pds {
     public:
       /**
        * Return true if either stream has no samples, or if every non-skip word of the threshold stream equals the raw sample at the matching position.
-       * Words with bit 15 set are skip markers that advance the raw position by their low 15 bits; a skip marker in the first position advances both positions by one. Always prints the error and test counts to stdout.
+       * Words with bit 15 set are skip markers that advance the raw position by their low 15 bits; a skip marker in the first position advances both positions by one. When both streams have samples, prints the error and test counts to stdout (nothing is printed on the early return for an empty stream).
        */
       bool validate(const StreamHeader& raw) const;
     private:

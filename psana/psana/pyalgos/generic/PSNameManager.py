@@ -26,6 +26,7 @@ class PSNameManager :
 #------------------------------
 
     def set_instrument_directory(self, instr_dir=DIR_INS) :
+        """Store ``instr_dir`` as the instrument root directory used by ``dir_exp``."""
         self.instr_dir = instr_dir
 
 #------------------------------
@@ -63,6 +64,10 @@ class PSNameManager :
 #------------------------------
 
     def log_file_repo(self) :
+        """Build a log file path '<cp.dir_log_repo>/<year>/<month>/<name>-<login>-<pid><ext>' from ``self.log.getLogFileName()``.
+
+        Returns None if ``self.cp`` or ``self.log`` is None. This class never sets ``self.cp`` or ``self.log`` and the method first imports ``expmon.PSUtils``, so as written the call fails with ImportError or AttributeError.
+        """
         import os
         import expmon.PSUtils as psu
 
@@ -109,6 +114,10 @@ if __name__ == "__main__" :
 
     #from psana.pyalgos.generic.PSNameManager import nm
 
+    """Print the instrument and the experiment, xtc, ffb and calib directories for experiment 'cxix25615' from the module object ``nm``.
+
+    Defined only when the module runs as a script.
+    """
     exp = 'cxix25615'
     print('instrument:', nm.instrument(exp))
     print('dir_exp   :', nm.dir_exp(exp))

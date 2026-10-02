@@ -20,6 +20,11 @@ MODES = ('print', 'convert', 'deldoc', 'delcol', 'deldb', 'delall', 'add', 'get'
 
 class MDB_CLI:
 
+    """Command-line driver for the calibration DB (``cdb``) using direct MongoDB access through ``MDBUtils``.
+
+    The constructor parses ``parser`` into ``args``/``kwargs`` (adding ``time_sec``, ``time_stamp`` and
+    ``cli_mode``), sets up logging through ``init_repoman_and_logger`` and immediately calls :meth:`dispatcher`.
+    """
     def __init__(self, parser):
         self._unpack(parser)
         kwa = {'logmode': self.strloglev,\
@@ -46,6 +51,10 @@ class MDB_CLI:
 
 
     def client(self):
+        """Return ``MDBUtils.connect_to_server(host, port, user, upwd, ctout, stout)`` with values from ``kwargs`` (timeouts default 5000 and 30000).
+
+        ``MDBUtils`` currently does not define ``connect_to_server`` (AttributeError).
+        """
         kwargs = self.kwargs
         host  = kwargs.get('host',  None)
         port  = kwargs.get('port',  None)
@@ -57,6 +66,7 @@ class MDB_CLI:
 
 
     def check_database(self, client, dbname):
+        """Return True if ``MDBUtils.database_exists(client, dbname)``; otherwise log a warning and return False."""
         if mu.database_exists(client, dbname):
             return True
         logger.warning('Database "%s" is not available. See for deteals: cdb print'%(dbname))
@@ -64,6 +74,10 @@ class MDB_CLI:
 
 
     def print_content(self):
+        """Log ``client_info`` (no DB name given) or ``database_info`` for the DB from ``MDBUtils.get_dbname(**kwargs)``.
+
+        Uses :meth:`client` and ``MDBUtils`` functions that are currently not defined there.
+        """
         dbname = mu.get_dbname(**self.kwargs)
         client = self.client()
         logger.info(mu.client_info(client, level=2) if dbname is None else
@@ -267,6 +281,7 @@ class MDB_CLI:
 
 
     def host_port_dbname_fname(self):
+        """Return ``(host, port, dbname, iofname)`` from ``self.kwargs`` (None for missing keys)."""
         kwargs = self.kwargs
         host   = kwargs.get('host', None)
         port   = kwargs.get('port', None)
@@ -297,6 +312,7 @@ class MDB_CLI:
 
 
     def test(self):
+        """Log the DB names from ``MDBUtils.database_names(self.client())``."""
         host, port, dbname, fname = self.host_port_dbname_fname()
         dbnames = mu.database_names(self.client())
         logger.info('dbnames: %s' % ', '.join(dbnames))
@@ -307,6 +323,7 @@ class MDB_CLI:
 
 
     def dispatcher(self):
+        """Call the method for ``self.mode`` (``print``, ``convert``, ``deldoc``, ``delcol``, ``deldb``, ``delall``, ``add``, ``get``, ``export``, ``import``, ``test``); other modes log a warning listing ``MODES``."""
         mode = self.mode
         logger.debug('Mode: %s' % mode)
         if   mode == 'print'  : self.print_content()

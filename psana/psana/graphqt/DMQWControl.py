@@ -17,15 +17,21 @@ from psana.graphqt.CMWControlBase import * # CMWControlBase, QApplication, ..., 
 logger = logging.getLogger(__name__)
 
 def detname_contains_pattern(detname, pattern):
+    """Return True if ``pattern`` is a substring of ``detname``; log a warning when it is not."""
     r = pattern in detname
     if not r: logger.warning('DETECTOR NAME "%s" DOES NOT CONTAIN "%s"' % (detname, pattern))
     return r
 
-def is_epix10ka(detname): return detname_contains_pattern(detname, 'Epix10')
+def is_epix10ka(detname):
+    """Return True if ``detname`` contains ``'Epix10'`` (warning logged otherwise)."""
+    return detname_contains_pattern(detname, 'Epix10')
 
-def is_jungfrau(detname): return detname_contains_pattern(detname, 'Jungfrau')
+def is_jungfrau(detname):
+    """Return True if ``detname`` contains ``'Jungfrau'`` (warning logged otherwise)."""
+    return detname_contains_pattern(detname, 'Jungfrau')
 
 def is_area_detector(detname):
+    """Log a warning and return True for any ``detname``; no check is done."""
     logger.warning('is_area_detector for DETECTOR NAME "%s" returns True' % detname)
     return True
 
@@ -118,6 +124,7 @@ class DMQWControl(CMWControlBase):
 
 
     def set_cmb_cmd(self):
+        """Refill the command combo box with ``self.cmd_list`` and select ``'detnames'``."""
         self.cmb_cmd.clear()
         self.cmb_cmd.addItems(self.cmd_list)
         self.cmb_cmd.setCurrentIndex(self.cmd_list.index('detnames'))
@@ -140,6 +147,7 @@ class DMQWControl(CMWControlBase):
 
 
     def set_lclsv(self, is_lcls1):
+        """Select the LCLS or LCLS2 command list and combo-box entry according to ``is_lcls1``, then refill the command combo box."""
         lclsv = 'LCLS' if is_lcls1 else 'LCLS2'
         self.cmd_list = self.cmd_list_lcls1 if is_lcls1 else self.cmd_list_lcls2
         self.cmb_lclsv.setCurrentIndex(self.lclsv_list.index(lclsv))
@@ -148,14 +156,17 @@ class DMQWControl(CMWControlBase):
 
 
     def set_lclsv_for_instrument(self, instr):
+        """Call :meth:`set_lclsv` with the result of ``is_lcls1(instr)``."""
         self.set_lclsv(self.is_lcls1(instr))
 
 
     def set_lclsv_for_experiment(self, expname):
+        """Call :meth:`set_lclsv_for_instrument` with the first three characters of ``expname``."""
         self.set_lclsv_for_instrument(expname[:3])
 
 
     def set_tool_tips(self):
+        """Call the base-class ``set_tool_tips`` and set tool tips on the experiment, start, stop, command and detector widgets."""
         CMWControlBase.set_tool_tips(self)
         self.but_exp.setToolTip('Select experiment')
         self.but_start.setToolTip('Start command execution in subprocess')
@@ -165,6 +176,7 @@ class DMQWControl(CMWControlBase):
 
 
     def set_style(self):
+        """Apply label styles and fixed widths, disable the LCLS-version combo box, and hide/disable the file-name, Save and View widgets."""
         CMWControlBase.set_style(self)
         self.lab_exp.setStyleSheet(style.styleLabel)
         self.lab_cmd.setStyleSheet(style.styleLabel)
@@ -189,6 +201,7 @@ class DMQWControl(CMWControlBase):
 
 
     def current_detnames(self):
+        """Return the list of all item texts in the detector combo box."""
         count = self.cmb_det.count()
         lst = [self.cmb_det.itemText(i) for i in range(count)]
         logger.debug('count %d current_detnames %s' % (count, str(lst)))
@@ -196,25 +209,43 @@ class DMQWControl(CMWControlBase):
 
 
     def on_cmb_det(self, ind):
+        """Log the selected detector index and name (``'None'`` for index 0) at debug level."""
         logger.debug('on_cmb_det selected index %d: %s' % (ind, self.current_detnames()[ind] if ind>0 else 'None'))
 
 
     def on_cmb_cmd(self, ind):
+        """Log the selected command index and name at debug level."""
         logger.debug('on_cmb_cmd selected index %d: %s' % (ind, self.cmd_list[ind]))
 
 
     def on_cmb_lclsv(self, ind):
+        """Call :meth:`set_lclsv` with True if entry ``ind`` of ``lclsv_list`` is ``'LCLS'``.
+
+        This slot is not connected to a signal in this class.
+        """
         txt = self.lclsv_list[ind]
         logger.debug('on_cmb_lclsv selected index %d: %s' % (ind, txt))
         self.set_lclsv(txt=='LCLS')
 
 
     def on_but_stop(self):
+        """Set ``force_stop`` to True; the running subprocess is killed at the next :meth:`on_timeout`."""
         logger.debug('on_but_stop')
         self.force_stop = True
 
 
     def on_but_start(self, **kwa):
+        """Build a shell command for the selected command, experiment, run and detector, let the user edit it, and run it in a subprocess.
+
+        Returns early if ``cp.dmqwmain`` is None, no run is selected, the command is not implemented,
+        a detector-name check fails or the edit dialog is cancelled. LCLS2 commands run with
+        ``shell=True``; LCLS1 commands run through ``/bin/bash -l -c`` prefixed by ``COMMAND_SET_ENV_LCLS1``.
+
+        Parameters
+        ----------
+        **kwa
+            ``events`` (1000), ``evskip`` (0), ``calibdir`` (None) and ``loglevel`` (``'INFO'``) used in some LCLS1 commands.
+        """
         events   = kwa.get('events', 1000)
         evskip   = kwa.get('evskip', 0)
         calibdir = kwa.get('calibdir', None)
@@ -359,6 +390,10 @@ class DMQWControl(CMWControlBase):
 
 
     def subprocess_command(self, cmd, **kwa):
+        """Append ``cmd`` to the info panel, start it with ``UtilsSubproc.SubProcess`` (stdout piped, stderr merged) and schedule :meth:`on_timeout`.
+
+        Keyword arguments ``env`` (None), ``shell`` (False) and ``executable`` (``'/bin/bash'``) are passed to the subprocess.
+        """
         import psana.graphqt.UtilsSubproc as usp
         cp.dmqwmain.append_info(cmd)
         env   = kwa.get('env', None)
@@ -372,6 +407,10 @@ class DMQWControl(CMWControlBase):
 
 
     def on_timeout(self):
+        """Poll the subprocess: kill it if ``force_stop`` is set, otherwise append new output and reschedule every ``dt_msec`` until it completes.
+
+        Output is printed if ``cp.dmqwmain`` is None. Completion is ``poll() == 0`` in ``SubProcess.is_compleated``.
+        """
         if self.force_stop:
            if self.osp: self.osp.kill()
            return
@@ -385,6 +424,12 @@ class DMQWControl(CMWControlBase):
 
 
     def on_but_exp(self):
+        """Open the instrument/experiment selection popup and apply a new experiment.
+
+        If both names are non-empty and the experiment differs from ``cp.exp_name``: update the button
+        text and config values, refill the run list and clear the info panel of ``cp.dmqwmain`` (if any),
+        and reset the LCLS version and detector combo box.
+        """
         from psana.graphqt.PSPopupSelectExp import select_instrument_experiment
         from psana.graphqt.CMConfigParameters import dir_calib
 
@@ -432,6 +477,7 @@ class DMQWControl(CMWControlBase):
 
 
     def view_hide_tabs(self):
+        """Call the base-class ``view_hide_tabs`` and also toggle the tab bar of ``cp.fmwtabs`` if it is not None."""
         CMWControlBase.view_hide_tabs(self)
         # set file manager tabs in/visible too
         wtabs = cp.fmwtabs
@@ -441,6 +487,11 @@ class DMQWControl(CMWControlBase):
 
 
     def save_item_path(self, index):
+        """Store the path of the list item at ``index`` in ``cp.last_selected_fname`` if it is an existing regular file.
+
+        If no item is at ``index`` the value is set to None. ``full_path_for_item`` is not defined or
+        imported in this module, so a non-None item raises NameError.
+        """
         i = cp.dmqwmain.wlist.model.itemFromIndex(index)
         if i is None:
            logger.info('on_item_selected: item is None')
@@ -455,10 +506,12 @@ class DMQWControl(CMWControlBase):
 
 
     def on_item_selected(self, selected, deselected):
+        """Call :meth:`save_item_path` with ``selected``."""
         self.save_item_path(selected)
 
 
     def detnames(self, expname, runnum):
+        """Return the detector names from ``UtilsWebServ.detnames(expname, runnum)`` (web service request) and append them to the info panel."""
         import psana.graphqt.UtilsWebServ as uws
         lst = uws.detnames(expname, runnum)
         s = 'detnames:\n  %s' % '\n  '.join(lst)
@@ -467,6 +520,10 @@ class DMQWControl(CMWControlBase):
 
 
     def set_cmb_det(self, detnames=None):
+        """Refill the detector combo box with ``'select'`` plus ``detnames`` (or ``det_list0`` if not a list), stripping a trailing ``'_0'``.
+
+        The previously selected text stays selected if it is in the new list, otherwise index 0.
+        """
         lst = ['select',] + detnames if isinstance(detnames, list) else self.det_list0
         lst = [v[:-2] if (len(v)>2 and v[-2:]=='_0') else v for v in lst]
 
@@ -478,6 +535,7 @@ class DMQWControl(CMWControlBase):
 
 
     def on_selected_exp_run(self, expname, runnum): # called from DMQWMain <- DMQWList
+        """Fetch detector names for the experiment/run and refill the detector combo box if the list is not empty."""
         logger.debug('on_selected_exp_run: %s %d'%(expname, runnum))
         lst = self.detnames(expname, runnum)
         if not lst: return
@@ -485,10 +543,12 @@ class DMQWControl(CMWControlBase):
 
 
     def on_click(self, index):
+        """Call :meth:`save_item_path` with ``index``."""
         self.save_item_path(index)
 
 
     def closeEvent(self, e):
+        """Call the base-class ``closeEvent`` and set ``cp.dmqwcontrol`` to None."""
         logger.debug('closeEvent')
         CMWControlBase.closeEvent(self, e)
         cp.dmqwcontrol = None

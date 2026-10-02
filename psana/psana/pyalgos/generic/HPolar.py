@@ -66,6 +66,10 @@ from psana.pyalgos.generic.HBins import HBins
 
 
 def info_ndarr(nda, name='', first=0, last=5):
+    """Return a one-line description of ``nda``: shape, size, dtype and elements ``first:last`` of the flattened array.
+
+    None gives '<name> None'; a tuple or list is converted to an array first; other non-array objects give their type. With ``last`` 0 no elements are shown, and the elements go on a new line when ``last-first`` exceeds 10.
+    """
     _name = '%s '%name if name!='' else name
     s = ''
     gap = '\n' if (last-first)>10 else ' '
@@ -81,6 +85,7 @@ def info_ndarr(nda, name='', first=0, last=5):
     return s
 
 def print_ndarr(nda, name=' ', first=0, last=5):
+    """Print ``info_ndarr(nda, name, first, last)``."""
     print(info_ndarr(nda, name, first, last))
 
 
@@ -129,6 +134,10 @@ def polarization_factor(rad, phi_deg, z, vertical=False):
 
 
 class HPolar():
+    """Bin pixels with Cartesian coordinates ``xarr``, ``yarr`` into a radial-angular (r, phi) grid.
+
+    The constructor converts coordinates to radius and angle (degrees, shifted by 360 below the lower phi edge), creates radial and angular ``HBins`` (``radedges``/``nradbins``, ``phiedges``/``nphibins``), and stores for each pixel a flat bin index (an overflow index for pixels outside the bins or masked by ``mask``) and the number of pixels per bin.
+    """
     def __init__(self, xarr, yarr, mask=None, radedges=None, nradbins=100, phiedges=(0,360), nphibins=32):
         """Parameters
            - mask     - n-d array with mask
@@ -198,16 +207,22 @@ class HPolar():
 
 
     def info_attrs(self):
+        """Return a text with the phi and radial bin ranges and bin counts."""
         return '%s attrbutes:' % self.__class__.__name__\
           + self.pb.strrange(fmt='\nPhi bins:  min:%8.1f  max:%8.1f  nbins:%5d')\
           + self.rb.strrange(fmt='\nRad bins:  min:%8.1f  max:%8.1f  nbins:%5d')
 
 
     def print_attrs(self):
+        """Print ``info_attrs()``."""
         print(self.info_attrs())
 
 
     def print_ndarrs(self):
+        """Print the shapes of the radius, phi and mask arrays.
+
+        Raises AttributeError when the object was created without a mask (``self.mask`` is None).
+        """
         print('%s n-d arrays:' % self.__class__.__name__)
         print('  rad  shape=', str(self.rad.shape))
         print('  phi  shape=', str(self.phi.shape))

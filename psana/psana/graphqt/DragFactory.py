@@ -20,6 +20,10 @@ def add_item(type, obj, parent=None, scene=None,\
              brush=QBrush(),\
              pen=QPen(Qt.blue, 2, Qt.SolidLine)):
 
+    """Create and return a draggable item of drag type ``type`` for ``obj``.
+
+    POINT, LINE, CIRC and WEDG give a ``DragPoint`` with a white brush and shapes 'r', 'v', 'c', 'w' (sizes 7, 9, 40, 8); RECT gives a ``DragRect`` with ``brush``; POLY and ELLIPSE give ``DragPoly`` and ``DragEllipse`` with a white brush. An unknown type logs a warning and returns None, but the debug log line first looks up ``dic_drag_type_to_name[type]``, so a type missing from that dict raises KeyError.
+    """
     brush_w=QBrush(Qt.white, Qt.SolidPattern)
 
     logger.debug('DragFactory add_item %s' % dic_drag_type_to_name[type])

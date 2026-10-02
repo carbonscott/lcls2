@@ -17,14 +17,20 @@ import threading
 
 
 def islink(path):
+    """Return ``os.path.islink(path)``."""
     return os.path.islink(path)
 
 
 def isdir(path):
+    """Return ``os.path.isdir(path)``."""
     return os.path.isdir(path)
 
 
 def safe_listdir(directory, timeout_sec=5):
+    """Return ``os.listdir(directory)`` run in a daemon thread, or None if it does not finish within ``timeout_sec`` seconds.
+
+    An exception raised by ``os.listdir`` inside the thread is not propagated; the returned list is then empty.
+    """
     contents = []
     t = threading.Thread(target=lambda: contents.extend(os.listdir(directory)))
     t.daemon = True  # don't delay program's exit
@@ -36,6 +42,7 @@ def safe_listdir(directory, timeout_sec=5):
 
 
 def list_of_files_in_dir(dirname):
+    """Return ``safe_listdir(dirname)`` (None on timeout)."""
     return safe_listdir(dirname)
 
 
@@ -59,6 +66,10 @@ def list_of_files_in_dir_for_pattern(dir, pattern='-r0022'):
 
 
 def load_ndarray_from_file(path):
+    """Load an array from ``path``: ``np.load`` for '.npy', otherwise ``psana.pscalib.calib.NDArrIO.load_txt``.
+
+    Extensions other than '.npy', '.txt', '.data' and '.dat' are logged at debug level and also loaded as text.
+    """
     ext = os.path.splitext(path)[1]
     if ext in ('.npy', ):
         import numpy as np
@@ -80,6 +91,10 @@ if __name__ == "__main__" :
     logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d : %(message)s', level=logging.DEBUG)
 
     def test_list_of_instruments():
+        """Write the result of ``list_of_instruments()`` to stdout.
+
+        Defined only when the module runs as a script; ``list_of_instruments`` is not defined in this module, so it raises NameError.
+        """
         sys.stdout.write('%s:\n  %s\n' % (sys._getframe().f_code.co_name, str(list_of_instruments())))
 
     USAGE = 'Use command: python %s <test-number>, where <test-number> = 0,1,2,...' % sys.argv[0]\

@@ -31,12 +31,21 @@ class DoWorkInThread :
         self.t.start()
 
     def is_running(self) :
+        """Return ``self.t.isAlive()`` for the worker thread.
+
+        `Thread.isAlive` was removed in Python 3.9, where this raises AttributeError.
+        """
         return self.t.isAlive()
 
     def is_compleated(self) :
+        """Intended to return ``not self.is_running()``.
+
+        As written it calls ``self.is_running(self)``, which raises TypeError.
+        """
         return not self.is_running(self)
 
     def dict_io(self) :
+        """Return the input/output dict passed to the worker."""
         return self.dicio
 
 #----------
@@ -49,6 +58,7 @@ if __name__ == "__main__" :
   from time import time, sleep
 
   def worker_example(dicio) :
+      """Example worker: print ``dicio['input']``, store a random 1-5 in ``dicio['output']`` and sleep that many seconds."""
       print('input:', dicio['input'])
       pause = randint(1,5)
       print('sleep in worker_example for random %d sec'%pause)
@@ -56,6 +66,7 @@ if __name__ == "__main__" :
       sleep(pause)
 
   def test_DoWorkInThread() :
+      """Run `worker_example` in a `DoWorkInThread` and poll it once per second (up to 10 times), printing the result when done."""
       t0_sec = time()
       #kwargs = {'dicio': {'input':123, 'output':None}}
       #o = DoWorkInThread(worker_example, **kwargs)

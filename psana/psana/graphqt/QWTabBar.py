@@ -51,6 +51,10 @@ class QWTabBar(QTabBar):
 
     def make_tab_bar(self):
 
+        """Add six demo tabs 'Tab0'-'Tab5' and connect the tab-bar signals.
+
+        Tab 0 gets a folder icon and a zero-size close button, tab 1 gets a custom 'x' QPushButton connected to ``on_tab_close``, and tab 2's close button is hidden. ``QPushButton`` is imported only in the ``__main__`` block, so this method raises NameError when the module is imported.
+        """
         w = self
 
         it0 = w.addTab('Tab0')
@@ -93,33 +97,40 @@ class QWTabBar(QTabBar):
 
 
     def on_current_changed(self, itab):
+        """Log at debug level the new current tab index ``itab``."""
         logger.debug('on_current_changed tab index:%d' % (itab))
 
 
     def current_tab_index_and_name(self):
+        """Return a tuple (index, text) of the current tab."""
         tab_ind  = self.currentIndex()
         tab_name = str(self.tabText(tab_ind))
         return tab_ind, tab_name
 
 
     def on_tab_close(self):
+        """Log at debug level the index and text of the current tab; no tab is removed."""
         tab_ind, tab_name = self.current_tab_index_and_name()
         logger.debug('on_tab_close tab index:%d name:%s' % (tab_ind, tab_name))
 
 
     def on_tab_close_request(self, itab):
+        """Log at debug level the index of the tab whose close was requested; no tab is removed."""
         logger.debug('on_tab_close_request tab index:%d' % itab)
 
 
     def on_tab_moved(self, inew, iold):
+        """Log at debug level the old and new index of a moved tab."""
         logger.debug('on_tab_close_request tab index begin:%d -> end:%d' % (iold, inew))
 
 
     def set_tool_tips(self):
+        """Set the tab bar tool tip to 'This is a tabbar'."""
         self.setToolTip('This is a tabbar')
 
 
     def set_style(self):
+        """Set a minimum width of 600 and a style sheet for the tab close buttons."""
         self.setMinimumWidth(600)
         #self.setGeometry(10, 25, 500, 50)
         ss = "QTabBar::close-button { image: url(close.png) subcontrol-position: left; }"\
@@ -128,6 +139,7 @@ class QWTabBar(QTabBar):
 
 
     def enterEvent(self, e):
+        """Append a '+' tab with a zero-size close button when the mouse enters the tab bar, storing its index in ``self.tabi_add``."""
         logger.debug('enterEvent %s' % e.type())
         #if e.type() == QEvent.Enter:
         #self.setTabEnabled(self.tabi_add, True)
@@ -139,6 +151,7 @@ class QWTabBar(QTabBar):
 
 
     def leaveEvent(self, e):
+        """Remove the '+' tab added by ``enterEvent`` (if any) when the mouse leaves, and reset ``self.tabi_add`` to None."""
         logger.debug('leaveEvent %s' % e.type())
         #if e.type() == QtCore.QEvent.Leave:
         #self.setTabEnabled(self.tabi_add, False)
@@ -148,6 +161,7 @@ class QWTabBar(QTabBar):
 
 
     def tabSizeHint(self, index):
+        """Return the size hint for tab ``index``: width ``self.tab_width`` (30 for the '+' tab or text starting with '+') and the base-class height."""
         w = self.tab_width
         if index==self.tabi_add or (self.tabText(index)[0] == '+'): w = 30
         h = QTabBar.tabSizeHint(self, index).height()
@@ -164,10 +178,12 @@ class QWTabBar(QTabBar):
 
 
     def mouseHoverEvent(self, e):
+        """Log a debug message; this name is not a Qt event handler and is not called in this module."""
         logger.debug('mouseHoverEvent')
 
 
     def closeEvent(self, event):
+        """Log a debug message; the event is not passed to the base class."""
         logger.debug('closeEvent')
 
         #try   : self.gui_win.close()

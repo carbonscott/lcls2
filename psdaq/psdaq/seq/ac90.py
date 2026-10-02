@@ -1,3 +1,7 @@
+"""Sequence description 'AC90': after an AC sync on timeslot 2 (marker 4, comment '1Hz AC'), issue ControlRequest(1) on timeslots 6, 4 and 2 in turn and loop.
+
+Defines `instrset`, `descset` (['90Hz']) and `title`.
+"""
 from psdaq.seq.seq import *
 
 sync_marker = 4  # 1Hz AC

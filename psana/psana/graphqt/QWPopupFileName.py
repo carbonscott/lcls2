@@ -26,6 +26,26 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QCursor
 
 def popup_file_name(parent=None, mode='w', path='', dirs=[], fltr='*'):
+    """Open a file dialog and return the selected path.
+
+    Parameters
+    ----------
+    parent : QWidget or None
+        Dialog parent; if None the ``QFileDialog`` object is moved near the cursor.
+    mode : str
+        ``'w'`` calls ``getSaveFileName`` (caption ``'Output file'``), any other value ``getOpenFileName`` (caption ``'Input file'``).
+    path : str
+        Initial directory or file.
+    dirs : list of str
+        Set as the dialog history.
+    fltr : str
+        Name filter.
+
+    Returns
+    -------
+    str
+        First element of the dialog response (the chosen path; an empty string if cancelled).
+    """
     qfdial = QFileDialog() #directory=path)
     qfdial.setHistory([]) # clear history
     rsp = qfdial.restoreState(qfdial.saveState())

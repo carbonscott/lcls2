@@ -127,6 +127,10 @@ def entropy_cpo(signal):
 
 def test_entropy():
 
+    """Compute the entropy of a random int16 array with ``entropy``, ``entropy_v1`` and ``entropy_cpo`` and print each value with its run time.
+
+    Uses ``sys``, which is only made global in the ``__main__`` block, so calling it after a plain import raises NameError.
+    """
     print('In %s' % sys._getframe().f_code.co_name)
 
     from psana.pyalgos.generic.NDArrGenerators import random_standard
@@ -149,6 +153,7 @@ def test_entropy():
 
 
 def unitest_entropy():
+    """Assert that ``entropy`` of a seeded (42) random int16 array of 100000 values equals 6.690948 when formatted with six decimals."""
     import sys
     from psana.pyalgos.generic.NDArrGenerators import random_standard
     print('In %s' % sys._getframe().f_code.co_name)

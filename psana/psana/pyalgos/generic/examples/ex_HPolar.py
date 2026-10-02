@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Example: test ``HPolar`` radial and radial-angular binning on CSPAD data and geometry loaded from fixed files, plotting and saving the results; the test is selected by a command-line number."""
 from psana.pyalgos.generic.HPolar import * #HPolar
 
 if __name__ == '__main__':
@@ -39,6 +40,10 @@ if __name__ == '__main__':
 
 
   def usage(ntest=None):
+    """Return the description of test ``ntest``, or of all tests when ``ntest`` is None.
+
+    Defined only when the module runs as a script.
+    """
     s = ''
     if ntest is None     : s+='\n Tests for radial 1-d binning of entire image'
     if ntest in (None, 1): s+='\n  1 - averaged data'

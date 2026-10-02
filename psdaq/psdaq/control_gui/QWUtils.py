@@ -117,15 +117,23 @@ def select_radio_button_in_popup_menu(dict_of_pars, win_title='Select option', d
 
 
 def info_point(p, cmt='', fmt='%sx=%1.0f y=%1.0f') :
+    """Return ``fmt % (cmt, p.x(), p.y())``, by default '<cmt>x=<x> y=<y>'."""
     return fmt % (cmt, p.x(), p.y())
 
 def info_rect_xywh(r, cmt='', fmt='%sx=%1.0f y=%1.0f w=%1.0f h=%1.0f') :
+    """Return ``fmt % (cmt, x, y, width, height)`` for rectangle `r`."""
     return fmt % (cmt, r.x(), r.y(), r.width(), r.height())
 
 def info_rect_lbrt(r, cmt='', fmt='%sL=%1.0f B=%1.0f R=%1.0f T=%1.0f') :
+    """Return ``fmt % (cmt, r.left(), r.right(), r.top(), r.bottom())``.
+
+    The default format labels these values L, B, R, T, so the labels do not match the
+    order of the values passed.
+    """
     return fmt % (cmt, r.left(), r.right(), r.top(), r.bottom())
 
 def print_rect(r, cmt=' ') :
+    """Log `info_rect_xywh(r, cmt)` at debug level (the same line is logged twice)."""
     logger.debug(info_rect_xywh(r, cmt))
     logger.debug(info_rect_xywh(r, cmt))
     #x, y, w, h = r.x(), r.y(), r.width(), r.height()
@@ -136,6 +144,7 @@ def print_rect(r, cmt=' ') :
 
 def get_save_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
+    """Show a save-file dialog and return the chosen path, or None if cancelled."""
     path, fext = QFileDialog.getSaveFileName(parent,
                                              caption   = title,
                                              directory = path0,
@@ -150,6 +159,7 @@ def get_save_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
 def get_open_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
+    """Show an open-file dialog and return the chosen path, or None if its directory or file part is empty."""
     path, fext = QFileDialog.getOpenFileName(parent, title, path0, filter=filter)
 
     #logger.debug('XXX: get_open_fname_through_dialog_box path =', path)
@@ -165,6 +175,7 @@ def get_open_fname_through_dialog_box(parent, path0, title, filter='*.txt'):
 
 def get_existing_directory_through_dialog_box(parent, path0, title, options = QFileDialog.ShowDirsOnly):
 
+    """Show a directory dialog and return the chosen directory (logged at info level), or None if cancelled."""
     resp = QFileDialog.getExistingDirectory(parent, title, path0, options)
 
     #logger.debug('XXX: get_open_fname_through_dialog_box path =', path)
@@ -247,12 +258,17 @@ def help_dialog_box(parent=None, text='Help message goes here', title='Help') :
 
 
 def widget_from_layout(l) :
+    """Intended to return a QWidget with layout `l`.
+
+    The code calls `QWigget`, which is not defined, so it raises NameError.
+    """
     w = QWigget()
     w.setLayout(l)
     return w
 
 
 def layout_from_widget(w, layout=QVBoxLayout) :
+    """Return a new `layout` (QVBoxLayout by default) containing widget `w`."""
     l = layout()
     l.addWidget(w)
     return l
@@ -262,6 +278,7 @@ if __name__ == "__main__" :
 
   def test(tname) :
 
+    """Run interactive test `tname` ('0'-'10') of the popup/dialog helpers in a QApplication."""
     from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
 

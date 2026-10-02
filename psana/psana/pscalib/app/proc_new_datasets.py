@@ -1,6 +1,7 @@
 #####!/usr/bin/env python
 #------------------------------
 
+"""Command ``proc_new_datasets``: find experiment runs not yet processed by a given processor and optionally start ``proc_control`` for them."""
 import os
 import sys
 from time import time, sleep
@@ -33,6 +34,13 @@ def subprocess_command(exp='xpptut15', run='0260', procname='pixel_status', qnam
 def proc_exp_runs(exp_runs, procname='pixel_status', do_proc=False, qname='psnehq', njobs=5,\
                        dt_sec=60, sources='cspad,opal,epix100,pnccd,princeton,andor') :
 
+    """Print the runs in ``exp_runs`` and, if ``do_proc``, start ``proc_control`` subprocesses for some of them.
+
+    First prints the number of jobs in batch queue ``qname`` and kills jobs in status ``SSUSP`` or
+    ``UNKWN`` (``SubprocUtils`` helpers, see their notes). A run is started (without waiting) only if
+    ``do_proc`` is True, its index is below ``njobs`` and fewer than ``njobs`` jobs are queued; each started
+    run is appended to the processor log with ``RunProcUtils.append_log_file``.
+    """
     njobs_in_queue = number_of_batch_jobs(qname=qname)
     print('%d jobs found in queue %s' % (njobs_in_queue, qname))
 
@@ -98,6 +106,7 @@ def proc_new_datasets(parser) :
 #------------------------------
 
 def usage() : 
+    """Return the usage text with ``%prog`` placeholders and examples."""
     return "\n%prog [-p <process-name> -q <queue-name> -m <mode> -s]"\
            "\n  Ex.1: %prog -p pixel_status -q psnehq -m ALL -s"\
            "\n  Ex.2: %prog     <--- lists non-processed datasets"\
@@ -107,6 +116,7 @@ def usage() :
 
 def input_option_parser() :
 
+    """Return an ``optparse.OptionParser`` with options ``-p/--pro``, ``-q/--que``, ``-n/--njb`` (2), ``-m/--mod`` (``'LIST'``), ``-S/--sub`` (flag), ``-t/--dts`` (60) and ``-s/--srs``."""
     from optparse import OptionParser
     d_pro = 'pixel_status'
     d_que = 'psnehq'
@@ -139,6 +149,7 @@ def input_option_parser() :
 
 def do_main() :
 
+    """Build the option parser (printing help and a warning if there are no arguments), call ``proc_new_datasets`` and exit with status 0."""
     parser = input_option_parser()
 
     if len(sys.argv) == 1 : 

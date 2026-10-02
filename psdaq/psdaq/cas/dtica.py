@@ -1,3 +1,4 @@
+"""PyQt5 GUI for DTI PVs: per-slot (3-7) allocation and status tabs under a PV base."""
 import sys
 import argparse
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -22,6 +23,7 @@ except NameError:
 
 class PvPushButtonX(QtWidgets.QPushButton):
 
+    """QPushButton (max width 25) that puts 1 to PV `pvname` when clicked; the PV is monitored with a no-op `update`."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, pvname, label):
@@ -33,19 +35,23 @@ class PvPushButtonX(QtWidgets.QPushButton):
         self.pv = Pv(pvname, self.update)
 
     def update(self, err):
+        """Do nothing; body is `pass`."""
         pass
 
     def buttonClicked(self):
+        """Put 1 to the PV."""
         self.pv.put(1)          # Value is immaterial
 
 class PvEditIntX(PvEditInt):
 
+    """`PvEditInt` subclass with no changes."""
     def __init__(self, pv, label):
         super(PvEditIntX, self).__init__(pv, label)
 #       self.setMaximumWidth(70)
 
 class PvEditCheckList:
 
+    """Row of `entries` exclusive check boxes in `grid` bound to PV `pv`: box k corresponds to PV value k-1."""
     def __init__(self, pv, grid, row, col, entries):
         self.boxes = QtWidgets.QButtonGroup()
         for i in range(entries):
@@ -57,10 +63,12 @@ class PvEditCheckList:
         initPvMon(self,pv)
 
     def buttonClicked(self, button):
+        """Put ``checkedId() - 1`` to the PV."""
         value = self.boxes.checkedId()-1
         self.pv.put(value)
 
     def update(self, err):
+        """Check box ``value + 1`` (from a synchronous get), ignoring errors from a missing box; print `err` if set."""
         q = self.pv.get()+1
         if err is None:
             try:
@@ -72,26 +80,35 @@ class PvEditCheckList:
 
 class PvCmb(PvEditCmb):
 
+    """Disabled (read-only) `PvEditCmb`."""
     def __init__(self, pvname, choices):
         super(PvCmb, self).__init__(pvname, choices)
         self.setEnabled(False)
 
 def LblPushButtonX(parent, pvbase, name, count=1, start=0, istart=0):
+    """Call `PvInput` with `PvPushButtonX`; returns None."""
     return PvInput(PvPushButtonX, parent, pvbase, name, count, start, istart)
 
 def LblEditIntX(parent, pvbase, name, count=1, start=0, istart=0, enable=True):
+    """Call `PvInput` with `PvEditIntX`; returns None."""
     return PvInput(PvEditIntX, parent, pvbase, name, count, start, istart, enable)
 
 class DtiAllocMon(object):
+    """Monitor PV `pvname` and call ``parent.updateTable(err)`` on each update."""
     def __init__(self, parent, pvname):
         self.parent = parent
         initPvMon(self,pvname)
 
     def update(self,err):
+        """Call ``self.parent.updateTable(err)``."""
         self.parent.updateTable(err)
 
 class DtiAllocation(QtWidgets.QWidget):
 
+    """Grid editing, for each upstream link i, 'UsLinkPartition<i>' (via `PvEditCheckList`) and the bits of 'UsLinkFwdMask<i>'.
+
+    Column j of the forward-mask boxes is an exclusive group across upstream links.
+    """
     def __init__(self, pvbase):
         super(DtiAllocation, self).__init__()
 
@@ -141,6 +158,7 @@ class DtiAllocation(QtWidgets.QWidget):
         self.setLayout(glo)
 
     def updateTable(self,err):
+        """Get every 'UsLinkFwdMask<i>' PV and check box (i, j) for each set bit j."""
         usmask = [0]*len(self.mon)
         for i,mon in enumerate(self.mon):
             usmask[i] = mon.pv.get()
@@ -149,6 +167,7 @@ class DtiAllocation(QtWidgets.QWidget):
                     self.groups[j].button(i).setChecked(True)
 
     def update(self):
+        """Build each upstream link's mask from the checked box of every downstream-link column and put it to 'UsLinkFwdMask<i>'."""
         usmask = [0]*NUsLinks
         for j in range(NDsLinks):
             i = self.groups[j].checkedId()
@@ -159,6 +178,11 @@ class DtiAllocation(QtWidgets.QWidget):
 
 class DtiStatistics(QtWidgets.QWidget):
 
+    """Status widget: link-up masks, a CountClear button, upstream/downstream count tables and five PvLabel values.
+
+    The labels are QpllLock, MonClkRate (x1e-6, 'MHz'), TimLinkUp, TimRefClk (x1e-6,
+    'MHz') and TimFrRate (x1e-3, 'kHz').
+    """
     def __init__(self, pvbase):
         super(DtiStatistics, self).__init__()
         self._pvlabels = []
@@ -192,7 +216,9 @@ class DtiStatistics(QtWidgets.QWidget):
         self.setLayout(lor)
 
 class Ui_MainWindow(object):
+    """Builder for the DTI window."""
     def setupUi(self, MainWindow, title):
+        """Build 'Allocation' and 'Status' tab widgets with one tab per slot 3-7 (PV prefix '<title>:<slot>:') and set the window title to `title`."""
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -221,6 +247,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse the PV base (and -v) from the command line and run the window."""
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

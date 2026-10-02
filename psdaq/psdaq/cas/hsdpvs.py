@@ -21,12 +21,14 @@ import json
 from enum import Enum
 
 class AlarmSevr(Enum):
+    """Enum of alarm severities: NONE, MINOR, MAJOR, INVALID (0-3)."""
     NONE = 0
     MINOR = 1
     MAJOR = 2
     INVALID = 3
 
 class AlarmStatus(Enum):
+    """Enum of alarm status codes NONE (0) through TIMEOUT (10)."""
     NONE = 0
     READ = 1
     WRITE = 2
@@ -47,28 +49,33 @@ alarms = {}
 # pv_fieldname, pv_fieldtype, default_value, mmap_address, bit_size, bit_shift
 
 def pvTypes(nt):
+    """Return a list of (field name, type code) pairs from a {name: (type, default)} dict."""
     result = []
     for x,y in nt.items():
         result.append((x,y[0]))
     return result
 
 def pvValues(nt):
+    """Return a list of (field name, default value) pairs from a {name: (type, default)} dict."""
     result = []
     for x,y in nt.items():
         result.append((x,y[1]))
     return result
 
 def MySharedPV(nt,cb=None):
+    """Return a SharedPV whose structure and initial values come from `nt`, with a `DefaultPVHandler(cb)`."""
     return SharedPV(initial=Value(Type(pvTypes(nt)),pvValues(nt)),
                     handler=DefaultPVHandler(cb))
 
 class DefaultPVHandler(object):
+    """p4p put handler that posts the written value and then calls `callback` (if given) with it."""
     type = None
 
     def __init__(self,callback=None):
         self.callback = callback
 
     def put(self, pv, op):
+        """Post the written value (no new timestamp), complete the operation, then call ``callback(value)`` if set."""
         postedval = op.value()
 #        postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time()), 1.0)
         pv.post(postedval)
@@ -77,6 +84,7 @@ class DefaultPVHandler(object):
             self.callback(postedval)
 
 class PVHandlerAlarm(object):
+    """p4p put handler that sets alarm fields from the limits stored in the module dict ``alarms[name]``."""
     type = None
 
     def __init__(self,name,callback=None):
@@ -84,6 +92,11 @@ class PVHandlerAlarm(object):
         self.callback = callback
 
     def put(self, pv, op):
+        """Timestamp the written value, set its alarm and post it, then call `callback` if set.
+
+        Values below ``alarms[name][0]`` get MAJOR/LOLO, above ``alarms[name][1]`` MAJOR/HIHI,
+        otherwise NONE/NONE.
+        """
         postedval = op.value()
         postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
         limits = alarms[self.name]
@@ -103,6 +116,13 @@ class PVHandlerAlarm(object):
             self.callback(postedval)
 
 class ChipServer(object):
+    """Add the PVs for one digitizer prefix to `provider`.
+
+    Adds ':CONFIG' (daqConfig; 'enable' set to 1 if `start`), ':READY', ':PGPCONFIG',
+    monitoring PVs (':FWBUILD', ':FWVERSION', ':PADDR', ':PADDR_U', ':PLINK',
+    ':KEEPROWS', ':FEXOOR' with alarm limits, ':MON*') and ':RESET'. The structure
+    definitions come from `psdaq.hsd.pvdef`.
+    """
     def __init__(self, provider, prefix, start):
         self.provider = provider
         self.prefix = prefix
@@ -181,22 +201,30 @@ class ChipServer(object):
         self.provider.add(prefix+':RESET',self.daqReset)
 
     def updateDaqConfig(self,value):
+        """Do nothing; body is `pass`."""
         pass
 
     def updateDaqReset(self,value):
+        """Do nothing; body is `pass`."""
         pass
 
 class PVAServer(object):
+    """StaticProvider with a `ChipServer` for each prefix in `prefix`."""
     def __init__(self, provider_name, prefix, start):
         self.provider = StaticProvider(provider_name)
         for p in prefix:
             self.chip     = ChipServer(self.provider, p, start)
 
     def forever(self):
+        """Serve the provider with `p4p.server.Server.forever` (blocks)."""
         Server.forever(providers=[self.provider])
 
 
 def update_limits(alarmFile):
+    """Load alarm limits from JSON file `alarmFile` into the module dict `alarms`, then reload it every 5 s when its mtime changes.
+
+    Runs while `alarms` is truthy; errors are printed and the loop continues.
+    """
     global alarms
     try:
         last = os.stat(alarmFile)
@@ -223,6 +251,10 @@ def update_limits(alarmFile):
 import argparse
 
 def main():
+    """Parse -P (one or more prefixes), -A (alarm file), -s and -v, start the PVA server and optional alarm-file thread.
+
+    On KeyboardInterrupt the server stops; `alarms` is set to None to end the alarm thread, which is then joined.
+    """
     global alarms
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='host PVs for High Speed Digitizer')
 

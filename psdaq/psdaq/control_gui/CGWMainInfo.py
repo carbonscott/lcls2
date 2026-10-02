@@ -33,7 +33,9 @@ from PyQt5.QtCore import Qt
 #----
 
 class CGWMainInfo(QGroupBox):
-    """
+    """QGroupBox 'Info' showing experiment and run labels (plus hidden events/drops labels).
+
+    Registers itself as `cp.cgwmaininfo` on construction and clears it on close.
     """
     def __init__(self, parent=None):
         QGroupBox.__init__(self, 'Info', parent)
@@ -64,10 +66,12 @@ class CGWMainInfo(QGroupBox):
 
 
     def set_tool_tips(self):
+        """Set the tool tip to 'Information'."""
         self.setToolTip('Information') 
 
 
     def set_style(self):
+        """Apply group-box, label and value styles/alignment and hide the second (events/drops) line."""
         self.setStyleSheet(style.qgrbox_title)
         self.layout().setContentsMargins(2,0,2,2)
 
@@ -83,11 +87,17 @@ class CGWMainInfo(QGroupBox):
  
 
     def set_visible_line2(self, is_visible):
+        """Show or hide the events/drops labels and values."""
         for fld in (self.edi_evt, self.edi_evd, self.lab_evt, self.lab_evd):
             fld.setVisible(is_visible)
 
 
     def update_info(self):
+        """Update the run and experiment labels from `cp`.
+
+        Shows 'run' with `cp.s_run_number` when recording in 'starting', 'paused' or
+        'running'; otherwise 'last run' with `cp.s_last_run_number`.
+        """
         cond = cp.s_recording and cp.s_state in ('starting', 'paused', 'running')
         run_number = cp.s_run_number if cond else cp.s_last_run_number
         self.lab_run.setText('run' if cond else 'last run')
@@ -96,6 +106,7 @@ class CGWMainInfo(QGroupBox):
 
 
     def closeEvent(self, e):
+        """Log a debug message, call `QGroupBox.closeEvent` and set `cp.cgwmaininfo` to None."""
         logger.debug('CGWMainInfo.closeEvent')
         QGroupBox.closeEvent(self, e)
         cp.cgwmaininfo = None
@@ -106,6 +117,10 @@ class CGWMainInfo(QGroupBox):
     #if True:
 
       def key_usage(self):
+        """Return the key help text (ESC, U).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  U - update info window'\
@@ -113,6 +128,10 @@ class CGWMainInfo(QGroupBox):
 
 
       def keyPressEvent(self, e):
+        """Handle keys in the test window: Esc closes, U sets test values in `cp` and calls `update_info`, others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 

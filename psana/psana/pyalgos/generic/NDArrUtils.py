@@ -86,6 +86,10 @@ logger = logging.getLogger('NDArrUtils')
 
 
 def str_formatted(nda, first=0, last=5, vfmt='%0.6f', spa=' '):
+    """Return elements ``first:last`` of the flattened ``nda`` as a bracketed string, with ' ...]' appended when the array has more elements.
+
+    Each value is formatted with ``vfmt`` and joined with ``spa``; with ``vfmt`` None numpy's own str() of the slice is used.
+    """
     if vfmt is None:
         return '%s%s' % (str(nda.ravel()[first:last]).rstrip(']'), '...]' if nda.size>last else ']')
     #str(nda.ravel()[first:last])
@@ -116,6 +120,7 @@ def info_ndarr(nda, name='', first=0, last=5, vfmt=None, spa=' ', sfmt=None): #'
 
 
 def print_ndarr(nda, name=' ', first=0, last=5):
+    """Print ``info_ndarr(nda, name, first, last)``."""
     print(info_ndarr(nda, name, first, last))
 
 
@@ -188,6 +193,10 @@ def reshape_2d_to_3d(arr):
 
 
 def arr_rot_n90(arr, rot_ang_n90=0):
+    """Return ``arr`` rotated by a multiple of 90 degrees given in ``rot_ang_n90``.
+
+    90 gives ``np.flipud(arr.T)``, 180 gives ``np.flipud(np.fliplr(arr))``, 270 gives ``np.fliplr(arr.T)``; 0 and any other value return ``arr`` unchanged.
+    """
     if   rot_ang_n90==  0: return arr
     elif rot_ang_n90== 90: return np.flipud(arr.T)
     elif rot_ang_n90==180: return np.flipud(np.fliplr(arr))
@@ -526,6 +535,7 @@ def locxymax(nda, order=1, mode='clip'):
 
 
 def set_file_access_mode(fname, mode=0o664):
+    """Call ``os.chmod(fname, mode)``."""
     os.chmod(fname, mode)
 
 
@@ -540,6 +550,10 @@ def change_file_ownership(fname, user=None, group='ps-users'):
 
 
 def save_2darray_in_textfile(nda, fname, fmode, fmt, umask=0o0, group='ps-users', logmethod=logger.debug):
+    """Save ``nda`` with ``np.savetxt(fname, nda, fmt=fmt)`` after setting ``os.umask(umask)``.
+
+    If the file did not exist before, its mode is set to ``fmode`` and its group to ``group`` (owner: current user). The file name is reported with ``logmethod``.
+    """
     os.umask(umask)
     fexists = os.path.exists(fname)
     np.savetxt(fname, nda, fmt=fmt)
@@ -550,6 +564,10 @@ def save_2darray_in_textfile(nda, fname, fmode, fmt, umask=0o0, group='ps-users'
 
 
 def save_ndarray_in_textfile(nda, fname, fmode, fmt, umask=0o0, group='ps-users'):
+    """Save ``nda`` with ``NDArrIO.save_txt(fname=fname, arr=nda, fmt=fmt)`` after setting ``os.umask(umask)``.
+
+    If the file did not exist before, its mode is set to ``fmode`` and its group to ``group`` (owner: current user). Logs the file name, mode and format at debug level.
+    """
     os.umask(umask)
     fexists = os.path.exists(fname)
     save_txt(fname=fname, arr=nda, fmt=fmt)

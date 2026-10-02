@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Interactive tests of ``GeometryAccess``: CSPAD quad image, jungfrau16M image and PSF vectors.
+
+Run as a script with test name ``'0'``, ``'1'`` or ``'2'`` (see :func:`selector`).
+"""
 import os
 import sys
 import logging
@@ -39,7 +43,9 @@ def test_plot_quad():
 
 
 def test_jungfrau16M():
-    """
+    """Build and plot an image from ``data/geometry-def-jungfrau16M.data`` (next to this script) with incrementing test data per segment; save it as ``img.png``.
+
+    Asserts that the geometry file exists and prints info about the index arrays, data and image.
     """
     from time import time
     import psana.pscalib.geometry.GeometryAccess as ga # import GeometryAccess, img_from_pixel_arrays
@@ -72,6 +78,7 @@ def test_jungfrau16M():
 
 
 def instance_GeometryAccess():
+    """Return ``GeometryAccess`` for ``data/geometry-def-jungfrau16M.data`` in this script's directory; asserts that the file exists."""
     import psana.pscalib.geometry.GeometryAccess as ga
     fngeo = os.path.join(SCRDIR, 'data/geometry-def-jungfrau16M.data')
     assert os.path.exists(fngeo)
@@ -88,6 +95,7 @@ def test_psf():
 
 
 def test_GeometryObject():
+    """Print the x rotation angle of the top geometry object of the jungfrau16M geometry."""
     det_geo = instance_GeometryAccess()
     top_geo = det_geo.get_top_geo()
     #print(dir(top_geo))
@@ -98,6 +106,7 @@ def test_GeometryObject():
 
 
 def argument_parser():
+    """Return an ``argparse.ArgumentParser`` with positional ``tname`` and options ``-k/--dskwargs``, ``-d/--detname``, ``-L/--loglevel`` (default ``'INFO'``) and ``-s/--subtest``."""
     from argparse import ArgumentParser
     d_tname = '0'
     d_dskwargs = 'exp=rixc00121,run=140,dir=/sdf/data/lcls/drpsrcf/ffb/rix/rixc00121/xtc'  # None
@@ -119,12 +128,18 @@ def argument_parser():
 
 
 def USAGE():
+    """Return a usage string with the ``TNAME in`` lines taken from the source of :func:`selector`."""
     import inspect
     return '\n  %s <TNAME>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if "TNAME in" in s])
 
 
 def selector():
+    """Parse the command line, configure logging at the given level and run test ``'0'``, ``'1'`` or ``'2'``; then exit.
+
+    For other test names the usage is printed and the script exits with a "not implemented" message.
+    ``test_GeometryObject`` is not reachable from here.
+    """
     parser = argument_parser()
     args = parser.parse_args()
     STRLOGLEV = args.loglevel

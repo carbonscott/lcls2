@@ -13,14 +13,17 @@ import matplotlib.patches as patches
 #----------
 
 def drawLine(axes, xarr, yarr, s=10, linewidth=1, color='w', **kwargs) : 
+    """Add a ``Line2D`` through ``xarr``, ``yarr`` to ``axes`` with ``linewidth``, ``color`` and extra keyword arguments; ``s`` is unused."""
     line = lines.Line2D(xarr, yarr, linewidth=linewidth, color=color, **kwargs)   
     axes.add_artist(line)
 
 def drawRectangle(axes, xy, width, height, linewidth=1, color='w', **kwargs) :
+    """Add a ``matplotlib.patches.Rectangle`` at ``xy`` with ``width`` and ``height`` to ``axes``."""
     rect = patches.Rectangle(xy, width, height, linewidth=linewidth, color=color, **kwargs)
     axes.add_artist(rect)
 
 def drawCircle(axes, xy0, radius, linewidth=1, color='w', fill=False, **kwargs) : 
+    """Add a ``matplotlib.patches.Circle`` at ``xy0`` with ``radius`` (not filled by default) to ``axes``."""
     circ = patches.Circle(xy0, radius=radius, linewidth=linewidth, color=color, fill=fill, **kwargs)
     axes.add_artist(circ)
 

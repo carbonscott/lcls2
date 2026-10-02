@@ -34,6 +34,10 @@ from psana.graphqt.QWIcons import icon
 #class QWHelp(QtWidgets.QWidget):
 class QWHelp(Frame):
 
+    """Frame-based window that shows a help message in a read-only text box, with a status label and a Close button.
+
+    ``msg`` is shown with ``setHelpMessage`` at construction.
+    """
     def __init__(self, parent=None, msg='No message in QWHelp...'):
 
         #QtWidgets.QWidget.__init__(self, parent)
@@ -73,10 +77,12 @@ class QWHelp(Frame):
 
     def showToolTips(self):
         #self           .setToolTip('This GUI is intended for run control and monitoring.')
+        """Set the Close button tool tip."""
         self.but_close .setToolTip('Close this window.')
 
 
     def setStyle(self):
+        """Set minimum height 300, apply the ``style`` sheets, make the text box read-only and zero the layout margins."""
         self.setMinimumHeight(300)
         self.           setStyleSheet(style.styleBkgd)
         self.tit_status.setStyleSheet(style.styleTitle)
@@ -87,26 +93,34 @@ class QWHelp(Frame):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def closeEvent(self, event):
+        """Log a debug message and close the text box widget; the event is not passed to the base class."""
         logger.debug('closeEvent')
         self.box_txt.close()
 
 
     def onClose(self):
+        """Log a debug message and close the window.
+
+        Connected to the Close button.
+        """
         logger.debug('onClose')
         self.close()
 
 
     def setHelpMessage(self, msg):
+        """Show ``msg`` in the text box and set the status to 'Status: show help info...'."""
         logger.debug('Set help message')
         self.box_txt.setText(msg)
         self.setStatus(0, 'Status: show help info...')
 
 
     def setStatus(self, status_index=0, msg=''):
+        """Set the status label text to ``msg`` and its style by ``status_index`` (0 good, 1 warning, 2 alarm; other values keep the style)."""
         list_of_states = ['Good','Warning','Alarm']
         if status_index == 0: self.tit_status.setStyleSheet(style.styleStatusGood)
         if status_index == 1: self.tit_status.setStyleSheet(style.styleStatusWarning)

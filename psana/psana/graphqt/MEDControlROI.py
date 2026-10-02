@@ -77,11 +77,13 @@ class MEDControlROI(QWidget):
         self.but_img.setStyleSheet(style.styleButtonGood)
 
     def set_style(self, width=60):
+        """Set the layout margins and give every button the fixed width ``width``."""
         self.layout().setContentsMargins(5,10,0,2)
         for but in self.list_of_buts: but.setFixedWidth(width)
         #self.set_buttons_visiable()
 
     def set_tool_tips(self):
+        """Set tool tips on the ROI control buttons."""
         self.but_add.setToolTip('Add ROI to image\nclick and select ROI type from pop-up menu,'\
                                 '\nthen click on image as many times as necessary to define ROI shape')
         self.but_com.setToolTip('Completing add ROI for multiclick input\nin case of PIXGROUP and POLYGON')
@@ -96,6 +98,10 @@ class MEDControlROI(QWidget):
         self.but_img.setToolTip('Set image control mode\nto scale/translate image by click-and-pan/scroll mouse')
 
     def on_but_clicked(self):
+        """Dispatch a click to the action of the button that has focus.
+
+        All buttons get the normal style, then: Add calls ``on_but_add``; Edit, Select and Invert call ``set_mode`` with 'E', 'S', 'I'; Delete, Cancel and Compl. call ``wim.delete_selected_roi``, ``wim.cancel_add_roi`` and ``wim.finish``; Save, Load, Mask and Image call their ``on_but_*`` methods. The clicked button gets the 'good' style (if no button has focus, the last one is used).
+        """
         for but in self.list_of_buts:
             but.setStyleSheet(style.styleButton)
         for but in self.list_of_buts:
@@ -115,10 +121,15 @@ class MEDControlROI(QWidget):
         but.setStyleSheet(style.styleButtonGood)
 
     def on_but_img(self):
+        """Log the method name and call ``set_mode('Q')``."""
         logger.debug(sys._getframe().f_code.co_name)
         self.set_mode('Q')
 
     def on_but_add(self):
+        """Call ``set_mode('A')``, let the user pick an ROI type from a popup list and apply it with ``set_roitype``.
+
+        If the popup is cancelled or the title item is chosen, the first entry of ``roiu.roi_names`` is used.
+        """
         logger.debug(sys._getframe().f_code.co_name)
         self.set_mode('A')
         roi_names = ('ROI name:',) + tuple(roiu.roi_names)
@@ -130,14 +141,20 @@ class MEDControlROI(QWidget):
         self.set_roitype(roi_key)
 
     def on_but_sav(self):
+        """Ask for a JSON file name and, if given, call ``wim.save_parameters_in_file(fname=path)``."""
         path = popup_file_name(parent=self, mode='w', path=self.fname_json, dirs=[], fltr='*.json\n*')
         if path: self.wim.save_parameters_in_file(fname=path)
 
     def on_but_loa(self):
+        """Ask for a JSON file name to read and, if given, call ``wim.load_parameters_from_file(fname=path)``."""
         path = popup_file_name(parent=self, mode='r', path=self.fname_json, dirs=[], fltr='*.json\n*')
         if path: self.wim.load_parameters_from_file(fname=path)
 
     def on_but_mas(self):
+        """Ask for a .npy file name and save the mask.
+
+        The 2-d mask from ``wim.save_mask`` is written to '<name>-2d.npy'; if ``wctl.geo`` is set, the mask is also converted with ``mask_ndarray_from_2d`` and saved with ``np.save`` under the chosen name.
+        """
         path = popup_file_name(parent=self, mode='w', path=self.fname_mask, dirs=[], fltr='*.npy\n*')
         if path:
             path_2d = path.replace('.npy', '-2d.npy')
@@ -154,6 +171,10 @@ class MEDControlROI(QWidget):
                 logger.info(info_ndarr(mask_nda, 'mask_nda') + ' saved in file %s' % path)
 
     def set_mode(self, ckey):
+        """If ``ckey`` is in ``roiu.mode_keys``, finish the current ROI input and set the image widget's ``mode_type`` and ``mode_name`` for that key.
+
+        Scale control of the image widget is set to 'HV' when ``mode_type <= roiu.VISIBLE`` and disabled otherwise.
+        """
         if ckey in roiu.mode_keys:
             wim = self.wim
             wim.finish()
@@ -165,6 +186,7 @@ class MEDControlROI(QWidget):
             wim.set_scale_control(scale_ctl=sc)
 
     def set_roitype(self, ckey):
+        """If ``ckey`` is in ``roiu.roi_keys``, set ``roi_type`` and ``roi_name`` of the image widget for that key."""
         if ckey in roiu.roi_keys:
             wim = self.wim
             i = roiu.roi_keys.index(ckey)

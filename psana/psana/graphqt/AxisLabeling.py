@@ -45,6 +45,11 @@ import numpy as np
 
 class Extended():
 
+    """Tick-label position search after Talbot, Lin and Hanrahan ("extended Wilkinson" algorithm).
+
+    The constructor stores ``density`` and ``steps`` (default ``[1, 5, 2, 2.5, 4, 3]``) in
+    ``_density`` and ``_steps``; :meth:`extended` does not read them and uses its own ``Q`` argument.
+    """
     def __init__(self, density = 1, steps = None):
         """
         Keyword args:
@@ -58,11 +63,20 @@ class Extended():
 
 
     def coverage(self, dmin, dmax, lmin, lmax):
+        """Return the coverage score ``1 - 0.5*((dmax-lmax)**2 + (dmin-lmin)**2) / (0.1*(dmax-dmin))**2``.
+
+        Raises ZeroDivisionError if ``dmax == dmin``.
+        """
         drange = dmax-dmin
         return 1 - 0.5 * (math.pow(dmax-lmax, 2)+math.pow(dmin-lmin, 2)) / math.pow(0.1 * drange, 2)
 
 
     def coverage_max(self, dmin, dmax, span):
+        """Return the upper bound of the coverage score for a label span ``span``.
+
+        Returns 1 if ``span`` does not exceed the data range, otherwise
+        ``1 - ((span-drange)/2)**2 / (0.1*drange)**2``; a zero range is replaced by 1e-10.
+        """
         drange = dmax-dmin
         if drange == 0: drange = 1e-10
         if span > drange:
@@ -73,12 +87,18 @@ class Extended():
 
 
     def density(self, k, m, dmin, dmax, lmin, lmax):
+        """Return the density score ``2 - max(r/rt, rt/r)``.
+
+        ``r = (k-1)/(lmax-lmin)`` is the label density and ``rt = (m-1)/(max(lmax, dmax) - min(lmin, dmin))``
+        the target density.
+        """
         r = (k-1.0) / (lmax-lmin)
         rt = (m-1.0) / (max(lmax, dmax) - min(lmin, dmin))
         return 2 - max( r/rt, rt/r )
 
 
     def density_max(self, k, m):
+        """Return ``2 - (k-1)/(m-1)`` if ``k >= m``, otherwise 1."""
         if k >= m:
             return 2 - (k-1.0)/(m-1.0)
         else:
@@ -86,6 +106,11 @@ class Extended():
 
 
     def simplicity(self, q, Q, j, lmin, lmax, lstep):
+        """Return the simplicity score ``(n-i)/(n-1) + v - j``.
+
+        ``n = len(Q)``, ``i`` is the 1-based index of ``q`` in ``Q``, and ``v`` is 1 if ``lmin`` is a
+        multiple of ``lstep`` (within 1e-10) and the range ``[lmin, lmax]`` contains 0, else 0.
+        """
         eps = 1e-10
         n = len(Q)
         i = Q.index(q)+1
@@ -94,6 +119,7 @@ class Extended():
 
 
     def simplicity_max(self, q, Q, j):
+        """Return the upper bound of the simplicity score, ``(n-i)/(n-1) + 1 - j`` with ``i`` the 1-based index of ``q`` in ``Q``."""
         n = len(Q)
         i = Q.index(q)+1
         v = 1
@@ -101,15 +127,40 @@ class Extended():
 
 
     def legibility(self, lmin, lmax, lstep):
+        """Return 1; legibility is not evaluated."""
         return 1
 
 
     def legibility_max(self, lmin, lmax, lstep):
+        """Return 1; legibility is not evaluated."""
         return 1
 
 
     def extended(self, dmin, dmax, m, Q=[1,5,2,2.5,4,3], only_inside=False, w=[0.25,0.2,0.5,0.05]):
         #n = len(Q)
+        """Search label sets and return the one with the highest weighted score.
+
+        Loops over skip factor ``j``, step ``q`` in ``Q``, label count ``k`` and power of ten ``z``, pruning
+        with the ``*_max`` bounds; the score is ``w[0]*simplicity + w[1]*coverage + w[2]*density + w[3]*legibility``.
+
+        Parameters
+        ----------
+        dmin, dmax : float
+            Data range.
+        m : float
+            Target number of labels.
+        Q : list
+            Preferred step multipliers.
+        only_inside : bool
+            If True, only label sets with ``lmin >= dmin`` and ``lmax <= dmax`` are accepted.
+        w : list of float
+            Four score weights.
+
+        Returns
+        -------
+        tuple
+            ``(lmin, lmax, lstep, q, k)`` of the best set; ``(dmin, dmax, dmax-dmin, 1, 2)`` if none scores above -2.
+        """
         best_score = -2.0
         best = (dmin, dmax, (dmax-dmin), 1, 2)
 
@@ -169,6 +220,16 @@ class Extended():
 
 
 def best_label_locs(vmin, vmax, size_inches, density=1, steps=None):
+    """Return tick label positions for the range ``vmin``..``vmax``.
+
+    Calls ``Extended(density, steps).extended`` with target count ``density*size_inches + 1``,
+    ``only_inside=True`` and weights ``[0.25, 0.2, 0.5, 0.05]``.
+
+    Returns
+    -------
+    numpy.ndarray
+        ``lmin + lstep*arange(k)`` from the best label set.
+    """
     size = size_inches
 
     # density * size gives target number of intervals,
@@ -184,6 +245,7 @@ def best_label_locs(vmin, vmax, size_inches, density=1, steps=None):
 
 def test():
 
+    """Print the label positions from :func:`best_label_locs` for three hard-coded ranges and sizes."""
     list_of_tests = ((-27.3, 55.4, 4.125),\
                      (25.1, 31.6, 6.125),\
                      (0.1, 0.2, 2.5))

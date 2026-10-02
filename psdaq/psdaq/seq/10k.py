@@ -1,3 +1,8 @@
+"""Sequence description 'LoopTest' with a 90-step loop (code comment: "Setup a 90 pulse sequence to repeat 10000 times each second").
+
+Step i requests bit j when ``i*(j+1) % 90 < j+1``, each followed by FixedRateSync(marker=0,
+occ=1); descriptions are '10 kHz'..'160 kHz'. The instructions are printed at import.
+"""
 from psdaq.seq.seq import *
 
 sync_marker = 6

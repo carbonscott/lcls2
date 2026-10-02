@@ -43,6 +43,11 @@ class SubProcess:
         self.selpoll = None
 
     def subprocs_open(self, command, logname=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=None, shell=False, executable='/bin/bash'):
+        """Start ``command`` with :func:`subproc_open` and register its stdout for polling.
+
+        Asserts that ``command`` is a str when ``shell`` is True and a list otherwise. Stores the command,
+        the ``Popen`` object (``self.subproc``) and a ``select.poll`` object (``self.selpoll``).
+        """
         self.command = command
         logger.debug('command: %s' % str(command))
         logger.debug('shell: %s' % str(shell))
@@ -54,11 +59,18 @@ class SubProcess:
     def __call__(self, *args, **kwargs): return self.subprocs_open(*args, **kwargs)
 
     def is_compleated(self):
+        """Return True if the subprocess has exited with return code 0 (``poll() == 0``); False while running or on non-zero exit."""
         return self.subproc.poll()==0
 
-    def kill(self): self.subproc.kill()
+    def kill(self):
+        """Kill the subprocess."""
+        self.subproc.kill()
 
     def stdout_incriment(self):
+        """Return the stdout lines currently available from the subprocess, decoded as ASCII and concatenated.
+
+        Reads lines while ``select.poll`` reports data within 1 ms; returns an empty string if none.
+        """
         sp = self.subproc
         sp.stdout.flush()
         buf = ''
@@ -77,6 +89,10 @@ class SubProcManager:
         subprocs = []
 
     def subprocs_open(self, command, logname=None, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=None, shell=False, executable='/bin/bash'):
+        """Create a :class:`SubProcess` for ``command`` and append it to ``subprocs``.
+
+        ``subprocs`` is only a local variable of ``__init__``, so the append raises NameError.
+        """
         osp = SubProcess()
         osp(command, logname, stdout, stderr, env, shell, executable)
         subprocs.append(osp)
@@ -87,9 +103,16 @@ spm = SubProcManager() # singleton
 
 if __name__ == "__main__":
 
-  def dump_line(s): print(s)
+  def dump_line(s):
+      """Print ``s`` (defined only when run as a script)."""
+      print(s)
 
   def test_SubProcess(time_proc_sec=10):
+      """Run ``'python test-long-job.py <time_proc_sec>'`` with :class:`SubProcess` and print its output every 2 s until it completes.
+
+      The command is a str with ``shell=False``, so the type assertion in ``subprocs_open`` fails.
+      Defined only when the module is run as a script.
+      """
       osp = SubProcess()
       dt_sec = 2
       t0_sec = time()

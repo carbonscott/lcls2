@@ -31,6 +31,7 @@ dic_mode_name_to_type = dict(zip(mode_names, mode_types))
 
 
 def print_warning(o, metframe):
+    """Print a warning that the method named by frame ``metframe`` of object ``o`` must be re-implemented in a derived class."""
     wng = 'WARNING: %s.%16s - abstract interface method needs to be re-implemented in derived class.' \
           % (o.__class__.__name__, metframe.f_code.co_name)
     print(wng)
@@ -39,6 +40,11 @@ def print_warning(o, metframe):
 
 class DragBase(object):
 
+    """Mixin base for draggable graphics items; holds drag mode, cursors, pens and optional control points.
+
+    Methods such as ``setPen``, ``setZValue``, ``rotation`` and ``rect`` are expected from the
+    ``QGraphicsItem`` subclass it is combined with; ``_dragtype`` must be set by the subclass.
+    """
     def __init__(self, parent=None,\
                  brush=QBrush(), pen=QPen(Qt.blue, 0, Qt.SolidLine)):
 
@@ -62,22 +68,30 @@ class DragBase(object):
 
     def set_drag_mode(self, mode=MOVE):
         #logger.debug('In DragBase.set_drag_mode %s for %s' % (mode_names[mode], self.str_dragtype()))
+        """Set the drag mode ``self._drag_mode`` (default ``MOVE``)."""
         self._drag_mode = mode
 
 
     def mode(self):
+        """Return the current drag mode ``self._drag_mode``."""
         return self._drag_mode
 
 
     def set_child_item_sel(self, item=None):
+        """Store ``item`` as the selected child item (``self._child_item_sel``)."""
         self._child_item_sel = item
 
 
     def child_item_sel(self):
+        """Return the selected child item stored by :meth:`set_child_item_sel`."""
         return self._child_item_sel
 
 
     def set_control_points_visible(self, visible=True):
+        """Show or hide all control points in ``lst_ctl_points`` and set the item z-value to 40 (visible) or 20.
+
+        Does nothing if ``lst_ctl_points`` is None.
+        """
         if self.lst_ctl_points is None: return
         for cpt in self.lst_ctl_points:
             cpt.setVisible(visible)
@@ -91,18 +105,27 @@ class DragBase(object):
 
 
     def str_dragtype(self):
+        """Return the name of ``self._dragtype`` from ``dic_drag_type_to_name``."""
         return dic_drag_type_to_name[self._dragtype]
 
 
     def set_cursor_hover(self, cursor=Qt.CrossCursor):
+        """Set ``self.hover_cursor`` (default ``Qt.CrossCursor``)."""
         self.hover_cursor = cursor
 
 
     def set_cursor_grab(self, cursor=Qt.SizeAllCursor): # Qt.ClosedHandCursor):
+        """Set ``self.grub_cursor`` (default ``Qt.SizeAllCursor``)."""
         self.grub_cursor = cursor
 
 
     def control_point_menu(self):
+        """Show a popup menu (Invert, Delete, Color, Cancel) and apply the chosen action to the item.
+
+        Invert swaps the pen between ``_pen_pos`` and ``_pen_inv``; Delete sets mode ``DELETE`` and hides
+        the item; Color opens a color dialog and sets a new 2-pixel cosmetic pen; Cancel does nothing.
+        Any other selection (e.g. None) prints a "not implemented" message.
+        """
         lst = ('Invert', 'Delete', 'Color', 'Cancel')
         txt = select_item_from_popup_menu(lst)
 
@@ -129,6 +152,7 @@ class DragBase(object):
 
 
     def rotate_point(self, p, sign=-1):
+        """Return point ``p`` rotated by ``sign`` times the item rotation angle (degrees, from ``self.rotation()``)."""
         angle = self.rotation()
         angle_rads = sign * radians(angle)
         s,c = sin(angle_rads), cos(angle_rads)

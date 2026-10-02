@@ -1,4 +1,8 @@
 
+"""Defines ``QWRange``, a QWidget with 'from' and 'to' line edits for a range of numbers.
+
+The 'from' field accepts 0-9999 and the 'to' field 1-9999 or 'end' (the tool tips call them run numbers); edits emit the ``field_is_changed`` signal.
+"""
 import logging
 logger = logging.getLogger(__name__)
 
@@ -60,17 +64,20 @@ class QWRange(QWidget):
         # cp.guirange = self # DO NOT REGISTER THIS OBJECT! There may be many instances in the list of runs...
 
     def set_edi_validators(self):
+        """Set validators: integers 0-9999 for the 'from' field and a regular expression for 1-9999 or 'end' for the 'to' field."""
         self.edi_from.setValidator(QIntValidator(0,9999,self))
         self.edi_to  .setValidator(QRegExpValidator(QRegExp("[1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1-9][0-9][0-9][0-9]|end$"),self))
         #self.edi_to  .setValidator(QRegExpValidator(QRegExp("[0-9]\\d{0,3}|end$"),self))
 
 
     def set_tool_tips(self):
+        """Set tool tips on the 'from' and 'to' fields."""
         self.edi_from.setToolTip('Enter run number in range [0,9999]')
         self.edi_to  .setToolTip('Enter run number in range [1,9999] or "end"')
 
 
     def set_style(self):
+        """Apply style sheets, minimum size (200x32 with the 'from' label, else 100x32), zero margins, 40 px right-aligned fields, then ``set_style_buttons``."""
         self.setStyleSheet(style.styleBkgd)
 
         if self.use_lab_from:
@@ -94,6 +101,7 @@ class QWRange(QWidget):
 
 
     def status_buttons_is_good(self):
+        """Return True if ``str_to`` is 'end' or ``int(str_from) <= int(str_to)``, otherwise False."""
         if self.str_to == 'end': return True
 
         if int(self.str_from) > int(self.str_to):
@@ -106,6 +114,7 @@ class QWRange(QWidget):
 
 
     def set_style_buttons(self):
+        """Give both fields the normal edit style if ``status_buttons_is_good()``, otherwise the 'bad' edit style."""
         if self.status_buttons_is_good():
             self.edi_from.setStyleSheet(style.styleEdit)
             self.edi_to  .setStyleSheet(style.styleEdit)
@@ -115,11 +124,13 @@ class QWRange(QWidget):
 
 
     def emit_field_is_changed_signal(self,msg):
+        """Emit ``field_is_changed(msg)``."""
         self.field_is_changed.emit(msg)
 
 
     def on_edi_from(self):
         #logger.debug('on_edi_from')
+        """If the 'from' text changed, store it in ``str_from``, update field styles and emit ``field_is_changed('from:<value>')``."""
         txt = str( self.edi_from.text() )
         if txt == self.str_from: return # if text has not changed
         self.str_from = txt
@@ -131,6 +142,7 @@ class QWRange(QWidget):
 
     def on_edi_to(self):
         #logger.debug('on_edi_to')
+        """If the 'to' text changed, store it in ``str_to``, update field styles and emit ``field_is_changed('to:<value>')``."""
         txt = str( self.edi_to.text() )
         if txt == self.str_to: return # if text has not changed
         self.str_to = txt
@@ -158,6 +170,7 @@ class QWRange(QWidget):
 
 
     def set_params(self, str_from=None, str_to=None):
+        """Set ``str_from`` (default '0') and ``str_to`` (default 'end') from the arguments."""
         self.str_from = str_from if str_from is not None else '0'
         self.str_to   = str_to   if str_to is not None else 'end'
 
@@ -169,6 +182,7 @@ class QWRange(QWidget):
 
 
     def set_fields(self):
+        """Write ``str_from`` and ``str_to`` into the fields and update their styles."""
         self.edi_from.setText(self.str_from)
         self.edi_to  .setText(self.str_to)
         self.set_style_buttons()

@@ -1,3 +1,4 @@
+"""Timing scan of '<detname>_<i>:user.trigger_delay_s' (i < nprocs) over 20 values from 0.0002 to 0.00022 using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import json
 import numpy as np
@@ -5,6 +6,11 @@ import numpy as np
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events per step, hutch 'mfx', detname 'jungfrau', record 1, config 'BEAM', nprocs 5.
+
+    Step i writes ``np.linspace(0.0002, 0.00022, 20)[i]`` to every segment's key and uses i
+    as the step value; metadata include 'step' and 'trigger_delay_s'.
+    """
     defaults = {
         "--events": 1000,
         "--hutch": "mfx",

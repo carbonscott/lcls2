@@ -16,6 +16,13 @@ from psdaq.control.syslog import SysLog
 import zmq.utils.jsonapi as json
 
 class Client:
+    """Test DAQ client that answers collection messages over ZMQ.
+
+    The constructor connects a PUSH socket to `back_pull_port(platform)` and a SUB socket
+    (subscribed to all topics) to `back_pub_port(platform)` on `collectHost`, then loops
+    forever dispatching each received message by ``header['key']`` to a `handle_*` method.
+    A key with no handler raises KeyError, which ends the loop.
+    """
     def __init__(self, platform, collectHost, alias):
 
         # initialize state
@@ -69,6 +76,16 @@ class Client:
                     handle_request[key](msg)
 
     def handle_rollcall(self, msg):
+        """Reply to a rollcall with this client's alias, host and pid.
+
+        Pushes a 'rollcall' message whose body is
+        ``{'drp': {'proc_info': {'alias': ..., 'host': ..., 'pid': ...}}}``.
+
+        Parameters
+        ----------
+        msg : dict
+            Received message; its ``header['msg_id']`` is echoed.
+        """
         logging.debug('Client handle_rollcall(msg_id=\'%s\')' % msg['header']['msg_id'])
         # time.sleep(1.5)
         body = {'drp': {'proc_info': {
@@ -79,6 +96,15 @@ class Client:
         self.push.send_json(reply)
 
     def handle_alloc(self, msg):
+        """Reply to alloc with fake connect info and set state to 'allocated'.
+
+        Pushes an 'alloc' message with body ``{'drp': {'connect_info': {'infiniband': '123.456.789'}}}``.
+
+        Parameters
+        ----------
+        msg : dict
+            Received message; its ``header['msg_id']`` is echoed.
+        """
         logging.debug('Client handle_alloc(msg_id=\'%s\')' % msg['header']['msg_id'])
         body = {'drp': {'connect_info': {'infiniband': '123.456.789'}}}
         reply = create_msg('alloc', msg['header']['msg_id'], self.id, body)
@@ -86,6 +112,7 @@ class Client:
         self.state = 'allocated'
 
     def handle_connect(self, msg):
+        """If state is 'allocated', set it to 'connected' and push an 'ok' reply; otherwise do nothing."""
         logging.debug('Client handle_connect(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'allocated':
             self.state = 'connected'
@@ -93,6 +120,10 @@ class Client:
             self.push.send_json(reply)
 
     def handle_disconnect(self, msg):
+        """If state is 'connected', set it to 'allocated' and push a 'disconnect' reply.
+
+        The reply body is ``{'err_info': 'This is only a test'}``. Does nothing in other states.
+        """
         logging.debug('Client handle_disconnect(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'connected':
             self.state = 'allocated'
@@ -101,6 +132,7 @@ class Client:
             self.push.send_json(reply)
 
     def handle_configure(self, msg):
+        """If state is 'connected', set it to 'paused' and push an 'ok' reply; otherwise do nothing."""
         logging.debug('Client handle_configure(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'connected':
             self.state = 'paused'
@@ -108,6 +140,7 @@ class Client:
             self.push.send_json(reply)
 
     def handle_unconfigure(self, msg):
+        """If state is 'paused', set it to 'connected' and push an 'ok' reply; otherwise do nothing."""
         logging.debug('Client handle_unconfigure(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'paused':
             self.state = 'connected'
@@ -115,6 +148,7 @@ class Client:
             self.push.send_json(reply)
 
     def handle_enable(self, msg):
+        """If state is 'paused', set it to 'running' and push an 'ok' reply; otherwise do nothing."""
         logging.debug('Client handle_enable(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'paused':
             self.state = 'running'
@@ -122,6 +156,7 @@ class Client:
             self.push.send_json(reply)
 
     def handle_disable(self, msg):
+        """If state is 'running', set it to 'paused' and push an 'ok' reply; otherwise do nothing."""
         logging.debug('Client handle_disable(msg_id=\'%s\')' % msg['header']['msg_id'])
         if self.state == 'running':
             self.state = 'paused'
@@ -129,36 +164,46 @@ class Client:
             self.push.send_json(reply)
 
     def handle_beginstep(self, msg):
+        """Push an 'ok' reply echoing the message's msg_id; the state is unchanged."""
         logging.debug('Client handle_beginstep(msg_id=\'%s\')' % msg['header']['msg_id'])
         if True:
             reply = create_msg('ok', msg['header']['msg_id'], self.id)
             self.push.send_json(reply)
 
     def handle_endstep(self, msg):
+        """Push an 'ok' reply echoing the message's msg_id; the state is unchanged."""
         logging.debug('Client handle_endstep(msg_id=\'%s\')' % msg['header']['msg_id'])
         if True:
             reply = create_msg('ok', msg['header']['msg_id'], self.id)
             self.push.send_json(reply)
 
     def handle_beginrun(self, msg):
+        """Push an 'ok' reply echoing the message's msg_id; the state is unchanged."""
         logging.debug('Client handle_beginrun(msg_id=\'%s\')' % msg['header']['msg_id'])
         if True:
             reply = create_msg('ok', msg['header']['msg_id'], self.id)
             self.push.send_json(reply)
 
     def handle_endrun(self, msg):
+        """Push an 'ok' reply echoing the message's msg_id; the state is unchanged."""
         logging.debug('Client handle_endrun(msg_id=\'%s\')' % msg['header']['msg_id'])
         if True:
             reply = create_msg('ok', msg['header']['msg_id'], self.id)
             self.push.send_json(reply)
 
     def handle_reset(self, msg):
+        """Set state to 'reset'; no reply is sent."""
         logging.debug('Client handle_reset(msg_id=\'%s\')' % msg['header']['msg_id'])
         self.state = 'reset'
         # is a reply to reset necessary?
 
 def main():
 
+    """Parse command-line arguments, configure SysLog logging and run a `Client`.
+
+    Options: -p platform (0-7), -C collection host, -P instrument, -u alias (required),
+    -v verbose. KeyboardInterrupt is caught and logged.
+    """
     try:
         # process arguments
         parser = argparse.ArgumentParser()

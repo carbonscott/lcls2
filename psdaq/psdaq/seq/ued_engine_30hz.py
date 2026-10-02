@@ -18,6 +18,12 @@
 #pre_delay=1; L_dark=2; M_pre=5; N_post=5; engine = 0
 
 # first engine
+"""Sequence description for UED engines synchronized to a 30 Hz AC marker; expects `engine`, `pre_delay`, `L_dark`, `M_pre` and `N_post` to be defined by the caller.
+
+Same structure as the 10 Hz version with '30H' AC syncs: dark, pre-laser, one laser and
+post-laser shots, each with an Andor expose code on engine 0, 463 '500kH' markers and the
+shot's event codes; then a branch to line 0.
+"""
 daq_trigger_ec = 0
 andor_expose_ec = 1
 

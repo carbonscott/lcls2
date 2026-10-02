@@ -60,6 +60,11 @@ from PyQt5.QtGui import QColor, QFont
 
 class FWViewAxis(FWView):
 
+    """``FWView`` showing an axis ruler (``FWRuler``) along side ``side`` (``'U'``, ``'D'``, ``'L'`` or ``'R'``).
+
+    Keyword arguments include ``scale_ctl`` (True gives horizontal scaling for U/D, vertical for
+    L/R), ``wlength``, ``wwidth``, ``bgcolor``, ``fgcolor`` and ``signal_fast``.
+    """
     def __init__(self, parent=None, rscene=QRectF(0, 0, 10, 10), origin='UL', side='U', **kwargs):
 
         self.bgcolor_def = 'black'
@@ -83,12 +88,14 @@ class FWViewAxis(FWView):
 
 
     def print_attributes(self):
+        """Print the scale control, origin and side of the axis."""
         print('scale_control: ', self.str_scale_control())
         print('origin       : ', self.origin())
         print('side         : ', self.side)
 
 
     def set_style(self):
+        """Call ``FWView.set_style`` and set axis color, font (Courier 10) and pen, plus fixed widget height (U/D) or width (L/R)."""
         FWView.set_style(self)
 
         color = QColor(self.fgcolor)
@@ -105,6 +112,10 @@ class FWViewAxis(FWView):
 
 
     def update_my_scene(self):
+        """Call ``FWView.update_my_scene``, add a background rect if ``bgcolor`` differs from the default, and re-create the ruler.
+
+        The previous ruler is removed; previously added background rects are not removed.
+        """
         FWView.update_my_scene(self)
         if self.bgcolor != self.bgcolor_def:
             s = self.scene()
@@ -117,6 +128,7 @@ class FWViewAxis(FWView):
 
     def reset_original_image_size(self):
          # def in FWView.py with overloaded update_my_scene()
+         """Call ``self.reset_original_size()``."""
          self.reset_original_size()
 
 
@@ -127,10 +139,12 @@ class FWViewAxis(FWView):
 
 
     def mouseReleaseEvent(self, e):
+        """Call :meth:`update_my_scene` and then ``FWView.mouseReleaseEvent``."""
         self.update_my_scene()
         FWView.mouseReleaseEvent(self, e)
 
     def closeEvent(self, e):
+        """Remove the ruler and pass the event to ``FWView.closeEvent``."""
         self.ruler.remove()
         FWView.closeEvent(self, e)
         #print('FWViewAxis.closeEvent')

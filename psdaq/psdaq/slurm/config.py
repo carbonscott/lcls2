@@ -1,3 +1,4 @@
+"""`Config` class for selecting, adding, renaming and printing entries of a DAQ process-config list (entries keyed by 'id')."""
 import copy, os
 import socket
 
@@ -41,6 +42,13 @@ class Config:
                     print(f"Warning: no {cid} found in main_config")
 
     def add(self, config):
+        """Add `config` to the selected configs under its 'id', setting 'host' to the local host name if missing.
+
+        Raises
+        ------
+        ValueError
+            If `config` is not a dict.
+        """
         if not isinstance(config, (dict,)):
             msg = 'Error: only accept config as a dictionary (e.g. {"id": "daq", ...})'
             raise ValueError(msg)
@@ -50,6 +58,11 @@ class Config:
         self.select_config[cid] = config
 
     def rename(self, *args):
+        """Rename selected configs; each positional argument is a (current id, new id) pair.
+
+        An id not yet selected is first selected from the main config; a warning is printed if
+        it is still not found.
+        """
         for arg in args:
             current_cid, new_cid = arg
             if current_cid not in self.select_config:
@@ -65,6 +78,7 @@ class Config:
             self.add(config)
 
     def show(self, full=False):
+        """Print a table of id, host and command for the selected configs (commands abbreviated unless `full`)."""
         print("%20s %18s %80s" % ("UniqueID", "Host", "Command+Args"))
         for cid, config_detail in self.select_config.items():
             host = config_detail["host"]

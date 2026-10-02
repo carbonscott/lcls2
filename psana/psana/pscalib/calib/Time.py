@@ -21,12 +21,15 @@ class Time() :
         self._nsec = nsec ;
 
     def sec(self) :
+        """Return the seconds value ``_sec`` (None for an invalid time)."""
         return self._sec
 
     def nsec(self) :
+        """Return the nanoseconds value ``_nsec``."""
         return self._nsec
 
     def isValid(self) :
+        """Return True if the seconds value is not None."""
         return self._sec is not None
 
     def to64(self):

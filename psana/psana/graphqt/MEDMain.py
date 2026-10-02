@@ -33,6 +33,12 @@ SCRNAME = sys.argv[0].rsplit('/')[-1]
 
 class MEDMain(QWidget):
 
+    """Mask-editor main widget: ``MEDControl`` on top, ``MEDControlROI`` beside ``GWImageSpec``, and a ``GWLoggerStd`` below.
+
+    The constructor creates a ``RepoManager`` from the keyword arguments (stored back as
+    ``kwa['repoman']``), calls ``repoman.save_record_at_start``, and gets the image and geometry
+    from ``MEDUtils.image_from_kwargs``; ``ctab`` (default 2) selects the color table.
+    """
     def __init__(self, **kwa):
         QWidget.__init__(self, parent=None)
 
@@ -70,23 +76,28 @@ class MEDMain(QWidget):
         self.set_tool_tips()
 
     def set_tool_tips(self):
+        """Set the widget tool tip to ``'Mask Editor'``."""
         self.setToolTip('Mask Editor')
 
     def set_style(self):
+        """Set zero contents margins on the main layout."""
         self.layout().setContentsMargins(0,0,0,0)
         #self.setStyleSheet("background-color: rgb(0, 0, 0); color: rgb(220, 220, 220);")
 
     def set_splitter_pos(self, fr=0.95):
+        """Give fraction ``fr`` of the widget height to the image area of the vertical splitter and set the image/spectrum split to 0.8."""
         h = self.height()
         s = int(fr*h)
         self.vspl.setSizes((s, h-s)) # spl_pos = self.vspl.sizes()[0]
         self.wisp.set_splitter_pos(fr=0.8)
 
     def resizeEvent(self, e):
+        """Call ``QWidget.resizeEvent`` and then :meth:`set_splitter_pos` with the default fraction."""
         QWidget.resizeEvent(self, e)
         self.set_splitter_pos()
 
     def closeEvent(self, e):
+        """Log at debug level and pass the event to ``QWidget.closeEvent``."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
 
@@ -96,6 +107,7 @@ def mask_editor(**kwa):
     #logging.basicConfig(format='[%(levelname).1s] %(name)s L%(lineno)04d : %(message)s', level=intlevel)
     #print('kwargs: %s' % mu.ut.info_dict(kwa))
 
+    """Create a ``QApplication``, show a ``MEDMain`` built from ``**kwa`` titled ``'Image Viewer'`` and run the event loop."""
     a = QApplication(sys.argv)
     w = MEDMain(**kwa)
     w.setGeometry(10, 100, 1000, 800)

@@ -38,6 +38,7 @@ from time import time, localtime, strftime
 
 def create_directory(dir, mode=0o777) :
     #print('XXX: create_directory: %s' % dir)
+    """Create directory ``dir`` with ``os.makedirs`` and set its permissions to ``mode``, unless it already exists."""
     if os.path.exists(dir) :
         pass
         #print('XXX: Directory exists: ', dir)
@@ -54,6 +55,15 @@ def create_directory(dir, mode=0o777) :
 def create_path(path, depth=5, mode=0o777) : 
     # Creates missing path for /reg/g/psdm/logs/calibman/2016/07/2016-07-19-12:20:59-log-dubrovin-562.txt
     # if path to file exists return True, othervise False
+    """Create the missing parent directories of file ``path`` that lie deeper than ``depth`` levels, and return whether the parent directory exists.
+
+    The first ``depth`` path components are skipped (not created).
+
+    Returns
+    -------
+    bool
+        ``os.path.exists`` of the last parent directory.
+    """
     subdirs = path.strip('/').split('/')
     #print('XXX subdirs', subdirs)
     cpath = ''
@@ -69,6 +79,10 @@ def create_path(path, depth=5, mode=0o777) :
 
 def note_fname() :
     # Returns name like /reg/g/psdm/logs/logbookgrabber/2016/07/2016-07-19-12:20:59-log-dubrovin-562.txt
+    """Return a notification file path '<cp.dir_log>/2017/log-notification.txt' built from a hard-coded file-name date.
+
+    The module does not define ``cp``, so calling it raises NameError.
+    """
     fnote = 'log-notification.txt'
     fname = '2017-01-27-10:00:00-log.txt'  # logger.getLogFileName() # 2016-07-19-11:53:02-log.txt
     year, month = fname.split('-')[:2]  # 2016, 07
@@ -95,6 +109,10 @@ class NotificationLog :
 
 
     def get_info_dict(self) :
+        """Return a dict with date, time, zone, user, host (HOSTNAME env), cwd, version, process name and pid, plus user fields.
+
+        User fields from ``dict_add_fields`` are added as ``v[1]`` of each value, and the loop uses Python-2 ``dict.iteritems``, which raises AttributeError in Python 3.
+        """
         info_dict = {}
         date,time,zone = self.get_current_local_time_stamp().split()
         info_dict['date'] = date
@@ -114,29 +132,41 @@ class NotificationLog :
 
 
     def get_current_local_time_stamp(self, fmt='%Y-%m-%d %H:%M:%S %Z'):
+        """Return the current local time formatted with ``fmt`` (default '%Y-%m-%d %H:%M:%S %Z')."""
         return strftime(fmt, localtime())
 
 
     def get_enviroment(self, env='USER') :
+        """Return ``str(os.environ.get(env))`` ('None' if the variable is not set)."""
         return str(os.environ.get(env))
         #return os.environ[env] if env in os.environ.keys() else '%s-NONDEF-ENV' % env
 
 
     def version(self) :
+        """Return the module ``__version__`` string."""
         return __version__
 
 
     def cname(self) :
+        """Return the lower-cased third word of ``__author__``.
+
+        ``__author__`` is not defined in this module, so this raises NameError.
+        """
         return __author__.split()[2].lower()
 
 
     def is_permitted(self) :
+        """Print and return whether the LOGNAME environment variable equals ``cname()``."""
         s = self.get_enviroment(env='LOGNAME') == self.cname()
         print('is_permitted:', s)
         return s
 
 
     def add_record(self, mode='enabled') : #  mode='self-disabled'
+        """Append one 'key:value ...' record built from ``get_info_dict()`` to ``self.fname``.
+
+        With ``mode='self-disabled'`` it returns early if ``is_permitted()`` is true. Missing parent directories are created with ``create_path``; the record is printed and appended. The code uses Python-2 ``dict.iteritems`` and, on the failure branch, an undefined ``logger``.
+        """
         if mode=='self-disabled' and self.is_permitted() : return
         d = self.get_info_dict()
         rec = ' '.join(['%s:%s'%(k,str(v)) for k,v in d.iteritems()])
@@ -160,6 +190,7 @@ class NotificationLog :
 #------------------------------
  
 def test_notificationlog(tname) :
+    """Create a ``NotificationLog`` for 'test-notification-log.txt' with one extra field and call ``add_record``; ``tname`` is unused."""
     _name = sys._getframe().f_code.co_name
     print('In %s' % _name)
     nl = NotificationLog(fname='test-notification-log.txt', dict_add_fields={'mycom':'my-comment-is-here'})

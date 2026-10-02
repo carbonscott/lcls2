@@ -35,6 +35,10 @@ from psana.graphqt.Styles import style
 
 class QWPopupSelectColorBar(QDialog):
 
+    """Frameless popup dialog listing color tables 1-8 as pixmaps, plus a Cancel button.
+
+    Clicking a list item stores its color table index in ``ctab_selected`` and accepts the dialog; Cancel, closing or window deactivation rejects it.
+    """
     def __init__(self, parent=None):
 
         QDialog.__init__(self, parent)
@@ -58,6 +62,10 @@ class QWPopupSelectColorBar(QDialog):
 
 
     def fill_list(self):
+        """Fill the list widget with items for color tables 1-8 and a final 'cancel' item.
+
+        Each color item gets ``_coltab_index`` set to its index and a QLabel showing ``ct.get_pixmap(i, size=(200,30))``; the last item holds the Cancel button.
+        """
         for i in range(1,9):
            item = QListWidgetItem('%02d'%i, self.list)
            item.setSizeHint(QSize(200,30))
@@ -72,12 +80,17 @@ class QWPopupSelectColorBar(QDialog):
 
 
     def onItemClick(self, item):
+        """Store ``item._coltab_index`` in ``self.ctab_selected`` and accept the dialog.
+
+        Connected to ``self.list.itemClicked``.
+        """
         self.ctab_selected = item._coltab_index
         logger.debug('onItemClick ctab_selected: %s' % str(self.ctab_selected))
         self.accept()
 
 
     def set_style(self):
+        """Set the title, fixed width 215, minimum height from the number of list items, frameless window flag, zero margins and Cancel button style, and move the dialog near the cursor."""
         self.setWindowTitle('Select')
         self.setFixedWidth(215)
         lst_len = self.list.__len__()
@@ -90,10 +103,15 @@ class QWPopupSelectColorBar(QDialog):
 
 
     def set_tool_tips(self):
+        """Set the dialog tool tip to 'Select color table'."""
         self.setToolTip('Select color table')
 
 
     def mousePressEvent(self, e):
+        """If the child widget under the click is a QLabel, store its ``_coltab_index`` in ``ctab_selected`` and accept the dialog.
+
+        The labels created in ``fill_list`` do not set ``_coltab_index`` (it is set on the list items), so this path would raise AttributeError.
+        """
         logger.debug('mousePressEvent')
         child = self.childAt(e.pos())
         if isinstance(child, QLabel):
@@ -104,26 +122,37 @@ class QWPopupSelectColorBar(QDialog):
 
     def event(self, e):
         #logger.debug('event.type %s' % e.type())
+        """Reject the dialog on a ``QEvent.WindowDeactivate`` event, then return ``QDialog.event(self, e)``."""
         if e.type() == QEvent.WindowDeactivate:
             self.reject()
         return QDialog.event(self, e)
 
 
     def closeEvent(self, e):
+        """Log a debug message and reject the dialog."""
         logger.debug('closeEvent')
         self.reject()
 
 
     def selectedColorTable(self):
+        """Return the selected color table index stored in ``ctab_selected`` (None if nothing was selected)."""
         return self.ctab_selected
 
 
     def onCancel(self):
+        """Log a debug message and reject the dialog.
+
+        Connected to the Cancel button.
+        """
         logger.debug('onCancel')
         self.reject()
 
 
 def popup_select_color_table(parent):
+    """Show a modal ``QWPopupSelectColorBar`` and return its selected color table index.
+
+    The ``exec_()`` result is ignored; the return value is ``selectedColorTable()``, which is None if nothing was clicked.
+    """
     w = QWPopupSelectColorBar(parent)
     resp=w.exec_()
     return w.selectedColorTable()
@@ -134,6 +163,10 @@ def popup_select_color_table(parent):
 #----------- TESTS ------------
 
 def test_select_color_table(tname):
+    """Create a QApplication, open the color table popup and log the selected index.
+
+    ``tname`` is unused. Uses ``sys``, which is imported only in the ``__main__`` block.
+    """
     from PyQt5.QtWidgets import QApplication
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     app = QApplication(sys.argv)

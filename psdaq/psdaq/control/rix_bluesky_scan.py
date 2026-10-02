@@ -1,5 +1,16 @@
 # rix_bluesky_scan.py
 
+"""Script (runs at import) that scans `ophyd.sim.motor1` from -10 to 10 in 10 points with `BlueskyScan`.
+
+Defaults: platform 2, host 'drp-neh-ctl001', 120 events per step, config alias 'BEAM'.
+``--groups`` builds a readout-group mask in ``args.g`` and ``--seqctl PV VALUE [DONE_PV]``
+is passed as `seq_ctl` (with a DONE_PV the event count is set to 0).
+
+Notes
+-----
+No -g option is defined, so ``args.g`` exists only when ``--groups`` is given; without
+it the ``args.g`` check raises AttributeError.
+"""
 from bluesky import RunEngine
 import sys
 import logging

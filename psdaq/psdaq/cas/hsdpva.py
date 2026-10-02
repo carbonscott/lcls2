@@ -1,3 +1,4 @@
+"""PyQt5 GUI for digitizer PVs under one or more PV bases, using structure definitions from `psdaq.hsd.pvdef`."""
 import sys
 import argparse
 import logging
@@ -26,6 +27,10 @@ except NameError:
     QChar = chr
 
 class PvScalarBox(QtWidgets.QGroupBox):
+    """QGroupBox with one row per field of `struct` (label, QLabel or editable QLineEdit, optional unit text from ``struct[f][2]``), bound to structured PV `pvname`.
+
+    With `edit` an 'Apply' button calls `put`.
+    """
     def __init__(self, pvname, title, struct, edit=False):
         super(PvScalarBox,self).__init__(title)
         self.struct = struct
@@ -54,12 +59,14 @@ class PvScalarBox(QtWidgets.QGroupBox):
         initPvMon(self,pvname,isStruct=True)
 
     def update(self,err):
+        """Set row i's widget to the string of the i-th field of the PV value dict."""
         if err is None:
             q = self.pv.__value__.todict()
             for i,v in enumerate(q):
                 self.widgets[i].setText(QString(q[v]))
 
     def put(self):
+        """Print and put a dict of the widget values, converted with int for fields of type 'i' and float otherwise."""
         v = {}
         w = self.widgets
         for i,ttl in enumerate(self.struct):
@@ -69,10 +76,15 @@ class PvScalarBox(QtWidgets.QGroupBox):
         self.pv.put(v)
 
 class PvBuf(PvScalarBox):
+    """`PvScalarBox` using the `monBuf` structure."""
     def __init__( self, pvname, title):
         super(PvBuf,self).__init__(pvname, title, monBuf)
 
 class PvArrayTable(QtWidgets.QGroupBox):
+    """QGroupBox grid with one row (or column if `vertical`) per array field of `struct`, bound to structured PV `pvname`.
+
+    With `edit` the cells are QLineEdits and an 'Apply' button calls `put`.
+    """
     def __init__( self, pvname, title, struct, vertical=False, edit=False):
         super(PvArrayTable,self).__init__(title)
         self.struct = struct
@@ -104,6 +116,7 @@ class PvArrayTable(QtWidgets.QGroupBox):
         initPvMon(self,pvname,isStruct=True)
 
     def update(self,err):
+        """Fill the cells from the PV value dict, formatting with ``struct[f][2]`` when present."""
         if err is None:
             q = self.pv.__value__.todict()
             for i,v in enumerate(q):
@@ -114,6 +127,7 @@ class PvArrayTable(QtWidgets.QGroupBox):
                         self.widgets[i][j].setText(QString(w))
 
     def put(self):
+        """Put a dict mapping each field to a tuple of the int contents of its cells."""
         d = {}
         for i,v in enumerate(self.struct):
             val = []
@@ -127,12 +141,14 @@ class PvArrayTable(QtWidgets.QGroupBox):
         self.pv.put(d)
 
 class PvJesd(object):
+    """Monitor structured PV `pvname` and show its 'stat' entries and 'clks' entries ('{0:.4f}') in the given label lists."""
     def __init__( self, pvname, statWidgets, clockWidgets):
         self.statWidgets =statWidgets
         self.clockWidgets=clockWidgets
         initPvMon(self,pvname,isStruct=True)
 
     def update(self,err):
+        """Set each status label from ``value['stat']`` and each clock label from ``value['clks']``."""
         if err is None:
             q = self.pv.__value__.todict()
             for i,v in enumerate(q['stat']):
@@ -141,6 +157,7 @@ class PvJesd(object):
                 self.clockWidgets[i].setText(QString('{0:.4f}'.format(v)))
 
 class PvPLink(QtWidgets.QWidget):
+    """Name label plus display of PV ``pvbase + name`` decoded as a link source."""
     def __init__( self, parent, pvbase, name ):
         super(PvPLink,self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -159,6 +176,10 @@ class PvPLink(QtWidgets.QWidget):
         initPvMon(self,pvname,True)
 
     def update(self,err):
+        """Get the PV synchronously and show '<host>:<bits 16-23>' for type 0xfb with non-zero low 16 bits, else 'Unknown'.
+
+        The host is the reverse-DNS short name of 172.21.x.y from the low 16 bits.
+        """
         q = self.pv.get().value
         # transform q into s
         s = 'Unknown'
@@ -174,6 +195,10 @@ class PvPLink(QtWidgets.QWidget):
 
 class HsdConfig(QtWidgets.QWidget):
 
+    """Widget with labels for each `daqConfig` field, a TESTPATTERN editor, ':BASE:APPLYCONFIG'/'APPLYUNCONFIG' buttons and a ':BASE:READY' label.
+
+    The QLineEdits created for the fields are stored in `widgets` but not added to the layout.
+    """
     def __init__(self, pvbase):
         super(HsdConfig, self).__init__()
         self._rows = []
@@ -220,6 +245,7 @@ class HsdConfig(QtWidgets.QWidget):
 
 class HsdBufferSummary(QtWidgets.QWidget):
 
+    """Widget with `PvBuf` boxes for ':MONRAWBUF' ('Raw') and ':MONFEXBUF' ('Fex')."""
     def __init__(self, pvbase):
         super(HsdBufferSummary,self).__init__()
 
@@ -241,6 +267,7 @@ class HsdBufferSummary(QtWidgets.QWidget):
 
 class HsdEnv(QtWidgets.QWidget):
 
+    """Widget with FWBUILD and PADDR strings, a PLINK decoder and the ':MONENV' scalar box."""
     def __init__(self, pvbase):
         super(HsdEnv, self).__init__()
         lo = QtWidgets.QVBoxLayout()
@@ -257,6 +284,7 @@ class HsdEnv(QtWidgets.QWidget):
 
 class HsdJesd(QtWidgets.QWidget):
 
+    """Widget with an 8-lane status grid (row titles from a synchronous get of ':MONJESDTTL') and five clock labels in MHz fed by ':MONJESD'."""
     def __init__(self, pvbase):
         super(HsdJesd, self).__init__()
         self._pvlabels = []
@@ -300,7 +328,9 @@ class HsdJesd(QtWidgets.QWidget):
         self.setLayout(vlo)
 
 class Ui_MainWindow(object):
+    """Builder for the hsdpva window."""
     def setupUi(self, MainWindow, titles):
+        """Build one tab widget per PV base in `titles` (chosen with a combo box) with Config, Timing, Trig, PGP, PgpCfg, Buffers, Raw/FexDetail, Flow, Env, Adc, Jesd and Reset tabs."""
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -353,6 +383,10 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse PV bases (or, with -u, the hutch name 'TMO' or 'RIX' expanded to a fixed list of bases) and run the window.
+
+    With -u and another hutch name it logs an error and exits.
+    """
     global NChannels
     global NLanes
     global Patterns

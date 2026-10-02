@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""
-"""
+"""Template for example scripts: run with test name ``'0'`` or ``'1'`` to call :func:`ex_01`."""
 
 #----------
 
 def ex_01(tname) : 
+    """Print ``'ex_01 <tname>'``."""
     print('ex_01 %s' % tname)
 
 #----------

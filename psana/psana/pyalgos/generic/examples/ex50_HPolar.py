@@ -1,3 +1,4 @@
+"""Example: build x/y coordinate grids, average an array of ones in radial and angular bins with ``HPolar.bin_avrg_rad_phi`` (5 radial, 64 angular bins) and plot the result."""
 import numpy as np
 from psana.pyalgos.generic.HPolar import HPolar
 from psana.pyalgos.generic.NDArrUtils import print_ndarr

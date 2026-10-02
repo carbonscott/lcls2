@@ -49,10 +49,15 @@ class QWStatus(QGroupBox):
     def showToolTips(self):
         #self           .setToolTip('This GUI is intended for run control and monitoring.')
         #self.but_close .setToolTip('Close this window.')
+        """Does nothing; body is ``pass``."""
         pass
 
 
     def setStyle(self):
+        """Apply background and text style sheets, make the text box read-only, zero the margins and set minimum size 300x60.
+
+        This overrides ``QWidget.setStyle`` with a method that takes no style argument.
+        """
         self.           setStyleSheet (style.styleBkgd)
         self.box_txt   .setReadOnly   (True)
         self.box_txt   .setStyleSheet (style.styleWhiteFixed)
@@ -61,25 +66,30 @@ class QWStatus(QGroupBox):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in the attribute ``self.parent``; this overrides ``QWidget.setParent`` and does not reparent the widget."""
         self.parent = parent
 
 
     def on_timeout(self):
+        """Restart the 1-second timer and show the current ``time()`` in seconds as the status message."""
         self.timer.start(1000)
         self.setStatusMessage(msg='Time %.3f sec' % time())
 
 
     def closeEvent(self, event):
+        """Close the text box ``box_txt``; the event is not passed to the base class."""
         self.box_txt.close()
 
 
     def onClose(self):
         #logger.debug('onClose', __name__)
+        """Close the widget."""
         self.close()
 
 
     def setStatusMessage(self, msg='msg is empty...'):
         #logger.debug('Set status message',__name__)
+        """Set the text of the status text box to ``msg``."""
         self.box_txt.setText(msg)
         #self.setStatus(0, 'Status: unknown')
 

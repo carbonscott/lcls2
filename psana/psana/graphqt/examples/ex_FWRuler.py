@@ -1,4 +1,5 @@
 
+"""Example: draw ``FWRuler`` rulers on all four sides ('L', 'D', 'U', 'R') of a plain QGraphicsView with a marked scene rect; runs only as a script."""
 from psana.graphqt.FWRuler import *
 
 if __name__ == "__main__":

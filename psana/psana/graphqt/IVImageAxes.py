@@ -71,12 +71,19 @@ class IVImageAxes(QWidget):
 
 
     def set_signal_fast(self, is_fast=True):
+        """Set the ``signal_fast`` attribute of the image view and both axis views to ``is_fast``."""
         self.wimg.signal_fast = is_fast
         self.wax.signal_fast = is_fast
         self.way.signal_fast = is_fast
 
 
     def set_info_visible(self, is_visible=True):
+        """Set the visibility of the info box and possibly (dis)connect the mouse-move slot.
+
+        After ``edi_info.setVisible(is_visible)``, if ``edi_info.isVisible()`` equals ``is_visible`` the
+        method returns; otherwise the image mouse-move signal is connected to :meth:`on_mouse_move_event`
+        (if ``is_visible``) or disconnected from it.
+        """
         self.edi_info.setVisible(is_visible)
         if self.edi_info.isVisible() and is_visible or\
            (not self.edi_info.isVisible()) and (not is_visible): return
@@ -85,18 +92,21 @@ class IVImageAxes(QWidget):
 
 
     def connect_scene_rect_changed(self):
+        """Connect the scene-rect-changed signals of ``wimg``, ``wax`` and ``way`` to their ``on_*_scene_rect_changed`` slots."""
         self.wimg.connect_scene_rect_changed(self.on_wimg_scene_rect_changed)
         self.wax.connect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.connect_scene_rect_changed(self.on_way_scene_rect_changed)
 
 
     def disconnect_scene_rect_changed(self):
+        """Disconnect the scene-rect-changed signals of ``wimg``, ``wax`` and ``way`` from their ``on_*_scene_rect_changed`` slots."""
         self.wimg.disconnect_scene_rect_changed(self.on_wimg_scene_rect_changed)
         self.wax.disconnect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.disconnect_scene_rect_changed(self.on_way_scene_rect_changed)
 
 
     def on_but_reset(self):
+        """Call ``reset_original_size()`` on the image view and both axis views."""
         logger.debug('on_but_reset')
         self.wimg.reset_original_size()
         self.wax.reset_original_size()
@@ -105,6 +115,7 @@ class IVImageAxes(QWidget):
 
     def on_wimg_scene_rect_changed(self, r):
         #logger.debug('on_wimg_scene_rect_changed: %s'%str(r))
+        """Set the x axis view to the x range and the y axis view to the y range of rect ``r``, then emit the image signal if the rect changed."""
         self.wax.set_view(rs=QRectF(r.x(), 0, r.width(), 1))
         self.way.set_view(rs=QRectF(0, r.y(), 1, r.height()))
         self.emit_signal_if_image_scene_rect_changed()
@@ -112,6 +123,7 @@ class IVImageAxes(QWidget):
 
     def on_wax_scene_rect_changed(self, r):
         #logger.debug('on_wax_scene_rect_changed: %s'%str(r))
+        """Set the image view to the x range of ``r`` (keeping its y range) and emit the image signal if the rect changed."""
         rs = self.wimg.scene().sceneRect()
         self.wimg.set_view(rs=QRectF(r.x(), rs.y(), r.width(), rs.height()))
         self.emit_signal_if_image_scene_rect_changed()
@@ -119,6 +131,7 @@ class IVImageAxes(QWidget):
 
     def on_way_scene_rect_changed(self, r):
         #logger.debug('on_way_scene_rect_changed: %s'%str(r))
+        """Set the image view to the y range of ``r`` (keeping its x range) and emit the image signal if the rect changed."""
         rs = self.wimg.scene().sceneRect()
         self.wimg.set_view(rs=QRectF(rs.x(), r.y(), rs.width(), r.height()))
         self.emit_signal_if_image_scene_rect_changed()
@@ -134,14 +147,17 @@ class IVImageAxes(QWidget):
 
 
     def connect_image_scene_rect_changed(self, recip):
+        """Connect the ``image_scene_rect_changed`` signal to ``recip``."""
         self.image_scene_rect_changed.connect(recip)
 
 
     def disconnect_image_scene_rect_changed(self, recip):
+        """Disconnect the ``image_scene_rect_changed`` signal from ``recip``."""
         self.image_scene_rect_changed.disconnect(recip)
 
 
     def set_tool_tips(self):
+        """Set tool tips on the image view, both axes and the info box."""
         self.wimg.setToolTip('Image\npixel map')
         self.wax.setToolTip('Image columns\nH-scale')
         self.way.setToolTip('Image rows\nV-scale')
@@ -149,6 +165,7 @@ class IVImageAxes(QWidget):
 
 
     def set_style(self):
+        """Set zero margins, a fixed 60x30 Reset button and a maximum info-box height of 30."""
         self.layout().setContentsMargins(0,0,0,0)
         self.but_reset.setFixedSize(60,30)
         self.edi_info.setMaximumHeight(30)
@@ -176,6 +193,7 @@ class IVImageAxes(QWidget):
 
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent`` and set ``cp.ivimageaxes`` to None."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
         cp.ivimageaxes = None

@@ -16,6 +16,7 @@ from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
 def test_data_from_hdf5(**kwargs):
 
+    """Open HDF5 file ``kwargs['ifname']`` with ``open_input_h5file`` and print the hit counts and peak times (ns) of events from ``kwargs['evskip']`` up to ``evskip + kwargs['events']``."""
     IFNAME = kwargs['ifname']
     EVSKIP = kwargs['evskip']
     EVENTS = kwargs['events'] + EVSKIP

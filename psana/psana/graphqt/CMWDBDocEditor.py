@@ -58,6 +58,11 @@ import psana.pyalgos.generic.Utils as gu
 
 class CMWDBDocEditor(QWidget):
 
+    """Widget with Restore and Save buttons above a ``CMWDBDocEditorTable`` showing one DB document as key/value rows.
+
+    Several table methods (``show_document``, ``fill_table_model``, ``get_model_dicdoc``, ...) are
+    exposed as attributes of this widget. Registers itself as ``cp.cmwdbdoceditor0``.
+    """
     def __init__(self, txt='Field for buttons'):
         QWidget.__init__(self, parent=None)
         logger.debug('c-tor CMWDBDocEditor')
@@ -98,12 +103,19 @@ class CMWDBDocEditor(QWidget):
         cp.cmwdbdoceditor0 = None
 
     def on_but_restore(self):
+        """Refill the table from the stored document ``self.table.doc``, discarding edits in the table."""
         logger.debug('on_but_restore')
         doc = self.table.doc
         logger.info('current doc in DB: %s' % str(doc))
         self.table.fill_table_model(doc=doc)
 
     def on_but_save(self):
+        """Copy the editable fields (``run``, ``run_beg``, ``run_end``) from the table into the document and replace it in the DB.
+
+        Does nothing (warning logged) unless ``dbu.is_doc_from_exp_db(doc)`` is True. Digit strings are
+        stored as int. The write is ``dbu.replace_document(doc)``; ``dbu`` is the web or MongoDB backend
+        chosen in ``CMDBUtils``.
+        """
         logger.info('on_but_save')
         dic_table = self.table.get_model_dicdoc(discard_id_ts=False)
         doc = self.table.doc
@@ -126,16 +138,23 @@ class CMWDBDocEditor(QWidget):
         logger.info('replaced document _id: %s' % id)
 
     def on_but_test(self):
+        """Log the table content dict from ``get_model_dicdoc(discard_id_ts=False)``."""
         dic_table = self.table.get_model_dicdoc(discard_id_ts=False)
         logger.info('on_but_test dic: %s' % str(dic_table))
         #print('XXX dir(self.table)', dir(self.table))
 
     def set_tool_tips(self):
+        """Set tool tips on the Restore and Save buttons."""
         self.but_restore.setToolTip('Restore changed fields')
         self.but_save.setToolTip('Save changed\ndocument in DB\nWORKS FOR EXP DB ONLY')
 
 
 class CMWDBDocEditorTable(QWTable):
+    """``QWTable`` that shows a calibration DB document as (key, value) rows; only ``run``, ``run_beg`` and ``run_end`` are editable.
+
+    Clicking the ``data_fname`` row opens a file dialog to load a replacement data array. Registers
+    itself as ``cp.cmwdbdoceditor``.
+    """
     keys_editable = ('run', 'run_beg', 'run_end')
     data_fname = 'data_fname'
     data_fname_value = '<Click and select calibration data file>'
@@ -166,6 +185,7 @@ class CMWDBDocEditorTable(QWTable):
         logger.debug(info_ndarr(self.data_nda, 'array from DB linked to the document'))
 
     def item_is_editable_for_key(self, k):
+        """Return True if ``k`` is in ``keys_editable`` (``'run'``, ``'run_beg'``, ``'run_end'``)."""
         return k in self.keys_editable
 #        forbid = ('id_exp', 'host', 'extpars', 'time_sec', 'data_fname', 'data_size', 'data_shape', 'data_dtype',\
 #                  'uid', 'cwd', 'id_data', 'id_data_ts', '_id', '_id_ts', 'md5')
@@ -234,6 +254,10 @@ class CMWDBDocEditorTable(QWTable):
 
 
     def select_file_name(self, item):
+        """Open a file dialog (starting at ``'./'``) and pass the chosen path to :meth:`change_value` for the row of ``item``.
+
+        Does nothing if the dialog returns None.
+        """
         index = self.model.indexFromItem(item)
         value = self.getFullNameFromItem(item)
         row = index.row()
@@ -252,6 +276,11 @@ class CMWDBDocEditorTable(QWTable):
 
 
     def change_value(self, item, key, path):
+        """Set the value of ``item`` from file ``path``.
+
+        For the ``data_fname`` key the array is loaded with :meth:`load_nda_from_file`, the metadata rows
+        are updated and the item turns cyan; for other keys the item text is set to the text file content.
+        """
         logger.debug('change_value for key: %s' % (key))
         if key == self.data_fname:
             item.setText(str(path))
@@ -285,10 +314,12 @@ class CMWDBDocEditorTable(QWTable):
 
 
     def info_model_dicdoc(self):
+        """Return the table content from :meth:`get_model_dicdoc` as ``key : value`` lines."""
         return '\n  '.join(['%12s : %s' % (k,v) for k,v in self.get_model_dicdoc().items()])
 
 
     def get_data_nda(self):
+        """Return ``self.data_nda``, the array linked to the shown document or loaded from file."""
         return self.data_nda
 
 
@@ -309,6 +340,7 @@ class CMWDBDocEditorTable(QWTable):
 
 
     def load_nda_from_file(self, path):
+        """Return the array in ``path``, read with ``numpy.load`` for ``.npy`` files and ``NDArrIO.load_txt`` otherwise."""
         ext = os.path.splitext(path)[1]
         nda = np.load(path) if ext in ('.npy', ) else load_txt(path)
         return nda
@@ -339,6 +371,7 @@ class CMWDBDocEditorTable(QWTable):
 
 
     def on_item_selected(self, ind_sel, ind_desel):
+        """Log the text of the newly current item (or None) at debug level."""
         item = self.model.itemFromIndex(ind_sel)
         logger.debug('on_item_selected "%s"' % (item.text() if item is not None else None))
 
@@ -351,6 +384,7 @@ class CMWDBDocEditorTable(QWTable):
 if __name__ == "__main__":
 
   def test_CMWDBDocEditor():
+    """Show a ``CMWDBDocEditor`` filled with a hard-coded test document (defined only when run as a script)."""
     import sys
     from PyQt5.QtWidgets import QApplication
     os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'  #     export LIBGL_ALWAYS_INDIRECT=1

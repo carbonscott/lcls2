@@ -1,8 +1,13 @@
+"""Defines ``HitFinder``, which matches MCP signal times with pairs of u and v signal times and computes X, Y, T values for the matched combinations with numpy."""
 import numpy as np
 
 
 class HitFinder:
 
+    """Combine MCP, u1, u2, v1 and v2 signal-time arrays into X, Y, T values.
+
+    The ``params`` dict must provide 'runtime_u', 'runtime_v', 'tsum_avg_u', 'tsum_hw_u', 'tsum_avg_v', 'tsum_hw_v', 'f_u', 'f_v' and 'Rmax'; the time-sum windows are average plus or minus half-width.
+    """
     def __init__(self, params):
 
         self.uRunTime = params['runtime_u']
@@ -25,6 +30,10 @@ class HitFinder:
              
     def FindHits(self, McpSig, u1Sig, u2Sig, v1Sig, v2Sig):
        
+        """Compute X, Y, T values for each time in ``McpSig`` and store them in the object.
+
+        For each MCP time, u1/u2 (v1/v2) times inside a window derived from the run time and time-sum average are paired when ``t1 + t2 - 2*McpT`` lies inside the time-sum window. X is ``(u1-u2)*f_u/2`` and Y is ``(v1-v2)*f_v/2`` for every u-pair/v-pair combination; combinations with sqrt(X**2+Y**2) < Rmax are appended to ``self.Xf``, ``self.Yf`` and ``self.Tf`` (the MCP time). The time sums and unscaled differences are kept in ``self.sumf`` and ``self.subf``; returns None.
+        """
         t1u = (-self.uRunTime+2*McpSig+self.uTSumAvg)/2
         t2u = (self.uRunTime+2*McpSig+self.uTSumAvg)/2
             
@@ -86,9 +95,11 @@ class HitFinder:
             self.Tf = np.concatenate([self.Tf,McpT*np.ones(len(Xuv[ind_R]))],axis=0)
             
     def GetXYT(self):
+        """Return the arrays ``(Xf, Yf, Tf)`` from the last ``FindHits`` call."""
         return self.Xf,self.Yf,self.Tf
         
     def GetSumSub(self):
+        """Return the dicts ``(sumf, subf)`` with 'u' and 'v' arrays of time sums and time differences from the last ``FindHits`` call."""
         return self.sumf, self.subf
 
 

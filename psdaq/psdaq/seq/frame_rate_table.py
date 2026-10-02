@@ -1,9 +1,11 @@
+"""Print the rates obtained by dividing 1300e6/7 Hz by every product of the factors [2, 2, 5, 5, 13]."""
 import sys
 import argparse
 import itertools
 import numpy as np
 
 def main():
+    """Print a table of rate (Hz), divisor and the factors used, for divisor 1 and every combination product of the factors."""
     parser = argparse.ArgumentParser(description='Find all RF solutions')
     args = parser.parse_args()
 

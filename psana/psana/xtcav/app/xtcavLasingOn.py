@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Command-line script: parse experiment, run number, --max_shots, --num_bunches, --snr_filter, --roi_expand, --mode and -l/--loglev, initialize logging and call ``procEvents(args)`` from ``psana.xtcav.LasingOnCharacterization``."""
 import sys
 import argparse
 import logging

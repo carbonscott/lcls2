@@ -11,6 +11,12 @@ from psdaq.control.control import back_pull_port, error_msg, warning_msg
 import argparse
 
 class Client:
+    """Send error and/or warning messages to the collection host.
+
+    The constructor connects a PUSH socket to ``back_pull_port(args.p)`` on host ``args.C``
+    and sends `error_msg` and/or `warning_msg` with text ``'<alias>: <message>'`` for
+    whichever of ``args.error``/``args.warning`` is not None.
+    """
     def __init__(self, args):
 
         # configure zmq sockets
@@ -28,6 +34,11 @@ class Client:
 
 def main():
 
+    """Parse command-line arguments and create a `Client`.
+
+    Options: -p platform, -C collection host, --error, --warning, --alias (required). It is
+    a parser error if neither --error nor --warning is given. KeyboardInterrupt is caught and printed.
+    """
     try:
         # process arguments
         parser = argparse.ArgumentParser()

@@ -1,3 +1,4 @@
+"""PyQt5 GUI for an XPM's PATT:GROUPS and PATT:COINC PVs plus per-group L0Select/DstSelect editors."""
 import sys
 import socket
 import argparse
@@ -8,6 +9,7 @@ from .xpm_utils import *
 NGroups     = 8
 
 def addGroup(tw, base, group):
+    """Add a tab 'Group <group>' to `tw` with `LblEditEvt` 'L0Select' and `LblEditDst` 'DstSelect' editors under '<base><group>:'."""
     pvbase = base+'%d:'%group
     wlo    = QtWidgets.QVBoxLayout()
 
@@ -23,6 +25,7 @@ def addGroup(tw, base, group):
     tw.addTab(w,'Group %d'%group)
 
 class PatternTab(QtWidgets.QTabWidget):
+    """Tab widget with a 'Stats' table of '<pvbase>PATT:GROUPS' and a triangular 'Coincidences' grid fed by '<pvbase>PATT:COINC'."""
     def __init__(self, pvbase):
         super(PatternTab,self).__init__()
 
@@ -47,6 +50,7 @@ class PatternTab(QtWidgets.QTabWidget):
         initPvMon(self,f'{pvbase}PATT:COINC',isStruct=True)
 
     def update(self,err):
+        """Write each element of the PV's ``value.Coinc`` array into the coincidence grid labels in order."""
         if err is None:
             v = self.pv.__value__
             q = v.value.Coinc
@@ -54,7 +58,9 @@ class PatternTab(QtWidgets.QTabWidget):
                 self.coinc[i].setText(str(qv))
 
 class Ui_MainWindow(object):
+    """Builder for the xpmpatt window."""
     def setupUi(self, MainWindow, title):
+        """Build a scrollable widget with the `PatternTab` and eight group tabs under '<title>:PART:'; the window title is 'xpmpatt'."""
         global ATCAWidget
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
@@ -88,6 +94,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse the XPM PV base ('tmo' and 'rix' map to 'DAQ:NEH:XPM:6' and 'DAQ:NEH:XPM:1') and run the window."""
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

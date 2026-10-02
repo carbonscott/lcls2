@@ -80,6 +80,7 @@ class CMWConfigFile(QWidget):
     def set_tool_tips(self):
         # Tips for buttons and fields:
         #self           .setToolTip('This GUI deals with the configuration parameters.')
+        """Set tool tips on the file edit field and the File, Read, Save, Reset default and Print current buttons."""
         self.ediFile   .setToolTip('Type the file path name here,\nor better use "Browse" button.')
         self.butFile   .setToolTip('Select the file path name\nto read/write the configuration parameters.')
         self.butRead   .setToolTip('Read the configuration parameters from file.')
@@ -90,6 +91,7 @@ class CMWConfigFile(QWidget):
 
     def set_style(self):
         #self.setMinimumSize(500,150)
+        """Limit the widget to 600x120, apply the ``style`` sheets to labels, edit field, buttons and check box, make the edit field read-only and fix the File button width to 50."""
         self.setMaximumSize(600,120)
         #width = 80
         #self.butFile .setFixedWidth(width)
@@ -113,21 +115,28 @@ class CMWConfigFile(QWidget):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def closeEvent(self, event):
+        """Log a debug message; the event is not passed to the base class."""
         logger.debug('closeEvent')
         #try   : del cp.guiconfigparameters
         #except: pass
 
 
     def onClose(self):
+        """Log a debug message and close the widget."""
         logger.debug('onClose')
         self.close()
 
 
     def onRead(self):
+        """Read configuration parameters with ``cp.readParametersFromFile`` from the file named in the edit field, then show ``cp.fname_cp`` in the field.
+
+        Connected to the Read button.
+        """
         fname = self.getFileNameFromEditField()
         logger.info('Load configuration parameters from file %s' % fname)
         cp.readParametersFromFile(fname)
@@ -137,18 +146,27 @@ class CMWConfigFile(QWidget):
 
 
     def onWrite(self):
+        """Save configuration parameters with ``cp.saveParametersInFile`` to the file named in the edit field.
+
+        Not connected to a button in this class (the Save button uses ``onSave``).
+        """
         fname = self.getFileNameFromEditField()
         logger.info('Save configuration parameters in file: %s' % fname)
         cp.saveParametersInFile(fname)
 
 
     def onSave(self):
+        """Save configuration parameters with ``cp.saveParametersInFile(cp.fname_cp)``.
+
+        Connected to the Save button.
+        """
         fname = cp.fname_cp
         logger.info('Save configuration parameters in file: %s' % fname)
         cp.saveParametersInFile(fname)
 
 
     def onDefault(self):
+        """Reset all configuration parameters to defaults with ``cp.setDefaultValues()`` and show ``cp.fname_cp`` in the edit field."""
         logger.info('Set default values of configuration parameters')
         cp.setDefaultValues()
         self.ediFile.setText(cp.fname_cp)
@@ -156,11 +174,16 @@ class CMWConfigFile(QWidget):
 
 
     def onPrint(self):
+        """Log a debug message and call ``cp.printParameters()``."""
         logger.debug('onPrint')
         cp.printParameters()
 
 
     def onFile(self):
+        """Open a file dialog in the directory of the current file name and, if a file is chosen, set it in the edit field and in ``cp.fname_cp``.
+
+        Sets ``self.path``, ``self.dname`` and ``self.fname``; if the chosen directory or file name is empty only an info message is logged.
+        """
         logger.debug('onFile')
         self.path = self.getFileNameFromEditField()
         self.dname,self.fname = os.path.split(self.path)
@@ -177,6 +200,10 @@ class CMWConfigFile(QWidget):
 
 
     def onEditFile(self):
+        """Set ``cp.fname_cp`` (and ``self.path``) to the text of the edit field and log its directory and file name.
+
+        Connected to the field's ``editingFinished`` signal.
+        """
         logger.debug('onEditFile')
         self.path = self.getFileNameFromEditField()
         #cp.fname_cp.setValue(self.path)
@@ -187,11 +214,13 @@ class CMWConfigFile(QWidget):
 
 
     def getFileNameFromEditField(self):
+        """Return the displayed text of the file edit field as str."""
         return str(self.ediFile.displayText())
 
 
     def onCbxSave(self):
         #if self.cbx.hasFocus():
+        """Store the 'Save at exit' check box state in ``cp.save_cp_at_exit`` and log it."""
         par = cp.save_cp_at_exit
         cbx = self.cbxSave
         tit = cbx.text()

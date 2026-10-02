@@ -25,6 +25,7 @@ que       = None
 
 class MonTrigPv(object):
 
+    """Monitor '<name>:MONTRIG' and keep its latest value; `done` becomes True when ontime+early+late exceeds `mincount`."""
     def __init__(self, name, mincount):
         self.name     = name
         self.pv       = Pv(name+':MONTRIG', isStruct=True)
@@ -47,12 +48,18 @@ class MonTrigPv(object):
 
     def latch(self):
 #        self.values.append(self.value)
+        """Print and put (name, ontime, early, late, phase) from the latest value on the module-global queue `que`."""
         t = (self.name, self.value['ontime'], self.value['early'], self.value['late'], self.value['phase'])
         print(f'Latched {t}')
         que.put(t)
         
 def analyze(q,names,record):
 
+    """Plot process: read tuples from queue `q` and plot early/total (red) and late/total (blue) against phase for each name.
+
+    Phase is scaled by ``1/56 * 70/13 / 6`` ns per step. With `record`, each tuple is
+    pickled to 'hsdPs.pyc'. Loops forever.
+    """
     app = pg.Qt.QtWidgets.QApplication([])
     win = pg.GraphicsLayoutWidget()
     win.setBackground('w')
@@ -106,6 +113,17 @@ def analyze(q,names,record):
 
 
 def main():
+    """Scan the 'mmcmphase' field of each '<base>:RESET' PV over --range and collect MONTRIG counts per step.
+
+    For each phase it enables L0 for groups ``(1 << group) + 1`` on the XPM, waits until
+    every `MonTrigPv` is done, disables L0 and latches the counts to the plot process.
+    With --setup it only sets the first phase and exits with status 1.
+
+    Notes
+    -----
+    The --base default is a plain string, not a list, so without --base the loop
+    iterates over its characters.
+    """
     global args
     global que
 

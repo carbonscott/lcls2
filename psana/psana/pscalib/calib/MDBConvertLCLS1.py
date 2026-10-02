@@ -46,11 +46,17 @@ logger = logging.getLogger(__name__)
 
 
 def must_to_fix_error(msg):
+    """Log ``msg`` as an error and call ``sys.exit('THIS ERROR MUST TO BE FIXED')`` (raises SystemExit)."""
     logger.error(msg)
     sys.exit('THIS ERROR MUST TO BE FIXED')
 
 def get_for_url(url):
 
+    """Send a Kerberos-authenticated GET request to ``url`` and return the ``'value'`` field of the JSON reply.
+
+    On an unsuccessful HTTP response or a reply with ``'success'`` false, :func:`must_to_fix_error` is called,
+    which exits. The result depends on the remote web service.
+    """
     krbheaders = KerberosTicket("HTTP@" + urlparse(url).hostname).getAuthHeaders()
     r = requests_get(url, headers=krbheaders) # returns {'success': True, 'value': [<old-style-responce>]}
     if not r:
@@ -65,6 +71,10 @@ def get_for_url(url):
 
 def run_begin_end_time(exp, runnum):
     # returns a list of dicts per run with 'begin_time', 'end_time', 'run_num', 'run_type'
+    """Return ``(begin_time, end_time)`` of run ``runnum`` of experiment ``exp`` from the logbook ``runs_for_calib`` web service.
+
+    For ``runnum <= 0`` or a run not found in the reply, returns the defaults ``(1000000000, 5000000000)``.
+    """
     if runnum>0:
         url = 'https://pswww.slac.stanford.edu/ws-kerb/lgbk/lgbk/%s/ws/runs_for_calib' % exp
         resp = get_for_url(url)
@@ -77,6 +87,7 @@ def run_begin_end_time(exp, runnum):
     return 1000000000, 5000000000
 
 def is_xtcav(calibvers, cftype):
+    """Return True if ``'Xtcav'`` is in ``calibvers`` and ``cftype`` is ``'lasingoffreference'`` or ``'pedestals'``."""
     return ('Xtcav' in calibvers) and (cftype in ('lasingoffreference', 'pedestals'))
 
 def check_data_shape(data, detname, ctype):
@@ -88,6 +99,13 @@ def check_data_shape(data, detname, ctype):
 
 def add_calib_file_to_cdb(exp, dircalib, calibvers, detname, cftype, fname, cfdir, listdicts, **kwargs):
 
+    """Load one LCLS1 calibration file and pass it with metadata to ``MDBUtils.insert_calib_data``.
+
+    Returns without inserting if the file name does not parse as ``<begin>-<end>.<ext>`` or the data is
+    None. Geometry files are loaded as text, Xtcav files with ``load_xtcav_calib_file``, others with
+    ``NDArrIO.load_txt``; dict data is serialized and converted to str. ``MDBUtils`` currently defines no
+    ``insert_calib_data``, so reaching the insert raises AttributeError.
+    """
     d = history_dict_for_file(listdicts, fname)
 
     resp = parse_calib_file_name(fname)
@@ -145,6 +163,11 @@ def detname_conversion(detname='XcsEndstation.0:Epix100a.1'):
 
 def scan_calib_for_experiment(exp='cxix25615', **kwargs):
 
+    """Walk ``<calib dir of exp>/<calibvers>/<detector>/<ctype>/*.data`` and call :func:`add_calib_file_to_cdb` for each file.
+
+    Returns early with a warning if the experiment DB already exists. It calls ``MDBUtils.connect_to_server``,
+    ``database_exists`` and ``database_names``, which ``MDBUtils`` currently does not define (AttributeError).
+    """
     host    = kwargs.get('host', None)
     port    = kwargs.get('port', None)
     user    = kwargs.get('user', None)
@@ -197,27 +220,37 @@ def scan_calib_for_experiment(exp='cxix25615', **kwargs):
 
 if __name__ == "__main__":
 
-  def usage(): return 'Use command: python %s <test-number>, where <test-number> = 1,2,...' % sys.argv[0]
+  def usage():
+      """Return a one-line usage string for the test script."""
+      return 'Use command: python %s <test-number>, where <test-number> = 1,2,...' % sys.argv[0]
 
   def test_detname_conversion(tname):
+      """Print ``detname_conversion`` results for three hard-coded LCLS1 detector names."""
       detnames = ('XcsEndstation.0:Epix100a.1', 'FeeHxSpectrometer.0:Opal1000.1', 'MfxEndstation.0:Rayonix.0')
       for detname in detnames:
           print('detname_conversion(%s) --> %s' % (detname, detname_conversion(detname)))
 
   def test_dir_calib(tname):
+      """Log ``nm.dir_calib('cxi02117')``."""
       logger.info('dir_calib: %s' % nm.dir_calib('cxi02117'))
 
   def test_get_for_url():
       #url = 'https://pswww.slac.stanford.edu/prevlgbk/lgbk/amo86615/ws/runs'
+      """Call :func:`get_for_url` for the amo86615 ``runs_for_calib`` URL and print the response."""
       url = 'https://pswww.slac.stanford.edu/ws-kerb/lgbk/lgbk/amo86615/ws/runs_for_calib'
       resp = get_for_url(url)
       print('url : %s\nresp: %s' % (url, resp))
 
   def test_run_begin_end_time():
+      """Print :func:`run_begin_end_time` for experiment amo86615, run 23."""
       exp, runnum = 'amo86615', 23
       print('test_run_begin_end_time: %s' % str(run_begin_end_time(exp, runnum)))
 
   def test_all(tname):
+    """Log the usage and run the test selected by ``tname`` (``'1'``-``'6'``); with a number of arguments other than one, run :func:`test_dir_calib`.
+
+    An unrecognized test number exits via ``sys.exit``.
+    """
     logger.info('\n%s\n' % usage())
     kwa = {'host':cc.HOST,\
            'port':cc.PORT,\

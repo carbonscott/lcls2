@@ -78,6 +78,7 @@ plt.rcParams.update({'figure.max_open_warning': 0}) #get rid of warning: More th
 
 
 def dict_subset(d, keys):
+    """Return a new dict with only the items of ``d`` whose keys are in ``keys``."""
     return {k:v for k,v in d.items() if k in keys}
 
 
@@ -109,11 +110,16 @@ def figure(**kwa):
 
 
 def set_win_title(fig, titwin='Image', **kwa):
+    """Set the window title of figure ``fig`` to ``titwin`` through its canvas manager."""
     fig.canvas.manager.set_window_title(titwin, **kwa)
 
 
 def move_fig(fig, x0=200, y0=100):
     #fig.canvas.manager.window.geometry('+%d+%d' % (x0, y0)) # in previous version of matplotlib
+    """Move the window of figure ``fig`` to screen position (``x0``, ``y0``).
+
+    Uses ``wm_geometry`` for the TkAgg backend, ``SetPosition`` for WXAgg, and ``window.move`` for any other backend.
+    """
     backend = matplotlib.get_backend()
     #logger.debug('matplotlib.get_backend(): %s' % backend)
     if backend == 'TkAgg': # this is our case
@@ -127,6 +133,7 @@ def move_fig(fig, x0=200, y0=100):
 
 
 def move(x0=200,y0=100) :
+    """Move the current matplotlib figure window to (``x0``, ``y0``) with ``move_fig``."""
     move_fig(plt.gcf(), x0, y0)
 
 
@@ -194,12 +201,17 @@ def fig_img_cbar_hist_axes(fig=None,\
 
 
 def add_title_labels_to_axes(axes, title=None, xlabel=None, ylabel=None, fslab=14, fstit=20, color='k', **kwa):
+    """Set the title (font size ``fstit``, color ``color``), x label and y label (font size ``fslab``) of ``axes``; arguments left as None are not set."""
     if title  is not None: axes.set_title(title, color=color, fontsize=fstit, **kwa)
     if xlabel is not None: axes.set_xlabel(xlabel, fontsize=fslab, **kwa)
     if ylabel is not None: axes.set_ylabel(ylabel, fontsize=fslab, **kwa)
 
 
 def show(mode=None, pause_sec=0.001):
+    """Show matplotlib figures.
+
+    With ``mode`` None interactive mode is turned off and ``plt.show`` blocks; otherwise interactive mode is turned on and it does not block. Then ``plt.pause(pause_sec)`` is called.
+    """
     if mode is None: plt.ioff() # hold contraol at show() (connect to keyboard for controllable re-drawing)
     else           : plt.ion()  # do not hold control
     plt.show(block=(mode is None))
@@ -207,19 +219,26 @@ def show(mode=None, pause_sec=0.001):
 
 
 def draw():
+    """Call ``plt.draw()``."""
     plt.draw()
 
 
 def draw_fig(fig):
+    """Call ``fig.canvas.draw()``."""
     fig.canvas.draw()
 
 
 def save_plt(fname='img.png', fmt='save figure in file: %s', **kwa): #verb=True
+    """Save the current figure to ``fname`` with ``plt.savefig(fname, **kwa)``, printing ``fmt % fname`` first unless ``fmt`` is None."""
     if fmt is not None: print(fmt % fname)
     plt.savefig(fname, **kwa)
 
 
 def save_fig(fig, fname='img.png', prefix=None, suffix='.png', fmt='save figure in file: %s', **kwa): #verb=True
+    """Save ``fig`` with ``fig.savefig``.
+
+    The path is ``fname``, or '<prefix><timestamp><suffix>' when ``prefix`` is given; it is printed with ``fmt`` unless ``fmt`` is None.
+    """
     path = fname
     if prefix is not None:
         ts = strftime('%Y-%m-%dT%H%M%S', localtime(time()))
@@ -229,11 +248,19 @@ def save_fig(fig, fname='img.png', prefix=None, suffix='.png', fmt='save figure 
 
 
 def save(fname='img.png', fmt='save figure in file: %s', do_save=True, **kwa):
+    """Call ``save_plt(fname, fmt, **kwa)`` if ``do_save`` is true; otherwise do nothing."""
     if not do_save: return
     save_plt(fname, fmt, **kwa)
 
 
 def proc_stat(weights, bins):
+    """Compute weighted statistics of a histogram from bin ``weights`` and bin edges ``bins``.
+
+    Returns
+    -------
+    tuple
+        ``(mean, rms, err_mean, err_rms, neff, skew, kurt, err_err, sum_w)`` computed at the bin centers; nine zeros if the sum of weights is not positive.
+    """
     center = np.array([0.5*(bins[i] + bins[i+1]) for i,w in enumerate(weights)])
 
     sum_w  = weights.sum()
@@ -269,6 +296,7 @@ def proc_stat(weights, bins):
 
 
 def add_stat_text(axhi, weights, bins):
+    """Write entries, mean and RMS with errors, and skewness/kurtosis from ``proc_stat`` as text in the upper-right corner of axes ``axhi`` (log y scale is handled)."""
     mean, rms, err_mean, err_rms, neff, skew, kurt, err_err, sum_w = proc_stat(weights,bins)
     pm = r'$\pm$'
     txt  = 'Entries=%d\nMean=%.2f%s%.2f\nRMS=%.2f%s%.2f\n' % (sum_w, mean, pm, err_mean, rms, pm, err_rms)
@@ -389,6 +417,15 @@ def imshow_cbar(fig, axim, axcb, img, amin=None, amax=None, **kwa):
 
 
 def fig_img_cbar(img, **kwa):
+    """Create a figure with image and color-bar axes, show ``img`` with ``imshow(**kwa)`` and add a vertical color bar.
+
+    ``kwa['figsize']`` (default (12,11)) is removed before ``imshow``; the color limits are set from ``kwa['vmin']`` and ``kwa['vmax']``.
+
+    Returns
+    -------
+    tuple
+        ``(fig, axim, axcb, imsh, cbar)``.
+    """
     fig = figure(figsize=kwa.pop('figsize', (12,11)))
     axim, axcb = fig_axes(fig, windows=((0.06, 0.03, 0.87, 0.93), (0.923,0.03, 0.02, 0.93)))
     imsh = axim.imshow(img, **kwa)
@@ -446,6 +483,7 @@ def fig_img_proj_cbar(img, **kwa):
 
 
 def drawCircle(axes, xy0, radius, **kwa):
+    """Add a ``matplotlib.patches.Circle`` at ``xy0`` with ``radius`` to ``axes`` (defaults: line width 1, white, not filled)."""
     kwa.setdefault('radius', radius)
     kwa.setdefault('linewidth', 1)
     kwa.setdefault('color', 'w')
@@ -455,6 +493,7 @@ def drawCircle(axes, xy0, radius, **kwa):
 
 
 def drawCenter(axes, xy0, **kwa):
+    """Add a cross-shaped ``Line2D`` marker of half-size ``kwa['s']`` (default 10) centered at ``xy0`` to ``axes`` (defaults: line width 1, white)."""
     s = kwa.pop('s', 10)
     kwa.setdefault('linewidth', 1)
     kwa.setdefault('color', 'w')
@@ -467,6 +506,7 @@ def drawCenter(axes, xy0, **kwa):
 
 
 def drawLine(axes, xarr, yarr, **kwa):
+    """Add a ``Line2D`` through ``xarr``, ``yarr`` to ``axes``, passing only line-style keys from ``kwa`` (defaults: line width 1, white)."""
     kwa.setdefault('linewidth', 1)
     kwa.setdefault('color', 'w')
     #print('drawLine kwa keys: %s' % str(kwa.keys()))
@@ -479,6 +519,7 @@ def drawLine(axes, xarr, yarr, **kwa):
 
 
 def drawRectangle(axes, xy, width, height, **kwa):
+    """Add a ``matplotlib.patches.Rectangle`` at ``xy`` with ``width`` and ``height`` to ``axes`` (defaults: line width 1, white)."""
     kwa.setdefault('linewidth', 1)
     kwa.setdefault('color', 'w')
     rect = patches.Rectangle(xy, width, height, **kwa)
@@ -489,6 +530,10 @@ def drawRectangle(axes, xy, width, height, **kwa):
 #--------------------------------
 
 def plotImageLarge(arr, img_range=None, amp_range=None, figsize=(12,10), title='Image', origin='upper', window=(0.05,  0.03, 0.94, 0.94), cmap='inferno'):
+    """Create a figure showing ``arr`` with ``imshow`` and a color bar, and return the image axes.
+
+    ``img_range`` is the imshow extent, ``amp_range`` sets the color limits when given, and ``title`` is used as the window title.
+    """
     fig  = plt.figure(figsize=figsize, dpi=80, facecolor='w', edgecolor='w', frameon=True)
     axim = fig.add_axes(window)
     imsh = axim.imshow(arr, interpolation='nearest', aspect='auto', origin=origin, extent=img_range, cmap=cmap)
@@ -523,6 +568,13 @@ def hist1d(arr, bins=None, amp_range=None, weights=None, color=None, show_stat=T
 
 
 def plotGraph(x,y, figsize=(5,10), window=(0.15, 0.10, 0.78, 0.86), pfmt='b-', lw=1):
+    """Create a figure and plot ``y`` versus ``x`` with format ``pfmt`` and line width ``lw``.
+
+    Returns
+    -------
+    tuple
+        ``(fig, ax)``.
+    """
     fig = plt.figure(figsize=figsize, dpi=80, facecolor='w', edgecolor='w', frameon=True)
     ax = fig.add_axes(window)
     ax.plot(x, y, pfmt, linewidth=lw)

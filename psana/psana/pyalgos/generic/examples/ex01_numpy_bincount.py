@@ -1,3 +1,4 @@
+"""Example: print ``np.bincount`` of a fixed integer tuple with and without ``minlength=10``."""
 import numpy as np
 
 ind_max = 10 

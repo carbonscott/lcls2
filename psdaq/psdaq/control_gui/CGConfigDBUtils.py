@@ -35,6 +35,11 @@ ROOT_CONFIGDB = 'configDB'
 from psdaq.configdb.configdb import configdb
 
 def get_configdb(uri=URI_CONFIGDB, hutch='tmo', create=False, root=ROOT_CONFIGDB, user='tmoopr', password=os.getenv('CONFIGDB_AUTH')) :
+    """Return ``configdb(uri, hutch, create=create, root=root, user=user, password=password)``.
+
+    Defaults: `URI_CONFIGDB`, hutch 'tmo', create False, root 'configDB', user 'tmoopr'
+    and the CONFIGDB_AUTH environment variable (read at import time) as password.
+    """
     return configdb(uri, hutch, create=create, root=root, user=user, password=password)
 
 #--------------------

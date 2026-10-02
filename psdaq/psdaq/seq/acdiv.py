@@ -1,3 +1,8 @@
+"""Sequence description 'ACDIV': 360 AC steps (all timeslots, marker 0), each a ControlRequest with bit j set when the step index is divisible by div[j].
+
+The 16 bits correspond to the rates listed in `rates` (360 Hz down to 10 Hz, also used
+as `descset`); defines `instrset`, `descset` and `title`.
+"""
 from psdaq.seq.seq import *
 
 rates = [360,180,120, 90, 72, 60, 45, 40, 36, 30, 24, 20, 18, 15, 12, 10]

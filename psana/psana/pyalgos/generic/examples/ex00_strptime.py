@@ -1,3 +1,4 @@
+"""Example: print the current time stamp, parse a fixed time string with ``strptime`` and print it back in seconds, GMT and local time."""
 from time import *
 
 fmt='%Y-%m-%d %H:%M:%S%z'

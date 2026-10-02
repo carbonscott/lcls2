@@ -1,9 +1,15 @@
+"""Pedestal scan of '<detname>_<i>:user.gainMode' (i < nprocs) over gain modes 0-2 using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import json
 
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events per step, hutch 'mfx', detname 'jungfrau', record 1, config 'BEAM', nprocs 5, run_type 'DARK'.
+
+    Each step sets the gainMode of every segment to the step number and records 'step' and
+    'gainMode' in the metadata.
+    """
     defaults = {
         "--events": 1000,
         "--hutch": "mfx",

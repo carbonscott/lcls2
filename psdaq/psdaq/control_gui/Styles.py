@@ -34,6 +34,7 @@ class Styles():
 #------------------------------
     def set_styles(self):
 
+        """Define the Qt style-sheet strings used by the GUI as attributes (e.g. `styleButton`, `styleBkgd`, `qgrbox_title`)."""
         self.styleYellowish = "background-color: rgb(255, 255, 220); color: rgb(0, 0, 0);" # Yellowish
         self.stylePink      = "background-color: rgb(255, 200, 220); color: rgb(0, 0, 0);" # Pinkish
         self.styleYellowBkg = "background-color: rgb(240, 240, 100); color: rgb(0, 0, 0);" # YellowBkg

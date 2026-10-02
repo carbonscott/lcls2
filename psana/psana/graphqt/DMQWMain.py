@@ -27,6 +27,11 @@ from psana.graphqt.QWInfoPanel import QWInfoPanel
 
 class DMQWMain(QWidget):
 
+    """Data-manager main widget: ``DMQWControl`` above ``DMQWList`` on the left of a splitter, ``QWInfoPanel`` on the right.
+
+    The constructor registers the instance as ``cp.dmqwmain``, sets ``append_info`` to
+    ``winfo.append`` and copies ``uws.is_lcls2`` into ``self.is_lcls2``.
+    """
     def __init__(self, **kwa):
 
         parent = kwa.get('parent', None)
@@ -63,16 +68,19 @@ class DMQWMain(QWidget):
 
 
     def proc_kwargs(self, **kwa):
+        """Read ``loglevel``, ``logdir`` and ``savelog`` from the keyword arguments into local variables; they are not used further."""
         loglevel   = kwa.get('loglevel', 'DEBUG').upper()
         logdir     = kwa.get('logdir', './')
         savelog    = kwa.get('savelog', False)
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to ``'File Manager for LCLS1'``."""
         self.setToolTip('File Manager for LCLS1')
 
 
     def set_style(self):
+        """Set layout margins of the sub-widgets, fix the control height to 60 and put the splitter at 280 pixels."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wleft.layout().setContentsMargins(0,0,0,0)
         self.winfo.layout().setContentsMargins(0,0,0,0)
@@ -85,17 +93,27 @@ class DMQWMain(QWidget):
 
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent`` and set ``cp.dmqwmain`` to None."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
         cp.dmqwmain = None
 
 
     def fname_info(self, expname, runnum):
+        """Return the info file name ``'info-<expname>-r<run>.txt'``.
+
+        The run is formatted as ``%04d`` if ``runnum`` is an int, otherwise with ``str``.
+        """
         srun = '%04d' % runnum if isinstance(runnum,int) else str(runnum)
         return 'info-%s-r%s.txt' % (expname, srun)
 
 
     def dump_info_exp_run_1(self, expname, runnum):
+        """Append to the info panel the "Scan Table" run-table record whose ``'num'`` equals ``runnum``.
+
+        The list comes from ``uws.run_table_data(expname)`` (web service request); if it is None a
+        "missing" note is appended instead. The text is passed with the file name from :meth:`fname_info`.
+        """
         s = 'dump_info_exp_run_1 %s run %s info:' % (expname, str(runnum))
         lst = uws.run_table_data(expname)
         if lst is None: s += ' list of run info dicts is missing'
@@ -108,6 +126,11 @@ class DMQWMain(QWidget):
 
 
     def dump_info_exp_run_2(self, expname, runnum):
+        """Append to the info panel the ``uws.json_runs(expname)`` record with ``'run_num' == runnum`` and the experiment tags.
+
+        Both lists come from web service requests (``uws.json_runs``, ``uws.exp_tags``); a "missing"
+        note is added if the run list is None.
+        """
         s = 'dump_info_exp_run_2 %s run %s info:' % (expname, str(runnum))
         lst = uws.json_runs(expname)#, location)
         if lst is None: s += ' list of run info dicts is missing'
@@ -123,6 +146,7 @@ class DMQWMain(QWidget):
 
 
     def dump_info_files(self, expname, runnum):
+        """Append to the info panel the JSON returned by ``uws.run_files(expname, runnum)`` (web service request)."""
         s = 'dump_info_files %s run %s info:' % (expname, str(runnum))
         jo = uws.run_files(expname, runnum)
         s += uws.json.dumps(jo, indent=2)
@@ -130,6 +154,10 @@ class DMQWMain(QWidget):
 
 
     def dump_all_run_parameters(self, expname, runnum):
+        """Append to the info panel the JSON returned by ``uws.run_parameters(expname, runnum)`` (web service request).
+
+        The header uses ``%d`` for ``runnum``, so ``runnum`` must be an integer.
+        """
         s = 'dump_all_run_parameters for %s run %d\n' % (expname, runnum)
         jo = uws.run_parameters(expname, runnum)
         s += uws.json.dumps(jo, indent=2)
@@ -137,6 +165,7 @@ class DMQWMain(QWidget):
 
 
     def dump_info_exp_run(self, expname, runnum):
+        """Call :meth:`dump_all_run_parameters`, :meth:`dump_info_exp_run_1`, :meth:`dump_info_exp_run_2` and :meth:`dump_info_files` in that order."""
         self.dump_all_run_parameters(expname, runnum)
         self.dump_info_exp_run_1(expname, runnum)
         self.dump_info_exp_run_2(expname, runnum)
@@ -144,11 +173,19 @@ class DMQWMain(QWidget):
 
 
     def on_selected_exp_run(self, expname, runnum): # called from DMQWList
+        """Dump all info for the selected experiment/run and forward the selection to ``wctrl.on_selected_exp_run``."""
         self.dump_info_exp_run(expname, runnum)
         self.wctrl.on_selected_exp_run(expname, runnum)
 
 
 def data_manager(**kwa):
+    """Configure logging, create a ``QApplication`` and show a ``DMQWMain`` titled ``'Data Manager'``.
+
+    Parameters
+    ----------
+    **kwa
+        Passed to ``DMQWMain``; ``loglevel`` (default ``'DEBUG'``) sets the logging level.
+    """
     loglevel = kwa.get('loglevel', 'DEBUG').upper()
     intlevel = logging._nameToLevel[loglevel]
     logging.basicConfig(format='[%(levelname).1s] %(name)s L%(lineno)04d: %(message)s', level=intlevel)

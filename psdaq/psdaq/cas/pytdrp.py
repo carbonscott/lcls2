@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""PVA server publishing a PCIe timing receiver's TXID, RXID and PINGID registers (read through pyrogue) as '<HOST>:<name>' PVs."""
 import sys
 import pyrogue as pr
 import argparse
@@ -14,6 +15,14 @@ from p4p.server.thread import SharedPV
 from p4p.nt import NTScalar
 
 def tdet(args):
+    """Start an `l2si_drp.DrpTDetRoot` on `args.dev`, print its AxiVersion status and return its timing objects.
+
+    Returns
+    -------
+    tuple
+        (TimingFrameRx, XpmMessageAligner, TriggerEventBuffer[0]) under
+        ``PcieControl.DevKcu1500.TDetTiming``.
+    """
     from psdaq.utils import enable_l2si_drp
     import l2si_drp
 
@@ -31,6 +40,13 @@ def tdet(args):
             getattr(root.PcieControl.DevKcu1500.TDetTiming.TriggerEventManager,'TriggerEventBuffer[0]'))
 
 def lppa(args):
+    """Start an `lcls2_pgp_pcie_apps.DevRoot` on `args.dev` (LCLS-II only, `args.pgp4`, `args.boardType`), print AxiVersion status and return its timing objects.
+
+    Returns
+    -------
+    tuple
+        (TimingFrameRx, XpmMessageAligner, TriggerEventBuffer[0]) under ``DevPcie.Hsio.TimingRx``.
+    """
     from psdaq.utils import enable_lcls2_pgp_pcie_apps
     import lcls2_pgp_pcie_apps
     import lcls2_pgp_fw_lib.shared as shared
@@ -60,6 +76,13 @@ def lppa(args):
             getattr(root.DevPcie.Hsio.TimingRx.TriggerEventManager,'TriggerEventBuffer[0]'))
 
 def lepx(args):
+    """Start an `lcls2_epix_hr_pcie.DevRoot` on `args.dev`, print AxiVersion status and return its timing objects.
+
+    Returns
+    -------
+    tuple
+        (TimingFrameRx, XpmMessageAligner, TriggerEventBuffer[0]) under ``DevPcie.Hsio.TimingRx``.
+    """
     from psdaq.utils import enable_lcls2_epix_hr_pcie
     import lcls2_epix_hr_pcie
     import lcls2_pgp_fw_lib.shared as shared
@@ -89,6 +112,13 @@ def lepx(args):
             getattr(root.DevPcie.Hsio.TimingRx.TriggerEventManager,'TriggerEventBuffer[0]'))
 
 def ludp(args):
+    """Start an `lcls2_udp_pcie_apps.DevRoot` on `args.dev`, print AxiVersion status and return its timing objects.
+
+    Returns
+    -------
+    tuple
+        (TimingFrameRx, XpmMessageAligner, TriggerEventBuffer[0]) under ``DevPcie.Hsio.TimingRx``.
+    """
     from psdaq.utils import enable_lcls2_udp_pcie_apps
     import lcls2_udp_pcie_apps
     import lcls2_pgp_fw_lib.shared as shared
@@ -112,21 +142,25 @@ def ludp(args):
             getattr(root.DevPcie.Hsio.TimingRx.TriggerEventManager,'TriggerEventBuffer[0]'))
 
 class MyProvider(StaticProvider):
+    """StaticProvider that also keeps added PVs in `pvdict`."""
     def __init__(self, name):
         super(MyProvider,self).__init__(name)
         self.pvdict = {}
 
     def add(self,name,pv):
+        """Record `pv` in `pvdict`, add it to the provider and log the name."""
         self.pvdict[name] = pv
         super(MyProvider,self).add(name,pv)
         logging.info(f'Added PV {name}')
 
 class DefaultPVHandler(object):
 
+    """p4p put handler that posts the written value with a new timestamp."""
     def __init__(self, ctype='UINT32'):
         self._ctype   = ctype
 
     def put(self, pv, op):
+        """Post the written value with the current timestamp and complete the operation."""
         postedval = op.value()
         logging.debug('DefaultPVHandler.put ',pv,postedval['value'])
         postedval['timeStamp.secondsPastEpoch'], postedval['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
@@ -134,6 +168,7 @@ class DefaultPVHandler(object):
         op.done()
 
 def updatePv(pv,v,timev):
+    """If `v` is not None and differs from the PV's value, post it with timestamp `timev` (seconds, nanoseconds)."""
     if v is not None:
         value = pv.current()
         if value['value']!=v:
@@ -144,6 +179,16 @@ def updatePv(pv,v,timev):
 argBool = lambda s: s.lower() in ['true', 't', 'yes', '1']
 
 def main():
+    """Parse arguments, open the device for --type (DrpTDet, Lcls2Pgp, Lcls2Epix, Lcls2Udp) and serve TXID/RXID/PINGID PVs.
+
+    PV names are the upper-cased host name with '-' replaced by ':' plus ':TXID' etc.;
+    values are read every --period seconds until KeyboardInterrupt.
+
+    Raises
+    ------
+    ValueError
+        If --type is not one of the four known types.
+    """
     global pvdb
     pvdb = {}     # start with empty dictionary
     global prefix

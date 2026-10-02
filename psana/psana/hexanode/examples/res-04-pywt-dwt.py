@@ -46,6 +46,7 @@ fig.canvas.set_window_title('Waveform dwt decomposition', **kwargs)
 fig.clear()
 
 def axes_h(fig, naxes=5, x0=0.07, y0=0.03, width=0.87, ygap=0.04) :
+    """Add ``naxes`` horizontal axes stacked vertically on ``fig`` (left ``x0``, bottom ``y0``, ``width``, gap ``ygap``) and return them as a list."""
     dy = 1./naxes
     return [gr.add_axes(fig, axwin=(x0, y0 + i*dy, width, dy-ygap)) for i in range(naxes)]
 

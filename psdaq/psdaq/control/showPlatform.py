@@ -10,6 +10,13 @@ from operator import itemgetter
 def main():
 
     # Process arguments
+    """Print the processes on a DAQ platform.
+
+    Returns early if `getInstrument` gives None. With ``--json`` prints
+    `getJsonConfig()`; otherwise prints a table of alias, level/pid/host ('*' marks
+    active) sorted by level and alias, with the readout group for active drp entries
+    (-v also pretty-prints the raw `getPlatform` reply).
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', type=int, choices=range(0, 8), default=0, help='platform (default 0)')
     parser.add_argument('-C', metavar='COLLECT_HOST', default='localhost', help='collection host')

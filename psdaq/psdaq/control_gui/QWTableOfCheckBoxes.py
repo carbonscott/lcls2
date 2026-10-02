@@ -41,6 +41,7 @@ class QWTableOfCheckBoxes(QWTable):
         self.hide_hidden_rows()
 
     def set_style(self):
+        """Call `QWTable.set_style`."""
         QWTable.set_style(self)
 
     def fill_table_model(self, **kwargs):
@@ -110,6 +111,7 @@ class QWTableOfCheckBoxes(QWTable):
         self.hide_hidden_rows()
 
     def hide_hidden_rows(self):
+        """Disable (but keep visible) every item of the rows flagged hidden, then resize the widget with `set_exact_widget_size`."""
         for row in self._list_hidden_rows:
             # 2021-04-29 Chris F. requested to show rows but not editable
             #self.hideRow(row)
@@ -137,6 +139,12 @@ class QWTableOfCheckBoxes(QWTable):
         self.connect_item_changed_to(self.on_item_changed)
 
     def on_item_changed(self, item):
+        """Log the changed item; validate its text and, with `do_live`, copy it back into `tableio`.
+
+        If the item has a `valid_reg_exp` and its text does not match (``re_search``), a
+        warning is logged and the text is set to 'N/A'. With `do_live`, list fields get their
+        check state and text updated and text fields their text.
+        """
         state = LIST_STR_CHECK_BOX_STATES[item.checkState()]
         index = self._si_model.indexFromItem(item)
         row, col = index.row(), index.column()

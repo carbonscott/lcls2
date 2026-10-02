@@ -37,6 +37,11 @@ from psdaq.control_gui.CGDaqControl import daq_control
 
 class QWPopupTableCheck(QWidget):
 
+    """Widget wrapping a `CGWPartitionTable` with an Apply button that sends the selection to the DAQ.
+
+    All keyword arguments are passed to `CGWPartitionTable`; 'win_title', 'do_ctrl'
+    (default True; enables Apply) and 'do_frame' are also read here.
+    """
     def __init__(self, **kwargs):
         parent = kwargs.get('parent', None)
         QWidget.__init__(self, parent)
@@ -71,6 +76,7 @@ class QWPopupTableCheck(QWidget):
     def set_style(self):
         #if not self.do_frame:
         #   self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        """Apply styles and sizes, re-style the table, and enable the Apply button only if `do_ctrl`."""
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
         self.setStyleSheet(styleDefault)
@@ -98,6 +104,7 @@ class QWPopupTableCheck(QWidget):
         #self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint)
 
     def setIcons(self):
+        """Set the ok icon on the Apply button, ignoring any exception."""
         try :
           from psdaq.control_gui.QWIcons import icon
           icon.set_icons()
@@ -106,6 +113,7 @@ class QWPopupTableCheck(QWidget):
 
     #def on_but_update(self):
     def update_partition_table(self):
+        """Replace the table widget with a new `CGWPartitionTable` built from `get_platform()` and re-apply styles."""
         logger.debug('update_partition_table')
         _, list2d = get_platform() # [[[True,''], 'test/19670/daq-tst-dev02', 'testClient2b'], ...]
         logger.debug('list2d\n',list2d)
@@ -130,6 +138,12 @@ class QWPopupTableCheck(QWidget):
 #        self.reject()
 
     def onApply(self):
+        """Send the table selection to the DAQ and request 'allocated' if any process is active.
+
+        The table rows are stored in `list2d_out` and passed with the current platform dict to
+        `set_platform`; if no process is selected a warning is logged instead of calling
+        ``daq_control().setState('allocated')``.
+        """
         logger.debug('onApply')
         self.list2d_out = self.wtab.fill_output_object()
         #self.accept()
@@ -149,6 +163,7 @@ class QWPopupTableCheck(QWidget):
 
 
     def table_out(self):
+        """Return the rows saved by the last `onApply` (empty list before that)."""
         return self.list2d_out
 
 

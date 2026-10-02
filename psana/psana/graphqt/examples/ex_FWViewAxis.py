@@ -1,9 +1,18 @@
 
+"""Example/test for ``FWViewAxis``: axis views for all sides and origins on scene rect (0, 0, 1000, 10).
+
+Run as a script with a test name (``'0'``-``'3'``, ``'10'``-``'13'``, ``'20'``-``'23'``, ``'30'``-``'33'``).
+"""
 from psana.graphqt.FWViewAxis import *
 
 import sys
 
 def test_guiview(tname):
+    """Create a ``QApplication`` and show an ``FWViewAxis`` chosen by ``tname``, printing its attributes first.
+
+    The tens digit selects origin UL/DL/DR/UR and the units digit the side D/U/L/R (test ``'0'`` also
+    uses red on yellow). Unknown names print a message and return.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     app = QApplication(sys.argv)
     w = None

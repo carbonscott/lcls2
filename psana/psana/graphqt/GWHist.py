@@ -35,6 +35,12 @@ import numpy as np
 
 class GWHist():
 
+    """Draws the step outline of an ``HBins`` histogram as one ``QGraphicsPathItem`` in the scene of ``view``.
+
+    Keyword arguments: ``hbins``, ``orient`` (``'H'`` or ``'V'``), ``color``, ``pen``, ``brush`` and
+    ``zvalue`` (10). If ``hbins`` is None the constructor calls ``self.add_test()``, which is not defined
+    in this class (AttributeError).
+    """
     def __init__(self, view, **kwargs):
 
         self.view   = view
@@ -60,6 +66,7 @@ class GWHist():
 
 
     def remove(self):
+        """Remove all items in ``lst_of_items`` from the scene (unless the scene was already deleted) and clear the list."""
         if not sip.isdeleted(self.scene):
           for item in self.lst_of_items:
             self.scene.removeItem(item)
@@ -69,6 +76,7 @@ class GWHist():
 
 
     def update(self, hbins):
+        """Remove the current items, store ``hbins`` and redraw with :meth:`add_hist`."""
         self.remove()
         self.hbins = hbins
         self.add_hist()
@@ -80,6 +88,11 @@ class GWHist():
 
     def add_hist(self):
 
+        """Build a step path from ``hbins.binedges()`` and ``hbins.bin_data()`` and add it to the scene.
+
+        For ``orient='V'`` bin values are along x and edges along y; otherwise edges are along x. The
+        previous path item is removed; the new one gets ``zvalue`` and is stored in ``lst_of_items``.
+        """
         if self.path_item is not None: self.scene.removeItem(self.path_item)
 
         edges = self.hbins.binedges() # n+1
@@ -117,11 +130,13 @@ class GWHist():
 #    return a0 * np.exp(-0.5*((x-x0)/sig)**2)
 
 def gauss(x, *p):
+    """Return the Gaussian ``a0 * exp(-0.5*((x-x0)/s)**2)`` with ``a0, x0, s = p``."""
     a0, x0, s = p
     return a0 * np.exp(-0.5*((x-x0)/s)**2)
 
 
 def test_histogram():
+    """Return a test ``HBins`` (1000 bins over 100..1100) filled with random noise plus two Gaussians and two large spikes at bins 10 and 11."""
     import psana.pyalgos.generic.NDArrGenerators as ag
     from psana.pyalgos.generic.HBins import HBins
     xmin, xmax = 100, 1100

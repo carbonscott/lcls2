@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``psana.pscalib.geometry.UtilsPSF`` using geometry and data files under ``/sdf/group/lcls/ds/ana/detector``.
+
+Run as a script with a test name (``'0'``-``'6'``, ``'10'``, ``'12'``-``'16'``, ``'22'``-``'26'``, ``'32'``-``'36'``);
+the test functions and file names are defined only in that case.
+"""
 if __name__ == "__main__":
 
   import sys
@@ -28,6 +33,10 @@ if __name__ == "__main__":
   fn_data_rayonix_1920 = '/sdf/group/lcls/ds/ana/detector/data_test/npy/nda-mfxlw7519-r0070-rayonix-max.npy'
 
   def load_data_from_file(fname):
+    """Return the array from ``fname``: ``numpy.load`` for ``.npy`` files, ``NDArrIO.load_txt`` otherwise.
+
+    Asserts that ``fname`` is a str.
+    """
     assert isinstance(fname, str), 'file name is not a str'
     if fname.split('.')[-1]=='npy': return np.load(fname)
     else:
@@ -36,6 +45,7 @@ if __name__ == "__main__":
 
 
   def test_geo_from_file(fname_geo):
+    """Create ``GeometryAccess(fname_geo)`` and log info about its X, Y, Z pixel coordinate arrays."""
     geo = GeometryAccess(fname_geo)
     X, Y, Z = geo.get_pixel_coords()
     logger.info(info_ndarr(X,'X:'))
@@ -44,6 +54,7 @@ if __name__ == "__main__":
 
 
   def test_psf_from_file(fname_geo):
+    """Call ``psf_from_file(fname_geo)``, log the segment type and ``info_psf``, and save the result to ``psf-test.txt`` and ``psf-test.npy``."""
     psf, sego, geo = psf_from_file(fname_geo)
     logger.info(type(sego))
     logger.info(info_psf(psf, title='info_psf: psf.shape: %s \npsf vectors:' % (str(np.array(psf).shape))))
@@ -52,16 +63,19 @@ if __name__ == "__main__":
 
 
   def test_load_psf(fname='psf-test.npy'):
+    """Load ``fname`` (default ``psf-test.npy``) with ``load_psf`` and log ``info_psf`` of it."""
     psf = load_psf(fname)
     logger.info(info_psf(psf, title='info_psf: psf.shape: %s \npsf vectors:' % (str(np.array(psf).shape))))
 
 
   def test_load_data_from_file(fname=fn_data_epix10ka2m):
+    """Load ``fname`` with :func:`load_data_from_file` and log info about the array."""
     data = load_data_from_file(fname)
     logger.info(info_ndarr(data, name='data', first=0, last=10))
 
 
   def test_psf_methods(fname_geo, fname_data):
+    """Run ``psf_from_file``, ``data_psf`` and ``pixel_coords_psf`` on the given geometry and data files and log the results and timings."""
     psf, sego, geo = psf_from_file(fname_geo)
     logger.info(type(sego))
     #logger.info(info_seg_geo(sego))
@@ -85,6 +99,7 @@ if __name__ == "__main__":
 
   def test_psana_image(geo, data):
 
+    """Build an image from ``geo.get_pixel_coords(cframe=0)`` and ``data`` with ``img_from_pixel_arrays``, show it with ``fleximagespec`` and save ``fig-psana.png``."""
     logger.info('======== test_psana_image ========')
 
     #data = load_data_from_file(fname_data)
@@ -108,6 +123,10 @@ if __name__ == "__main__":
 
 
   def ascending_nda(shape, amin=0, dtype=np.float32):
+    """Return an array of ``shape`` (nsegs, rows, cols) where every segment is ``0.3*col + 0.7*row + amin``.
+
+    Asserts that ``shape`` has three elements.
+    """
     assert len(shape)==3
     nsegs, rows, cols = shape
     ash = (rows, cols)
@@ -120,6 +139,7 @@ if __name__ == "__main__":
 
 
   def test_psf_graph(fname_geo, fname_data):
+    """Build and show an image from ``data_psf`` and ``pixel_coords_psf`` results (saved as ``fig-psf.png``), then call :func:`test_psana_image` for comparison."""
     psf, sego, geo = psf_from_file(fname_geo)
 
     #data = ascending_nda((32, 185, 194*2))
@@ -157,12 +177,14 @@ if __name__ == "__main__":
 
 
 def USAGE():
+    """Return a usage string with the ``TNAME ==`` lines taken from the source of :func:`selector`."""
     import inspect
     return '\n  %s <TNAME>\n' % sys.argv[0].split('/')[-1]\
     + '\n'.join([s for s in inspect.getsource(selector).split('\n') if 'TNAME ==' in s])
 
 
 def selector():
+  """Run the test chosen by ``sys.argv[1]``; for a missing or unknown name print :func:`USAGE` and a "non-implemented" message."""
   TNAME = sys.argv[1] if len(sys.argv)>1 else 'USAGE'
 
   if   TNAME == '0': test_geo_from_file(fn_geo_cspad_cxi)                             # test_geo_from_file(fn_geo_cspad_cxi)

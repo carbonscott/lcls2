@@ -54,6 +54,10 @@ from psana.pyalgos.generic.Utils import str_kwargs
 
 class WFHDF5IO:
 
+    """Write per-event peak results (hit counts and peak times) of a waveform peak finder to an HDF5 file with h5py, and read them back.
+
+    Keyword arguments 'run', 'exp', 'tdc_resolution' (default 0.250) and 'size_increment' (default 4096) are stored as attributes. ``__del__`` closes any open input or output file.
+    """
     def __init__(self, **kwargs):
         """
         """
@@ -67,6 +71,10 @@ class WFHDF5IO:
 
 
     def open_output_h5file(self, fname, wfpeaks):
+        """Create HDF5 file ``fname`` for writing and its datasets.
+
+        Creates scalar datasets run, experiment, start_time, stop_time, proc_time, tdc_res_ns, nevents and resizable datasets event_number, event_time, nhits (events x channels) and tdcsec (events x channels x hits), sized by ``wfpeaks.NUM_CHANNELS`` and ``wfpeaks.NUM_HITS``. Records the start time.
+        """
         self._nev = 0
         self._nevmax = self._size_increment
         self._wfpeaks        = wfpeaks
@@ -92,6 +100,10 @@ class WFHDF5IO:
 
 
     def close_output_h5file(self):
+        """Shrink the per-event datasets to the number of written events, fill the scalar datasets (times, event count, TDC resolution, run, experiment) and close the output file.
+
+        Does nothing if no output file is open.
+        """
         if self._of is None: return
 
         self._stop_time_sec = time()
@@ -118,6 +130,10 @@ class WFHDF5IO:
 
 
     def add_event_to_h5file(self):
+        """Append the current results of the peak finder (``_number_of_hits`` and ``_pktsec``), the event index and the current time to the output datasets.
+
+        Asserts that waveforms were processed. Datasets grow by ``size_increment`` only after the event count exceeds the current size, so the write at index equal to the current size happens before any resize.
+        """
         assert (self._wfpeaks._wfs_old is not None),\
                "waveforms need to be processed before calling add_event_to_h5file()"
         i = self._nev
@@ -130,6 +146,10 @@ class WFHDF5IO:
 
 
     def open_input_h5file(self, fname='./test.h5'):
+        """Open HDF5 file ``fname`` for reading and load its datasets and scalar values.
+
+        Uses dataset 'tdcsec' if present, otherwise 'tdcns' (either may be None); reads nevents, experiment, run, tdc_res_ns, start_time and stop_time, and resets the event counter.
+        """
         self._error_flag = 0
         self._nev = 0
         self._if = f = h5py.File(fname,'r')
@@ -146,6 +166,7 @@ class WFHDF5IO:
 
 
     def close_input_h5file(self):
+        """Close the input file if one is open."""
         if self._if is None: return
         logger.debug('Close file: %s' % self._if.filename)
         self._if.close()
@@ -153,6 +174,10 @@ class WFHDF5IO:
 
 
     def next_event(self, nev=None):
+        """Load hit counts and peak times (seconds; converted from 'tdcns' if needed) of event ``nev`` or of the next event.
+
+        Returns False when the index is past the last event, otherwise True; the internal counter is incremented in both the ``nev`` and the sequential case.
+        """
         i = nev if nev is not None else self._nev
         if i>self.h5ds_nevents-1:
              return False
@@ -163,25 +188,56 @@ class WFHDF5IO:
         return True
 
 
-    def peak_arrays(self)      : return self._number_of_hits, self._tdcsec
-    def number_of_hits(self)   : return self._number_of_hits
-    def tdc_ns(self)           : return self._tdcsec*1E9
-    def tdcsec(self)           : return self._tdcsec
-    def tdc_resolution(self)   : return self.TDC_RESOLUTION
-    def events_in_h5file(self) : return self.h5ds_nevents
-    def event_number(self)     : return self._nev - 1
-    def start_time(self)       : return self._start_time_sec
-    def stop_time(self)        : return self._stop_time_sec
+    def peak_arrays(self)      :
+        """Return ``(number_of_hits, tdcsec)`` of the current event."""
+        return self._number_of_hits, self._tdcsec
+    def number_of_hits(self)   :
+        """Return the hit-count array of the current event."""
+        return self._number_of_hits
+    def tdc_ns(self)           :
+        """Return the peak-time array of the current event multiplied by 1e9."""
+        return self._tdcsec*1E9
+    def tdcsec(self)           :
+        """Return the peak-time array of the current event as stored (seconds per the dataset name)."""
+        return self._tdcsec
+    def tdc_resolution(self)   :
+        """Return ``self.TDC_RESOLUTION``."""
+        return self.TDC_RESOLUTION
+    def events_in_h5file(self) :
+        """Return the number of events read from the 'nevents' dataset."""
+        return self.h5ds_nevents
+    def event_number(self)     :
+        """Return the index of the last loaded event (internal counter minus 1)."""
+        return self._nev - 1
+    def start_time(self)       :
+        """Return the start time read from (or recorded for) the file."""
+        return self._start_time_sec
+    def stop_time(self)        :
+        """Return the stop time read from (or recorded for) the file."""
+        return self._stop_time_sec
 
     # interface methods - return arrays through input parameters
     def get_number_of_hits_array(self, arr, maxvalue=None): # arr[:] = self._number_of_hits[:]
+        """Copy the hit counts of the current event into ``arr``, clipping each to ``maxvalue``.
+
+        With the default ``maxvalue`` None the comparison raises TypeError in Python 3.
+        """
         for i,v in enumerate(self._number_of_hits):
             arr[i] = v if v<maxvalue else maxvalue
 
-    def get_tdc_data_array(self, arr, maxsize=-1): arr[:,0:maxsize] = self._tdcsec[:,0:maxsize]
+    def get_tdc_data_array(self, arr, maxsize=-1):
+        """Copy columns ``0:maxsize`` of the current peak-time array into the same columns of ``arr``.
 
-    def error_flag(self): return self._error_flag
-    def get_error_text(self, error_flag): return 'no-error: flag=%d' % self._error_flag
+        With the default ``maxsize`` -1 the last column is excluded.
+        """
+        arr[:,0:maxsize] = self._tdcsec[:,0:maxsize]
+
+    def error_flag(self):
+        """Return ``self._error_flag`` (set to 0 by ``open_input_h5file``)."""
+        return self._error_flag
+    def get_error_text(self, error_flag):
+        """Return 'no-error: flag=<n>' with the stored error flag; the ``error_flag`` argument is ignored."""
+        return 'no-error: flag=%d' % self._error_flag
 
 
     def __del__(self):
@@ -191,12 +247,14 @@ class WFHDF5IO:
 
 
 def open_output_h5file(fname, peaks, **kwargs):
+    """Create a ``WFHDF5IO(**kwargs)``, open ``fname`` for writing with peak finder ``peaks`` and return the object."""
     f = WFHDF5IO(**kwargs)
     f.open_output_h5file(fname, peaks)
     return f
 
 
 def open_input_h5file(fname, **kwargs):
+    """Create a ``WFHDF5IO(**kwargs)``, open ``fname`` for reading and return the object."""
     f = WFHDF5IO(**kwargs)
     f.open_input_h5file(fname)
     return f

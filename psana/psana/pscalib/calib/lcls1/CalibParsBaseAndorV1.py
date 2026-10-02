@@ -29,6 +29,7 @@ Author: Mikhail S. Dubrovin
 
 class CalibParsBaseAndorV1 :
 
+    """Class attributes only: ``ndim`` 2, ``rows`` and ``cols`` 0 (comment: taken from file metadata), ``size_cm`` 16 and ``cmod = (2, 10, 10, cols, 0, ...)``; the constructor does nothing."""
     ndim = 2 
     rows = 0 # VARIABLE SHAPE DATA PARAMETERS WILL BE TAKEN FROM FILE METADATA
     cols = 0 # VARIABLE SHAPE DATA PARAMETERS WILL BE TAKEN FROM FILE METADATA

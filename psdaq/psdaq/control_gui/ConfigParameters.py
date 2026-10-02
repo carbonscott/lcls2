@@ -74,6 +74,7 @@ class Parameter :
 
 
     def setParameter(self, name='EMPTY', val=None, val_def=None, type='str', index=None) :
+        """Set the default value, name, type and index, then set the value with `setValue(val)`."""
         self._value_def = val_def
         self._name      = name
         self._type      = type
@@ -82,6 +83,12 @@ class Parameter :
 
 
     def setValue(self, val=None) :
+        """Set the value, converting it according to the declared type.
+
+        None sets the default value. Types 'str', 'int', 'float' and 'bool' use the matching
+        built-in; 'long' calls `long`, which is undefined in Python 3 (NameError); any other
+        type stores `val` unchanged.
+        """
         if val is None :
             self._value = self._value_def
         else :
@@ -104,10 +111,12 @@ class Parameter :
 
 
     def setDefaultValue(self) :
+        """Set the value to the default value."""
         self._value = self._value_def
 
 
     def setDefault(self) :
+        """Set the value to the default value."""
         self._value = self._value_def
 
 
@@ -140,43 +149,53 @@ class Parameter :
 
 
     def setType(self, type='str') :
+        """Set the parameter type string (default 'str')."""
         self._type = type
 
 
     def setName(self, name='EMPTY') :
+        """Set the parameter name (default 'EMPTY')."""
         self._name = name
 
 
     def value(self) :
+        """Return the current value."""
         return self._value
 
 
     def value_def(self) :
+        """Return the default value."""
         return self._value_def
 
 
     def is_default(self) :
+        """Return True if the current value equals the default value."""
         return self._value == self._value_def
 
 
     def name(self) :
+        """Return the parameter name."""
         return self._name
 
 
     def type(self) :
+        """Return the parameter type string."""
         return self._type
 
 
     def index(self) :
+        """Return the parameter index."""
         return self._index
 
 
     def strParInfo(self) :
+        """Return a one-line 'Par: <name> <value> <type> <index>' string with padded columns."""
         s = 'Par: %s %s %s %s' % (self.name().ljust(32), str(self.value()).ljust(32), self.type().ljust(8), str(self.index()).ljust(8))
         return s
 
 
     def printParameter(self) :
+        """Log `strParInfo()` at info level."""
         s = self.strParInfo()
         logger.info(s)
         #print(s)
@@ -214,6 +233,10 @@ class ConfigParameters :
 
 
     def declareParameter(self, name='EMPTY', val=None, val_def=None, type='str', index=None) :
+        """Create a `Parameter`, store it in `dict_pars` under `name` and return it.
+
+        `dict_pars` is a class attribute, so it is shared by all instances.
+        """
         par = Parameter(name, val, val_def, type, index)
         #self.dict_pars[name] = par
         self.dict_pars.update({name:par})
@@ -221,6 +244,16 @@ class ConfigParameters :
 
 
     def declareListOfPars(self, list_name='EMPTY_LIST', list_val_def_type=None) :
+        """Create one `Parameter` per (val, val_def, type) record and register them.
+
+        Each parameter is named '<list_name>:<index as %03d>' and added to `dict_pars`; the
+        list is stored in `dict_lists` under `list_name`.
+
+        Returns
+        -------
+        list of Parameter or None
+            The new parameters, or None if `list_val_def_type` is None.
+        """
         list_of_pars = []
 
         if list_val_def_type is None : return None
@@ -240,10 +273,12 @@ class ConfigParameters :
 
 
     def getListOfPars(self, name) :
+        """Return the parameter list registered under `name` in `dict_lists` (KeyError if absent)."""
         return self.dict_lists[name]
 
 
     def printListOfPars(self, name) :
+        """Print a header for list `name` and log each of its parameters."""
         list_of_pars = self.getListOfPars(name)
 
         print('Parameters for list:', name)
@@ -252,11 +287,13 @@ class ConfigParameters :
 
 
     def printParameters(self) :
+        """Log `getTextParameters()` at info level."""
         msg = self.getTextParameters()
         logger.info(msg)
 
 
     def getTextParameters(self) :
+        """Return the number of declared parameters followed by one `strParInfo()` line per parameter."""
         txt = 'Number of declared parameters: %d\n' % len(self.dict_pars)
         lpars = list(self.dict_pars.values())
         #lpars.sort() # sort "in situ" - it does not return anything so can't use it any other way....
@@ -265,11 +302,13 @@ class ConfigParameters :
 
 
     def setDefaultValues(self) :
+        """Reset every declared parameter to its default value."""
         for par in self.dict_pars.values() :
             par.setDefaultValue()
 
 
     def setParsFileName(self, fname=None) :
+        """Set `self.fname` to `fname`, or to `fname_cp` ('confpars.txt') if `fname` is None."""
         if fname is None :
             self.fname = self.fname_cp
         else :
@@ -277,10 +316,15 @@ class ConfigParameters :
 
 
     def getParsFileName(self) :
+        """Return `self.fname` (set by `setParsFileName`)."""
         return self.fname
 
 
     def saveParametersInFile(self, fname=None) :
+        """Write each parameter as '<name padded to 32> <value>' lines to the parameters file.
+
+        The file name is set first with `setParsFileName(fname)`.
+        """
         self.setParsFileName(fname)        
         logger.debug('Save configuration parameters in file: %s' % self.fname)
         f=open(self.fname,'w')
@@ -295,6 +339,10 @@ class ConfigParameters :
 
 
     def saveParametersInFileV0(self, fname=None) :
+        """Write each parameter as '<name padded to 32> <value>' lines to the parameters file.
+
+        Same output as `saveParametersInFile`; the file name is set with `setParsFileName(fname)`.
+        """
         self.setParsFileName(fname)        
         logger.debug('Save configuration parameters in file: %s' % self.fname)
         f=open(self.fname,'w')
@@ -307,6 +355,10 @@ class ConfigParameters :
 
     def setParameterValueByName(self, name, str_val) :
 
+        """Set parameter `name` from the string `str_val` via `setValueFromString`.
+
+        Logs a warning and does nothing if `name` was not declared.
+        """
         if not (name in self.dict_pars.keys()) :
             msg  = 'The parameter name %s is unknown in the dictionary.\n' % name
             msg += 'WARNING! Parameter needs to be declared first. Skip this parameter initialization.\n' 
@@ -318,6 +370,11 @@ class ConfigParameters :
 
 
     def readParametersFromFile(self, fname=None) :
+        """Read '<name> <value>' lines from the parameters file and set the declared parameters.
+
+        The file name is set with `setParsFileName(fname)`; if the file does not exist,
+        nothing is changed. Lines of length 1 are skipped.
+        """
         self.setParsFileName(fname)        
         msg = 'Read configuration parameters from file: ' + self.fname
         logger.debug(msg)
@@ -337,6 +394,10 @@ class ConfigParameters :
 #------------------------------
 
 def usage() :
+    """Log a usage message as a warning.
+
+    It uses `sys.argv`, but `sys` is not imported in this module, so calling it raises NameError.
+    """
     msg  = 'Use command: %s [<configuration-file-name>]\n'\
            'with a single or without arguments.' % sys.argv[0]
     msg = '\n%s\n%s\n%s' % (51*'-', msg, 51*'-')

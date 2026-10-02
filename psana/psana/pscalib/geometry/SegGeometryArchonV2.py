@@ -61,6 +61,7 @@ class SegGeometryArchonV2(SegGeometryArchonV1):
         return mask
 
     def get_xyz_min_um(sp):
+        """Return ``(x, y, z)`` minimum coordinates in um: ``x_arr_um[_colsf]`` (first real column), ``y_arr_um[-1]`` and ``z_pix_arr_um[0, 0]``."""
         return sp.x_arr_um[sp._colsf],\
                sp.y_arr_um[-1],\
                sp.z_pix_arr_um[0,0]
@@ -73,10 +74,18 @@ class SegGeometryArchonV2(SegGeometryArchonV1):
 
 # for converter
 
-    def asic0indices(self): self.print_warning('asic0indices')
-    def asic_rows_cols(self): self.print_warning('asic_rows_cols')
-    def number_of_asics_in_rows_cols(self): self.print_warning('number_of_asics_in_rows_cols')
-    def name(self): self.print_warning('name')
+    def asic0indices(self):
+        """Not implemented: logs a warning through ``print_warning('asic0indices')`` and returns None."""
+        self.print_warning('asic0indices')
+    def asic_rows_cols(self):
+        """Not implemented: logs a warning through ``print_warning('asic_rows_cols')`` and returns None."""
+        self.print_warning('asic_rows_cols')
+    def number_of_asics_in_rows_cols(self):
+        """Not implemented: logs a warning through ``print_warning('number_of_asics_in_rows_cols')`` and returns None."""
+        self.print_warning('number_of_asics_in_rows_cols')
+    def name(self):
+        """Not implemented: logs a warning through ``print_warning('name')`` and returns None."""
+        self.print_warning('name')
 
 #archon_one = SegGeometryArchonV1(use_wide_pix_center=False)
 

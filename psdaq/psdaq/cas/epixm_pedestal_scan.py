@@ -1,3 +1,4 @@
+"""Pedestal scan of '<detname>:user.gain_mode' over the gain modes given by --gain-modes, using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 from psdaq.configdb.epixm320_config import gain_mode_value
 import json
@@ -5,6 +6,12 @@ import json
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events per step, hutch 'rix', detname 'epixm_0', record 1, run_type 'DARK' and gain modes ['AHL', 'SH'].
+
+    Step k writes ``gain_mode_value(mode)`` (from `psdaq.configdb.epixm320_config`) to the
+    key and uses k as the step value; metadata hold 'gain_mode', 'step' (the gain value)
+    and 'events', which `ConfigScanBase.run` uses as the readout count.
+    """
     defargs = {'--events'  :1000,
                '--hutch'   :'rix',
                '--detname' :'epixm_0',

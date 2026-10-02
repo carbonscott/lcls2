@@ -18,11 +18,13 @@ DT_sec = 3
 
 class MyQGraphicsView(QGraphicsView):
 
+   """QGraphicsView test subclass that prints geometry information and pans the scene rect with the mouse."""
    def __init__(self, parent=None):
        QGraphicsView.__init__(self, parent)
 
 
    def mousePressEvent(self, e):
+       """Store the press position, scene-rect center and inverse view scales for panning, and print the window and scene coordinates."""
        self.p0 = pw = e.pos()
        #self.r0 = self.sceneRect() #.center()
        self.rs_center = self.sceneRect().center()
@@ -35,11 +37,19 @@ class MyQGraphicsView(QGraphicsView):
 
 
    def mouseReleseEvent(self, e):
+       """Set ``self.p0`` to None.
+
+       The name is misspelled (not ``mouseReleaseEvent``), so Qt never calls it.
+       """
        self.p0 = None
 
 
    def mouseMoveEvent(self, e):
 
+       """Move the scene rect center by the mouse displacement since the press (scaled to scene units) and print the elapsed time.
+
+       Returns if ``self.p0`` is None; ``self.p0`` is only set in ``mousePressEvent``.
+       """
        if self.p0 is None: return
        t0_sec = time()
 
@@ -62,10 +72,12 @@ class MyQGraphicsView(QGraphicsView):
 
 
    def moveEvent(self, e):
+       """Print the top-left corner of the widget geometry."""
        print('XXX: MyQGraphicsView.moveEvent topLeft:', self.geometry().topLeft())
 
 
    def resizeEvent(self, e):
+       """Print the new size and fit the scene rect, enlarged by 100 px in x and 50 px in y on each side, into the view ignoring the aspect ratio."""
        print('XXX: MyQGraphicsView.resizeEvent size:', self.geometry().size())
        s = self.scene()
        rs = self.sceneRect()

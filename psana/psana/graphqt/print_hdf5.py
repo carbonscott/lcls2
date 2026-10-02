@@ -1,4 +1,5 @@
 
+"""Print the structure of an HDF5 file with h5py: file, groups and datasets (with shape and dtype), recursively."""
 import sys
 import h5py
 

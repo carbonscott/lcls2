@@ -17,3 +17,7 @@
 
 #dt_sec = time() - t0_sec
 #print('XXX: from .generic import * time = %.6f sec' % dt_sec)
+"""Package ``psana.pyalgos``.
+
+The ``__init__`` contains only comments; importing it runs no code.
+"""

@@ -1,3 +1,4 @@
+"""PVA server hosting a fixed set of TPR PVs (input and per-channel settings) under a partition prefix."""
 import sys
 import logging
 
@@ -12,6 +13,7 @@ import argparse
 import pdb
 
 def printDb(prefix):
+    """Print the number of PVs in the module-global `pvdb` and each name prefixed by `prefix`."""
     global pvdb
 
     print('=========== Serving %d PVs ==============' % len(pvdb))
@@ -21,6 +23,12 @@ def printDb(prefix):
     return
 
 def main():
+    """Parse -P, define the PVs and serve them forever.
+
+    PVs: ':ACCSEL', ':LINKSTATE', ':LINKLATCH', ':RXERRS', ':RXPOL', ':FRAMERATE',
+    ':RXCLKRATE', ':IRQENA', ':EVTCNT', plus per-channel ':CH<i>:...' settings for
+    channels 0-11 (with DELAY/WIDTH/POL) and 12-13 (without), all prefixed by the -P value.
+    """
     global pvdb
     pvdb = {}     # start with empty dictionary
     global prefix

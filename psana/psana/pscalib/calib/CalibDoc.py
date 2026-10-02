@@ -43,13 +43,19 @@ class CalibDoc():
         #print('YYY %s' % self.info_calibdoc())
 
     def set_invalid(self, msg):
+        """Log ``msg`` as a warning and set ``self.valid`` to False."""
         logger.warning(msg)
         self.valid = False
 
     def info_calibdoc(self, fmt='begin:%4d  end:%s  tsec_id:%d  tstamp_id:%s'):
+        """Return ``fmt`` filled with ``begin``, ``end``, ``tsec_id`` and ``tstamp_id``.
+
+        For a document marked invalid before ``end`` was set, this raises AttributeError.
+        """
         return fmt % (self.begin, str(self.end), self.tsec_id, self.tstamp_id)
 
     def cmp_tsec_id(self, other):
+        """Compare ``tsec_id`` (time from the document ``_id``) with that of ``other``; return -1, 1 or 0."""
         if   self.tsec_id < other.tsec_id: return -1
         elif self.tsec_id > other.tsec_id: return  1
         else: return 0

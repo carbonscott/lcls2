@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryMatrixV2`` using its module-level ``segment_one_v2`` object.
+
+Run with test number ``'1'``-``'7'``; without an argument a "non-expected test name" warning with the
+usage is logged. All code, including the import, runs only when the module is executed as a script.
+"""
 if __name__ == "__main__":
 
   from psana.pscalib.geometry.SegGeometryMatrixV2 import *
@@ -11,6 +16,7 @@ if __name__ == "__main__":
   FIGSIZE_INCH = (9,8)
 
   def test_xyz_min_max():
+    """Print the min/max coordinates in um of ``segment_one_v2`` and log its min/max X, Y and Z pixel coordinates."""
     w = segment_one_v2
     w.print_xyz_min_max_um()
 
@@ -26,6 +32,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
+    """Print the coordinate maps in um of ``segment_one_v2`` and plot its X and Y pixel-index maps."""
     w = segment_one_v2
     w.print_maps_seg_um()
 
@@ -39,6 +46,7 @@ if __name__ == "__main__":
 
   def test_img():
 
+    """Histogram the pixel coordinates of ``segment_one_v2`` with weights ``X + Y`` using ``numpy.histogram2d`` (passing ``normed=False``), log shapes and edges, and plot the result."""
     w = segment_one_v2
 
     X,Y = w.get_seg_xy_maps_pix()
@@ -73,6 +81,7 @@ if __name__ == "__main__":
 
 
   def test_img_easy():
+    """Plot an image of ``segment_one_v2`` built from pixel index maps shifted to start at 0, using weights ``X + 2*Y``."""
     o = segment_one_v2
     X, Y = o.get_seg_xy_maps_pix()
     xmin, xmax, ymin, ymax  = X.min(), X.max(), Y.min(), Y.max()
@@ -85,6 +94,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Print the pixel-size arrays of ``segment_one_v2`` and log slices [0:10, 190:198] and shapes of its area and X-size arrays."""
     w = segment_one_v2
     w.print_pixel_size_arrs()
     size_arr = w.pixel_size_array('X')
@@ -98,6 +108,7 @@ if __name__ == "__main__":
 
 
   def test_mask(width=0, edge_rows=5, edge_cols=5):
+    """Plot ``pixel_mask_array(width=width, edge_rows=edge_rows, edge_cols=edge_cols)`` of ``segment_one_v2`` placed by the pixel index maps."""
     o = segment_one_v2
     X, Y = o.get_seg_xy_maps_pix_with_offset()
     mask = o.pixel_mask_array(width=width, edge_rows=edge_rows, edge_cols=edge_cols)
@@ -108,6 +119,7 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``."""
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0','1'): s+='\n 1 - test_xyz_min_max'

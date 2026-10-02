@@ -1,3 +1,4 @@
+"""Example: load a .npy file (first command-line argument or a default name) with ``np.load`` and print its shape and dtype; exits if the file does not exist."""
 import os
 import sys
 import numpy as np

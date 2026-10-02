@@ -15,6 +15,7 @@ cc = wu.cc
 
 
 def datasource_kwargs_from_string(str_dskwargs, detname=None):
+    """Return ``utils_psana.datasource_kwargs_from_string(str_dskwargs, detname=detname)`` and log the result at info level."""
     dskwargs = up.datasource_kwargs_from_string(str_dskwargs, detname=detname)
     logger.info('DataSource kwargs: %s' % str(dskwargs))
     return dskwargs
@@ -22,12 +23,17 @@ def datasource_kwargs_from_string(str_dskwargs, detname=None):
 
 class MDBWeb_CLI(MDB_CLI):
 
+    """``MDB_CLI`` subclass whose ``print``, ``deldoc``, ``delcol``, ``deldb``, ``get`` and ``add`` modes use the calibration DB web service (``MDBWebUtils``).
+
+    As in ``MDB_CLI``, the constructor parses the command line and runs :meth:`dispatcher` immediately.
+    """
     def __init__(self, parser):
         MDB_CLI.__init__(self, parser)
 
     def _warning(self): logger.warning('MDBWeb_CLI: TBD for mode: %s' % self.mode)
 
     def print_content(self):
+        """Log ``MDBWebUtils.info_webclient(**self.kwargs)`` at info level (DB content from the web service)."""
         logger.info(wu.info_webclient(**self.kwargs))
 
     def deldoc(self):
@@ -191,10 +197,15 @@ class MDBWeb_CLI(MDB_CLI):
         #id_data_exp, id_data_det, id_doc_exp, id_doc_det = resp if resp is not None
 
     def test(self):
+        """Log two warnings (a "TBD for mode" message and ``'MDBWeb_CLI.test'``); nothing else is done."""
         self._warning()
         logger.warning('MDBWeb_CLI.test')
 
     def dispatcher(self):
+        """Call the method for ``self.mode`` (``print``, ``deldoc``, ``delcol``, ``deldb``, ``get`` or ``add``); any other mode logs a warning listing ``MODES``.
+
+        Unlike ``MDBWeb_CLI.py``, the pymongo-based modes (``convert``, ``delall``, ``export``, ``import``, ``test``) are commented out here.
+        """
         mode = self.mode
         logger.debug('mode: %s' % mode)
         # Reimplemented web access methods

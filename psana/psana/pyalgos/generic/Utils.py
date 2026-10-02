@@ -130,11 +130,16 @@ def str_tstamp_v1(fmt='%Y-%m-%dT%H:%M:%S.%f%z', time_sec=None):
 
 
 def time_and_stamp(fmt='%Y-%m-%dT%H:%M:%S%z', time_sec=None):
+    """Return ``(tsec, str_tstamp(fmt, tsec))`` where ``tsec`` is ``time_sec`` or the current time."""
     tsec = time() if time_sec is None else time_sec
     return tsec, str_tstamp(fmt, tsec)
 
 
 def time_sec_from_stamp(fmt='%Y-%m-%dT%H:%M:%S%z', time_stamp='1970-01-01T00:00:00-0800'):
+    """Parse ``time_stamp`` with ``strptime(time_stamp, fmt)`` and return ``int(mktime(...))``.
+
+    On ValueError it logs the exception and calls ``sys.exit()``.
+    """
     try: struc = strptime(time_stamp, fmt)
     except ValueError as err:
         logger.exception(err)
@@ -171,6 +176,10 @@ def get_login():
 
 
 def shell_command_is_available(cmd='mongorestore', verb=True):
+    """Log a warning (if ``verb``) when ``shutil.which(cmd)`` does not find ``cmd``.
+
+    Returns None in both cases; the result of the check is not returned.
+    """
     import shutil
     if shutil.which(cmd) is None:
         if verb: logger.warning('shell command "%s" is unavailable.' % cmd)
@@ -225,6 +234,7 @@ def create_path(path, depth=6, mode=0o2775):
 
 
 def get_list_of_files_in_dir(dirname):
+    """Return ``os.listdir(dirname)``."""
     return os.listdir(dirname)
 
 
@@ -256,6 +266,10 @@ def get_list_of_files_in_dir_for_pattern(dir, pattern='-r0022'):
 
 
 def get_path_owner(path):
+    """Return the user name owning ``path`` (from ``os.stat`` and ``pwd.getpwuid``).
+
+    The debug log call refers to an undefined name ``uid``, so the function raises NameError before returning.
+    """
     import pwd
     stat = os.stat(path)
     pwuid = pwd.getpwuid(stat.st_uid)
@@ -275,10 +289,12 @@ def change_file_ownership(fname, user=None, group='ps-users'):
 
 
 def get_path_mode(path):
+    """Return ``os.stat(path).st_mode``."""
     return os.stat(path).st_mode
 
 
 def get_tempfile(mode='r+b',suffix='.txt'):
+    """Create and return a ``tempfile.NamedTemporaryFile`` object opened with ``mode`` and ``suffix``."""
     import tempfile
     tf = tempfile.NamedTemporaryFile(mode=mode,suffix=suffix)
     return tf # .name
@@ -298,10 +314,12 @@ def str_parsed_path(path):
 
 
 def print_parsed_path(path):
+    """Print the ``str_parsed_path(path)`` text (existence checks and os.path splits of ``path``)."""
     print('print_parsed_path(path): path:', str_parsed_path(path))
 
 
 def set_file_access_mode(fname, mode=0o2775):
+    """Call ``os.chmod(fname, mode)``."""
     os.chmod(fname, mode)
 
 
@@ -443,6 +461,13 @@ def _parse_token(token):
 
 
 def check_token(do_print=False):
+    """Run the shell command 'tokens' and report whether its output contains 'Expire'.
+
+    Returns
+    -------
+    tuple
+        ``(status, msg)``: bool status and a message with the expiration time parsed from the output; ``msg`` is printed if ``do_print``.
+    """
     token = getoutput('tokens')
     #if do_print: print(token)
     status = True if 'Expire' in token else False
@@ -453,6 +478,7 @@ def check_token(do_print=False):
 
 
 def get_afs_token(do_print=False):
+    """Run the shell command 'aklog' with ``getoutput`` and return its output (printed if ``do_print``)."""
     output = getoutput('aklog')
     if do_print: print(str(output))
     return output
@@ -479,16 +505,19 @@ def text_status_of_queues(lst_of_queues=['psanaq', 'psnehq', 'psfehq', 'psnehpri
 
 
 def str_kwargs(kwargs, title='Input parameters:', fmt='\n%20s: %s'):
+    """Return ``title`` followed by one ``fmt``-formatted line per key/value of ``kwargs``."""
     return title + ''.join([fmt % (k,str(v)) for k,v in kwargs.items()])
 
 
 def print_kwargs(kwargs, cmt='%s\n  kwargs:' % (40*'_')):
+    """Print ``cmt``, one padded line per key/value of ``kwargs`` and a separator line."""
     print(cmt)
     for k,v in kwargs.items(): print('  %10s: %10s' % (k,v))
     print(40*'_')
 
 
 def str_attributes(o, cmt='\nattributes:', fmt='\n  %s'):
+    """Return ``cmt`` followed by one ``fmt``-formatted line per name in ``dir(o)``."""
     return cmt + ''.join([fmt % str(v) for v in dir(o)])
 
 
@@ -539,12 +568,17 @@ def input_single_char(prompt='input? >'):
 
 
 def os_system(cmd):
+    """Assert that ``cmd`` is a str, run it with ``os.system`` and log it at debug level; returns None."""
     assert isinstance(cmd,str), 'command should be str'
     os.system(cmd)
     logger.debug('os_system command: %s' % cmd)
 
 
 def os_command(cmd):
+    """Assert that ``cmd`` is a str, run it with ``os.popen``, read its output and log the command and output at debug level.
+
+    The output is not returned (the function returns None).
+    """
     assert isinstance(cmd,str), 'command should be str'
     _cmd = cmd
     stream = os.popen(_cmd)
@@ -558,6 +592,10 @@ def os_command(cmd):
 if __name__ == "__main__":
 
   def test_10():
+    """Save a random image with ``save_image_tiff`` to 'image.tiff' and with ``save_image_file`` to 'image.png' and 'image.xyz'.
+
+    Defined only when the module runs as a script, as are the other tests here.
+    """
     from psana.pyalgos.generic.NDArrGenerators import random_standard
 
     image = random_standard()
@@ -568,6 +606,7 @@ if __name__ == "__main__":
 
 
   def test_datetime():
+    """Print the current time as seconds, as datetime objects, and as a millisecond time stamp with the local zone offset."""
     from datetime import datetime
     t_sec = time()
     print('t_sec:', t_sec)
@@ -584,6 +623,7 @@ if __name__ == "__main__":
 
 
   def test_input_single_char():
+    """Prompt up to 20 times for a single key with ``input_single_char`` and exit on any key other than 'y'."""
     for n in range(20):
       ch = input_single_char('Event:%03d Next event? [y/n]' %n)
       if ch != 'y': sys.exit('\nExit by key %s' % ch)
@@ -591,6 +631,7 @@ if __name__ == "__main__":
 
   def test_01():
 
+    """Print environment, host, cwd, login and time-stamp helpers, create './work' with mode 0o377 and print its mode, the start record and ``list_of_hosts()``."""
     print('get_enviroment("PWD"): %s' % get_enviroment(env='PWD'))
     print('get_hostname()       : %s' % get_hostname())
     print('get_cwd()            : %s' % get_cwd())

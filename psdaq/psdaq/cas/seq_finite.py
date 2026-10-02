@@ -1,4 +1,10 @@
 #from evtsel import *
+"""Script that loads and starts a finite 'BurstTest' sequence with `sequser.SeqUser` on PV base --pv (default 'TPG:SYS2:2:EXP00').
+
+It starts with FixedRateSync(marker=0, occ=10), adds the same burst groups as
+`seq_burst`, then a CheckPoint(0) and a branch to itself; the instructions are printed,
+then stop/clean/load/begin(wait=True).
+"""
 import sys
 import argparse
 from sequser import *

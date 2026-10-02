@@ -1,3 +1,4 @@
+"""Charge-injection scan for an EpixHR detector: steps a pixel-map grid pattern with trbit 0 and 1 using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import numpy as np
 import json
@@ -5,6 +6,12 @@ import json
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 2000 events per step, hutch 'rix', detname 'epixhr_0', scantype 'chargeinj', record 1, --spacing 5.
+
+    Every step sets gain_mode 5 and, for the four ASICs, atest=1, test=1, Pulser=0xc8 and
+    the current trbit. For trbit in (0, 1) and s in range(spacing**2), pixel_map is a
+    288x384 grid with 1 at every `spacing`-th pixel offset by s; step value s + trbit*spacing**2.
+    """
     defargs = {'--events'  :2000,
                '--hutch'   :'rix',
                '--detname' :'epixhr_0',

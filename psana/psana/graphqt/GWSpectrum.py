@@ -81,21 +81,25 @@ class GWSpectrum(QWidget):
         self.update_info_panel()
 
     def set_signal_fast(self, is_fast=True):
+        """Set the ``signal_fast`` attribute of the histogram view and both axis views to ``is_fast``."""
         self.whi.signal_fast = is_fast
         self.wax.signal_fast = is_fast
         self.way.signal_fast = is_fast
 
     def connect_scene_rect_changed(self):
+        """Connect the scene-rect-changed signals of ``whi``, ``wax`` and ``way`` to their ``on_*_scene_rect_changed`` slots."""
         self.whi.connect_scene_rect_changed(self.on_whi_scene_rect_changed)
         self.wax.connect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.connect_scene_rect_changed(self.on_way_scene_rect_changed)
 
     def disconnect_scene_rect_changed(self):
+        """Disconnect the scene-rect-changed signals of ``whi``, ``wax`` and ``way`` from their ``on_*_scene_rect_changed`` slots."""
         self.whi.disconnect_scene_rect_changed(self.on_whi_scene_rect_changed)
         self.wax.disconnect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.disconnect_scene_rect_changed(self.on_way_scene_rect_changed)
 
     def on_but_reset(self):
+        """Increment ``nreset``, reset the histogram scene rect and call :meth:`on_whi_scene_rect_changed` with the new rect."""
         self.nreset += 1
         self.whi.reset_scene_rect()
         r = self.whi.scene_rect()
@@ -105,6 +109,7 @@ class GWSpectrum(QWidget):
         #self.way.reset_scene_rect()
 
     def on_whi_scene_rect_changed(self, r):
+        """Set the axis limits of ``wax`` (x range) and ``way`` (y range) from rect ``r``, update the info panel and emit the histogram signal if the rect changed."""
         logger.debug('on_whi_scene_rect_changed: %s' % qu.info_rect_xywh(r))
         self.wax.set_axis_limits(r.x(), r.x()+r.width())   # fit_in_view(QRectF(r.x(), 0, r.width(), 1))
         self.way.set_axis_limits(r.y(), r.y()+r.height())  # fit_in_view(QRectF(0, r.y(), 1, r.height()))
@@ -113,12 +118,14 @@ class GWSpectrum(QWidget):
 
     def on_wax_scene_rect_changed(self, r):
         #logger.debug('on_wax_scene_rect_changed: %s' % qu.info_rect_xywh(r))
+        """Fit the histogram view to the x range of ``r`` (keeping its y range) and emit the histogram signal if the rect changed."""
         rs = self.whi.scene_rect()
         self.whi.fit_in_view(QRectF(r.x(), rs.y(), r.width(), rs.height()))
         self.emit_signal_if_histogram_scene_rect_changed()
 
     def on_way_scene_rect_changed(self, r):
         #logger.debug('on_way_scene_rect_changed: %s' % qu.info_rect_xywh(r))
+        """Fit the histogram view to the y range of ``r`` (keeping its x range), emit the histogram signal if changed and update the info panel."""
         rs = self.whi.scene_rect()  # scene().sceneRect()
         self.whi.fit_in_view(QRectF(rs.x(), r.y(), rs.width(), r.height()))
         self.emit_signal_if_histogram_scene_rect_changed()
@@ -132,12 +139,15 @@ class GWSpectrum(QWidget):
             self.histogram_scene_rect_changed.emit(rs)
 
     def connect_histogram_scene_rect_changed(self, recip):
+        """Connect the ``histogram_scene_rect_changed`` signal to ``recip``."""
         self.histogram_scene_rect_changed.connect(recip)
 
     def disconnect_histogram_scene_rect_changed(self, recip):
+        """Disconnect the ``histogram_scene_rect_changed`` signal from ``recip``."""
         self.histogram_scene_rect_changed.disconnect(recip)
 
     def test_histogram_scene_rect_changed(self, r):
+        """Test slot: print the received rect ``r`` followed by a carriage return."""
         print(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r), end='\r')
 
     def update_info_panel(self):
@@ -156,6 +166,7 @@ class GWSpectrum(QWidget):
         self.edi_info.setText(s)
 
     def set_tool_tips(self):
+        """Set tool tips on the histogram, axes, info box, Reset button and color bar."""
         self.whi.setToolTip('Spectral intensity\ndistribution')
         self.wax.setToolTip('Spectral\nintensity')
         self.way.setToolTip('Spectral\nvalue')
@@ -164,6 +175,7 @@ class GWSpectrum(QWidget):
         self.wcbar.setToolTip('Color bar for color\nto intensity conversion\nclick on it to select another')
 
     def set_style(self):
+        """Set zero margins, color-bar width 25, info-box height 85-90 and the histogram default style on the info box."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wcbar.setFixedWidth(25)
         self.edi_info.setMinimumHeight(85)
@@ -184,6 +196,7 @@ class GWSpectrum(QWidget):
         self.on_but_reset()
 
     def closeEvent(self, e):
+        """Log at debug level and pass the event to ``QWidget.closeEvent``."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
 

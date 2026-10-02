@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+"""Example/test for ``GWViewColorBar``: a subclass with keyboard control of the color table.
+
+Run as a script with test name ``'0'`` (horizontal bar) or ``'1'`` (vertical bar). The module-level
+``USAGE`` refers to ``test_gfviewcolorbar``, which is defined only under ``__main__``, so importing the
+module raises NameError.
+"""
 import inspect
 from psana.graphqt.GWViewColorBar import *
 
@@ -7,6 +13,7 @@ SCRNAME = sys.argv[0].split('/')[-1]
 
 class TestGWViewColorBar(GWViewColorBar):
 
+    """``GWViewColorBar`` subclass with key handling for resetting and cycling the color table."""
     KEY_USAGE = 'Keys:'\
             '\n  ESC - exit'\
             '\n  R - reset color table 0'\
@@ -16,6 +23,7 @@ class TestGWViewColorBar(GWViewColorBar):
     def keyPressEvent(self, e):
         #print('keyPressEvent, key=', e.key())
 
+        """Handle keys if bit 0 of ``change_mode`` is set: Escape closes, R selects table 0, N the next table, others print ``KEY_USAGE``."""
         if not (self.change_mode & 1): return
 
         if   e.key() == Qt.Key_Escape:
@@ -41,6 +49,12 @@ if __name__ == "__main__":
   os.environ['LIBGL_ALWAYS_INDIRECT'] = '1' #export LIBGL_ALWAYS_INDIRECT=1
 
   def test_gfviewcolorbar(tname):
+    """Create a ``QApplication`` and show a ``TestGWViewColorBar`` with a 1000-color rainbow table.
+
+    Test ``'0'`` makes a horizontal bar with ``change_mode=1`` and ``scale_ctl='H'``, ``'1'`` a vertical
+    bar; other names print a message and return. Test slots are connected to the mouse-move,
+    index-selected, new-color-table and scene-rect signals.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     arr = np.random.random((1000, 100))
     #arr = image_with_random_peaks((1000, 1000))

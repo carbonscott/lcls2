@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
+"""Example: draw lines, a point, rectangles, rounded rectangles, ellipses and text on a 400x300 QPixmap shown in a QMainWindow.
+
+The application window is created and the Qt event loop is started at import time.
+"""
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import Qt
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    """QMainWindow whose central QLabel holds a white 400x300 pixmap; ``__init__`` calls all ``draw_something_*`` methods on it."""
     def __init__(self):
         super().__init__()
 
@@ -23,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def draw_something_line(self):
+        """Draw a blue line of width 15 from (10, 10) to (300, 200) on the label pixmap."""
         pen = QtGui.QPen()
         pen.setWidth(15)
         pen.setColor(QtGui.QColor('blue'))
@@ -36,6 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #    painter.drawPoint(200, 150)
     #    painter.end()
     #def draw_something(self):
+        """Draw a red point of pen width 40 at (200, 150) on the label pixmap."""
         painter = QtGui.QPainter(self.label.pixmap())
         pen = QtGui.QPen()
         pen.setWidth(40)
@@ -46,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def draw_something_rects(self):
+        """Draw five overlapping rectangles with a blue-gray pen and a yellow Dense1Pattern brush on the label pixmap."""
         from random import randint
         painter = QtGui.QPainter(self.label.pixmap())
         pen = QtGui.QPen()
@@ -68,6 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
         painter.end()
 
     def draw_something_rounded_rects(self):
+        """Draw four rounded rectangles with different corner radii on the label pixmap."""
         from random import randint
         painter = QtGui.QPainter(self.label.pixmap())
         pen = QtGui.QPen()
@@ -82,6 +91,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def draw_something_ellipses(self):
+        """Draw three red ellipses starting at (10, 10) with increasing sizes on the label pixmap."""
         from random import randint
         painter = QtGui.QPainter(self.label.pixmap())
         pen = QtGui.QPen()
@@ -95,6 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         painter.end()
 
     def draw_something_text(self):
+        """Draw 'Hello, world!' in bold 40 pt Times, green, at (100, 100) on the label pixmap."""
         from random import randint
         painter = QtGui.QPainter(self.label.pixmap())
         pen = QtGui.QPen()

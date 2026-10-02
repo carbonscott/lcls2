@@ -1,3 +1,8 @@
+"""Generated sequence description with seqcodes {0: '33kHz base', 1: '35kHz base'}.
+
+Alternates ControlRequest([0]) and ControlRequest([1]) with '910kH' waits (comments
+record period=[28, 26]) over one 364-bucket cycle and branches back to line 0.
+"""
 from psdaq.seq.seq import *
 
 seqcodes = {0:'33kHz base',1:'35kHz base'}

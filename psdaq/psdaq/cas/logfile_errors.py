@@ -1,3 +1,4 @@
+"""Command-line tool that prints the first '<E>' lines from DAQ log files, grouped by control-log timestamp."""
 import argparse
 import datetime
 import glob
@@ -6,6 +7,13 @@ import subprocess
 import logging
 
 def dump_errors(a, limit=5):
+    """Grep file `a` for '<E>' and log the file name and up to `limit` matching lines at info level.
+
+    Returns
+    -------
+    bool
+        True if grep found a match (return code 0), else False.
+    """
     cmd = f"grep '<E>' {a}"
     result = subprocess.run(cmd, capture_output=True, shell=True, encoding='utf-8')
 #            logging.info(f'return code {result.returncode}')
@@ -19,6 +27,12 @@ def dump_errors(a, limit=5):
     return result.returncode == 0
 
 def main():
+    """Find '*control.log' files under the hutch log path for a date and report errors from each run's log files.
+
+    The path is --path or '/cds/home/opr/<H>opr/' plus -D or today's 'Y/M/D_' prefix. For
+    each control log, the same-prefix logs are scanned (control_gui.log skipped) and per
+    day the count of control logs with errors is logged.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', metavar='HUTCH', default='tmo',
                         help='hutch logfiles to search')

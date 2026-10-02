@@ -43,6 +43,7 @@ class CMWDBTree(QWTree):
 
 
     def fill_tree_model(self, pattern=''):
+        """Clear the model and fill it with database names containing ``pattern`` (all if empty) via :meth:`fill_tree_model_dbs`; log the fill time."""
         logger.debug('CMWDBTree.fill_tree_model')
         from time import time
         t0_sec = time()
@@ -59,6 +60,11 @@ class CMWDBTree(QWTree):
 
         #pattern = 'cdb_xcs'
         #pattern = 'cspad'
+        """Add one top-level item per database name from ``dbu.database_names()`` that contains ``self._pattern``.
+
+        Asserts the name list is not None and prints it. Collections are not added here (that branch is
+        disabled with ``if False``). ``dbu`` is the web or MongoDB backend chosen in ``CMDBUtils``.
+        """
         pattern = self._pattern
         dbnames = dbu.database_names()
         assert dbnames is not None
@@ -91,6 +97,10 @@ class CMWDBTree(QWTree):
 
 
     def fill_tree_model_collections(self, index):
+        """Replace the children of the database item at ``index`` with its collection names from ``dbu.collection_names`` and expand it.
+
+        Existing children are removed first; nothing is added if the item is not at the top (DB) level.
+        """
         m = self.model
         item = m.itemFromIndex(index)
         itemname = item.text()
@@ -129,6 +139,7 @@ class CMWDBTree(QWTree):
 
 
     def on_db_and_collection_selected(self, dbname, colname):
+        """Call ``cp.cmwdbdocs.show_documents(dbname, colname)`` if that widget exists."""
         msg = 'on_db_and_collection_selected DB: %s collection: %s' % (dbname, colname)
         logger.debug(msg)
         wdocs = cp.cmwdbdocs
@@ -137,6 +148,7 @@ class CMWDBTree(QWTree):
 
 
     def on_item_selected(self, selected, deselected):
+        """Call ``QWTree.on_item_selected`` and set ``cp.last_selection`` to ``cp.DB_COLS`` if an item is selected."""
         QWTree.on_item_selected(self, selected, deselected)
 
         itemsel = self.model.itemFromIndex(selected)

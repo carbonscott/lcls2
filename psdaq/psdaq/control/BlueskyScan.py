@@ -1,5 +1,6 @@
 # BlueskyScan.py
 
+"""`BlueskyScan`: a bluesky-compatible device object that runs DAQ scan steps through a control object."""
 from bluesky import RunEngine
 from ophyd.status import Status
 import json
@@ -12,6 +13,13 @@ import numpy as np
 from psdaq.control.ControlDef import ControlDef
 
 class BlueskyScan:
+    """Bluesky device that drives the DAQ one scan step per `trigger` call.
+
+    On construction it binds/connects an inproc PUSH/PULL socket pair
+    ('inproc://bluesky_scan') and starts `daq_communicator_thread` and
+    `daq_monitor_thread` as daemon threads. `control` must provide `setState`, `setRecord`,
+    `monitorStatus`, `getPlatform`, `getBlock` and a `platform` attribute.
+    """
     def __init__(self, control, *, daqState):
         self.control = control
         self.name = 'mydaq'
@@ -48,11 +56,13 @@ class BlueskyScan:
         # e.g. how many events we took.  called when trigger status
         # is done&&successful.
         # typically called by trigger_and_read()
+        """Return an empty dict (a debug message is logged)."""
         logging.debug('*** here in read')
         return {}
 
     def describe(self):
         # stuff we want to give back to user running bluesky
+        """Return an empty dict (a debug message is logged)."""
         logging.debug('*** here in describe')
         return {}
 
@@ -61,6 +71,20 @@ class BlueskyScan:
     # it is done as a separate thread so we don't block
     # the bluesky event loop.
     def daq_communicator_thread(self):
+        """Loop forever, acting on state strings received on the inproc PULL socket.
+
+        For 'connected'/'starting' it calls `control.setState`, waits for `daqState` to match,
+        calls `control.setRecord(self.record)` if now 'connected', and sets `ready`. For
+        'running' it builds Configure and BeginStep blocks from the motor positions and
+        requests 'running' with 'configure', 'beginstep' and 'enable' phase-1 info, then
+        waits for 'running' and for `step_done`.
+
+        Notes
+        -----
+        After a step it increments `step_value` and calls ``self.status._finished(success=True)``.
+        A motor named `ControlDef.STEP_VALUE` overrides `step_value`; the other motors are
+        recorded under names from `_scan_record_name`. 'shutdown' ends the loop.
+        """
         logging.debug('*** daq_communicator_thread')
         while True:
             state = self.pull_socket.recv().decode("utf-8")
@@ -181,6 +205,12 @@ class BlueskyScan:
                 break
 
     def daq_monitor_thread(self):
+        """Loop forever, tracking DAQ state from `control.monitorStatus()`.
+
+        Stops when the first part is None, sets `step_done` on 'step' and ignores other
+        non-transition parts. On 'endrun' `step_value` is reset to 1. For transitions
+        `daqState` is set to the second part and `daqState_cv` is notified.
+        """
         logging.debug('*** daq_monitor_thread')
         while True:
             part1, part2, part3, part4, part5, part6, part7, part8 = self.control.monitorStatus()
@@ -205,6 +235,17 @@ class BlueskyScan:
     # this is a co-routine, so shouldn't block
     def trigger(self):
         # do one step
+        """Start one scan step without blocking.
+
+        Creates a new ophyd `Status`, pushes 'running' (BeginStep) and 'starting' (EndStep)
+        to the communicator thread and returns the status, which the communicator thread
+        marks finished after the step is done.
+
+        Returns
+        -------
+        ophyd.status.Status
+            Status object for this step.
+        """
         self.status = Status()
         # tell the control level to do a step in the scan
         # to-do: pass it the motor positions, ideally both
@@ -218,10 +259,12 @@ class BlueskyScan:
 
     def read_configuration(self):
         # done at the first read after a configure
+        """Return an empty dict."""
         return {}
 
     def describe_configuration(self):
         # the metadata for read_configuration()
+        """Return an empty dict."""
         return {}
 
     def configure(self, *, motors=None, events=None, record=None, detname=None, scantype=None, scan_names=None, serial_number=None, alg_name=None, alg_version=None, seq_ctl=None):
@@ -348,6 +391,7 @@ class BlueskyScan:
     def stage(self):
         # done once at start of scan
         # put the daq into the right state ('connected')
+        """Put the DAQ in 'connected' (blocking until done) and return ``[self]``."""
         logging.debug('*** here in stage')
         self._set_connected()
 
@@ -356,6 +400,7 @@ class BlueskyScan:
     def unstage(self):
         # done once at end of scan
         # put the daq into the right state ('connected')
+        """Put the DAQ in 'connected' (blocking until done) and return ``[self]``."""
         logging.debug('*** here in unstage')
         self._set_connected()
         
@@ -378,6 +423,24 @@ class BlueskyScan:
 #
 
     def getBlock(self, *, transition, data):
+        """Fill step-info fields in `data` and return ``control.getBlock(data)``.
+
+        Sets 'transitionid' from `ControlDef.transitionId` (logs an error if `transition` is
+        unknown), sets 'add_names'/'add_shapes_data' to True/False for 'Configure' and
+        False/True otherwise, and sets 'namesid' to `ControlDef.STEPINFO`.
+
+        Parameters
+        ----------
+        transition : str
+            Transition name, e.g. 'Configure' or 'BeginStep'.
+        data : dict
+            Block description; must contain 'motors'. Modified in place.
+
+        Returns
+        -------
+        object
+            Whatever `control.getBlock` returns.
+        """
         logging.debug('getBlock: motors=%s' % data["motors"])
         if transition in ControlDef.transitionId.keys():
             data["transitionid"] = ControlDef.transitionId[transition]

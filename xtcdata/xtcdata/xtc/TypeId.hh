@@ -30,7 +30,7 @@ public:
     /** Set the value to ((version << 12) & 0xf000) | type, so only the low 4 bits of version are kept. */
     TypeId(Type type, unsigned version);
     /**
-     * Parse a string of the form "<name>_v<digits>", where <name> is one of name()'s strings.
+     * Parse a string of the form `NAME_vDIGITS`, where `NAME` is one of name()'s strings and `DIGITS` is the version number.
      * On a match the code computes (version << 16) | type, which the 16-bit storage truncates to just the type, so the parsed version is dropped (version() returns 0).
      * If there is no "_v" suffix, the digits are missing or followed by other characters, or the name is unknown, the value is NumberOf.
      */

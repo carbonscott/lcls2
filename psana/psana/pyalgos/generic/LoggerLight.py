@@ -84,34 +84,49 @@ class Logger :
 
 
     def getListOfLevels(self):
+        """Return the class list of level names (lower- and upper-case variants)."""
         return self.levels
 
 
     def getLevel(self):
+        """Return the threshold level name set by ``setLevel``."""
         return self.level_thr_str
 
 
     def getLogFileName(self):
+        """Return the log file name set at start (default '<start-time>-log.txt')."""
         return self.fname
 
 
     def getLogTotalFileName(self):
+        """Return the total-log file name set at start."""
         return self.fname_total
 
 
     def getStrStartTime(self):
+        """Return the session start time string."""
         return self.str_start_time
 
 
-    def debug   (self, msg, name=None) : self._message(msg, 0, name)
+    def debug   (self, msg, name=None) :
+        """Record ``msg`` at level index 0 ('debug') with optional source ``name``."""
+        self._message(msg, 0, name)
 
-    def info    (self, msg, name=None) : self._message(msg, 1, name)
+    def info    (self, msg, name=None) :
+        """Record ``msg`` at level index 1 ('info') with optional source ``name``."""
+        self._message(msg, 1, name)
 
-    def warning (self, msg, name=None) : self._message(msg, 2, name)
+    def warning (self, msg, name=None) :
+        """Record ``msg`` at level index 2 ('warning') with optional source ``name``."""
+        self._message(msg, 2, name)
 
-    def error   (self, msg, name=None) : self._message(msg, 3, name)
+    def error   (self, msg, name=None) :
+        """Record ``msg`` at level index 3 ('error') with optional source ``name``."""
+        self._message(msg, 3, name)
 
-    def critical(self, msg, name=None) : self._message(msg, 4, name)
+    def critical(self, msg, name=None) :
+        """Record ``msg`` at level index 4 ('critical') with optional source ``name``."""
+        self._message(msg, 4, name)
 
     def _message(self, msg, index, name=None) :
         """Store input message the 2D tuple of records, send request to append GUI.
@@ -163,6 +178,7 @@ class Logger :
 
 
     def timeStamp(self, fmt='%Y-%m-%d %H:%M:%S') : # '%Y-%m-%d %H:%M:%S %Z'
+        """Return the current local time formatted with ``fmt`` (default '%Y-%m-%d %H:%M:%S')."""
         return strftime(fmt, localtime())
 
 
@@ -227,6 +243,7 @@ logger = Logger(fname=None)
 def test_Logger() :
 
     #logger.setLevel('debug')
+    """Set the module logger to level 'warning' with all print bits, record one message per level and print the selected and total log content."""
     logger.setLevel('warning')
     logger.setPrintBits(0o177777) # print messages
     

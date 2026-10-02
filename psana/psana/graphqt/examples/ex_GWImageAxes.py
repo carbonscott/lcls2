@@ -18,11 +18,13 @@ from psana.pyalgos.generic.NDArrGenerators import np, test_image, random_standar
 
 class TestGWImageAxes(GWImageAxes):
 
+      """GWImageAxes subclass for interactive testing; prints the key usage at construction."""
       def __init__(self, **kwa):
           GWImageAxes.__init__(self, **kwa)
           print(self.key_usage())
 
       def key_usage(self):
+        """Return the key help text (Esc, R, N)."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset original size'\
@@ -30,6 +32,7 @@ class TestGWImageAxes(GWImageAxes):
                '\n'
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes, R resets the view with ``on_but_reset``, N shows a new random test image of random shape, other keys print the key help."""
         logger.debug('==  keyPressEvent key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             print('Close app')

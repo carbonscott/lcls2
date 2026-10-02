@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+"""Command-line script: parse experiment, run number, --max_shots (default 400) and -l/--loglev, initialize logging and run ``DarkBackgroundReference(args)`` from ``psana.xtcav.DarkBackgroundReference``."""
 import sys
 import argparse
 import logging

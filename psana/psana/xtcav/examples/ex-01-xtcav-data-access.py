@@ -11,6 +11,7 @@ print('e.g.: [python] %s [test-number]' % sys.argv[0])
 #----------
 
 def test_xtcav_data_access() :
+    """Open the test file selected by ``sys.argv[1]`` (via ``data_file``), print the run info and ``det.raw(evt)`` of detector 'xtcav' for events 0-10."""
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'
 
     ds = DataSource(files=data_file(tname))

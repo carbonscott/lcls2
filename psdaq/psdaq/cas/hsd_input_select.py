@@ -1,3 +1,4 @@
+"""Command-line tool to read or set the 'jesdsetup' input selection in the ':RESET' PV of every digitizer found on a hutch host."""
 import os
 import sys
 import argparse
@@ -12,6 +13,16 @@ subnet = {'TMO':'daq-tmo-hsd-01',
           'RIX':'daq-rix-hsd-01',}
 
 def main():
+    """Find 'DAQ:<H>:HSD:1_*:[A,B]:RESET' PVs served from the hutch host (via `pvlist`) and print or set 'jesdsetup'.
+
+    The argparse help describes -I as "Input selection (0=A0_2, 1=A1_3)". Without -I the
+    current values are logged; with -I each PV is updated unless --test.
+
+    Raises
+    ------
+    ValueError
+        If the hutch is not 'TMO' or 'RIX', or -I is not 0 or 1.
+    """
     parser = argparse.ArgumentParser(description='Make input selection for all HSDs in the hutch')
     parser.add_argument('-H', type=str, required=True, help='TMO,RIX,...', metavar='HUTCH')
     parser.add_argument('-I', type=int, required=False, help='Input selection (0=A0_2, 1=A1_3). Omit to see current setting', metavar='INPUT', default=None)

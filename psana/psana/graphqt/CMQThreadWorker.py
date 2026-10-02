@@ -27,6 +27,7 @@ from PyQt5.QtCore import QThread #, QTimer # Qt, QPoint
 
 class CMQThreadWorker(QThread):
 
+    """QThread whose ``run`` loop increments a counter and sleeps ``dt_msec`` ms per iteration."""
     def __init__ (self, parent=None, dt_msec=5):
         """
            uses/updates cp.list_of_sources
@@ -65,6 +66,10 @@ class CMQThreadWorker(QThread):
 
 
     def run(self):
+        """Loop forever: increment ``self.counter``, log it at debug level and sleep ``self.dt_msec`` ms.
+
+        There is no exit condition in the loop.
+        """
         while True:
             self.counter += 1
             logger.debug('XXX:CMQThreadWorker %d' % self.counter)
@@ -79,10 +84,12 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(levelname)s %(name)s: %(message)s', level=logging.DEBUG)
 
     def on_but_play():
+        """Log a debug message; test button handler defined in the ``__main__`` block."""
         logger.debug('XXX: on_but_play')
 
     def on_but_exit():
         #stat = t1.quit()
+        """Log a debug message and call ``sys.exit()``; test button handler defined in the ``__main__`` block."""
         logger.debug('XXX: on_but_exit')
         sys.exit()
 

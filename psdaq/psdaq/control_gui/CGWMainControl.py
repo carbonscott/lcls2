@@ -42,7 +42,10 @@ from psdaq.control_gui.QWProgressBar import QWProgressBar
 
 
 class CGWMainControl(QGroupBox):
-    """
+    """QGroupBox 'Control' with a target-state combo box, record button, progress bar and last-transition/state buttons.
+
+    Registers itself as `cp.cgwmaincontrol`. State names in the combo box are
+    'Select' followed by the upper-cased `ControlDef.states`.
     """
     def __init__(self, parent=None):
 
@@ -131,6 +134,7 @@ class CGWMainControl(QGroupBox):
 
 
     def set_tool_tips(self):
+        """Set tool tips and set the recording label text to 'Recording:'."""
         self.setToolTip('Configuration')
         self.but_record.setToolTip('sets flag for recording')
         self.lab_record.setText('Recording:')
@@ -140,6 +144,7 @@ class CGWMainControl(QGroupBox):
 
 
     def set_style(self):
+        """Apply sizes and styles; the progress bar starts hidden."""
         self.setStyleSheet(style.qgrbox_title)
         self.lab_record.setFixedWidth(100)
         self.but_record.setFixedSize(50, 50)
@@ -153,16 +158,24 @@ class CGWMainControl(QGroupBox):
 
 
     def update_progress_bar(self, value=0.3, is_visible=False, trans_name=''):
+        """Set the progress bar visibility, value and label."""
         self.bar_progress.setVisible(is_visible)
         self.bar_progress.set_value(value)
         self.bar_progress.set_label(trans_name)
 
 
     def sizeHint(self):
+        """Return QSize(270, 160)."""
         return QSize(270,160)
 
 
     def on_box_state(self, ind):
+        """Request the selected target state through `daq_control_set_state` (lower-cased).
+
+        Index 0 ('Select') is ignored. If the previous selection was 'RESET', a separator is
+        first added to the error log of `cp.cgwmain.wlogr`; a warning is logged if no DAQ
+        control object is set.
+        """
         if not ind: return
         state = self.states[ind]
 
@@ -176,16 +189,22 @@ class CGWMainControl(QGroupBox):
 
     def on_but_transition(self):
         #logger.debug('on_but_transition') # NO ACTION')
+        """Refresh the transition button text via `check_transition`."""
         self.check_transition()
 
 
     def on_but_ctrls(self):
+        """Log a debug message and call `check_state`."""
         logger.debug('on_but_ctrls')
         self.check_state()
 
 
     def on_cbx_runc(self, ind):
         #if self.cbx.hasFocus():
+        """Style and log the state of check box `self.cbx_runc`.
+
+        `cbx_runc` is never created in this class, so calling this raises AttributeError.
+        """
         cbx = self.cbx_runc
         tit = cbx.text()
         self.cbx_runc.setStyleSheet(style.styleGreenish if cbx.isChecked() else style.styleYellowBkg)
@@ -194,6 +213,7 @@ class CGWMainControl(QGroupBox):
 
 
     def on_but_record(self):
+        """Toggle recording by calling `daq_control_set_record(not cp.s_recording)`; warn if it returns False."""
         logger.debug('on_but_record')
 
         if not daq_control_set_record(not cp.s_recording):
@@ -208,6 +228,10 @@ class CGWMainControl(QGroupBox):
 
     def check_state(self):
         #logger.debug('check_state -> daq_control_get_state()')
+        """If `cp.s_state` differs from `self.state`, call `set_buts_enabled` and store the new state.
+
+        Logs a warning and returns if `cp.s_state` is None.
+        """
         s = cp.s_state # daq_control_get_state()
         if s is None:
             logger.warning('check_state: STATE IS NOT AVAILABLE')
@@ -218,6 +242,7 @@ class CGWMainControl(QGroupBox):
 
 
     def set_but_record_enabled(self, is_enabled=True):
+        """Enable or disable the record button (disabled buttons are drawn flat)."""
         but = self.but_record
         but.setEnabled(is_enabled)
         but.setFlat(not is_enabled)
@@ -226,6 +251,12 @@ class CGWMainControl(QGroupBox):
 
     def set_buts_enabled(self):
 
+        """Update widgets from the cached `cp.s_transition`, `cp.s_state`, `cp.s_cfgtype`, `cp.s_recording`.
+
+        Sets the record icon, enables the record button only in reset/unallocated/allocated/
+        connected/configured, disables the state box in reset/unallocated, and sets the state
+        and transition button texts.
+        """
         status = transition, state, cfgtype, recording =\
              (cp.s_transition, cp.s_state, cp.s_cfgtype, cp.s_recording)
 
@@ -262,11 +293,13 @@ class CGWMainControl(QGroupBox):
     def set_transition(self, s):
         #ts = gu.str_tstamp(fmt='%H:%M:%S', time_sec=None) # '%Y-%m-%dT%H:%M:%S%z'
         #self.but_transition.setText('%s since %s' % (s.upper(), ts))
+        """Set the transition button text to `s.upper()` (or None if `s` is None)."""
         self.but_transition.setText(s.upper() if s is not None else None)
 
 
     def closeEvent(self, e):
         #logger.debug('closeEvent')
+        """Call `QGroupBox.closeEvent` and set `cp.cgwmaincontrol` to None."""
         QGroupBox.closeEvent(self, e)
         cp.cgwmaincontrol = None
 
@@ -274,6 +307,10 @@ class CGWMainControl(QGroupBox):
     if __name__ == "__main__":
 
       def resizeEvent(self, e):
+        """Print the widget size.
+
+        Defined only when the module is run as a script.
+        """
         print('CGWMainControl.resizeEvent: %s' % str(self.size()))
 
 

@@ -18,6 +18,11 @@ from PyQt5.QtWidgets import QGraphicsPolygonItem
 
 class DragPoly(QGraphicsPolygonItem, DragBase):
                 # QPolygonF, QGraphicsItem, QGraphicsScene
+    """Draggable ``QGraphicsPolygonItem`` combined with ``DragBase``; vertices can be added with the mouse and edited through control points.
+
+    Constructed from a ``QPointF`` (starts in ADD mode and grabs the mouse) or a ``QPolygonF`` (drawn as
+    is); other types log a warning and leave the item uninitialized.
+    """
     def __init__(self, obj, parent=None, scene=None,\
                  brush=QBrush(), pen=QPen(Qt.blue, 0, Qt.SolidLine)):
         """Adds QGraphics(Polygon)Item to the scene.
@@ -69,6 +74,11 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
 
 
     def set_control_points(self):
+        """Create a ``DragPoint`` child at each polygon vertex and store them in ``lst_ctl_points``.
+
+        If there are at least two vertices an extra yellow rectangular point ``self.ped`` at
+        ``0.7*p0 + 0.3*p1`` is appended. The z-value of this polygon item is set to 100.
+        """
         logger.debug('In DragPoly.set_control_points - TBE')
         #return
         parent = self # None
@@ -96,6 +106,7 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
     def move_control_points(self):
         #logger.debug('In DragPoly.move_control_points - TBE')
 
+        """Move the vertex control points by the displacement of each vertex since the press (``poly0``/``pos0``), and move ``self.ped`` accordingly."""
         poly  = self.polygon()
         poly0 = self.poly0
 
@@ -111,6 +122,7 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
 
     def itemChange(self, change, value):
         #print('%s.itemChange' % (self.__class__.__name__), ' change: %d, value:' % change, value)
+        """Call the base ``itemChange`` and, on a selection change, show the control points only while the item is selected; return the base result."""
         valnew = QGraphicsPolygonItem.itemChange(self, change, value)
         if change == self.ItemSelectedHasChanged:
             #self.set_control_points_visible(visible=True)
@@ -121,6 +133,11 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
     def mousePressEvent(self, e):
         #logger.debug('DragPoly.mousePressEvent, at point: %s on scene: %s '%\
         #             (str(e.pos()), str(e.scenePos()))) # self.__class__.__name__
+        """Call the base handler; a right button marks the end of adding. If a control point is clicked, enter EDIT mode for it.
+
+        In EDIT mode the clicked point index and the current polygon and point positions are stored; clicking
+        ``self.ped`` opens the control-point menu. Returns after a warning if there are no control points yet.
+        """
         QGraphicsPolygonItem.mousePressEvent(self, e) # points would not show up w/o this line
 
         if e.button()==Qt.RightButton: self._end_of_add = True
@@ -154,6 +171,11 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
 
 
     def mouseMoveEvent(self, e):
+        """Call the base handler, then move the item (MOVE mode, selected), drag the last vertex (ADD mode) or move the selected vertex (EDIT mode).
+
+        In ADD mode nothing happens after the end of adding was marked; in EDIT mode the control points
+        are moved with :meth:`move_control_points`.
+        """
         QGraphicsPolygonItem.mouseMoveEvent(self, e)
         #logger.debug('%s.mouseMoveEvent' % self.__class__.__name__)
         #print('%s.mouseMoveEvent, at point: ' % self.__class__.__name__, e.pos(), ' scenePos: ', e.scenePos())
@@ -182,6 +204,12 @@ class DragPoly(QGraphicsPolygonItem, DragBase):
 
     def mouseReleaseEvent(self, e):
         #logger.debug('DragPoly.mouseReleaseEvent') # % self.__class__.__name__)
+        """Call the base handler and finish the current step of ADD or EDIT mode.
+
+        In ADD mode a vertex is appended, or, after a right click, the last vertex is set, the mouse is
+        released, the mode reset and control points created. In EDIT mode the selected point is cleared
+        and the mode reset.
+        """
         QGraphicsPolygonItem.mouseReleaseEvent(self, e)
 
         if self._drag_mode == ADD:

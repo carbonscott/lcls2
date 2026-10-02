@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseCSPadV1 :
 
+    """Class attributes only: ``ndim`` 3, ``shape = (32, 185, 388)`` (4 quads of 8 segments), ``size_cm`` 4 and ``cmod = (1, 25, 25, 100)``; the constructor does nothing."""
     ndim = 3 
     quads= 4 
     segs = 8 

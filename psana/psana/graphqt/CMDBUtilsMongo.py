@@ -46,6 +46,12 @@ from psana.graphqt.CMConfigParameters import cp
 
 
 def connect_client(host=None, port=None, user=cp.user, upwd=cp.upwd): # user=dbu.cc.USERNAME
+    """Return ``dbu.connect_to_server(host, port, user, upwd)``, using ``cp.cdb_host``/``cp.cdb_port`` when ``host``/``port`` are None.
+
+    The defaults of ``user`` and ``upwd`` are taken from ``cp`` once, at import time. The current
+    ``MDBUtils`` module does not define ``connect_to_server`` (or several other names aliased at the top
+    of this module), so importing this module raises AttributeError.
+    """
     _host = cp.cdb_host.value() if host is None else host
     _port = cp.cdb_port.value() if port is None else port
     #logger.debug('CMDBBUtils: Connect client to host: %s port: %d user: %s upwd: %s' % (_host, _port, user, upwd))
@@ -54,7 +60,9 @@ def connect_client(host=None, port=None, user=cp.user, upwd=cp.upwd): # user=dbu
 
 
 def database_names(client=None):
-    """
+    """Return ``dbu.database_names(client)``, connecting with :func:`connect_client` if ``client`` is None.
+
+    The result comes from the database server.
     """
     if client is None:
        client = connect_client()
@@ -62,8 +70,7 @@ def database_names(client=None):
 
 
 def collection_names(db):
-    """
-    """
+    """Return ``dbu.collection_names(db)``; if ``db`` is a str it is first opened as a database on a new :func:`connect_client` connection."""
     if isinstance(db, str):
       client = connect_client()
       db = dbu.database(client, db)
@@ -110,6 +117,13 @@ def delete_documents(dbname, colname, doc_ids):
 
 
 def insert_document_and_data(dbname, colname, doc, data):
+    """Insert ``data`` and document ``doc`` into database ``dbname``, collection ``colname`` via ``dbu.insert_data_and_doc``.
+
+    Returns
+    -------
+    tuple
+        ``(id_data, id_doc)`` as returned by ``dbu.insert_data_and_doc``.
+    """
     client = connect_client()
     db, fs = dbu.db_and_fs(client, dbname)
     col = collection(db, colname)
@@ -118,6 +132,7 @@ def insert_document_and_data(dbname, colname, doc, data):
 
 
 def get_data_for_doc(dbname, doc):
+    """Connect, open database ``dbname`` and its GridFS, and return ``dbu.get_data_for_doc(fs, doc)`` (None if the data is not found)."""
     client = connect_client()
     db, fs = dbu.db_and_fs(client, dbname)
     return dbu.get_data_for_doc(fs, doc)
@@ -131,6 +146,7 @@ def collection_info(dbname, colname):
 
 
 def list_of_documents(dbname, colname):
+    """Return all documents of collection ``colname`` in database ``dbname`` as a list sorted by ``_id`` descending."""
     client = connect_client()
     db = database(client, dbname)
     #db, fs = dbu.db_and_fs(client, dbname='cdb-cxi12345')

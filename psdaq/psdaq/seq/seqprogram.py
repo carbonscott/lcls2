@@ -1,3 +1,4 @@
+"""Load sequence scripts into XPM/TPG sequence engines over PVA and optionally start them."""
 import time
 from psdaq.seq.seq import *
 from psdaq.cas.pvedit import *
@@ -7,6 +8,10 @@ import argparse
 tmo = 5.0  # epics pva timeout
 
 class SeqUser:
+    """PV handles for sequence engine `base` ('<pv>:SEQENG:<n>'): instruction, index, description, reset and run PVs.
+
+    The engine number is the last ':' field; ':RUNNING' is monitored with `changed`.
+    """
     def __init__(self, base):
         prefix = base
         self.ninstr   = Pv(prefix+':INSTRCNT')
@@ -36,17 +41,20 @@ class SeqUser:
         self.namespv  = Pv(':'.join(prefix.split(':')[:-2]+['SEQCODENAMES']))
 
     def changed(self,err=None):
+        """Release and clear `self.lock` when the cached ':RUNNING' value is 0 and a lock is held."""
         q = self.running.__value__
         if q==0 and self.lock!=None:
             self.lock.release()
             self.lock=None
 
     def stop(self):
+        """Put 0 to ':RUNIDX', then 1 and 0 to ':FORCERESET'."""
         self.idxrun.put(0,wait=tmo)  # a do-nothing sequence
         self.reset .put(1,wait=tmo)
         self.reset .put(0,wait=tmo)
 
     def clean(self, ridx=None):
+        """Remove sequences: with `ridx` None put -1 to ':RMVIDX' and 1 to ':RMVSEQ'; otherwise remove each index from ':SEQIDX' except those below 2 and `ridx`."""
         if ridx is None:
             self.idxseq0r.put(-1,wait=tmo)
             self.seqr.put(1,wait=tmo)
@@ -60,6 +68,12 @@ class SeqUser:
                 self.seqr.put(1,wait=tmo)
 
     def load(self, title, instrset, descset=None):
+        """Encode `instrset` (after `preproc`) and load it into the engine.
+
+        Puts the title to ':DESCINSTRS' and the encoding to ':INSTRS', checks ':INSTRCNT'
+        (prints an error and returns if it differs), puts 1 to ':INS', reads the assigned
+        index from ':SEQ00IDX' (RuntimeError unless 2-63) and puts `descset` to ':SEQ00BDESC' if given.
+        """
         self.desc.put(title,wait=tmo)
 
         # Before encoding, run the preprocessor to expand any macros
@@ -103,6 +117,10 @@ class SeqUser:
         self._idx = idx
 
     def begin(self, wait=False, refresh=False):
+        """Put 0 to ':SCHEDRESET', the loaded index to ':RUNIDX', then 0 and 1 to ':FORCERESET'.
+
+        With `wait`, a new Lock is acquired (released later by `changed`); `refresh` is unused.
+        """
         self.start .put(0,wait=tmo) # noop
         self.idxrun.put(self._idx,wait=tmo)
         self.reset .put(0,wait=tmo)
@@ -112,6 +130,11 @@ class SeqUser:
             self.lock.acquire()
 
     def sync(self,refresh=False):
+        """Put 0 to ':SCHEDRESET', the loaded index to ':RUNIDX', 0 to ':FORCERESET', then 2 (or 4 if `refresh`) to ':SCHEDRESET'.
+
+        Code comments describe 2 as "don't schedule reset, but queue to reset on next linkUp"
+        and 4 as "dont schedule reset, but next force reset also queues reset on linkUp".
+        """
         self.start .put(0,wait=tmo) # noop
         self.idxrun.put(self._idx,wait=tmo)
         self.reset .put(0,wait=tmo)
@@ -119,6 +142,10 @@ class SeqUser:
 
     #  Move from one set to the next without stopping
     def execute(self, title, instrset, descset=None, sync=False, refresh=False, clean=False):
+        """Optionally `clean(0)`, then `load` and either `sync(refresh)` or `begin(refresh)`.
+
+        In the `begin` case `refresh` is passed positionally as begin's `wait` argument.
+        """
         if clean:
             self.clean(0)
         self.load (title,instrset,descset)
@@ -129,6 +156,7 @@ class SeqUser:
 #        self.clean(self._idx)
 
     def seqcodes(self, codes):
+        """Write this engine's four event-code names into the 'SEQCODENAMES' PV from a list or dict `codes` (others cleared)."""
         desc = self.namespv.get()
         for e in range(4*self.eng,4*self.eng+4):
             desc[e] = ''
@@ -143,6 +171,10 @@ class SeqUser:
         self.namespv.put(desc)
 
 def main():
+    """For each 'engine:script' in --seq, optionally stop/clean, execute the script, load it (sync unless --reset) and set its code names.
+
+    With --start, the mask of loaded engines is put to '<pv>:SeqReset'.
+    """
     parser = argparse.ArgumentParser(description='sequence pva programming')
     parser.add_argument('--title', type=str, default='TITLE', required=False, help="title for the sequence; defaults to TITLE")
     parser.add_argument('--pv', type=str, required=True, help="sequence engine pv; e.g. DAQ:NEH:XPM:0")

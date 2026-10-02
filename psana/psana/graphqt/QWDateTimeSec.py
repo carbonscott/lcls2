@@ -46,6 +46,12 @@ def str_tstamp(fmt='%Y-%m-%dT%H:%M:%S%Z', time_sec=None, zone='GMT'):
 
 
 def get_time_sec(year, month=1, day=1, hour=0, minute=0, second=0, zone='PDT', isdst=-1):
+    """Return seconds since the epoch for the given date, time and zone name.
+
+    Formats the fields as ``'%Y %m %d %H %M %S %Z'``, parses them with ``time.strptime`` and converts
+    with ``time.mktime``, which interprets the result as local time. ``isdst`` is not used;
+    ``strptime`` raises ValueError for a zone name it does not recognize.
+    """
     s_tstamp = '%04d %02d %02d %02d %02d %02d %s' % (year, month, day, hour, minute, second, zone)
     struct = strptime(s_tstamp, '%Y %m %d %H %M %S %Z')
     #struct.tm_isdst = isdst
@@ -145,6 +151,7 @@ class QWDateTimeSec(QGroupBox):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the widget, the POSIX and LCLS2 seconds fields and the zone button."""
         self.setToolTip('Select date and time to get time in second')
         self.edi_sec_posix.setToolTip('POSIX epoch seconds\nfrom 1970-01-01')
         self.edi_sec_lcls2.setToolTip('LCLS2 epoch seconds\nfrom 1990-01-01')
@@ -156,6 +163,7 @@ class QWDateTimeSec(QGroupBox):
 
     def set_style(self):
 
+        """Apply the group-box style, minimum size 500x50, margins, fixed widths of buttons, fields and labels, and label colors."""
         self.setStyleSheet(style.qgrbox_title)
 
         self.setMinimumSize(500,50)
@@ -193,6 +201,10 @@ class QWDateTimeSec(QGroupBox):
 
 
     def on_edi(self, text):
+        """Slot for edits of the POSIX seconds field: update the date/time buttons and the LCLS2 seconds field (POSIX minus 631152000) and log the time.
+
+        An empty, ``'-'`` or ``'+'`` text counts as 0.
+        """
         logger.debug('on_edi_sec_posix %s' % str(text))
         #txt = str(text.strip())
         txt = str(self.edi_sec_posix.displayText()).strip()
@@ -203,6 +215,10 @@ class QWDateTimeSec(QGroupBox):
 
 
     def on_edi_sec_lcls2(self, text):
+        """Slot for edits of the LCLS2 seconds field: add 631152000, update the date/time buttons and the POSIX seconds field, and log the time.
+
+        An empty, ``'-'`` or ``'+'`` text counts as 0.
+        """
         logger.debug('on_edi_sec_lcls2 %s' % str(text))
         #txt = str(text.strip())
         txt = str(self.edi_sec_lcls2.displayText()).strip()
@@ -230,10 +246,12 @@ class QWDateTimeSec(QGroupBox):
 
 
     def print_tsec_tstamp(self, tsec, zone='GMT'):
+        """Log at debug level ``tsec`` and its timestamp string in ``zone`` (GMT by default)."""
         logger.debug('t(sec): %d  is  %s' % (tsec, str_tstamp('%Y-%m-%dT%H:%M:%S %Z', tsec, zone)))
 
 
     def msg_to_logger(self, tsec, zone='GMT'):
+        """Log at info level ``tsec`` and its timestamp string in ``zone`` (GMT by default)."""
         msg = 't(sec): %d  is  %s' % (tsec, str_tstamp('%Y-%m-%dT%H:%M:%S %Z', tsec, zone))
         logger.info(msg)
 
@@ -259,6 +277,12 @@ class QWDateTimeSec(QGroupBox):
 
     def on_but(self):
         #logger.debug('on_but')
+        """Show a popup list for the date/time button that has focus and apply the selection.
+
+        The day list uses ``29 if year % 4 else 28`` days for February. After a selection the seconds
+        fields are recomputed (``set_tsec``) and the buttons refreshed; nothing happens if no button has
+        focus or the popup is cancelled.
+        """
         but = None
         lst = None
         if self.but_year.hasFocus():
@@ -307,6 +331,7 @@ class QWDateTimeSec(QGroupBox):
 if __name__ == "__main__":
 
   def test_gui(tname):
+    """Show a ``QWDateTimeSec`` widget and run the module-level ``app`` event loop (defined only when run as a script)."""
     w = QWDateTimeSec(None)
     w.setWindowTitle('Convertor of date and time to sec')
     w.show()
@@ -317,6 +342,7 @@ if __name__ == "__main__":
     #lst = sorted(os.listdir('/reg/d/psdm/CXI/'))
     #logger.debug('lst: %s' % str(lst))
 
+    """Ask for year, month, day, hour and minute in successive popups and log the resulting time in seconds (defined only when run as a script)."""
     ts = str_tstamp(fmt, time_sec=None)
     logger.debug('current time %s' % ts)
     year_now = int(str_tstamp(fmt='%Y', time_sec=None))

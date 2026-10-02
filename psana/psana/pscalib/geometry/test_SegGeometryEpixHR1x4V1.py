@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryEpixHR1x4V1``; run with test number ``'1'``-``'7'`` (no argument logs the usage).
+
+All code, including the import of ``SegGeometryEpixHR1x4V1``, runs only when the module is executed as a script.
+"""
 if __name__ == "__main__":
 
   from psana.pscalib.geometry.SegGeometryEpixHR1x4V1 import *
@@ -13,6 +17,7 @@ if __name__ == "__main__":
   WINDOW = (0.03, 0.06, 0.97, 0.92)
 
   def test_xyz_min_max():
+    """Print the segment min/max coordinates in um and log the min/max pixel Y coordinate."""
     w = SegGeometryEpixHR1x4V1()
     w.print_xyz_min_max_um()
     logger.info('\n  Ymin = %f' % w.pixel_coord_min('Y')\
@@ -21,6 +26,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
+    """Print the segment coordinate maps in um and plot the X and Y pixel-index maps."""
     w = SegGeometryEpixHR1x4V1()
     w.print_maps_seg_um()
 
@@ -36,6 +42,7 @@ if __name__ == "__main__":
 
   def test_1x4_img():
 
+    """Create the geometry with ``use_wide_pix_center=False`` (logging the time), print segment info, and log the X map shape and the image size from the min/max coordinates."""
     t0_sec = time()
     w = SegGeometryEpixHR1x4V1(use_wide_pix_center=False)
     #w = SegGeometryEpixHR1x4V1(use_wide_pix_center=True)
@@ -61,6 +68,7 @@ if __name__ == "__main__":
 
 
   def test_1x4_img_easy():
+    """Plot an image built from the pixel index maps (with offset, rounded with +0.25) using weights ``iX + 2*iY``."""
     w = SegGeometryEpixHR1x4V1(use_wide_pix_center=False)
     X,Y = w.get_seg_xy_maps_pix_with_offset()
     iX, iY = (X+0.25).astype(int), (Y+0.25).astype(int)
@@ -70,6 +78,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Print the pixel-size arrays for rows 68:76, then log slices [68:76, 380:388] and shapes of the pixel area and X/Y size arrays."""
     w = SegGeometryEpixHR1x4V1()
     w.print_pixel_size_arrs(rowslice=slice(68,76))
     size_arrX = w.pixel_size_array('X')
@@ -85,6 +94,7 @@ if __name__ == "__main__":
 
 
   def test_1x4_mask(width=4, wcenter=2, edge_rows=3, edge_cols=6, center_rows=2, center_cols=4):
+    """Plot the transposed image of ``1 + pixel_mask_array(width, wcenter, edge_rows, edge_cols, center_rows, center_cols)`` placed by the pixel index maps."""
     pc1x4 = SegGeometryEpixHR1x4V1(use_wide_pix_center=False)
     X, Y = pc1x4.get_seg_xy_maps_pix_with_offset()
     mask = 1+pc1x4.pixel_mask_array(width, wcenter, edge_rows, edge_cols, center_rows, center_cols)#, dtype=DTYPE_MASK, **kwa)
@@ -95,6 +105,10 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``.
+
+    The line shown for test 7 lists different mask parameters than the ones the script passes.
+    """
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0','1'): s+='\n 1 - test_xyz_min_max()'

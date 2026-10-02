@@ -1,4 +1,8 @@
 
+"""Example/test for ``FWViewImage``: show test images and color-bar arrays with keyboard control.
+
+Run as a script with test name ``'0'``-``'7'``. Appends ``'..'`` to ``sys.path`` at import time.
+"""
 from psana.graphqt.FWViewImage import *
 
 import sys
@@ -9,6 +13,7 @@ import numpy as np
 
 class TestFWViewImage(FWViewImage):
 
+    """``FWViewImage`` subclass that shows cursor pixel info in the window title and reacts to keys R, N, W, D."""
     KEY_USAGE = 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset original size'\
@@ -27,6 +32,10 @@ class TestFWViewImage(FWViewImage):
 
     def keyPressEvent(self, e):
         #print('keyPressEvent, key=', e.key())
+        """Handle keys: Escape closes, R resets the size, N sets a new random image of the same size, W/D set one of random size.
+
+        For D the new image also resets the default scene rect (``set_def=True``); other keys print ``KEY_USAGE``.
+        """
         if e.key() == Qt.Key_Escape:
             print('Close app')
             self.close()
@@ -56,6 +65,7 @@ class TestFWViewImage(FWViewImage):
 
 
 def image_with_random_peaks(shape=(500, 500)):
+    """Return a random normal image (mu 0, sigma 10) of ``shape`` with 50 random peaks and a ring of radius 300 at row 500, column 500; prints debug info."""
     from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
     print('XXX1 shape:', shape)
@@ -68,6 +78,11 @@ def image_with_random_peaks(shape=(500, 500)):
 
 
 def test_wfviewimage(tname):
+    """Create a ``QApplication`` and show a ``TestFWViewImage`` selected by ``tname``.
+
+    Tests ``'0'``-``'3'`` show a 1000x1000 random-peaks image with scale control HV/H/V/none, ``'4'``-``'6'``
+    show color-bar arrays, ``'7'`` a 5x3 ``arange`` array; other names print a message and return.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     #arr = np.random.random((1000, 1000))
     arr = image_with_random_peaks((1000, 1000))

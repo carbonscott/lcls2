@@ -73,6 +73,7 @@ class QWPopupEditText(QDialog) :
 #-----------------------------  
 
     def set_tool_tips(self):
+        """Set tool tips on the dialog and the Apply/Cancel buttons."""
         self.setToolTip('Text Editor')
         self.but_apply.setToolTip('Apply changes')
         self.but_cancel.setToolTip('Cancel changes')
@@ -82,6 +83,7 @@ class QWPopupEditText(QDialog) :
 
     def set_style(self):
         #self.setFixedWidth(200)
+        """Set minimum width 200, zero margins, an empty dialog style and gray Apply/Cancel buttons."""
         self.setMinimumWidth(200)
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
@@ -107,10 +109,12 @@ class QWPopupEditText(QDialog) :
         #print('XXX:document().size()', s.width(), s.height())
         #self.edi_msg.setMinimumSize(200,50)
         #self.edi_msg.setFixedSize(180,50)
+        """Do nothing; body is `pass` (all statements are commented out)."""
         pass
 
 
     def set_icons(self):
+        """Set cancel/ok icons on the buttons from `QWIcons`, ignoring any exception."""
         try :
           #from psana.graphqt.QWIcons import icon
           from psdaq.control_gui.QWIcons import icon
@@ -130,27 +134,32 @@ class QWPopupEditText(QDialog) :
 
     
     def closeEvent(self, e):
+        """Call `QDialog.closeEvent`, then reject the dialog via `on_but_cancel`."""
         logger.debug('closeEvent')
         QDialog.closeEvent(self, e)
         self.on_but_cancel()
 
 
     def on_but_cancel(self):
+        """Log a debug message and reject the dialog."""
         logger.debug('on_but_cancel')
         self.reject()
 
 
     def on_but_apply(self):
+        """Log a debug message and accept the dialog."""
         logger.debug('on_but_apply')  
         self.accept()
 
 #--------------------
 
     def get_content(self):
+        """Return the embedded editor's text as str."""
         return str(self.edi_text.get_content())
         #return str(self.edi_text.toPlainText())
 
     def set_content(self, text='N/A'):
+        """Replace the embedded editor's text with `text` (default 'N/A')."""
         self.edi_text.set_content(text)
         #self.edi_text.setPlainText(text)
 

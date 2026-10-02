@@ -2,6 +2,7 @@
 #------------------------------
 
 #import os
+"""Helpers to run shell commands and LSF batch commands (``bsub``, ``bjobs``) in subprocesses; see the detailed description string below the imports."""
 from time import time
 import subprocess # for subprocess.Popen
 # import psana.pyalgos.generic.Utils as gu
@@ -51,6 +52,7 @@ Adopted for LCLS2 on 2018-03-05
 #------------------------------
 
 def call(cmd, shell=False) :
+    """Run ``cmd`` split on whitespace with ``subprocess.call``; returns None."""
     subprocess.call(cmd.split(), shell=shell) # , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
 
 #------------------------------
@@ -82,6 +84,11 @@ def _str_jobid(msg) :
 #------------------------------
 
 def batch_job_submit(cmd='bsub -q psnehq -o log-%%J.txt ls -l', env=None, shell=False) :
+    """Run the submit command ``cmd`` with :func:`subproc` and return ``(out, err, jobid)``.
+
+    ``jobid`` is parsed from ``out`` by ``_str_jobid``. Since ``out`` is ``bytes`` (the pipe is not opened in
+    text mode), the comparison with ``'Job'`` there fails and ``jobid`` is None.
+    """
     out, err = subproc(cmd, env, shell)
     jobid = _str_jobid(out)
     return out, err, jobid
@@ -139,6 +146,10 @@ def number_of_batch_jobs(user=None, qname=None, addopts='') : # qname='psnehq'
 #------------------------------
 
 def batch_job_kill(jobid, user=None, qname=None, addopts='') :
+    """Run ``'kill [-q qname] [-u user] [addopts] <jobid>'`` with :func:`subproc` and return ``(out, err)``.
+
+    The command used is ``kill``, not an LSF command.
+    """
     cmd = 'kill'
     if qname is not None : cmd += ' -q %s' % qname
     if user  is not None : cmd += ' -u %s' % user
@@ -181,6 +192,7 @@ def is_text(fname):
     #msg = subprocess.Popen(['file', '--mime', fname], stdout=subprocess.PIPE).communicate()[0]
     #return re.search('text', msg) != None
 
+    """Return True if ``mimetypes.guess_type(fname)`` gives ``'text/plain'`` (decided from the file name only)."""
     import mimetypes
     return mimetypes.guess_type(fname)[0] == 'text/plain'
 
@@ -192,6 +204,7 @@ def is_text(fname):
 if __name__ == "__main__" :
 
   def test_subproc(cmd='ls -ltra', env=None, shell=False, do_wait=True) :
+    """Run ``cmd`` with :func:`subproc` and print the command, stdout and stderr."""
     out, err = subproc(cmd, env, shell, do_wait)
     print('Command: "%s"' % cmd)
     print('out:\n"%s"' % out)
@@ -200,6 +213,7 @@ if __name__ == "__main__" :
 #------------------------------
 
   def test_batch_job_submit(cmd='bsub -q psnehq -o log-%J.txt ls -l', env=None, shell=False) :
+    """Submit ``cmd`` with :func:`batch_job_submit` and print the output, error, job id and expected log file name."""
     out, err, jobid = batch_job_submit(cmd, env, shell)
     print('Command: "%s"' % cmd)
     print('out:\n"%s"' % out)
@@ -210,6 +224,7 @@ if __name__ == "__main__" :
 #------------------------------
 
   def test_number_of_batch_jobs(user=None, qname='psnehq', addopts='') :
+    """Print the parameters and the result of :func:`number_of_batch_jobs`."""
     njobs = number_of_batch_jobs(user, qname, addopts)
     print('user   : %s' % str(user))
     print('qname  : %s' % qname)
@@ -219,6 +234,10 @@ if __name__ == "__main__" :
 #------------------------------
 
   def test_batch_job_kill(jobid, qname='psnehq', addopts='') :
+    """Call ``batch_job_kill(jobid, qname, addopts)`` and print the parameters, output and error.
+
+    The arguments are passed by position, so ``qname`` lands in the ``user`` parameter.
+    """
     out, err = batch_job_kill(jobid, qname, addopts)
     print('qname  : %s'  % qname)
     print('jobid  : "%s"' % jobid)
@@ -229,6 +248,7 @@ if __name__ == "__main__" :
 #------------------------------
 
   def test_batch_job_ids(status=None, user=None, qname=None, addopts='') :
+    """Print the parameters and the result of :func:`batch_job_ids`."""
     job_ids = batch_job_ids(status, user, qname, addopts) 
     print('status : %s' % status)
     print('user   : %s' % user)
@@ -239,6 +259,7 @@ if __name__ == "__main__" :
 #------------------------------
 
   def test_is_text() :
+      """Print :func:`is_text` for two hard-coded calibration file paths."""
       fname1 = '/reg/d/psdm/XCS/xcsm9816/calib/Xtcav::CalibV1/XrayTransportDiagnostic.0:Opal1000.0/pedestals/30-end.data'
       fname2 = '/reg/d/psdm/XCS/xcsls3716/calib/Jungfrau::CalibV1/XcsEndstation.0:Jungfrau.0/pixel_offset/0-end.data'
       print('is_text %s file %s' % (is_text(fname1), fname1))
@@ -249,6 +270,7 @@ if __name__ == "__main__" :
 #------------------------------
 
   def usage() :
+    """Return a usage string listing tests 1-4."""
     return  'python PSCalib/src/SubprocUtils.py <test_name> [<jobid>]\n'\
            +'       <test_name> = 1  - test subproc\n'\
            +'                   = 2  - test batch_job_submit\n'\

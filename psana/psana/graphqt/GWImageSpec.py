@@ -60,31 +60,49 @@ class GWImageSpec(QWidget):
         self.connect_image_pixmap_changed()
 
     def set_tool_tips(self):
+        """Set the tool tip ``'Image'`` on the image widget ``wimax``."""
         self.wimax.setToolTip('Image')
 
     def set_style(self):
+        """Set zero contents margins on the widget layout."""
         self.layout().setContentsMargins(0,0,0,0)
 
     def set_splitter_pos(self, fr=0.8):
         #print('XXX', sys._getframe().f_code.co_name)
         #self.wimax.setMinimumWidth(200)
         #self.wspec.setMinimumWidth(200)
+        """Set the horizontal splitter sizes so the image part gets fraction ``fr`` of the widget width.
+
+        Parameters
+        ----------
+        fr : float
+            Fraction of ``self.width()`` given to ``wimax``; the rest goes to ``wspec``. Default 0.8.
+        """
         wid = self.width()
         s = int(fr*wid)
         self.hspl.setSizes((s, wid-s))  #spl_pos = self.vspl.sizes()[0]
 
     def resizeEvent(self, e):
+        """Call ``QWidget.resizeEvent`` and then :meth:`set_splitter_pos` with the default fraction."""
         QWidget.resizeEvent(self, e)
         self.set_splitter_pos()
 
     def connect_image_scene_rect_changed(self):
         #self.wimax.connect_image_scene_rect_changed(self.wimax.test_image_scene_rect_changed)
+        """Connect the image widget's scene-rect-changed signal (via ``wimax``) to :meth:`on_image_scene_rect_changed`."""
         self.wimax.connect_image_scene_rect_changed(self.on_image_scene_rect_changed)
 
     def disconnect_image_scene_rect_changed(self):
+        """Disconnect the image widget's scene-rect-changed signal (via ``wimax``) from :meth:`on_image_scene_rect_changed`."""
         self.wimax.disconnect_image_scene_rect_changed(self.on_image_scene_rect_changed)
 
     def on_image_scene_rect_changed(self, r=None):
+        """Recompute the spectrum from the image pixels inside rectangle ``r``.
+
+        If ``r`` is None the current image scene rect is used. Resets ``wim.arr_limits_old`` to
+        None, passes ``wim.array_in_rect(rect=r)`` to ``wspec.set_spectrum_from_arr`` while the
+        histogram scene-rect signal is temporarily disconnected, and logs the rect at debug level.
+        """
         if r is None: r=self.wimax.wim.scene_rect()
         #print(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r), end='\r')
         logger.debug(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r))
@@ -95,21 +113,30 @@ class GWImageSpec(QWidget):
         self.connect_histogram_scene_rect_changed()
 
     def connect_image_pixmap_changed(self):
+        """Connect the image view's pixmap-changed signal to :meth:`on_image_scene_rect_changed`."""
         self.wimax.wim.connect_image_pixmap_changed(self.on_image_scene_rect_changed)
 
     def disconnect_image_pixmap_changed(self):
+        """Disconnect the image view's pixmap-changed signal from :meth:`on_image_scene_rect_changed`."""
         self.wimax.wim.disconnect_image_pixmap_changed(self.on_image_scene_rect_changed)
 
     def connect_histogram_scene_rect_changed(self):
         #self.wspec.connect_histogram_scene_rect_changed(self.wspec.test_histogram_scene_rect_changed)
+        """Connect the spectrum widget's histogram scene-rect-changed signal to :meth:`on_histogram_scene_rect_changed`."""
         self.wspec.connect_histogram_scene_rect_changed(self.on_histogram_scene_rect_changed)
 
     def disconnect_histogram_scene_rect_changed(self):
         #self.wspec.connect_histogram_scene_rect_changed(self.wspec.test_histogram_scene_rect_changed)
+        """Disconnect the spectrum widget's histogram scene-rect-changed signal from :meth:`on_histogram_scene_rect_changed`."""
         self.wspec.disconnect_histogram_scene_rect_changed(self.on_histogram_scene_rect_changed)
 
     def on_histogram_scene_rect_changed(self, r):
         #print(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r), end='\r')
+        """Redraw the image pixmap using the intensity range taken from histogram rectangle ``r``.
+
+        Calls ``wim.set_pixmap_from_arr(wim.arr, set_def=True, amin=r.top(), amax=r.bottom(), frmin=0, frmax=1)``
+        with the image scene-rect and pixmap-changed signals temporarily disconnected.
+        """
         logger.debug(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r))
         wim = self.wimax.wim
         self.disconnect_image_scene_rect_changed()
@@ -120,9 +147,14 @@ class GWImageSpec(QWidget):
 
     def connect_new_color_table(self):
         #self.wspec.wcbar.connect_new_color_table(self.wspec.wcbar.test_new_color_table_reception)
+        """Connect the color bar's (``wspec.wcbar``) new-color-table signal to :meth:`on_new_color_table`."""
         self.wspec.wcbar.connect_new_color_table(self.on_new_color_table)
 
     def on_new_color_table(self):
+        """Apply the color bar's current color table ``wspec.wcbar._ctab`` to the image and redraw its pixmap.
+
+        The image scene-rect signal is disconnected during the update and reconnected afterwards.
+        """
         wcb = self.wspec.wcbar
         wim = self.wimax.wim
         logger.debug(sys._getframe().f_code.co_name + ': %s' % str(wcb._ctab[:5]))

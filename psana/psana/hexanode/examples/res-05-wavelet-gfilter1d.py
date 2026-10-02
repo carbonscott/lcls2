@@ -43,6 +43,7 @@ fig.clear()
 
 
 def axes_h(fig, naxes=5, x0=0.07, y0=0.03, width=0.87, ygap=0.04) :
+    """Add ``naxes`` horizontal axes stacked vertically on ``fig`` (left ``x0``, bottom ``y0``, ``width``, gap ``ygap``) and return them as a list."""
     dy = 1./naxes
     return [gr.add_axes(fig, axwin=(x0, y0 + i*dy, width, dy-ygap)) for i in range(naxes)]
 
@@ -117,6 +118,10 @@ for p in peaks :
 #----------
 
 def wavelet(x, scx=0.5, xoff=-2.4, trise=11, tdecr=40, n=5) :
+    """Return ``-xc**(n-1) * (n - a*xc) * exp_desc_step(b*xc) / norm`` evaluated at ``x``.
+
+    Here a = 1/trise, b = a + 1/tdecr, xc = (x + xpk + xoff)*scx, and ``xpk`` and ``norm`` are computed from these parameters so that the value at the extremum is normalized.
+    """
     a = 1./trise
     g = 1./tdecr
     b = a + g

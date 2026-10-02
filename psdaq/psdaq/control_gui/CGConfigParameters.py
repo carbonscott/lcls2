@@ -87,6 +87,7 @@ class CGConfigParameters(ConfigParameters) :
 
 
     def test_cpinit(self) :
+        """Set the cached status fields (`s_transition`, `s_state`, `s_cfgtype`, `s_recording`, `s_platform`) to test strings."""
         self.s_transition = 'tst-transition'
         self.s_state      = 'tst-state'
         self.s_cfgtype    = 'tst-cfgtype'
@@ -97,6 +98,7 @@ class CGConfigParameters(ConfigParameters) :
     def declareParameters(self) :
 
         # Possible typs for declaration : 'str', 'int', 'long', 'float', 'bool'
+        """Declare the LOG_LEVEL, MAIN_WIN_POS_X/Y and MAIN_WIN_WIDTH/HEIGHT parameters with their defaults."""
         self.log_level = self.declareParameter(name='LOG_LEVEL', val_def='INFO', type='str') # val_def='NOTSET'
         self.main_win_pos_x  = self.declareParameter(name='MAIN_WIN_POS_X',  val_def=100, type='int')
         self.main_win_pos_y  = self.declareParameter(name='MAIN_WIN_POS_Y',  val_def=5,   type='int')
@@ -109,6 +111,7 @@ cp = CGConfigParameters()
 
 def test_CGConfigParameters() :
 
+    """Test: read, print, set LOG_LEVEL to 'DEBUG' and save the parameters file."""
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     cp.readParametersFromFile()

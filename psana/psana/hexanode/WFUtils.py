@@ -1,6 +1,7 @@
 
 #----------
 
+"""Waveform helpers built on numpy and scipy: two peak finders (``peak_finder_v2``, ``peak_finder_v3``), a gradient-based filter ``bpf``, an analytic ``wavelet`` shape and ``split_consecutive``."""
 import numpy as np
 from scipy.ndimage import gaussian_filter1d
 from scipy.signal import find_peaks
@@ -75,6 +76,10 @@ def bpf(wf, sigmabins=3, basebins=100, nstdthr=5, gapbins=100) :
 #----------
 
 def wavelet(x, scx=0.5, xoff=-2.4, trise=11, tdecr=40, n=5) :
+    """Return a wavelet-shaped array evaluated at ``x`` from rise/decay parameters ``trise``, ``tdecr``, power ``n``, scale ``scx`` and offset ``xoff``, normalized to its peak value.
+
+    The body uses ``sqrt``, ``exp`` and ``exp_desc_step``, which this module does not import, so calling it raises NameError.
+    """
     a = 1./trise
     g = 1./tdecr
     b = a + g

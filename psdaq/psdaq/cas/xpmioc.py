@@ -1,3 +1,4 @@
+"""Python simulation of XPM PVs: writes fixed/incrementing link statistics and per-partition rate/count PVs once per second."""
 import sys
 import socket
 import argparse
@@ -30,6 +31,7 @@ lstats = [{'name':'LinkTxReady'     , 'value' : 1, 'delta' : 0},
           {'name':'RemoteLinkId'    , 'value' : 0, 'delta' : 0}]
 
 class PVStats:
+    """PV handles for the global statistics ('<pvbase>:<name>') and 32 sets of per-link statistics ('<pvbase>:<name><i>')."""
     def __init__(self,pvbase):
         self.pvs = []
         self.ncall = 0
@@ -43,6 +45,7 @@ class PVStats:
             self.lpvs.append(lpv)
 
     def expired(self):
+        """Put ``value + delta * ncall`` to every statistics PV, then advance `ncall` cyclically through 0-5."""
         for i,s in enumerate(stats):
             self.pvs[i].put(s['value']+s['delta']*self.ncall)
         for i in range(len(self.lpvs)):
@@ -54,12 +57,14 @@ class PVStats:
             self.ncall+=1
 
 class PVCtrls:
+    """Placeholder; the constructor does nothing."""
     def __init__(self,pvbase):
         pass
 
 fixedRate = [1.3e6/1.4, 1.e6/14., 1.e6/98., 1.e6/980., 1.e6/9800, 1.e6/98000, 1.e6/980000]
 
 class PVP:
+    """Simulated partition: monitors L0Select, L0Select_FixedRate, ResetL0, Run and MsgConfig and writes rate/count PVs under `pvbase`."""
     def __init__(self,pvbase):
         self.l0Select  = Pv(pvbase+'L0Select'          ,self.update)
         self.l0SelectF = Pv(pvbase+'L0Select_FixedRate',self.update)
@@ -81,16 +86,24 @@ class PVP:
         self.reset()
 
     def reset (self):
+        """Zero the run-time and L0/L1 counters."""
         self.runTimeSec = 0
         self.numL0InpN  = 0
         self.numL0AccN  = 0
         self.numL1N     = 0
 
     def update(self,err=None):
+        """Call `reset` if the cached ResetL0 value is truthy."""
         if self.resetL0.__value__:
             self.reset()
 
     def expired(self):
+        """Advance the simulation by one second and put the results.
+
+        If 'Run' is set, the run time increments and, when 'L0Select' is 0, the rate is
+        ``fixedRate[L0Select_FixedRate]``; the counters grow by that rate. RunTime, L0InpRate,
+        L0AccRate, NumL0Inp, NumL0Acc and NumL1 are put, and L1Rate, DeadFrac, DeadTime are put as 0.
+        """
         r = 0
         if self.run.get():
             self.runTimeSec += 1
@@ -113,6 +126,10 @@ class PVP:
 
 def main():
 
+    """Parse -P (XPM PV base), put 0xffffffff to ':PAddr' and a build string to ':FwBuild', then update statistics and 8 partitions every second forever.
+
+    Partition PVs use '<base without its last two fields>:PART:<i>:'.
+    """
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='Python simulation for XPM')
 
     parser.add_argument('-P', required=True, help='e.g. DAQ:LAB2:XPM:2', metavar='PREFIX')

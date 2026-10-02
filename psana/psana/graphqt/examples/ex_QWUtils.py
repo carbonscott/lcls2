@@ -1,9 +1,19 @@
 #!/usr/bin/env python
 
+"""Example/test for the popup and dialog helpers of ``psana.graphqt.QWUtils``.
+
+Run as a script with test name ``'0'``-``'10'``; each test opens one dialog and logs the response.
+"""
 from psana.graphqt.QWUtils import *
 
 def test(tname):
 
+    """Create a ``QApplication`` and open the ``QWUtils`` dialog selected by ``tname``, logging the response.
+
+    ``'0'`` item menu, ``'1'`` check-box list, ``'2'`` radio buttons, ``'3'``/``'4'`` save/open file dialogs,
+    ``'5'`` confirm, ``'6'`` confirm-or-cancel, ``'7'`` help box, ``'8'`` color selection, ``'9'`` check-box
+    dict, ``'10'`` edit-and-confirm; other names log a message.
+    """
     app = QApplication(sys.argv)
 
     if tname == '0':

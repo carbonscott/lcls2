@@ -1,4 +1,10 @@
 #from evtsel import *
+"""Script that programs a 90-step sequence with `sequser.SeqUser` on TPG PV base --pv (default 'TPG:SYS2:2').
+
+Code comment: "Setup a 90 pulse sequence to repeat 10000 times each second". Step i
+issues ControlRequest bits with bit j set when ``i*(j+1) % 90 < j+1``, each followed by
+FixedRateSync(marker=6, occ=1); the instructions are printed and executed as 'LoopTest'.
+"""
 import sys
 import argparse
 from sequser import *

@@ -30,6 +30,10 @@ from psana.pyalgos.generic.UtilsFS import safe_listdir
 
 
 def full_path_for_item(item, path=''):
+    """Return the path of a tree item built by joining the texts of the item and its ancestors with '/'.
+
+    The top-level item's text is used as the prefix without an added separator; returns ``path`` if ``item`` is None.
+    """
     if item is None: return path # stop recursion
     if item.parent() is None: return '%s%s' % (item.text(),path) # stop recursion
     path_ext = ('/%s' % item.text()) if path=='' else\
@@ -51,6 +55,7 @@ class FSTree(QWTree):
 
 
     def update_tree_model(self, topdir):
+        """Set ``self.topdir`` to ``topdir`` and rebuild the tree, or log a warning and return if it is not a directory."""
         if not os.path.isdir(topdir):
             logger.warning('NON-EXISTENT PATH: %s' % str(topdir))
             return
@@ -59,6 +64,10 @@ class FSTree(QWTree):
 
 
     def fill_tree_model(self):
+        """Clear the model and fill it recursively from ``self.topdir`` with ``fill_tree_model_dir``, then expand all items.
+
+        Returns with a warning if the top directory does not exist, is not readable, or ``safe_listdir`` (5 s timeout) returns None. Logs the filling time.
+        """
         logger.debug('FSTree.fill_tree_model for %s' % self.topdir)
         from time import time
         t0_sec = time()
@@ -92,6 +101,10 @@ class FSTree(QWTree):
 
 
     def add_item(self, pitem, name, iconimg=None, **kwa):
+        """Create a QStandardItem ``name`` with optional icon, append it to ``pitem`` and return it.
+
+        Keyword arguments 'iseditable' (default False), 'ischeckable' (True), 'isselectable' (True), 'isenabled' (True), 'accessibletext' and 'accessibledescription' set the item flags and texts; the description is set only when 'accessibletext' is non-empty.
+        """
         item = QStandardItem(name)
         if iconimg: item.setIcon(iconimg)
         item.setEditable(kwa.get('iseditable', False))
@@ -108,6 +121,10 @@ class FSTree(QWTree):
 
     def fill_tree_model_dir(self, dirname, pitem=None, **kwa):
 
+        """Add items for the sorted entries of ``dirname`` under ``pitem``, recursing into subdirectories.
+
+        With ``pitem`` None it first adds a non-selectable top item for ``dirname`` and recurses into it. Directories are selectable if 'is_selectable_dir' (default True); files are selectable if their name contains one of 'selectable_ptrns' (or the list is empty) and none of 'unselectable_ptrns'. Returns with a warning if ``safe_listdir`` returns None.
+        """
         logger.debug('call safe_listdir("%s")' % str(dirname))
         lst = safe_listdir(dirname)
         if lst is None:
@@ -158,6 +175,7 @@ class FSTree(QWTree):
 
 
     def on_item_selected(self, selected, deselected):
+        """Call ``QWTree.on_item_selected`` and log the selected item's full path, if an item is selected."""
         QWTree.on_item_selected(self, selected, deselected)
         i = self.model.itemFromIndex(selected)
         if i is None:

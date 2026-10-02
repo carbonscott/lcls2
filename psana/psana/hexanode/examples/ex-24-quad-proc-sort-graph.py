@@ -55,6 +55,10 @@ USAGE = 'Usage: python %s' % sys.argv[0]
 
 def proc_data(**kwargs):
 
+    """Process the selected events of ``kwargs['dsname']``: find waveform peaks with ``WFPeaks``, run ``DLDProcessor.event_proc``, fill ``DLDStatistics`` with ``fill_data``, and at the end draw and save the statistics plots with ``DLDGraphics.draw_plots``.
+
+    Prints ``det.calibconst`` and passes it (or None if empty) as 'consts'; with 'verbose' per-event arrays and the (x, y, t, r) hits are printed.
+    """
     logger.info(str_kwargs(kwargs, title='Input parameters:'))
 
     DSNAME       = kwargs.get('dsname', FNAME)

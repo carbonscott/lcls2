@@ -1,3 +1,8 @@
+"""Scratch collection of PyQt5 import lines and GUI code snippets (layout, style and signal calls written with ``self``).
+
+Not usable as a module: importing it runs the imports and three ``logging.basicConfig`` calls, then
+raises NameError at the first module-level statement that uses ``self``.
+"""
 import logging
 logger = logging.getLogger(__name__)
 

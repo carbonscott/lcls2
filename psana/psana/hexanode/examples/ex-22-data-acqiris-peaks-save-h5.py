@@ -29,6 +29,10 @@ USAGE = 'Usage: python %s' % sys.argv[0]
 
 def proc_data(**kwargs):
 
+    """Find waveform peaks with ``WFPeaks`` for the selected events of ``kwargs['dsname']`` and append each event's results to the HDF5 file '<ofprefix><exp>-rNNNN-eNNNNNN-ex-22.h5' via ``WFHDF5IO.add_event_to_h5file``.
+
+    With 'verbose' it prints per-event arrays and timing; at the end it prints the total processing time.
+    """
     logger.info(str_kwargs(kwargs, title='Input parameters:'))
 
     DSNAME       = kwargs.get('dsname', FNAME)

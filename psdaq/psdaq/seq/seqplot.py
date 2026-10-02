@@ -1,3 +1,4 @@
+"""PyQt/pyqtgraph tool that simulates sequence scripts with the instruction `execute` methods and plots the requested bits versus frame."""
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
 import numpy as np
@@ -10,6 +11,7 @@ f=None
 verbose=False
 
 class bcolors:
+    """ANSI terminal color escape strings (HEADER, OKBLUE, OKGREEN, WARNING, FAIL, ENDC, BOLD, UNDERLINE)."""
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -21,6 +23,7 @@ class bcolors:
 
 class Engine(object):
 
+    """Simulation state for one sequence engine: request word, instruction pointer, frame/acframe counters, modes, four conditional counters, done flag and return address."""
     def __init__(self, acmode=False):
         self.request = 0
         self.instr   = 0
@@ -33,12 +36,14 @@ class Engine(object):
         self.returnaddr = None
 
     def frame_number(self):
+        """Return ``int(acframe)`` in AC mode, else ``int(frame)``."""
         return int(self.acframe) if self.acmode else int(self.frame)
 
     def __str__(self):
         return f'request {self.request}  instr {self.instr}  returnaddr {self.returnaddr}  frame {self.frame}  ccnt {self.ccnt}'
 
 class SeqUser(object):
+    """Simulator collecting (frame, bit) points for frames in [`start`, `stop`)."""
     def __init__(self, start=0, stop=200, acmode=False):
         global f
         self.start   = start
@@ -51,6 +56,12 @@ class SeqUser(object):
 
     def execute(self, title, instrset, descset):
 
+        """Run the instructions on a new `Engine` until the frame reaches `stop` or the engine is done, recording set request bits.
+
+        Whenever an instruction advances the frame, each set bit of the request in effect is
+        recorded at the old frame (if not before `start`). Points are appended to `xdata`/
+        `ydata` per bit; a warning is printed if both fixed-rate and AC-rate syncs were used.
+        """
         x = 0
 
         # keep separate lists for each request line and merge at the end
@@ -89,6 +100,7 @@ class SeqUser(object):
             print(bcolors.WARNING + "Found both fixed-rate-sync and ac-rate-sync instructions." + bcolors.ENDC)
 
 class PatternWaveform(object):
+    """pyqtgraph GraphicsLayoutWidget holding one linked plot per sequence."""
     def __init__(self):
         self.gl = pg.GraphicsLayoutWidget()
         self.gl.setBackground('w')
@@ -108,6 +120,10 @@ class PatternWaveform(object):
     def add(self, title, xdata, ydata, use_seconds=False):
         #  Plotting lots of consecutive buckets with scatter points is
         #  time consuming.  Replace consecutive points with a line.
+        """Add a plot row for (`xdata`, `ydata`) with runs of consecutive frames drawn as thick lines and other points as squares.
+
+        The x axis is scaled by 1/FixedFidRate if `use_seconds`; all plots share the first plot's x range.
+        """
         def plot(q, x, y):
             if len(x):
                 rx = []
@@ -164,6 +180,7 @@ class PatternWaveform(object):
         self.index += 1
 
 def main():
+    """Simulate each 'engine:script' in --seq over --time seconds and plot the request bits (offset by 4*engine + 256) in one window."""
     parser = argparse.ArgumentParser(description='simple sequence plotting gui')
     parser.add_argument("--seq", required=True, nargs='+', type=str, help="sequence engine:script pairs; e.g. 0:train.py")
     parser.add_argument("--time", required=False, type=float, nargs='+', default=[0.,1.], help="simulated time (sec)")

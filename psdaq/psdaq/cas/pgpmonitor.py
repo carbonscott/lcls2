@@ -9,6 +9,7 @@
 ## the terms contained in the LICENSE.txt file.
 ##############################################################################
 
+"""pyrogue root for a PCIe PGP card that checks lane link status and can export it as PVA PVs."""
 import sys
 import rogue
 import numpy
@@ -36,11 +37,13 @@ from p4p.server import Server, StaticProvider
 provider = None
 
 class MyProvider(StaticProvider):
+    """StaticProvider that also keeps added PVs in `pvdict`."""
     def __init__(self, name):
         super(MyProvider,self).__init__(name)
         self.pvdict = {}
 
     def add(self,name,pv):
+        """Record `pv` in `pvdict` and add it to the provider."""
         self.pvdict[name] = pv
         super(MyProvider,self).add(name,pv)
 
@@ -62,6 +65,10 @@ def detect_version(dev):
         return boardType, version
 
 class PgpMonitor(pr.Root):
+    """pyrogue Root mapping the AxiPcieCore, per-lane PGP (v4, v3 or 2b from `detect_version`), stream monitors and DMA FIFOs of `dev`.
+
+    The number of lanes is ``int(log2(lanemask)) + 1``; a local ZmqServer interface is added.
+    """
     def __init__(   self,
                     name        = "pciServer",
                     description = "DMA Loopback Testing",
@@ -146,6 +153,12 @@ class PgpMonitor(pr.Root):
 
     def init_lanes(self):
 
+        """For each lane in the mask, require RxStatus LinkReady and RemRxLinkReady and record four RxStatus counters in `stat`.
+
+        Raises RuntimeError (after a critical log) if a ready flag is False. With `pv` set it
+        calls `addPv`, which is not defined in this module (NameError). The ready masks stay
+        0 because the nested helper only increments a local copy.
+        """
         linkReadyMask = 0
         remRxLinkReadyMask = 0
 
@@ -180,6 +193,12 @@ class PgpMonitor(pr.Root):
 
     def check_lanes(self,header=''):
 
+        """Re-check the ready flags and compare the four RxStatus counters with `stat`, logging changes.
+
+        Raises RuntimeError if a ready flag is False. It indexes `stat` filled by
+        `init_lanes`, logs with an undefined name `stat`, and with `pv` set calls the
+        undefined `updatePv`.
+        """
         timev = divmod(float(time.time_ns()), 1.0e9)
 
         linkReadyMask = 0
@@ -215,6 +234,10 @@ class PgpMonitor(pr.Root):
             updatePv(self._pv_remRxLinkReadyMask, remRxLinkReadyMask, timev)
 
 def main():
+    """Parse --dev, --lanes and --pv, create and enter a `PgpMonitor`, then call `check_lanes` once inside a PVA server and sleep 10 s.
+
+    `init_lanes` is not called first.
+    """
     global pvdb
     global provider
 

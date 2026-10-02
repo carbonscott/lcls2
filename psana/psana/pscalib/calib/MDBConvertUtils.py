@@ -35,6 +35,12 @@ TYPES_OF_FLOAT = ('float', 'float16', 'float32', 'float64','float128')
 
 
 def compare_dicts(d1, d2, gap='  '):
+    """Print, for each key of ``d1``, whether its value equals the value for the same key in ``d2``.
+
+    Nested dicts are compared recursively (``d2`` must then contain a dict for that key), numpy arrays
+    with ``numpy.array_equal`` and other values with ``==``; a warning is logged for value types outside a
+    short allowed list. Keys present only in ``d2`` are not reported. Returns None.
+    """
     print('%sCompare two dictionaries:'%gap)
     allowed = [dict, int, float, str, bytes, np.ndarray, np.int64, np.float64]
     for k1,v1 in d1.items():
@@ -51,10 +57,12 @@ def compare_dicts(d1, d2, gap='  '):
 
 
 def serialize_value(v):
+    """Return ``{'type': 'sc', 'dtype': type(v).__name__, 'data': str(v)}``."""
     return {'type':'sc', 'dtype':type(v).__name__, 'data':str(v)}
 
 
 def serialize_numpy_value(v):
+    """Return ``{'type': 'sc', 'dtype': str(v.dtype), 'data': str(v)}`` for a numpy scalar ``v``."""
     return {'type':'sc', 'dtype':str(v.dtype), 'data':str(v)}
 
 
@@ -80,6 +88,7 @@ def deserialize_value(d):
 
 
 def is_none(v,msg):
+    """Return True (and log a debug message naming ``msg``) if ``v`` is None; otherwise return None."""
     if v is None:
         logger.debug('deserialize_numpy_array/value: paremeter "%s" is None' % msg)
         return True
@@ -189,6 +198,7 @@ if __name__ == "__main__":
   from psana.pyalgos.generic.NDArrUtils import print_ndarr # info_ndarr
 
   def test_serialize_numpy_array():
+    """Serialize and deserialize a random (4, 6) float32 array and print it; the original array is printed in both places (``nda2`` is not printed)."""
     nda = random_standard(shape=(4,6), mu=100, sigma=10, dtype=np.float32)
     #nda = aranged_array(shape=(2,3), dtype=np.float32) # uint32)
     print_ndarr(nda, 'nda', first=0, last=12)
@@ -199,6 +209,7 @@ if __name__ == "__main__":
 
 
   def test_serialize_dict():
+      """Print a test dict before serialization, after :func:`serialize_dict` and after :func:`deserialize_dict`."""
       d = {'val':123,
            'nda1': aranged_array(shape=(3,4), dtype=np.int32),
            'nda2': random_standard(shape=(2,3), mu=100, sigma=10, dtype=np.float32)
@@ -217,6 +228,7 @@ if __name__ == "__main__":
 
 
   def test_serialize_numpy_value():
+      """Serialize a numpy uint32 scalar with :func:`serialize_numpy_value`, deserialize it and print each step."""
       nda = aranged_array(shape=(2,3), dtype=np.uint32)
       v = nda[1,1]
       print('value:', v, ' v.dtype:', v.dtype, ' v.dtype.str:', v.dtype.str)
@@ -227,6 +239,7 @@ if __name__ == "__main__":
 
 
   def test_serialize_value():
+      """Serialize ``float(6)`` with :func:`serialize_value`, deserialize it and print each step."""
       v = float(6)
       print('value:', v, ' type(v).__name__:', type(v).__name__)
       d = serialize_value(v)
@@ -236,6 +249,7 @@ if __name__ == "__main__":
 
 
   def usage():
+      """Return the usage string listing tests 0-3."""
       return 'Use command: python %s <test-number>, where <test-number> = 0,1,2,3' % sys.argv[0]\
            + '\n  0: test_serialize_numpy_value'\
            + '\n  1: test_serialize_numpy_array'\

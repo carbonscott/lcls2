@@ -72,6 +72,7 @@ def parse_calib_file_name(fname) :
 #------------------------------
 
 def info_history_dict(d, fmt='  %s : %s\n', cmt='HISTORY info:') :
+    """Return ``cmt`` followed by one ``fmt`` line per key/value of history dict ``d``, or None if ``d`` is None."""
     if d is None : return
     s = '%s\n' % cmt
     for k, v in d.items() :
@@ -81,6 +82,7 @@ def info_history_dict(d, fmt='  %s : %s\n', cmt='HISTORY info:') :
 #------------------------------
 
 def print_history_dict(d, fmt='    %s : %s\n', cmt='HISTORY info:') :
+    """Print :func:`info_history_dict` of ``d`` (prints ``None`` if ``d`` is None)."""
     print(info_history_dict(d, fmt, cmt))
 
 #------------------------------
@@ -89,6 +91,7 @@ if __name__ == "__main__" :
 
   def test_history_access() :
     #from psana.pscalib.calib.CalibUtils import *
+    """Read a hard-coded LCLS1 pedestals ``HISTORY`` file, select the record for ``54-end.data`` and print it (defined only when run as a script)."""
     hfname = '/reg/d/psdm/xpp/xpptut15/calib/CsPad::CalibV1/XppGon.0:Cspad.0/pedestals/HISTORY'
     listdicts = history_list_of_dicts(hfname, verb=True)
     d = history_dict_for_file(listdicts, '54-end.data')

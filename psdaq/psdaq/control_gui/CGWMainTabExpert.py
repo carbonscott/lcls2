@@ -38,6 +38,10 @@ from psdaq.control_gui.CGWMainControl   import CGWMainControl
 
 class CGWMainTabExpert(QWidget) :
 
+    """Expert tab widget: a vertical splitter with a `CGWMainPartition` above a `CGWMainControl`.
+
+    The 'parent' keyword is passed to `CGWMainControl` only; the widget itself is created without a parent.
+    """
     _name = 'CGWMainTabExpert'
 
     def __init__(self, **kwargs) :
@@ -67,17 +71,20 @@ class CGWMainTabExpert(QWidget) :
 #------------------------------
 
     def set_tool_tips(self) :
+        """Do nothing; body is `pass`."""
         pass
         #self.butStop.setToolTip('Not implemented yet...')
 
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(300, 280)."""
         return QSize(300, 280)
 
 #--------------------
 
     def set_style(self) :
+        """Set minimum size 280x260, zero margins and a MinimumExpanding/Preferred size policy."""
         self.setMinimumSize(280, 260)
         self.layout().setContentsMargins(0,0,0,0)
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
@@ -85,6 +92,10 @@ class CGWMainTabExpert(QWidget) :
 #--------------------
 
     def closeEvent(self, e) :
+        """Log a debug message; the try block contains only `pass`, so nothing else happens.
+
+        `QWidget.closeEvent` is not called.
+        """
         logger.debug('%s.closeEvent' % self._name)
 
         try :
@@ -100,6 +111,10 @@ class CGWMainTabExpert(QWidget) :
  
       def resizeEvent(self, e):
         #logger.debug('resizeEvent', self._name) 
+        """Print the widget size.
+
+        Defined only when the module is run as a script.
+        """
         print('CGWMainTabExpert.resizeEvent: %s' % str(self.size()))
 
 

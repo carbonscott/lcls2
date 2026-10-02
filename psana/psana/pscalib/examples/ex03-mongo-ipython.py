@@ -1,5 +1,8 @@
 
-"""
+"""Example: connect to the MongoDB server ``psanaphi105:27017``, open DB ``calib-cxi12345`` with GridFS and print its collection and first document.
+
+All statements run at import time. It uses ``client.database_names()`` and ``db.collection_names()``,
+which newer pymongo versions no longer provide.
 """
 import gridfs
 from pymongo import MongoClient

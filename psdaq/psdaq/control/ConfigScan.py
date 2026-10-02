@@ -1,3 +1,4 @@
+"""ConfigScan helper class that steps the DAQ through a scan via a control object."""
 import logging
 import zmq
 from threading import Thread, Event, Condition
@@ -5,6 +6,13 @@ import json as oldjson
 from psdaq.control.ControlDef import ControlDef, front_pub_port, front_rep_port, create_msg
 
 class ConfigScan:
+    """Run DAQ scan steps through a control object using two threads.
+
+    On construction it binds/connects an inproc PUSH/PULL socket pair
+    ('inproc://config_scan') and starts `daq_communicator_thread` (non-daemon) and
+    `daq_monitor_thread` (daemon). `control` must provide `setState`, `monitorStatus` and
+    `getBlock`; `args` must have attributes v, detname, scantype and run_type.
+    """
     def __init__(self, control, *, daqState, args):
         self.control = control
         self.name = 'mydaq'
@@ -33,6 +41,14 @@ class ConfigScan:
 
     # this thread tells the daq to do a step and waits for the completion
     def daq_communicator_thread(self):
+        """Loop forever, acting on state strings received on the inproc PULL socket.
+
+        Each message is split on the first ',' into a state and an optional JSON phase1 part.
+        For 'connected'/'starting' it calls `control.setState` (with the parsed phase1 if
+        present), waits until `daqState` matches and sets `ready`. For 'running' it adds
+        ``args.run_type`` (if not None) to phase1, calls `setState`, waits for 'running' and then
+        for the `step_done` event; 'shutdown' ends the loop and other input is ignored.
+        """
         logging.debug('*** daq_communicator_thread')
         while True:
             sss = self.pull_socket.recv().decode("utf-8")
@@ -96,6 +112,12 @@ class ConfigScan:
                 break
 
     def daq_monitor_thread(self):
+        """Loop forever, tracking DAQ state from `control.monitorStatus()`.
+
+        Stops when the first returned part is None; sets the `step_done` event on 'step';
+        ignores other parts not in `ControlDef.transitions`. For transitions it sets
+        `daqState` to the second part and notifies `daqState_cv`.
+        """
         logging.debug('*** daq_monitor_thread')
         while True:
             part1, part2, part3, part4, part5, part6, part7, part8 = self.control.monitorStatus()
@@ -121,17 +143,23 @@ class ConfigScan:
     def stage(self):
         # done once at start of scan
         # put the daq into the right state ('connected')
+        """Put the DAQ in 'connected' (blocking until done) and reset the step count to 0."""
         self._set_connected()
         self._step_count = 0
 
     def unstage(self):
         # done once at end of scan
         # put the daq into the right state ('connected')
+        """Log the step count and put the DAQ in 'connected', blocking until done."""
         logging.debug('*** unstage: step count = %d' % self._step_count)
         self._set_connected()
 
     # use 'motors' keyword arg to specify a set of motors
     def configure(self, *args, **kwargs):
+        """Store the 'motors' keyword argument in `self.motors`.
+
+        Logs an error if 'motors' is not given; positional arguments are ignored.
+        """
         logging.debug("*** here in configure")
 
         if 'motors' in kwargs:
@@ -141,18 +169,32 @@ class ConfigScan:
             logging.error('configure: no motors')
 
     def getMotors(self):
+        """Return the list of motors set by `configure`."""
         return self.motors
 
     def step_count(self):
+        """Return the number of steps triggered since the last `stage`."""
         return self._step_count
 
     def update(self, *, value):
         # update 'motors'
+        """Call ``motor.update(value)`` on every motor in `self.motors`."""
         for motor in self.motors:
             motor.update(value)
 
     def trigger(self, *, phase1Info=None):
         # do one step
+        """Request one scan step and increment the step count.
+
+        Fills in missing 'beginstep', 'configure', ``configure['step_keys']`` and
+        ``beginstep['step_values']`` entries of `phase1Info`, then pushes 'running,<json>' and
+        'starting' to the communicator thread. Does not wait for the step to finish.
+
+        Parameters
+        ----------
+        phase1Info : dict, optional
+            Phase-1 info; modified in place when given.
+        """
         logging.debug('*** trigger: step count = %d' % self._step_count)
         if phase1Info is None:
             phase1Info = {}
@@ -189,6 +231,24 @@ class ConfigScan:
 #
 
     def getBlock(self, *, transition, data):
+        """Fill step-info fields in `data` and return ``control.getBlock(data)``.
+
+        Sets 'transitionid' from `ControlDef.transitionId` (logs an error if `transition` is
+        unknown), sets 'add_names'/'add_shapes_data' to True/False for 'Configure' and
+        False/True otherwise, and sets 'namesid' to `ControlDef.STEPINFO`.
+
+        Parameters
+        ----------
+        transition : str
+            Transition name, e.g. 'Configure'.
+        data : dict
+            Block description; must contain 'motors'. Modified in place.
+
+        Returns
+        -------
+        object
+            Whatever `control.getBlock` returns.
+        """
         logging.debug('getBlock: motors=%s' % data["motors"])
         if transition in ControlDef.transitionId.keys():
             data["transitionid"] = ControlDef.transitionId[transition]

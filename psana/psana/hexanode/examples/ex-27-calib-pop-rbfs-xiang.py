@@ -29,6 +29,7 @@ FNAME = '%s/%s' % (DIR_DATA_TEST, 'data-amox27716-r0085-opal1k.xtc2')
 print('e.g.: [python] %s [test-number]' % sys.argv[0])
 
 def test_opal_data_access() :
+    """Print the 'pop_rbfs' calibration constants of 'ele_opal_1234' fetched with ``MDBWebUtils.calib_constants``, then open the test xtc2 file, print the run info and ``camera.raw.image`` of the first event of detector 'opal', and print the metadata from ``camera.calibconst.get('pop_rbfs')``."""
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'
 
     print('DIRECT ACCESS CALIBRATION CONSTANTS')

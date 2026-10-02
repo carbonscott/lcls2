@@ -122,6 +122,26 @@ handle_names = [n for t,n in handle_tuple]
 dict_handle_type_name = {t:n for t,n in handle_tuple}
 
 def regular_polygon_qpoints(p, rx=5, ry=5, npoints=8, astart=0, aspan=360, endpoint=False):
+    """Return points on an ellipse around ``p`` at evenly spaced angles.
+
+    Parameters
+    ----------
+    p : QPointF
+        Center point.
+    rx, ry : float
+        Radii along x and y.
+    npoints : int
+        Number of points.
+    astart, aspan : float
+        Start angle and angular span in degrees.
+    endpoint : bool
+        Passed to ``numpy.linspace``; if True the last point is at ``astart + aspan``.
+
+    Returns
+    -------
+    list of QPointF
+        Points ``(p.x() + rx*cos(a), p.y() + ry*sin(a))``.
+    """
     start, span = math.radians(astart), math.radians(aspan)
     angs = np.linspace(start, start+span, num=npoints, endpoint=endpoint)
     return [QPointF(p.x()+rx*c, p.y()+ry*s)\
@@ -129,31 +149,46 @@ def regular_polygon_qpoints(p, rx=5, ry=5, npoints=8, astart=0, aspan=360, endpo
 
 
 def angle_between_points(p0, p1):
+    """Return the angle in degrees (``atan2``) of the vector from ``p0`` to ``p1``."""
     d = p1 - p0
     return math.degrees(math.atan2(d.y(), d.x()))
 
 def distance_between_points(p0, p1):
+    """Return the Euclidean distance between points ``p0`` and ``p1``."""
     d = p1 - p0
     x,y = d.x(), d.y()
     return math.sqrt(x*x + y*y)
 
 def items_at_point(scene, point):
+    """Return ``scene.items(point)`` and log the result at debug level."""
     items = scene.items(point)
     logging.debug('sc.itemsAt(%s): %s' % (str(point), str(items)))
     return items
 
 def int_scpos(scpos):
+    """Return ``QPoint(int(x), int(y))`` for ``scpos``, or None if ``scpos`` is None."""
     return None if scpos is None else QPoint(int(scpos.x()), int(scpos.y()))
 
 def json_point_int(p):
+    """Return the tuple ``(p.x(), p.y())``; no rounding or int conversion is done here."""
     return p.x(), p.y()
     #return '(%d, %d)' % (p.x(), p.y())
 
 def json_point(p, prec=2):
+    """Return the tuple ``(x, y)`` of point ``p`` rounded to ``prec`` decimals (default 2)."""
     return round(p.x(), prec), round(p.y(), prec)
     #return  '(%.2f, %.2f)' % (p.x(), p.y())
 
 def rect_to_square(rect, pos):
+    """Resize ``rect`` in place to a square spanning from its top-left corner toward ``pos``.
+
+    The side is ``max(|dx|, |dy|)`` with the signs of ``dx, dy = pos - rect.topLeft()``.
+
+    Returns
+    -------
+    QRectF
+        The same ``rect`` object.
+    """
     dp = pos - rect.topLeft()
     w,h = dp.x(), dp.y()
     v = max(abs(w), abs(h))
@@ -162,10 +197,12 @@ def rect_to_square(rect, pos):
     return rect
 
 def cartesian_distance(x, y):
+    """Return ``numpy.sqrt(x*x + y*y)``."""
     return np.sqrt(x*x + y*y)
 
 def cr_meshgrid(shape):
     #logging.debug('cr_meshgrid shape %s' % str(shape))
+    """Return ``numpy.meshgrid(arange(shape[1]), arange(shape[0]))``, i.e. column and row index arrays of the given 2-d shape."""
     return np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
 
 def mask_for_polygon_vertices(shape, poly_verts, good=True, bad=False):
@@ -184,6 +221,12 @@ def mask_for_polygon_vertices(shape, poly_verts, good=True, bad=False):
 
 
 class ROIBase():
+    """Base class for interactive ROIs drawn on the scene of a ``QGraphicsView``.
+
+    Subclasses set ``self.roi_type`` before calling ``__init__`` and create ``self.scitem``. Keyword
+    arguments include ``view`` (asserted to be a ``QGraphicsView``), ``pos``, ``mode``, ``tolerance``
+    (default 5.0), ``is_busy_iscpos`` and the color/pen/brush passed to :meth:`set_color_pen_brush`.
+    """
     def __init__(self, **kwa):
         #self.roi_type   = kwa.get('roi_type', NONE)
         self.roi_name   = dict_roi_type_name[self.roi_type]
@@ -205,6 +248,12 @@ class ROIBase():
         assert isinstance(self.pos, (QPoint, QPointF))
 
     def set_color_pen_brush(self, color=QCOLOR_DEF, pen=QPEN_DEF, brush=QBRUSH_DEF, **kwa):
+        """Set ``self.pen``, ``self.brush`` and ``self.color``; make the pen cosmetic and apply ``color``.
+
+        The pen is made cosmetic unless ``pen_is_cosmetic=False`` is given. If ``color`` is not None it
+        is set on the pen and brush objects in place (the defaults are the module-level ``QPEN_DEF`` and
+        ``QBRUSH_DEF`` objects).
+        """
         self.pen   = pen
         self.brush = brush
         self.color = color
@@ -225,18 +274,26 @@ class ROIBase():
         #else: return # bit is already set correctly
 
     def swap_mode(self, mode):
+        """Toggle the bits ``mode`` in ``self.mode`` (XOR)."""
         self.mode ^= mode
 
     def is_mode(self, mode):
+        """Return True if all bits of ``mode`` are set in ``self.mode``."""
         return self.mode & mode == mode
 
     def scene(self):
+        """Return ``self.view.scene()``, or None if there is no ``view`` attribute or it has no ``scene``."""
         if not hasattr(self, 'view'): return None
         if not hasattr(self.view, 'scene'): return None
         return self.view.scene()
 
     def add_to_scene(self, pos=None, pen=None, brush=None):
         #self.pos = pos
+        """Set pen and brush on ``self.scitem`` and add it to the scene.
+
+        ``pen``/``brush`` default to ``self.pen``/``self.brush``; the brush is not set for LINE ROIs.
+        ``pos`` is not used. ``self.scitem`` must already be created by the subclass.
+        """
         item = self.scitem
         item.setPen(self.pen if pen is None else pen)
         if self.roi_type != LINE:
@@ -248,6 +305,7 @@ class ROIBase():
         logging.debug('ROIBase.move_at_add to be re-implemented in subclasses, if necessary')
 
     def set_point_at_add(self, pos, clicknum):
+        """Base implementation only logs a debug message; overridden in some subclasses."""
         logging.debug('ROIBase.set_point_at_add must be re-implemented in SOME of subclasses')
 
     def is_last_point(self, scpos, clicknum):
@@ -259,6 +317,7 @@ class ROIBase():
         return self.is_finished
 
     def finish_add_roi(self):
+        """Log a debug message and set ``is_finished`` to True."""
         logging.debug('ROIBase.finish_add_roi should be re-implemented if necessary, e.g ROIPolygon')
         self.is_finished = True
 
@@ -270,6 +329,7 @@ class ROIBase():
         logging.info('ROIBase.show_handles TBRe-implemented for ROI %s' % self.roi_name)
 
     def hide_handles(self):
+        """Set the pen of every handle in ``list_of_handles`` to ``QPEN_HID``; the handles stay on the scene."""
         logging.debug('ROIBase.hide_handles for ROI %s' % self.roi_name)
         for o in self.list_of_handles:
             o.setPen(QPEN_HID)
@@ -277,6 +337,10 @@ class ROIBase():
         #self.remove_handles_from_scene()
 
     def add_handles_to_scene(self):
+        """Set the pen of every handle in ``list_of_handles`` to ``QPEN_EDI`` (also logs a warning).
+
+        Handles are not added to the scene here; they are children of ``self.scitem``.
+        """
         logging.debug('ROIBase.add_handles_to_scene for ROI %s' % self.roi_name)
         logging.warning('  handles might be already added to scene at instatiation... by parent=...')
         for o in self.list_of_handles:
@@ -303,12 +367,17 @@ class ROIBase():
         return handles
 
     def handle_at_point(self, p):
+        """Return the first handle from :meth:`handles_at_point` at point ``p``, or None if there is none."""
         handles = self.handles_at_point(p)
         logger.debug('handle_at_point - point %s: found handles, return [0]: %s' % (str(p), str(handles)))
         if handles in (None, []): return None
         return None if handles in (None, []) else handles[0]
 
     def roi_pars(self):
+        """Return a dict with ``'roi_name'``, ``'roi_type'`` and an empty ``'points'`` list.
+
+        If the INVERT mode bit is set, ``'mode'`` (equal to ``INVERT``) is added as well.
+        """
         logging.debug('ROIBase.roi_pars - dict of common roi parameters - name and type')
         d = {'roi_name': self.roi_name,
              'roi_type': self.roi_type,
@@ -318,6 +387,7 @@ class ROIBase():
         return d
 
     def set_from_roi_pars(self, d):
+        """Log a warning that subclasses must implement this and return False."""
         logging.warning('ROIBase.set_from_roi_pars - dict of roi parameter NEEEDS TO BE RE-EMPLEMENTED IN DERIVED SUBCLASS')
         return False
 
@@ -363,6 +433,7 @@ class ROIBase():
 
 
 class ROIPixel(ROIBase):
+    """Single-pixel ROI drawn as a 1x1 ``QGraphicsRectItem`` at an integer scene position; not invertable."""
     def __init__(self, **kwa):
         self.roi_type = PIXEL
         ROIBase.__init__(self, **kwa)
@@ -374,6 +445,7 @@ class ROIPixel(ROIBase):
         #print('ROIPixel.roi_pars: %s' % str(self.roi_pars()))
 
     def pixel_rect(self, pos=None):
+        """Return a 1x1 ``QRectF`` at ``self.pos``, first setting ``self.pos`` to ``int_scpos(pos)`` if ``pos`` is given."""
         if pos is not None: self.pos = int_scpos(pos)
         return QRectF(QPointF(self.pos), QSizeF(1,1))
 
@@ -386,14 +458,17 @@ class ROIPixel(ROIBase):
         self.finish_add_roi()
 
     def is_last_point(self, scpos, clicknum):
+        """Return True; a pixel ROI is complete after one click."""
         return True
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` set to ``[(x, y)]`` of ``self.pos``."""
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point_int(self.pos),]
         return d
 
     def set_from_roi_pars(self, d):
+        """Add the pixel at ``d['points'][0]`` to the scene and return True."""
         logger.info('ROIPixel.set_from_roi_pars dict: %s' % str(d))
         xy = d['points'][0]  # list [x, y]
         self.add_to_scene(pos=QPointF(*xy))
@@ -401,6 +476,10 @@ class ROIPixel(ROIBase):
 
 
 class ROIPixGroup(ROIBase):
+    """ROI made of many pixels drawn as 1x1 rectangles in one ``QGraphicsPathItem``.
+
+    Pixel positions are kept in ``self.pixpos``; clicking an existing pixel removes it.
+    """
     def __init__(self, **kwa):
         self.roi_type = PIXGROUP
         ROIBase.__init__(self, **kwa)
@@ -413,11 +492,16 @@ class ROIPixGroup(ROIBase):
         self.iscpos_last = None
 
     def pixel_rect(self, pos=None):
+        """Append ``pos`` (or ``self.pos`` if None) to ``self.pixpos`` and return a 1x1 ``QRectF`` there.
+
+        If ``pos`` is given it is stored in ``self.pos`` first.
+        """
         if pos is not None: self.pos = pos
         self.pixpos.append(self.pos)
         return QRectF(QPointF(self.pos), QSizeF(1,1))
 
     def is_busy_pos(self, iscpos=None):
+        """Return True if ``iscpos`` equals one of the positions in ``self.pixpos``."""
         is_busy = any([iscpos == p for p in self.pixpos])
         return is_busy
 
@@ -463,10 +547,12 @@ class ROIPixGroup(ROIBase):
            item.setPath(path)
 
     def set_point_at_add(self, pos, clicknum):
+        """Call :meth:`add_to_scene` with ``pos`` (adds the pixel, or removes it if already in the group)."""
         self.add_to_scene(pos)
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROIPixGroup.move_at_add')
+        """Call :meth:`add_to_scene` with ``pos`` if ``left_is_pressed`` is True; otherwise do nothing."""
         if left_is_pressed:
             self.add_to_scene(pos=pos)
 
@@ -475,11 +561,13 @@ class ROIPixGroup(ROIBase):
         return clicknum > clicknum_max
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` set to the ``(x, y)`` tuples of all pixels in ``pixpos``."""
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point_int(p) for p in self.pixpos]
         return d
 
     def set_from_roi_pars(self, d):
+        """Add a pixel for each ``(x, y)`` in ``d['points']`` via :meth:`add_to_scene` and return True."""
         logger.info('ROIPixGroup.set_from_roi_pars dict: %s' % str(d))
         for x,y in d['points']:
             self.add_to_scene(pos=QPoint(x,y))
@@ -488,6 +576,7 @@ class ROIPixGroup(ROIBase):
 
 class ROILine(ROIBase):
 
+    """Line ROI drawn as a ``QGraphicsLineItem``."""
     def __init__(self, **kwa):
         self.roi_type = LINE
         ROIBase.__init__(self, **kwa)
@@ -503,23 +592,27 @@ class ROILine(ROIBase):
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROILine.move_at_add')
+        """Set the end point ``p2`` of the line item to ``pos``."""
         line = self.scitem.line()
         line.setP2(pos)
         self.scitem.setLine(line)
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` set to the line end points rounded to 2 decimals."""
         o = self.scitem.line()
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in (o.p1(), o.p2())]
         return d
 
     def set_from_roi_pars(self, d):
+        """Add a line between the two points in ``d['points']`` to the scene and return True."""
         logger.info('ROILine.set_from_roi_pars dict: %s' % str(d))
         p1, p2 = [QPointF(*xy) for xy in d['points']]
         self.add_to_scene(pos=p1, line=QLineF(p1, p2))
         return True
 
     def show_handles(self):
+        """Create TRANSLATE handles at the two line end points (``poinum`` 0 and 1) and set their edit pen."""
         logging.info('ROILine.show_handles for ROI %s' % self.roi_name)
         o = self.scitem.line()
         self.list_of_handles = [
@@ -530,6 +623,7 @@ class ROILine(ROIBase):
 
     def set_point(self, n, p):
         #logging.debug('ROILine.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Set line point ``n`` (0 for ``p1``, 1 for ``p2``) to ``p``; other values of ``n`` do nothing."""
         line = self.scitem.line()
         if   n==0: line.setP1(p)
         elif n==1: line.setP2(p)
@@ -552,6 +646,7 @@ class ROILine(ROIBase):
 
 
 class ROIRect(ROIBase):
+    """Rectangle ROI drawn as a ``QGraphicsRectItem``, optionally rotated about its top-left corner by ``self.angle``."""
     def __init__(self, **kwa):
         self.roi_type = RECT
         ROIBase.__init__(self, **kwa)
@@ -571,11 +666,16 @@ class ROIRect(ROIBase):
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROIRect.move_at_add')
+        """Set the bottom-right corner of the rect item to ``pos``."""
         rect = self.scitem.rect()
         rect.setBottomRight(pos)
         self.scitem.setRect(rect)
 
     def roi_pars(self):
+        """Return the base dict with ``'angle'`` and ``'points'`` = top-left and bottom-right of the item rect.
+
+        Points are in the item's own (unrotated) coordinates, rounded to 2 decimals.
+        """
         o = self.scitem.rect()
         d = ROIBase.roi_pars(self)
         d['angle'] = self.angle
@@ -583,12 +683,14 @@ class ROIRect(ROIBase):
         return d
 
     def set_from_roi_pars(self, d):
+        """Add a rect spanning the two points in ``d['points']`` rotated by ``d['angle']`` and return True."""
         logger.info('ROIRect.set_from_roi_pars dict: %s' % str(d))
         p1, p2 = [QPointF(*xy) for xy in d['points']]
         self.add_to_scene(pos=p1, rect=QRectF(p1, p2), angle_deg=d['angle'])
         return True
 
     def show_handles(self):
+        """Create handles TRANSLATE at top-left (0), SCALE at bottom-right (1) and ROTATE at top-right (2)."""
         logging.info('ROIRect.show_handles for ROI %s' % self.roi_name)
         o = self.scitem.rect()
         self.list_of_handles = [
@@ -600,6 +702,12 @@ class ROIRect(ROIBase):
 
     def set_point(self, n, p):
         #logging.debug('ROIRect.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Apply a handle move: 0 moves the rect, 1 sets its bottom-right corner, 2 sets the rotation.
+
+        ``p`` is mapped from scene to item coordinates. For ``n == 2`` the angle is
+        ``angle_between_points(r.topLeft(), p)``. Other values of ``n`` do nothing; otherwise handles 1
+        and 2 are moved to the new bottom-right and top-right corners.
+        """
         h0, h1, h2 = self.list_of_handles
         r = self.scitem.rect()
         self.scitem.setTransformOriginPoint(r.topLeft())
@@ -634,6 +742,7 @@ class ROIRect(ROIBase):
 
 
 class ROISquare(ROIRect):
+    """``ROIRect`` subclass with type SQUARE that keeps width and height equal using ``rect_to_square``."""
     def __init__(self, **kwa):
         ROIRect.__init__(self, **kwa)
         self.roi_type = SQUARE
@@ -641,9 +750,11 @@ class ROISquare(ROIRect):
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROISquare.move_at_add')
+        """Resize the item rect to a square from its top-left corner toward ``pos``."""
         self.scitem.setRect(rect_to_square(self.scitem.rect(), pos))
 
     def show_handles(self):
+        """Create handles TRANSLATE at top-left (0) and ROTATE at bottom-right (1)."""
         logging.info('ROISquare.show_handles for ROI %s' % self.roi_name)
         o = self.scitem.rect()
         self.list_of_handles = [
@@ -654,6 +765,12 @@ class ROISquare(ROIRect):
 
     def set_point(self, n, p):
         #logging.debug('ROISquare.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Apply a handle move: 0 moves the square, 1 sets rotation and size.
+
+        For ``n == 1`` the rotation is ``angle_between_points(r.topLeft(), p) - 45`` and the bottom-right
+        corner is set to ``p`` mapped to item coordinates. Other ``n`` do nothing; otherwise the rect is
+        squared and handle 1 is moved to its bottom-right corner.
+        """
         h0, h1 = self.list_of_handles
         r = self.scitem.rect()
         self.scitem.setTransformOriginPoint(r.topLeft())
@@ -673,6 +790,7 @@ class ROISquare(ROIRect):
 
 
 class ROIPolygon(ROIBase):
+    """Polygon ROI drawn as a ``QGraphicsPolygonItem``; vertices are added by clicks."""
     def __init__(self, **kwa):
         self.roi_type = POLYGON
         ROIBase.__init__(self, **kwa)
@@ -685,9 +803,11 @@ class ROIPolygon(ROIBase):
         #self.scitem = self.scene().addPolygon(QPolygonF(poly), pen, brush)
 
     def move_at_add(self, pos, left_is_pressed=False):
+        """Call :meth:`move_vertex` with ``pos``."""
         self.move_vertex(pos)
 
     def move_vertex(self, pos):
+        """Append ``pos`` if the polygon has one vertex, otherwise replace its last vertex with ``pos``."""
         poly = self.scitem.polygon()
         i = poly.size()
         logger.debug('polygon size: %d' % i)
@@ -696,6 +816,7 @@ class ROIPolygon(ROIBase):
         self.scitem.setPolygon(poly)
 
     def add_vertex(self, pos):
+        """Append ``pos`` to the polygon, store the polygon in ``self.poly_selected`` and set it on the item."""
         poly = self.scitem.polygon()
         poly.append(pos)
         self.poly_selected = poly
@@ -703,20 +824,24 @@ class ROIPolygon(ROIBase):
 
     def set_point_at_add(self, pos, clicknum):
         #logging.debug('ROIPolygon.set_point_at_add - set point number: %d to position: %s' % (clicknum, str(p)))
+        """Call :meth:`add_vertex` with ``pos``."""
         self.add_vertex(pos)
 
     def is_last_point(self, scpos, clicknum):
+        """Return True if ``clicknum > 2`` and ``scpos`` is within ``tolerance`` (Manhattan length) of the first point ``self.pos``."""
         d = (scpos - self.pos).manhattanLength()
         logging.info('POLYGON manhattanLength(last-first): %.1f closing distance: %.1f'%\
                       (d, self.tolerance))
         return clicknum > 2 and d < self.tolerance
 
     def finish_add_roi(self):
+        """If not yet finished, call :meth:`set_poly` (restore ``poly_selected``) and set ``is_finished`` to True."""
         if not self.is_finished:
             self.set_poly()
             self.is_finished = True
 
     def set_poly(self, poly=None):
+        """Set the item polygon to ``poly``, or to ``self.poly_selected`` if ``poly`` is None."""
         self.scitem.setPolygon(self.poly_selected if poly==None else poly)
 
     def polygon_points(self):
@@ -725,17 +850,20 @@ class ROIPolygon(ROIBase):
         return [o.value(i) for i in range(o.size())]
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` set to the polygon vertices rounded to 2 decimals."""
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in self.polygon_points()]
         return d
 
     def set_from_roi_pars(self, d):
+        """Add a polygon with the vertices in ``d['points']`` (``pos`` = first vertex) and return True."""
         logger.info('ROIPolygon.set_from_roi_pars dict: %s' % str(d))
         pxy = [QPointF(*xy) for xy in d['points']]
         self.add_to_scene(pos=pxy[0], poly=QPolygonF(pxy))
         return True
 
     def show_handles(self):
+        """Create a TRANSLATE handle at every polygon vertex with ``poinum`` equal to the vertex index."""
         logging.info('ROIPolygon.show_handles for ROI %s' % self.roi_name)
         self.list_of_handles = [
             select_handle(TRANSLATE, view=self.view, roi=self, pos=p, poinum=i) for i,p in enumerate(self.polygon_points())]
@@ -743,6 +871,7 @@ class ROIPolygon(ROIBase):
 
     def set_point(self, n, p):
         #logging.debug('ROIPolygon.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Replace polygon vertex ``n`` with ``p``; return without change if ``n`` is greater than the polygon size."""
         poly = self.scitem.polygon()
         if n>poly.size(): return
         poly.replace(n, p)
@@ -756,6 +885,11 @@ class ROIPolygon(ROIBase):
 
 
 class ROIPolyreg(ROIBase):
+    """Regular-polygon ROI drawn as a ``QGraphicsPolygonItem``.
+
+    The first click sets the center ``pos``, the second the radius and angle, the third the number
+    of vertices ``nverts`` (initially 3).
+    """
     def __init__(self, **kwa):
         self.roi_type = POLYREG
         ROIBase.__init__(self, **kwa)
@@ -777,12 +911,18 @@ class ROIPolyreg(ROIBase):
         ROIBase.add_to_scene(self, pen=pen, brush=brush)
 
     def polyreg_dxy(self, pos):
+        """Return ``(d, d.x(), d.y())`` where ``d = pos - self.pos``."""
         d = pos - self.pos
         x, y = d.x(), d.y()
         return d, x, y
 
     def move_at_add(self, scpos, left_is_pressed=False):
         #logger.debug('ROIPolyreg.move_at_add')
+        """Rebuild the regular polygon for mouse position ``scpos``.
+
+        Angle and radius come from ``scpos`` relative to the center unless already set; if
+        ``clicknum != 3`` :meth:`set_nverts` is called with ``scpos`` first.
+        """
         d, x, y = self.polyreg_dxy(scpos)
         angle = math.degrees(math.atan2(y, x)) if self.angle is None else self.angle
         r = math.sqrt(x*x + y*y) if self.radius is None else self.radius
@@ -791,6 +931,7 @@ class ROIPolyreg(ROIBase):
         self.scitem.setPolygon(poly)
 
     def set_radius_and_angle(self, scpos):
+        """Store ``scpos_rad = scpos`` and set ``pradius`` (offset from center), ``radius`` and ``angle`` (degrees) from it."""
         self.scpos_rad = scpos
         d, x, y = self.polyreg_dxy(scpos)
         self.pradius = QPointF(x, y)
@@ -798,12 +939,17 @@ class ROIPolyreg(ROIBase):
         self.angle = math.degrees(math.atan2(y, x))
 
     def set_nverts(self, scpos):
+        """Set ``pnverts = scpos - scpos_rad`` and ``nverts = 3 + int(16*d/radius)``, ``d`` being the Manhattan length of that offset.
+
+        Does nothing if ``scpos_rad`` is None.
+        """
         if self.scpos_rad is not None:
             self.pnverts = scpos - self.scpos_rad
             d = (scpos-self.scpos_rad).manhattanLength()
             self.nverts = 3 + int(16*d/self.radius)
 
     def set_point_at_add(self, p, clicknum):
+        """Store ``clicknum``; click 2 calls :meth:`set_radius_and_angle`, click 3 calls :meth:`set_nverts`."""
         logging.debug('ROIPolyreg.set_point_at_add - set point number: %d to position: %s' % (clicknum, str(p)))
         self.clicknum = clicknum
         if   clicknum == 2: self.set_radius_and_angle(p)
@@ -816,6 +962,10 @@ class ROIPolyreg(ROIBase):
         return self.is_finished
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` = ``[pos, pradius, pnverts]`` plus ``'nverts'``, ``'radius'`` and ``'angle'``.
+
+        ``pradius`` and ``pnverts`` are relative offsets, not absolute positions.
+        """
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in (self.pos, self.pradius, self.pnverts)]
         d['nverts'] = self.nverts
@@ -824,6 +974,7 @@ class ROIPolyreg(ROIBase):
         return d
 
     def set_from_roi_pars(self, d):
+        """Restore center, offsets, ``nverts``, ``radius`` and ``angle`` from ``d``, add the polygon to the scene and return True."""
         logger.info('ROIPolyreg.set_from_roi_pars dict: %s' % str(d))
         self.pos, self.pradius, self.pnverts = pos, pradius, pnverts = [QPointF(*xy) for xy in d['points']]
         nverts = self.nverts = d['nverts']
@@ -834,6 +985,7 @@ class ROIPolyreg(ROIBase):
         return True
 
     def show_handles(self):
+        """Create handles TRANSLATE at the center (0), ROTATE at ``scpos_rad`` (1) and SCALE at ``scpos_rad + pnverts`` (2)."""
         logging.info('ROIPolyreg.show_handles for ROI %s' % self.roi_name)
         self.list_of_handles = [
             select_handle(TRANSLATE, view=self.view, roi=self, pos=self.pos,       poinum=0),
@@ -843,6 +995,11 @@ class ROIPolyreg(ROIBase):
         self.add_handles_to_scene()
 
     def set_point(self, n, p):
+        """Apply a handle move: 0 sets the center, 1 the radius and angle, 2 the number of vertices.
+
+        Other ``n`` do nothing. Otherwise :meth:`move_at_add` is called with ``p`` and handles 1 and 2 are
+        moved to ``pos + pradius`` and ``pos + pradius + pnverts``.
+        """
         logging.debug('ROIPolyreg.set_point - set point number: %d to position: %s' % (n, str(p)))
         h0, h1, h2 = self.list_of_handles
         ph2 = h2.pos  # scpos-self.scpos_rad
@@ -873,6 +1030,7 @@ class ROIPolyreg(ROIBase):
 
 class ROIEllipse(ROIBase):
 
+    """Ellipse ROI drawn as a ``QGraphicsEllipseItem``, rotated about its center by ``self.angle``."""
     def __init__(self, **kwa):
         self.roi_type = ELLIPSE
         ROIBase.__init__(self, **kwa)
@@ -896,11 +1054,13 @@ class ROIEllipse(ROIBase):
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROIEllipse.move_at_add')
+        """Set the item rect centered at ``self.pos`` with one corner at ``pos``."""
         c = self.pos
         dp = pos-c # rect.center()
         self.scitem.setRect(QRectF(c-dp, c+dp))
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` = top-left and bottom-right of the item rect and ``'angle'``."""
         o = self.scitem.rect()
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in (o.topLeft(), o.bottomRight())]  # list(o.getCoords())
@@ -908,6 +1068,7 @@ class ROIEllipse(ROIBase):
         return d
 
     def set_from_roi_pars(self, d):
+        """Add an ellipse in the rect spanned by ``d['points']`` with rotation ``d.get('angle', 0)`` and return True."""
         logger.info('ROIEllipse.set_from_roi_pars dict: %s' % str(d))
         p1, p2 = [QPointF(*xy) for xy in d['points']]
         angle = d.get('angle', 0)
@@ -916,6 +1077,7 @@ class ROIEllipse(ROIBase):
         return True
 
     def show_handles(self):
+        """Create handles TRANSLATE at the center (0), SCALE at bottom-right (1) and ROTATE at top-right (2)."""
         logging.info('ROIEllipse.show_handles for ROI %s' % self.roi_name)
         o = self.scitem.rect()
         self.list_of_handles = [
@@ -927,6 +1089,11 @@ class ROIEllipse(ROIBase):
 
     def set_point(self, n, p):
         #logging.debug('ROIEllipse.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Apply a handle move: 0 moves the center, 1 sets the bottom-right corner, 2 sets the rotation.
+
+        ``p`` is mapped to item coordinates; the angle for ``n == 2`` is ``angle_between_points(r.topLeft(), p)``.
+        Other ``n`` do nothing; otherwise all three handles are moved to the new rect positions.
+        """
         h0, h1, h2 = self.list_of_handles
         r = self.scitem.rect()
         self.scitem.setTransformOriginPoint(r.center())
@@ -944,6 +1111,7 @@ class ROIEllipse(ROIBase):
 
 
 class ROICircle(ROIEllipse):
+    """``ROIEllipse`` subclass with type CIRCLE."""
     def __init__(self, **kwa):
         ROIEllipse.__init__(self, **kwa)
         self.roi_type = CIRCLE
@@ -951,6 +1119,7 @@ class ROICircle(ROIEllipse):
 
     def move_at_add(self, pos, left_is_pressed=False):
         #logger.debug('ROIEllipse.move_at_add')
+        """Set a square item rect centered at ``self.pos`` with half-side ``max(dx, dy)`` of ``pos - self.pos``."""
         c = self.pos # center
         d = pos-c
         d = max(d.x(), d.y())
@@ -958,6 +1127,7 @@ class ROICircle(ROIEllipse):
         self.scitem.setRect(QRectF(c-dp, c+dp))
 
     def show_handles(self):
+        """Create handles TRANSLATE at the center (0) and SCALE at the right edge middle point (1)."""
         logging.info('ROICircle.show_handles for ROI %s' % self.roi_name)
         o = self.scitem.rect()
         self.list_of_handles = [
@@ -968,6 +1138,10 @@ class ROICircle(ROIEllipse):
 
     def set_point(self, n, p):
         #logging.debug('ROICircle.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Apply a handle move: 0 moves the center (and shifts handle 1 by the same offset), 1 sets the radius.
+
+        For ``n == 1`` the radius is the distance from the center to ``p``. Other ``n`` do nothing.
+        """
         h0, h1 = self.list_of_handles
         r = self.scitem.rect()
         if n==0:
@@ -986,6 +1160,7 @@ class ROICircle(ROIEllipse):
         self.scitem.setRect(r)
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` = top-left and bottom-right of the item rect (no angle)."""
         o = self.scitem.rect()
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in (o.topLeft(), o.bottomRight())]  # list(o.getCoords())
@@ -1004,6 +1179,11 @@ class ROICircle(ROIEllipse):
 
 
 class ROIArch(ROIBase):
+    """Arch ROI drawn as a ``QGraphicsPathItem`` around center ``pos``.
+
+    Points ``p1`` and ``p2`` (set by the second and third clicks) define two radii and the start and
+    span angles; ``npoints`` (kwa, default 32) sets the polygon resolution of the arcs.
+    """
     def __init__(self, **kwa):
         self.roi_type = ARCH
         ROIBase.__init__(self, **kwa)
@@ -1021,6 +1201,10 @@ class ROIArch(ROIBase):
         ROIBase.add_to_scene(self, pen=pen, brush=brush)
 
     def point_vraxy(self, p):
+        """Return ``(v, r, a, x, y)`` for point ``p`` relative to the center.
+
+        ``v = p - self.pos``, ``r`` its length, ``a`` its ``atan2`` angle in degrees, ``x, y`` its components.
+        """
         v = p - self.pos # defines v relative center
         x, y = v.x(), v.y()
         r = math.sqrt(x*x + y*y)
@@ -1028,15 +1212,18 @@ class ROIArch(ROIBase):
         return v, r, a, x, y
 
     def set_point_at_add(self, p, clicknum):
+        """Store ``clicknum``; click 2 calls :meth:`set_p1`, click 3 calls :meth:`set_p2`."""
         self.clicknum = clicknum
         if   clicknum == 2: self.set_p1(p)
         elif clicknum == 3: self.set_p2(p)
 
     def set_p1(self, p):
+        """Store ``p1 = p`` and set ``v1, r1, a1, x1, y1`` from :meth:`point_vraxy`."""
         self.p1 = p
         self.v1, self.r1, self.a1, self.x1, self.y1 = self.point_vraxy(p)
 
     def set_p2(self, p):
+        """Store ``p2 = p`` and set ``v2, r2, a2, x2, y2`` from :meth:`point_vraxy`."""
         self.p2 = p
         self.v2, self.r2, self.a2, self.x2, self.y2 = self.point_vraxy(p)
 
@@ -1057,6 +1244,10 @@ class ROIArch(ROIBase):
 
     def move_at_add(self, p, left_is_pressed=False):
         #logger.debug('ROIArch.move_at_add')
+        """Update ``p1`` (if ``clicknum == 1``) or ``p2`` (if ``clicknum == 2``) to ``p`` and rebuild the path.
+
+        Does nothing if ``p`` is within ``tolerance`` (Manhattan length) of the center.
+        """
         if (p-self.pos).manhattanLength() < self.tolerance: return
         if   self.clicknum == 1: self.set_p1(p)
         elif self.clicknum == 2: self.set_p2(p)
@@ -1069,11 +1260,13 @@ class ROIArch(ROIBase):
         return self.is_finished
 
     def roi_pars(self):
+        """Return the base dict with ``'points'`` = ``[pos, p1, p2]`` rounded to 2 decimals."""
         d = ROIBase.roi_pars(self)
         d['points'] = [json_point(p) for p in (self.pos, self.p1, self.p2)]
         return d
 
     def set_from_roi_pars(self, d):
+        """Add the arch with center and points from ``d['points']``, mark it finished, set its path and return True."""
         logger.info('ROIArch.set_from_roi_pars dict: %s' % str(d))
         p0, p1, p2 = [QPointF(*xy) for xy in d['points']]
         self.add_to_scene(pos=p0)
@@ -1085,6 +1278,7 @@ class ROIArch(ROIBase):
         return True
 
     def show_handles(self):
+        """Create handles CENTER at ``pos`` (0) and TRANSLATE at ``p1`` (1) and ``p2`` (2)."""
         logging.info('ROIArch.show_handles for ROI %s' % self.roi_name)
         self.list_of_handles = [
             select_handle(CENTER,    view=self.view, roi=self, pos=self.pos, poinum=0),
@@ -1095,6 +1289,11 @@ class ROIArch(ROIBase):
 
     def set_point(self, n, p):
         #logging.debug('ROIArch.set_point - set point number: %d to position: %s' % (n, str(p)))
+        """Apply a handle move: 0 moves the center (shifting handles 1 and 2), 1 sets ``p1``, 2 sets ``p2``.
+
+        Other ``n`` do nothing; otherwise the path is rebuilt. Moving the center does not update the
+        stored ``p1``/``p2`` attributes.
+        """
         h0, h1, h2 = self.list_of_handles
         if n==0:
             d = p - self.pos
@@ -1121,6 +1320,24 @@ class ROIArch(ROIBase):
 
 
 def create_roi(roi_type, view=None, pos=QPointF(1,1), **kwa):
+    """Create an ROI object of the given type.
+
+    Parameters
+    ----------
+    roi_type : int
+        One of the type constants (PIXEL, LINE, RECT, SQUARE, POLYGON, POLYREG, CIRCLE, ELLIPSE,
+        ARCH, PIXGROUP).
+    view : QGraphicsView
+        View passed to the ROI.
+    pos : QPointF
+        Initial scene position.
+
+    Returns
+    -------
+    ROIBase or None
+        New ROI; None (with a warning) for a type without a class, e.g. NONE. A type missing from
+        ``dict_roi_type_name`` raises KeyError.
+    """
     o = ROIPixel   (view=view, pos=pos, **kwa) if roi_type == PIXEL else\
         ROILine    (view=view, pos=pos, **kwa) if roi_type == LINE else\
         ROIRect    (view=view, pos=pos, **kwa) if roi_type == RECT else\
@@ -1160,15 +1377,22 @@ class HandleBase(QGraphicsPathItem):
         self.setPath(self.path())
 
     def path(self):
+        """Return the item's current ``QPainterPath``; subclasses override this to build the handle shape."""
         return QGraphicsPathItem.path(self)
 
     def add_handle_to_scene(self, pen=QPEN_EDI, brush=QBRUSH_DEF):
+        """Set brush and pen on the handle and return ``self``; the item is not added to the scene here."""
         self.setBrush(brush)
         self.setPen(pen)
         #self.hscene.addItem(self)  # ALREDAY SET ??? by parent=self.roi
         return self
 
     def size_points_on_scene(self):
+        """Return the handle half-size as two scene vectors ``(QPointF(rx, 0), QPointF(0, ry))``.
+
+        The viewport size ``rsize * view.rect().width()`` is divided by the view transform scale factors
+        ``m11`` and ``m22``.
+        """
         view, rsize = self.hview, self.rsize
         vsize = rsize * view.rect().width() # viewport size of the handle
         t = view.transform()
@@ -1176,6 +1400,7 @@ class HandleBase(QGraphicsPathItem):
         return QPointF(rx,0), QPointF(0,ry)
 
     def boundingRect(self):
+        """Return a ``QRectF`` around ``hpos`` extended by the handle size plus one unit in each direction."""
         p = self.hpos
         dx, dy = self.size_points_on_scene()
         v = dx + dy + QPointF(1,1)
@@ -1183,17 +1408,20 @@ class HandleBase(QGraphicsPathItem):
 
     def set_handle_pos(self, p):
         #d = p - self.hpos
+        """Set ``hpos`` to ``p`` and rebuild the handle path."""
         self.hpos = p
         self.setPath(self.path()) # WORKS
         #self.setPos(p) # DOES NOT WORK
         #self.translate(d.x(), d.y())
 
     def on_move(self, p):
+        """Move the handle to ``p`` and call ``self.roi.set_point(self.poinum, p)``."""
         self.set_handle_pos(p)
         self.roi.set_point(self.poinum, p)
 
 
 class HandleCenter(HandleBase):
+    """Handle of type CENTER; its path is a closed polyline marker around ``hpos``."""
     def __init__(self, **kwa):
         self.htype = CENTER
         HandleBase.__init__(self, **kwa)
@@ -1213,6 +1441,7 @@ class HandleCenter(HandleBase):
 
 
 class HandleOrigin(HandleBase):
+    """Handle of type ORIGIN; its path is a cross centered at ``hpos``."""
     def __init__(self, **kwa):
         self.htype = ORIGIN
         HandleBase.__init__(self, **kwa)
@@ -1230,6 +1459,7 @@ class HandleOrigin(HandleBase):
 
 
 class HandleTranslate(HandleBase):
+    """Handle of type TRANSLATE; its path is a square centered at ``hpos``."""
     def __init__(self, **kwa):
         self.htype = TRANSLATE
         HandleBase.__init__(self, **kwa)
@@ -1247,6 +1477,7 @@ class HandleTranslate(HandleBase):
 
 
 class HandleRotate(HandleBase):
+    """Handle of type ROTATE; its path is a 16-vertex circle polygon centered at ``hpos``."""
     def __init__(self, **kwa):
         self.htype = ROTATE
         HandleBase.__init__(self, **kwa)
@@ -1263,6 +1494,7 @@ class HandleRotate(HandleBase):
 
 
 class HandleScale(HandleBase):
+    """Handle of type SCALE; its path is a rhombus centered at ``hpos``."""
     def __init__(self, **kwa):
         self.htype = SCALE
         HandleBase.__init__(self, **kwa)
@@ -1281,6 +1513,7 @@ class HandleScale(HandleBase):
 
 
 class HandleMenu(HandleBase):
+    """Handle of type MENU; its path is a square with two horizontal lines inside."""
     def __init__(self, **kwa):
         self.htype = MENU
         HandleBase.__init__(self, **kwa)
@@ -1304,6 +1537,7 @@ class HandleMenu(HandleBase):
 
 
 class HandleOther(HandleBase):
+    """Handle of type OTHER; its path shape is chosen by kwa ``shhand`` (1 default, 2, or other)."""
     def __init__(self, **kwa):
         self.htype = OTHER
         self.shhand = kwa.get('shhand', 1)
@@ -1338,6 +1572,23 @@ class HandleOther(HandleBase):
 
 
 def select_handle(htype, roi=None, pos=QPointF(1,1), **kwa):
+    """Create a handle object of the given type.
+
+    Parameters
+    ----------
+    htype : int
+        One of CENTER, ORIGIN, TRANSLATE, ROTATE, SCALE, MENU, OTHER.
+    roi : ROIBase or None
+        ROI that owns the handle.
+    pos : QPointF
+        Handle position.
+
+    Returns
+    -------
+    HandleBase or None
+        New handle; None (with a warning) for NONE. A type missing from ``dict_handle_type_name``
+        raises KeyError.
+    """
     _roi = roi
     o = HandleCenter   (roi=_roi, pos=pos, **kwa) if htype == CENTER else\
         HandleOrigin   (roi=_roi, pos=pos, **kwa) if htype == ORIGIN else\

@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Example/test for ``GWViewImageROI``: draw, select, edit, save and load ROIs on a test image with keyboard control.
+
+Run as a script with test name ``'0'``-``'7'``. Configures root logging at INFO level and appends
+``'..'`` to ``sys.path`` at import time.
+"""
 from psana.graphqt.GWViewImageROI import *
 
 logger = logging.getLogger(__name__)
@@ -14,7 +19,10 @@ import numpy as np
 
 class TestGWViewImageROI(GWViewImageROI):
 
-    def KEY_USAGE(self): return 'Keys:'\
+    """``GWViewImageROI`` subclass with key handling for ROI type/mode selection, test drawing, ROI deletion and file I/O."""
+    def KEY_USAGE(self):
+        """Return a help string listing the handled keys and the current ROI type and mode with their selection keys."""
+        return 'Keys:'\
                '\n  ESC - exit'\
                '\n  O - reset original size'\
                '\n  N - set new pixmap'\
@@ -91,6 +99,12 @@ class TestGWViewImageROI(GWViewImageROI):
         ith3 = roiu.select_handle(roiu.OTHER,     view=self, roi=None, pos=QPointF(290,20), shhand=3).add_to_scene()
 
     def keyPressEvent(self, e):
+        """Call the base handler, then act on the key: Escape closes, O resets the scene rect, N/W/H set new random images, K draws test items.
+
+        D deletes selected ROIs, C cancels and F finishes the current ROI, J/L save/load ROI parameters
+        (JSON), M saves the mask; ROI-type keys set ``roi_type`` and mode keys set ``mode_type`` (also
+        switching scale control off for modes above VISIBLE). ``chr(key)`` is applied to every non-Escape key.
+        """
         GWViewImageROI.keyPressEvent(self, e)
 
         key = e.key()
@@ -165,6 +179,7 @@ class TestGWViewImageROI(GWViewImageROI):
         logger.info(self.KEY_USAGE())
 
 def image_with_random_peaks(shape=(500, 500)):
+    """Return a random normal image (mu 0, sigma 10) of ``shape`` with 50 random peaks and a ring of radius 300 at row 500, column 500."""
     from psana.pyalgos.generic.NDArrUtils import info_ndarr
 
     img = ag.random_standard(shape, mu=0, sigma=10)
@@ -175,6 +190,12 @@ def image_with_random_peaks(shape=(500, 500)):
     return img
 
 def test_gfviewimageroi(tname):
+    """Create a ``QApplication`` and show a ``TestGWViewImageROI`` selected by ``tname``.
+
+    Tests ``'0'``-``'3'`` use a 1000x1000 random-peaks image with different scale controls, ``'4'``-``'6'``
+    color-bar arrays and ``'7'`` a 5x3 array. Test ``'6'`` calls ``next_color_table``, which is not
+    defined in this module (NameError).
+    """
     logger.info(sys._getframe().f_code.co_name)
     arr = image_with_random_peaks((1000, 1000))
     ctab = ct.color_table_monochr256()

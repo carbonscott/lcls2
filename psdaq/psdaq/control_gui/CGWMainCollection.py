@@ -35,7 +35,9 @@ from psdaq.control_gui.CGConfigParameters import cp
 #--------------------
 
 class CGWMainCollection(QWidget) :
-    """
+    """Widget showing a grid of `CGWPanelList` columns for the 'drp', 'teb' and 'meb' process lists.
+
+    Registers itself as `cp.cgwmaincollection`; the data come from `CGJsonUtils.get_status`.
     """
     TABTITLE_H = ['drp','teb','meb']
 
@@ -76,6 +78,11 @@ class CGWMainCollection(QWidget) :
         #          ['drp2','teb2','meb2'],\
         #          ['drp3','teb3','meb3']]
 
+        """Fill the grid from ``get_status(['drp', 'teb', 'meb'])``.
+
+        On the first call it creates the grid with a title label and a `CGWPanelList` per
+        column; later calls refill the existing panel lists.
+        """
         list2d = get_status(self.TABTITLE_H)
         logger.debug('list2d processes status:\n%s' % str(list2d))
 
@@ -100,17 +107,20 @@ class CGWMainCollection(QWidget) :
 #--------------------
 
     def set_tool_tips(self) :
+        """Set the tool tip to 'CGWMainCollection'."""
         self.setToolTip('CGWMainCollection')
         #self.but_status.setToolTip('Click on button.') 
 
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(250, 60)."""
         return QSize(250, 60)
 
 #--------------------
 
     def set_style(self) :
+        """Apply the group-box title style, size policy, minimum size 100x40 and zero margins."""
         from psdaq.control_gui.Styles import style
         self.setStyleSheet(style.qgrbox_title)
 
@@ -123,6 +133,7 @@ class CGWMainCollection(QWidget) :
 
     def closeEvent(self, e) :
         #logger.debug('closeEvent')
+        """Call `QWidget.closeEvent` and set `cp.cgwmaincollection` to None."""
         QWidget.closeEvent(self, e)
         cp.cgwmaincollection = None
 

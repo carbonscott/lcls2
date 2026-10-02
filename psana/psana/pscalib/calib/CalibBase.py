@@ -53,6 +53,10 @@ from psana.pscalib.calib.CalibConstants import *
 
 class CalibBase() :
 
+    """Interface base class for calibration-constant storage; ``put``/``get``/``delete`` only log a warning here.
+
+    The constructor stores kwa ``dbname`` (default ``'Undefined'``).
+    """
     def __init__(self, **kwargs) :
         self.dbname = kwargs.get('dbname', 'Undefined')
 
@@ -61,13 +65,16 @@ class CalibBase() :
         logger.warning(msg)
 
     def put(self, data, **kwargs) :
+        """Log a "needs to be re-implemented" warning and return None; ``data`` is not stored."""
         self._show_warning('put(data)')
 
     def get(self, **kwargs) :
+        """Log a "needs to be re-implemented" warning and return None."""
         self._show_warning('get()')
         return None
 
     def delete(self, **kwargs) :
+        """Log a "needs to be re-implemented" warning and return None."""
         self._show_warning('delete()')
         return None
 

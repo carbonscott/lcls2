@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""
+"""Example: write test constants to a text file and print the ``cdb add`` command that would upload them.
+
+Run as a script with test name ``'0'`` (``delayed_denom`` array) or ``'1'`` (``fir_coefficients`` dict).
 """
 
 import numpy as np
@@ -10,16 +12,24 @@ from psana.pyalgos.generic.Utils import save_textfile
 #----------
 
 def fir_coefficients() : 
+    """Return a hard-coded dict of FIR coefficient strings and the ctype name ``'fir_coefficients'``."""
     return {'CoefficientSet0': '7f7f7f7f', 'CoefficientSet1': '7f7f7f7f', 'CoefficientSet2': '7f7f7f7f', 'CoefficientSet3': '7f7f7f7f', 'CoefficientSet4': '81818181', 'CoefficientSet5': '81818181', 'CoefficientSet6': '81818181', 'CoefficientSet7': '81818181', 'LoadCoefficients': '1'}, 'fir_coefficients'
 
 #----------
 
 def delayed_denom() : 
+    """Return ``numpy.ones((2048,), dtype=numpy.uint8)`` and the ctype name ``'delayed_denom'``."""
     return np.ones((2048,), dtype=np.uint8), 'delayed_denom'
 
 #----------
 
 def save_constants_in_file(tname, fname='0-end.txt') : 
+    """Save test constants to ``fname`` and print a reminder with the matching ``cdb add`` command.
+
+    ``tname='0'`` saves the ``delayed_denom`` array with ``NDArrIO.save_txt``; ``'1'`` saves the string form
+    of the ``fir_coefficients`` dict with ``save_textfile``. Any other ``tname`` leaves ``cmd`` undefined and
+    raises NameError.
+    """
     if tname == '0' :
         nda, ctype = delayed_denom()
         print_ndarr(nda, 'nda for ctype: %s' % ctype)

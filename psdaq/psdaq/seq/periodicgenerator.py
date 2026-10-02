@@ -1,3 +1,4 @@
+"""`PeriodicGenerator`: build sequence source lines that issue requests at one or more fixed bucket periods."""
 import argparse
 import json
 import os
@@ -11,6 +12,7 @@ import psdaq.configdb.tsdef as ts # for marker/interval mapping
 verbose = False
 
 def myunion(s0,s1):
+    """Return the union of `s0` and `s1` as a set."""
     return set(s0) | set(s1)
 
 class PeriodicGenerator(object):
@@ -39,6 +41,17 @@ class PeriodicGenerator(object):
         self.init(period, start, marker, repeat, notify)
 
     def init(self, period, start, marker='910kH', repeat=-1, notify=False):
+        """Set the periods/starts and marker wait instruction, then generate the instruction lines.
+
+        `marker` is a key of `tsdef.FixedIntvsDict` (Wait) or 'a<rate>t<timeslots>' (WaitA).
+
+        Raises
+        ------
+        ValueError
+            If period and start lists differ in length or the marker is not recognized.
+        RuntimeError
+            If more than 1024 instructions are generated.
+        """
         self.async_start       = 0
         if isinstance(period,list):
             if len(period) != len(start):
@@ -126,6 +139,17 @@ class PeriodicGenerator(object):
 
 
     def fill_bkts(self,bkts,period,resync=False,start=None):
+        """Append waits and requests for the union of bucket ranges `bkts` within `period`, folding equal consecutive steps into loops.
+
+        Requests are BeamRequest(charge) if a charge is set, else ControlRequest([0]) with
+        `merge` or the list of matching period indices.
+
+        Returns
+        -------
+        bool or None
+            True if the remainder was filled with a one-marker Wait (resync), False otherwise,
+            None if there were no buckets.
+        """
         bunion = sorted(reduce(myunion,bkts))  # set of buckets with a request
         reqs   = []  # list of request values for those buckets
         for b in bunion:
@@ -216,6 +240,10 @@ class PeriodicGenerator(object):
         return False
 
 def main():
+    """Parse -p, -s, -d, -r, -n, -m, -M, build a `PeriodicGenerator` (resync off) and print seqcodes and instructions.
+
+    A warning goes to stderr above 1000 instructions.
+    """
     parser = argparse.ArgumentParser(description='Periodic sequence generator')
     parser.add_argument("-p", "--period"            , required=True , nargs='+', type=int, 
                         help="buckets between start of each train")

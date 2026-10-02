@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+"""PVA server (cothread) that publishes Prometheus query results as NTScalar PVs, polled only while clients are connected."""
 import os
 import sys
 import time
@@ -20,11 +21,13 @@ _log = logging.getLogger(__name__)
 
 
 class PromMetric(object):
+    """One Prometheus query `query` against server `srvurl`."""
     def __init__(self, srvurl, query):
         self._srvurl = srvurl
         self._query  = query
 
     def query(self):
+        """GET '<srvurl>/api/v1/query' with the query and return the decoded JSON, or None (logged) on a non-200 status."""
         payload = {'query': self._query}
         url = f'{self._srvurl}/api/v1/query'
         response = requests.get(url, params=payload)
@@ -40,6 +43,19 @@ class PromMetric(object):
         return data
 
     def get(self):
+        """Run the query and return its single result.
+
+        Returns
+        -------
+        list or tuple
+            The vector result's ``value`` pair (timestamp, value string), or ``result['value']``
+            for 'scalar'/'string' types; (None, None) if the request failed or the vector is empty.
+
+        Raises
+        ------
+        RuntimeError
+            For more than one vector item, an unsupported result type, or a non-success status.
+        """
         result = self.query()
         if result is None:
             return None, None
@@ -66,6 +82,7 @@ class PromMetric(object):
             raise RuntimeError(f"Error from query {self._query}")
 
 class Timer(object):
+    """Repeating cothread timer that calls registered callbacks every `interval` seconds while any are registered."""
     def __init__(self, interval):
         self._interval = interval
         self._timer = None
@@ -73,6 +90,7 @@ class Timer(object):
         self._active = False
 
     def append(self, callback):
+        """Register `callback` (once), starting the cothread timer if needed, and mark the timer active."""
         if self._timer is None:
             self._timer = cothread.Timer(self._interval, self._tick, retrigger=True)
         if callback not in self._callbacks:
@@ -91,6 +109,7 @@ class Timer(object):
                 callback()
 
     def remove(self, callback):
+        """Unregister `callback`; when none remain the timer is marked inactive and is cancelled at its next tick."""
         if self._timer is not None:
             if callback in self._callbacks:
                 self._callbacks.remove(callback)
@@ -98,6 +117,11 @@ class Timer(object):
                 self._active = False
 
 class Handler(object):
+    """SharedPV handler that samples a `PromMetric` on each timer tick while clients are connected.
+
+    `typeCode` (default 'd') must be one of 'bBhHiIlLdf' (else RuntimeError); `alarm`
+    enables valueAlarm fields initialized from the given dict.
+    """
     def __init__(self, timer, name, metric, typeCode=None, alarm=None):
         self._timer = timer
         self._name = name
@@ -158,6 +182,7 @@ class Handler(object):
         return 0, 0, ''
 
     def onFirstConnect(self, pv):
+        """Register this handler's tick with the timer, store `pv` and mark the handler active."""
         _log.debug(f"First client connects to {self._name}")
         self._timer.append(self._tick)
         self._pv = pv
@@ -202,11 +227,13 @@ class Handler(object):
                 self._pv.post(wrapped)
 
     def onLastDisconnect(self, pv):
+        """Mark the handler inactive; the PV is closed at the next tick."""
         _log.debug(f"Last client disconnects from {self._name}")
         # mark in-active, but don't immediately close()
         self._active = False
 
     def put(self, pv, op):
+        """Queue writes to 'valueAlarm.*' fields for the next tick; complete the operation with an error listing any other written fields."""
         msg = ''
         for item in op.value().changedSet(expand=False):
             if item.split('.')[0] == 'valueAlarm':
@@ -217,6 +244,10 @@ class Handler(object):
 
 
 def main():
+    """Load the JSON metric file (with %J, %I, %X, %P substituted), create one PV per named metric under '<P>:<inst>:<part>:' and serve until quit.
+
+    The Prometheus server is $DM_PROM_SERVER if set, else -S.
+    """
     parser = argparse.ArgumentParser(prog=sys.argv[0], description='Prometheus metric PV server')
 
     srv = 'http://psmetric03:9090'

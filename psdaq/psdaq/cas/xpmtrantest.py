@@ -1,3 +1,4 @@
+"""Test script that periodically writes the partition mask to an XPM's GroupMsgInsert PV."""
 import sys
 import socket
 import argparse
@@ -8,6 +9,10 @@ import time
 
 class TranControl(object):
 
+    """Holds PV names for XPM 'DAQ:LAB2:XPM:<x>' and a p4p 'pva' context.
+
+    The ':PART:<g>:MsgHeader' names for groups in the mask are built but not used.
+    """
     def __init__(self,args):
         print('__init__')
 
@@ -24,6 +29,14 @@ class TranControl(object):
 
     def pv_put(self, pvName, val):
 
+        """Put `val` to PV `pvName`.
+
+        Returns
+        -------
+        bool
+            True on success. On failure the code calls `self.report_error`, which this class
+            does not define (AttributeError).
+        """
         retval = False
 
         try:
@@ -39,6 +52,7 @@ class TranControl(object):
         return retval
 
     def run(self):
+        """Put the partition mask to ':GroupMsgInsert' now and then every 1/rate seconds with a repeating Timer; loops forever."""
         print('run')
         self.groups = self.args.p
         self.pv_put(self.pvGroupMsgInsert  ,self.args.p)
@@ -57,6 +71,7 @@ class TranControl(object):
             time.sleep(1)
 
 def main():
+    """Parse -x (XPM, default 2), -p (partition mask, default 1), -r (rate Hz) and -t (unused), then run `TranControl`."""
     print('main')
     parser = argparse.ArgumentParser(description='xpm scan test')
     parser.add_argument('-x', metavar='XPM', type=int, default=2,

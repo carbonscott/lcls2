@@ -75,6 +75,7 @@ NBINSWL  = 2000
 NBINSOFF = 200
 
 class Store :
+    """Holder of a (5, 2000) float64 array ``w``, initialized to zeros."""
     def __init__(self):
         self.w = np.zeros((5,NBINSWL), dtype=np.float64)
 
@@ -83,6 +84,10 @@ sp = Store()
 #------------------------------
 
 def wf_extremas(ax, wf, wt, rank=10) :
+    """Find local minima of ``wf`` below ``THR`` with ``local_minima_1d`` (from ``psalgos.pypsalgos``, rank ``rank``) and return their amplitudes and indexes.
+
+    The result is ``np.array(zip(amps, inds))``; in Python 3 ``zip`` is an iterator, so this gives a 0-d object array rather than an (n, 2) array. ``ax`` and ``wt`` are unused.
+    """
     sh = wf.shape
     #mask = np.ones(sh, dtype=np.uint16).flatten()
     mask_min = np.array(wf<THR, dtype=np.uint16)
@@ -115,6 +120,7 @@ def draw_times(ax, wf, wt) :
     #wf -= wf[0:1000].mean()
     #edges = find_edges(wf, BASE, THR, CFR, DEADTIME, LEADINGEDGE)
 
+    """Get (amplitude, index) pairs from ``wf_extremas`` and draw a vertical line from +amp to -amp at ``wt[index]`` on ``ax`` for each; returns the pairs."""
     edges = wf_extremas(ax, wf, wt, rank=10)
     # pairs of (amplitude,sampleNumber)
 
@@ -136,6 +142,7 @@ def draw_times(ax, wf, wt) :
 def draw_times_old(ax, wf, wt) :
 
     #wf -= wf[0:1000].mean()
+    """Get (amplitude, index) pairs from ``pypsalg.find_edges`` with the module CFD settings and draw a vertical line from +amp to -amp at ``wt[index]`` on ``ax`` for each; returns the pairs."""
     edges = find_edges(wf, BASE, THR, CFR, DEADTIME, LEADINGEDGE)
     # pairs of (amplitude,sampleNumber)
     #print(' nhits:', edges.shape[0],)

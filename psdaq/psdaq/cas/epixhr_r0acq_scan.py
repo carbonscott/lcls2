@@ -1,3 +1,4 @@
+"""Scan that writes the same value to the EpixHR R0Delay and AcqDelay1 expert keys using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import numpy as np
 import json
@@ -5,6 +6,11 @@ import json
 def main():
 
     # default command line arguments
+    """Run a --linear scan (start, stop, step via `np.arange`) writing ``int(value)`` to both keys.
+
+    Defaults: 1000 events per step, hutch 'rix', detname 'epixhr_0', scantype 'scan',
+    record 1. Without --linear it raises RuntimeError('Must specify scan type (--linear,)').
+    """
     defargs = {'--events'  :1000,
                '--hutch'   :'rix',
                '--detname' :'epixhr_0',

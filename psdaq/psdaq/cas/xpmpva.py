@@ -1,3 +1,4 @@
+"""PyQt5 GUI for one or more XPMs: global, timing, front-panel link, dead-time, group/event-code, pattern, SFP and path-timer tabs."""
 import sys
 import socket
 import argparse
@@ -29,11 +30,13 @@ ATCAWidget  = None
 nohier      = False
 
 def isATCA(v):
+    """Return True unless `v` contains 'Kcu1500' or 'C1100' (the result is also printed)."""
     result = ('Kcu1500' not in v) and ('C1100' not in v)
     print(f'isATCA({v}) = {result}')
     return result
 
 class PvPAddr(QtWidgets.QWidget):
+    """Name label plus display of PV ``pvbase + name`` decoded as the upstream XPM link."""
     def __init__(self, parent, pvbase, name):
         super(PvPAddr,self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -52,6 +55,11 @@ class PvPAddr(QtWidgets.QWidget):
         initPvMon(self,pvname)
 
     def update(self, err):
+        """Show 'XTPG' if the hex value starts with 'ffffffff' (or `nohier`), else for 'ff..' values 'XPM:<shelf>:AMC<a>-<b>' or 'XPM:<shelf>:QSFP<a>-<b>'.
+
+        Shelf and port come from hex digits 2-3 and 6-7; AMC vs QSFP is decided by `isATCA`
+        on a synchronous get of that shelf's ':FwBuild'. Other values show '-'.
+        """
         q = self.pv.__value__
         if err is None:
             s = '-'
@@ -76,6 +84,7 @@ class PvPAddr(QtWidgets.QWidget):
 
 class PvPushButtonX(QtWidgets.QPushButton):
 
+    """QPushButton that puts 1 then 0 to PV `pvname` when clicked (max width 70 when `ATCAWidget` is set)."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, pvname, label):
@@ -88,14 +97,17 @@ class PvPushButtonX(QtWidgets.QPushButton):
         self.pv = Pv(pvname, self.update)
 
     def update(self, err):
+        """Do nothing; body is `pass`."""
         pass
 
     def buttonClicked(self):
+        """Put 1 and then 0 to the PV."""
         self.pv.put(1)
         self.pv.put(0)
 
 class PvPushButtonVal(QtWidgets.QPushButton):
 
+    """QPushButton that puts the fixed `value` to PV `pvname` when clicked (max width 70 when `ATCAWidget` is set)."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, pvname, label, value):
@@ -109,13 +121,16 @@ class PvPushButtonVal(QtWidgets.QPushButton):
         initPvMon(self,pvname)
 
     def update(self, err):
+        """Do nothing; body is `pass`."""
         pass
 
     def buttonClicked(self):
+        """Put `self.value` to the PV."""
         self.pv.put(self.value)
 
 class PvEditIntX(PvEditInt):
 
+    """`PvEditInt` limited to width 70 when `ATCAWidget` is set."""
     def __init__(self, pv, label):
         super(PvEditIntX, self).__init__(pv, label)
         if ATCAWidget:
@@ -123,12 +138,14 @@ class PvEditIntX(PvEditInt):
 
 class PvCmb(PvEditCmb):
 
+    """Disabled (read-only) `PvEditCmb`."""
     def __init__(self, pvname, choices):
         super(PvCmb, self).__init__(pvname, choices)
         self.setEnabled(False)
 
 class PvGroupMask(PvComboDisplay):
 
+    """Combo box ('None', '0'..'7', 'All') editing a group-mask PV."""
     def __init__(self, pvname, label):
         super(PvGroupMask, self).__init__(Masks)
         self.connect_signal()
@@ -136,6 +153,7 @@ class PvGroupMask(PvComboDisplay):
         initPvMon(self,pvname)
 
     def setValue(self):
+        """Put 0 for 'None', ``1 << (index-1)`` for a single group, or 0xff for 'All', unless it equals the cached value."""
         ivalue = self.currentIndex()
         value = 0
         if ivalue>NGroups:
@@ -146,6 +164,7 @@ class PvGroupMask(PvComboDisplay):
             self.pv.put(value)
 
     def update(self,err):
+        """Select 'All' if more than one bit is set, else the entry of the (highest) set bit, or 'None' for 0."""
         q = self.pv.__value__
         if err is None:
             idx = 0
@@ -160,16 +179,20 @@ class PvGroupMask(PvComboDisplay):
             print(err)
 
 def LblPushButtonX(parent, pvbase, name, count=1, start=0, istart=0, label=None):
+    """Call `PvInput` with `PvPushButtonX`; returns None (`label` is unused)."""
     return PvInput(PvPushButtonX, parent, pvbase, name, count, start, istart)
 
 def LblEditIntX(parent, pvbase, name, count=1, start=0, istart=0, enable=True):
+    """Call `PvInput` with `PvEditIntX`; returns None."""
     return PvInput(PvEditIntX, parent, pvbase, name, count, start, istart, enable)
 
 def LblGroupMask(parent, pvbase, name, count=1, start=0, istart=0, enable=True):
+    """Call `PvInput` with `PvGroupMask`; returns None."""
     return PvInput(PvGroupMask, parent, pvbase, name, count, start, istart, enable)
 
 class PvLinkId:
 
+    """Pair of QLabels showing the (type, source) names of a link-ID PV via `xpmLinkId`."""
     def __init__(self,pvname):
         self.linkType = QtWidgets.QLabel('-')
         self.linkType.setMaximumWidth(70)
@@ -180,6 +203,7 @@ class PvLinkId:
         initPvMon(self,pvname)
 
     def update(self, err):
+        """Set the two labels from ``xpmLinkId(int(value))``."""
         value = self.pv.__value__
         names = xpmLinkId(int(value))
         self.linkType.setText(names[0])
@@ -187,6 +211,7 @@ class PvLinkId:
 
 class PvLinkIdV(QtWidgets.QWidget):
 
+    """Widget stacking the two `PvLinkId` labels vertically."""
     def __init__(self,pvname,idx):
         super(PvLinkIdV, self).__init__()
         self.pvlink = PvLinkId(pvname)
@@ -198,6 +223,7 @@ class PvLinkIdV(QtWidgets.QWidget):
 
 class PvLinkIdG:
 
+    """Place the two `PvLinkId` labels of PV `pvname` in grid `layout` at (row, col) and (row, col+1)."""
     def __init__(self,pvname,layout,row,col):
         super(PvLinkIdG, self).__init__()
         self.pvlink = PvLinkId(pvname)
@@ -205,6 +231,11 @@ class PvLinkIdG:
         layout.addWidget(self.pvlink.linkSrc ,row,col+1)
 
 def FrontPanelAMC(pvbase,nDsLinks,start):
+        """Return a widget with one column per downstream link (`start` to `start+nDsLinks-1`) and one row per link PV.
+
+        Rows include RemoteLinkId, Tx/RxLinkReset, RxLinkDump, LinkGroupMask, status check
+        boxes, LinkLoopback, LinkRxErr and LinkRxRcv; only some rows are enabled.
+        """
         dsbox = QtWidgets.QWidget()
         dslo = QtWidgets.QGridLayout()
         headers = [("RemoteLinkId"   ,PvLinkIdV    ,True),
@@ -232,6 +263,7 @@ def FrontPanelAMC(pvbase,nDsLinks,start):
         return dsbox
 
 def PLLs(pvbase,ncol):
+        """Return a widget with read-only PLL_LOS, PLL_LOSCNT, PLL_LOL and PLL_LOLCNT rows for `ncol` columns."""
         dsbox = QtWidgets.QWidget()
         dslo = QtWidgets.QGridLayout()
         headers = [("PLL_LOS"   ,PvCheckBox    ,False),
@@ -251,6 +283,11 @@ def PLLs(pvbase,ncol):
 
 def DeadTime(pvbase,parent):
 
+    """Return a widget showing 'PART:<g>:DeadFLnk' arrays for 8 groups against 14 links and 4 'INH' rows.
+
+    Link names come from 'RemoteLinkId<i>'; the monitors are stored on `parent`
+    (`dtPvId`, `deadflnk`).
+    """
     deadbox = QtWidgets.QWidget()
     deadlo = QtWidgets.QVBoxLayout()
     deadgrid = QtWidgets.QGridLayout()
@@ -292,6 +329,11 @@ def DeadTime(pvbase,parent):
     return deadbox
 
 class PvRxAlign(QtWidgets.QWidget):
+    """Widget with a label and a small bar image drawn from one synchronous get of array PV `pvname`.
+
+    Element 0 is printed in the label and marked in red; elements 1-64 are drawn as bars
+    scaled to their maximum.
+    """
     def __init__(self,pvname,title):
         super(PvRxAlign, self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -327,6 +369,7 @@ class PvRxAlign(QtWidgets.QWidget):
         self.setLayout(layout)
 
 def addTiming(self,pvbase):
+    """Return a widget with PvLabels for RxClks, RxRsts, CrcErrs, RxDecErrs, RxDspErrs, BypassRsts, BypassDones, RxLinkUp, FIDs, RxReset/RxCountReset buttons and a `PvRxAlign`."""
     lor = QtWidgets.QVBoxLayout()
     PvLabel(self,lor, pvbase, "RxClks"     )
     PvLabel(self,lor, pvbase, "RxRsts"     )
@@ -346,6 +389,11 @@ def addTiming(self,pvbase):
     return w
 
 class PvMmcm(QtWidgets.QWidget):
+    """Widget with a label, reset button and image drawn from one synchronous get of array PV `pvname`.
+
+    From element 0: bits 0-15 are shown in the label, bits 16-28 set the image width
+    (divided by 4), bit 31 appends '*' and bit 30 appends 'R'.
+    """
     def __init__(self,pvname,rstname,title):
         super(PvMmcm, self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -391,12 +439,14 @@ class PvMmcm(QtWidgets.QWidget):
         self.setLayout(layout)
 
 def intInput(layout, pv, label):
+    """Add a row with label `label` and a `PvEditInt` for PV `pv` to `layout`."""
     lo = QtWidgets.QHBoxLayout()
     lo.addWidget( QtWidgets.QLabel(label) )
     lo.addWidget( PvEditInt(pv, '') )
     layout.addLayout(lo)
 
 def addUsTab(self,pvbase):
+    """Return a widget containing `addTiming` for '<pvbase>Us:'."""
     lor = QtWidgets.QVBoxLayout()
     lor.addWidget( addTiming(self,pvbase+'Us:') )
 #   xpmGenKcu1500 can't generate this PV???
@@ -407,6 +457,7 @@ def addUsTab(self,pvbase):
     return w
 
 def addCuTab(self,pvbase):
+    """Return a widget with `addTiming` for '<pvbase>Cu:', XTPG controls/labels and four `PvMmcm` views."""
     lor = QtWidgets.QVBoxLayout()
     lor.addWidget( addTiming(self,pvbase+'Cu:') )
 
@@ -431,6 +482,10 @@ def addCuTab(self,pvbase):
 class XpmGroups(object):
     # monitor PAddr recursively
     # monitor PART:[0..7].Master,L0InpRate
+    """Monitors of PART:<i>:Master, PART:<i>:L0InpRate and SEQCODES for one XPM, linked to its parent XPM.
+
+    The parent is found from 'PAddr' via `xpmLinkId` (unless 0xffffffff or `nohier`).
+    """
     def __init__(self,pvbase):
     # assuming that pvbase is of the form DAQ:NEH:XPM:1:
         pvbase_split = pvbase.split(":")
@@ -452,6 +507,7 @@ class XpmGroups(object):
                      'codes' : Pv(pvbase+f'SEQCODES'             ,self.update, isStruct=True) }
 
     def update(self,err):
+        """Do nothing; body is `pass`."""
         pass
 
     def _update(self):
@@ -480,6 +536,7 @@ class XpmGroups(object):
         return vals
 
 class GroupsTab(QtWidgets.QWidget):
+    """Widget showing each group's master XPM and L0InpRate, sequence-engine buttons and event-code sources (codes 256-287)."""
     def __init__(self, pvbase):
         super(GroupsTab,self).__init__()
 
@@ -546,6 +603,7 @@ class GroupsTab(QtWidgets.QWidget):
         initPvMon(self,pvbase+'SEQCODES',isStruct=True)
 
     def update(self,err):
+        """Refresh the group and event-code labels from `XpmGroups._update()`."""
         vals = self.xpm._update()
         for i in range(NGroups):
             self.masterText[i].setText(vals['master'][i])
@@ -556,6 +614,7 @@ class GroupsTab(QtWidgets.QWidget):
             self.codesText['rate'  ][i].setText(vals['codes'][i]['rate'  ])
 
 class PatternTab(QtWidgets.QWidget):
+    """Widget with a PATT:L0Select editor, a PATT:GROUPS table and a coincidence grid fed by PATT:COINC."""
     def __init__(self, pvbase):
         super(PatternTab,self).__init__()
 
@@ -584,6 +643,7 @@ class PatternTab(QtWidgets.QWidget):
         self.setLayout(l)
 
     def update(self,err):
+        """Write each element of ``value.Coinc`` into the coincidence labels in order."""
         if err is None:
             v = self.pv.__value__
             q = v.value.Coinc
@@ -592,6 +652,7 @@ class PatternTab(QtWidgets.QWidget):
 
 def PathTimer(pvbase,parent):
 
+    """Return a widget showing 'PART:<g>:PATH_TIME:Array' for 8 groups against 14 links, with an 'Upd' button per group."""
     pathbox = QtWidgets.QWidget()
     pathlo = QtWidgets.QVBoxLayout()
     pathgrid = QtWidgets.QGridLayout()
@@ -626,7 +687,13 @@ def PathTimer(pvbase,parent):
     return pathbox
 
 class Ui_MainWindow(object):
+    """Builder for the xpmpva window."""
     def setupUi(self, MainWindow, titles, nopatt):
+        """Build one tab widget per XPM in `titles` (selected with a combo box); tab set depends on its FwBuild string.
+
+        ATCA builds get AMC tabs, PLLs and SFPs; others QSFP tabs. 'xtpg' builds get a
+        CuTiming tab, others UsTiming. The Pattern tab is omitted if `nopatt`.
+        """
         global ATCAWidget
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
@@ -727,6 +794,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse --nopatt, --nohier and the XPM PV bases, then run the window."""
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

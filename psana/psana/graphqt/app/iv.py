@@ -42,6 +42,7 @@ def image_viewer():
 
 
 class Constants:
+    """Default values (``d_*``) and help strings (``h_*``) for the command-line options built in :func:`input_argument_parser`."""
     d_posargs  = None
     d_fname    = None
     d_loglevel = 'INFO'
@@ -56,6 +57,11 @@ class Constants:
 
 
 def input_argument_parser():
+    """Return an ``argparse.ArgumentParser`` for the image viewer.
+
+    Options: positional ``posargs`` (zero or more), ``-f/--fname``, ``-l/--loglevel`` (default ``'INFO'``),
+    ``-o/--repodir`` (default ``DIR_REPO``) and ``--rec_at_start`` (``store_false``: default True, the flag sets it to False).
+    """
     from argparse import ArgumentParser
     parser = ArgumentParser(description='Image Viewer')
     c = Constants()

@@ -1,3 +1,4 @@
+"""Charge-injection scan for an ePixQuad detector: steps a pixel-map grid pattern with trbit 0 and 1 using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import json
 import numpy as np
@@ -5,6 +6,13 @@ import numpy as np
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events per step, hutch 'ued', detname 'epixquad_0', record 1, --spacing 7.
+
+    Every step sets gain_mode 5 and, for the 16 Epix10kaSaci entries, atest=1, test=1,
+    Pulser=0xc8 and the current trbit. pixel_map is a 352x384 grid with 1 at every
+    `spacing`-th pixel at offset (s//spacing, s%spacing), split into a (16, 178, 192) array;
+    metadata include 'injpos'.
+    """
     defargs = {'--events'  :1000,
                '--hutch'   :'ued',
                '--detname' :'epixquad_0',

@@ -61,6 +61,7 @@ MSG_LEVEL_TO_TEXT_COLOR = {'<C>' : Qt.gray,
 #------------------------------
 
 def is_error_msg(rec):
+    """Return True if the log record's levelname is '<E>'."""
     return rec.levelname == '<E>'
 
 
@@ -80,12 +81,17 @@ def log_file_name(lfpath='.'):
 #------------------------------
 
 class QWFilter(logging.Filter):
+    """logging.Filter that copies each record into a `QWLoggerStd` widget.
+
+    `qwlogger` is the widget; `logging.Filter.__init__` is not called.
+    """
     def __init__(self, qwlogger):
         #logging.Filter.__init__(self)#, name='')
         self.qwl = qwlogger
 
 
     def filter(self, rec):
+        """Format `rec` with the widget's formatter, append it to the main text (and to the error window if '<E>'), and return True."""
         msg = self.qwl.formatter.format(rec)
         self.qwl.set_msg_style(rec.levelname)
         self.qwl.append_qwlogger(msg)
@@ -95,6 +101,7 @@ class QWFilter(logging.Filter):
 
 
     def print_filter_attributes(self, rec):
+        """Print the record's type, dir() and created/name/levelname/msg fields."""
         print('type(rec): %s'%type(rec))
         print('dir(rec): %s'%dir(rec))
         #print('dir(logger): %s'%dir(logger))
@@ -104,6 +111,12 @@ class QWFilter(logging.Filter):
 #------------------------------
 
 class QWLoggerStd(QWidget):
+    """Log-viewer widget with an all-messages text area, an error window and level/save/random/close controls.
+
+    Keyword arguments: log_level (default 'DEBUG'), show_buttons (True), instrument
+    ('NonDefined'; None becomes 'None') and log_prefix ('.') used by `log_file_name`. The
+    log file directory is created and `config_logger` is called.
+    """
     _name = 'QWLoggerStd'
 
     def __init__(self, **kwargs):
@@ -174,6 +187,11 @@ class QWLoggerStd(QWidget):
 
     def config_logger(self):
         
+        """Create a `SysLog` for the instrument and level and attach a `QWFilter` to its console handler.
+
+        Also prints every root-logger handler and sets `self.formatter` (format includes the
+        logger name at DEBUG level).
+        """
         levname = self.log_level
         level = self.dict_name_to_level.get(levname, logging.DEBUG)
 
@@ -199,6 +217,11 @@ class QWLoggerStd(QWidget):
 
     def config_logger_v0(self, log_fname='control_gui.txt'):
 
+        """Older logger setup: add a FileHandler or StreamHandler with a `QWFilter` to the root logger.
+
+        A FileHandler on `log_fname` (or '/var/tmp/control_gui_<login>.log' if None) is used
+        when `log_fname` is given or the level is DEBUG; then `set_level` is called.
+        """
         self.append_qwlogger('Start logger\nLog file: %s' % log_fname)
 
         levname = self.log_level
@@ -237,6 +260,7 @@ class QWLoggerStd(QWidget):
     def set_level(self, level_name='DEBUG'):
         #self.append_qwlogger('Set logger layer: %s' % level_name)
         #logger.setLevel(level_name) # {0: 'NOTSET'}
+        """Set the root logger level from `level_name` (DEBUG if unknown) and log the change at info level."""
         level = self.dict_name_to_level.get(level_name, logging.DEBUG)
         logger.setLevel(level)
         #msg = 'Set logger level %s of the list: %s' % (level_name, ', '.join(self.level_names))
@@ -245,6 +269,7 @@ class QWLoggerStd(QWidget):
 
 
     def connect_buttons(self):
+        """Connect the close, save, random buttons and level combo box to their handlers."""
         self.but_close.clicked.connect(self.on_but_close)
         self.but_save.clicked.connect(self.on_but_save)
         self.but_rand.clicked.connect(self.on_but_rand)
@@ -252,6 +277,7 @@ class QWLoggerStd(QWidget):
 
 
     def disconnect_buttons(self):
+        """Disconnect the handlers connected by `connect_buttons`."""
         self.but_close.clicked.disconnect(self.on_but_close)
         self.but_save.clicked.disconnect(self.on_but_save)
         self.but_rand.clicked.disconnect(self.on_but_rand)
@@ -260,6 +286,7 @@ class QWLoggerStd(QWidget):
 
     def set_tool_tips(self):
         #self           .setToolTip('This GUI is for browsing log messages')
+        """Set tool tips on the text areas, buttons and level combo box."""
         self.edi_txt    .setToolTip('Window for ALL messages')
         self.edi_err    .setToolTip('Window for ERROR messages')
         self.but_close  .setToolTip('Close this window')
@@ -269,6 +296,7 @@ class QWLoggerStd(QWidget):
 
 
     def set_style(self):
+        """Apply styles, read-only main text, button visibility from `show_buttons`, error-window settings and splitter sizes."""
         self.           setStyleSheet(style.styleBkgd)
         #self.lab_title.setStyleSheet(style.styleTitleBold)
         self.lab_level .setStyleSheet(style.styleTitle)
@@ -304,6 +332,7 @@ class QWLoggerStd(QWidget):
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(300, 300)."""
         return QSize(300,300)
 
 #--------------------
@@ -324,6 +353,7 @@ class QWLoggerStd(QWidget):
 
 
     def closeEvent(self, e):
+        """Log at info level, remove the `QWFilter` from the SysLog console handler and call `QWidget.closeEvent`."""
         logger.info('%s.closeEvent' % self._name)
         #self.save_log_total_in_file() # It will be saved at closing of GUIMain
         #self.syslog.syslog_handler.removeFilter(self._myfilter)
@@ -338,16 +368,19 @@ class QWLoggerStd(QWidget):
 
 
     def on_but_close(self):
+        """Log a debug message and close the widget."""
         logger.debug('on_but_close')
         self.close()
 
 
     def on_but_save(self):
+        """Log a debug message and call `save_log_in_file`."""
         logger.debug('on_but_save:')
         self.save_log_in_file()
 
 
     def on_but_rand(self):
+        """Log a test message at a randomly chosen level (announced first in the text area)."""
         levels = self.level_names
         level_name = levels[randint(0, len(levels)-1)]
         self.append_qwlogger('===> Inject in logger random message of level %s' % level_name)
@@ -356,6 +389,7 @@ class QWLoggerStd(QWidget):
 
 
     def on_cmb_level(self):
+        """Set `log_level` and the root logger level to the level chosen in the combo box."""
         selected = str(self.cmb_level.currentText())
         msg = 'on_cmb_level set %s %s' % (self.lab_level.text(), selected)
         logger.debug(msg)
@@ -367,6 +401,10 @@ class QWLoggerStd(QWidget):
 
 
     def save_log_in_file(self):
+        """Ask for an output file name with a save dialog and store it in `log_fname`.
+
+        No log content is written; the save call is commented out in the code.
+        """
         logger.info('save_log_in_file ' + self.log_fname)
         resp = QFileDialog.getSaveFileName(self,
                                            caption   = 'Select the file to save log',
@@ -390,6 +428,7 @@ class QWLoggerStd(QWidget):
 
     def set_msg_style(self, levelname):
         #print('QWLoggerStd.set_msg_style for level %s' % levelname)
+        """Set the main text color for `levelname` from `MSG_LEVEL_TO_TEXT_COLOR` (magenta if unknown)."""
         textcolor = MSG_LEVEL_TO_TEXT_COLOR.get(levelname, Qt.magenta)
         self.edi_txt.setTextColor(textcolor)
         #self.edi_txt.setTextBackgroundColor(bkgdcolor)
@@ -397,31 +436,40 @@ class QWLoggerStd(QWidget):
 
 
     def append_qwlogger(self, msg='...'):
+        """Append `msg` to the main text area and scroll to the end."""
         self.edi_txt.append(msg)
         self.scroll_down_txt()
 
 
     def add_separator(self, sep='\n\n\n\n\n%s'%(50*'_')):
+        """Append the separator text (newlines then 50 underscores) to the main text area."""
         self.append_qwlogger(msg=sep)
 
 
     def append_qwlogger_err(self, msg='...'):
+        """Append `msg` to the error window and scroll it to the end."""
         self.edi_err.append(msg)
         self.edi_err.scroll_down()
 
 
     def add_separator_err(self, sep='\n\n\n\n\n%s'%(50*'_')):
+        """Append the separator text (newlines then 50 underscores) to the error window."""
         self.append_qwlogger_err(msg=sep)
 
 
     def scroll_down_txt(self):
         #logger.debug('scroll_down_txt')
+        """Move the main text cursor to the end and repaint."""
         self.edi_txt.moveCursor(QTextCursor.End)
         self.edi_txt.repaint()
 
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return the key help text (ESC, A, S).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  A - add separator in main logger window'\
@@ -431,6 +479,10 @@ class QWLoggerStd(QWidget):
 
       def keyPressEvent(self, e):
         #logger.info('keyPressEvent, key=', e.key())
+        """Handle keys in the test window: Esc closes, S adds an error separator, A adds a main separator, others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 

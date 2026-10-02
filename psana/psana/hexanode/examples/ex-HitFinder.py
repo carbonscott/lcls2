@@ -1,4 +1,5 @@
 
+"""Example: find waveform peaks with ``WFPeaks`` (version 4, one ``PyCFD`` per channel) in a test xtc2 file, combine the peak times with ``HitFinder`` and plot an X-Y histogram and a histogram of the T values."""
 import sys
 from time import time
 import numpy as np
@@ -21,6 +22,10 @@ USAGE = 'Use command: python %s [test-number]' % sys.argv[0]
 def proc_data(**kwargs):
 
 
+    """Loop over the selected events of ``kwargs['dsname']``, get peak times (converted to ns) per channel with ``WFPeaks``, call ``HitFinder.FindHits`` with channel 4 as MCP and channels 0-3 as u1, u2, v1, v2, and accumulate the X, Y, T values.
+
+    Afterwards shows a log-scale 2-d histogram of X versus Y and a 1-d histogram of T with matplotlib. ``det.calibconst`` is added to ``kwargs`` as 'consts'.
+    """
     DSNAME       = kwargs.get('dsname', '/reg/g/psdm/detector/data2_test/xtc/data-amox27716-r0100-acqiris-e000100.xtc2')
     DETNAME      = kwargs.get('detname','tmo_quadanode')
     EVSKIP       = kwargs.get('evskip', 0)

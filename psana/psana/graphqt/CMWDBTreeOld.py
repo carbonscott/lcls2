@@ -44,6 +44,10 @@ class CMWDBTree(QWTree):
 
 
     def fill_tree_model(self, pattern=''):
+        """Clear the model and start a ``CMQThreadClient`` that calls ``fill_tree_model_for_client`` when its client is ready.
+
+        Stores ``pattern`` in ``self._pattern``; any previous thread is told to quit first.
+        """
         logger.debug('CMWDBTree.fill_tree_model')
         self._pattern = pattern
         self.clear_model()
@@ -58,6 +62,10 @@ class CMWDBTree(QWTree):
 
     def fill_tree_model_for_client(self):
         #client = dbu.connect_client()
+        """Fill the tree with one item per DB name (filtered by substring ``self._pattern`` if set) and one child item per non-empty collection name.
+
+        The client comes from the worker thread, which is told to quit. If the client is None a warning with host and port is logged and nothing is added.
+        """
         client = self.thread.client()
         stat = self.thread.quit()
 
@@ -109,6 +117,7 @@ class CMWDBTree(QWTree):
 
 
     def on_db_and_collection_selected(self, dbname, colname):
+        """Log the DB and collection names and show their documents in ``cp.cmwdbdocs`` if it exists."""
         msg = 'on_db_and_collection_selected DB: %s collection: %s' % (dbname, colname)
         logger.debug(msg)
         wdocs = cp.cmwdbdocs
@@ -117,6 +126,7 @@ class CMWDBTree(QWTree):
 
 
     def on_item_selected(self, selected, deselected):
+        """Call ``QWTree.on_item_selected`` and, if an item is selected, set ``cp.last_selection`` to ``cp.DB_COLS``."""
         QWTree.on_item_selected(self, selected, deselected)
 
         itemsel = self.model.itemFromIndex(selected)
@@ -125,6 +135,10 @@ class CMWDBTree(QWTree):
 
 
     def closeEvent(self, e):
+        """Stop and delete the worker thread, then forward the event to ``QWTree.closeEvent``.
+
+        It calls ``self.thread.stop()``, which QThread does not provide, so this raises AttributeError when a thread exists.
+        """
         logger.debug('closeEvent')
         if self.thread is not None: self.thread.stop()
         del self.thread

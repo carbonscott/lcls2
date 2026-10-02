@@ -77,11 +77,13 @@ class QWProgressBar(QWidget) :
 #-----------------------------
 
     def set_tool_tips(self):
+        """Set tool tips on the widget and the progress bar."""
         self.setToolTip('Progress bar')
         self.pbar.setToolTip('Progress bar indicator')
 
     def set_style(self):
         #self.setFixedWidth(200)
+        """Set minimum width 150, show bar text, style the label (fixed width 60), zero margins and set a green/white palette."""
         self.setMinimumWidth(150)
 
         self.pbar.setTextVisible(True)
@@ -111,15 +113,19 @@ class QWProgressBar(QWidget) :
 
 
     def set_range(self, vmin, vmax):
+        """Set the progress bar range to [vmin, vmax]."""
         self.pbar.setRange(vmin,vmax)
 
     def set_value(self, value):
+        """Set the progress bar value to ``int(value)``."""
         self.pbar.setValue(int(value))
 
     def set_label(self, s):
+        """Set the label text to `s`."""
         self.plab.setText(s)
 
     def set_icons(self):
+        """Call `icon.set_icons()` from `QWIcons`, ignoring any exception."""
         try :
           from psdaq.control_gui.QWIcons import icon
           #from psana.graphqt.QWIcons import icon

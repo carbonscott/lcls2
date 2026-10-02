@@ -5,6 +5,7 @@
 # . setup_env.sh
 # python lcls2/psana/psana/hexanode/examples/ex-cpo-quad_to_xtc2.py
 
+"""Script: read datasets 'waveforms' and 'times' from './hexanode.h5' and write one xtc2 datagram per event to './hexanode.xtc2' with ``dgramCreate.CyDgram`` (detector 'tmo_hexanode'), using transition id 2 for the first event and 12 for the others."""
 import dgramCreate as dc
 import numpy as np
 import os

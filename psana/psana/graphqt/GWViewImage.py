@@ -68,6 +68,10 @@ from PyQt5.QtGui import QImage, QPixmap
 
 class GWViewImage(GWViewExt):
 
+    """GWViewExt that displays a 2-d array ``arr`` as a pixmap colored with color table ``coltab``.
+
+    The initial scene rect is (0, 0, width, height) of ``arr``; ``signal_fast`` is passed as both ``wheel_fast`` and ``move_fast``. The ``image_pixmap_changed`` signal is emitted whenever a new pixmap is set, and an optional ``self.mask`` is AND-ed into the colored array.
+    """
     image_pixmap_changed = pyqtSignal()
 
     def __init__(self, parent=None, arr=None,\
@@ -88,10 +92,12 @@ class GWViewImage(GWViewExt):
 
 
     def set_coltab(self, coltab=ct.color_table_rainbow(ncolors=1000, hang1=250, hang2=-20)):
+        """Store ``coltab`` as the color table used by ``set_pixmap_from_arr`` (None means the array values are used directly)."""
         self.coltab = coltab
 
 
     def set_style(self):
+        """Apply ``GWViewExt.set_style``, set the window title and the translucent-background attribute."""
         GWViewExt.set_style(self)
         self.setWindowTitle('GWViewImage%s' %(30*' '))
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -100,6 +106,7 @@ class GWViewImage(GWViewExt):
 
 
     def add_pixmap_to_scene(self, pixmap):
+        """Add ``pixmap`` to the scene as a new pixmap item on the first call; afterwards replace the pixmap of the existing item ``self.pmi``."""
         if self.pmi is None: self.pmi = self.scene().addPixmap(pixmap)
         else               : self.pmi.setPixmap(pixmap)
 
@@ -126,6 +133,10 @@ class GWViewImage(GWViewExt):
 
 
     def array_in_rect(self, rect=None):
+        """Return the part of ``self.arr`` covered by ``rect`` (default the scene rect).
+
+        Row and column limits are the floored/ceiled rect coordinates clipped to the array bounds, and the slice ``arr[r1:r2, c1:c2]`` is widened to at least 2 rows and columns. If the limits equal the previous call's, the cached slice is returned.
+        """
         if rect is None: rect=self.scene().sceneRect()
         x1,y1,x2,y2 = rect.getCoords()
         h,w = self.arr.shape
@@ -148,10 +159,12 @@ class GWViewImage(GWViewExt):
 
 
     def connect_image_pixmap_changed(self, recip):
+        """Connect ``recip`` to the ``image_pixmap_changed`` signal."""
         self.image_pixmap_changed.connect(recip)
 
 
     def disconnect_image_pixmap_changed(self, recip):
+        """Disconnect ``recip`` from the ``image_pixmap_changed`` signal."""
         self.image_pixmap_changed.disconnect(recip)
 
 

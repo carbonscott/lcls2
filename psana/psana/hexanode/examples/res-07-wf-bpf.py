@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #--------------------
-"""
+"""Example: apply ``WFUtils.bpf`` to one channel of waveforms loaded from a fixed .npy file and plot the smoothed waveform, its gradient with thresholds, the selected signal, a comparison and ``find_peaks`` results, then save the figure.
+
+The sample range is selected by the test number; all work runs at import time.
 """
 import sys
 import numpy as np
@@ -32,6 +34,7 @@ fig.canvas.set_window_title('Waveform filters', **kwargs)
 fig.clear()
 
 def axes_h(fig, naxes=5, x0=0.07, y0=0.03, width=0.87, ygap=0.04) :
+    """Add ``naxes`` horizontal axes stacked vertically on ``fig`` (left ``x0``, bottom ``y0``, ``width``, gap ``ygap``) and return them as a list."""
     dy = 1./naxes
     return [gr.add_axes(fig, axwin=(x0, y0 + i*dy, width, dy-ygap)) for i in range(naxes)]
 

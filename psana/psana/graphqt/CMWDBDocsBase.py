@@ -26,6 +26,10 @@ from psana.graphqt.CMDBUtils import dbu
 
 
 class CMWDBDocsBase():
+    """Mixin holding the DB name, collection name and document list shown by a document widget.
+
+    The constructor registers the instance as ``cp.cmwdbdocswidg``; ``__del__`` resets it to None.
+    """
     def __init__(self):
         logger.debug('in c-tor')
         self.dbname  = None
@@ -39,6 +43,7 @@ class CMWDBDocsBase():
 
 
     def show_documents(self, dbname, colname, docs):
+        """Store ``dbname``, ``colname`` and ``docs`` in ``self.dbname``, ``self.colname`` and ``self.current_docs``; nothing is displayed here."""
         self.dbname, self.colname, self.current_docs = dbname, colname, docs
 
 # EOF

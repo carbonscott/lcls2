@@ -82,10 +82,12 @@ class QWFileBrowser(QWidget):
 
     def showToolTips(self):
         #self           .setToolTip('This GUI is intended for run control and monitoring.')
+        """Set the Close button tool tip."""
         self.but_close .setToolTip('Close this window.')
 
 
     def setStyle(self):
+        """Initialize ``style`` and apply its style sheets to the widget, labels, combo box and buttons; the text box is read-only unless ``is_editable``."""
         style.set_styles()
 
         self.           setStyleSheet(style.styleBkgd)
@@ -104,6 +106,7 @@ class QWFileBrowser(QWidget):
 
 
     def setListOfFiles(self, list):
+        """Fill the file combo box with a prompt entry followed by the paths in ``list``, and store them in ``self.list_of_files``."""
         self.list_of_files  = ['Click on this box and select file from pop-up-list']
         self.list_of_files += list
         self.box_file.clear()
@@ -111,20 +114,27 @@ class QWFileBrowser(QWidget):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def closeEvent(self, event):
+        """Log a debug message and close the text box widget; the event is not passed to the base class."""
         logger.debug('closeEvent')
         self.box_txt.close()
 
 
     def onClose(self):
+        """Log a debug message and close the window."""
         logger.debug('onClose')
         self.close()
 
 
     def onSave(self):
+        """Ask for a file name (starting from ``self.fname``, set by ``onBox``) and write the text box content to it.
+
+        Returns without writing if the dialog is cancelled.
+        """
         logger.debug('onSave')
         path = gu.get_save_fname_through_dialog_box(self, self.fname, 'Select file to save', filter='*.txt')
         if path is None or path == '': return
@@ -136,6 +146,10 @@ class QWFileBrowser(QWidget):
 
 
     def onBrow(self):
+        """Ask for a file to browse and, if it is new, add it to the combo box, show its content and select it.
+
+        Nothing happens if the dialog is cancelled, returns the start path, or the path is already listed.
+        """
         logger.debug('onBrow - select file')
 
         path0 ='./'
@@ -156,6 +170,10 @@ class QWFileBrowser(QWidget):
 
 
     def onBox(self):
+        """Show the file currently selected in the combo box.
+
+        Sets ``self.fname``; for the prompt entry it shows a hint, for an existing path it loads the file with ``load_textfile`` into the text box, and for a missing path it shows a warning and an alarm status.
+        """
         self.fname = str( self.box_file.currentText() )
         #logger.debug('onBox - selected file: ' + self.fname)
 
@@ -191,6 +209,7 @@ class QWFileBrowser(QWidget):
 
 
     def startFileBrowser(self, selected_file=None):
+        """Set the initial combo box selection: ``selected_file`` if it is listed, else the only file if there is one, else the prompt entry."""
         logger.debug('Start the QWFileBrowser.')
         self.setStatus(0, 'Waiting for file selection...')
 
@@ -205,12 +224,14 @@ class QWFileBrowser(QWidget):
 
 
     def appendGUILog(self, msg='...'):
+        """Append ``msg`` to the text box and scroll it to the bottom."""
         self.box_txt.append(msg)
         scrol_bar_v = self.box_txt.verticalScrollBar()
         scrol_bar_v.setValue(scrol_bar_v.maximum())
 
 
     def setStatus(self, status_index=0, msg=''):
+        """Set the status label text to ``msg`` and its style by ``status_index`` (0 good, 1 warning, 2 alarm; other values keep the style)."""
         list_of_states = ['Good','Warning','Alarm']
         if status_index == 0: self.tit_status.setStyleSheet(style.styleStatusGood)
         if status_index == 1: self.tit_status.setStyleSheet(style.styleStatusWarning)

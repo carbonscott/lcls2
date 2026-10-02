@@ -78,6 +78,7 @@ class IVControlSpec(QWidget):
 
 
     def connect_fields(self):
+        """Connect the mode combo box to :meth:`on_cmb_mode` and the three line edits' ``editingFinished`` to :meth:`on_editing_finished`."""
         self.cmb_mode.currentIndexChanged[int].connect(self.on_cmb_mode)
         self.edi_nbins.editingFinished.connect(self.on_editing_finished)
         self.edi_min.editingFinished.connect(self.on_editing_finished)
@@ -85,18 +86,25 @@ class IVControlSpec(QWidget):
 
 
     def disconnect_fields(self):
+        """Disconnect the mode combo box from :meth:`on_cmb_mode`; the line edits stay connected."""
         self.cmb_mode.currentIndexChanged[int].disconnect(self.on_cmb_mode)
 
 
     def connect_signal_spectrum_range_changed(self, recip):
+        """Connect the ``spectrum_range_changed`` signal to ``recip``."""
         self.spectrum_range_changed.connect(recip)
 
 
     def disconnect_signal_spectrum_range_changed(self, recip):
+        """Disconnect the ``spectrum_range_changed`` signal from ``recip``."""
         self.spectrum_range_changed.disconnect(recip)
 
 
     def on_cmb_mode(self):
+        """Slot for a mode change: fill min/max fields with the defaults of the selected mode, update field visibility and emit the signal.
+
+        Fraction mode uses ``frmin_def``/``frmax_def``, other modes ``amin_def``/``amax_def``.
+        """
         mode = str(self.cmb_mode.currentText())
         logger.debug('on_cmb_mode selected %s' % (mode))
         amin = self.frmin_def if mode == 'fraction' else self.amin_def
@@ -119,6 +127,11 @@ class IVControlSpec(QWidget):
 
 
     def on_editing_finished(self):
+        """Store the field texts as new defaults and emit ``spectrum_range_changed``.
+
+        ``nbins_def`` always gets the nbins text; min/max texts go to ``amin_def``/``amax_def`` in value
+        mode or ``frmin_def``/``frmax_def`` in fraction mode. The stored values are strings.
+        """
         self.nbins_def = self.edi_nbins.text()
         if self.is_mode('value'):
           self.amin_def = self.edi_min.text()
@@ -131,12 +144,21 @@ class IVControlSpec(QWidget):
 
 
     def emit_signal_spectrum_range_changed(self):
+        """Emit ``spectrum_range_changed`` with the dict from :meth:`spectrum_parameters`."""
         d = self.spectrum_parameters()
         logger.debug('emit_signal_spectrum_range_changed %s' % str(d))
         self.spectrum_range_changed.emit(d)
 
 
     def spectrum_parameters(self):
+        """Return the current spectrum settings parsed from the fields.
+
+        Returns
+        -------
+        dict
+            Keys ``'mode'``, ``'nbins'`` (int), ``'amin'``/``'amax'`` (floats in value mode, else None)
+            and ``'frmin'``/``'frmax'`` (floats in fraction mode, else None).
+        """
         mode = str(self.cmb_mode.currentText())
         mode_full     = mode == 'full'
         mode_fraction = mode == 'fraction'
@@ -153,12 +175,14 @@ class IVControlSpec(QWidget):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the nbins, min and max line edits."""
         self.edi_nbins.setToolTip('spectrum histogram\nnumber of bins')
         self.edi_min.setToolTip('spectrum range\nminimal value/fraction')
         self.edi_max.setToolTip('spectrum range\nmaximal value/fraction')
 
 
     def set_style(self):
+        """Set layout margins and fixed widths of the line edits (55) and the mode combo box (80)."""
         self.layout().setContentsMargins(5,0,5,0)
         self.edi_nbins.setFixedWidth(55)
         self.edi_min.setFixedWidth(55)
@@ -167,10 +191,12 @@ class IVControlSpec(QWidget):
 
 
     def is_mode(self, mode='full'):
+        """Return True if the combo-box text equals ``mode`` (default ``'full'``)."""
         return str(self.cmb_mode.currentText()) == mode
 
 
     def set_range_fields_visible(self, isvisible=None):
+        """Show or hide the min/max labels and fields; None means visible unless the mode is ``'full'``."""
         isvisible = not self.is_mode('full') if isvisible is None else isvisible
         self.lab_min.setVisible(isvisible)
         self.lab_max.setVisible(isvisible)
@@ -181,6 +207,7 @@ class IVControlSpec(QWidget):
 if __name__ == "__main__":
 
     def test_signal_spectrum_range_changed(d):
+        """Test slot (defined only when run as a script): print the received dict ``d``."""
         print(' test_signal_spectrum_range_changed:', d)
 
     import os

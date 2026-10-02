@@ -1,5 +1,6 @@
 #----------
 
+"""Interactive example: open a test xtc2 file with ``DataSource``, get the raw interface of detector 'tmo_hexanode' and print ``times`` and ``waveforms`` for a few events, then access the first datagram of the last event directly."""
 from psana.pyalgos.generic.NDArrUtils import print_ndarr
 
 from psana import DataSource

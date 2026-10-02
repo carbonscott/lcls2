@@ -27,6 +27,15 @@ d = {1:{'cam':'UED:ANDOR:CAM:01:',
         'tim': None}}
 
 def main():
+    """Configure an Andor camera and its TPR triggers over CA, then program a sequence engine with `seqprogram`.
+
+    Unless --test (or camera 0), sets camera PVs (Acquire 0, AcquireTime, TriggerMode 1,
+    ImageMode 2, ...), reads AcquirePeriod_RBV and sets the TPR channels to event codes
+    257+4*eng and 256+4*eng. Without --period it loads ued_60Hz.py or ued_360Hz.py and
+    puts 0 to ':PART:0:SeqMask'; with --period it writes a temporary readout/exposure
+    sequence, loads it, disables the engine and puts ``1 << eng`` to SeqMask. Finally it
+    puts Acquire 1.
+    """
     parser = argparse.ArgumentParser(description='ued sequencer programming')
     parser.add_argument('--pv', type=str, default='DAQ:UED:XPM:0', help="sequence engine pv; default DAQ:UED:XPM:0")
     parser.add_argument('--cam', type=int, default=1, help="Andor camera number (1,3)")

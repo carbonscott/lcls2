@@ -11,6 +11,12 @@ import argparse
 def main():
 
     # process arguments
+    """Print the active experiment for an instrument[:station] argument.
+
+    GETs '<url>//lgbk/ws/activeexperiment_for_instrument_station' with params
+    instrument_name and station (default 0). Prints '<instrument>:<station> <experiment>',
+    or separate lines with -v; exits with a message on request, HTTP, JSON or lookup failure.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("instrument", help="instrument_name[:station_number]")
     # unauthenticated URL is OK for read-only access

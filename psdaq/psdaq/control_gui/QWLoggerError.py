@@ -41,8 +41,7 @@ from psdaq.control_gui.Styles import style
 #----
 
 class QWLoggerError(QGroupBox):
-    """
-    """
+    """QGroupBox titled 'Error messages' containing a read-only, red-text QTextEdit for error messages."""
     def __init__(self, parent=None):
 
         QGroupBox.__init__(self, 'Error messages', parent)
@@ -57,9 +56,11 @@ class QWLoggerError(QGroupBox):
         #self.set_tool_tips()
 
     def set_tool_tips(self):
+        """Set the text edit tool tip to 'Window for ERROR messages'."""
         self.edi_err.setToolTip('Window for ERROR messages')
 
     def set_style(self):
+        """Make the text edit read-only with yellowish style, minimum height 50 and red text; set group-box size policy, style and margins."""
         self.edi_err.setReadOnly(True)
         self.edi_err.setStyleSheet(style.styleYellowish) 
         self.edi_err.setMinimumHeight(50)
@@ -71,39 +72,47 @@ class QWLoggerError(QGroupBox):
         self.layout().setContentsMargins(2,0,2,2)
 
     def sizeHint(self):
+        """Return QSize(300, 300)."""
         return QSize(300,300)
 
  
     def append_qwlogger_err(self, msg='...'):
+        """Append `msg` to the text edit and scroll to the end."""
         self.edi_err.append(msg)
         self.scroll_down()
 
 
     def add_separator_err(self, sep='\n\n\n\n\n%s'%(50*'_')):
+        """Append the separator text (default: newlines followed by 50 underscores) via `append_qwlogger_err`."""
         self.append_qwlogger_err(msg=sep)
 
 
     def scroll_down(self):
         #logger.debug('scroll_down')
+        """Move the text cursor to the end and repaint the text edit."""
         self.edi_err.moveCursor(QTextCursor.End)
         self.edi_err.repaint()
         #self.edi_err.update()
 
 
     def setReadOnly(self, state):
+        """Set the read-only state of the text edit."""
         self.edi_err.setReadOnly(state)
 
 
     def setStyleSheet(self, s):
+        """Set the style sheet of the group box (not the text edit)."""
         QGroupBox.setStyleSheet(self, s)
          #self.edi_err.setStyleSheet(s)
 
 
     def setTextColor(self, c):
+        """Set the text color of the text edit."""
         self.edi_err.setTextColor(c)
 
 
     def append(self, msg):
+        """Append `msg` to the text edit without scrolling."""
         self.edi_err.append(msg)
 
 
@@ -117,6 +126,10 @@ class QWLoggerError(QGroupBox):
     #if True:
 
       def key_usage(self):
+        """Return the key help text (ESC, M, S).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  M - add message in error logger window'\
@@ -125,6 +138,10 @@ class QWLoggerError(QGroupBox):
 
 
       def keyPressEvent(self, e):
+        """Handle keys in the test window: Esc closes, S adds a separator, M adds 'new message', others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 

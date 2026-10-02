@@ -1,3 +1,4 @@
+"""Grouping helpers for 2-d arrays of profiles: clustering with scikit-learn (hierarchical, k-means) or a correlation-based method, gap-statistic selection of the number of groups, and small array utilities."""
 import numpy as np
 import scipy.interpolate
 import time
@@ -159,12 +160,20 @@ def calculateClusterVariance(assignments, data, num_clusters):
     return d
 
 def getPercentile(data, percentile=0.9):
+    """Return, for each column of ``data``, the first row index where the column's normalized cumulative sum exceeds ``1 - percentile``.
+
+    Columns with zero sum are treated as all zeros after normalization (their index is 0).
+    """
     a = np.cumsum(data, axis=0)
     out = np.divide(a, np.sum(data, axis=0), out=np.zeros_like(a), where=np.sum(data, axis=0)!=0)
     test = (out > 1-percentile).argmax(axis=0)
     return test
     
 def trimImg(x):
+    """Return ``x`` cropped to the smallest row and column range that contains all non-zero elements.
+
+    Raises IndexError if ``x`` has no non-zero element.
+    """
     rows = np.any(x, axis=1)
     cols = np.any(x, axis=0)
     ymin, ymax = np.where(rows)[0][[0, -1]]
@@ -173,6 +182,10 @@ def trimImg(x):
 
 
 def getNorthCoast(imgs):
+    """Trim each image of ``imgs`` with ``trimImg``, compute ``getPercentile`` per image, pad the results to equal length with the value (overall maximum + 1) and return them stacked with ``np.vstack``.
+
+    The left pad width is computed with ``/`` and is a float in Python 3, which ``np.pad`` does not accept.
+    """
     trimmed = np.array([trimImg(f) for f in imgs])
     out = np.array([getPercentile(x) for x in trimmed])
     arrlens = np.array([len(x) for x in out])
@@ -193,6 +206,7 @@ def generateRandSample(bounding_box, num_profiles):
 
 
 def getBoundingBox(X):
+    """Return a list of ``(min, max)`` tuples, one per column of the 2-d array ``X``."""
     return [(min(X[:,i]), max(X[:,i])) for i in range(X.shape[1])]
 
 

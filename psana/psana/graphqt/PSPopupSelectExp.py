@@ -34,6 +34,10 @@ from PyQt5.QtGui import QFont, QColor, QCursor
 
 
 def years(lst_exp):
+    """Return sorted year strings '20YY' built from the distinct two-digit endings of the names in ``lst_exp``.
+
+    Names whose last two characters are not digits are ignored.
+    """
     years = []
     for exp in lst_exp:
         year = exp[-2:]
@@ -44,6 +48,14 @@ def years(lst_exp):
 
 
 def years_and_runs(lst_exp):
+    """Return two sorted lists derived from the last two characters of the names in ``lst_exp``.
+
+    The first list is '20YY' for distinct digit endings of 8-character names; the second is 'Run:NN' for distinct digit endings of 9-character names.
+
+    Returns
+    -------
+    tuple of (list of str, list of str)
+    """
     years = []
     runs  = []
     for exp in lst_exp:
@@ -64,13 +76,19 @@ def years_and_runs(lst_exp):
 
 
 def lst_exp_for_year(lst_exp, year):
+    """Return the names in ``lst_exp`` whose last two characters equal the last two characters of ``year``.
+
+    ``year`` may be a str or an int (formatted with '%4d').
+    """
     str_year = year if isinstance(year,str) else '%4d'%year
     pattern = str_year[-2:] # two last digits if the year
     return [exp for exp in lst_exp if exp[-2:]==pattern]
 
 
 class PSPopupSelectExp(QDialog):
-    """
+    """Stay-on-top popup dialog listing experiment names grouped under non-selectable year and 'Run:' headers.
+
+    Clicking an experiment stores its name and accepts the dialog; window deactivation or closing rejects it. A timer re-activates the window every second.
     """
     def __init__(self, parent=None, lst_exp=[], show_frame=False):
 
@@ -96,6 +114,7 @@ class PSPopupSelectExp(QDialog):
 
 
     def on_timeout(self):
+        """Raise, activate and focus the dialog, and schedule itself again after ``self.dt_msec`` ms."""
         self.raise_()
         self.activateWindow()
         self.setFocus(True)
@@ -103,6 +122,10 @@ class PSPopupSelectExp(QDialog):
 
 
     def fill_list(self, lst_exp):
+        """Fill the list widget from ``lst_exp`` using ``years_and_runs``.
+
+        Each '20YY' header (bold, no item flags) is followed by the sorted 8-character names with that ending; each 'Run:NN' header is followed by the sorted 9-character names with that ending. Sets ``self.years`` and ``self.runs``.
+        """
         self.years, self.runs = years_and_runs(lst_exp)
 
         for year in self.years:
@@ -127,6 +150,10 @@ class PSPopupSelectExp(QDialog):
 
 
     def set_style(self):
+        """Set the title, fixed width 120, minimum height 600, small margins, focus policy and, unless ``show_frame``, the frameless flag.
+
+        If the dialog has no parent widget it is moved near the cursor.
+        """
         self.setWindowTitle('Select experiment')
         self.setFixedWidth(120)
         self.setMinimumHeight(600)
@@ -141,10 +168,12 @@ class PSPopupSelectExp(QDialog):
 
 
     def show_tool_tips(self):
+        """Set the dialog tool tip to 'Select experiment'."""
         self.setToolTip('Select experiment')
 
 
     def on_item_click(self, item):
+        """Store the clicked item text in ``name_sel`` and accept the dialog, unless the text is a year or run header."""
         self.name_sel = item.text()
         if self.name_sel in self.years: return # ignore selection of year
         if self.name_sel in self.runs : return # ignore selection of run
@@ -154,6 +183,7 @@ class PSPopupSelectExp(QDialog):
 
     def event(self, e):
         #logger.debug('event.type %s' % str(e.type()))
+        """Reject the dialog on ``QEvent.WindowDeactivate``, then return ``QDialog.event(self, e)``."""
         if e.type() == QEvent.WindowDeactivate:
             logger.debug('intercepted mouse click outside popup window')
             self.reject()
@@ -162,16 +192,22 @@ class PSPopupSelectExp(QDialog):
 
 
     def closeEvent(self, event):
+        """Log a debug message and reject the dialog."""
         logger.debug('closeEvent')
         self.reject()
         self.done(QDialog.Rejected)
 
 
     def selectedName(self):
+        """Return the last clicked item text, or None if nothing was clicked."""
         return self.name_sel
 
 
 def select_experiment(parent, lst_exp, show_frame=False):
+    """Show a modal ``PSPopupSelectExp`` for ``lst_exp`` and return ``selectedName()``.
+
+    The ``exec_()`` result is only logged; the return value is None if nothing was clicked.
+    """
     w = PSPopupSelectExp(parent, lst_exp, show_frame)
     resp=w.exec_()
     logger.debug('responce from w.exec_(): %s' % str(resp))
@@ -180,6 +216,15 @@ def select_experiment(parent, lst_exp, show_frame=False):
 
 #def select_instrument_experiment(parent=None, dir_instr='/cds/data/psdm', show_frame=False):
 def select_instrument_experiment(parent=None, dir_instr='/sdf/data/lcls/ds/', show_frame=False):
+    """Let the user pick an instrument directory and then an experiment in it.
+
+    Instrument names come from ``list_of_instruments(dir_instr)`` and experiment names from ``list_of_experiments`` (both in ``psana.pyalgos.generic.PSUtils``).
+
+    Returns
+    -------
+    tuple
+        ``(instr, exp)``; ``(None, None)`` if the instrument selection is cancelled, and ``exp`` may be None.
+    """
     from psana.graphqt.QWPopupSelectItem import popup_select_item_from_list
     from psana.pyalgos.generic.PSUtils import list_of_instruments, list_of_experiments
     instrs = sorted(list_of_instruments(dir_instr))
@@ -197,6 +242,10 @@ if __name__ == "__main__":
   logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d: %(message)s', level=logging.DEBUG)
 
   def test_all(tname):
+    """Print years, years and runs, and the 2016 experiments for the names in /sdf/data/lcls/ds/MFX/, then open ``select_experiment`` if ``tname == '1'`` (otherwise exit).
+
+    Defined only when the module runs as a script.
+    """
     lst_exp = sorted(os.listdir('/sdf/data/lcls/ds/MFX/'))
     print('years form the list of experiments', years(lst_exp))
     print('years and runs form the list of experiments', str(years_and_runs(lst_exp)))

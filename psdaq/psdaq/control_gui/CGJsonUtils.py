@@ -233,6 +233,7 @@ def list_active_procs(lst):
 #--------------------
 
 def load_json_from_file(fname):
+    """Read file `fname` as text and return the object parsed by `json.loads`."""
     s = load_textfile(fname)
     #ucode = s.decode('utf8').replace("\'t", ' not').replace("'", '"')
     #ss = s.replace(' ', '').replace("'", '"')
@@ -241,6 +242,7 @@ def load_json_from_file(fname):
 #--------------------
 
 def json_from_str(s):
+    """Return ``json.loads(s)``."""
     return json.loads(s)
 
 #--------------------

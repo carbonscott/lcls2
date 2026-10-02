@@ -1,5 +1,6 @@
 #####!/usr/bin/env python
 #------------------------------
+"""Command ``proc_info``: print information about experiments and runs in xtc directories and the auto-processing status, using ``psana.pscalib.proc.RunProcUtils``."""
 import os
 import sys
 from time import time
@@ -9,7 +10,12 @@ import psana.pscalib.proc.RunProcUtils as rpu
 #------------------------------
 
 def proc_info(parser) :
-    """
+    """Parse the command line with ``parser`` and run the print mode given by the single positional argument (default ``'0'``).
+
+    Modes call ``RunProcUtils`` functions: 0 ``print_all_experiments``, 1 ``print_datasets_new_under_control``,
+    2 ``print_datasets_new``, 3 ``print_experiments``, 4 ``print_datasets_old``, 5
+    ``print_experiments_count_runs`` (processor name ``'pixel_status'`` for 1, 2 and 4). An unknown mode calls
+    ``sys.exit`` with a message; otherwise the elapsed time is printed.
     """
     (popts, pargs) = parser.parse_args()
     ins      = popts.ins
@@ -40,6 +46,7 @@ def proc_info(parser) :
 #------------------------------
 
 def usage() : 
+    """Return the usage/help text listing the print modes and command examples."""
     return '\n  proc_info <arg> [-i <instrument-name> -p <process-name> -m]'\
            '\n    where argument switches between print modes:'\
            '\n    arg = 0 - print all experiments'\
@@ -61,6 +68,7 @@ def usage() :
 
 def input_option_parser() :
 
+    """Return an ``optparse.OptionParser`` with options ``-i/--ins`` (instrument, default None), ``-p/--pro`` (processor name, default ``'pixel_status'``) and ``-a/--app`` (flag, default False)."""
     from optparse import OptionParser
     d_ins = None # 'CXI'
     d_pro = 'pixel_status'
@@ -81,6 +89,7 @@ def input_option_parser() :
 
 def do_main() :
 
+    """Build the option parser (printing help and a warning if no arguments are given), call :func:`proc_info` and exit with status 0."""
     parser = input_option_parser()
 
     if len(sys.argv) == 1 : 

@@ -70,18 +70,26 @@ class QWFileNameV2(QWidget):
         self.but.clicked.connect(self.on_but)
 
     def path(self):
+        """Return ``self.path``.
+
+        ``__init__`` assigns the instance attribute ``self.path``, which hides this method, so ``obj.path`` is the string and ``obj.path()`` raises TypeError.
+        """
         return self.path
 
     def but_text(self):
+        """Return the button text: the last path component if ``self.hide_path`` is true, otherwise the full ``self.path``."""
         return self.path.rsplit('/',1)[-1] if self.hide_path else self.path
 
     def set_dirs_to_search(self, dirs):
+        """Set ``self.dirs``, the directory list used as file-dialog history."""
         self.dirs = dirs
 
     def set_tool_tips(self):
+        """Set the button tool tip."""
         self.but.setToolTip('Click and select input file.')
 
     def set_style(self):
+        """Set the window title, minimum widths (300 widget, 200 button), zero margins and the start style of the button and label."""
         self.setWindowTitle('File name selection widget')
         self.setMinimumWidth(300)
         self.but.setMinimumWidth(200)
@@ -91,6 +99,10 @@ class QWFileNameV2(QWidget):
         self.lab.setStyleSheet(style.styleLabel)
 
     def on_but(self):
+        """Open a file dialog (save dialog if ``mode == 'w'``, open dialog otherwise) and apply the chosen path.
+
+        ``self.path`` is overwritten with the dialog result first. It then returns without other changes if, in 'r' mode, the path does not exist, if its directory or file part is empty, or if it equals the old path; otherwise it updates the button text and style and emits ``path_is_changed(path)``.
+        """
         path_old = self.path
         qfdial = QFileDialog() # directory=self.path)
         qfdial.setHistory([]) # clear history
@@ -126,12 +138,15 @@ class QWFileNameV2(QWidget):
             self.but.setStyleSheet(self.but_style_selected)
 
     def connect_path_is_changed(self, recip):
+        """Connect ``recip`` to the ``path_is_changed['QString']`` signal."""
         self.path_is_changed['QString'].connect(recip)
 
     def disconnect_path_is_changed(self, recip):
+        """Disconnect ``recip`` from the ``path_is_changed['QString']`` signal."""
         self.path_is_changed['QString'].disconnect(recip)
 
     def test_signal_reception(self, s):
+        """Log at debug level the received path string ``s``."""
         logger.debug('test_signal_reception: %s' % s)
 
 

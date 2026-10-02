@@ -12,6 +12,12 @@ import argparse
 def main():
 
     # process arguments
+    """Get, and optionally start or end, the current run of an experiment via the run database.
+
+    Uses '<rundb>/run_control/<experiment>/ws/' with HTTP basic auth: ``--start`` POSTs
+    'start_run', then 'current_run?skipClosedRuns=true' is fetched and the run number
+    printed, and ``--end`` POSTs 'end_run'. Exits on a non-OK status from current_run.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("experiment", help="experiment name")
     parser.add_argument("--user", default="xppopr")

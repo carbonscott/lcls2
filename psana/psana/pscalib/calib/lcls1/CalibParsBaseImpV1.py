@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseImpV1 :
 
+    """Class attributes only: ``ndim`` 2, shape (4, 1023), ``size_cm`` 16 and an all-zero 16-element ``cmod`` tuple; the constructor does nothing."""
     ndim = 2 
     rows = 4
     cols = 1023 

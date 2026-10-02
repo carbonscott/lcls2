@@ -29,14 +29,17 @@ import psana.pyalgos.generic.Utils as gu
 #----------
 
 def load_int(line) :
+    """Return the first whitespace-separated field of ``line`` as int."""
     return int(line.strip().split()[0]) # .atoi()
 
 
 def load_double(line) :
+    """Return the first whitespace-separated field of ``line`` as float."""
     return float(line.strip().split()[0]) # .atof()
 
 
 def load_double_couple(line) :
+    """Return the first two whitespace-separated fields of ``line`` as a tuple of floats."""
     flds = line.strip().split()
     return float(flds[0]), float(flds[1])
 
@@ -171,6 +174,15 @@ def load_config_pars(txt_config, sorter=None, **kwargs) :
 #----------
 
 def load_calibration_group(lins, il, cmt='') :
+    """Read a group of point pairs starting at line index ``il`` of ``lins``: a count line followed by that many 'x y' lines.
+
+    The pairs are parsed but never appended, so the returned list is always empty.
+
+    Returns
+    -------
+    tuple
+        ``(list_of_pairs, il)`` with the empty list and the index of the line after the group.
+    """
     points = load_int(lins[il])
     logger.info('DLDUtils.load_calibration_group - %2d points for %s' % (points, cmt))
 
@@ -219,6 +231,7 @@ def load_calibration_tables(txt_calib, sorter=None) :
 #----------
 
 def text_data(fname) :
+    """Return the content of text file ``fname`` read with ``Utils.load_textfile`` (also logged at debug level)."""
     logger.info('DLDUtils.text_data from file') #: %s' % fname)        
     data = gu.load_textfile(fname, verb=True)
     logger.debug(data)
@@ -237,17 +250,26 @@ if __name__ == "__main__" :
     CDIR ='/reg/neh/home4/dubrovin/LCLS/con-lcls2/lcls2/psana/psana/hexanode/examples/'
 
     class sorter_proxy() :
+        """Empty placeholder class (constructor body is ``pass``); defined only when the module runs as a script."""
         def __init__(self) :
             pass
 
 
     def test_load_config_pars() :
+        """Load 'configuration_quad.txt' from a hard-coded directory and parse it with ``load_config_pars`` without a sorter.
+
+        Defined only when the module runs as a script.
+        """
         txt = text_data(CDIR + 'configuration_quad.txt')
         status, command, offset_sum_u, offset_sum_v, offset_sum_w, w_offset, pos_offset_x, pos_offset_y=\
         load_config_pars(txt, sorter=None)
 
 
     def test_load_calibration_tables() :
+        """Load 'calibration_table_data.txt' from a hard-coded directory and parse it with ``load_calibration_tables`` without a sorter.
+
+        Defined only when the module runs as a script.
+        """
         txt = text_data(CDIR + 'calibration_table_data.txt')
         status = load_calibration_tables(txt, sorter=None)
 

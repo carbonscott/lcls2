@@ -72,12 +72,14 @@ class CMWConfig(QWidget):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the Close, Save and Show Image buttons."""
         self.but_close.setToolTip('Close this window.')
         self.but_save.setToolTip('Save all current configuration parameters.')
         self.but_show.setToolTip('Show ...')
 
 
     def set_style(self):
+        """Apply background and button style sheets, set minimum size 600x500 and hide the Close, Save and Show Image buttons."""
         self.          setStyleSheet(style.styleBkgd)
         self.but_close.setStyleSheet(style.styleButton)
         self.but_save .setStyleSheet(style.styleButton)
@@ -92,6 +94,10 @@ class CMWConfig(QWidget):
 
 
     def make_tab_bar(self):
+        """Create ``self.tab_bar`` with the 'Parameters' and 'Configuration File' tabs (magenta text) and select the tab named by ``cp.current_config_tab``.
+
+        Connects ``currentChanged`` to ``on_tab_bar``.
+        """
         self.tab_bar = QTabBar()
 
         self.ind_tab_0 = self.tab_bar.addTab(self.tab_names[0])
@@ -113,6 +119,10 @@ class CMWConfig(QWidget):
 
     def gui_selector(self, tab_name):
 
+        """Close the current tab widget and show a ``CMWConfigPars`` or ``CMWConfigFile`` widget for ``tab_name``.
+
+        For an unknown name it logs a warning and then fails, because ``self.gui_win`` has been deleted (or is still None) when it is added to the layout and made visible.
+        """
         if self.gui_win is not None:
             self.gui_win.close()
             del self.gui_win
@@ -132,12 +142,14 @@ class CMWConfig(QWidget):
 
 
     def current_tab_index_and_name(self):
+        """Return a tuple (index, text) of the current tab."""
         tab_ind  = self.tab_bar.currentIndex()
         tab_name = str(self.tab_bar.tabText(tab_ind))
         return tab_ind, tab_name
 
 
     def on_tab_bar(self):
+        """Store the current tab name in ``cp.current_config_tab`` and switch the displayed widget with ``gui_selector``."""
         tab_ind, tab_name = self.current_tab_index_and_name()
         logger.info('Selected tab "%s"' % tab_name)
         cp.current_config_tab.setValue(tab_name)
@@ -145,10 +157,12 @@ class CMWConfig(QWidget):
 
 
     def set_parent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def closeEvent(self, e):
+        """Close the tab bar and the current tab widget, then call ``QWidget.close(self)``."""
         logger.debug('closeEvent')
         self.tab_bar.close()
         if self.gui_win is not None: self.gui_win.close()
@@ -156,16 +170,25 @@ class CMWConfig(QWidget):
 
 
     def on_close(self):
+        """Log a debug message and close the widget.
+
+        Connected to the (hidden) Close button.
+        """
         logger.debug('on_close')
         self.close()
 
 
     def on_save(self):
+        """Call ``cp.saveParametersInFile(cp.fname_cp.value())``.
+
+        ``cp.fname_cp`` is a plain string in CMConfigParameters, so ``.value()`` raises AttributeError; the Save button is hidden by ``set_style``.
+        """
         logger.debug('on_save')
         cp.saveParametersInFile( cp.fname_cp.value() )
 
 
     def on_show(self):
+        """Log that the method is not implemented; does nothing else."""
         logger.debug('on_show - is not implemented yet...')
 
 

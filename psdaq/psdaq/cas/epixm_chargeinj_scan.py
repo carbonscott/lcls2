@@ -1,3 +1,4 @@
+"""Charge-injection scan for an ePixM detector over gain modes, ASICs and column bands using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 from psdaq.configdb.epixm320_config import gain_mode_value
 import numpy as np
@@ -10,6 +11,13 @@ nColumns = 384
 def main():
 
     # default command line arguments
+    """Run the scan writing gain_mode and the FPGAChargeInjection startCol, endCol, step and currentAsic keys.
+
+    Defaults: hutch 'rix', detname 'epixm_0', record 1, gain modes SH/SL/AHL, all 4 ASICs,
+    columns 0-383. The events per step are forced to ``1024 // pulserStep`` (code comment:
+    "The 1024 is hardcoded in firmware"); the column band moves by --bandStep for
+    --nBandSteps steps, clamped to 0-383.
+    """
     defargs = {'--events'  :1024,
                '--hutch'   :'rix',
                '--detname' :'epixm_0',

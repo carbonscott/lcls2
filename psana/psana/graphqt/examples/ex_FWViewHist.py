@@ -1,8 +1,13 @@
 
+"""Example: show an ``FWViewHist`` widget with one of several origin, scale-control and color settings selected by a test number."""
 import sys
 from psana.graphqt.FWViewHist import *
 
 def test_guiview(tname):
+    """Create a QApplication and an ``FWViewHist`` configured by ``tname`` ('0'-'5'), print its attributes and run the event loop.
+
+    For any other ``tname`` it prints a message and returns.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     app = QApplication(sys.argv)
     w = None

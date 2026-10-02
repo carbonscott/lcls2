@@ -1,3 +1,4 @@
+"""PyQt5 summary window of partition statistics and per-link 'DeadFLnk' values for 8 partitions (run as a script with base 'DAQ:LAB2', shelf '2')."""
 import sys
 import argparse
 import logging
@@ -9,7 +10,14 @@ logger = logging.getLogger(__name__)
 NParts = 8
 
 class Ui_MainWindow(object):
+    """Builder for the partition summary window."""
     def setupUi(self, MainWindow, base, shelf):
+        """Build one column per partition with rate/count labels and a link table of 'PART:<i>:DeadFLnk' values.
+
+        Link names come from synchronous gets of '<base>:XPM:<shelf>:LinkLabel<j>' after a
+        2 s sleep. The code calls ``PvLabel(lol, pvbase, name)``; `pvedit.PvLabel` takes
+        (owner, parent, pvbase, name, ...), so these calls raise TypeError as written.
+        """
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")

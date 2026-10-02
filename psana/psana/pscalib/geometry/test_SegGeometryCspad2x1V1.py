@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryCspad2x1V1``; run with test number ``'1'``-``'7'`` (no argument logs the usage).
+
+Only the import of ``SegGeometryCspad2x1V1`` runs at import time; the tests are defined only when run as a script.
+"""
 from psana.pscalib.geometry.SegGeometryCspad2x1V1 import *
 
 if __name__ == "__main__":
@@ -12,6 +16,7 @@ if __name__ == "__main__":
 
 
   def test_xyz_min_max():
+    """Print the segment min/max coordinates in um and log the min/max pixel Y coordinate."""
     w = SegGeometryCspad2x1V1()
     w.print_xyz_min_max_um()
     s = 'test_xyz_min_max'\
@@ -21,6 +26,7 @@ if __name__ == "__main__":
 
 
   def test_xyz_maps():
+    """Print the segment coordinate maps in um and plot the X and Y pixel-index maps."""
     w = SegGeometryCspad2x1V1()
     w.print_maps_seg_um()
     titles = ['X map','Y map']
@@ -33,6 +39,7 @@ if __name__ == "__main__":
 
   def test_2x1_img():
 
+    """Histogram the pixel coordinates with weights ``X + Y`` using ``numpy.histogram2d`` (passing ``normed=False``), log the shapes and edges, and plot the result."""
     w = SegGeometryCspad2x1V1(use_wide_pix_center=False)
     X,Y = w.get_seg_xy_maps_pix()
 
@@ -65,6 +72,7 @@ if __name__ == "__main__":
 
 
   def test_2x1_img_easy():
+    """Plot an image built from the pixel index maps (with offset, rounded with +0.25) using weights ``iX + iY``."""
     pc2x1 = SegGeometryCspad2x1V1(use_wide_pix_center=False)
     #X,Y = pc2x1.get_seg_xy_maps_pix()
     X,Y = pc2x1.get_seg_xy_maps_pix_with_offset()
@@ -75,6 +83,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Print the pixel-size arrays and log slices [0:10, 190:198] and shapes of the pixel area and X-size arrays."""
     w = SegGeometryCspad2x1V1()
     w.print_pixel_size_arrs()
     size_arr = w.pixel_size_array('X')
@@ -88,6 +97,7 @@ if __name__ == "__main__":
 
 
   def test_2x1_mask(mbits=0o7, width=0, wcenter=0, edge_rows=10, edge_cols=6, center_cols=4):
+    """Log and plot ``1 + pixel_mask_array(mbits, width, wcenter, edge_rows, edge_cols, center_cols)`` placed by the pixel index maps."""
     pc2x1 = SegGeometryCspad2x1V1(use_wide_pix_center=False)
     X, Y = pc2x1.get_seg_xy_maps_pix_with_offset()
     mask = 1 + pc2x1.pixel_mask_array(mbits, width, wcenter, edge_rows, edge_cols, center_cols)
@@ -101,6 +111,10 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``.
+
+    The listed names and parameters (e.g. ``test_img``, ``test_mask``) do not match the functions the script calls.
+    """
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0','1'): s+='\n 1 - test_xyz_min_max()'

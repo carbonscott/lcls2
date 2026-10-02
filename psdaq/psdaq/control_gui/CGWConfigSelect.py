@@ -40,7 +40,10 @@ from psdaq.control_gui.CGConfigParameters import cp
 char_expand  = u' \u25BC' # down-head triangle
 
 class CGWConfigSelect(QGroupBox):
-    """
+    """QGroupBox 'Edit configuration' with buttons to pick a configdb alias (type) and a device.
+
+    Button texts start as `type_def`/`dev_def` followed by a down-triangle character. The
+    lists come from the configuration database returned by `inst_configdb`.
     """
     def __init__(self, parent=None, type_def='Select', dev_def='Select'):
 
@@ -82,12 +85,17 @@ class CGWConfigSelect(QGroupBox):
 #--------------------
 
     def set_tool_tips(self):
+        """Set tool tips on the type and device buttons."""
         self.but_type.setToolTip('Select configuration type.') 
         self.but_dev .setToolTip('Select device for configuration.') 
 
 #--------------------
 
     def set_buts_enabled(self):
+        """Enable the device button when a type is selected, and `but_apply` (if set) when both are selected.
+
+        A button counts as selected when its text does not start with 'Select'.
+        """
         is_selected_type = self.but_type.text()[:6] != 'Select'
         is_selected_det  = self.but_dev .text()[:6] != 'Select'
         self.but_dev.setEnabled(is_selected_type)
@@ -100,6 +108,7 @@ class CGWConfigSelect(QGroupBox):
 #--------------------
 
     def set_style(self):
+        """Apply the group-box title style and update button enabled states."""
         from psdaq.control_gui.Styles import style
         self.setStyleSheet(style.qgrbox_title)
         self.set_buts_enabled()
@@ -111,6 +120,16 @@ class CGWConfigSelect(QGroupBox):
 #--------------------
  
     def inst_configdb(self, msg=''):
+        """Return the instrument and a configdb client.
+
+        Takes URIs, user and password from `cp.cgwmain` (URIs default to `URI_CONFIGDB`) and the
+        instrument from `cp.instr` or, if None, `daq_control_get_instrument()`.
+
+        Returns
+        -------
+        tuple
+            (inst, result of ``get_configdb(uri=..., hutch=inst, create=False, root=ROOT_CONFIGDB, ...)``).
+        """
         uris = getattr(cp.cgwmain, 'uris', URI_CONFIGDB)
         inst = getattr(cp, 'instr', None)
         user = getattr(cp.cgwmain, 'user', None)
@@ -123,6 +142,11 @@ class CGWConfigSelect(QGroupBox):
  
     def on_but_type(self):
         #logger.debug('on_but_type')
+        """Pop up the list of configdb aliases for the instrument and set the type button to the choice.
+
+        If the list is empty, ['NOBEAM', 'BEAM'] is used with a warning. When the choice
+        changes, the device button is reset to 'Select' and `type_old` is updated.
+        """
         inst, confdb = self.inst_configdb('on_but_type: ')
         list_of_aliases = confdb.get_aliases(hutch=inst) # ['NOBEAM', 'BEAM', ??? 'PROD']
 
@@ -148,6 +172,7 @@ class CGWConfigSelect(QGroupBox):
 #--------------------
  
     def set_config_type(self, config_type):
+        """Set the type button to `config_type`, reset the device button and update `type_old`; no-op if unchanged."""
         if config_type == self.type_old: return
 
         self.set_but_type_text(config_type)
@@ -158,21 +183,34 @@ class CGWConfigSelect(QGroupBox):
 
 #--------------------
  
-    def set_but_type_text(self, txt='Select'): self.but_type.setText('%s %s' % (txt, char_expand))
-    def set_but_dev_text (self, txt='Select'): self.but_dev .setText('%s %s' % (txt, char_expand))
+    def set_but_type_text(self, txt='Select'):
+        """Set the type button text to `txt` followed by the down-triangle character."""
+        self.but_type.setText('%s %s' % (txt, char_expand))
+    def set_but_dev_text (self, txt='Select'):
+        """Set the device button text to `txt` followed by the down-triangle character."""
+        self.but_dev .setText('%s %s' % (txt, char_expand))
 
-    def but_type_text(self): return str(self.but_type.text()).split(' ')[0] # 'NOBEAM' or 'BEAM'
-    def but_dev_text (self): return str(self.but_dev .text()).split(' ')[0] # 'testdev0'
+    def but_type_text(self):
+        """Return the first space-separated word of the type button text."""
+        return str(self.but_type.text()).split(' ')[0] # 'NOBEAM' or 'BEAM'
+    def but_dev_text (self):
+        """Return the first space-separated word of the device button text."""
+        return str(self.but_dev .text()).split(' ')[0] # 'testdev0'
 
 #--------------------
 
     def cfgtype_and_device(self):
+        """Return ``(but_type_text(), but_dev_text())``."""
         return self.but_type_text(), self.but_dev_text()
 
 #--------------------
  
     def on_but_dev(self):
         #logger.debug('on_but_dev')
+        """Pop up the configdb devices for the selected type and set the device button to the choice.
+
+        Logs a warning and returns if the device list is empty.
+        """
         inst, confdb = self.inst_configdb('on_but_dev: ')
         cfgtype = str(self.but_type.text()).split(' ')[0] # 'NOBEAM' or 'BEAM'
         list_of_device_names = confdb.get_devices(cfgtype, hutch=inst)
@@ -191,6 +229,7 @@ class CGWConfigSelect(QGroupBox):
 #--------------------
 
     def closeEvent(self, e):
+        """Print a message and call `QGroupBox.closeEvent`."""
         print('CGWConfigSelect.closeEvent')
         QGroupBox.closeEvent(self, e)
 

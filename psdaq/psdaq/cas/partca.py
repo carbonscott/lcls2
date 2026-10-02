@@ -1,3 +1,4 @@
+"""PyQt5 window for one partition PV prefix: master, trigger, transition, message and inhibit controls plus statistics."""
 import sys
 import argparse
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -5,7 +6,12 @@ from psdaq.cas.pvedit import *
 from psdaq.cas.collection_widget import CollectionWidget
 
 class Ui_MainWindow(object):
+    """Builder for the partition window."""
     def setupUi(self, MainWindow, base, no_coll):
+        """Build editor (left) and statistics (right) panes for '<base>:' PVs, plus a `CollectionWidget` unless `no_coll`.
+
+        The collection widget's partition is ``int`` of the last ':'-field of `base`.
+        """
         MainWindow.setObjectName("MainWindow")
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
@@ -118,6 +124,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
 def main():
+    """Parse -v, -n/--no_collection, -x/--xtpg_mode and the PV prefix, call `setCuMode`, and run the window."""
     print(QtCore.PYQT_VERSION_STR)
 
     parser = argparse.ArgumentParser(description='simple pv monitor gui')

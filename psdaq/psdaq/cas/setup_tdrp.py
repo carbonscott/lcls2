@@ -1,9 +1,16 @@
+"""Generate a process-manager config file that runs `pytdrp` on DRP hosts and one `pytdet_collector`."""
 import argparse
 import os
 import sys
 
 def main():
 
+    """Read XPM (-x) and experiment (-e) config files and write config file -o (default 'tdet-base.py').
+
+    Each input file is executed with `exec`. XPM entries come from 'pyxpm'/'pykcuxpm'
+    commands (--ip, -P); DRP hosts get a pytdrp type from the drp -D option (or tdet for
+    epicsArch/drp_pva/drp_bld), and wave8/hsd -k options supply FIM/HSD prefixes.
+    """
     parser = argparse.ArgumentParser(description='create .py for timing system monitoring')
 
     parser.add_argument('-o', help='output file (daqmgr input file)', metavar='CNF_FILE', default='tdet-base.py')

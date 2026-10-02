@@ -82,24 +82,28 @@ class IVSpectrum(QWidget):
 
 
     def set_signal_fast(self, is_fast=True):
+        """Set the ``signal_fast`` attribute of the histogram view and both axis views to ``is_fast``."""
         self.whis.signal_fast = is_fast
         self.wax.signal_fast = is_fast
         self.way.signal_fast = is_fast
 
 
     def connect_scene_rect_changed(self):
+        """Connect the scene-rect-changed signals of ``whis``, ``wax`` and ``way`` to their ``on_*_scene_rect_changed`` slots."""
         self.whis.connect_scene_rect_changed(self.on_whis_scene_rect_changed)
         self.wax.connect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.connect_scene_rect_changed(self.on_way_scene_rect_changed)
 
 
     def disconnect_scene_rect_changed(self):
+        """Disconnect the scene-rect-changed signals of ``whis``, ``wax`` and ``way`` from their ``on_*_scene_rect_changed`` slots."""
         self.whis.disconnect_scene_rect_changed(self.on_whis_scene_rect_changed)
         self.wax.disconnect_scene_rect_changed(self.on_wax_scene_rect_changed)
         self.way.disconnect_scene_rect_changed(self.on_way_scene_rect_changed)
 
 
     def on_but_reset(self):
+        """Call ``reset_original_size()`` on the histogram view and both axis views."""
         logger.debug('on_but_reset')
         self.whis.reset_original_size()
         self.wax.reset_original_size()
@@ -108,6 +112,7 @@ class IVSpectrum(QWidget):
 
     def on_whis_scene_rect_changed(self, r):
         #logger.debug('on_whis_scene_rect_changed: %s'%str(r))
+        """Set the axis views to the x and y ranges of rect ``r``, update the info box and emit the histogram signal if the rect changed."""
         self.wax.set_view(rs=QRectF(r.x(), 0, r.width(), 1))
         self.way.set_view(rs=QRectF(0, r.y(), 1, r.height()))
         self.update_info()
@@ -116,6 +121,10 @@ class IVSpectrum(QWidget):
 
     def on_wax_scene_rect_changed(self, r):
         #logger.debug('on_wax_scene_rect_changed: %s'%str(r))
+        """Emit the histogram signal if the rect changed, then set the histogram view to the x range of ``r`` (keeping its y range).
+
+        The signal check runs before the view is updated.
+        """
         rs = self.whis.scene().sceneRect()
         self.emit_signal_if_histogram_scene_rect_changed()
         self.whis.set_view(rs=QRectF(r.x(), rs.y(), r.width(), rs.height()))
@@ -123,6 +132,7 @@ class IVSpectrum(QWidget):
 
     def on_way_scene_rect_changed(self, r):
         #logger.debug('on_way_scene_rect_changed: %s'%str(r))
+        """Set the histogram view to the y range of ``r`` (keeping its x range), update the info box and emit the histogram signal if changed."""
         rs = self.whis.scene().sceneRect()
         self.whis.set_view(rs=QRectF(rs.x(), r.y(), rs.width(), r.height()))
         self.update_info()
@@ -139,14 +149,21 @@ class IVSpectrum(QWidget):
 
 
     def connect_histogram_scene_rect_changed(self, recip):
+        """Connect the ``histogram_scene_rect_changed`` signal to ``recip``."""
         self.histogram_scene_rect_changed.connect(recip)
 
 
     def disconnect_histogram_scene_rect_changed(self, recip):
+        """Disconnect the ``histogram_scene_rect_changed`` signal from ``recip``."""
         self.histogram_scene_rect_changed.disconnect(recip)
 
 
     def update_info(self):
+        """Show the visible value range and histogram statistics in the info box.
+
+        Statistics (entries, bin range, mean, rms with errors, skew, kurtosis) are added only if
+        ``whis.hbins`` is not None and ``histogram_statistics(vmin, vmax)`` returns a result.
+        """
         hb = self.whis.hbins
         r = self.whis.scene().sceneRect()
         vmin, vmax = r.y(), r.y()+r.height()
@@ -162,6 +179,7 @@ class IVSpectrum(QWidget):
 
 
     def set_tool_tips(self):
+        """Set tool tips on the histogram, axes, info box, Reset button and color bar."""
         self.whis.setToolTip('Spectral intensity\ndistribution')
         self.wax.setToolTip('Spectral\nintensity')
         self.way.setToolTip('Spectral\nvalue')
@@ -171,6 +189,7 @@ class IVSpectrum(QWidget):
 
 
     def set_style(self):
+        """Set zero margins, color-bar width 25 and maximum info-box height 80."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wcbar.setFixedWidth(25)
         self.edi_info.setMaximumHeight(80)
@@ -188,6 +207,7 @@ class IVSpectrum(QWidget):
 
 
     def closeEvent(self, e):
+        """Pass the event to ``QWidget.closeEvent`` and set ``cp.ivspectrum`` to None."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
         cp.ivspectrum = None
@@ -196,6 +216,7 @@ class IVSpectrum(QWidget):
     if __name__ == "__main__":
 
       def key_usage(self):
+        """Return a help string listing keys ESC, R and N (defined only when run as a script)."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset original size'\
@@ -204,6 +225,10 @@ class IVSpectrum(QWidget):
 
 
       def keyPressEvent(self, e):
+        """Handle keys: Escape closes, R resets the original size, N sets a spectrum from a new 500x500 test image; others print :meth:`key_usage`.
+
+        Defined only when the module is run as ``__main__``.
+        """
         print('keyPressEvent key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             print('Close app')

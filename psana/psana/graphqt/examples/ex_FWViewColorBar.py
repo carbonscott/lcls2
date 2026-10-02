@@ -1,16 +1,24 @@
 
+"""Example/test for ``FWViewColorBar``: a subclass with printing slots and key handling.
+
+Run as a script with test name ``'0'`` (horizontal color bar, the default) or ``'1'`` (vertical).
+"""
 from psana.graphqt.FWViewColorBar import *
 
 
 class TestFWViewColorBar(FWViewColorBar):
 
+    """``FWViewColorBar`` subclass adding print-based test slots and keyboard control of the color table."""
     def test_new_color_table_reception(self):
+        """Print the first five entries of the current color table ``self._ctab``."""
         print('  FWViewColorBar.test_new_color_table_reception: %s' % str(self._ctab[:5]))
 
     def test_new_color_table_index_is_selected_reception(self, ind):
+        """Print the current color table index ``self._ctab_ind``; the ``ind`` argument is not used."""
         print('  FWViewColorBar.test_new_color_table_index_is_selected_reception: %s' % str(self._ctab_ind))
 
     def key_usage(self):
+        """Return a help string listing keys ESC, R and N."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset color table 0'\
@@ -20,6 +28,11 @@ class TestFWViewColorBar(FWViewColorBar):
     def keyPressEvent(self, e):
         #print('keyPressEvent, key=', e.key())
 
+        """Handle keys if bit 0 of ``self.change_mode`` is set; otherwise ignore the event.
+
+        Escape closes the widget, R selects color table index 0, N selects the next color table
+        (``set_colorbar_table_ind(ctab_ind=None)``), any other key prints :meth:`key_usage`.
+        """
         if not (self.change_mode & 1): return
 
         if   e.key() == Qt.Key_Escape:
@@ -46,6 +59,12 @@ if __name__ == "__main__":
   os.environ['LIBGL_ALWAYS_INDIRECT'] = '1' #export LIBGL_ALWAYS_INDIRECT=1
 
   def test_fwviewcolorbar(tname):
+    """Create a ``QApplication`` and show a ``TestFWViewColorBar`` with a 1000-color rainbow table.
+
+    Test ``'0'`` builds a horizontal bar with ``change_mode=1`` and ``scale_ctl='H'``, test ``'1'`` a
+    vertical bar; other names print a message and return. Connects the mouse-move, index-selected
+    and new-color-table signals to the test slots before running the event loop.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     arr = np.random.random((1000, 100))
     #arr = image_with_random_peaks((1000, 1000))

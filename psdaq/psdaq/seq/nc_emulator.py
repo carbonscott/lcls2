@@ -1,12 +1,22 @@
+"""Generate periodic control sequences c2..c16 and c60 with `PeriodicGenerator` on the '35kH' marker and write them as .py and .json files."""
 from psdaq.seq.periodicgenerator import *
 from psdaq.seq.seqwrite import *
 
 def ctrl_write(name, instr, output):
+    """Write `instr` with `seq_write_py` and `seq_write_json` to '<output>.py' and '<output>.json'.
+
+    `seq_write_json` passes an unsupported `isTPG` argument to `preproc` (TypeError).
+    """
     seq_write_py  (instr, output)
     seq_write_json(name, instr, output)
 
 def main():
 
+    """Create directory -o (errors ignored) and write one sequence per generator.
+
+    Periods are derived from ``int((35000/0.98)//360 + 1)`` (the 360 Hz period) and its
+    multiples, with start offsets of 0-5 times that period.
+    """
     parser = argparse.ArgumentParser(description='train pattern generator')
     parser.add_argument("-o", "--output", required=True , help="file output path")
     args = parser.parse_args()

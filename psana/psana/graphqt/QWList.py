@@ -45,6 +45,10 @@ class QWList(QListView):
 
 
     def set_selection_mode(self, smode='extended'):
+        """Set the view selection mode from a name.
+
+        ``smode`` is one of 'single', 'contiguous', 'extended', 'multi' or 'no selection' and is mapped to the matching QAbstractItemView mode; any other value raises KeyError.
+        """
         logger.debug('Set selection mode: %s'%smode)
         mode = {'single'      : QAbstractItemView.SingleSelection,
                 'contiguous'  : QAbstractItemView.ContiguousSelection,
@@ -55,28 +59,40 @@ class QWList(QListView):
 
 
     def connect_item_selected(self, recipient):
+        """Connect ``recipient`` to the selection model's ``currentChanged[QModelIndex, QModelIndex]`` signal."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(recipient)
 
 
     def disconnect_item_selected(self, recipient):
+        """Disconnect ``recipient`` from the selection model's ``currentChanged[QModelIndex, QModelIndex]`` signal."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].disconnect(recipient)
 
 
     def selected_indexes(self):
+        """Return ``self.selectedIndexes()``."""
         return self.selectedIndexes()
 
 
     def selected_items(self):
+        """Return the list of model items for the currently selected indexes."""
         indexes =  self.selectedIndexes()
         return [self.model.itemFromIndex(i) for i in self.selectedIndexes()]
 
 
     def clear_model(self):
+        """Remove all rows from ``self.model``.
+
+        This definition is replaced by the identical ``clear_model`` defined later in the class.
+        """
         rows = self.model.rowCount()
         self.model.removeRows(0, rows)
 
 
     def fill_list_model(self, **kwa):
+        """Clear the model and fill it with 20 checkable demo items.
+
+        Each item has text '%02d item text', icon ``icon.icon_table`` and a size hint of height 22; ``kwa`` is ignored.
+        """
         self.clear_model()
         for i in range(20):
             item = QStandardItem('%02d item text'%(i))
@@ -87,11 +103,19 @@ class QWList(QListView):
 
 
     def clear_model(self):
+        """Remove all rows from ``self.model``.
+
+        This second definition replaces the identical earlier one.
+        """
         rows = self.model.rowCount()
         self.model.removeRows(0, rows)
 
 
     def on_item_selected(self, selected, deselected):
+        """Log the row and text of the newly current item, if it exists.
+
+        Connected to the selection model's currentChanged signal in ``__init__``; ``deselected`` is unused.
+        """
         itemsel = self.model.itemFromIndex(selected)
         if itemsel is not None:
             msg = 'on_item_selected row:%02d selected: %s' % (selected.row(), itemsel.text())
@@ -99,12 +123,17 @@ class QWList(QListView):
 
 
     def on_item_changed(self, item):
+        """Log the text and check state of a changed item.
+
+        Connected to ``self.model.itemChanged`` in ``__init__``.
+        """
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         msg = 'on_item_changed: item "%s", is at state %s' % (item.text(), state)
         logger.info(msg)
 
 
     def on_click(self, index):
+        """Log the row and text of the clicked item, truncating text of 50 or more characters."""
         item = self.model.itemFromIndex(index)
         txt = item.text()
         txtshow = txt if len(txt)<50 else '%s...'%txt[:50]
@@ -113,33 +142,39 @@ class QWList(QListView):
 
 
     def on_double_click(self, index):
+        """Log at debug level the row and text of the double-clicked item."""
         item = self.model.itemFromIndex(index)
         msg = 'on_double_click item in row:%02d text: %s' % (index.row(), item.text())
         logger.debug(msg)
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to 'List model'."""
         self.setToolTip('List model')
 
 
     def set_style(self):
         #from psana.graphqt.Styles import style
+        """Set the window icon to ``icon.icon_monitor`` and a style sheet that colors hovered items."""
         self.setWindowIcon(icon.icon_monitor)
         #self.layout().setContentsMargins(0,0,0,0)
         self.setStyleSheet("QListView::item:hover{background-color:#00FFAA;}")
 
 
     def closeEvent(self, e):
+        """Log a debug message and forward the close event to ``QListView.closeEvent``."""
         logger.debug('closeEvent')
         QListView.closeEvent(self, e)
 
 
     def on_exit(self):
+        """Log a debug message and close the widget."""
         logger.debug('on_exit')
         self.close()
 
 
     def process_selected_items(self):
+        """Log the number of selected items and the text of each."""
         selitems = self.selected_items()
         msg = '%d Selected items:' % len(selitems)
         for i in selitems:
@@ -150,6 +185,10 @@ class QWList(QListView):
     if __name__ == "__main__":
 
       def keyPressEvent(self, e):
+        """Handle key presses: Esc closes the widget, S logs the selected items, any other key logs a key help message.
+
+        Defined only when the module runs as a script (it sits under ``if __name__ == '__main__'`` in the class body).
+        """
         logger.info('keyPressEvent, key=%s' % e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()

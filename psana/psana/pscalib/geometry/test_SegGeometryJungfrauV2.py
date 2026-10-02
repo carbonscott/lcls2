@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryJungfrauV2`` using the module-level ``jungfrau_front`` object.
+
+Run as a script with test number ``'1'``-``'7'`` (see :func:`selector`). The test functions are defined
+only when the module is run as a script.
+"""
 if __name__ == "__main__":
   from psana.pscalib.geometry.SegGeometryJungfrauV2 import *
   import sys
@@ -9,6 +14,7 @@ if __name__ == "__main__":
   logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d: %(message)s', level=logging.DEBUG)
 
   def test_xyz_min_max():
+    """Print the min/max coordinates in um of ``jungfrau_front`` and log its min/max pixel Y coordinate."""
     w = jungfrau_front
     w.print_xyz_min_max_um()
     logger.info('\nYmin = ' + str(w.pixel_coord_min('Y'))\
@@ -17,6 +23,7 @@ if __name__ == "__main__":
 
   def test_xyz_maps():
 
+    """Print the coordinate maps in um of ``jungfrau_front`` and plot its X and Y pixel-index maps."""
     w = jungfrau_front
     w.print_maps_seg_um()
 
@@ -32,6 +39,10 @@ if __name__ == "__main__":
 
   def test_jungfrau_img():
 
+    """Print segment info of ``jungfrau_front`` and log the X map shape and the image size from the min/max coordinates.
+
+    The logged "consumed time" covers only the assignment of the already existing ``jungfrau_front`` object.
+    """
     t0_sec = time()
     w = jungfrau_front
     logger.info('Consumed time for coordinate arrays (sec) = %.3f' % (time()-t0_sec))
@@ -56,6 +67,7 @@ if __name__ == "__main__":
 
 
   def test_jungfrau_img_easy():
+    """Plot an image of ``jungfrau_front`` built from pixel index maps shifted to start at 0 (y flipped), using weights ``X + 3*Y``."""
     o = jungfrau_front
     X, Y = o.get_seg_xy_maps_pix()
     xmin, xmax, ymin, ymax  = X.min(), X.max(), Y.min(), Y.max()
@@ -67,6 +79,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Print the pixel-size arrays of ``jungfrau_front`` and log slices [348:358, 378:388] and shapes of its area and X/Y size arrays."""
     w = jungfrau_front
     w.print_pixel_size_arrs()
     size_arrX = w.pixel_size_array('X')
@@ -83,6 +96,7 @@ if __name__ == "__main__":
 
 
   def test_jungfrau_mask(width=0, wcenter=0, edge_rows=3, edge_cols=6, center_rows=2, center_cols=4):
+    """Plot ``1 + pixel_mask_array(...)`` (zeros replaced by 4) of ``jungfrau_one``, the ``SegGeometryJungfrauV1`` instance imported through ``SegGeometryJungfrauV2``."""
     o = jungfrau_one
     X, Y = o.get_seg_xy_maps_pix_with_offset()
     mask = 1 + o.pixel_mask_array(width, wcenter, edge_rows, edge_cols, center_rows, center_cols)
@@ -107,6 +121,7 @@ if __name__ == "__main__":
 
 
 def USAGE(tname=None):
+    """Return a usage string with the test-name lines taken from the source of :func:`selector` and help hints; ``tname`` is not used."""
     import inspect
     SCRNAME = sys.argv[0].rsplit('/')[-1]
     return '\n  %s <TNAME>\n' % SCRNAME\
@@ -114,6 +129,7 @@ def USAGE(tname=None):
          + '\n\nHELP:\n  list of parameters: ./%s -h\n  list of tests:      ./%s' % (SCRNAME, SCRNAME)
 
 def selector():
+    """Run the test chosen by ``sys.argv[1]`` (``'1'``-``'7'``), or only log :func:`USAGE` with no argument, then call ``sys.exit('END OF TEST')``."""
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'

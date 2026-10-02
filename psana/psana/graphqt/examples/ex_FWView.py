@@ -1,4 +1,9 @@
 
+"""Example/test for ``FWView``: a subclass with keyboard control of the scene rect.
+
+Run as a script with a test name ``'0'``-``'8'`` selecting origin, ``show_mode`` and ``scale_ctl``.
+Configures root logging at DEBUG level at import time.
+"""
 from psana.graphqt.FWView import *
 
 logging.basicConfig(format='[%(levelname).1s] %(asctime)s L:%(lineno)03d %(message)s', datefmt='%Y-%m-%dT%H:%M:%S', level=logging.DEBUG)
@@ -10,7 +15,9 @@ import numpy as np
 
 class TestFWView(FWView):
 
+    """``FWView`` subclass with key handling: R resets the size, W/D set a random scene rect."""
     def key_usage(self):
+        """Return a help string listing keys ESC, R, W and D."""
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset original size'\
@@ -21,6 +28,10 @@ class TestFWView(FWView):
 
     def keyPressEvent(self, e):
         #logger.debug('keyPressEvent, key=', e.key())
+        """Handle keys: Escape closes, R calls ``reset_original_size``, W/D set a random scene rect; others print :meth:`key_usage`.
+
+        For D the new rect also becomes the default (``set_def=True``); for W it does not.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 
@@ -41,6 +52,7 @@ class TestFWView(FWView):
 
 
 def usage(tname):
+    """Return a usage string for this script; ``tname`` is not used."""
     scrname = sys.argv[0].split('/')[-1]
     s = '\nUsage: python %s <tname [0-8]>' %scrname\
       + ' # then activate graphics window and use keyboad keys R/W/D/<Esc>'
@@ -48,6 +60,12 @@ def usage(tname):
 
 
 def test_fwview(tname):
+    """Create a ``QApplication`` and show a ``TestFWView`` configured by test name ``tname``.
+
+    Tests ``'0'``-``'8'`` vary origin (DL, UL, UR, DR), ``scale_ctl`` and ``show_mode`` over the scene
+    rect (-10, -10, 30, 30); other names print a message and return. The mouse-move, scene-rect and
+    mouse-press signals are connected to the test slots.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     b="background-color:yellow; border: 0px solid green"
     app = QApplication(sys.argv)

@@ -29,6 +29,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseCameraV1 :
 
+    """Class attributes only: ``ndim`` 2, ``rows`` and ``cols`` 0, ``size_cm`` 16 and ``cmod = (1, 50, 50, 100, 1, size, 1, 0, ...)``; the constructor does nothing."""
     ndim = 2 
     rows = 0 
     cols = 0 

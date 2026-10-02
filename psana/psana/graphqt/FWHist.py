@@ -34,6 +34,12 @@ from PyQt5.QtCore import Qt, QPointF
 
 class FWHist():
 
+    """Adds a step-line drawing of an ``HBins`` histogram to the scene of ``view`` as a single path item.
+
+    Keyword arguments: ``hbins``, ``orient`` (default ``'H'``), ``color``, ``pen``, ``brush``, ``zvalue``
+    (default 10). With ``hbins=None`` the constructor calls ``self.add_test()``, which does not exist in
+    this class, so it raises AttributeError.
+    """
     def __init__(self, view, **kwargs):
 
         self.view   = view
@@ -59,6 +65,7 @@ class FWHist():
 
 
     def remove(self):
+        """Remove the items listed in ``lst_of_items`` from the scene if the scene still exists, then empty the list."""
         if not sip.isdeleted(self.scene):
           for item in self.lst_of_items:
             self.scene.removeItem(item)
@@ -68,6 +75,7 @@ class FWHist():
 
 
     def update(self, hbins):
+        """Call :meth:`remove`, replace ``self.hbins`` with ``hbins`` and call :meth:`add_hist`."""
         self.remove()
         self.hbins = hbins
         self.add_hist()
@@ -79,6 +87,11 @@ class FWHist():
 
     def add_hist(self):
 
+        """Create a ``QPainterPath`` step outline from the bin edges and bin data of ``self.hbins`` and add it to the scene.
+
+        With ``orient == 'V'`` the bin values go along x and edges along y, otherwise the reverse. Any
+        earlier path item is removed first; the new item gets z-value ``zvalue`` and is kept in ``lst_of_items``.
+        """
         if self.path_item is not None: self.scene.removeItem(self.path_item)
 
         edges = self.hbins.binedges() # n+1
@@ -111,6 +124,7 @@ class FWHist():
 
 
 def test_histogram():
+    """Return an ``HBins`` with 1000 bins over 0..1000 filled with random normal values (mu 50, sigma 10)."""
     import psana.pyalgos.generic.NDArrGenerators as ag
     from psana.pyalgos.generic.HBins import HBins
     nbins = 1000

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Standalone PyQt5 screen-grabber application in a single module.
+
+Contains a list-based ``Logger``, file-dialog helpers, ``Parameter`` and ``ConfigParameters`` classes, the ``GUILogger`` log window, the ``GUIImage`` image label and the ``GUIScreenGrabber`` main widget. Importing the module creates the module-level ``logger`` and ``cp`` objects; ``cp`` reads 'confpars-screen-grabber.txt' from the current directory if that file exists.
+"""
 import sys
 import os
 import pwd
@@ -36,30 +40,45 @@ class Logger:
 
 
     def getListOfLevels(self):
+        """Return the list of level names ('debug', 'info', 'warning', 'error', 'crytical')."""
         return self.levels
 
 
     def getLevel(self):
+        """Return the current threshold level name."""
         return self.level_thr
 
 
     def getLogFileName(self):
+        """Return the log file name set by ``startLog``."""
         return self.fname
 
 
     def getLogTotalFileName(self):
+        """Return the total-log file name set by ``startLog``."""
         return self.fname_total
 
 
     def getStrStartTime(self):
+        """Return the session start time string set by ``startLog``."""
         return self.str_start_time
 
 
-    def debug   (self, msg, name=None): self._message(msg, 0, name)
-    def info    (self, msg, name=None): self._message(msg, 1, name)
-    def warning (self, msg, name=None): self._message(msg, 2, name)
-    def error   (self, msg, name=None): self._message(msg, 3, name)
-    def crytical(self, msg, name=None): self._message(msg, 4, name)
+    def debug   (self, msg, name=None):
+        """Record ``msg`` at level 'debug' (index 0) with optional source ``name``."""
+        self._message(msg, 0, name)
+    def info    (self, msg, name=None):
+        """Record ``msg`` at level 'info' (index 1) with optional source ``name``."""
+        self._message(msg, 1, name)
+    def warning (self, msg, name=None):
+        """Record ``msg`` at level 'warning' (index 2) with optional source ``name``."""
+        self._message(msg, 2, name)
+    def error   (self, msg, name=None):
+        """Record ``msg`` at level 'error' (index 3) with optional source ``name``."""
+        self._message(msg, 3, name)
+    def crytical(self, msg, name=None):
+        """Record ``msg`` at level 'crytical' (index 4) with optional source ``name``."""
+        self._message(msg, 4, name)
 
     def _message (self, msg, index, name=None):
         """Store input message the 2D tuple of records, send request to append GUI.
@@ -111,6 +130,7 @@ class Logger:
 
 
     def timeStamp(self, fmt='%Y-%m-%d %H:%M:%S'): # '%Y-%m-%d %H:%M:%S %Z'
+        """Return the current local time formatted with ``fmt`` (default '%Y-%m-%d %H:%M:%S')."""
         return strftime(fmt, localtime())
 
 
@@ -172,6 +192,7 @@ logger = Logger (fname=None)
 def test_Logger():
 
     #logger.setLevel('debug')
+    """Set the module logger to level 'warning', record one message at each level and print the selected and total log content."""
     logger.setLevel('warning')
 
     logger.debug   ('This is a test message 1', __name__)
@@ -191,16 +212,36 @@ def test_Logger():
 #------ GlobalUtils.py -------
 
 def stringOrNone(value):
+    """Return 'None' if ``value`` is None, otherwise ``str(value)``."""
     if value == None: return 'None'
     else            : return str(value)
 
 def intOrNone(value):
+    """Return None if ``value`` is None, otherwise ``int(value)``."""
     if value == None: return None
     else            : return int(value)
 
 
 def get_save_fname_through_dialog_box(parent, path0, dial_title, filter='*.txt'):
 
+    """Open a save-file dialog and return the selected path.
+
+    Parameters
+    ----------
+    parent : QWidget or None
+        Dialog parent.
+    path0 : str
+        Initial directory or file path.
+    dial_title : str
+        Dialog caption.
+    filter : str
+        File filter, default '*.txt'.
+
+    Returns
+    -------
+    str or None
+        The selected path, or None (logged) if the dialog was cancelled.
+    """
     path,filt = QFileDialog.getSaveFileName(parent,
                                 caption   = dial_title,
                                 directory = path0,
@@ -217,6 +258,14 @@ def get_save_fname_through_dialog_box(parent, path0, dial_title, filter='*.txt')
 
 def get_open_fname_through_dialog_box(parent, path0, dial_title, filter='*.txt'):
 
+    """Open an open-file dialog and return the selected path.
+
+    Returns None (with an info log) if the directory or file part of the selected path is empty, for example when the dialog is cancelled.
+
+    Returns
+    -------
+    str or None
+    """
     path, filt = QFileDialog.getOpenFileName(parent, dial_title, path0, filter=filter)
     dname, fname = os.path.split(path)
     if dname == '' or fname == '':
@@ -285,6 +334,7 @@ class Parameter:
 
 
     def setParameter (self, name='EMPTY', val=None, val_def=None, type='str', index=None):
+        """Set the default value, name, type and index of the parameter, then set its value with ``setValue(val)``."""
         self._value_def = val_def
         self._name      = name
         self._type      = type
@@ -293,6 +343,10 @@ class Parameter:
 
 
     def setValue (self, val=None):
+        """Set the parameter value, converting ``val`` according to the declared type.
+
+        If ``val`` is None the default value is used. Types 'str', 'int', 'float' and 'bool' use the matching built-in; type 'long' calls ``long``, which does not exist in Python 3; any other type stores ``val`` unchanged.
+        """
         if val == None:
             self._value = self._value_def
         else:
@@ -315,10 +369,12 @@ class Parameter:
 
 
     def setDefaultValue (self):
+        """Reset the parameter value to its default value."""
         self._value = self._value_def
 
 
     def setDefault (self):
+        """Reset the parameter value to its default value (same as ``setDefaultValue``)."""
         self._value = self._value_def
 
 
@@ -351,33 +407,42 @@ class Parameter:
 
 
     def setType (self, type='str'):
+        """Set the declared parameter type string."""
         self._type = type
 
     def setName (self, name='EMPTY'):
+        """Set the parameter name."""
         self._name = name
 
     def value (self):
+        """Return the current parameter value."""
         return self._value
 
     def value_def (self):
+        """Return the parameter default value."""
         return self._value_def
 
     def name (self):
+        """Return the parameter name."""
         return self._name
 
     def type (self):
+        """Return the declared parameter type string."""
         return self._type
 
     def index(self):
+        """Return the parameter index (None unless declared in a list)."""
         return self._index
 
 
     def strParInfo(self):
+        """Return a one-line string with the parameter name, value, type and index in padded columns."""
         s = 'Par: %s %s %s %s' % (self.name().ljust(32), str(self.value()).ljust(32), self.type().ljust(8), str(self.index()).ljust(8))
         return s
 
 
     def printParameter(self):
+        """Log the ``strParInfo()`` line at info level through the module logger."""
         s = self.strParInfo()
         logger.info(s)
         #print(s)
@@ -402,6 +467,7 @@ class ConfigParameters:
 
 
     def declareParameter(self, name='EMPTY', val=None, val_def=None, type='str', index=None):
+        """Create a ``Parameter``, store it in the class-level ``dict_pars`` under ``name`` and return it."""
         par = Parameter(name, val, val_def, type, index)
         #self.dict_pars[name] = par
         self.dict_pars.update({name:par})
@@ -409,6 +475,15 @@ class ConfigParameters:
 
 
     def declareListOfPars(self, list_name='EMPTY_LIST', list_val_def_type=None):
+        """Declare a list of parameters named '<list_name>:<index>'.
+
+        Each record of ``list_val_def_type`` is a (val, val_def, type) tuple; every created ``Parameter`` is added to ``dict_pars`` and the list is stored in ``dict_lists`` under ``list_name``.
+
+        Returns
+        -------
+        list of Parameter or None
+            The created parameters, or None if ``list_val_def_type`` is None.
+        """
         list_of_pars = []
 
         if list_val_def_type == None: return None
@@ -428,10 +503,12 @@ class ConfigParameters:
 
 
     def getListOfPars(self, name):
+        """Return the parameter list stored in ``dict_lists`` under ``name``; raises KeyError if it was not declared."""
         return self.dict_lists[name]
 
 
     def printListOfPars(self, name):
+        """Print the list name and log every parameter of that list."""
         list_of_pars = self.getListOfPars(name)
 
         print('Parameters for list:', name)
@@ -440,6 +517,7 @@ class ConfigParameters:
 
 
     def printParameters(self):
+        """Log the number of declared parameters and one ``strParInfo`` line per parameter."""
         msg = 'printParameters - Number of declared parameters in the dict: %d' % len(self.dict_pars)
         logger.info(msg, self.name)
         #print(msg)
@@ -451,11 +529,13 @@ class ConfigParameters:
 
 
     def setDefaultValues(self):
+        """Reset every declared parameter to its default value."""
         for par in self.dict_pars.values():
             par.setDefaultValue()
 
 
     def setParsFileName(self, fname=None):
+        """Set ``self.fname`` to ``fname``, or to ``self.fname_cp`` if ``fname`` is None."""
         if fname == None:
             self.fname = self.fname_cp
         else:
@@ -463,6 +543,10 @@ class ConfigParameters:
 
 
     def saveParametersInFile (self, fname=None):
+        """Write every declared parameter as a 'name value' line to a text file.
+
+        The file name is chosen by ``setParsFileName(fname)``.
+        """
         self.setParsFileName(fname)
         logger.info('Save configuration parameters in file: ' + self.fname, self.name)
         f=open(self.fname,'w')
@@ -475,6 +559,10 @@ class ConfigParameters:
 
     def setParameterValueByName (self, name, str_val):
 
+        """Set a declared parameter from a string with ``setValueFromString``.
+
+        If ``name`` is not declared, log a warning and return without change.
+        """
         if not (name in self.dict_pars.keys()):
             msg  = 'The parameter name ' + name + ' is unknown in the dictionary.\n'
             msg += 'WARNING! Parameter needs to be declared first. Skip this parameter initialization.\n'
@@ -486,6 +574,10 @@ class ConfigParameters:
 
 
     def readParametersFromFile (self, fname=None):
+        """Read 'name value' lines from the configuration file and set the matching parameters.
+
+        The file name is chosen by ``setParsFileName(fname)``; if the file does not exist a debug message is logged and defaults are kept. Single-character lines are skipped.
+        """
         self.setParsFileName(fname)
         msg = 'Read configuration parameters from file: ' + self.fname
         logger.info(msg, self.name)
@@ -506,6 +598,10 @@ class ConfigParameters:
 
 
 def usage():
+    """Log a usage message for the command line.
+
+    The function refers to ``self.name`` although it is a module-level function, so calling it raises NameError.
+    """
     msg  = 'Use command: ' + sys.argv[0] + ' [<configuration-file-name>]\n'
     msg += 'with a single or without arguments.'
     msg = '\n' + 51*'-' + '\n' + msg + '\n' + 51*'-'
@@ -568,6 +664,7 @@ class ConfigParametersForApp (ConfigParameters):
         self.defineStyles()
 
     def initRunTimeParameters(self):
+        """Initialize run-time attributes: ``iconsAreLoaded`` False and ``guilogger``, ``guihelp`` None."""
         self.iconsAreLoaded  = False
         #self.char_expand = u' \u25BE' # down-head triangle
         self.guilogger = None
@@ -576,6 +673,10 @@ class ConfigParametersForApp (ConfigParameters):
 
     def setIcons(self):
 
+        """Load QIcon objects from the 'icons/' directory next to ``sys.argv[0]``, once.
+
+        Sets attributes such as ``icon_save``, ``icon_exit`` and ``icon_monitor``, and the aliases ``icon_logger``, ``icon_help`` and ``icon_reset``; returns immediately if icons are already loaded.
+        """
         if self.iconsAreLoaded: return
 
         self.iconsAreLoaded = True
@@ -612,6 +713,7 @@ class ConfigParametersForApp (ConfigParameters):
         # Possible typs for declaration: 'str', 'int', 'long', 'float', 'bool'
 
         # GUILogger.py
+        """Declare the application parameters LOG_LEVEL_OF_MSGS, LOG_FILE_NAME, CBX_SHOW_MORE_OPTIONS, IMG_INPUT_FNAME and IMG_OUTPUT_FNAME with their defaults."""
         self.log_level      = self.declareParameter(name='LOG_LEVEL_OF_MSGS',  val_def='info',         type='str')
         self.log_file       = self.declareParameter(name='LOG_FILE_NAME',      val_def='./log_screem_grabber.txt',   type='str')
         #self.log_file_total = self.declareParameter(name='LOG_FILE_TOTAL',     val_def='./log_total.txt',           type='str')
@@ -623,6 +725,7 @@ class ConfigParametersForApp (ConfigParameters):
 
 
     def defineStyles(self):
+        """Define Qt style-sheet strings (backgrounds, text colors, button and status styles) and three QColor attributes."""
         self.styleYellowish = "background-color: rgb(255, 255, 220); color: rgb(0, 0, 0);" # Yellowish
         self.stylePink      = "background-color: rgb(255, 200, 220); color: rgb(0, 0, 0);" # Pinkish
         self.styleYellowBkg = "background-color: rgb(255, 255, 120); color: rgb(0, 0, 0);" # Pinkish
@@ -665,6 +768,10 @@ class ConfigParametersForApp (ConfigParameters):
         self.colorEdit         = QColor('white')
 
     def printParsDirectly(self):
+        """Log the name and value of ``self.fname_ped`` and ``self.fname_dat``.
+
+        These attributes are not declared in this class, so the call raises AttributeError.
+        """
         logger.info('Direct use of parameter:' + self.fname_ped.name() + ' ' + self.fname_ped.value(), self.name)
         logger.info('Direct use of parameter:' + self.fname_dat.name() + ' ' + self.fname_dat.value(), self.name)
 
@@ -674,6 +781,7 @@ cp = confpars
 
 
 def test_ConfigParametersForApp():
+    """Log all parameters of the module ``confpars`` object and save them to its default file."""
     confpars.printParameters()
     #confpars.printParsDirectly()
     confpars.saveParametersInFile()
@@ -736,6 +844,7 @@ class GUILogger(QWidget):
 
     def showToolTips(self):
         #self           .setToolTip('This GUI is for browsing log messages')
+        """Set tool tips on the text box, buttons, status label and level combo box."""
         self.box_txt    .setToolTip('Window for log messages')
         self.but_close  .setToolTip('Close this window')
         self.but_save   .setToolTip('Save current content of the GUI Logger\nin work directory file: '+os.path.basename(self.fname_log))
@@ -744,6 +853,7 @@ class GUILogger(QWidget):
 
 
     def setFrame(self):
+        """Create a sunken box QFrame covering the widget rectangle and store it in ``self.frame``."""
         self.frame = QFrame(self)
         self.frame.setFrameStyle(QFrame.Box | QFrame.Sunken)
         self.frame.setLineWidth(0)
@@ -753,6 +863,7 @@ class GUILogger(QWidget):
 
 
     def setStyle(self):
+        """Apply the ``cp`` style sheets to the widget, labels, buttons and combo box, and make the text box read-only."""
         self.           setStyleSheet (cp.styleBkgd)
         #self.tit_title.setStyleSheet (cp.styleTitleBold)
         self.tit_status.setStyleSheet (cp.styleTitle)
@@ -765,35 +876,51 @@ class GUILogger(QWidget):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def resizeEvent(self, e):
         #logger.debug('resizeEvent', self.name)
+        """Resize ``self.frame`` to the widget rectangle."""
         self.frame.setGeometry(self.rect())
 
 
     def moveEvent(self, e):
         #logger.debug('moveEvent', self.name)
         #cp.posGUIMain = (self.pos().x(),self.pos().y())
+        """Do nothing; the body is ``pass``."""
         pass
 
 
     def closeEvent(self, event):
+        """Log a debug message; the event is not passed to the base class."""
         logger.debug('closeEvent', self.name)
 
 
     def onClose(self):
+        """Log a debug message and close the window.
+
+        Connected to the Close button.
+        """
         logger.debug('onClose', self.name)
         self.close()
 
 
     def onSave(self):
+        """Log a debug message and call ``saveLogInFile``.
+
+        Connected to the 'Save log-file' button.
+        """
         logger.debug('onSave:', self.name)
         self.saveLogInFile()
 
 
     def onBox(self):
+        """Apply the level selected in the combo box.
+
+        Stores it in ``cp.log_level``, sets the module logger threshold and reloads the text box with the selected log content. ``__init__`` calls ``disconnect`` (not ``connect``) for this slot, so it is not connected to the combo box.
+        """
         level_selected = self.box_level.currentText()
         cp.log_level.setValue(level_selected)
         logger.info('onBox - selected ' + self.tit_level.text() + ' ' + cp.log_level.value(), self.name)
@@ -802,6 +929,10 @@ class GUILogger(QWidget):
 
 
     def saveLogInFile(self):
+        """Ask for a file name and save the selected log records there.
+
+        On cancel it logs and returns; otherwise it saves through ``logger.saveLogInFile``, updates ``self.fname_log`` and ``cp.log_file`` and shows the file name in the status label.
+        """
         logger.info('saveLogInFile ' + self.fname_log, self.name)
         path,filt = QFileDialog.getSaveFileName(self,
                                                caption   = 'Select the file to save log',
@@ -819,6 +950,10 @@ class GUILogger(QWidget):
 
 
     def saveLogTotalInFile(self):
+        """Save all log records to ``self.fname_log_total``.
+
+        ``fname_log_total`` is never assigned in this class (the line in ``startGUILog`` is commented out), so this raises AttributeError unless set externally.
+        """
         logger.info('saveLogTotalInFile' + self.fname_log_total, self.name)
         logger.saveLogTotalInFile(self.fname_log_total)
 
@@ -842,11 +977,16 @@ class GUILogger(QWidget):
 
 
     def onShow(self):
+        """Log that the method is not implemented; does nothing else."""
         logger.info('onShow - is not implemented yet...', self.name)
 
 
     def startGUILog(self):
         #self.fname_log = cp.log_file.value()
+        """Initialize the log view.
+
+        Sets ``self.fname_log`` from ``logger.fname``, shows it in the status label, applies ``cp.log_level`` to the logger, fills the text box with the selected log content and registers this widget as the logger's GUI.
+        """
         self.fname_log = logger.fname
 
         #self.fname_log_total = cp.log_file_total.value()
@@ -861,16 +1001,19 @@ class GUILogger(QWidget):
 
 
     def appendGUILog(self, msg='...'):
+        """Append ``msg`` to the text box and scroll to the end."""
         self.box_txt.append(msg)
         self.scrollDown()
 
 
     def scrollDown(self):
+        """Move the text box cursor to the end and repaint it."""
         self.box_txt.moveCursor(QTextCursor.End)
         self.box_txt.repaint()
 
 
     def setStatus(self, status_index=0, msg=''):
+        """Set the status label text to ``msg`` and its style by ``status_index`` (0 good, 1 warning, 2 alarm; other values keep the style)."""
         list_of_states = ['Good','Warning','Alarm']
         if status_index == 0: self.tit_status.setStyleSheet(cp.styleStatusGood)
         if status_index == 1: self.tit_status.setStyleSheet(cp.styleStatusWarning)
@@ -879,6 +1022,7 @@ class GUILogger(QWidget):
 
 
 def test_GUILogger():
+    """Create a QApplication, show a ``GUILogger`` and run the event loop."""
     app = QApplication(sys.argv)
     widget = GUILogger()
     widget.show()
@@ -929,6 +1073,10 @@ class GUIImage(QLabel):
 
 
     def grabImage(self):
+        """Grab a screen region with the external ImageMagick ``import`` command and display it.
+
+        Runs ``import -trim -frame -border`` into a temporary .xpm file via ``os.system``; if the command returns 0 the file is loaded into ``r_pixmap`` and shown.
+        """
         fname = tempfile.NamedTemporaryFile(mode='r+b',suffix='.xpm')
         #print(fname.name)
         #logger.info('Use temporary file: %s' % (fname.name), self.name)
@@ -938,21 +1086,28 @@ class GUIImage(QLabel):
 
 
     def grabEntireWindow(self):
+        """Grab the desktop window with ``QPixmap.grabWindow``, store it in ``r_pixmap`` and display it."""
         self.r_pixmap = QPixmap.grabWindow(QApplication.desktop().winId())
         self.setPixmapForImage()
 
 
     def resetImage(self):
+        """Clear ``r_pixmap`` and the displayed image."""
         self.r_pixmap = None
         self.setPixmapForImage()
 
 
     def loadImageFromFile(self, fname): #Read formats: bmp, jpg, jpeg, png, ppm, xbm, xpm + gif, pbm, pgm,
+        """Load image file ``fname`` into ``r_pixmap`` and display it."""
         self.r_pixmap = QPixmap(QImage(fname))
         self.setPixmapForImage()
 
 
     def setPixmapForImage(self):
+        """Display ``r_pixmap`` scaled to the label size, keeping the aspect ratio.
+
+        If ``r_pixmap`` is None the scaled pixmap is set to None and the label is cleared; otherwise the scaled pixmap is aligned top-left and ``setScailedMask`` is called.
+        """
         if self.r_pixmap == None:
             self.s_pixmap = None
             self.clear()
@@ -965,6 +1120,7 @@ class GUIImage(QLabel):
 
 
     def setScailedMask(self):
+        """Create an all-zero monochrome mask with the size of the scaled pixmap and set it on ``s_pixmap``."""
         size = self.s_pixmap.size()
         #print('Scaled pixmap size: %d x %d' % (size.width(), size.height()))
 
@@ -975,15 +1131,18 @@ class GUIImage(QLabel):
 
 
     def saveImageInFile(self, fname='test.png'): #Write formats: bmp, jpg, jpeg, png, pbm, pgm, ppm, xbm, xpm
+        """Save ``r_pixmap`` to ``fname`` (default 'test.png') if it is not None."""
         if self.r_pixmap is not None:
             self.r_pixmap.save(fname, format=None)
 
 
     def showToolTips(self):
+        """Set the label tool tip to 'Window for image'."""
         self.setToolTip('Window for image')
 
 
     def setFrame(self):
+        """Create a transparent sunken box QFrame covering the label and store it in ``self.frame``."""
         self.frame = QFrame(self)
         self.frame.setFrameStyle(QFrame.Box | QFrame.Sunken)
         self.frame.setLineWidth(0)
@@ -994,12 +1153,14 @@ class GUIImage(QLabel):
 
 
     def setStyle(self):
+        """Apply the white style sheet, a 150x150 minimum size and an expanding size policy."""
         self               .setStyleSheet(cp.styleWhite)
         self.setMinimumSize(150, 150)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
 
     def resizeEvent(self, e):
+        """Resize ``self.frame`` to the label size and redisplay the scaled image."""
         s = self.size()
         self.frame.setGeometry(QtCore.QRect(0,0,s.width(),s.height()))
         self.setPixmapForImage()
@@ -1009,11 +1170,13 @@ class GUIImage(QLabel):
 
     def onExit(self):
         #logger.debug('onExit', self.name)
+        """Close the label widget."""
         self.close()
 
 
     def mouseMoveEvent(self, e):
         #print('mouseMoveEvent: x, y = %d, %d' % (e.pos().x(), e.pos().y()))
+        """Store the mouse position in ``self.poi2``."""
         self.poi2.setX(e.pos().x())
         self.poi2.setY(e.pos().y())
 
@@ -1023,6 +1186,10 @@ class GUIImage(QLabel):
         #self.update()
 
     def mousePressEvent(self, e):
+        """Store the press position in ``poi1`` and ``poi2``.
+
+        If the button value is 4 (Qt.MiddleButton) and earlier pixmaps are stored, the last one is popped back into ``r_pixmap`` and displayed (undo zoom).
+        """
         if e.button() == 4 and len(self.o_pixmap_list)>0: # Undo last zoom-in
             self.r_pixmap = self.o_pixmap_list.pop()
             self.setPixmapForImage()
@@ -1037,6 +1204,7 @@ class GUIImage(QLabel):
 
 
     def mouseReleaseEvent(self, e):
+        """Store the release position in ``poi2`` and call ``zoomInImage``."""
         self.poi2.setX(e.pos().x())
         self.poi2.setY(e.pos().y())
         #print('mouseReleaseEvent: e.x, e.y, e.button =', str(e.x()), str(e.y()), str(e.button()))
@@ -1044,6 +1212,10 @@ class GUIImage(QLabel):
 
 
     def zoomInImage(self):
+        """Crop ``r_pixmap`` to the rectangle between ``poi1`` and ``poi2`` and display it.
+
+        The points are reset first; nothing is cropped if there is no image or the rectangle is under 10 pixels in either direction. The previous pixmap is pushed to ``o_pixmap_list``, which keeps at most 10 entries.
+        """
         if self.r_pixmap == None:
             self.resetRectPoints()
             return
@@ -1084,6 +1256,7 @@ class GUIImage(QLabel):
 
 
     def resetRectPoints(self):
+        """Set ``poi1`` and ``poi2`` to (0, 0)."""
         self.poi1.setX(0)
         self.poi1.setY(0)
         self.poi2.setX(0)
@@ -1091,6 +1264,10 @@ class GUIImage(QLabel):
 
 
     def paintEvent(self, e):
+        """Paint the label, then draw the selection rectangle with ``drawRect`` and call ``self.update()``.
+
+        Calling ``update()`` inside ``paintEvent`` schedules another repaint each time.
+        """
         super(GUIImage,self).paintEvent(e)
         #self.counter+=1
         #print(self.counter)
@@ -1104,11 +1281,19 @@ class GUIImage(QLabel):
 
 
     def setPen(self, qp):
+        """Set dash style and width 1 on ``self.pen``.
+
+        ``self.pen`` is never assigned in this class, so the call raises AttributeError; ``qp`` is unused.
+        """
         self.pen.setStyle(QtCore.Qt.DashLine)
         self.pen.setWidthF(1)
 
 
     def drawRect(self, qp):
+        """Draw the selection rectangle between ``poi1`` and ``poi2`` with ``qp``.
+
+        Draws a black dashed rectangle and a white dashed one inset by 1 pixel; does nothing if there is no image or the points coincide in x or y.
+        """
         if self.r_pixmap == None:
             return
 
@@ -1128,6 +1313,7 @@ class GUIImage(QLabel):
 
 
     def drawPixmap(self, qp):
+        """Draw ``s_pixmap`` at (0, 0) with ``qp`` if ``r_pixmap`` is not None."""
         if self.r_pixmap != None:
             qp.drawPixmap(0,0,self.s_pixmap)
 
@@ -1135,6 +1321,7 @@ class GUIImage(QLabel):
 #http://doc.qt.nokia.com/4.6/qt.html#Key-enum
     def keyPressEvent(self, event):
         #print('event.key() = %s' % (event.key()))
+        """Set ``self.SHowIsOn = False`` on Esc; the B, Return and Home branches do nothing."""
         if event.key() == QtCore.Qt.Key_Escape:
             #self.close()
             self.SHowIsOn = False
@@ -1154,6 +1341,7 @@ class GUIImage(QLabel):
 
 
 def test_GUIImage():
+    """Create a QApplication, show a ``GUIImage`` with a grab of the desktop window and run the event loop."""
     app = QApplication(sys.argv)
     ex  = GUIImage()
     ex.grabEntireWindow()
@@ -1169,12 +1357,15 @@ class LocalParameter ():
         self._val = val
 
     def setValue (self, val):
+        """Set the stored value to ``val``."""
         self._val = val
 
     def getValue (self):
+        """Return the stored value."""
         return self._val
 
     def value (self):
+        """Return the stored value."""
         return self._val
 
 
@@ -1271,6 +1462,10 @@ class GUIScreenGrabber(QWidget):
 
 
     def setConfigPars(self, cfname):
+        """Read configuration parameters from ``cfname`` if given.
+
+        If ``cfname`` is None it returns. Otherwise it sets ``cp.fname_cp`` and ``self.cfname`` to it and reads the file if it exists.
+        """
         if cfname is None:
             return # use default config parameters
         else:
@@ -1283,6 +1478,7 @@ class GUIScreenGrabber(QWidget):
 
     def setToolTips(self):
 
+        """Log a message and set tool tips on the buttons and the check box."""
         logger.info('Set tool-tips for all fields', self.name)
 
         #self              .setToolTip('Screen grabber GUI')
@@ -1299,6 +1495,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def setIcons(self):
+        """Load the ``cp`` icons and set them on the buttons."""
         cp.setIcons()
         self.but_load    .setIcon(cp.icon_browser)
         self.but_save    .setIcon(cp.icon_save)
@@ -1311,6 +1508,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def setHBox1Layout(self):
+        """Create ``self.hbox1`` with the Grab, Load and Clear buttons, a stretch and the Save button."""
         self.hbox1 = QHBoxLayout()
         self.hbox1.addWidget(self.but_grab)
         self.hbox1.addWidget(self.but_load)
@@ -1321,6 +1519,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def setHBox2Layout(self):
+        """Create ``self.hbox2`` with the check box, Help and Logger buttons, a stretch, and the Save cfg and Exit buttons."""
         self.hbox2 = QHBoxLayout()
         self.hbox2.addWidget(self.cbx_more)
         self.hbox2.addWidget(self.but_help)
@@ -1332,6 +1531,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def setFrame(self):
+        """Create a sunken box QFrame covering the widget rectangle and store it in ``self.frame``."""
         self.frame = QFrame(self)
         self.frame.setFrameStyle(QFrame.Box | QFrame.Sunken)
         self.frame.setLineWidth(0)
@@ -1344,6 +1544,7 @@ class GUIScreenGrabber(QWidget):
         #self.setMinimumWidth(400)
         #self.setMinimumHeight(320)
         #self.setFixedHeight(350)
+        """Set a 500x500 minimum size and apply the ``cp`` style sheets to the widget, buttons and check box."""
         self.setMinimumSize(500, 500)
 
         self.setStyleSheet(cp.styleBkgd)
@@ -1360,19 +1561,26 @@ class GUIScreenGrabber(QWidget):
 
 
     def setParent(self,parent):
+        """Store ``parent`` in ``self.parent``; Qt parenting is not changed."""
         self.parent = parent
 
 
     def resizeEvent(self, e):
         #logger.debug('resizeEvent', self.name)
+        """Resize ``self.frame`` to the widget rectangle."""
         self.frame.setGeometry(self.rect())
 
 
     def moveEvent(self, e):
+        """Do nothing; the body is ``pass``."""
         pass
 
 
     def closeEvent(self, event):
+        """Close and clear ``cp.guilogger`` and ``cp.guihelp`` if they are open.
+
+        The event is not passed to the base class.
+        """
         logger.debug('closeEvent', self.name)
         if  cp.guilogger != None:
             cp.guilogger.close()
@@ -1389,12 +1597,17 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_quit(self):
+        """Log a debug message and close the widget.
+
+        Connected to the Exit button.
+        """
         logger.debug('on_but_quit', self.name)
         #self.on_but_save_cfg()
         self.close()
 
 
     def set_but_save_visibility(self):
+        """Show the 'Save img' button only if the image widget holds a pixmap."""
         if self.wimg.r_pixmap is None:
             self.but_save.setVisible(False)
         else:
@@ -1402,6 +1615,10 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_cbx_more(self):
+        """Apply the 'More options' check box state.
+
+        Shows or hides the Logger, Help and Save cfg buttons, stores the state in ``cp.cbx_more_options`` and updates the status label.
+        """
         is_visible = self.cbx_more.isChecked()
         dic_stat = {False:'less', True:'more'}
 
@@ -1416,6 +1633,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_grab(self):
+        """Grab a screen region into the image widget with ``wimg.grabImage()`` and update the Save button and status label."""
         logger.info('Grab image from monitor', self.name)
 
         if self.wimg != None:
@@ -1429,6 +1647,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_clear(self):
+        """Clear the image widget, hide the Save button and update the status label."""
         logger.info('Clear image', self.name)
         self.wimg.resetImage()
         self.set_but_save_visibility()
@@ -1436,6 +1655,10 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_load(self):
+        """Ask for an image file and load it into the image widget.
+
+        On cancel it sets a warning status and returns; otherwise it updates ``self.ifname``, ``cp.img_infname``, the status label and the Save button visibility.
+        """
         logger.info('Select file name and Load image from file', self.name)
         self.setStatus(1, 'Waiting for file name...')
         path = get_open_fname_through_dialog_box(self, self.ifname, 'Select file with text image',
@@ -1458,6 +1681,10 @@ class GUIScreenGrabber(QWidget):
 
     def on_but_save(self):
 
+        """Ask for a file name and save the raw image there.
+
+        Returns with a warning log if there is no image or the dialog is cancelled; otherwise it saves via ``wimg.saveImageInFile`` and updates ``self.ofname`` and ``cp.img_oufname``.
+        """
         if self.wimg.r_pixmap is None:
             path = ''
             logger.warning('Image is empty, there is nothing to save. Saving is cancelled...', self.name)
@@ -1488,6 +1715,10 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_save_cfg(self):
+        """Ask for a file name and save the configuration parameters there.
+
+        On cancel it logs a warning and sets the status; otherwise it calls ``cp.saveParametersInFile(path)`` and sets ``cp.fname_cp`` to the path.
+        """
         logger.debug('on_but_save_cfg',  self.name)
         #cp.elog_post_tag.setValue(self.tag.value())
         #cp.elog_post_des.setValue(self.des.value())
@@ -1515,6 +1746,10 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_logger (self):
+        """Toggle the ``GUILogger`` window stored in ``cp.guilogger``.
+
+        If it is open it is closed and cleared; otherwise a new one is created, placed to the right of this widget and shown. The button style and status label are updated.
+        """
         logger.debug('on_but_logger',  self.name)
         #try :
         if cp.guilogger!=None:
@@ -1536,6 +1771,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def on_but_help(self):
+        """Toggle the non-modal help message box stored in ``cp.guihelp`` and update the status label."""
         msg = str(self.help_msg)
         if  cp.guihelp is None:
             cp.guihelp = help_dialog_box(self, text=msg)
@@ -1551,6 +1787,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def help_message(self):
+        """Return the default help text describing the mouse controls and the Clear button."""
         msg  = '\n' + '='*60
         msg += '\nMouse control functions in graphical window:'
         msg += '\nZoom-in image: left/right mouse button click, move, and release in another image position.'
@@ -1560,6 +1797,7 @@ class GUIScreenGrabber(QWidget):
 
 
     def setStatus(self, ind=None, msg=''):
+        """Set the status label text to ``str(msg)`` and its style by ``ind`` (0 good, 1 warning, 2 alarm), then repaint."""
         if   ind == 0: self.lab_status.setStyleSheet(cp.styleStatusGood)
         elif ind == 1: self.lab_status.setStyleSheet(cp.styleStatusWarning)
         elif ind == 2: self.lab_status.setStyleSheet(cp.styleStatusAlarm)
@@ -1567,11 +1805,13 @@ class GUIScreenGrabber(QWidget):
         self.enforceStatusRepaint()
 
     def enforceStatusRepaint(self):
+        """Repaint the status label and the widget immediately."""
         self.lab_status.repaint()
         self.repaint()
 
 
 def test_GUIScreenGrabber():
+    """Create a QApplication, show a ``GUIScreenGrabber`` and run the event loop."""
     app = QApplication(sys.argv)
     widget = GUIScreenGrabber()
     widget.show()
@@ -1582,6 +1822,13 @@ from optparse import OptionParser
 
 def input_option_parser():
 
+    """Parse the command line options -c/--cfg, -i/--inp and -o/--out with optparse.
+
+    Returns
+    -------
+    tuple
+        ``(opts, args)`` from ``OptionParser.parse_args()``.
+    """
     parser = OptionParser(description='Optional input parameters.', usage ='usage: %prog [options] args')
     parser.add_option('-c', '--cfg', dest='cfname', default=None, action='store', type='string', help='file name with configuration parameters')
     parser.add_option('-i', '--inp', dest='ifname', default=None, action='store', type='string', help='input file name with image')
@@ -1593,6 +1840,7 @@ def input_option_parser():
 
 def run_GUIScreenGrabber():
 
+    """Parse the command line, show a ``GUIScreenGrabber`` with the given file names, run the event loop and print an exit message."""
     (opts, args) = input_option_parser()
 
     app = QApplication(sys.argv)

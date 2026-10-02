@@ -42,17 +42,23 @@ from psana.graphqt.Styles import style
 scrname = sys.argv[0].rsplit('/')[-1]
 
 class QWFilter(logging.Filter):
+    """``logging.Filter`` that copies every record, formatted with the logger widget's formatter, into that widget."""
     def __init__(self, qwlogger):
         #logging.Filter.__init__(self)#, name='')
         self.qwl = qwlogger
 
     def filter(self, rec):
+        """Format ``rec`` with ``self.qwl.formatter``, append it to the widget via ``append_qwlogger`` and return True (never filters out)."""
         msg = self.qwl.formatter.format(rec)
         self.qwl.append_qwlogger(msg)
         #self.print_filter_attributes(rec)
         return True
 
     def print_filter_attributes(self, rec):
+        """Log the type and ``dir()`` of record ``rec`` and of the root logger at debug level.
+
+        The last call passes four record fields to ``logger.debug`` without format placeholders.
+        """
         logger.debug('type(rec): %s'%type(rec))
         logger.debug('dir(rec): %s'%dir(rec))
         logger.debug('dir(logger): %s'%dir(logger))
@@ -62,6 +68,12 @@ class QWFilter(logging.Filter):
 
 class GWLoggerStd(QWidget):
 
+    """``QWidget`` showing root-logger messages in a read-only ``QTextEdit``, with optional level/save/random buttons.
+
+    Keyword arguments: ``show_buttons`` (False), ``logmode`` (level name, ``'INFO'``), ``savelog``
+    (False) and ``repoman``; the log file is ``repoman.logname('masked')`` if both ``repoman`` and
+    ``savelog`` are given, otherwise ``'/dev/null'``.
+    """
     def __init__(self, **kwa):
 
         QWidget.__init__(self, parent=None)
@@ -118,6 +130,12 @@ class GWLoggerStd(QWidget):
 
     def config_logger(self):
 
+        """Replace all root-logger handlers with one handler that also feeds this widget.
+
+        The handler is a ``StreamHandler`` if the level is DEBUG, otherwise a ``FileHandler`` writing
+        ``self.logfname`` (mode ``'w'``); it gets a ``QWFilter`` and a formatter stored in
+        ``self.formatter``. Then calls :meth:`set_level` and logs the log-file name.
+        """
         self.append_qwlogger('Start logger\nLog file: %s' % self.logfname)
 
         levname = self.log_level
@@ -142,24 +160,28 @@ class GWLoggerStd(QWidget):
                     (self.logfname, 'IS' if self.savelog else 'IS NOT'))
 
     def set_level(self, level_name='DEBUG'):
+        """Set the root-logger level from the name ``level_name``, log it and store it in ``self.log_level``."""
         level = self.dict_name_to_level[level_name]
         logger.setLevel(level)
         logger.info('Set logger level %s' % level_name)
         self.log_level = level_name
 
     def connect_buttons(self):
+        """Connect Close, Save, Random buttons and the level combo box to their slots."""
         self.but_close.clicked.connect(self.on_but_close)
         self.but_save.clicked.connect(self.on_but_save)
         self.but_rand.clicked.connect(self.on_but_rand)
         self.cmb_level.currentIndexChanged[int].connect(self.on_cmb_level)
 
     def disconnect_buttons(self):
+        """Disconnect Close, Save, Random buttons and the level combo box from their slots."""
         self.but_close.clicked.disconnect(self.on_but_close)
         self.but_save.clicked.disconnect(self.on_but_save)
         self.but_rand.clicked.disconnect(self.on_but_rand)
         self.cmb_level.currentIndexChanged[int].disconnect(self.on_cmb_level)
 
     def set_tool_tips(self):
+        """Set tool tips on the text window, buttons and level combo box."""
         self.edi_txt    .setToolTip('Window for log messages')
         self.but_close  .setToolTip('Close this window')
         self.but_save   .setToolTip('Save logger content in file')
@@ -167,6 +189,7 @@ class GWLoggerStd(QWidget):
         self.cmb_level  .setToolTip('Select logger level of messages to display')
 
     def set_style(self):
+        """Apply style sheets, make the text window read-only and show the buttons only if ``show_buttons`` is True."""
         self.           setStyleSheet(style.styleBkgd)
         self.lab_level .setStyleSheet(style.styleTitle)
         self.but_close .setStyleSheet(style.styleButton)
@@ -186,6 +209,7 @@ class GWLoggerStd(QWidget):
         #self.setMinimumSize(300,50)
 
     def closeEvent(self, e):
+        """Log at debug level and pass the event to ``QWidget.closeEvent``."""
         logger.debug('closeEvent')
         #logger.info('%s.closeEvent' % self._name)
         #self.savelog_total_in_file() # It will be saved at closing of GUIMain
@@ -194,14 +218,17 @@ class GWLoggerStd(QWidget):
         QWidget.closeEvent(self, e)
 
     def on_but_close(self):
+        """Log and close the widget."""
         logger.debug('on_but_close')
         self.close()
 
     def on_but_save(self):
+        """Log and call :meth:`save_log_in_file`."""
         logger.debug('on_but_save:')
         self.save_log_in_file()
 
     def on_but_rand(self):
+        """Append a note to the widget and log a test message at a randomly chosen level."""
         levels = self.level_names
         level_name = levels[randint(0, len(levels)-1)]
         self.append_qwlogger('===> Inject in logger random message of level %s' % level_name)
@@ -209,6 +236,7 @@ class GWLoggerStd(QWidget):
         logger.log(ind, 'This is a random message of level %s' % level_name)
 
     def on_cmb_level(self):
+        """Set the logger level to the combo-box selection and replace the text window content with a start message."""
         selected = str(self.cmb_level.currentText())
         msg = 'on_cmb_level set %s %s' % (self.lab_level.text(), selected)
         logger.debug(msg)
@@ -216,6 +244,11 @@ class GWLoggerStd(QWidget):
         self.edi_txt.setText('Start logging messages in GWLoggerStd for level %s' % self.log_level)
 
     def save_log_in_file(self):
+        """Open a "save file" dialog starting at ``self.logfname`` and log the chosen path.
+
+        No file is written here. The dialog result (a tuple in PyQt5) is converted with ``str``, so the
+        "cancelled" branch comparing it to ``''`` is not reached.
+        """
         logger.info('save_log_in_file ' + self.logfname)
         path = str(QFileDialog.getSaveFileName(self,
                                                caption   = 'Select the file to save log',
@@ -228,11 +261,13 @@ class GWLoggerStd(QWidget):
         logger.info('Log saved in: %s' % str(path))
 
     def append_qwlogger(self, msg='...'):
+        """Append ``msg`` to the text window and scroll to the end."""
         self.edi_txt.append(msg)
         self.scrollDown()
 
     def scrollDown(self):
         #logger.debug('scrollDown')
+        """Move the text-window cursor to the end and repaint it."""
         self.edi_txt.moveCursor(QTextCursor.End)
         self.edi_txt.repaint()
         #self.raise_()

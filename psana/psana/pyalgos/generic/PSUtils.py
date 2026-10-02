@@ -48,14 +48,20 @@ from psana.pyalgos.generic.UtilsFS import *
 INSTRUMENT_DIR = os.getenv('SIT_PSDM_DATA', '/sdf/data/lcls/ds/').rstrip('/')  # /sdf/data/lcls/ds/ or /cds/data/psdm/
 
 def dir_exp(expname, dirinstr=INSTRUMENT_DIR):
+    """Return the experiment directory '<dirinstr>/<first 3 chars of expname>/<expname>'.
+
+    Asserts that ``expname`` is a str of length 8 or 9.
+    """
     assert isinstance(expname, str)
     assert len(expname) in (8,9)
     return os.path.join(dirinstr, expname[:3], expname) # expname[:3].upper()
 
 def dir_xtc(expname, dirinstr=INSTRUMENT_DIR):
+    """Return '<dir_exp(expname, dirinstr)>/xtc'."""
     return os.path.join(dir_exp(expname, dirinstr), 'xtc')
 
 def dir_calib(expname, dirinstr=INSTRUMENT_DIR):
+    """Return '<dir_exp(expname, dirinstr)>/calib'."""
     return os.path.join(dir_exp(expname, dirinstr), 'calib')
 
 def list_of_experiments(direxp=None): # e.g. '/reg/d/psdm/XPP'
@@ -74,6 +80,10 @@ def list_of_experiments(direxp=None): # e.g. '/reg/d/psdm/XPP'
     return [e for e in ldir if e[:3] == ptrn]
 
 def list_of_instruments(dirname=INSTRUMENT_DIR):
+    """Return instrument directory names found in ``dirname``.
+
+    If ``os.listdir(dirname)`` gives more than 10 entries, returns a tuple of the entries whose first three characters are upper case plus ('asc', 'prj', 'mon', 'ued', 'txi'); otherwise logs a message and returns a hard-coded list of names.
+    """
     ldir = os.listdir(dirname)
     if len(ldir)>10: return tuple([d for d in ldir if d[:3].isupper()]) + ('asc','prj','mon','ued','txi')
     else:
@@ -93,6 +103,10 @@ def list_of_str_from_list_of_int(list_in, fmt='%04d'):
 
 def list_of_runs_in_xtc_dir(dirxtc, ext='.xtc'):  # e.g. '/reg/d/psdm/XPP/xpptut15/xtc'
     #xtcfiles = list_of_files_in_dir_for_ext(dirxtc, ext)
+    """Return the set of run-number strings for the xtc files in ``dirxtc`` whose names contain ``ext``.
+
+    For each path from ``list_of_files_in_dir_for_pattern`` it takes the second '-'-separated field and strips leading 'r'. The paths include the directory, so a '-' in the directory name shifts the field.
+    """
     xtcfiles = list_of_files_in_dir_for_pattern(dirxtc, ext)
     runs = [f.split('-')[1].lstrip('r') for f in xtcfiles]
     return set(runs)
@@ -316,6 +330,7 @@ cspad_ndarr_from_table8x8 = cspad_ndarr_from_table
 # See tests in Detector/examples/ex_ndarray_from_image.py
 
 def env_time(env):
+    """Return the constant 1585724400; ``env`` is ignored."""
     return 1585724400
 
 #----------- TEST -------------
@@ -323,20 +338,27 @@ def env_time(env):
 if __name__ == "__main__":
 
   def test_convertCheetahEventName():
+    """Convert a fixed Cheetah event name with ``convertCheetahEventName`` and print the run number, time stamp, seconds and fiducial.
+
+    Defined only when the module runs as a script, as are the other tests here.
+    """
     eventName = 'LCLS_2015_Feb22_r0169_022047_197f7'
     runnum, tstamp, tsec, fid = convertCheetahEventName(eventName, fmtts='%Y-%m-%dT%H:%M:%S')
     print('Method convertCheetahEventName converts Cheetah event name %s' % eventName,\
           '\nto runnum: %d  tstamp: %s  tsec: %d  fid: %s' % (runnum, tstamp, tsec, fid))
 
   def test_directory():
+    """Print and return the test directory '<INSTRUMENT_DIR>/XPP/xpptut15/xtc/'."""
     d = '%s/XPP/xpptut15/xtc/' % INSTRUMENT_DIR
     print('test directory: %s' % d)
     return d
 
   def test_01():
+    """Print a message containing the function name; no other action."""
     print('empty %s' % sys._getframe().f_code.co_name)
 
   def test_list_of_files_in_dir():
+    """Print up to the first 12 file names from ``list_of_files_in_dir`` of the test directory, followed by '...' if there are more."""
     print('%s:' % sys._getframe().f_code.co_name)
     lfiles = list_of_files_in_dir(test_directory())
     for i,fname in enumerate(lfiles):
@@ -346,11 +368,13 @@ if __name__ == "__main__":
             break
 
   def test_list_of_files_in_dir_for_pattern():
+    """Print the files of the test directory whose names contain '-r0059'."""
     print('%s:' % sys._getframe().f_code.co_name)
     lfiles = list_of_files_in_dir_for_pattern(test_directory(), pattern='-r0059')
     for i,fname in enumerate(lfiles): print(fname)
 
   def test_list_of_files_in_dir_for_ext():
+    """Print up to the first 12 '.xtc' file names of the test directory, followed by '...' if there are more."""
     print('%s:' % sys._getframe().f_code.co_name)
     lfiles = list_of_files_in_dir_for_ext(test_directory(), ext='.xtc')
     for i,fname in enumerate(lfiles):
@@ -360,14 +384,17 @@ if __name__ == "__main__":
             break
 
   def test_list_of_str_from_list_of_int():
+    """Print ``list_of_str_from_list_of_int([1, 202, 203, 204], fmt='%04d')``."""
     print('%s:' % sys._getframe().f_code.co_name)
     print(list_of_str_from_list_of_int([1, 202, 203, 204], fmt='%04d'))
 
   def test_list_of_int_from_list_of_str():
+    """Print ``list_of_int_from_list_of_str(['0001', '0202', '0203', '0204'])``."""
     print('%s:' % sys._getframe().f_code.co_name)
     print(list_of_int_from_list_of_str(['0001', '0202', '0203', '0204']))
 
   def test_list_of_experiments(tname):
+    """Print the experiment names in '<INSTRUMENT_DIR>/XPP', ten per line; ``tname`` is unused."""
     print('%s:' % sys._getframe().f_code.co_name)
 
     lexps = list_of_experiments('%s/XPP' % INSTRUMENT_DIR)
@@ -378,13 +405,17 @@ if __name__ == "__main__":
     print(s + '\n...')
 
   def test_list_of_runs_in_xtc_dir():
+    """Print ``list_of_runs_in_xtc_dir`` for the test directory."""
     print('%s:' % sys._getframe().f_code.co_name)
     d = test_directory()
     print(list_of_runs_in_xtc_dir(d))
 
-  def usage(): return 'Use command: python %s <test-number>, where <test-number> = 1,2,...,8,...' % sys.argv[0]
+  def usage():
+      """Return the test usage string."""
+      return 'Use command: python %s <test-number>, where <test-number> = 1,2,...,8,...' % sys.argv[0]
 
   def test_all(tname):
+    """Print the usage and run the test selected by ``tname`` ('1'-'8'); with a number of arguments other than one it runs ``test_01``, and an unknown name exits."""
     print('\n%s\n' % usage())
     if len(sys.argv) != 2: test_01()
     elif tname == '1': test_convertCheetahEventName()

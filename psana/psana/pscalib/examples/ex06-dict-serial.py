@@ -1,3 +1,4 @@
+"""Example: serialize a dict holding a numpy array with ``pickle.dumps``, restore it with ``pickle.loads`` and print all three forms."""
 import pickle
 import numpy as np
 

@@ -1,3 +1,9 @@
+"""PyQt5 widgets bound to PVA PVs through the p4p client, plus layout helper functions.
+
+The `Pv` class wraps a module-level p4p 'pva' `Context` (`pvactx`). Widgets monitor
+their PV via `initPvMon` and display/edit its value; the module flag `nogui` makes
+update methods print instead of updating widgets.
+"""
 from PyQt5 import QtCore, QtGui, QtWidgets
 from p4p.client.thread import Context
 from psdaq.configdb.tsdef import *
@@ -38,14 +44,22 @@ nogui       = False
 xtpg        = False
 
 def setCuMode(v):
+    """Print and set the module-global `xtpg` flag to `v`."""
     global xtpg
     print('CuMode',v)
     xtpg = v
 
 def getCuMode():
+    """Return the module-global `xtpg` flag."""
     return xtpg
 
 class Pv(object):
+    """Wrapper around one PVA PV using the module context `pvactx`.
+
+    If `callback` is given, a monitor is started; on each update the converted value is
+    stored in `__value__` and ``callback(err=None)`` is called. A TimeoutError while
+    subscribing is logged. With `isStruct` the whole received structure is kept.
+    """
     def __init__(self, pvname, callback=None, isStruct=False):
         self.pvname = pvname
         self.__value__ = None
@@ -66,6 +80,10 @@ class Pv(object):
             logger.debug("PV %s created without a callback", self.pvname) # Call get explictly for an sync get or use for put
 
     def to_value(self,newval):
+        """Convert a received p4p value: the object itself if `isStruct`, else its `.value` or `.raw.value`.
+
+        Returns None (and logs an error) if conversion raises.
+        """
         result = None
         try:
             if self.isStruct:
@@ -79,6 +97,10 @@ class Pv(object):
         return result
 
     def get(self, useCached=True, timeout=5.0):
+        """Do a synchronous get of the PV, store and return the converted value.
+
+        `useCached` is ignored. A TimeoutError is logged and re-raised.
+        """
         try:
             self.__value__ = self.to_value(pvactx.get(self.pvname,timeout=timeout))
         except TimeoutError as e:
@@ -88,6 +110,10 @@ class Pv(object):
         return self.__value__
 
     def put(self, newval, wait=None):
+        """Put `newval` to the PV, store it as the cached value and return the result of ``pvactx.put``.
+
+        A TimeoutError is logged and re-raised.
+        """
         logger.debug("Putting to PV %s current value %s new value %s", self.pvname, self.__value__, newval)
         try:
             ret =  pvactx.put(self.pvname, newval, wait=wait)
@@ -98,6 +124,10 @@ class Pv(object):
         return ret
 
     def monitor(self, callback):
+        """Start a monitor that stores each update (whole value if `isStruct`, else ``.raw.value``) and calls ``callback(err=None)``.
+
+        Does nothing if `callback` is falsy.
+        """
         if callback:
             logger.debug("Monitoring PV %s", self.pvname)
             def monitor_cb(newval):
@@ -111,11 +141,13 @@ class Pv(object):
 
 
 def initPvMon(mon, pvname, isStruct=False):
+    """Set ``mon.pv = Pv(pvname, mon.update, isStruct=isStruct)``."""
     logger.debug("Monitoring PV %s", pvname)
     mon.pv = Pv(pvname, mon.update, isStruct=isStruct)
 
 class PvDisplay(QtWidgets.QLabel):
 
+    """QLabel (initial text '-') with a `valueSet` string signal connected to `setText`."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self):
@@ -123,12 +155,19 @@ class PvDisplay(QtWidgets.QLabel):
         self.setMinimumWidth(100)
 
     def connect_signal(self):
+        """Connect `valueSet` to `setValue`."""
         self.valueSet.connect(self.setValue)
 
     def setValue(self,value):
+        """Set the label text to `value`."""
         self.setText(value)
 
 class PvLabel(QtWidgets.QWidget):
+    """Name label plus `PvDisplay` showing the value of PV ``pvbase + name``.
+
+    The widget adds itself to `parent` and to ``owner._pvlabels``. Optional `dName` PV is
+    monitored too; `isInt`, `isTime`, `scale` and `units` control formatting in `update`.
+    """
     def __init__(self, owner, parent, pvbase, name, dName=None, isInt=False, isTime=False, scale=None, units=None):
         super(PvLabel,self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -160,6 +199,17 @@ class PvLabel(QtWidgets.QWidget):
         owner._pvlabels.append(self)
 
     def update(self, err):
+        """Format the PV value and emit it to the display (or print it when `nogui`).
+
+        isTime: seconds since 1990-01-01 UTC shown as local 'yyyy-MMM-dd HH:mm:ss'; isInt:
+        '1,234 (0x4d2)'; otherwise the value (times `scale`) plus `units`. If formatting
+        raises, the value is shown as an array of '%5.2f' entries (value*scale), 8 per line.
+
+        Notes
+        -----
+        When `dName` was given the code reads `self.dpv`, but the attribute is `dPv`, so this
+        raises AttributeError.
+        """
         q = self.pv.__value__
         if self.dPv is not None:
             dq = self.dpv.__value__
@@ -212,6 +262,7 @@ class PvLabel(QtWidgets.QWidget):
 
 class PvPushButton(QtWidgets.QPushButton):
 
+    """QPushButton (width 8 px per label character, minimum 25) that writes to PV `pvname` when clicked."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, pvname, label):
@@ -226,25 +277,30 @@ class PvPushButton(QtWidgets.QPushButton):
         self.pv = Pv(pvname)
 
     def buttonClicked(self):
+        """Put 1 and then 0 to the PV."""
         self.pv.put(1)
         self.pv.put(0)
 
 class CheckBox(QtWidgets.QCheckBox):
 
+    """QCheckBox with an int `valueSet` signal that sets the checked state."""
     valueSet = QtCore.pyqtSignal(int, name='valueSet')
 
     def __init__(self, label):
         super(CheckBox, self).__init__(label)
 
     def connect_signal(self):
+        """Connect `valueSet` to `boxClicked`."""
         self.valueSet.connect(self.boxClicked)
 
     def boxClicked(self, state):
         #print "CheckBox.clicked: state:", state
+        """Set the checked state to `state`."""
         self.setChecked(state)
 
 class PvCheckBox(CheckBox):
 
+    """`CheckBox` bound to PV `pvname`: clicking writes 1/0 and PV updates set the box."""
     def __init__(self, pvname, label):
         super(PvCheckBox, self).__init__(label)
         self.connect_signal()
@@ -252,12 +308,14 @@ class PvCheckBox(CheckBox):
         initPvMon(self,pvname)
 
     def pvClicked(self):
+        """Put 1 if the box is checked, else 0, to the PV."""
         q = self.isChecked()
         self.pv.put(1 if q else 0)
         #print "PvCheckBox.clicked: pv %s q %x" % (self.pv.name, q)
 
     def update(self, err):
         #print ("PvCheckBox.update:  pv %s, i %s, v %x, err %s" % (self.pv.name, self.text(), self.pv.get(), err))
+        """Emit `valueSet` with ``value != 0`` if it differs from the box state (print it when `nogui`)."""
         q = self.pv.__value__ != 0
         if err is None:
             if nogui:
@@ -269,6 +327,7 @@ class PvCheckBox(CheckBox):
 
 class PvTextDisplay(QtWidgets.QLineEdit):
 
+    """QLineEdit (initial text '-') with a `valueSet` string signal connected to `setText`; `label` is unused."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self, label):
@@ -276,14 +335,17 @@ class PvTextDisplay(QtWidgets.QLineEdit):
         #self.setMinimumWidth(60)
 
     def connect_signal(self):
+        """Connect `valueSet` to `setValue`."""
         self.valueSet.connect(self.setValue)
 
     def setValue(self,value):
+        """Set the line-edit text to `value`."""
         self.setText(value)
 
 class PvComboDisplay(QtWidgets.QComboBox):
 
     #valueSet = QtCore.pyqtSignal('QString',name='valueSet')
+    """QComboBox with `choices` and an int `valueSet` signal that sets the current index."""
     valueSet = QtCore.pyqtSignal(int ,name='valueSet')
 
     def __init__(self, choices):
@@ -291,13 +353,20 @@ class PvComboDisplay(QtWidgets.QComboBox):
         self.addItems(choices)
 
     def connect_signal(self):
+        """Connect `valueSet` to `setValue`."""
         self.valueSet.connect(self.setValue)
 
     def setValue(self,value):
+        """Set the current index to `value`."""
         self.setCurrentIndex(value)
 
 class PvTableDisplay(QtWidgets.QWidget):
 
+    """Grid of QLabels showing a structured (table) PV: rows from `rowNames`, columns from the PV's `labels`.
+
+    The constructor does a synchronous get to build the grid. Values equal to
+    ``colEmpty[j]`` are shown as '-'.
+    """
     def __init__(self, pvname, rowNames=None, colEmpty=None):
         super(PvTableDisplay, self).__init__()
         self.ready = False
@@ -321,6 +390,7 @@ class PvTableDisplay(QtWidgets.QWidget):
         self.ready = True
 
     def update(self,err):
+        """Set each grid label from the cached table value; does nothing until construction finished."""
         if not self.ready:
             return
         v = self.pv.__value__
@@ -334,6 +404,7 @@ class PvTableDisplay(QtWidgets.QWidget):
 
 class PvEditTxt(PvTextDisplay):
 
+    """`PvTextDisplay` bound to PV `pv`; editingFinished calls `setPv`, which subclasses define."""
     def __init__(self, pv, label):
         super(PvEditTxt, self).__init__(label)
         self.connect_signal()
@@ -342,10 +413,12 @@ class PvEditTxt(PvTextDisplay):
 
 class PvEditInt(PvEditTxt):
 
+    """Line edit for an integer PV."""
     def __init__(self, pv, label):
         super(PvEditInt, self).__init__(pv, label)
 
     def setPv(self):
+        """Put ``int(text)`` to the PV; text that is not an int is ignored."""
         try:
             value = int(self.text())
         except ValueError:
@@ -356,6 +429,7 @@ class PvEditInt(PvEditTxt):
 
     def update(self, err):
 #        print 'Update '+pv  #  This print is evil.
+        """Emit the PV value as an int string, or as space-separated '%f' values for an array (print when `nogui`)."""
         q = self.pv.__value__
         if err is None:
             s = QString('fail')
@@ -377,15 +451,18 @@ class PvEditInt(PvEditTxt):
 
 class PvInt(PvEditInt):
 
+    """`PvEditInt` with an empty label whose `setPv` does nothing (edits are not written)."""
     def __init__(self,pv):
         super(PvInt, self).__init__(pv, '')
 #        self.setEnabled(False)
 
     def setPv(self):
+        """Do nothing; body is `pass`."""
         pass
 
 class PvIntArrayW(QtWidgets.QLabel):
 
+    """QLabel (initial text '-') with a `valueSet` string signal connected to `setText`."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self):
@@ -393,18 +470,22 @@ class PvIntArrayW(QtWidgets.QLabel):
         self.connect_signal()
 
     def connect_signal(self):
+        """Connect `valueSet` to `setValue`."""
         self.valueSet.connect(self.setValue)
 
     def setValue(self,value):
+        """Set the label text to `value`."""
         self.setText(value)
 
 class PvIntArray:
 
+    """Monitor array PV `pv` and show element i in ``widgets[i]``."""
     def __init__(self, pv, widgets):
         self.widgets = widgets
         initPvMon(self,pv)
 
     def update(self, err):
+        """Set the text of ``widgets[i]`` to element i of the value formatted as an integer."""
         q = self.pv.__value__
         if err is None:
             for i in range(len(q)):
@@ -415,10 +496,15 @@ class PvIntArray:
 
 class PvEditHML(PvEditTxt):
 
+    """Line edit for a PV packed as 2-bit codes written as letters L/H/M/m (0/1/2/3)."""
     def __init__(self, pv, label):
         super(PvEditHML, self).__init__(pv, label)
 
     def setPv(self):
+        """Convert the text to an int, 2 bits per letter with the first letter most significant, and put it.
+
+        Prints a message if a character is not one of L, H, M, m.
+        """
         value = self.text()
         try:
             q = 0
@@ -429,6 +515,7 @@ class PvEditHML(PvEditTxt):
             print("Invalid character in string:", value)
 
     def update(self, err):
+        """Convert the value to its L/H/M/m letter string (2 bits per letter) and emit it (print when `nogui`)."""
         q = self.pv.__value__
         if err is None:
             v = toLMH[q & 0x3]
@@ -447,20 +534,24 @@ class PvEditHML(PvEditTxt):
 
 class PvHML(PvEditHML):
 
+    """Disabled (read-only) `PvEditHML`."""
     def __init__(self, pv, label):
         super(PvHML, self).__init__(pv, label)
         self.setEnabled(False)
 
 class PvEditDbl(PvEditTxt):
 
+    """Line edit for a floating-point PV."""
     def __init__(self, pv, label):
         super(PvEditDbl, self).__init__(pv, label)
 
     def setPv(self):
+        """Put ``float(text)`` to the PV; a ValueError is not caught."""
         value = float(self.text())
         self.pv.put(value)
 
     def update(self, err):
+        """Emit the value as '{:.4f}', or array elements as ' {:4f}' (print when `nogui`)."""
         q = self.pv.__value__
         if err is None:
             s = QString('fail')
@@ -481,12 +572,14 @@ class PvEditDbl(PvEditTxt):
 
 class PvDbl(PvEditDbl):
 
+    """Disabled `PvEditDbl` with an empty label."""
     def __init__(self,pv):
         super(PvDbl, self).__init__(pv, '')
         self.setEnabled(False)
 
 class PvDblArrayW(QtWidgets.QLabel):
 
+    """QLabel (initial text '-') with a `valueSet` string signal connected to `setText`."""
     valueSet = QtCore.pyqtSignal('QString',name='valueSet')
 
     def __init__(self):
@@ -494,18 +587,22 @@ class PvDblArrayW(QtWidgets.QLabel):
         self.connect_signal()
 
     def connect_signal(self):
+        """Connect `valueSet` to `setValue`."""
         self.valueSet.connect(self.setValue)
 
     def setValue(self,value):
+        """Set the label text to `value`."""
         self.setText(value)
 
 class PvDblArray:
 
+    """Monitor array PV `pv` and show element i in ``widgets[i]``."""
     def __init__(self, pv, widgets):
         self.widgets = widgets
         initPvMon(self,pv)
 
     def update(self, err):
+        """Emit element i formatted '.4f' to ``widgets[i].valueSet``; with `nogui`, print the array instead."""
         q = self.pv.__value__
         if err is None:
             for i in range(len(q)):
@@ -519,6 +616,10 @@ class PvDblArray:
 
 class PvEditCmb(PvComboDisplay):
 
+    """Combo box bound to PV `pvname`; the index (optionally mapped through `imap`) is the PV value.
+
+    Optional `cb` is called after each PV update.
+    """
     def __init__(self, pvname, choices, cb=None, imap=None):
         super(PvEditCmb, self).__init__(choices)
         self.cb = cb
@@ -528,6 +629,7 @@ class PvEditCmb(PvComboDisplay):
         initPvMon(self,pvname)
 
     def setValue(self):
+        """Put the current index (mapped through `imap` if given) unless it equals the cached PV value."""
         value = self.currentIndex()
         if self.imap is not None:
             value = self.imap[value]
@@ -537,6 +639,7 @@ class PvEditCmb(PvComboDisplay):
             logger.debug("Skipping updating PV for edit combobox as the value of the pv %s is the same as the current value", self.pv.pvname)
 
     def update(self, err):
+        """Set the current index from the PV value and emit `valueSet` (print when `nogui`), then call `cb` if set."""
         q = self.pv.__value__
         if err is None:
             if nogui:
@@ -552,11 +655,13 @@ class PvEditCmb(PvComboDisplay):
 
 class PvCmb(PvEditCmb):
 
+    """Disabled (read-only) `PvEditCmb`."""
     def __init__(self, pvname, choices):
         super(PvCmb, self).__init__(pvname, choices)
         self.setEnabled(False)
 
 class PvIntRow(object):
+    """One grid row: a name label in column 0 and `length` value labels fed by array PV `pvname`."""
     def __init__(self, layout, name, pvname, row, length):
         layout.addWidget( QtWidgets.QLabel(name), row, 0 )
         self.cells = []
@@ -567,6 +672,7 @@ class PvIntRow(object):
         initPvMon(self,pvname)
 
     def update(self, err):
+        """Set each cell to '%d' for int elements, else '{0:.4f}'."""
         q = self.pv.__value__
         for i in range(len(q)):
             if type(q[i]) == int:
@@ -575,6 +681,7 @@ class PvIntRow(object):
                 self.cells[i].setText('{0:.4f}'.format(q[i]))
 
 class PvIntTable(QtWidgets.QGroupBox):
+    """QGroupBox with one `PvIntRow` per name, using PV ``pvbase + pvlist[i]``."""
     def __init__(self, title, pvbase, pvlist, names, length):
         super(PvIntTable, self).__init__(title)
 
@@ -585,6 +692,7 @@ class PvIntTable(QtWidgets.QGroupBox):
 
 
 class PvCString(QtWidgets.QWidget):
+    """Name label plus word-wrapping display of a character-array PV ``pvbase + name``."""
     def __init__(self, parent, pvbase, name, dName=None, isStruct=False):
         super(PvCString,self).__init__()
         layout = QtWidgets.QHBoxLayout()
@@ -604,6 +712,7 @@ class PvCString(QtWidgets.QWidget):
         initPvMon(self,pvname,isStruct)
 
     def update(self, err):
+        """Synchronously get the PV (its `.value` if `isStruct`), print it, and emit the characters up to the first 0."""
         if self.pv.isStruct:
             q = self.pv.get().value
         else:
@@ -625,6 +734,7 @@ class PvCString(QtWidgets.QWidget):
 
 class PvMask(object):
 
+    """Row of `bits` disabled check boxes added to `parent`, showing the bits of PV `pvname`."""
     def __init__(self, parent, pvname, bits):
         super(PvMask,self).__init__()
 
@@ -637,6 +747,7 @@ class PvMask(object):
         initPvMon(self, pvname)
 
     def update(self, err):
+        """Check box i if bit i of the PV value is set, else uncheck it."""
         v = self.pv.__value__
         for i in range(len(self.chkBox)):
             if v & (1<<i):
@@ -646,6 +757,10 @@ class PvMask(object):
 
 class PvMaskTab(QtWidgets.QWidget):
 
+    """Grid of labelled check boxes (one per name) editing the bits of PV `pvname`.
+
+    Optional `cb` is called after each PV update.
+    """
     def __init__(self, pvname, names, cb=None):
         super(PvMaskTab,self).__init__()
 
@@ -665,6 +780,7 @@ class PvMaskTab(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def setValue(self):
+        """Put the bitmask of checked boxes (bit i for box i) to the PV."""
         v = 0
         for i in range(len(self.chkBox)):
             if self.chkBox[i].isChecked():
@@ -672,6 +788,7 @@ class PvMaskTab(QtWidgets.QWidget):
         self.pv.put(v)
 
     def update(self, err):
+        """Set box i from bit i of the PV value (print when `nogui`), then call `cb` if set."""
         q = self.pv.__value__
         if err is None:
             if nogui:
@@ -687,9 +804,14 @@ class PvMaskTab(QtWidgets.QWidget):
     #  Reassert PV when window is shown
     def showEvent(self,QShowEvent):
 #        self.QWidget.showEvent()
+        """Re-put the current check-box bitmask when the widget is shown."""
         self.setValue()
 
 class PvDefSeq(QtWidgets.QWidget):
+    """Sequence selector: a combo of 'Global_0'..'Global_16' and 'Local' writing PV ``pvname + '_Sequence'``.
+
+    A stacked set of `PvEditCmb` widgets on ``pvname + '_SeqBit'`` follows the selection.
+    """
     valueSet = QtCore.pyqtSignal(int,name='valueSet')
 
     def __init__(self, pvname):
@@ -715,11 +837,13 @@ class PvDefSeq(QtWidgets.QWidget):
         initPvMon(self,pvname+'_Sequence')
 
     def setValue(self):
+        """Put the selected combo index to the '_Sequence' PV."""
         value = self.seqsel.currentIndex()
 #        self.pv.put(value+15)  # Defined sequences start at 15
         self.pv.put(value)
 
     def update(self,err):
+        """Set the combo index from the '_Sequence' PV value and emit `valueSet`."""
         q = self.pv.__value__
         if err is None:
             self.seqsel.setCurrentIndex(q)
@@ -728,15 +852,18 @@ class PvDefSeq(QtWidgets.QWidget):
             print(err)
 
 class MonFwd(object):
+    """Monitor PV `pvname` and forward each update to ``parent.update(err)``."""
     def __init__(self,parent,pvname):
         self._parent = parent
         initPvMon(self,pvname)
 
     def update(self,err):
+        """Call ``self._parent.update(err)``."""
         self._parent.update(err)
 
 class PvDefCuSeq(QtWidgets.QWidget):
 
+    """Widget with one `PvEditInt` for PV ``pvname + '_EventCode'``."""
     def __init__(self, pvname):
         super(PvDefCuSeq,self).__init__()
 
@@ -745,10 +872,16 @@ class PvDefCuSeq(QtWidgets.QWidget):
         self.setLayout(lo)
 
     def update(self,err):
+        """Do nothing; body is `pass`."""
         pass
 
 class PvEvtTab(QtWidgets.QStackedWidget):
 
+    """Stacked widget of event-selection editors whose page follows combo box `evtcmb`.
+
+    Pages: '_FixedRate' combo (`fixedRates`); '_ACRate' combo plus '_ACTimeslot' mask
+    (`acTS`); `PvDefCuSeq`; `PvDefSeq`. The lists come from `psdaq.configdb.tsdef`.
+    """
     def __init__(self, pvname, evtcmb):
         super(PvEvtTab,self).__init__()
 
@@ -784,6 +917,7 @@ class PvEvtTab(QtWidgets.QStackedWidget):
     #  and timeslot mask is empty
     #
     def validate(self,idx=None):
+        """Give the AC timeslot mask a red palette if its cached PV value is 0, else the normal palette."""
         if self.actsmask.pv.__value__==0:
             self.actsmask.setPalette(self.errpalette)
         else:
@@ -791,6 +925,7 @@ class PvEvtTab(QtWidgets.QStackedWidget):
 
 class PvEditEvt(QtWidgets.QWidget):
 
+    """Widget with a `PvEditCmb` on `pvname` (choices `evtsel`) above a `PvEvtTab`; `idx` is unused."""
     def __init__(self, pvname, idx):
         super(PvEditEvt, self).__init__()
         vbox = QtWidgets.QVBoxLayout()
@@ -801,6 +936,7 @@ class PvEditEvt(QtWidgets.QWidget):
 
 class PvDstTab(QtWidgets.QWidget):
 
+    """4x4 grid of 'D0'..'D15' check boxes editing the bitmask PV `pvname`; optional `cb` runs after updates."""
     def __init__(self, pvname, cb=None):
         super(PvDstTab,self).__init__()
 
@@ -818,6 +954,7 @@ class PvDstTab(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def setValue(self):
+        """Put the bitmask of checked boxes (bit i for 'Di') to the PV."""
         v = 0
         for i in range(NBeamSeq):
             if self.chkBox[i].isChecked():
@@ -825,6 +962,7 @@ class PvDstTab(QtWidgets.QWidget):
         self.pv.put(v)
 
     def update(self, err):
+        """Set each box from its bit in the PV value (print when `nogui`), then call `cb` if set."""
         q = self.pv.__value__
         if err is None:
             if nogui:
@@ -839,6 +977,10 @@ class PvDstTab(QtWidgets.QWidget):
 
 class PvEditDst(QtWidgets.QWidget):
 
+    """Destination editor: `PvEditCmb` on `pvname` (Include/DontCare) and a `PvDstTab` on ``pvname + '_Mask'``.
+
+    `idx` is unused.
+    """
     def __init__(self, pvname, idx):
         super(PvEditDst, self).__init__()
 
@@ -858,6 +1000,7 @@ class PvEditDst(QtWidgets.QWidget):
     #  and no destination is selected
     #
     def validate(self):
+        """Give both widgets a red palette when both cached PV values are 0, else the normal palette."""
         if self.selcmb.pv.__value__==0 and self.selmask.pv.__value__==0:
             self.selcmb .setPalette(self.errpalette)
             self.selmask.setPalette(self.errpalette)
@@ -867,10 +1010,17 @@ class PvEditDst(QtWidgets.QWidget):
 
 class PvEditTS(PvEditCmb):
 
+    """`PvEditCmb` with choices '0'..'15'; `idx` is unused."""
     def __init__(self, pvname, idx):
         super(PvEditTS, self).__init__(pvname, ['%u'%i for i in range(16)])
 
 def PvInput(widget, parent, pvbase, name, count=1, start=0, istart=0, enable=True, horiz=True, width=None):
+    """Add a labelled row (or column) of PV widgets to layout `parent`; returns None.
+
+    With `count` 1 one ``widget(pvbase + name, '')`` is made; otherwise `count` widgets
+    for PVs ``pvbase + name + str(i + start)`` labelled ``str(i + istart)``. Each widget
+    is enabled per `enable` and limited to `width` if given.
+    """
     pvname = pvbase+name
     print(pvname)
 
@@ -899,30 +1049,39 @@ def PvInput(widget, parent, pvbase, name, count=1, start=0, istart=0, enable=Tru
     parent.addLayout(layout)
 
 def LblPushButton(parent, pvbase, name, count=1):
+    """Call `PvInput` with `PvPushButton`; returns None."""
     return PvInput(PvPushButton, parent, pvbase, name, count)
 
 def LblCheckBox(parent, pvbase, name, count=1, start=0, istart=0, enable=True, horiz=True):
+    """Call `PvInput` with `PvCheckBox`; returns None."""
     return PvInput(PvCheckBox, parent, pvbase, name, count, start, istart, enable, horiz=horiz)
 
 def LblEditInt(parent, pvbase, name, count=1, horiz=True):
+    """Call `PvInput` with `PvEditInt`; returns None."""
     return PvInput(PvEditInt, parent, pvbase, name, count, horiz=horiz)
 
 def LblEditDbl(parent, pvbase, name, count=1, horiz=True):
+    """Call `PvInput` with `PvEditDbl`; returns None."""
     return PvInput(PvEditDbl, parent, pvbase, name, count, horiz=horiz)
 
 def LblEditHML(parent, pvbase, name, count=1):
+    """Call `PvInput` with `PvEditHML`; returns None."""
     return PvInput(PvEditHML, parent, pvbase, name, count)
 
 def LblEditTS(parent, pvbase, name, count=1):
+    """Call `PvInput` with `PvEditTS`; returns None."""
     return PvInput(PvEditTS, parent, pvbase, name, count)
 
 def LblEditEvt(parent, pvbase, name, count=1):
+    """Call `PvInput` with `PvEditEvt`; returns None."""
     return PvInput(PvEditEvt, parent, pvbase, name, count)
 
 def LblEditDst(parent, pvbase, name, count=1):
+    """Call `PvInput` with `PvEditDst`; returns None."""
     return PvInput(PvEditDst, parent, pvbase, name, count)
 
 def LblMask(pvbase, label, bits=1):
+    """Return a QHBoxLayout with a label and a `PvMask` of `bits` boxes for PV ``pvbase + label``."""
     hbox = QtWidgets.QHBoxLayout()
     hbox.addWidget( QtWidgets.QLabel(label) )
     PvMask(hbox, pvbase+label, bits)
@@ -930,6 +1089,7 @@ def LblMask(pvbase, label, bits=1):
     return hbox
 
 def to_mask(lista):
+    """Return the int with bit l set for each l in `lista`."""
     v = 0
     for l in lista:
         v |= (1<<l)

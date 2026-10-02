@@ -34,6 +34,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         self.collapse_all()
 
     def set_style(self):
+        """Apply the base-class style and set minimum height 300, maximum height 1000."""
         QWTableOfCheckBoxes.set_style(self)
         self.setMinimumHeight(300)
         self.setMaximumHeight(1000)
@@ -52,6 +53,11 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         logger.debug('CGWPartitionTable.on_item_selected: "%s" is selected' % (item.text() if item is not None else None))
 
     def on_item_changed(self, item):
+        """Handle check-state changes in the 'sel' and 'Monitor' columns.
+
+        If the row's ID item is a collapsed-group row, the new state is copied to every item
+        of its group via `set_group_check_state`; then the change is logged at debug level.
+        """
         if item.column() not in (self.column_cbx(), self.column_mon()): return
         item_id = self._si_model.item(item.row(), self.column_id())
         if item_id._is_collapser: self.set_group_check_state(item)
@@ -69,6 +75,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
             it.setCheckState(state)
 
     def on_click(self, index):
+        """On click, offer a readout-group popup for editable 'grp' cells and toggle collapse/expand for 'ID' cells."""
         item = self._si_model.itemFromIndex(index)
         model, row, col, txt = self._si_model, index.row(), index.column(), item.text()
         msg = 'CGWPartitionTable.on_click: item in row:%02d col:%02d text: %s' % (row, col, txt)
@@ -84,22 +91,36 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         return hhi.text() == coltitle
 
     def approved_column_for_title(self, col, coltitle):
+        """Return `col` if its header text equals `coltitle`, else log an error and return None."""
         if self.is_column_for_title(col, coltitle): return col
         else:
             logger.error('CGWPartitionTable.approved_column_for_title:'\
                         +'column number:%d is not consistent with column-title %s' % (col,coltitle))
             return None
 
-    def column_cbx(self): return self.approved_column_for_title(0, 'sel')
+    def column_cbx(self):
+        """Return 0 if column 0 is titled 'sel', else None (with an error logged)."""
+        return self.approved_column_for_title(0, 'sel')
 
-    def column_grp(self): return self.approved_column_for_title(1, 'grp')
+    def column_grp(self):
+        """Return 1 if column 1 is titled 'grp', else None (with an error logged)."""
+        return self.approved_column_for_title(1, 'grp')
 
-    def column_id (self): return self.approved_column_for_title(3, 'ID')
+    def column_id (self):
+        """Return 3 if column 3 is titled 'ID', else None (with an error logged)."""
+        return self.approved_column_for_title(3, 'ID')
 
     # This is also a checkbox
-    def column_mon (self): return self.approved_column_for_title(4, 'Monitor')
+    def column_mon (self):
+        """Return 4 if column 4 is titled 'Monitor', else None (with an error logged)."""
+        return self.approved_column_for_title(4, 'Monitor')
 
     def set_readout_group_number(self, item):
+        """Let the user pick a readout group '0'-'7' for an editable 'grp' cell and store it.
+
+        If the row is a collapsed-group row, the value is also written to the 'grp' cells of
+        the other segments (with item-changed handling disconnected meanwhile).
+        """
         if not self.is_column_for_title(item.column(), 'grp'): return
         if not item.isEditable(): return
 
@@ -118,6 +139,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
             self.connect_item_changed_to(self.on_item_changed)
 
     def set_readout_group_number_for_detector_segments(self, item, selected):
+        """Set the 'grp' text of every other row in the item's collapsed group to `selected`."""
         column_grp = self.column_grp()
         item_cbx = self._si_model.item(item.row(), self.column_cbx())
         for it in item_cbx._group_cbx_items:
@@ -130,6 +152,10 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         return segname.rsplit('_', 1)[0]
 
     def in_collapsed_group(self, item):
+        """Return True if `item` is an 'ID' cell and another row with the same detector name is hidden.
+
+        The detector name is the ID text without its last '_' suffix.
+        """
         model, col, row  = self._si_model, item.column(), item.row()
         if not self.is_column_for_title(col, 'ID'): return False
         segname_sel = item.text()
@@ -143,6 +169,12 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         return False
 
     def expand_collapse_detector(self, item, do_collapse=True):
+        """Hide (collapse) or show (expand) the other segment rows of the clicked 'ID' cell's detector.
+
+        Does nothing for non-'ID' cells or single-segment detectors. On collapse it saves the
+        row's 'sel'/'Monitor' check states and group items; on expand it restores the saved
+        states if the group is mixed. The ID cell turns yellow when collapsed and white otherwise.
+        """
         col, row  = item.column(), item.row()
         if not self.is_column_for_title(col, 'ID'): return
 
@@ -209,6 +241,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
         self.set_style()
 
     def expand_all(self):
+        """Expand every collapsed detector group."""
         col_id, model = self.column_id(), self._si_model
         for r in range(model.rowCount()):
             item = model.item(r, col_id)
@@ -216,6 +249,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
             self.expand_collapse_detector(item, do_collapse=False)
 
     def collapse_all(self):
+        """Collapse the detector group of every visible row (skipped if there is no 'ID' column)."""
         col_id, model = self.column_id(), self._si_model
         for r in range(model.rowCount()):
             if self.isRowHidden(r): continue
@@ -224,6 +258,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
             self.expand_collapse_detector(item, do_collapse=True)
 
     def sort_items(self):
+        """Sort rows by the 'ID' column (ascending) and reset each ID item's `_is_collapser` flag; no-op without an 'ID' column."""
         col_id = self.column_id()
         if col_id is None: return
         self.sortByColumn(col_id,0) # Qt.AscendingOrder:0,  Qt.DescendingOrder:1
@@ -233,6 +268,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
             model.item(r, col_id)._is_collapser = False
 
     def closeEvent(self, event):
+        """Call the base closeEvent, clear `cp.cgwpartitiontable` and call `cp.cgwmainpartition.set_but_show_title()` if set."""
         logger.debug('closeEvent')
         QWTableOfCheckBoxes.closeEvent(self, event)
         cp.cgwpartitiontable = None
@@ -265,6 +301,10 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
     if __name__ == "__main__":
 
       def keyPressEvent(self, e):
+        """Handle keys in the test window: Esc closes, E expands all, C collapses all, others log key help.
+
+        Defined only when the module is run as a script.
+        """
         logger.debug('keyPressEvent, key = %s' % e.key())
         if   e.key() == Qt.Key_Escape:
             self.close()
@@ -286,6 +326,7 @@ class CGWPartitionTable(QWTableOfCheckBoxes):
 if __name__ == "__main__":
 
   def test00_CGWPartitionTable():
+    """Build and return a `CGWPartitionTable` from a sample sel/grp/level/ID table (printing the input)."""
     title_h = ['sel', 'grp', 'level/pid/host', 'ID']
     tableio = [\
                [[True,  ''], '1', 'drp/123456/drp-tst-dev008', 'cookie_9'],\
@@ -313,6 +354,7 @@ if __name__ == "__main__":
     return w
 
   def test01_CGWPartitionTable():
+    """Build and return a `CGWPartitionTable` from a sample str/cbx/flags table (printing the input)."""
     title_h = ['str', 'cbx', 'flags']
     tableio = [\
                [[False, '11', 6], [True,  'name 12', 3], [False, 'name 13aa', 0]],\

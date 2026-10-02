@@ -43,6 +43,12 @@ import sip
 
 class GWRuler():
 
+    """Draws an axis line with tick marks and text labels along one side (``'U'``, ``'D'``, ``'L'``, ``'R'``) of the scene rect of ``view``.
+
+    Tick positions come from ``AxisLabeling.best_label_locs`` over the scene-rect range along the axis.
+    Keyword arguments include ``font``, ``pen``, ``brush``, ``color``, ``tick_fr`` (0.15), ``size_inches`` (3),
+    ``zvalue`` (10), ``fmt`` (``'%g'``) and ``label_rot`` (-10). The view must provide ``_origin_u`` and ``_origin_l``.
+    """
     def __init__(self, view, side='U', **kwargs):
 
         self.view   = view
@@ -79,6 +85,10 @@ class GWRuler():
 
 
     def set_pars(self):
+        """Compute the axis end points ``p1``/``p2``, tick vector ``dt1``, label offsets and axis coordinate ``vort`` for the side and view origin.
+
+        For an unknown side an error message is printed and those attributes are not set.
+        """
         r = self.rect
         w,h = r.width(), r.height()
         v = self.view
@@ -140,6 +150,11 @@ class GWRuler():
 
     def add(self):
         # add ruller to the path of the scene
+        """Add the axis path (line plus ticks) and one rotated text item per label to the scene, and store them in ``lst_of_items``.
+
+        Any previous path item is removed first. Text items ignore view transformations and are offset
+        from the tick position in view coordinates.
+        """
         if self.path_item is not None: self.scene.removeItem(self.path_item)
 
         self.path = QPainterPath(self.p1)
@@ -185,6 +200,7 @@ class GWRuler():
 
 
     def remove(self):
+        """Remove all items in ``lst_of_items`` from the scene (unless the scene was already deleted) and clear the list."""
         if not sip.isdeleted(self.scene):
           for item in self.lst_of_items:
             self.scene.removeItem(item)
@@ -192,6 +208,10 @@ class GWRuler():
 
 
     def update(self):
+        """Call :meth:`remove`, :meth:`set_pars` and :meth:`add`.
+
+        The label positions computed in the constructor are reused; they are not recomputed here.
+        """
         self.remove()
         self.set_pars()
         self.add()

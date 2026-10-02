@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Example: show a ``GWImageAxesROI`` test widget with a generated image and keyboard controls for drawing and editing ROIs.
+
+Importing the module configures logging at INFO level and appends '..' to ``sys.path``.
+"""
 from psana.graphqt.GWImageAxesROI import *
 
 logger = logging.getLogger(__name__)
@@ -14,7 +18,10 @@ import numpy as np
 
 class TestGWImageAxesROI(GWImageAxesROI):
 
-    def KEY_USAGE(self): return 'Keys:'\
+    """GWImageAxesROI subclass that prints key usage at construction and adds test drawing methods and key handling."""
+    def KEY_USAGE(self):
+        """Return the key help text, including the current ROI and mode names and the selectable ROI and mode keys from ``roiu``."""
+        return 'Keys:'\
                '\n  ESC - exit'\
                '\n  O - reset original size'\
                '\n  N - set new pixmap'\
@@ -92,6 +99,10 @@ class TestGWImageAxesROI(GWImageAxesROI):
         ith3 = roiu.select_handle(roiu.OTHER,     view=self, roi=None, pos=QPointF(290,20), shhand=3).add_to_scene()
 
     def keyPressEvent(self, e):
+        """Forward the event to ``GWImageAxesROI.keyPressEvent``, then handle test keys and log the key usage.
+
+        Esc closes; O resets the scene rect; N sets a new random image; W/H set a random-shape image with a test mask (H also changes the default rect); K draws test shapes, ROIs and handles; D, C, F delete, cancel or finish ROIs; J/L save/load ROI parameters; M saves the mask. Other characters matching ``roiu.roi_keys`` or ``roiu.mode_keys`` select the ROI type or mode.
+        """
         GWImageAxesROI.keyPressEvent(self, e)
 
         key = e.key()
@@ -166,6 +177,7 @@ class TestGWImageAxesROI(GWImageAxesROI):
         logger.info(self.KEY_USAGE())
 
 def image_with_random_peaks(shape=(500, 500)):
+    """Return a random image of ``shape`` (mean 0, sigma 10) with 50 random peaks and a ring of radius 300 centered at row 500, column 500 added."""
     from psana.pyalgos.generic.NDArrUtils import info_ndarr
 
     img = ag.random_standard(shape, mu=0, sigma=10)
@@ -176,6 +188,10 @@ def image_with_random_peaks(shape=(500, 500)):
     return img
 
 def test_gwimageaxesroi(tname):
+    """Create a QApplication and a ``TestGWImageAxesROI`` configured by ``tname`` ('0'-'7'), connect its mouse test receivers and run the event loop.
+
+    For any other ``tname`` it logs a message and returns.
+    """
     logger.info(sys._getframe().f_code.co_name)
     arr = image_with_random_peaks((1000, 1000))
     ctab = ct.color_table_monochr256()

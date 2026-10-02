@@ -36,6 +36,10 @@ from PyQt5.QtGui import QCursor, QColor, QBrush
 
 class QWPopupSelectItem(QDialog):
 
+    """Stay-on-top popup dialog that shows a list of strings and returns the clicked one.
+
+    Items ending with ':' are shown as non-selectable yellow titles. A timer re-activates the window every second, and window deactivation rejects the dialog.
+    """
     def __init__(self, parent=None, lst=[], show_frame=False, do_sorted=True):
 
         QDialog.__init__(self, parent, flags=Qt.WindowStaysOnTopHint)
@@ -59,6 +63,7 @@ class QWPopupSelectItem(QDialog):
         QTimer().singleShot(self.dt_msec, self.on_timeout)
 
     def on_timeout(self):
+        """Give the dialog focus, raise and activate it, and schedule itself again after ``self.dt_msec`` ms."""
         logger.debug('on_timeout - activate popup window, isActive: %s' % self.isActiveWindow())
         self.setFocus(True)
         self.raise_()
@@ -66,6 +71,10 @@ class QWPopupSelectItem(QDialog):
         QTimer().singleShot(self.dt_msec, self.on_timeout)
 
     def fill_list(self, lst, do_sorted=True):
+        """Clear the list widget and add one item per string of ``lst`` (sorted if ``do_sorted``).
+
+        Strings ending with ':' get black text on yellow background and no item flags; each item gets a size hint of width ``4*len(s)`` and height 15.
+        """
         self.list.clear()
         names = sorted(lst) if do_sorted else lst
         for s in names:
@@ -78,6 +87,10 @@ class QWPopupSelectItem(QDialog):
         #self.list.sortItems(Qt.AscendingOrder)
 
     def set_style(self):
+        """Set the title, focus policy, zero margins and, unless ``show_frame``, the frameless window flag.
+
+        If the dialog has no parent widget it is moved near the cursor.
+        """
         self.setWindowTitle('Select')
         if not self.show_frame:
           self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
@@ -91,9 +104,14 @@ class QWPopupSelectItem(QDialog):
         logger.debug('use %s position for popup findow' % ('CURSOR' if parent is None else 'BUTTON'))
 
     def show_tool_tips(self):
+        """Set the dialog tool tip to 'Select item from the list'."""
         self.setToolTip('Select item from the list')
 
     def on_item_click(self, item):
+        """Store the clicked item text in ``name_sel`` and accept the dialog.
+
+        For a title item (text ending with ':') it logs a warning and rejects first, but execution continues to ``accept()`` and ``done(QDialog.Accepted)``.
+        """
         self.name_sel = item.text()
         logger.debug('on_item_click %s' % self.name_sel)
         if self.name_sel[-1] == ':':
@@ -105,6 +123,7 @@ class QWPopupSelectItem(QDialog):
 
     def event(self, e):
         #logger.debug('event.type %s' % str(e.type()))
+        """Reject the dialog on ``QEvent.WindowDeactivate``, then return ``QDialog.event(self, e)``."""
         if e.type() == QEvent.WindowDeactivate:
             logger.debug('intercepted mouse click outside popup window')
             self.reject()
@@ -112,14 +131,25 @@ class QWPopupSelectItem(QDialog):
         return QDialog.event(self, e)
 
     def closeEvent(self, e):
+        """Log a debug message and reject the dialog."""
         logger.debug('closeEvent')
         self.reject()
         self.done(QDialog.Rejected)
 
     def selectedName(self):
+        """Return the text of the clicked item, or None if nothing was clicked."""
         return self.name_sel
 
 def popup_select_item_from_list(parent, lst, min_height=200, dx=0, dy=0, show_frame=False, do_sorted=True):
+    """Show a modal ``QWPopupSelectItem`` for ``lst`` and return the selected string.
+
+    The dialog width is 10 times the longest string length and its height is ``min(min_height, 16*len(lst))``; if ``dx`` or ``dy`` is non-zero it is moved to the cursor position plus that offset.
+
+    Returns
+    -------
+    str or None
+        The selected string, or None if nothing was selected or a title item (ending with ':') was clicked.
+    """
     w = QWPopupSelectItem(parent, lst, show_frame, do_sorted)
     #w.setMinimumHeight(min_height)
     size = len(lst)
@@ -137,6 +167,10 @@ if __name__ == "__main__":
 
   def test_select_item_from_list(tname):
     #lst = sorted(os.listdir('/sdf/data/lcls/ds/'))
+    """Open the popup for a fixed list of instrument names with a title item and log the result.
+
+    Defined only when the module runs as a script; ``tname`` is unused.
+    """
     lst = ('Title:', 'CXI', 'DET', 'MEC', 'MFX', 'XCS', 'XPP')
     logger.debug('lst: %s' % str(lst))
     app = QApplication(sys.argv)

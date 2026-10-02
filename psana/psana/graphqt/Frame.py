@@ -35,6 +35,19 @@ class Frame(QtWidgets.QFrame):
 
 
     def setFrame(self, lw=0, mlw=1, vis=False, style=QtWidgets.QFrame.Box | QtWidgets.QFrame.Sunken):
+        """Set frame style, line width, mid-line width and border visibility.
+
+        Parameters
+        ----------
+        lw : int
+            Line width.
+        mlw : int
+            Mid-line width.
+        vis : bool
+            Passed to :meth:`setBoarderVisible`; default False here (the constructor passes True by default).
+        style : int
+            Frame style flags; default ``QFrame.Box | QFrame.Sunken``.
+        """
         self.setFrameStyle(style)
         self.setLineWidth(lw)
         self.setMidLineWidth(mlw)
@@ -42,11 +55,13 @@ class Frame(QtWidgets.QFrame):
 
 
     def setBoarderVisible(self, vis=True):
+        """Set the frame shape to ``QFrame.Box`` if ``vis`` is True, otherwise to ``QFrame.NoFrame``."""
         if vis: self.setFrameShape(QtWidgets.QFrame.Box)
         else  : self.setFrameShape(QtWidgets.QFrame.NoFrame)
 
 
 class GUILabel(QtWidgets.QLabel, Frame):
+    """Example ``QLabel``/``Frame`` combination initialized through ``Frame`` with mid-line width 5 and text ``'GUILabel set'``."""
     def __init__(self, parent=None):
         Frame       .__init__(self, parent, mlw=5)
         #QtWidgets.QLabel.__init__(self, QtCore.QString('label'), parent)
@@ -54,6 +69,7 @@ class GUILabel(QtWidgets.QLabel, Frame):
 
 
 class GUIWidget(QtWidgets.QWidget):
+    """Example ``QWidget`` containing one push button at (30, 20)."""
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         #super(GUIWidget, self).__init__(parent)
@@ -62,6 +78,7 @@ class GUIWidget(QtWidgets.QWidget):
 
 
 class GUIWidgetFrame(Frame, QtWidgets.QWidget):
+    """Example ``Frame``/``QWidget`` with mid-line width 5 containing one push button at (20, 10)."""
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         Frame        .__init__(self, parent, mlw=5)
@@ -70,6 +87,7 @@ class GUIWidgetFrame(Frame, QtWidgets.QWidget):
 
 
 class GUIFrame(Frame):
+    """Example ``Frame`` with mid-line width 30 containing one push button at (30, 20); shown when the module is run as a script."""
     def __init__(self, parent=None):
         #Frame.__init__(self, parent, mlw=5)
         Frame.__init__(self, mlw=30)

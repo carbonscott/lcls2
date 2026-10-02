@@ -235,6 +235,7 @@ def check_node(hostname: str) -> dict:
 
 
 class NodeChecker(QObject):
+    """QObject worker that runs `check_node` on each host (5 in parallel) and emits results and progress."""
     result_ready = pyqtSignal(dict)
     progress = pyqtSignal(int)
     finished = pyqtSignal()
@@ -245,6 +246,10 @@ class NodeChecker(QObject):
         self._running = True
 
     def run(self):
+        """Run `check_node` for all hosts with a thread pool, emitting `result_ready` per host and `progress` (percent), then `finished`.
+
+        Stops consuming results early once `stop` has been called.
+        """
         total = len(self._hostnames)
         done = 0
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as exe:
@@ -258,6 +263,7 @@ class NodeChecker(QObject):
         self.finished.emit()
 
     def stop(self):
+        """Set the running flag to False so `run` stops after the current result."""
         self._running = False
 
 
@@ -267,6 +273,7 @@ class NodeChecker(QObject):
 
 
 def make_item(text: str, align=Qt.AlignCenter, tooltip: str = "") -> QTableWidgetItem:
+    """Return a QTableWidgetItem with `text`, alignment `align` and optional tool tip."""
     item = QTableWidgetItem(text)
     item.setTextAlignment(align)
     if tooltip:
@@ -275,6 +282,7 @@ def make_item(text: str, align=Qt.AlignCenter, tooltip: str = "") -> QTableWidge
 
 
 def colour_item(item: QTableWidgetItem, colour: QColor):
+    """Set the background colour of `item`."""
     item.setBackground(colour)
 
 
@@ -284,6 +292,10 @@ def colour_item(item: QTableWidgetItem, colour: QColor):
 
 
 class MainWindow(QMainWindow):
+    """Window with a 'Refresh All' button, progress bar, legend and a table of datadev checks for drp-srcf-cmp001..080.
+
+    Ansible groups per host are read once from `HOSTS_FILE`.
+    """
     def __init__(self):
         super().__init__()
         self.setWindowTitle("datadev Node Status Monitor")
@@ -539,6 +551,7 @@ class MainWindow(QMainWindow):
         return -1
 
     def closeEvent(self, event):
+        """Stop the checker and quit/wait (up to 2 s) for its thread, then call the base closeEvent."""
         if self._checker:
             self._checker.stop()
         if self._checker_thread:
@@ -553,6 +566,7 @@ class MainWindow(QMainWindow):
 
 
 def main():
+    """Create the QApplication (Fusion style, 9 pt font), show `MainWindow` and run the event loop."""
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 

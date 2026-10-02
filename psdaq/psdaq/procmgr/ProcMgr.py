@@ -1,6 +1,11 @@
 #!/bin/env python
 # ProcMgr.py - configure (start, stop, status) the DAQ processes
 
+"""`ProcMgr`: start, stop, restart and report DAQ processes run under procServ, driven by a procmgr config file.
+
+Processes are reached over telnet on per-process control ports; dictionary keys have
+the form '<host>:<uniqueid>'.
+"""
 import os, sys, string, telnetlib
 from subprocess import Popen, PIPE, DEVNULL, run
 import stat, errno, time
@@ -20,6 +25,10 @@ rcFileDefault = '/etc/procmgrd.conf'
 # printError
 #
 def printError(errorCode, args):
+    """Print a '*** ERR: failed to run' message for a non-zero `errorCode`, with specific texts for codes 5-13.
+
+    Does nothing for code 0.
+    """
     if (errorCode == 5):
         print("*** ERR: failed to run '%s' (invalid arguments)" % args)
     elif (errorCode == 6):
@@ -55,6 +64,10 @@ def printError(errorCode, args):
 # RETURNS: Two values: running config filename, last config filename
 #
 def getConfigFileNames(argconfig, partition):
+    """Return ('<dir>/p<partition>.cnf.running', '<dir>/p<partition>.cnf.last') using the directory of `argconfig` (no directory if it has none).
+
+    The files need not exist.
+    """
     dirname = os.path.dirname(argconfig)
     if len(dirname) > 0:
         run_name = dirname + '/' + 'p%d.cnf.running' % partition
@@ -73,6 +86,7 @@ def getConfigFileNames(argconfig, partition):
 # RETURNS: Two values: username, hostname
 #
 def getUser():
+    """Return (user name, host name) from `getpass.getuser()` and `platform.node()`."""
     return getuser(), node()
 
 
@@ -83,6 +97,7 @@ def getUser():
 #   '/reg/lab2/home/caf/2012/03/29_16:27:22_localhost:helloX.log' -> 'helloX'
 #
 def name2uniqueid(name):
+    """Translate a procServ name (bytes) ending in '.log' to the part after the last ':' without '.log'; otherwise return it unchanged."""
     rv = name
     try:
         if name.endswith(b".log"):
@@ -97,6 +112,7 @@ def name2uniqueid(name):
 # progressMessage
 #
 def progressMessage(msg):
+    """Print `msg` padded to 60 characters followed by ' ...' without a newline, and flush stdout."""
     print('%-60s ...' % msg, end=' ')
     sys.stdout.flush()
     return
@@ -112,6 +128,7 @@ def progressMessage(msg):
 # makekey - given <host> and <uniqueid>, generate a dictionary key
 #
 def makekey(host, uniqueid):
+    """Return '<host>:<uniqueid>'."""
     return (host + ':' + uniqueid)
 
 
@@ -119,6 +136,7 @@ def makekey(host, uniqueid):
 # key2host - given a dictionary key, get <host>
 #
 def key2host(key):
+    """Return the part of `key` before the first ':'."""
     return (key.split(':')[0])
 
 
@@ -126,6 +144,7 @@ def key2host(key):
 # key2uniqueid - given a dictionary key, get <uniqueid>
 #
 def key2uniqueid(key):
+    """Return the part of `key` between the first and second ':'."""
     return (key.split(':')[1])
 
 
@@ -133,6 +152,13 @@ def key2uniqueid(key):
 # mkdir_p - emulate mkdir -p
 #
 def mkdir_p(path):
+    """Create `path` and its parents like 'mkdir -p'.
+
+    Returns
+    -------
+    int
+        0 if the directory was created, 1 if it already existed; other OSErrors are raised.
+    """
     rv = 1
     try:
         os.makedirs(path)
@@ -152,6 +178,7 @@ def mkdir_p(path):
 # Substring '.' is a special case that matches all IDs.
 #
 def idFoundInList(id, substrings):
+    """Return True if any string in `substrings` occurs in `id` or is '.' (after stripping)."""
     found = False
     for item in substrings:
         if (id.find(item) != -1) or (item.strip() == '.'):
@@ -166,6 +193,11 @@ def idFoundInList(id, substrings):
 # Returns: non-negative platform number, or -1 on error.
 #
 def deduce_platform(configfilename):
+    """Execute config file `configfilename` and return its 'platform' as an int.
+
+    Requires $CONDA_PREFIX. Returns -1 (and prints the error) if execution fails or
+    'platform' is not a digit string.
+    """
     rv = -1  # return -1 on error
     cc = {'platform': None, 'procmgr_config': None, 'TESTRELDIR': None, 'CONDA_PREFIX': os.environ['CONDA_PREFIX'],
           'CONFIGDIR': '',
@@ -187,6 +219,11 @@ def deduce_platform(configfilename):
 # RETURNS: Three values: platform number (or -1 on error), macros, and TESTRELDIR
 #
 def deduce_platform2(configfilename, platform=None):
+    """Execute config file `configfilename` and return (platform, procmgr_macro, TESTRELDIR).
+
+    platform is -1 unless the file leaves a digit string in 'platform'; TESTRELDIR comes
+    from the file if non-empty, else from $TESTRELDIR, else ''. Requires $CONDA_PREFIX.
+    """
     platform_rv = -1  # return -1 on error
     macro_rv = {}
     testreldir_rv = ''
@@ -219,6 +256,10 @@ def add_macro_config(procmgr_macro, oldfilename, newfilename, platform):
     #
     # read old file into memory
     #
+    """Write `newfilename` as a generated header (command line, date, `procmgr_macro` entries and platform) followed by the contents of `oldfilename`.
+
+    Read/write errors are printed; an unexpected error while building the header is re-raised.
+    """
     try:
         oldfile = open(oldfilename, 'r')
         oldfilecontents = oldfile.read()
@@ -270,6 +311,7 @@ def add_macro_config(procmgr_macro, oldfilename, newfilename, platform):
 # findOnPath - find executable on PATH environment variable
 #
 def findOnPath(cmd, env):
+    """Return the full path of `cmd` found on the PATH given in the space-separated 'PATH=...' entry of `env`, else `cmd` unchanged."""
     retval = cmd
     if env is not None:
         path = None
@@ -288,6 +330,7 @@ def findOnPath(cmd, env):
 # ConfigFileError - this exception is raised to report configuration file errors
 #
 class ConfigFileError(Exception):
+    """Exception for config file errors; `value` holds the message and `str()` returns its repr."""
     def __init__(self, value):
         self.value = value
 
@@ -300,6 +343,14 @@ class ConfigFileError(Exception):
 #
 class ProcMgr:
     # index into arrays managed by this class
+    """Read a procmgr config file and the current procServ status of each process it lists.
+
+    The file is executed with `exec`; each 'procmgr_config' entry needs 'cmd' and 'id'
+    and may give host, flags, port, rtprio, env, evr and conda. Control ports are
+    assigned (static 'port' entries first) from `baseport` + 100*platform + 2 per host,
+    and each port is probed by telnet to read the procServ banner. Config errors raise
+    `ConfigFileError`; platform -1 prints an error and leaves the dictionary empty.
+    """
     DICT_STATUS = 0
     DICT_PID = 1
     DICT_CMD = 2
@@ -646,6 +697,7 @@ class ProcMgr:
             # DICT_STATUS  DICT_PID  DICT_CMD  DICT_CTRL      DICT_PPID  DICT_FLAGS  DICT_GETID DICT_CONDA DICT_ENV DICT_RTPRIO
 
     def spawnXterm(self, name, host, port, large=False):
+        """Start an xterm titled `name` running telnet to `host` `port` (larger, colored window if `large`)."""
         if large:
             args = [self.PATH_XTERM, "-bg", "midnightblue", "-fg", "white", "-fa", "18", "-T", name, \
                     "-e", self.PATH_TELNET, host, port]
@@ -655,6 +707,15 @@ class ProcMgr:
         return
 
     def spawnConsole(self, uniqueid, large=False):
+        """Open an xterm with telnet to the procServ port of `uniqueid` (preceded by cat of its log file if that exists).
+
+        Returns
+        -------
+        int
+            0 on success; 1 if the id is unknown, not RUNNING/SHUTDOWN, or starting the xterm
+            raised. The log-file path is bytes, so concatenating it raises inside the try and
+            returns 1 whenever the file exists.
+        """
         rv = 1  # return value (0=OK, 1=ERR)
         found = False
         for key in self.d.keys():
@@ -688,6 +749,14 @@ class ProcMgr:
         return rv
 
     def spawnLogfile(self, uniqueid, large=False):
+        """Open an xterm running 'less +F' on the log file '<LOGPATH macro or .>/<getid>' of `uniqueid`.
+
+        Returns
+        -------
+        int
+            0 on success; 1 if the id or log file is not found, it is not RUNNING/SHUTDOWN,
+            or starting the xterm raised.
+        """
         rv = 1  # return value (0=OK, 1=ERR)
         logfile = ''
         found = False
@@ -719,6 +788,12 @@ class ProcMgr:
         return rv
 
     def readLogPortBanner(self):
+        """Read the procServ banner from the open telnet connection and set status, PIDs and child name.
+
+        Sets SHUTDOWN (procServ PID and child name) or RUNNING (child PID, name and procServ
+        PID). Returns 1 on success; if the banner end is missing it sets ERROR and returns 0,
+        but its message concatenates str and bytes, which raises TypeError first.
+        """
         response = self.telnet.read_until(self.MSG_BANNER_END, 1)
         if not response.count(self.MSG_BANNER_END):
             print('readLogPortBanner: banner not found in response: ' + response)
@@ -741,6 +816,7 @@ class ProcMgr:
     # show - call status() with an empty id_list
     #
     def show(self, verbose=0):
+        """Print the status of all processes via ``status([], verbose)`` and return its result (1)."""
         return self.status([], verbose)
 
     #
@@ -748,6 +824,16 @@ class ProcMgr:
     #
     def status(self, id_list, verbose=0, only_static=0):
 
+        """Print a status table (host, id, status, PID, port, command) for the processes in `id_list` (all if empty).
+
+        With `only_static`, only 'k'-flagged entries are shown. Consoles/log files are opened
+        for ids in the X/x lists, and log paths are printed if `verbose`.
+
+        Returns
+        -------
+        int
+            Always 1.
+        """
         nonePrinted = 1
 
         if self.isEmpty():
@@ -820,6 +906,11 @@ class ProcMgr:
     #
     def getStatus(self, id_list=[], verbose=0, only_static=0):
 
+        """Return a list of {'showId', 'status', 'host'} dicts for the processes in `id_list` (all if empty).
+
+        'showId' is the config id for NOCONNECT entries, else the id derived from the procServ
+        child name (bytes). With `only_static`, only 'k'-flagged entries are included.
+        """
         resultlist = list()
 
         if self.isEmpty():
@@ -859,6 +950,7 @@ class ProcMgr:
     # checkConnection
     #
     def checkConnection(self, key, value, verbose=0):
+        """Return True if a telnet connection to the process's control port succeeds within two tries (the connection is closed again)."""
         connected = False
         # open a connection to the procServ control port
         started = False
@@ -889,6 +981,13 @@ class ProcMgr:
     def restart(self, key, value, verbose=0):
 
         # open a connection to the procServ control port
+        """Restart a SHUT DOWN process by telnet: wait for the shutdown message, send ^R and wait for 'new child'.
+
+        Returns
+        -------
+        bool
+            True if the restart message was seen; False otherwise (errors are printed).
+        """
         started = False
         connected = False
         telnetCount = 0
@@ -931,6 +1030,7 @@ class ProcMgr:
     # startAll - call start() with an empty id_list
     #
     def startAll(self, verbose=0, logpathbase=None, coresize='0', rcFile=rcFileDefault):
+        """Call ``start([], verbose, logpathbase, coresize, rcFile)`` and return its result."""
         return self.start([], verbose, logpathbase, coresize, rcFile)
 
     #
@@ -940,6 +1040,18 @@ class ProcMgr:
     #
     def start(self, id_list, verbose=0, logpathbase=None, coresize='0', rcFile=rcFileDefault):
 
+        """Start the processes in `id_list` (all if empty) that are not connected, and restart SHUTDOWN ones.
+
+        Requires $CONDA_PREFIX, $CONFIGDB_AUTH and $SUBMODULEDIR and a platform 0-9. Each
+        process is launched with `condaProcServ` (locally via shell or through the host's
+        procmgr telnet port with exported variables), optionally with a log file under
+        `logpathbase`; xterms are opened for X/x flags.
+
+        Returns
+        -------
+        int
+            0 if any process was started, else 1.
+        """
         rv = 1  # return value
         started_count = 0  # count successful start commands
 
@@ -1261,12 +1373,23 @@ class ProcMgr:
     # isEmpty
     #
     def isEmpty(self):
+        """Return True if no processes are configured."""
         return (len(self.d) < 1)
 
     #
     # stopDictionary
     #
     def stopDictionary(self, stopdict, verbose, sigdelay):
+        """Stop the processes in `stopdict` through their procServ control ports.
+
+        Sends ^C to 's'-flagged ones and waits `sigdelay` seconds, then ^X (retried once) to
+        those not shut down, then ^Q to all, updating their status.
+
+        Returns
+        -------
+        int
+            0, or 1 if any write/read raised (or, when `verbose`, a retried kill failed).
+        """
         rv = 0  # return value
         stopcount = 0
 
@@ -1420,12 +1543,23 @@ class ProcMgr:
     # stopAll - call stop() with an empty id_list
     #
     def stopAll(self, verbose=0, sigdelay=1):
+        """Call ``stop([], verbose, sigdelay)`` and return its result."""
         return self.stop([], verbose, sigdelay)
 
     #
     # stop
     #
     def stop(self, id_list, verbose=0, sigdelay=1, only_static=0):
+        """Stop the connected processes in `id_list`; with an empty list, all except static ('k') entries.
+
+        With `only_static`, only 'k' entries are considered. Exceptions from
+        `stopDictionary` are printed.
+
+        Returns
+        -------
+        int
+            Result of `stopDictionary`, or 0 if nothing was configured or it raised.
+        """
         rv = 0  # return value
 
         if self.isEmpty():
@@ -1470,6 +1604,7 @@ class ProcMgr:
     # getIdList
     #
     def getIdList(self):
+        """Return the list of unique ids of all configured processes."""
         idList = []
         for key, value in self.d.items():
             idList.append(key2uniqueid(key))
@@ -1484,6 +1619,7 @@ class ProcMgr:
     def getProcessCounts(self):
 
         # count the processes that are not NOCONNECT
+        """Return (static count, dynamic count) of processes that are not NOCONNECT, split by the 'k' flag."""
         staticProcessCount = 0
         dynamicProcessCount = 0
         for key, value in self.d.items():
@@ -1501,6 +1637,7 @@ class ProcMgr:
     # RETURNS: Two values: username, hostname
     #
     def getStartUser(self):
+        """Return the 'USER' and 'HOST' macros, each '(unknown)' if missing."""
         return self.procmgr_macro.get('USER', '(unknown)'), self.procmgr_macro.get('HOST', '(unknown)')
 
     #
@@ -1512,6 +1649,13 @@ class ProcMgr:
     #
     def setStatus(self, key_list, newStatus):
 
+        """Set the status of each key in `key_list` to `newStatus`.
+
+        Returns
+        -------
+        int
+            0 on success; 1 (after printing an error) at the first unknown key.
+        """
         for key in key_list:
             if key in self.d:
                 self.d[key][self.DICT_STATUS] = newStatus

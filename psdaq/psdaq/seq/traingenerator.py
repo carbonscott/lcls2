@@ -1,3 +1,4 @@
+"""`TrainGenerator`: build sequence source lines for bunch trains (start bucket, train spacing, bunches per train, repeats)."""
 import argparse
 import os
 import sys
@@ -15,6 +16,18 @@ from .globals import *
 #
 class TrainGenerator(object):
 #    COUNT_RANGE=256
+    """Generate instruction lines (in `instr`) for trains of requests; the meaning of each argument is listed in the comment above the class.
+
+    Requests are ControlRequest([0]) if `charge` is None, else BeamRequest(charge).
+    repeat < 0 loops forever; otherwise `repeat` trains are issued, optionally followed by
+    a CheckPoint (`notify`) and either a branch back to the first train (`rrepeat`, after
+    an optional `rpad` wait) or a 1 Hz idle loop.
+
+    Notes
+    -----
+    The 'loop B' and 'loop C' paths write the literal text 'self.COUNT_RANGE-1' into the
+    generated lines.
+    """
     COUNT_RANGE=1024
 
     def __init__(self, start_bucket=0, 
@@ -162,6 +175,10 @@ class TrainGenerator(object):
 
 
 def main():
+    """Parse -t, -b, -n, -s, -q, -r, -N, -d, build a `TrainGenerator` and print seqcodes and instruction lines.
+
+    Above 1000 lines it writes a warning using `gen.ninstr`, an attribute the class does not define (AttributeError).
+    """
     parser = argparse.ArgumentParser(description='simple validation printing')
     parser.add_argument("-t", "--train_spacing"     , required=True , type=int, help="buckets between start of each _train")
     parser.add_argument("-b", "--bunch_spacing"     , required=True , type=int, help="buckets between bunches within _train")

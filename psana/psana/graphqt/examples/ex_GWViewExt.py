@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Example/test for ``GWViewExt``: views with different origins and scale controls and keyboard control of the scene rect.
+
+Run as a script with test name ``'0'``-``'8'``. Configures root logging at DEBUG level at import time.
+"""
 from psana.graphqt.GWViewExt import *
 
 logging.basicConfig(format='[%(levelname).1s] %(filename)s L:%(lineno)03d %(message)s', level=logging.DEBUG)
@@ -12,6 +16,7 @@ import numpy as np
 
 class TestGWViewExt(GWViewExt):
 
+    """``GWViewExt`` subclass with key handling for resetting and changing the scene rect."""
     KEY_USAGE = 'Keys:'\
             '\n  ESC - exit'\
             '\n  R - reset original size'\
@@ -22,6 +27,11 @@ class TestGWViewExt(GWViewExt):
 
     def keyPressEvent(self, e):
         #logger.debug('keyPressEvent, key=', e.key())
+        """Handle keys: Escape closes, R calls ``reset_scene_rect()``, U resets to rect (-10, -10, 30, 30), W/D set a random rect.
+
+        W and D both call ``reset_scene_rect(rs)``, which also replaces the default rect; the W/D
+        difference only changes the printed message. Other keys print ``KEY_USAGE``.
+        """
         if   e.key() == Qt.Key_Escape:
             self.close()
 
@@ -48,6 +58,11 @@ class TestGWViewExt(GWViewExt):
 
 
 def test_fwviewext(tname):
+    """Create a ``QApplication`` and show a ``TestGWViewExt`` over scene rect (-10, -10, 30, 30) configured by ``tname``.
+
+    Tests ``'0'``-``'8'`` vary origin (DL, UL, UR, DR), ``scale_ctl`` and ``show_mode``; other names print a
+    message and return. Mouse-move, scene-rect and mouse-press signals are connected to the test slots.
+    """
     print('%s:' % sys._getframe().f_code.co_name)
     b="background-color:yellow; border: 0px solid green"
     app = QApplication(sys.argv)

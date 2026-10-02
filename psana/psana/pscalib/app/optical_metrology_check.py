@@ -40,6 +40,10 @@ class OpticalMetrologyCheck(object):
 
 
     def init_parameters(self):
+        """Parse the command line with :func:`option_parser` and store the options as attributes (input file, output prefix and derived ``.txt``/``.png`` names, pixel size, tolerances, verbosity, plot flags, geometry file).
+
+        The first positional argument, if given, overrides ``--ifn``. With the INFO verbosity bit the command line and parameters are printed.
+        """
         self.parser = option_parser()
         (popts, pargs) = self.parser.parse_args()
         self.ifname = pargs[0] if len(pargs) else popts.ifn # popts['ifn']
@@ -150,6 +154,7 @@ class OpticalMetrologyCheck(object):
 
 
     def check_points_numeration(self):
+        """Print whether all point numbers in ``arr_segs`` are sequential starting at 4k+1, then the same check for each segment's four points."""
         if self.vrb & INFO: print('%s\n%s' % (60*'-', sys._getframe().f_code.co_name))
 
         if is_correct_numeration(self.arr_segs[:,:,0].flatten()): print('OK - points in table are sequential')
@@ -165,6 +170,7 @@ class OpticalMetrologyCheck(object):
 
 
     def test_loop_over_segments(self):
+        """For each segment compute its center and run ``evaluate_length_width_angle`` and ``evaluate_deviation_from_flatness``; the center is printed with the DEBUG verbosity bit."""
         nsegs = self.arr_segs.shape[0]
         for nseg in range(nsegs):
             arr1seg = self.arr_segs[nseg,:,:4]
@@ -176,6 +182,7 @@ class OpticalMetrologyCheck(object):
 
 
     def print_quality_check_tables(self):
+        """Print the X-Y and Z quality-check tables from ``txt_qc_table_xy`` and ``txt_qc_table_z``."""
         if self.vrb & DEBUG: print('In %s' % (sys._getframe().f_code.co_name))
 
         txt = self.txt_qc_table_xy()
@@ -227,6 +234,7 @@ class OpticalMetrologyCheck(object):
 
 
     def evaluate_short_long_average(self):
+        """Set ``dZSA``, ``dZLA``, ``SA``, ``LA``, ``dSA`` and ``dLA`` to the averages of the corresponding ``...1`` and ``...2`` attributes set by other methods."""
         self.dZSA = 0.5 * (self.dZS1 + self.dZS2)
         self.dZLA = 0.5 * (self.dZL1 + self.dZL2)
         self.SA   = 0.5 * (self.S1   + self.S2)
@@ -436,6 +444,10 @@ class OpticalMetrologyCheck(object):
 #--------- GRAPHICS -----------
 
     def plot_metrology_data(self, offset=2000):
+        """Plot the measured points, segment outlines, segment numbers and optional geometry-file outlines with matplotlib, show the figure and save it to ``ofplot``.
+
+        Imports ``matplotlib.pyplot`` and ``matplotlib.lines`` as module globals ``plt`` and ``lines``, which the other plotting functions use.
+        """
         import matplotlib.pyplot as plt;   global plt
         import matplotlib.lines  as lines; global lines
 
@@ -468,6 +480,7 @@ class OpticalMetrologyCheck(object):
 
 
     def plot_points(self, axes):
+        """Draw each segment's four measured points as a closed red polyline and label every point with its number; prints the x coordinates per segment."""
         arr_segs = self.arr_segs
         nsegs = arr_segs.shape[0]
         for nseg in range(nsegs):
@@ -484,6 +497,7 @@ class OpticalMetrologyCheck(object):
 
 
     def plot_centers(self, axes):
+        """Label each segment center (mean of its four points) with the segment index."""
         nsegs = self.arr_segs.shape[0]
         for nseg in range(nsegs):
             arr1seg = self.arr_segs[nseg,:,:4]
@@ -493,6 +507,7 @@ class OpticalMetrologyCheck(object):
 
 
     def plot_geometry_file(self, axes):
+        """Draw the outlines of 16 segments from geometry file ``gfn``, shifted so geometry segment 0 matches the center of measured segment 15; returns at once if ``gfn`` is None."""
         print('geometry file name: %s' % str(self.gfn))
         if self.gfn is None: return
 
@@ -621,6 +636,10 @@ class OpticalMetrologyCheck(object):
 
 def add_stat_text(axhi, weights, bins):
     #mean, rms, err_mean, err_rms, neff = proc_stat(weights,bins)
+    """Write entries, mean, RMS (with errors), skewness and kurtosis from :func:`proc_stat` in the upper-right corner of histogram axes ``axhi``.
+
+    For a log y scale it calls ``log10``, which is not imported in this module (NameError).
+    """
     mean, rms, err_mean, err_rms, neff, skew, kurt, err_err, sum_w = proc_stat(weights,bins)
     pm = r'$\pm$'
     txt  = 'Entries=%d\nMean=%.2f%s%.2f\nRMS=%.2f%s%.2f\n' % (sum_w, mean, pm, err_mean, rms, pm, err_rms)
@@ -647,6 +666,14 @@ def add_stat_text(axhi, weights, bins):
 
 
 def proc_stat(weights, bins):
+    """Return weighted statistics of a histogram with bin contents ``weights`` and bin edges ``bins``.
+
+    Returns
+    -------
+    tuple
+        ``(mean, rms, err_mean, err_rms, neff, skew, kurt, err_err, sum_w)`` evaluated at bin centers; all
+        zeros if the sum of weights is <= 0.
+    """
     center = np.array([0.5*(bins[i] + bins[i+1]) for i,w in enumerate(weights)])
 
     sum_w  = weights.sum()
@@ -709,6 +736,7 @@ def hist1d(arr, bins=None, amp_range=None, weights=None, color=None, show_stat=T
 
 
 def save(fname='img.png', do_save=True, pbits=0o377):
+    """Save the current matplotlib figure to ``fname`` if ``do_save`` is True (printing the name if bit 0 of ``pbits`` is set)."""
     if not do_save: return
     if pbits & 1: print('Save plot in file: %s' % fname)
     plt.savefig(fname)
@@ -721,6 +749,7 @@ def save(fname='img.png', do_save=True, pbits=0o377):
 
 
 def move(x0=200,y0=100):
+    """Move the current matplotlib figure window to ``(x0, y0)``."""
     plt.get_current_fig_manager().window.move(x0, y0)
 
 
@@ -729,6 +758,7 @@ def move(x0=200,y0=100):
 
 
 def is_correct_numeration(mylst):
+    """Return True if the first value of ``mylst`` is 4k+1 and every following value is the previous one plus 1; otherwise False."""
     for i, v in enumerate(mylst):
         if i==0:
             if (v-1)%4 != 0: return False
@@ -758,6 +788,7 @@ def print_command_line_parameters(parser):
 
 
 def usage():
+    """Return the usage text with ``%prog`` placeholders and examples."""
     return '\nCommand to run:'+\
            '\n  %prog'+\
            ' -i <input-file-name> -o <output-file-name> -p -s <pixel-seze-um> -v <verbosity-bitword>'+\
@@ -769,6 +800,7 @@ def usage():
 
 def option_parser():
 
+    """Return an ``optparse.OptionParser`` with options ``-i/--ifn``, ``-o/--ofp``, ``-s/--psz`` (109.92), ``-x/--txy`` (60), ``-z/--toz`` (100), ``-p/--plt`` (``store_false``, default True), ``-H/--his``, ``-v/--vrb`` (15) and ``-g/--gfn``."""
     from optparse import OptionParser
 
     d_ifn = './optical_metrology.txt'
@@ -805,6 +837,7 @@ def option_parser():
     return parser
 
 def do_main():
+    """Run ``OpticalMetrologyCheck()`` (all processing happens in its constructor) and exit via ``sys.exit()``."""
     omc = OpticalMetrologyCheck()
     sys.exit()
 

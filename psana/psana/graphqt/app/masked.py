@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Command-line launcher of the Mask Editor GUI.
+
+Parses the command line with ``argument_parser`` and passes all options to ``psana.graphqt.MEDMain.mask_editor``.
+"""
 import sys
 import psana.graphqt.MEDUtils as mu  # includes psana.detector.Utils info_dict, info_command_line, info_namespace, info_parser_arguments, str_tstamp
 
@@ -30,6 +34,10 @@ USAGE = '\n  %s -a <fname-nda.npy> -k <DataSource-kwargs> -d <detector> -g <fnam
 #      + '\n  %s -k /cds/data/psdm/prj/public01/xtc/rixl1013320-r0093-s006-c000.xtc2 -d atmopal -o ./work' % SCRNAME\
 
 def argument_parser():
+    """Build and return the ArgumentParser for the Mask Editor command.
+
+    Options: positional ``posargs``, -a/--ndafname, -d/--detname, -k/--dskwargs, -g/--geofname, -L/--logmode, -o/--dirrepo, --ctab, --dirmode, --filemode, --group and --savelog (``store_false``, default True).
+    """
     from argparse import ArgumentParser
 
     d_posargs  = []        # [NDAFNAME, GEOFNAME]
@@ -79,6 +87,7 @@ def argument_parser():
     return parser
 
 def mask_editor():
+    """Parse the command line, print the parsed arguments and launch ``MEDMain.mask_editor(**kwargs)`` with all of them."""
     parser = argument_parser()
     namesp = parser.parse_args()
     posargs = namesp.posargs

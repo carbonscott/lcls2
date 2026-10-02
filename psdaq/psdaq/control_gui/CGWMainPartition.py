@@ -39,7 +39,10 @@ from psdaq.control_gui.CGConfigParameters import cp
 #--------------------
 
 class CGWMainPartition(QGroupBox):
-    """
+    """QGroupBox 'Partition' with Select/Show buttons above a `CGWMainCollection` widget.
+
+    Registers itself as `cp.cgwmainpartition`. Table columns are 'sel', 'grp',
+    'level/pid/host', 'ID' and 'Monitor'.
     """
     TABTITLE_H = ['sel', 'grp', 'level/pid/host', 'ID', 'Monitor']
 
@@ -85,6 +88,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def set_tool_tips(self):
+        """Set tool tips on the group box and the Select/Show buttons."""
         self.setToolTip('Partition GUI')
         self.but_select.setToolTip('Select partitions')
         self.but_show.setToolTip('Show partitions')
@@ -92,6 +96,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def set_style(self):
+        """Apply the group-box title style, size policy, margins and minimum size 150x100."""
         from psdaq.control_gui.Styles import style
         self.setStyleSheet(style.qgrbox_title)
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
@@ -101,11 +106,13 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(200, 120)."""
         return QSize(200, 120)
  
 #--------------------
  
     def on_but_select(self):
+        """Close the selection window if open, then send a 'rollcall' transition via `roll_call`."""
         logger.debug('on_but_select')
         if self.w_select is not None:
             self.w_select.close()
@@ -115,6 +122,10 @@ class CGWMainPartition(QGroupBox):
 #--------------------
  
     def open_select_window(self):
+        """Open a non-modal `QWPopupTableCheck` 'Select partition' window filled from `get_platform()`.
+
+        The table is editable only when `do_ctrl` is True (set by `set_buts_enabled`).
+        """
         logger.debug('open_select_window')
         dict_platf, list2d = get_platform() # list2d = [[[True,''], 'test/19670/daq-tst-dev02', 'testClient2b'], ...]
 
@@ -169,6 +180,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def update_select_window(self):
+        """Print debug text and refresh the selection window's partition table if it is open."""
         print('*** update select')
         logger.debug('update_select_window')
         if self.w_select is None: return
@@ -178,6 +190,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def update_show_window(self):
+        """Refill the show window's table from `get_platform()` if that window is open."""
         logger.debug('update_show_window')
         if cp.cgwpartitiontable is None: self.w_show = None
         if self.w_show is None: return
@@ -189,6 +202,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def on_but_show(self):
+        """Open a `CGWPartitionTable` of active processes, or close it if already open, then update the Show button title."""
         logger.debug('on_but_show')
 
         if cp.cgwpartitiontable is None: self.w_show = None
@@ -295,6 +309,7 @@ class CGWMainPartition(QGroupBox):
 #--------------------
 
     def closeEvent(self, e):
+        """Call `QGroupBox.closeEvent` and set `cp.cgwmainpartition` to None."""
         logger.debug('closeEvent')
         QGroupBox.closeEvent(self, e)
         cp.cgwmainpartition = None
@@ -304,6 +319,10 @@ class CGWMainPartition(QGroupBox):
     if __name__ == "__main__":
  
       def resizeEvent(self, e):
+        """Print the widget size.
+
+        Defined only when the module is run as a script.
+        """
         print('CGWMainPartition.resizeEvent: %s' % str(self.size()))
 
 #--------------------

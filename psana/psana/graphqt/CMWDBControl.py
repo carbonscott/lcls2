@@ -125,6 +125,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_tool_tips(self):
+        """Set the base-class tool tips and those of the host, port, docs, selection, add, delete, filter and level widgets."""
         CMWControlBase.set_tool_tips(self)
         self.cmb_host.setToolTip('Select DB host')
         self.cmb_port.setToolTip('Select DB port')
@@ -140,6 +141,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_style(self):
+        """Apply the base style plus label styles, button icons and fixed widths, a checkable Test button, margins, minimum width 500 and fixed height 30; hides the inherited file-name widget."""
         CMWControlBase.set_style(self)
         self.lab_host.setStyleSheet(style.styleLabel)
         self.lab_port.setStyleSheet(style.styleLabel)
@@ -176,6 +178,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def closeEvent(self, event):
+        """Log a debug message; the event is not passed to the base class."""
         logger.debug('closeEvent')
 
 
@@ -191,6 +194,10 @@ class CMWDBControl(CMWControlBase):
 
 
     def buttons_dict(self):
+        """Return a dict mapping button-group names ('DB filter', 'Expand', 'Host & port', ..., 'View') to the masked bits of ``cp.cdb_buttons``.
+
+        Values are the masked integers (non-zero when visible), not booleans.
+        """
         r = cp.cdb_buttons.value()
         return {'DB filter'  : r & 1,\
                 'Expand'     : r & 2,\
@@ -210,6 +217,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_buttons_config_bitword(self, d):
+        """Encode the visibility dict ``d`` (keys as in ``buttons_dict``) into a bit word and store it in ``cp.cdb_buttons``."""
         w = 0
         if d['DB filter']  : w |= 1
         if d['Expand']     : w |= 2
@@ -230,6 +238,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_buttons_visiable(self, dic_buts=None):
+        """Show or hide the control widgets according to ``dic_buts`` (default ``buttons_dict()``)."""
         d = self.buttons_dict() if dic_buts is None else dic_buts
         self.set_db_filter_visible (d['DB filter'])
         self.set_host_port_visible (d['Host & port'])
@@ -252,6 +261,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def select_visible_buttons(self):
+        """Let the user edit button visibility in a check-box popup; if accepted (response 1), apply it and save the bit word."""
         logger.debug('select_visible_buttons')
         d = self.buttons_dict()
         resp = qwu.change_check_box_dict_in_popup_menu(d, 'Select buttons',\
@@ -267,6 +277,10 @@ class CMWDBControl(CMWControlBase):
 
 
     def select_doc_widget(self):
+        """Let the user pick a document widget type from a popup menu, store it in ``cp.cdb_docw``, rebuild the documents widget of ``cp.cmwdbmain`` and update the Docs button text.
+
+        Returns without change if the menu is cancelled.
+        """
         resp = qwu.select_item_from_popup_menu(cp.list_of_doc_widgets, parent=self)
         logger.debug('select_doc_widget resp: %s' % resp)
         if resp is None: return
@@ -277,6 +291,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_host_port_visible(self, is_visible=True):
+        """Show or hide the host and port labels and combo boxes."""
         self.lab_host.setVisible(is_visible)
         self.lab_port.setVisible(is_visible)
         self.cmb_host.setVisible(is_visible)
@@ -284,15 +299,18 @@ class CMWDBControl(CMWControlBase):
 
 
     def set_db_filter_visible(self, is_visible=True):
+        """Show or hide the DB filter edit field."""
         self.edi_db_filter.setVisible(is_visible)
 
 
     def set_tabs_visible(self, is_visible=True):
+        """Call ``cp.cmwmaintabs.set_tabs_visible(is_visible)``."""
         wtabs = cp.cmwmaintabs
         wtabs.set_tabs_visible(is_visible)
 
 
     def on_cmb_host_changed(self):
+        """Store the selected host in ``cp.cdb_host`` and regenerate the DB tree with ``on_edi_db_filter_finished``."""
         selected = self.cmb_host.currentText()
         cp.cdb_host.setValue(selected)
         logger.info('on_cmb_host_changed - selected: %s' % selected)
@@ -300,6 +318,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def on_cmb_port_changed(self):
+        """Store the selected port (as int) in ``cp.cdb_port`` and regenerate the DB tree with ``on_edi_db_filter_finished``."""
         selected = self.cmb_port.currentText()
         cp.cdb_port.setValue(int(selected))
         logger.info('on_cmb_port_changed - selected: %s' % selected)
@@ -307,6 +326,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def on_cmb_docw_changed(self):
+        """Store the selected document widget type in ``cp.cdb_docw`` and rebuild the documents widget of ``cp.cmwdbmain``."""
         selected = self.cmb_docw.currentText()
         cp.cdb_docw.setValue(selected)
         logger.info('on_cmb_docw_changed - selected: %s' % selected)
@@ -314,6 +334,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def on_cmb_level_changed(self):
+        """Store the selected logger level in ``cp.log_level`` and apply it to ``cp.qwloggerstd`` if that exists."""
         selected = self.cmb_level.currentText()
         cp.log_level.setValue(selected)
         logger.info('Set logger level %s' % selected)
@@ -322,6 +343,10 @@ class CMWDBControl(CMWControlBase):
 
 
     def expand_collapse_dbtree(self):
+        """Toggle the DB tree of ``cp.cmwdbmain`` between expanded and collapsed, updating the button text and icon.
+
+        Returns if ``cp.cmwdbmain`` is None.
+        """
         if cp.cmwdbmain is None: return
         wtree = cp.cmwdbmain.wtree
         but = self.but_exp_col
@@ -348,6 +373,10 @@ class CMWDBControl(CMWControlBase):
 
 
     def delete_selected_items_docs(self):
+        """Delete the documents selected in the documents widget after user confirmation.
+
+        The document ids are the selected items' accessible text; on confirmation ``dbu.delete_documents`` is called and the document list is refreshed. Returns with a warning if there is no documents widget.
+        """
         logger.debug('delete_selected_items_docs')
         wdocs = cp.cmwdbdocswidg
         if wdocs is None:
@@ -371,6 +400,10 @@ class CMWDBControl(CMWControlBase):
 
 
     def delete_selected_items_db_cols(self):
+        """Delete the DBs or collections selected in the DB tree after user confirmation.
+
+        If any selected item is a DB (no parent), the selected DBs are deleted with ``dbu.delete_databases``; otherwise the selected collections are deleted with ``dbu.delete_collections``. The tree is regenerated afterwards; returns with a warning if there is no tree or nothing is selected.
+        """
         wtree = cp.cmwdbtree
         if wtree is None:
             logger.warning('delete_selected_items_db_cols - CMWDBTree object does not exist?')
@@ -426,6 +459,10 @@ class CMWDBControl(CMWControlBase):
 
     def set_selection_mode(self):
         #logger.debug('set_selection_model')
+        """Let the user pick a selection mode for the DB tree from a popup menu, store it in ``cp.cdb_selection_mode`` and apply it.
+
+        Returns if there is no tree or the menu is cancelled.
+        """
         wtree = cp.cmwdbtree
         if wtree is None: return
         selected = qwu.select_item_from_popup_menu(wtree.dic_smodes.keys(), title='Select mode',\
@@ -517,6 +554,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def selected_db_names(self):
+        """Return the texts of the selected top-level (DB) items of the DB tree, or an empty list if the tree does not exist."""
         wtree = cp.cmwdbtree
         if wtree is None:
             logger.warning('selected_db_names - CMWDBTree object does not exist?')
@@ -577,6 +615,7 @@ class CMWDBControl(CMWControlBase):
 
 
     def on_but_clicked(self):
+        """Dispatch a click to the action of the button that has focus (expand/collapse, button selection, delete, docs widget, selection mode or add)."""
         for but in self.list_of_buts:
             if but.hasFocus(): break
         logger.info('Click on "%s"' % but.text())
@@ -611,24 +650,28 @@ class CMWDBControl(CMWControlBase):
 
 
     def on_but_pressed(self):
+        """Log at debug level the text of the button that has focus."""
         for but in self.list_of_buts:
             if but.hasFocus(): break
         logger.debug('on_but_pressed "%s"' % but.text())
 
 
     def on_but_released(self):
+        """Log at debug level the text of the button that has focus."""
         for but in self.list_of_buts:
             if but.hasFocus(): break
         logger.debug('on_but_released "%s"' % but.text())
 
 
     def on_but_toggled(self):
+        """Log at debug level the text of the button that has focus."""
         for but in self.list_of_buts:
             if but.hasFocus(): break
         logger.debug('on_but_toggled "%s"' % but.text())
 
 
     def set_logger_level(self):
+        """Log a debug message; does nothing else."""
         logger.debug('In set_logger_level')
 
 

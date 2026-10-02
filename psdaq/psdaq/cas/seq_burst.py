@@ -1,4 +1,10 @@
 #from evtsel import *
+"""Script that loads and starts a 'BurstTest' sequence with `sequser.SeqUser` on PV base --pv (default 'TPG:SYS2:2:EXP00').
+
+For i in 0-3 it adds four ControlRequest/FixedRateSync(marker=6, occ=i+1) groups with
+masks 0xf, 0xe, 0xc, 0x8 shifted by 4*i and conditional repeat counts 1, 1, 3, 7, then
+branches back to line 0; the instructions are printed, then stop/clean/load/begin(wait=True).
+"""
 import sys
 import argparse
 from sequser import *

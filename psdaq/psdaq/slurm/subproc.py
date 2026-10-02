@@ -1,8 +1,10 @@
+"""Async helper for running subprocesses."""
 import asyncio
 import sys
 
 
 class SubprocHelper:
+    """Helper with a coroutine `run_exec` that runs a command with asyncio and returns its exit code."""
     async def run_exec(self, args, env=None, echo_output=True):
         """Start a subprocess without a shell."""
         proc = await asyncio.create_subprocess_exec(

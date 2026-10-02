@@ -1,3 +1,4 @@
+"""Test script that loads a sequence file, reads sequence-engine PVs and updates the engine's event-code descriptions in ':SEQCODES'."""
 import time
 from psdaq.seq.seq import *
 from psdaq.cas.pvedit import *
@@ -6,6 +7,10 @@ import argparse
 import logging
 
 class SeqUser:
+    """PV handles for sequence engine `base` (':INSTRCNT', ':DESCINSTRS', ':INSTRS', ':SEQ00IDX', ... ':RUNNING').
+
+    ':RUNNING' is monitored with `changed`.
+    """
     def __init__(self, base):
         prefix = base
         self.ninstr   = Pv(prefix+':INSTRCNT')
@@ -25,12 +30,17 @@ class SeqUser:
         self.lock     = None
 
     def changed(self,err=None):
+        """Release and clear `self.lock` when the cached ':RUNNING' value is 0 and a lock is held."""
         q = self.running.__value__
         if q==0 and self.lock!=None:
             self.lock.release()
             self.lock=None
 
     def execute(self, title, instrset, descset=None):
+        """Do a synchronous get of several engine PVs (INSTRCNT, DESCINSTRS, SEQ00IDX, SEQ00DESC, SEQ00BDESC, RUNIDX, RUNNING, FORCERESET, SCHEDRESET).
+
+        `title`, `instrset` and `descset` are not used; nothing is written.
+        """
         self.ninstr.get()
         self.desc  .get()
         self.idxseq.get()
@@ -42,6 +52,10 @@ class SeqUser:
         self.start.get()
 
 def main():
+    """Execute the sequence script, expand it with `preproc`, print it, call `SeqUser.execute` and write the script's `seqcodes` descriptions into '<pv>:SEQCODES'.
+
+    Descriptions go to index ``4*engine + code`` of the Description array.
+    """
     parser = argparse.ArgumentParser(description='sequence pva programming')
     parser.add_argument('--engine', type=int, default=0, help="sequence engine")
     parser.add_argument("seq", help="sequence script")

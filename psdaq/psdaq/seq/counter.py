@@ -1,6 +1,4 @@
-"""
-
-"""
+"""Generate sequence files 'counter<N>.py' whose ControlRequest words count up in odd numbers, 4 bits per engine."""
 from psdaq.seq.globals import *
 from psdaq.seq.seq import *
 import argparse
@@ -13,6 +11,10 @@ args = None
 #
 def write_seq(instr, seqcodes, filename):
 
+    """Write `instr` lines with a header and `seqcodes` to `filename`, then run `validate` on it.
+
+    Logs an error if there are more than 2000 lines.
+    """
     if (len(instr) > 2000):
         logging.error(f'*** Sequence has {len(instr)} instructions.  May be too large to load. ***\n')
 
@@ -32,6 +34,10 @@ def write_seq(instr, seqcodes, filename):
 #  Generate a sequence engine with the appropriate structure
 #
 def generate_engine(engine):
+    """Write '<path>/counter<engine>.py': a 1 Hz sync, then for i < count ControlRequest(((2i+1) >> 4*engine) & 0xf) followed by Wait('910kH', period), looping back.
+
+    Seqcodes are 'Base' for engine 0 code 0 and 'C<4*engine+i-1>' otherwise.
+    """
     global_sync = 'FixedRateSync("1H", 1)'
 #    motion_step = f'FixedRateSync("910kH",{args.period})'
     motion_step = f'Wait("910kH",{args.period})'
@@ -53,6 +59,7 @@ def generate_engine(engine):
     write_seq(instr, seqcodes, f'{args.path}/counter{engine}.py')
 
 def main():
+    """Parse --period, --count and --path, then generate engine 0 and further engines while ``count >> 3`` (shifted by 4 each time) is non-zero."""
     global args
     parser = argparse.ArgumentParser(description="counter sequencer",formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--period", default=1, type=int, help='Period in 929kHz steps')

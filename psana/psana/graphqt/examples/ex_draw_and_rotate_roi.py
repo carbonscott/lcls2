@@ -13,6 +13,7 @@ from PyQt5.QtCore import Qt, QPointF, QRectF, QLineF
 
 class TestQGraphicsView(QGraphicsView):
 
+    """QGraphicsView test subclass whose keys and mouse clicks move, rotate and scale the ellipse item stored in ``self.ite2``."""
     KEY_USAGE = 'Keys:'\
             '\n  ESC - exit'\
             '\n  P - position'\
@@ -21,6 +22,7 @@ class TestQGraphicsView(QGraphicsView):
             '\n  or click on mouse left for next rotation angle for ellipse\n'
 
     def keyPressEvent(self, e):
+        """Handle key presses on ``self.ite2``: Esc closes, P shifts the item position, R adds 10 degrees of rotation, S scales by 1.2 (reset to 1 above 2); then print the key usage."""
         item = self.ite2
 
         if e.key() == Qt.Key_Escape:
@@ -46,6 +48,7 @@ class TestQGraphicsView(QGraphicsView):
         print(self.KEY_USAGE)
 
     def mousePressEvent(self, e):
+        """Forward the event and rotate ``self.ite2`` to the angle from its rect center to the clicked scene point, printing the angle."""
         item = self.ite2
         QGraphicsView.mousePressEvent(self, e)
         scpoint = self.mapToScene(e.pos())

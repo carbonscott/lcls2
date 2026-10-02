@@ -1,3 +1,4 @@
+"""Find where several series with constant intervals and offsets coincide, using sympy's `diop_solve`."""
 import numpy as np
 from sympy.solvers.diophantine import diop_solve
 from sympy.abc import x,y
@@ -10,6 +11,21 @@ from sympy import symbols
 #
 def intersection(offsets, intervals):
 
+    """Return the (offset, interval) at which all series coincide.
+
+    The series are reduced pairwise with linear Diophantine solutions; the interval is the
+    LCM and the offset is reduced into [0, interval).
+
+    Returns
+    -------
+    tuple
+        (offset, interval), or (None, None) if a pair has no solution.
+
+    Raises
+    ------
+    ValueError
+        If fewer than 2 series are given or the lists differ in length.
+    """
     if len(offsets) < 2:
         raise ValueError(f'intersection requires at least 2 series')
 
@@ -38,6 +54,7 @@ def intersection(offsets, intervals):
     return (off,itv)
 
 def main():
+    """Print ``intersection([0, 0, 364*12], [280, 364, 4732])``."""
     result = intersection([0,0,364*12],[280,364,4732])
     print(f'result {result}')
 

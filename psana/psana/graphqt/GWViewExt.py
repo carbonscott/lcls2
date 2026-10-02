@@ -34,6 +34,11 @@ logger = logging.getLogger(__name__)
 
 
 class GWViewExt(GWView):
+    """``GWView`` extension adding origin orientation, a default scene rect and delayed redraw on mouse move/wheel.
+
+    Defines signals ``mouse_move_event``, ``mouse_press_event`` (``QMouseEvent``) and
+    ``scene_rect_changed`` (``QRectF``), and keeps a scene-rect item ``rs_item`` that sets the cursor type.
+    """
     mouse_move_event   = pyqtSignal('QMouseEvent')
     mouse_press_event  = pyqtSignal('QMouseEvent')
     scene_rect_changed = pyqtSignal('QRectF')
@@ -67,6 +72,11 @@ class GWViewExt(GWView):
         self.init_timer_move()
 
     def init_timer_move(self):
+        """Create ``timer_move`` connected to ``on_timeout_move`` and set move-delay attributes from ``self.kwa``.
+
+        Sets ``move_fast`` (kwa ``'move_fast'``, default False), ``tmove_msec`` (kwa ``'tmove_msec'``,
+        default 400) and ``move_time_is_expired = True``.
+        """
         self.move_fast  = self.kwa.get('move_fast', False)
         self.tmove_msec = self.kwa.get('tmove_msec', 400)  # timeout for mouseMoveEvent
         self.timer_move = QTimer()
@@ -74,12 +84,18 @@ class GWViewExt(GWView):
         self.move_time_is_expired = True
 
     def init_timer(self):
+        """Create ``timer_wheel`` connected to ``on_timeout`` and set wheel-delay attributes from ``self.kwa``.
+
+        Sets ``wheel_fast`` (kwa ``'wheel_fast'``, default False) and ``twheel_msec`` (kwa
+        ``'twheel_msec'``, default 500).
+        """
         self.wheel_fast  = self.kwa.get('wheel_fast', False)
         self.twheel_msec = self.kwa.get('twheel_msec', 500)  # timeout for wheelEvent
         self.timer_wheel = QTimer()
         self.timer_wheel.timeout.connect(self.on_timeout)
 
     def set_style(self):
+        """Call ``GWView.set_style`` and create default brushes/pens ``brudf``, ``brubx``, ``pendf`` (no pen) and ``penbx``."""
         GWView.set_style(self)  # set_background_brush
         logger.debug('GWViewExt.set_style')
         self.brudf = QBrush()
@@ -89,6 +105,15 @@ class GWViewExt(GWView):
         self.penbx = QPen(Qt.black, 6, Qt.SolidLine)
 
     def set_origin(self, origin='UL'):
+        """Store the origin string and set the view transform signs accordingly.
+
+        Parameters
+        ----------
+        origin : str
+            Origin location; ``'U'`` or ``'T'`` in it means upper, otherwise lower; ``'L'`` means left,
+            otherwise right (case-insensitive). Default ``'UL'``. For any origin other than upper-left the
+            current transform is scaled by -1 along the flipped axis.
+        """
         self._origin = origin
         key = origin.upper()
 
@@ -146,6 +171,11 @@ class GWViewExt(GWView):
         self.emit_signal_if_scene_rect_changed()
 
     def mouseMoveEvent(self, e):
+        """Emit ``mouse_move_event`` and pan the view, rate-limited by ``timer_move``, while a button is pressed.
+
+        Does nothing unless ``is_clicked`` is True. ``GWView.mouseMoveEvent`` is called only if
+        ``move_fast`` is True or the move timer has expired; the timer is then restarted.
+        """
         if not self.is_clicked: return
 
         #print('GWViewExt.' + sys._getframe().f_code.co_name + ' with is_clicked at point: %s' % str(e.pos()), end='\r')
@@ -157,16 +187,19 @@ class GWViewExt(GWView):
            self.timer_move.start(self.tmove_msec)
 
     def wheelEvent(self, e):
+        """Call ``GWView.wheelEvent``, then emit the scene-rect signal immediately if ``wheel_fast`` or start ``timer_wheel``."""
         GWView.wheelEvent(self, e)
         if self.wheel_fast: self.emit_signal_if_scene_rect_changed()
         else: self.timer_wheel.start(self.twheel_msec)
 
     def resizeEvent(self, e):
+        """Call ``GWView.resizeEvent`` and read the scene rect; nothing else is done with it."""
         GWView.resizeEvent(self, e)
         r = self.scene_rect()
         #self._add_cursor_type_rect_to_scene(r, self.brudf, self.pendf)
 
     def closeEvent(self, e):
+        """Remove all items from the scene and call ``GWView.closeEvent``."""
         logger.debug('GWViewExt.closeEvent > sc.removeItem > GWView.closeEvent')
         sc = self.scene()
         for item in sc.items():
@@ -197,32 +230,41 @@ class GWViewExt(GWView):
             self.update_my_scene()
 
     def connect_mouse_move_event(self, recip):
+        """Connect the ``mouse_move_event`` signal to ``recip``."""
         self.mouse_move_event['QMouseEvent'].connect(recip)
 
     def disconnect_mouse_move_event(self, recip):
+        """Disconnect the ``mouse_move_event`` signal from ``recip``."""
         self.mouse_move_event['QMouseEvent'].disconnect(recip)
 
     def test_mouse_move_event_reception(self, e):
+        """Test slot: set the window title to the scene coordinates of the mouse event position."""
         p = self.mapToScene(e.pos())
         self.setWindowTitle(sys._getframe().f_code.co_name + ': x=%.1f y=%.1f %s' % (p.x(), p.y(), 25*' '))
 
     def connect_scene_rect_changed(self, recip):
+        """Connect the ``scene_rect_changed`` signal to ``recip``."""
         self.scene_rect_changed.connect(recip)
 
     def disconnect_scene_rect_changed(self, recip):
+        """Disconnect the ``scene_rect_changed`` signal from ``recip``."""
         self.scene_rect_changed.disconnect(recip)
 
     def test_scene_rect_changed_reception(self, r):
         #if logging.root.level == logging.DEBUG:
+        """Test slot: print the received rect ``r`` (x, y, width, height) followed by a carriage return."""
         print(sys._getframe().f_code.co_name + ' %s' % qu.info_rect_xywh(r), end='\r')
 
     def connect_mouse_press_event(self, recip):
+        """Connect the ``mouse_press_event`` signal to ``recip``."""
         self.mouse_press_event.connect(recip)
 
     def disconnect_mouse_press_event(self, recip):
+        """Disconnect the ``mouse_press_event`` signal from ``recip``."""
         self.mouse_press_event.disconnect(recip)
 
     def test_mouse_press_event_reception(self, e):
+        """Test slot: log the mouse event x, y position at debug level."""
         logger.debug(sys._getframe().f_code.co_name + ' QMouseEvent point: x=%d y=%d' % (e.x(), e.y()))
 
     def reset_scene_rect(self, rs=None, mode=Qt.IgnoreAspectRatio):
@@ -232,6 +274,7 @@ class GWViewExt(GWView):
         self.fit_in_view(self.rs_def, mode)
 
     def reset_scene_rect_default(self):
+        """Set the default scene rect ``rs_def`` to the current ``scene_rect()``."""
         self.rs_def = self.scene_rect()
 
     def _add_cursor_type_rect_to_scene(self, rect, brush=QBrush(), pen=QPen(Qt.yellow, 4, Qt.DashLine)):
@@ -261,6 +304,7 @@ class GWViewExt(GWView):
         self.rs_item.setZValue(self.sc_zvalue)
 
     def update_my_scene(self):
+        """Call :meth:`set_cursor_type_rect` to re-create the cursor-type rect item over the scene rect."""
         logger.debug('GWViewExt.update_my_scene > set_cursor_type_rect > _add_cursor_type_rect_to_scene')
         self.set_cursor_type_rect()
 

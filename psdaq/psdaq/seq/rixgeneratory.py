@@ -1,5 +1,10 @@
 #  Generates eventcodes for 2-integration cameras (fast,slow) and the bunch train (to simulate)
 #  The trigger periods must align with the bunch spacing, else the DAQ will reject the camera triggers
+"""Generate sequence files for one or two integrating cameras, a simulated bunch train and laser on/off codes (per the header comment, for RIX 2-integrator mode).
+
+Writes 'beam.py', 'laser.py', 'codes.py' and, for two cameras, 'codes2.py' in the
+current directory.
+"""
 from psdaq.seq.traingenerator import *
 from psdaq.seq.periodicgenerator import *
 from psdaq.seq.globals import *
@@ -17,6 +22,10 @@ SXR_OFFSET = 7
 
 def get_factor(product):
 
+    """Split `product` into (product // a, a) using the largest a <= 4096 that divides it; (product, 1) if product <= 4096.
+
+    Raises ValueError if no such a > 1 exists.
+    """
     if product <= 4096:
         return (product,1)
 
@@ -27,6 +36,7 @@ def get_factor(product):
     raise ValueError(f'{product} does not factor')
 
 def factorize(product):
+    """Return (and print) the list of factors from repeatedly applying `get_factor` until 1 remains."""
     result = []
 
     p = product
@@ -38,6 +48,12 @@ def factorize(product):
     return result
 
 class LaserGenerator(object):
+    """Build the source lines of a laser on/off sequence as `instr`.
+
+    An optional initial Wait of `start_bucket` buckets, then for each entry n of `onoff`
+    a one-second block requesting codes [req, 2] every `bunch_period` buckets (nested
+    conditional branches with `branch_counts`), repeated n times, alternating req 0/1.
+    """
     def __init__(self,start_bucket,bunch_period,branch_counts,onoff):
         self.instr = []
         self.ninstr = 0
@@ -57,6 +73,7 @@ class LaserGenerator(object):
         self.ninstr += 1
 
     def one_second(self,bunch_period,branch_counts,req):
+        """Append lines for one block: ControlRequest([req, 2]), FixedRateSync('910kH', bunch_period) and one conditional branch per entry of `branch_counts`."""
         self.instr.append('start = len(instrset)')
         self.instr.append(f'instrset.append( ControlRequest([{req},2]) )')
         self.instr.append(f'instrset.append( FixedRateSync(marker="910kH", occ={bunch_period}) )')
@@ -68,6 +85,10 @@ class LaserGenerator(object):
     #  The call/return instruction doesn't seem to be working correctly
     #  Needs some vhdl simulation work
     def init(self,bunch_period,branch_counts,onoff):
+        """Alternative builder using Call/Return subroutines for the on and off blocks.
+
+        A code comment says "The call/return instruction doesn't seem to be working correctly".
+        """
         self.instr = []
         self.instr.append('instrset = []')
         self.instr.append('instrset.append( Branch.unconditional(line=0) )') # placeholder
@@ -103,6 +124,10 @@ class LaserGenerator(object):
 
 def write_seq(gen,seqcodes,filename):
 
+    """Write `gen.instr` with a header and `seqcodes` to `filename`, then `validate` it.
+
+    A warning is written to stderr if there are more than 1000 lines.
+    """
     if (len(gen.instr) > 1000):
         sys.stderr.write('*** Sequence has {} instructions.  May be too large to load. ***\n'.format(gen.ninstr))
 
@@ -120,6 +145,7 @@ def write_seq(gen,seqcodes,filename):
 
 def one_camera_sequence(args):
 
+    """Write beam.py (bunch trains in the non-readout part of each period), laser.py and codes.py (one periodic camera code) for a single period."""
     print(f'Generating one repeating bunch train for one camera')
 
     args_period = [int(TPGSEC*p) for p in args.periods]
@@ -163,6 +189,10 @@ def one_camera_sequence(args):
 
 def two_camera_sequence(args):
 
+    """Write beam.py, laser.py, codes.py (slow and fast camera codes) and codes2.py (gated fast code) for two periods.
+
+    The slow readout gap is expanded to a multiple of the fast period.
+    """
     args_period = [int(TPGSEC*p) for p in args.periods]
 
     #  period,readout times translated to units of bunch spacing
@@ -236,6 +266,12 @@ def two_camera_sequence(args):
     write_seq(gen,seqcodes,'codes2.py')
 
 def main():
+    """Parse options, check the periods against --bunch_period and the TPG second, then generate one- or two-camera sequences.
+
+    Unless --override, a period that is not a multiple of the bunch period or not a factor
+    of TPGSEC is replaced by the smallest `sub_rates` divisor that is at least the period;
+    raises ValueError for more than two periods.
+    """
     global args
     parser = argparse.ArgumentParser(description='rix 2-integrator mode',formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--start", default=7, type=int, help='Offset bucket for all sequences')

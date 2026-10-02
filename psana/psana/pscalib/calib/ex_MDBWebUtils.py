@@ -23,14 +23,20 @@ if __name__ == "__main__":
     return a
 
   def test_database_names():
+    """Print the DB names from ``database_names()`` and their count (web service request)."""
     dbnames = database_names()
     print('test_database_names:', dbnames, '\nnumber of DBs:', len(dbnames))
 
   def test_collection_names():
+    """Print ``collection_names(dbname)`` for ``sys.argv[2]`` or ``'cdb_cspad_0001'`` (web service request)."""
     dbname = sys.argv[2] if len(sys.argv) > 2 else 'cdb_cspad_0001'
     print('test_collection_names:', collection_names(dbname))
 
   def test_find_docs():
+    """Print a summary line for each document of ``cdb_cspad_0001``/``cspad_0001`` from ``find_docs``, then the type, content and keys of the first one.
+
+    Returns after the summary if no documents are found. Requires the calibration DB web service.
+    """
     docs = find_docs('cdb_cspad_0001', 'cspad_0001')
     print('find_docs: number of docs found: %d' % len(docs))
     print('test_find_docs returns:', type(docs))
@@ -44,6 +50,13 @@ if __name__ == "__main__":
     print('doc0.keys():', doc0.keys())
 
   def test_get_random_doc_and_data_ids(det='cspad_0001'):
+    """Find one ``'pedestals'`` document for detector ``det`` with ``find_doc`` and print it.
+
+    Returns
+    -------
+    tuple
+        ``(id_doc, id_data, dbname, colname)``; raises AttributeError if no document is found.
+    """
     dbname = mu.db_prefixed_name(det)
     colname = det
     doc = find_doc(dbname, colname, query={'ctype':'pedestals'})
@@ -61,27 +74,36 @@ if __name__ == "__main__":
     #doc = find_doc('cdb_cxid9114', 'cspad_0001', query={'ctype':'pedestals', 'time_sec':{'$lte':1402851400}})
     #print('====> test_find_doc for time_sec: %s' % str(doc))
 
+    """Call :func:`test_get_random_doc_and_data_ids` for ``cspad_0001`` and ``cspad_0002``."""
     _,_,_,_ = test_get_random_doc_and_data_ids(det='cspad_0001')
     _,_,_,_ = test_get_random_doc_and_data_ids(det='cspad_0002')
 
   def test_get_data_for_id():
+    """Fetch the data of a ``cspad_0001`` pedestals document with ``get_data_for_id`` and print its first 500 elements."""
     id_doc, id_data, dbname, colname = test_get_random_doc_and_data_ids(det='cspad_0001')
     o = get_data_for_id(dbname, id_data)
     print('test_get_data_for_id: r.content raw data: %s ...' % str(o[:500]))
 
   def test_get_data_for_docid():
+    """Fetch the data of a ``cspad_0001`` pedestals document with ``get_data_for_docid`` and print part of the array."""
     id_doc, id_data, dbname, colname = test_get_random_doc_and_data_ids(det='cspad_0001')
     o = get_data_for_docid(dbname, colname, id_doc)
     #o = get_data_for_docid('cdb_cxid9114', 'cspad_0001', '5b6cdde71ead144f115319be')
     print_ndarr(o, 'test_get_data_for_docid o:', first=0, last=10)
 
   def test_dbnames_collection_query():
+    """Print the DB names, collection and query returned by ``dbnames_collection_query`` for ``cspad_0001`` pedestals, run 50."""
     detname='cspad_0001'
     kwargs = {'exp':None, 'ctype':'pedestals', 'run':50, 'time_sec':None, 'vers':None}
     db_det, db_exp, colname, query = dbnames_collection_query(detname, **kwargs)
     print('test_dbnames_collection_query:', db_det, db_exp, colname, query)
 
   def test_calib_constants():
+    """Call ``calib_constants('cspad_0001', exp='cxic0415', ctype='pedestals', run=50, ...)`` and print the result.
+
+    If the response is not None, the conditional expression evaluates ``print_ndarr(data, ...)`` before
+    ``data`` is assigned, which raises UnboundLocalError.
+    """
     detname = 'cspad_0001'
     kwargs = {'exp':'cxic0415', 'ctype':'pedestals', 'run':50, 'time_sec':None, 'vers':None}
     resp = calib_constants(detname, **kwargs) #, url=cc.URL)
@@ -90,6 +112,7 @@ if __name__ == "__main__":
     print('==== doc: %s' % str(doc))
 
   def test_calib_constants_text():
+    """Print the data and document from ``calib_constants`` for the cspad_0001 ``'geometry'`` and tmo_quadanode ``'calibcfg'`` constants."""
     det = 'cspad_0001'
     data, doc = calib_constants(det, exp='cxic0415', ctype='geometry', run=50, time_sec=None, vers=None) #, url=cc.URL)
     print('==== test_calib_constants_text data:', data)
@@ -101,6 +124,7 @@ if __name__ == "__main__":
     print('==== doc: %s' % str(doc))
 
   def test_calib_constants_dict():
+    """Print the data, types and document from ``calib_constants`` for ``opal1000_0059`` ctype ``'lasingoffreference'``, run 60."""
     det = 'opal1000_0059'
     #data, doc = calib_constants(det, exp='amox23616', ctype='lasingoffreference', run=60, time_sec=None, vers=None)
     data, doc = calib_constants(det, exp=None, ctype='lasingoffreference', run=60, time_sec=None, vers=None)
@@ -112,6 +136,7 @@ if __name__ == "__main__":
   def test_calib_constants_all_types():
     #resp = calib_constants_all_types('tmo_quadanode', exp='amox27716', run=100, time_sec=None, vers=None) #, url=cc.URL)
     #resp = calib_constants_all_types('pnccd_0001', exp='amo86615', run=200, time_sec=None, vers=None) #, url=cc.URL)
+    """Call ``calib_constants_all_types`` for ``epixhr2x2_000001``/``rixx45619`` run 200 (``dbsuffix='mytestdb'``), print the data/meta types per ctype and pickle the result."""
     resp = calib_constants_all_types('epixhr2x2_000001', exp='rixx45619', run=200, time_sec=None, vers=None, dbsuffix='mytestdb')
     print('==== test_calib_constants_text data:') #, resp)
 
@@ -143,6 +168,7 @@ if __name__ == "__main__":
     print('test_delete_database 2:', database_names())
 
   def test_delete_database(dbname=TEST_DBEXPNAME):
+    """Print the DB names, delete DB ``dbname`` with ``delete_database`` (Kerberos URL), and print the DB names again."""
     print('WARNING: before deleting something, add this something, use tests 16-18')
     print('test_delete_database %s' % dbname)
     print('test_delete_database BEFORE:', database_names())
@@ -150,12 +176,14 @@ if __name__ == "__main__":
     print('test_delete_database AFTER :', database_names())
 
   def test_delete_collection(dbname=TEST_DBEXPNAME, colname=TEST_DETNAME):
+    """Print the collections of ``dbname``, delete collection ``colname`` with ``delete_collection`` (Kerberos URL), and print them again."""
     print('test_delete_collection %s collection: %s' % (dbname, colname))
     print('test_delete_collection BEFORE:', collection_names(dbname, url=cc.URL))
     resp = delete_collection(dbname, colname, url=cc.URL_KRB, krbheaders=cc.KRBHEADERS)
     print('test_delete_collection AFTER :', collection_names(dbname, url=cc.URL))
 
   def test_delete_document(dbname=TEST_DBEXPNAME, colname=TEST_DETNAME, query={'ctype':'test_ctype'}):
+    """Find a document matching ``query`` and delete it with ``delete_document`` (Kerberos URL); log a warning and return if none is found."""
     doc = find_doc(dbname, colname, query=query, url=cc.URL)
     print('find_doc:', doc)
     if doc is None:
@@ -167,6 +195,7 @@ if __name__ == "__main__":
     print('test_delete_document resp:', resp)
 
   def test_delete_document_and_data(dbname=TEST_DBEXPNAME, colname=TEST_DETNAME):
+    """Delete the first document of ``dbname``/``colname`` and its data with ``delete_document_and_data`` (Kerberos URL); return if the collection has no documents."""
     ldocs = find_docs(dbname, colname, query={}, url=cc.URL)
     if not ldocs:
         print('test_delete_document_and_data db/collection: %s/%s does not have any document' % (dbname, colname))
@@ -179,22 +208,26 @@ if __name__ == "__main__":
     print('test_delete_document_and_data resp:', resp)
 
   def test_add_data_from_file(dbname=TEST_DBEXPNAME, fname=TEST_FNAME_PNG):
+    """Upload file ``fname`` to DB ``dbname`` with ``add_data_from_file`` (Kerberos URL) and print the response."""
     resp = add_data_from_file(dbname, fname, url=cc.URL_KRB, krbheaders=cc.KRBHEADERS)
     print('test_add_data_from_file resp: %s of type: %s' % (resp, type(resp)))
 
   def test_add_data(dbname=TEST_DBEXPNAME):
     #data = 'some text is here'
+    """Upload a random (32, 185, 388) test array to DB ``dbname`` with ``add_data`` (Kerberos URL) and print the response."""
     data = get_test_nda() # np.array(range(12))
     resp = add_data(dbname, data, url=cc.URL_KRB, krbheaders=cc.KRBHEADERS)
     print('test_add_data: %s\n  to: %s/gridfs/\n  resp: %s' % (info_ndarr(data, 'test nda'), dbname, resp))
 
   def test_add_document(dbname=TEST_DBEXPNAME, colname=TEST_DETNAME, doc={'ctype':'test_ctype'}):
+    """Add a current ``'time_stamp'`` to ``doc`` (the mutable default dict is modified) and insert it with ``add_document`` (Kerberos URL)."""
     from psana.pyalgos.generic.Utils import str_tstamp
     doc['time_stamp'] = str_tstamp(fmt='%Y-%m-%dT%H:%M:%S%z')
     resp = add_document(dbname, colname, doc, url=cc.URL_KRB, krbheaders=cc.KRBHEADERS)
     print('\ntest_add_document: %s\n  to: %s/%s\n  resp: %s' % (str(doc), dbname, colname, resp))
 
   def test_add_data_and_two_docs(exp=TEST_EXPNAME, det=TEST_DETNAME):
+    """Upload a random test array with ``add_data_and_two_docs`` for ``exp``/``det`` (ctype ``'testnda'``, run 123) and print the elapsed time."""
     from psana.pyalgos.generic.Utils import get_login
     t0_sec = time()
     kwa = {'user'      : get_login(),
@@ -212,6 +245,7 @@ if __name__ == "__main__":
     print('time to insert data and two docs: %.6f sec' % (time()-t0_sec))
 
   def test_pro_detector_name():
+    """Print the short name returned by ``pro_detector_name`` for a test detector name chosen by ``sys.argv[2]`` (short, long, epixhremu-style, or long with suffix)."""
     shortname = TEST_DETNAME
     longname = shortname + '_this_is_insane_long_detector_name_exceeding_55_characters_in_length_or_longer'
     detname1 = 'epixhremu_00cafe0003-0000000000-0000000000-0000000000-0000000000-0000000000-0000000000'
@@ -226,17 +260,20 @@ if __name__ == "__main__":
     print('associated in %s with short name: %s' % (cc.DETNAMESDB, name))
 
   def test_valid_post_privilege():
+      """Print ``valid_post_privilege(dbname)`` for three hard-coded DB names (web service request)."""
       for dbname in ('cdb_xpptut15', 'cdb_epix_000001', 'cdb_ueddaq02'):
           print('\n=== test_test_post_privilege for DB: %s' % dbname)
           r = valid_post_privilege(dbname)
           print('     responce: %s' % r)
 
   def test_collection_info():
+    """Print ``collection_info('cdb_cspad_0001', 'cspad_0001')`` (web service request)."""
     s = collection_info('cdb_cspad_0001', 'cspad_0001')
     print('test_collection_info:\n%s' % str(s))
 
   def test_tmp():
 
+    """Query ``https://pswww.slac.stanford.edu/calib_ws/cdb_testexper/testdet_1234`` directly with ``requests.get``, then query again by the first document ``_id``, printing both responses."""
     from requests import get
 
     url = 'https://pswww.slac.stanford.edu/calib_ws/cdb_testexper/testdet_1234'
@@ -265,6 +302,7 @@ if __name__ == "__main__":
 if __name__ == "__main__":
 
   def test_MDBWebUtils():
+    """Configure DEBUG logging and run the test selected by ``sys.argv[1]`` (``'0'``-``'22'``, ``'00'``), then exit via ``sys.exit``."""
     import os
     from psana.pyalgos.generic.NDArrUtils import print_ndarr, info_ndarr
     global print_ndarr, info_ndarr

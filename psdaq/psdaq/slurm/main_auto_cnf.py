@@ -1,3 +1,4 @@
+"""Example DAQ config file (platform '4', hutch 'tst') defining command strings and the `main_config` and `ami_config` process lists."""
 platform = "4"
 # if not platform: platform = '4'
 

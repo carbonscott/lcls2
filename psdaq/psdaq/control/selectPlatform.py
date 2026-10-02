@@ -8,9 +8,14 @@ import pprint
 import argparse
 
 def common_match(alias, arglist):
+    """Return True if `arglist` is not None and contains `alias`."""
     return arglist is not None and alias in arglist
 
 def drp_match(alias, arglist):
+    """Return True if any entry of `arglist` equals `alias` or `detector_name(alias)`.
+
+    Returns False if `arglist` is None.
+    """
     if arglist is not None:
         for arg in arglist:
             if (arg == alias) or (arg == detector_name(alias)):
@@ -20,6 +25,13 @@ def drp_match(alias, arglist):
 def main():
 
     # Process arguments
+    """Select or unselect DAQ processes on a platform from the command line.
+
+    Gets the platform dict with `DaqControl.getPlatform`, sets 'active' to 1 for entries
+    matched by -s/--select-all (drp entries also get their readout group set to -R or the
+    platform) and to 0 for entries matched by -u. If anything changed, sends it back with
+    `selectPlatform` and prints any 'err_info' in the reply.
+    """
     parser = argparse.ArgumentParser(epilog='For multisegment detector, specify drp alias without _N suffix.')
     parser.add_argument('-p', metavar='PLATFORM', type=int, choices=range(0, 8), default=0, help='platform (default 0)')
     parser.add_argument('-C', metavar='COLLECT_HOST', default='localhost', help='collection host (default localhost)')

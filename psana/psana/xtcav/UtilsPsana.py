@@ -1,4 +1,5 @@
 
+"""Helpers that read XTCAV-related values through psana run and event objects: detector lookups for calibration and ROI values, calibration constants, ROI metrics and shot-to-shot parameters."""
 import logging
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,10 @@ from psana.xtcav.Simulators import\
 
 
 def get_pv_value(evt, atr, name, default):
+    """Return ``atr(evt)``, or ``default`` with a warning if ``atr`` is None.
+
+    The warning formats ``default`` with %d, so a non-numeric default (such as None) raises TypeError on that path.
+    """
     if atr is None :
         logger.warning('PV "%s" is set to default value %d' % (name, default))
         return default
@@ -37,6 +42,10 @@ def get_pv_value(evt, atr, name, default):
 
 def getCameraSaturationValue(xtcavcalibpars, evt):
 
+    """Return 4095 if an analysis-version value is found for ``evt``, otherwise 16383.
+
+    The lookup uses the key 'analysiver' of ``xtcavcalibpars``; any exception (including KeyError, since ``get_calibration_parameters`` stores 'analysisver') is caught and 16383 is returned.
+    """
     try:
         analysis_version = get_pv_value(evt, xtcavcalibpars["analysiver"], xtcavcalibpars["analysisver_name"], None) #SimulatorDetector(cons.ANALYSIS_VERSION)
         if analysis_version(evt) is not None:
@@ -48,6 +57,10 @@ def getCameraSaturationValue(xtcavcalibpars, evt):
     
 
 def get_calibconst(det, ctype='xtcav_pedestals', detname='xtcav', expname='amox23616', run_number=131):
+    """Return ``det.calibconst.get(ctype)``; if that is None, fetch the constants with ``MDBWebUtils.calib_constants(detname, exp=expname, ctype=ctype, run=run_number)``.
+
+    Logs a warning and calls ``sys.exit`` if both give None.
+    """
     resp = det.calibconst.get(ctype)
     if resp is None : # try direct access
         logger.warning('ACCESS TO CALIB CONSTANTS "%s"' % ctype\
@@ -97,6 +110,10 @@ def getGlobalXTCAVCalibration(xtcavcalibpars, evt):
                           
 
 def pv_and_name_from_list(run, names):
+    """Return ``(run.Detector(name), name)`` for the first name in ``names`` that gives a detector.
+
+    Names whose lookup raises are logged as warnings; if none works the result is ``(None, <last name>)``.
+    """
     atr = None
     for name in names:
         try:
@@ -108,6 +125,13 @@ def pv_and_name_from_list(run, names):
     return atr, name
 
 def get_calibration_parameters(run):
+    """Look up detectors for the calibration names in ``psana.xtcav.Constants`` (um per pixel, streak strength, RF amplitude and phase calibration, dump energy and dispersion, analysis version) with ``pv_and_name_from_list``.
+
+    Returns
+    -------
+    dict
+        Keys 'umperpix', 'strstrength', 'rfampcalib', 'rfphasecalib', 'dumpe', 'dumpdisp', 'analysisver' with the detector objects (or None) and the same keys with suffix '_name' holding the names used.
+    """
     umperpix, umperpix_name  = pv_and_name_from_list(run, cons.UM_PER_PIX_names)
     strstrength, strstrength_name = pv_and_name_from_list(run, cons.STR_STRENGTH_names) 
     rfampcalib, rfampcalib_name = pv_and_name_from_list(run, cons.RF_AMP_CALIB_names) 
@@ -136,6 +160,13 @@ def get_calibration_parameters(run):
 
 
 def get_roi_parameters(run):
+    """Look up detectors for the ROI size and start names in ``psana.xtcav.Constants`` with ``pv_and_name_from_list``.
+
+    Returns
+    -------
+    dict
+        Keys 'roiXN', 'roiYN', 'roiX0', 'roiY0' with the detector objects (or None) and 'nameXN', 'nameYN', 'nameX0', 'nameY0' with the names used.
+    """
     roiXN, nameXN = pv_and_name_from_list(run, cons.ROI_SIZE_X_names)
     roiYN, nameYN = pv_and_name_from_list(run, cons.ROI_SIZE_Y_names)
     roiX0, nameX0 = pv_and_name_from_list(run, cons.ROI_START_X_names)
@@ -153,7 +184,9 @@ def get_roi_parameters(run):
 
 
 def getXTCAVImageROI(xtcavroipars, evt):
-    """
+    """Return a ``ROIMetrics`` built from the ROI sizes and start positions read for ``evt`` (constants from ``psana.xtcav.Constants`` when a detector is missing).
+
+    The pixel coordinates are ``x0 + arange(xN)`` and ``y0 + arange(yN)``. Returns None if any value is None or all four are 0.
     """
     #logger.debug('ZZZZ getXTCAVImageROI dir(ovals):\n%s' % str(dir(ovals)))
 
@@ -183,6 +216,10 @@ def getShotToShotParameters(evt, ebeam, gasdetector) :
     
     # sec, nsec      = valseid.time(evt)
     # unixtime       = int((sec<<32)|nsec)
+    """Return a ``ShotToShotParameters`` for ``evt`` built from ``ebeam.raw`` and ``gasdetector.raw`` values.
+
+    Uses ebeam charge, XTCAV RF amplitude and phase, dump charge multiplied by ``Constants.E_CHARGE``, ``1e-3 * gasdetector.raw.energy(evt)`` as x-ray energy, and ``evt.timestamp`` as unixtime.
+    """
     timestamp        = evt.timestamp
     # fiducial       = valseid.fiducials(evt)
     ebeamcharge      = ebeam.raw.ebeamCharge(evt)

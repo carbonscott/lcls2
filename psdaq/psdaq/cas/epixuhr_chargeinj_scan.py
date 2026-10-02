@@ -1,3 +1,4 @@
+"""Charge-injection scan for an ePixUHR detector over gain modes, optionally with a cross-talk pixel-map pattern, using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import numpy as np
 import json
@@ -10,6 +11,13 @@ DET_SIZE = (4, 168, 192)  # 4 ASICs of 168x192 pixels each
 def main():
 
     # default command line arguments
+    """Run the scan with defaults hutch 'asc', detname 'epixuhr_0', scantype 'chargeinj', record 1 and all eight gain modes.
+
+    Each step enables VINJ_DAC (enable/dacEn/rampEn = 1), InjEn = 1 and SetSameGain4All = 1
+    and writes the mode's DAC start/stop/step and gain 'level' from a fixed table; metadata
+    'events' is stop/step. With --cross, a 168x192 pixel map ('level' on every
+    crossdeltax/crossdeltay grid point, 'off' elsewhere) is stepped over all grid offsets.
+    """
     defargs = {'--hutch'   : 'asc',
                '--detname' : 'epixuhr_0',
                '--scantype': 'chargeinj',

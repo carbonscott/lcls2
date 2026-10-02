@@ -1,3 +1,4 @@
+"""Timing scan of '<detname>_<i>:user.start_ns' (i < nprocs) using `ConfigScanBase`."""
 import json
 import numpy as np
 import numpy.typing as npt
@@ -8,6 +9,12 @@ from psdaq.cas.config_scan_base import ConfigScanBase
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events, hutch 'tst', detname 'epixuhr3x2', record 0, config 'BEAM', nprocs 2, run_type 'TIMING'.
+
+    Values are ``np.linspace(start_val, stop_val, int((stop_val - start_val) / step_val))``
+    as uint32 (defaults 81000, 115000, 1000); each value is printed, written to every
+    segment and the step index is the step value. Metadata include 'events' and 'start_ns'.
+    """
     defargs = {
         "--events": 1000,
         "--hutch": "tst",

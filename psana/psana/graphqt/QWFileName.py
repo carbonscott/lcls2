@@ -68,15 +68,21 @@ class QWFileName(QWidget):
 
 
     def path(self):
+        """Return ``self.path``.
+
+        ``__init__`` assigns the instance attribute ``self.path``, which hides this method, so ``obj.path`` is the string and ``obj.path()`` raises TypeError.
+        """
         return self.path
 
 
     def set_tool_tips(self):
+        """Set tool tips on the button and the read-only path field."""
         self.but.setToolTip('Select input file.')
         self.edi.setToolTip('Path to the file (read-only).\nClick on button to change it.')
 
 
     def set_style(self):
+        """Set the window title, minimum widths (300 widget, 210 field), fixed height 34 and layout margins."""
         self.setWindowTitle('File name selection widget')
         self.setMinimumWidth(300)
         self.edi.setMinimumWidth(210)
@@ -85,6 +91,10 @@ class QWFileName(QWidget):
 
 
     def on_but(self):
+        """Open a file dialog (save dialog if ``mode == 'w'``, open dialog otherwise) and apply the chosen path.
+
+        ``self.path`` is overwritten with the dialog result first. It then returns without other changes if, in 'r' mode, the path does not exist, if its directory or file part is empty, or if it equals the old path; otherwise it shows the path in the field and emits ``path_is_changed(path)``.
+        """
         logger.debug('on_but')
 
         path_old = self.path
@@ -119,10 +129,12 @@ class QWFileName(QWidget):
 
 
     def connect_path_is_changed(self, recip):
+        """Connect ``recip`` to the ``path_is_changed['QString']`` signal."""
         self.path_is_changed['QString'].connect(recip)
 
 
     def test_signal_reception(self, s):
+        """Log at debug level the received path string ``s``."""
         logger.debug('test_signal_reception: %s' % s)
 
 

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Example: show a ``GWViewImage`` test widget with a generated image, color table and scale-control setting selected by a test number.
+
+Importing the module configures logging at INFO level and appends '..' to ``sys.path``.
+"""
 from psana.graphqt.GWViewImage import *
 
 logger = logging.getLogger(__name__)
@@ -14,6 +18,7 @@ import numpy as np
 
 class TestGWViewImage(GWViewImage):
 
+    """GWViewImage subclass with test signal receivers and keyboard controls for resetting and replacing the image."""
     KEY_USAGE = 'Keys:'\
                '\n  ESC - exit'\
                '\n  R - reset original size'\
@@ -30,9 +35,11 @@ class TestGWViewImage(GWViewImage):
         self.setWindowTitle('TestGWViewImage x=%d y=%d v=%s%s' % (ix, iy, '%.1f'%fv, 25*' '))
 
     def test_image_pixmap_changed(self):
+        """Log 'image_pixmap_changed' at info level."""
         logger.info('image_pixmap_changed')
 
     def keyPressEvent(self, e):
+        """Handle key presses: Esc closes, R resets the scene rect, N sets a new random image of the current pixmap size, W/D set a random-shape image (D also makes it the default scene rect), other keys log the key usage."""
         logger.info('keyPressEvent, key = %s' % e.key())
         if e.key() == Qt.Key_Escape:
             logger.info('Close app')
@@ -62,6 +69,7 @@ class TestGWViewImage(GWViewImage):
 
 
 def image_with_random_peaks(shape=(500, 500)):
+    """Return a random image of ``shape`` (mean 0, sigma 10) with 50 random peaks and a ring of radius 300 centered at row 500, column 500 added."""
     from psana.pyalgos.generic.NDArrUtils import info_ndarr
 
     logger.info('image_with_random_peaks shape: %s' % str(shape))
@@ -74,6 +82,10 @@ def image_with_random_peaks(shape=(500, 500)):
 
 
 def test_gfviewimage(tname):
+    """Create a QApplication and a ``TestGWViewImage`` configured by ``tname`` ('0'-'7'), connect its test receivers and run the event loop.
+
+    For any other ``tname`` it logs a message and returns.
+    """
     logger.info(sys._getframe().f_code.co_name)
     #arr = np.random.random((1000, 1000))
     arr = image_with_random_peaks((1000, 1000))

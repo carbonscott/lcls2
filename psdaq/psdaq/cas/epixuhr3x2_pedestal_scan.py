@@ -1,3 +1,4 @@
+"""Pedestal scan over ePixUHR3x2 gain modes (written as '<detname>_<i>:user.Gain.SetGainValue') using `ConfigScanBase`."""
 from psdaq.cas.config_scan_base import ConfigScanBase
 import json
 
@@ -5,6 +6,12 @@ import json
 def main():
 
     # default command line arguments
+    """Run the scan with defaults 1000 events, hutch 'tst', detname 'epixuhr3x2', record 0, config 'BEAM', nprocs 2, run_type 'DARK'.
+
+    --gain-modes is a comma-separated string of names mapped to values (FHG 32, FMG 40,
+    FLG1 1, FLG2 33, AHLG1 16, AHLG2 48, AMLG1 24, AMLG2 56). For every segment each step
+    also sets SetSameGain4All 1 and zeros the pixel-map and FebFpga VINJ_DAC keys.
+    """
     defargs = {
         "--events": 1000,
         "--hutch": "tst",

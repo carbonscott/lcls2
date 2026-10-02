@@ -58,6 +58,11 @@ import numpy as np
 
 class FWViewColorBar(FWViewImage):
 
+    """``FWViewImage`` that displays a color table as a horizontal (``orient='H'``) or vertical color bar.
+
+    Defines signals ``new_color_table`` and ``new_color_table_index_is_selected(int)``. Bit 2 of
+    ``change_mode`` makes a mouse press open the color-table selection popup.
+    """
     new_color_table = pyqtSignal()
     new_color_table_index_is_selected = pyqtSignal('int')
 
@@ -91,11 +96,16 @@ class FWViewColorBar(FWViewImage):
 
 
     def mousePressEvent(self, e):
+        """Call :meth:`on_colorbar` if bit 2 of ``change_mode`` is set, otherwise pass the event to ``FWViewImage.mousePressEvent``."""
         if self.change_mode & 2: self.on_colorbar(e)
         else: FWViewImage.mousePressEvent(self, e)
 
 
     def on_colorbar(self, e):
+        """Open the color-table selection popup and apply the chosen index if it differs from the current one.
+
+        Does nothing if the popup returns None or the same index.
+        """
         ctab_ind = popup_select_color_table(None)
         #logger.debug('on_colorbar - selected index %s'% str(ctab_ind))
         if ctab_ind is None: return
@@ -124,34 +134,44 @@ class FWViewColorBar(FWViewImage):
 
 
     def color_table(self):
+        """Return the current color table ``self._ctab``."""
         return self._ctab
 
 
     def color_table_index(self):
+        """Return the current color table index ``self._ctab_ind`` (None until one is selected)."""
         return self._ctab_ind
 
 
     def connect_new_color_table_index_is_selected(self, recip):
+        """Connect the ``new_color_table_index_is_selected(int)`` signal to ``recip``."""
         self.new_color_table_index_is_selected['int'].connect(recip)
         #self.connect(self, QtCore.SIGNAL('new_color_table_index_is_selected(int)'), recip)
 
 
     def disconnect_new_color_table_index_is_selected(self, recip):
+        """Disconnect the ``new_color_table_index_is_selected(int)`` signal from ``recip``."""
         self.new_color_table_index_is_selected['int'].disconnect(recip)
         #self.disconnect(self, QtCore.SIGNAL('new_color_table_index_is_selected(int)'), recip)
 
 
     def connect_new_color_table(self, recip):
+        """Connect ``recip`` to the ``new_color_table_index_is_selected`` signal.
+
+        Despite the name, the code connects the index-selected signal, not ``new_color_table``.
+        """
         self.new_color_table_index_is_selected.connect(recip)
         #self.connect(self, QtCore.SIGNAL('new_color_table()'), recip)
 
 
     def disconnect_new_color_table(self, recip):
+        """Disconnect ``recip`` from the ``new_color_table_index_is_selected`` signal (not ``new_color_table``)."""
         self.new_color_table_index_is_selected.disconnect(recip)
         #self.disconnect(self, QtCore.SIGNAL('new_color_table()'), recip)
 
 
     def closeEvent(self, e):
+        """Does nothing; body is ``pass`` (the event is not passed to the base class)."""
         pass
         #print('%s.closeEvent' % self._name)
         #QWidget.closeEvent(self, e)

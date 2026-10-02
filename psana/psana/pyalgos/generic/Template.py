@@ -38,6 +38,7 @@ logger = logging.getLogger('Template')
 #------------------------------
 
 def test_01():
+    """Do nothing; the body is ``pass``."""
     pass
 
 #------------------------------

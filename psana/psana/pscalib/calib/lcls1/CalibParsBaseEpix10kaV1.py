@@ -30,6 +30,7 @@ Author: Mikhail Dubrovin
 
 class CalibParsBaseEpix10kaV1 :
 
+    """Class attributes only: ``ndim`` 1 (although ``shape`` is ``(352, 384)``), ``size_cm`` 16 and ``cmod = (3, 100, 100, 384, 0, ...)``; the constructor does nothing."""
     ndim = 1 
     rows = 352 
     cols = 384 

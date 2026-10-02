@@ -66,6 +66,11 @@ class QWPopupRadioList(QDialog):
 
 
     def make_radio_buttons(self):
+        """Create one ``QRadioButton`` per name in ``dict_of_pars['list']``, add it to the layout and connect its ``clicked`` to :meth:`onRadioButton`.
+
+        ``dict_of_pars['checked']`` is read but no button is pre-checked, and the buttons are not added to
+        the ``QButtonGroup`` ``rad_grp``.
+        """
         self.list_of_rad = []
         self.rad_grp = QButtonGroup()
 
@@ -81,11 +86,13 @@ class QWPopupRadioList(QDialog):
 
 
     def showToolTips(self):
+        """Set tool tips on the Apply and Cancel buttons."""
         self.but_apply.setToolTip('Apply changes to the list')
         self.but_cancel.setToolTip('Use default list')
 
 
     def setStyle(self):
+        """Set minimum width 200, gray style on the buttons and show Apply/Cancel only if ``do_confirm`` is True."""
         self.setMinimumWidth(200)
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
@@ -97,6 +104,7 @@ class QWPopupRadioList(QDialog):
 
 
     def setIcons(self):
+        """Set the cancel and OK icons on the Cancel and Apply buttons."""
         from psana.graphqt.QWIcons import icon
         icon.set_icons()
         self.but_cancel.setIcon(icon.icon_button_cancel)
@@ -104,11 +112,16 @@ class QWPopupRadioList(QDialog):
 
 
     def onRadioButton(self):
+        """Call :meth:`applySelection` immediately if ``do_confirm`` is False; otherwise do nothing."""
         if not self.do_confirm:
             self.applySelection()
 
 
     def applySelection(self):
+        """Store the text of the first checked radio button in ``dict_of_pars['checked']`` and accept the dialog.
+
+        If no button is checked nothing happens and the dialog stays open.
+        """
         for rad in self.list_of_rad:
             if rad.isChecked():
                 name = str(rad.text())
@@ -120,11 +133,13 @@ class QWPopupRadioList(QDialog):
 
     def onCancel(self):
         #logger.debug('onCancel', __name__)
+        """Reject the dialog."""
         self.reject()
 
 
     def onApply(self):
         #logger.debug('onApply', __name__)
+        """Call :meth:`applySelection`."""
         self.applySelection()
 
 

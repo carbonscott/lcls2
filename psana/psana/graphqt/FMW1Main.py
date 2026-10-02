@@ -26,6 +26,10 @@ from psana.graphqt.QWInfoPanel import QWInfoPanel
 
 class FMW1Main(QWidget):
 
+    """QWidget with a control bar above a horizontal splitter holding an ``FSTree`` file tree and a ``QWInfoPanel``.
+
+    The tree top directory is ``dir_calib(expname)`` and only names matching '.data' are selectable. The instance registers itself as ``cp.fmw1main``.
+    """
     def __init__(self, **kwa):
 
         parent = kwa.get('parent', None)
@@ -65,16 +69,19 @@ class FMW1Main(QWidget):
 
     def proc_kwargs(self, **kwa):
         #print_kwa(kwa)
+        """Read 'loglevel', 'logdir' and 'savelog' from ``kwa`` into local variables; the values are not used."""
         loglevel   = kwa.get('loglevel', 'DEBUG').upper()
         logdir     = kwa.get('logdir', './')
         savelog    = kwa.get('savelog', False)
 
 
     def set_tool_tips(self):
+        """Set the widget tool tip to 'File Manager for LCLS1'."""
         self.setToolTip('File Manager for LCLS1')
 
 
     def set_style(self):
+        """Zero layout margins, fix the control bar height to 40, and place the splitter handle at 280 px (stored in ``self.spl_pos``)."""
         self.layout().setContentsMargins(0,0,0,0)
         self.wctrl.setFixedHeight(40)
         self.wctrl.layout().setContentsMargins(2,2,2,0)
@@ -88,10 +95,12 @@ class FMW1Main(QWidget):
 
     def on_splitter_moved(self, pos, ind):
         #logger.debug('on_splitter_moved - ind:%d position:%d' % (ind, pos))
+        """Store the new splitter position ``pos`` in ``self.spl_pos``."""
         self.spl_pos = pos
 
 
     def resizeEvent(self, e):
+        """Forward the event to the base class and restore the splitter position ``self.spl_pos``."""
         QWidget.resizeEvent(self, e)
         spl_pos = self.spl_pos
         #logger.debug('resizeEvent - restore splitter position: %d' % spl_pos)
@@ -99,12 +108,14 @@ class FMW1Main(QWidget):
 
 
     def closeEvent(self, e):
+        """Log a debug message, forward the event to the base class and set ``cp.fmw1main`` to None."""
         logger.debug('closeEvent')
         QWidget.closeEvent(self, e)
         cp.fmw1main = None
 
 
 def file_manager_lcls1(**kwa):
+    """Configure logging from ``kwa['loglevel']`` (default 'DEBUG'), create a QApplication, show an ``FMW1Main(**kwa)`` window and run the event loop."""
     loglevel = kwa.get('loglevel', 'DEBUG').upper()
     intlevel = logging._nameToLevel[loglevel]
     logging.basicConfig(format='[%(levelname).1s] %(name)s L%(lineno)04d: %(message)s', level=intlevel)
@@ -120,6 +131,7 @@ def file_manager_lcls1(**kwa):
 
 
 def do_main(**kwa):
+    """Call ``file_manager_lcls1(**kwa)``."""
     file_manager_lcls1(**kwa)
 
 

@@ -17,6 +17,10 @@ from psana.graphqt.DragBase import DragBase, FROZEN, ADD, MOVE, EDIT, DELETE, PO
 
 class DragPoint(QGraphicsPathItem, DragBase):
                 # QPointF, QGraphicsItem, QGraphicsScene
+    """QGraphicsPathItem plus DragBase that draws a small selectable, movable marker at ``point``.
+
+    ``pshape`` selects the marker path: 'v' rhombus, 'h' rectangle, 'w', 'z', 'x', 'c' other outlines, anything else an ellipse; its size ``rsize`` is in view pixels converted to scene units. The item adds itself to ``scene`` when it has no parent and starts in ADD drag mode.
+    """
     def __init__(self, point=QPointF(0,0), parent=None, scene=None,\
                  brush=QBrush(Qt.white, Qt.SolidPattern),\
                  pen=QPen(Qt.black, 2, Qt.SolidLine),\
@@ -67,12 +71,22 @@ class DragPoint(QGraphicsPathItem, DragBase):
 
 
     def size_on_scene(self, scene, rsize):
+        """Return ``rsize`` converted to scene units in x and y using the scale of the first view of ``scene``.
+
+        Also stores the view scales in ``self.scx0`` and ``self.scy0``.
+
+        Returns
+        -------
+        tuple of float
+            ``(rsize/m11, rsize/m22)`` of the view transform.
+        """
         t = scene.views()[0].transform()
         self.scx0, self.scy0 = t.m11(), t.m22()
         return rsize/self.scx0, rsize/self.scy0
 
 
     def size_points_on_scene(self, scene, rsize):
+        """Return the scene-unit sizes from ``size_on_scene`` as two offset points ``(QPointF(rx, 0), QPointF(0, ry))``."""
         rx, ry = self.size_on_scene(scene, rsize)
         return QPointF(rx,0), QPointF(0,ry)
 
@@ -161,6 +175,10 @@ class DragPoint(QGraphicsPathItem, DragBase):
 
 
     def listOfCirclePoints(self, p, rx=5, ry=5, np=12):
+        """Return a cached list of ``np`` integer QPoints at angles i*pi/np (i = 0..np-1) on an ellipse of radii ``rx``, ``ry`` around ``p``.
+
+        The angles cover half a turn. The list is built on the first call only; later calls return it unchanged regardless of the arguments.
+        """
         if self._lst_circle is None:
             from math import cos, sin, pi, ceil
             dphi = pi/np
@@ -170,6 +188,7 @@ class DragPoint(QGraphicsPathItem, DragBase):
 
 
     def mousePressEvent(self, e):
+        """Log the press position, select the item, forward the event to the base class and then to the parent item, if any."""
         pe = e.pos()
         ps = e.scenePos()
         pc = self.path().currentPosition()
@@ -185,11 +204,13 @@ class DragPoint(QGraphicsPathItem, DragBase):
     def mouseMoveEvent(self, e):
         #logger.debug('DragPoint:mouseMoveEvent at point: (%.1f, %.1f)' % (e.pos().x(),  e.pos().y()))
                      #(str(e.pos()), str(e.scenePos()))) # self.__class__.__name__
+        """Forward the event to the base class and then to the parent item, if any."""
         QGraphicsPathItem.mouseMoveEvent(self, e)
         if self.parentItem() is not None: self.parentItem().mouseMoveEvent(e)
 
 
     def mouseReleaseEvent(self, e):
+        """Log the release position, deselect the item and forward the event; if the drag mode was ADD, call ``set_drag_mode()``; then forward the event to the parent item, if any."""
         pe = e.pos()
         ps = e.scenePos()
         logger.debug('DragPoint.mouseReleaseEvent at point (%6.1f, %6.1f) on scene (%6.1f, %6.1f)'%

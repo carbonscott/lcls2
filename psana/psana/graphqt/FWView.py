@@ -110,6 +110,10 @@ import psana.graphqt.QWUtils as qu # print_rect
 
 
 class FWView(QGraphicsView):
+    """QGraphicsView on its own QGraphicsScene with mouse panning and wheel zooming of the scene rect.
+
+    Signals: ``mouse_move_event(QMouseEvent)``, ``mouse_press_event(QMouseEvent)`` and ``scene_rect_changed(QRectF)``. ``origin`` flips the view axes and ``scale_ctl`` ('H', 'V') selects which axes are interactive.
+    """
     mouse_move_event   = pyqtSignal('QMouseEvent')
     mouse_press_event  = pyqtSignal('QMouseEvent')
     scene_rect_changed = pyqtSignal('QRectF')
@@ -156,6 +160,7 @@ class FWView(QGraphicsView):
 
 
     def set_origin(self, origin='UL'):
+        """Store ``origin`` and set the ``_origin_*`` flags from its letters ('U' or 'T' for upper, 'L' for left), then flip the view transform if the origin is not upper-left."""
         self._origin = origin
         key = origin.upper()
 
@@ -187,18 +192,22 @@ class FWView(QGraphicsView):
 
 
     def scale_control(self):
+        """Return the scale-control bit word (bit 0: x interactive, bit 1: y interactive)."""
         return self._scale_ctl
 
 
     def str_scale_control(self):
+        """Return the scale-control string given to ``set_scale_control``."""
         return self.str_scale_ctl
 
 
     def origin(self):
+        """Return the origin string given to ``set_origin``."""
         return self._origin
 
 
     def set_style(self):
+        """Create the default and box brushes and pens used for scene items and set the background brush."""
         self.brudf = QBrush()
         self.brubx = QBrush(Qt.black, Qt.SolidPattern)
         self.pendf = QPen()
@@ -208,6 +217,7 @@ class FWView(QGraphicsView):
 
 
     def set_background_brush(self, color=QColor(50,5,50), pattern=Qt.SolidPattern):
+        """Set the view background brush to ``QBrush(color, pattern)``."""
         self.setBackgroundBrush(QBrush(color, pattern))
 
 
@@ -267,6 +277,7 @@ class FWView(QGraphicsView):
 
 
     def mouseReleaseEvent(self, e):
+        """Restore the application override cursor, forward the event, clear ``pos_click`` and emit ``scene_rect_changed`` if the scene rect changed."""
         QApplication.restoreOverrideCursor()
         QGraphicsView.mouseReleaseEvent(self, e)
         #logger.debug('FWView.mouseReleaseEvent, at point: '+str(e.pos()))
@@ -276,6 +287,7 @@ class FWView(QGraphicsView):
 
 
     def mousePressEvent(self, e):
+        """Log the press, emit ``mouse_press_event(e)``, forward the event, and store the click position and current scene-rect center for panning."""
         logger.debug('FWView.mousePressEvent but=%d %s scene x=%.1f y=%.1f'%\
                      (e.button(), str(e.pos()), self.x(), self.y())) # self.__class__.__name__
 
@@ -287,6 +299,10 @@ class FWView(QGraphicsView):
 
 
     def mouseMoveEvent(self, e):
+        """Forward the event, emit ``mouse_move_event(e)`` and, while a button is held and scale control is on, pan the scene rect along the interactive axes.
+
+        If ``signal_fast`` is set, ``scene_rect_changed`` is emitted when the rect changed.
+        """
         QGraphicsView.mouseMoveEvent(self, e)
         #logger.debug('FWView.mouseMoveEvent, at point: %s' % str(e.pos()))
         self.mouse_move_event.emit(e)
@@ -306,6 +322,10 @@ class FWView(QGraphicsView):
 
 
     def wheelEvent(self, e):
+        """Zoom the scene rect around the mouse position along the interactive axes.
+
+        The rect is scaled by 1.4 for a positive angle delta and by 0.6 otherwise, then shown with ``set_view``. ``scene_rect_changed`` is emitted at once if ``signal_fast`` is set, otherwise after the ``twheel_msec`` timer expires. Does nothing beyond the base call if scale control is 0.
+        """
         QGraphicsView.wheelEvent(self, e)
 
         if self._scale_ctl==0: return
@@ -357,31 +377,37 @@ class FWView(QGraphicsView):
 
 
     def connect_scene_rect_changed(self, recip):
+        """Connect ``recip`` to the ``scene_rect_changed`` signal."""
         self.scene_rect_changed.connect(recip)
 
 
     def disconnect_scene_rect_changed(self, recip):
+        """Disconnect ``recip`` from the ``scene_rect_changed`` signal."""
         self.scene_rect_changed.disconnect(recip)
 
 
     def test_scene_rect_changed_reception(self, rs):
+        """Print rect ``rs`` with ``qu.print_rect``."""
         qu.print_rect(rs, cmt='FWView.test_scene_rect_changed_reception')
 
 
     def enterEvent(self, e):
     #    logger.debug('enterEvent')
+        """Forward the event to ``QGraphicsView.enterEvent``."""
         QGraphicsView.enterEvent(self, e)
         #QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
 
 
     def leaveEvent(self, e):
     #    logger.debug('leaveEvent')
+        """Forward the event to ``QGraphicsView.leaveEvent``."""
         QGraphicsView.leaveEvent(self, e)
         #QApplication.restoreOverrideCursor()
 
 
     def closeEvent(self, e):
         #logger.debug('XXX FWView.closeEvent')
+        """Remove all items from the scene and forward the event to ``QGraphicsView.closeEvent``."""
         sc = self.scene()
         for item in sc.items():
             #logger.debug('XXX removeItem:', item)
@@ -412,6 +438,7 @@ class FWView(QGraphicsView):
 
 
     def add_test_items_to_scene(self, show_mode=0):
+        """Add optional marker rectangles: a magenta 10x10 rect at the origin if ``show_mode & 1`` and a red 2x2 rect centered on the origin if ``show_mode & 2``."""
         colfld = Qt.magenta
         colori = Qt.red
         if show_mode & 1:
@@ -423,31 +450,38 @@ class FWView(QGraphicsView):
 
 
     def connect_mouse_press_event(self, recip):
+        """Connect ``recip`` to the ``mouse_press_event`` signal."""
         self.mouse_press_event.connect(recip)
 
 
     def disconnect_mouse_press_event(self, recip):
+        """Disconnect ``recip`` from the ``mouse_press_event`` signal."""
         self.mouse_press_event.disconnect(recip)
 
 
     def test_mouse_press_event_reception(self, e):
+        """Print the x and y widget coordinates of mouse event ``e``."""
         print('FWViewImage.mouse_press_event, QMouseEvent point: x=%d y=%d' % (e.x(), e.y()))
 
 
     def connect_mouse_move_event(self, recip):
+        """Connect ``recip`` to the ``mouse_move_event['QMouseEvent']`` signal."""
         self.mouse_move_event['QMouseEvent'].connect(recip)
 
 
     def disconnect_mouse_move_event(self, recip):
+        """Disconnect ``recip`` from the ``mouse_move_event['QMouseEvent']`` signal."""
         self.mouse_move_event['QMouseEvent'].disconnect(recip)
 
 
     def test_mouse_move_event_reception(self, e):
+        """Show the scene coordinates of mouse event ``e`` in the window title."""
         p = self.mapToScene(e.pos())
         self.setWindowTitle('FWView: x=%.1f y=%.1f %s' % (p.x(), p.y(), 25*' '))
 
 
     def resizeEvent(self, e):
+        """Forward the event and refit the current scene rect into the view with ``set_view``."""
         QGraphicsView.resizeEvent(self, e)
         rs = self.scene().sceneRect()
         self.set_view(rs)

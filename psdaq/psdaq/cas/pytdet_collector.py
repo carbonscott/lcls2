@@ -1,3 +1,8 @@
+"""Prometheus exporter that monitors XPM and timing-receiver PVs and records problems as gauge metrics.
+
+PV monitors (via `psdaq.cas.pvedit`) feed a `CustomCollector`, which is served over
+HTTP by `prometheus_client`; `main` sets up the checks and polls timing updates.
+"""
 import argparse
 import datetime
 import logging
@@ -21,10 +26,18 @@ d = {'checkTiming':{},   # [pvname] = (cb,state)
 }
 
 class CustomCollector():
+    """Prometheus collector holding gauge values as {family: {name: value}}."""
     def __init__(self):
         self._d = {}
 
     def register(self, family, name, value, overwrite):
+        """Store `value` for (`family`, `name`) if new or if `overwrite`.
+
+        Returns
+        -------
+        bool
+            True if the value was stored, False otherwise.
+        """
         d = self._d
         if family not in d.keys():
             d[family] = {}
@@ -37,6 +50,7 @@ class CustomCollector():
     def collect(self):
 #        d = copy.deepcopy(self._d)
 #        self._d = {}
+        """Yield one `GaugeMetricFamily` per family, with label 'id' set to each stored name."""
         d = self._d
         for family, entry in d.items():
 #            logging.warning(f'collect {family} {len(entry)}')
@@ -58,6 +72,11 @@ c = CustomCollector()
 
 class CustomCb(object):
     
+    """Base callback that tracks an occurrence count and last severity in the collector.
+
+    For a non-None `family` (':' replaced by '_', lower-cased), the gauges
+    '<family>_occurrences' and '<family>_severity' for `name` are registered as 0.
+    """
     def __init__(self, family, name):
         if family is not None:
             self._family = family.replace(':','_').lower() # generally derived from PV name
@@ -68,6 +87,7 @@ class CustomCb(object):
             c.register(self._family+'_severity'   , self._name, self._sev, True)
 
     def record(self, value):
+        """Increment the occurrence count, set the severity to `value` and update both gauges."""
         self._occ += 1
         self._sev = value
         c.register(self._family+'_occurrences', self._name, self._occ, True)
@@ -75,6 +95,7 @@ class CustomCb(object):
 
 class EmptyCb(CustomCb):
 
+    """Callback that only remembers the latest value of PV `pv` in `last`."""
     def __init__(self,family,name,pv,isStruct=False):
         super().__init__(family,name)
         self.pv = None
@@ -82,10 +103,12 @@ class EmptyCb(CustomCb):
         initPvMon(self,pv,isStruct)
 
     def update(self,err=None):
+        """Store the cached PV value in `last`."""
         self.last = self.pv.__value__
 
 class RangeCb(CustomCb):
 
+    """Callback that records the PV value when it is outside [`lo`, `hi`]."""
     def __init__(self, family, name, pv, lo, hi):
         super().__init__(family, name)
         self.pv = None
@@ -94,6 +117,7 @@ class RangeCb(CustomCb):
         initPvMon(self,pv)
 
     def update(self,err=None):
+        """Log the value; if it is below `lo` or above `hi`, log an error and `record` the value."""
         logging.info(f'RangeCb {self.pv.pvname}  {self.pv.__value__}')
         if self.pv.__value__ < self.lo or self.pv.__value__ > self.hi:
             logging.error(f'{self.pv.pvname} = {self.pv.__value__} is out of range [{self.lo},{self.hi}]')
@@ -101,6 +125,7 @@ class RangeCb(CustomCb):
 
 class LatchCb(CustomCb):
 
+    """Callback for a latch PV; when it reads 1 it is counted and cleared by writing 1 to PV `clear`."""
     def __init__(self, family, name, pv,clear):
         super().__init__(family, name)
         self.pv = None
@@ -108,6 +133,7 @@ class LatchCb(CustomCb):
         initPvMon(self,pv)
 
     def update(self,err=None):
+        """If the PV value is 1, record severity+1, log an error and put 1 to the clear PV."""
         if self.pv.__value__ == 1:
             self.record(self._sev+1) # integrating
             logging.error(f'{self.pv.pvname} latched.  Clearing...')
@@ -115,12 +141,18 @@ class LatchCb(CustomCb):
 
 class TimeCb(CustomCb):
 
+    """Callback comparing a PV holding seconds since 1990-01-01 with the current UTC time.
+
+    The constructor is declared ``__init__(family, name, pv)`` without `self`, so
+    creating an instance raises TypeError.
+    """
     def __init__(family,name,pv):
         super().__init__(family,name)
         self.pv = None
         initPvMon(self,pv)
 
     def update(self,err=None):
+        """If the PV time differs from now by more than 5 s, log a warning, record the difference and set gauge 'xpm_timedelta_seconds'."""
         logging.info(f'TimeCb {self.pv.pvname}  {self.pv.__value__}')
         pvsec = self.pv.__value__
         dtsec = (datetime.datetime.utcnow()-datetime.datetime(1990,1,1)).total_seconds()
@@ -132,6 +164,7 @@ class TimeCb(CustomCb):
 
 class DsLinkCb(CustomCb):
 
+    """Callback for '<pv>:LinkRxErr<link>', also tracking '<pv>:LinkRxRcv<link>' and an optional remote ID."""
     def __init__(self, family, pv, link):
         super().__init__(family,f'{pv}:LinkRxErr{link}')
         self.pv = None
@@ -140,13 +173,16 @@ class DsLinkCb(CustomCb):
         initPvMon(self,f'{pv}:LinkRxErr{link}')
 
     def link(self, remoteId):
+        """Store `remoteId` and log the link with its `xpmLinkId` names."""
         logging.warning(f'Link {xpmLinkId(remoteId)} to {self.pv.pvname}')
         self.remoteId = remoteId
 
     def unlink(self):
+        """Clear the stored remote ID."""
         self.remoteId = None
 
     def update(self,err=None):
+        """Record the rx-error value (added to the severity) when it is > 0 and the link has receive counts or a remote ID; log warnings/errors."""
         rxrcv = self.rxrcv.last
         v = self.pv.__value__
         if rxrcv is not None:
@@ -163,6 +199,10 @@ class DsLinkCb(CustomCb):
 
 class RemoteLinkCb(CustomCb):
 
+    """Callback checking a receiver's remote-link ID PV and linking it to the matching `DsLinkCb`.
+
+    `pvbase` is a tuple (rx ID PV, tx ID PV name or int, name).
+    """
     def __init__(self,pvbase):
         super().__init__('tim_remlink_id',pvbase[2])
         rxid = pvbase[0]
@@ -183,6 +223,12 @@ class RemoteLinkCb(CustomCb):
             return self.txpv.__value__
 
     def update(self,err=None):
+        """Validate the rx ID and update which XPM downstream link this receiver is attached to.
+
+        Returns early if either ID is None. An ID that is 0, -1 or whose top byte is not
+        0xff records severity 1. Otherwise, if the ID changed, the old link is unlinked and
+        the new one linked; an unknown XPM records severity 2.
+        """
         logging.info(f'RemoteLinkCb {self.pv.pvname}  {self.pv.__value__}')
         rxid = self.pv.__value__
         txid = self._txid()
@@ -210,11 +256,13 @@ class RemoteLinkCb(CustomCb):
 
 class SFPCb(object):
 
+    """Callback for a structured SFP status PV."""
     def __init__(self, pv):
         self.pv = None
         initPvMon(self,pv,isStruct=True)
 
     def update(self,err=None):
+        """For each of 14 modules that is present, log at info level if LossOfSignal is 1 or RxPower is below `RX_POWER_MIN` (0.02)."""
         v = self.pv.__value__
         modabs = v.value.ModuleAbsent
         los    = v.value.LossOfSignal
@@ -230,11 +278,16 @@ class SFPCb(object):
 #  Monitor and report link state changes and update frequency changes
 #          
 def checkTiming(family,name,pv):
+    """Monitor structured PV `pv` with an `EmptyCb` and register it in ``d['checkTiming']`` with state 1."""
     logging.info(f'checkTiming({pv})')
     c = EmptyCb(family,name,pv,True)
     d['checkTiming'][pv] = (c,1)
 
 def checkTiming_update(now):
+    """For each monitored timing PV, record 1 when its timestamp is more than 5 s older than `now` and record 0 when it resumes.
+
+    `now` is seconds since 1990-01-01. The log messages lack the f-prefix, so '{pv}' is printed literally.
+    """
     logging.info(f'checkTiming_update({now})')
     for pv,t in d['checkTiming'].items():
         v = t[0].pv.__value__
@@ -249,21 +302,28 @@ def checkTiming_update(now):
             d['checkTiming'][pv] = (t[0],1)
 
 def checkRange(pvbase,pvext,vlo,vhi):
+    """Add a `RangeCb` for '<pvbase>:<pvext>' with limits `vlo`, `vhi` to ``d['monitor']``."""
     pv = pvbase+':'+pvext
     logging.info(f'checkRange {pv}: {vlo}-{vhi}')
     d['monitor'].append(RangeCb(pvext, pvbase, pv, vlo, vhi))
 
 def checkLatch(pvbase,pvext,clear):
+    """Add a `LatchCb` for '<pvbase>:<pvext>' that clears via PV `clear` to ``d['monitor']``."""
     latch = pvbase+':'+pvext
     logging.info(f'checkLatch({latch})')
     d['monitor'].append(LatchCb(pvext, pvbase, latch, clear))
         
 def checkTime(pvbase,pvext):
+    """Add a `TimeCb` for '<pvbase>:<pvext>' to ``d['monitor']`` (construction raises TypeError; see `TimeCb`)."""
     pv = pvbase+':'+pvext
     logging.info(f'checkTime({pv})')
     d['monitor'].append(TimeCb(pvext,pvbase,pv))
 
 def checkDsLinks(ip, pvbase, nLinks):
+    """Create `nLinks` `DsLinkCb` monitors for XPM `pvbase` under an XPM ID derived from the PV name and IP.
+
+    The ID is ``int(last PV field) << 16``, plus bits from the IP when it starts with '10.'.
+    """
     logging.info(f'checkDsLinks({pvbase},{nLinks})')
     xpmid = (int(pvbase.split(':')[-1])<<16)
     ipw = ip.split('.')
@@ -273,15 +333,23 @@ def checkDsLinks(ip, pvbase, nLinks):
     d['dslinks'][xpmid] = {i : DsLinkCb('xpm_dslink_err',pvbase,i) for i in range(nLinks)}
 
 def checkSFPs(pvbase):
+    """Add an `SFPCb` for PV `pvbase` to ``d['monitor']``."""
     logging.info(f'checkSFPs({pvbase})')
     d['monitor'].append(SFPCb(pvbase))
 
 def checkQSFPs(pvbase):
+    """Log the call only; the QSFP check is commented out."""
     logging.info(f'checkQSFPs({pvbase})')
 # No indication of when something is connected
 #    d['monitor'].append(QSFPCb(pvbase))
 
 def checkXPM(arg):
+    """Set up the monitors for one XPM given as (ip, pvbase), depending on its '<pvbase>:FwBuild' string.
+
+    Without 'Gen' in the build string, timing checks are added (Cu/XTPG checks if 'xtpg'
+    is present, else Us checks); then 8 downstream links plus QSFPs ('Kcu' builds) or 14
+    links plus SFPs. If reading FwBuild fails the error is logged and `v` stays unset (NameError).
+    """
     logging.info(f'checkXPM({arg})')
 
     ip     = arg[0]
@@ -314,10 +382,19 @@ def checkXPM(arg):
         checkSFPs   (pvbase+':SFPSTATUS')
 
 def checkTDET(pvbase):
+    """Add a `RemoteLinkCb` for the (rx PV, tx PV or ID, name) tuple `pvbase` to ``d['monitor']``."""
     logging.info(f'checkTDET({pvbase}')
     d['monitor'].append(RemoteLinkCb(pvbase))
 
 def createExposer(prometheusDir):
+    """Start the Prometheus HTTP server on the first free port from 9200 and write '<dir>/drpmon_<host>_<i>.yaml'.
+
+    Returns
+    -------
+    bool or None
+        True on success; False if writing the file fails or no port 9200-9299 is free;
+        None (after a warning) if `prometheusDir` is ''.
+    """
     if prometheusDir == '':
         logging.warning('Unable to update Prometheus configuration: directory not provided')
         return
@@ -348,6 +425,16 @@ def createExposer(prometheusDir):
 def main():
 
     #  Need IP addresses to distinguish NEH/FEH
+    """Parse arguments, set up XPM and timing-receiver monitors, register the collector and poll timing every 4 s.
+
+    Polling runs only while `createExposer` returns True.
+
+    Notes
+    -----
+    As written the code calls ``tdets.extent`` (AttributeError), iterates ``args.xpm``
+    (None unless --xpm is given) and builds 2-tuples for --drp entries that
+    `RemoteLinkCb` indexes at [2].
+    """
     xpms = {'NEH' : [('10.0.1.102','DAQ:NEH:XPM:0'),
                      ('10.0.2.102','DAQ:NEH:XPM:1'),
                      ('10.0.3.103','DAQ:NEH:XPM:2'),

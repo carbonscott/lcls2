@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Interactive test script for ``SegGeometryJungfrauV1`` using the module-level ``jungfrau_one`` object.
+
+Run with test number ``'1'``-``'7'`` (no argument logs the usage). All code, including the import,
+runs only when the module is executed as a script.
+"""
 if __name__ == "__main__":
 
   from psana.pscalib.geometry.SegGeometryJungfrauV1 import *
@@ -11,6 +16,7 @@ if __name__ == "__main__":
   logging.basicConfig(format='[%(levelname).1s] L%(lineno)04d: %(message)s', level=logging.DEBUG)
 
   def test_xyz_min_max():
+    """Print the min/max coordinates in um of ``jungfrau_one`` and log its min/max pixel Y coordinate."""
     w = jungfrau_one
     w.print_xyz_min_max_um()
     logger.info('\nYmin = ' + str(w.pixel_coord_min('Y'))\
@@ -18,6 +24,7 @@ if __name__ == "__main__":
 
 
   def test_xyz_maps():
+    """Print the coordinate maps in um of ``jungfrau_one`` and plot its X and Y pixel-index maps."""
     w = jungfrau_one
     w.print_maps_seg_um()
     titles = ['X map','Y map']
@@ -31,6 +38,10 @@ if __name__ == "__main__":
 
   def test_jungfrau_img():
 
+    """Print segment info of ``jungfrau_one`` and log the X map shape and the image size from the min/max coordinates.
+
+    The logged "consumed time" covers only the assignment of the already existing ``jungfrau_one`` object.
+    """
     t0_sec = time()
     w = jungfrau_one
     logger.info('Consumed time for coordinate arrays (sec) = %.3f' % (time()-t0_sec))
@@ -55,6 +66,7 @@ if __name__ == "__main__":
 
 
   def test_jungfrau_img_easy():
+    """Plot an image of ``jungfrau_one`` built from pixel index maps shifted to start at 0, using weights ``X + 3*Y``."""
     o = jungfrau_one
     X, Y = o.get_seg_xy_maps_pix()
     xmin, xmax, ymin, ymax  = X.min(), X.max(), Y.min(), Y.max()
@@ -66,6 +78,7 @@ if __name__ == "__main__":
 
 
   def test_pix_sizes():
+    """Print the pixel-size arrays of ``jungfrau_one`` and log slices [348:358, 378:388] and shapes of its area and X/Y size arrays."""
     w = jungfrau_one
     w.print_pixel_size_arrs()
     size_arrX = w.pixel_size_array('X')
@@ -82,6 +95,7 @@ if __name__ == "__main__":
 
 
   def test_jungfrau_mask(width=0, wcenter=0, edge_rows=3, edge_cols=6, center_rows=2, center_cols=4):
+    """Plot ``1 + pixel_mask_array(width, wcenter, edge_rows, edge_cols, center_rows, center_cols)`` of ``jungfrau_one`` (zeros replaced by 4) placed by the pixel index maps."""
     o = jungfrau_one
     X, Y = o.get_seg_xy_maps_pix_with_offset()
     mask = 1 + o.pixel_mask_array(width, wcenter, edge_rows, edge_cols, center_rows, center_cols)
@@ -93,6 +107,7 @@ if __name__ == "__main__":
 
 
   def usage(tname='0'):
+    """Return a usage string for all tests (``tname='0'``) or only the line for test ``tname``."""
     s = ''
     if tname in ('0',): s+='\n==== Usage: python %s <test-number>' % sys.argv[0]
     if tname in ('0','1'): s+='\n 1 - test_xyz_min_max()'

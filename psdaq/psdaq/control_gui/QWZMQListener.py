@@ -33,6 +33,12 @@ from PyQt5.QtWidgets import QWidget
 from psdaq.control.control import front_pub_port
 
 class QWZMQListener(QWidget):
+    """QWidget that receives ZMQ SUB messages inside the Qt event loop via a QSocketNotifier.
+
+    Keyword arguments: timeout (ms, default 1000), is_normal (True: connect at
+    construction), on_poll (default `on_zmq_poll`), host ('localhost'), platform (6) and
+    topicfilter (b''); the URI is 'tcp://<host>:<front_pub_port(platform)>'.
+    """
     def __init__(self, **kwargs):
         QWidget.__init__(self, parent=None)
         #logger.debug('In QWZMQListener.__init__')
@@ -51,6 +57,7 @@ class QWZMQListener(QWidget):
 
 
     def init_connect_zmq(self, on_poll, uri, topicfilter):
+        """Create a ZMQ SUB socket connected to `uri` with `topicfilter` and receive timeout, and connect a read notifier on its FD to `on_poll`."""
         logger.debug('QWZMQListener.init_connect_zmq uri=%s' % uri)
         self.zmq_context = zmq.Context(1)
         self.zmq_socket = self.zmq_context.socket(zmq.SUB)
@@ -94,6 +101,11 @@ class QWZMQListener(QWidget):
 
 
     def process_zmq_message(self, msg):
+        """Test handler: append the second message part to `self.edi_text` and flag gaps in the leading counter.
+
+        The text is cleared when the counter is a multiple of 50. `edi_text` is created only in
+        the module's test code.
+        """
         s = msg[1].decode('utf-8')
         v = int(s.split(' ',1)[0])
         #self.setWindowTitle(s)
@@ -116,6 +128,10 @@ class QWZMQListener(QWidget):
 
 
     def closeEvent(self, e) :
+        """Log '<_name>.closeEvent' and call `QWidget.closeEvent`.
+
+        `_name` is not defined in this class, so a subclass must provide it or this raises AttributeError.
+        """
         logger.debug('%s.closeEvent' % self._name)
         QWidget.closeEvent(self, e)
 

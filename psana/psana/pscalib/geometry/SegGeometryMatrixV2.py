@@ -153,6 +153,7 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def print_member_data(sp):
+        """Log ``_rows``, ``_cols``, ``_pixs`` and the row/column/depth pixel sizes at info level."""
         s = 'SegGeometryMatrixV2.print_member_data()'\
           + '\n    _rows : %d'    % sp._rows\
           + '\n    _cols : %d'    % sp._cols\
@@ -164,6 +165,7 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def print_pixel_size_arrs(sp):
+        """Compute the pixel-size arrays if needed, re-create the coordinate arrays, and log slices [0:10, 190:198] of the x-size and area arrays, the full y/z size arrays and the shapes."""
         sp.make_pixel_size_arrs()
         sp.make_pixel_coord_arrs()
         s = 'SegGeometryMatrixV2.print_pixel_size_arrs()'\
@@ -179,6 +181,7 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def print_maps_seg_um(sp):
+        """Log the x, y, z pixel coordinate maps in um and their shapes."""
         s = 'SegGeometryMatrixV2.print_maps_seg_um()'\
           + '\n  x_pix_arr_um =\n'      + str(sp.x_pix_arr_um)\
           + '\n  x_pix_arr_um.shape = ' + str(sp.x_pix_arr_um.shape)\
@@ -190,6 +193,7 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def print_xy_1darr_um(sp):
+        """Log the 1-d x and y pixel coordinate arrays in um and their shapes."""
         s = 'SegGeometryyMatrixV1.print_xy_1darr_um()'\
           + '\n  x_arr_um:\n'       + str(sp.x_arr_um)\
           + '\n  x_arr_um.shape = ' + str(sp.x_arr_um.shape)\
@@ -199,6 +203,7 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def print_xyz_min_max_um(sp):
+        """Log the values from :meth:`get_xyz_min_um` and :meth:`get_xyz_max_um`."""
         xmin, ymin, zmin = sp.get_xyz_min_um()
         xmax, ymax, zmax = sp.get_xyz_max_um()
         s = 'SegGeometryMatrixV2.print_xyz_min_max_um()'\
@@ -208,22 +213,27 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def get_xyz_min_um(sp):
+        """Return ``(x_arr_um[0], y_arr_um[-1], 0)``: the smallest x and y coordinates in um (``y_arr_um`` is descending here) and 0 for z."""
         return sp.x_arr_um[0], sp.y_arr_um[-1], 0
 
 
     def get_xyz_max_um(sp):
+        """Return ``(x_arr_um[-1], y_arr_um[0], 0)``: the largest x and y coordinates in um and 0 for z."""
         return sp.x_arr_um[-1], sp.y_arr_um[0], 0
 
 
     def get_seg_xy_maps_um(sp):
+        """Return the 2-d pixel coordinate maps ``(x_pix_arr_um, y_pix_arr_um)`` in um."""
         return sp.x_pix_arr_um, sp.y_pix_arr_um
 
 
     def get_seg_xyz_maps_um(sp):
+        """Return the 2-d pixel coordinate maps ``(x_pix_arr_um, y_pix_arr_um, z_pix_arr_um)`` in um."""
         return sp.x_pix_arr_um, sp.y_pix_arr_um, sp.z_pix_arr_um
 
 
     def get_seg_xy_maps_um_with_offset(sp):
+        """Return the x and y coordinate maps minus the values from :meth:`get_xyz_min_um`; computed once and cached."""
         if  sp.x_pix_arr_um_offset is None:
             x_min_um, y_min_um, z_min_um = sp.get_xyz_min_um()
             sp.x_pix_arr_um_offset = sp.x_pix_arr_um - x_min_um
@@ -232,6 +242,10 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def get_seg_xyz_maps_um_with_offset(sp):
+        """Return the x, y and z coordinate maps minus the values from :meth:`get_xyz_min_um`; computed once and cached.
+
+        If :meth:`get_seg_xy_maps_um_with_offset` ran first, the z offset map is never created (AttributeError).
+        """
         if  sp.x_pix_arr_um_offset is None:
             x_min_um, y_min_um, z_min_um = sp.get_xyz_min_um()
             sp.x_pix_arr_um_offset = sp.x_pix_arr_um - x_min_um
@@ -241,26 +255,31 @@ class SegGeometryMatrixV2(SegGeometry):
 
 
     def get_pix_size_um(sp):
+        """Return the pixel scale size ``_pixs`` (constructor argument ``pix_scale_size``)."""
         return sp._pixs
 
 
     def get_pixel_size_arrs_um(sp):
+        """Create the pixel-size maps if needed (column size along x, row size along y, depth along z) and return ``(x_pix_size_um, y_pix_size_um, z_pix_size_um)``."""
         sp.make_pixel_size_arrs()
         return sp.x_pix_size_um, sp.y_pix_size_um, sp.z_pix_size_um
 
 
     def get_pixel_area_arr(sp):
+        """Create the pixel-size maps if needed and return ``pix_area_arr`` (all ones)."""
         sp.make_pixel_size_arrs()
         return sp.pix_area_arr
 
 
     def get_seg_xy_maps_pix(sp):
+        """Return the x and y coordinate maps divided by ``_pixs``; they are also stored as ``x_pix_arr_pix``/``y_pix_arr_pix``."""
         sp.x_pix_arr_pix = sp.x_pix_arr_um/sp._pixs
         sp.y_pix_arr_pix = sp.y_pix_arr_um/sp._pixs
         return sp.x_pix_arr_pix, sp.y_pix_arr_pix
 
 
     def get_seg_xy_maps_pix_with_offset(sp):
+        """Return the maps from :meth:`get_seg_xy_maps_pix` shifted so their minimum values are 0."""
         X, Y = sp.get_seg_xy_maps_pix()
         xmin, ymin = X.min(), Y.min()
         return X-xmin, Y-ymin

@@ -44,6 +44,11 @@ from psdaq.control_gui.QWProgressBar import QWProgressBar
 
 class CGWMainTabUser(QGroupBox) :
 
+    """QGroupBox 'Control' with play/pause, stop and record buttons and a hidden progress bar.
+
+    Registers itself as `cp.cgwmaintabuser`; button states follow the cached `cp.s_*`
+    status via `set_buts_enabled`.
+    """
     _name = 'CGWMainTabUser'
 
     s_running, s_paused = 'running', 'paused'
@@ -118,6 +123,7 @@ class CGWMainTabUser(QGroupBox) :
 #------------------------------
 
     def set_tool_tips(self) :
+        """Set tool tips on the play, record and stop buttons."""
         self.but_play  .setToolTip('Start/Pause running')
         self.but_record.setToolTip('ON/OFF recording')
         self.but_stop  .setToolTip('Stop running')
@@ -125,12 +131,14 @@ class CGWMainTabUser(QGroupBox) :
 #--------------------
 
     def sizeHint(self):
+        """Return QSize(110, 70)."""
         return QSize(110, 70)
 
 #--------------------
 
     def set_style(self) :
 
+        """Apply group-box style, zero margins/spacing, minimum size 145x60, button/icon sizes, and hide the progress bar."""
         self.setStyleSheet(style.qgrbox_title)
         #self.setCheckable(True)
         self.layout().setContentsMargins(0,0,0,0)
@@ -152,6 +160,10 @@ class CGWMainTabUser(QGroupBox) :
 
 
     def closeEvent(self, e) :
+        """Log a debug message; the try block only contains `pass`.
+
+        This definition is overridden by the later `closeEvent` in the same class and is never used.
+        """
         logger.debug('%s.closeEvent' % self._name)
 
         try :
@@ -170,6 +182,7 @@ class CGWMainTabUser(QGroupBox) :
 
 
     def hbox_buttons(self) :
+        """Create the play, stop and record buttons and the progress bar, connect their handlers and return them in a QHBoxLayout."""
         hbox = QHBoxLayout()
 
         #state = daq_control_get_state()
@@ -215,6 +228,11 @@ class CGWMainTabUser(QGroupBox) :
 
     def on_but_play(self) :
         #txt = self.but_play.accessibleName()
+        """Request 'paused' if `cp.s_state` is 'running', else 'running', via `daq_control_set_state`.
+
+        On success the play button shows a wait icon and is disabled until the next
+        `set_buts_enabled`; if no DAQ control object is set a warning is logged.
+        """
         logger.debug('on_but_play')
 
         # submit command for "running" or "pause"
@@ -236,24 +254,29 @@ class CGWMainTabUser(QGroupBox) :
 
 
     def set_but_enabled(self, but, is_enabled=True) :
+        """Enable or disable `but` (disabled buttons are drawn flat)."""
         but.setEnabled(is_enabled)
         but.setFlat(not is_enabled)
         #but.setVisible(is_enabled)
 
 
     def set_but_play_enabled(self, is_enabled=True) :
+        """Enable or disable the play button."""
         self.set_but_enabled(self.but_play, is_enabled)
 
 
     def set_but_stop_enabled(self, is_enabled=True) :
+        """Enable or disable the stop button."""
         self.set_but_enabled(self.but_stop, is_enabled)
 
 
     def set_but_record_enabled(self, is_enabled=True) :
+        """Enable or disable the record button."""
         self.set_but_enabled(self.but_record, is_enabled)
 
 
     def on_but_record(self) :
+        """Toggle recording with `daq_control_set_record(not cp.s_recording)`; warn if it returns False."""
         logger.debug('on_but_record')
 
         #cp.s_transition, cp.s_state, cp.s_cfgtype, cp.s_recording
@@ -270,6 +293,7 @@ class CGWMainTabUser(QGroupBox) :
 #--------------------
 
     def update_progress_bar(self, value=0.3, is_visible=False, trans_name='') :
+        """Set the progress bar visibility, value and label."""
         self.bar_progress.setVisible(is_visible)
         self.bar_progress.set_value(value)
         self.bar_progress.set_label(trans_name)
@@ -278,6 +302,7 @@ class CGWMainTabUser(QGroupBox) :
 
     def on_but_stop(self) :
         #txt = self.but_stop.accessibleName()
+        """Request the 'configured' state via `daq_control_set_state`."""
         logger.debug('on_but_stop')
         daq_control_set_state('configured')
         #self.set_but_stop_enabled(False) # set depending on state
@@ -286,6 +311,7 @@ class CGWMainTabUser(QGroupBox) :
 
     def closeEvent(self, e) :
         #logger.debug('closeEvent')
+        """Call `QGroupBox.closeEvent` and set `cp.cgwmaintabuser` to None."""
         QGroupBox.closeEvent(self, e)
         cp.cgwmaintabuser = None
 
@@ -297,6 +323,10 @@ class CGWMainTabUser(QGroupBox) :
     if __name__ == "__main__" :
 
       def hbox_test(self) :
+        """Return a QHBoxLayout of 25-pixel-wide buttons, one per playback/record icon (test helper).
+
+        Defined only when the module is run as a script.
+        """
         list_of_icons = [\
           icon.icon_eject\
         , icon.icon_eject_sym\

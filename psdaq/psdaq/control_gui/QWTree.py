@@ -63,34 +63,44 @@ class QWTree(QTreeView) :
  
 
     def set_selection_mode(self, smode='extended') :
+        """Set the selection mode by name using `dic_smodes` ('extended' by default; unknown names raise KeyError)."""
         logger.debug('Set selection mode: %s'%smode)
         mode = self.dic_smodes[smode]
         self.setSelectionMode(mode)
 
 
     def connect_item_selected_to(self, recipient) :
+        """Connect the selection model's currentChanged signal to `recipient`."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(recipient)
 
 
     def disconnect_item_selected_from(self, recipient) :
+        """Disconnect `recipient` from the selection model's currentChanged signal."""
         self.selectionModel().currentChanged[QModelIndex, QModelIndex].disconnect(recipient)
 
 
     def selected_indexes(self):
+        """Return ``self.selectedIndexes()``."""
         return self.selectedIndexes()
 
 
     def selected_items(self):
+        """Return the model items for the selected indexes."""
         indexes =  self.selectedIndexes()
         return [self.model.itemFromIndex(i) for i in self.selectedIndexes()]
 
 
     def clear_model(self):
+        """Remove all top-level rows from the model."""
         rows = self.model.rowCount()
         self.model.removeRows(0, rows)
 
 
     def fill_tree_model(self):
+        """Clear the model and fill it with a nested demo tree of 'itemA k i' (checkable) and 'itemB k i' items.
+
+        Each 'itemB' becomes the parent of the next pair for the same k.
+        """
         self.clear_model()
         for k in range(0, 4):
             parentItem = self.model.invisibleRootItem()
@@ -108,6 +118,7 @@ class QWTree(QTreeView) :
 
 
     def on_item_expanded(self, ind):
+        """Set the open-folder icon on the expanded item if it has children."""
         item = self.model.itemFromIndex(ind) # get QStandardItem
         if item.hasChildren() :
            item.setIcon(icon.icon_folder_open)
@@ -116,6 +127,7 @@ class QWTree(QTreeView) :
 
 
     def on_item_collapsed(self, ind):
+        """Set the closed-folder icon on the collapsed item if it has children."""
         item = self.model.itemFromIndex(ind)
         if item.hasChildren() :
            item.setIcon(icon.icon_folder_closed)
@@ -124,6 +136,7 @@ class QWTree(QTreeView) :
 
 
     def on_item_selected(self, selected, deselected):
+        """Log the newly current item's text, row and parent text at debug level, if there is an item."""
         itemsel = self.model.itemFromIndex(selected)
         if itemsel is not None :
             parent = itemsel.parent()
@@ -138,12 +151,14 @@ class QWTree(QTreeView) :
 
 
     def on_item_changed(self, item):
+        """Log the item's text and check state at debug level."""
         state = ['UNCHECKED', 'TRISTATE', 'CHECKED'][item.checkState()]
         msg = 'on_item_changed: item "%s", is at state %s' % (item.text(), state)
         logger.debug(msg)
 
 
     def on_click(self, index):
+        """Log the clicked item's text and its parent's text at debug level."""
         item = self.model.itemFromIndex(index)
         parent = item.parent()
         spar = parent.text() if parent is not None else None
@@ -152,6 +167,7 @@ class QWTree(QTreeView) :
 
 
     def on_double_click(self, index):
+        """Log the double-clicked row and text at debug level."""
         item = self.model.itemFromIndex(index)
         msg = 'on_double_click item in row:%02d text: %s' % (index.row(), item.text())
         logger.debug(msg)
@@ -160,6 +176,7 @@ class QWTree(QTreeView) :
     #--------------------------
 
     def process_expand(self):
+        """Log a debug message and expand all tree items."""
         logger.debug('process_expand')
         #self.model.set_all_group_icons(self.icon_expand)
         self.expandAll()
@@ -167,6 +184,7 @@ class QWTree(QTreeView) :
 
 
     def process_collapse(self):
+        """Log a debug message and collapse all tree items."""
         logger.debug('process_collapse')
         #self.model.set_all_group_icons(self.icon_collapse)
         self.collapseAll()
@@ -182,10 +200,12 @@ class QWTree(QTreeView) :
     #--------------------------
 
     def show_tool_tips(self):
+        """Set the tool tip to 'Tree model'."""
         self.setToolTip('Tree model') 
 
 
     def set_style(self):
+        """Hide the header, set the window icon, zero contents margins and set an item-hover style sheet."""
         self.header().hide()
         #from psana.graphqt.Styles import style
         self.setWindowIcon(icon.icon_monitor)
@@ -208,6 +228,7 @@ class QWTree(QTreeView) :
 
 
     def closeEvent(self, e):
+        """Log a debug message and call `QTreeView.closeEvent`."""
         logger.debug('closeEvent')
         QTreeView.closeEvent(self, e)
 
@@ -220,6 +241,7 @@ class QWTree(QTreeView) :
 
 
     def on_exit(self):
+        """Log a debug message and close the widget."""
         logger.debug('on_exit')
         self.close()
 
@@ -227,6 +249,10 @@ class QWTree(QTreeView) :
     if __name__ == "__main__" :
 
       def key_usage(self) :
+        """Return the key help text (ESC, E, C).
+
+        Defined only when the module is run as a script.
+        """
         return 'Keys:'\
                '\n  ESC - exit'\
                '\n  E - expand'\
@@ -236,6 +262,10 @@ class QWTree(QTreeView) :
 
       def keyPressEvent(self, e) :
         #logger.debug('keyPressEvent, key = %s'%e.key())       
+        """Handle keys in the test window: Esc closes, E expands all, C collapses all, others log `key_usage()`.
+
+        Defined only when the module is run as a script.
+        """
         if   e.key() == Qt.Key_Escape :
             self.close()
 

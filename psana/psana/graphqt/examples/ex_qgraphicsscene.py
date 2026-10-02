@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""Experimental example with a ``QGraphicsScene`` subclass and local ``GWView``/``GWViewImage`` variants.
+
+At import time it configures logging, creates a ``QApplication`` and shows a ``GWViewImage`` of a
+1000x1000 random-peaks image (there is no ``__main__`` guard).
+"""
 import sys  # used in subclasses
 
 import logging
@@ -19,6 +24,7 @@ from psana.pyalgos.generic.NDArrUtils import info_ndarr
 def draw_something_rects(painter):
     #from random import randint
     #painter = QPainter()
+    """Draw five overlapping rectangles with ``painter`` (blue-gray 3-pixel pen, yellow Dense1 brush) and call ``painter.end()``."""
     pen = QPen(QColor("#376F9F"), 0, Qt.SolidLine) #Qt.black
     pen.setWidth(3)
     painter.setPen(pen)
@@ -38,11 +44,13 @@ def draw_something_rects(painter):
 
 
 class TestQGraphicsScene(QGraphicsScene):
+    """``QGraphicsScene`` subclass that prints debug messages and draws test rectangles in the foreground."""
     def __init__(self, **kwa):
         QGraphicsScene.__init__(self, **kwa)
         print('XXX TestQGraphicsScene')
 
     def drawForeground(self, painter, rect):
+        """Call the base ``drawForeground``, print a message and draw rectangles with :func:`draw_something_rects` (which ends the painter)."""
         QGraphicsScene.drawForeground(self, painter, rect)
         print('XXX TestQGraphicsScene.drawForeground')
         draw_something_rects(painter)
@@ -52,6 +60,7 @@ class TestQGraphicsScene(QGraphicsScene):
 #        print('XXX in TestQGraphicsScene.paintEvent')
 
     def event(self, e,  *args, **kwa):
+        """Pass the event to ``QGraphicsScene.event``, print the event type (naming Paint, Move, Resize, Leave, Enter, FocusOut) and return the base result."""
         res = QGraphicsScene.event(self, e, *args, **kwa)
         evtype = e.type()
         print('XXX in TestQGraphicsScene.event', evtype, end='')
@@ -67,9 +76,14 @@ class TestQGraphicsScene(QGraphicsScene):
         return res
 
     def items_of_type(self, qgsitem=QGraphicsPixmapItem):
+        """Return the scene items that are instances of ``qgsitem`` (default ``QGraphicsPixmapItem``)."""
         return [item for item in self.items() if isinstance(item, qgsitem)]
 
     def mousePressEvent(self, e):
+        """Pass the event to the base class; on a left click print the scene position and ``dir()`` of the first pixmap item's pixmap.
+
+        The empty-list check uses ``is []`` and is never true, so a scene without pixmap items raises IndexError.
+        """
         QGraphicsScene.mousePressEvent(self, e)
 
         if e.button() == Qt.LeftButton:  # and e.modifiers() & Qt.ControlModifier
@@ -105,10 +119,12 @@ class GWView(QGraphicsView):
 
 
     def scene_rect(self):
+        """Return the scene rect ``self.scene().sceneRect()``."""
         return self.scene().sceneRect()
 
 
     def set_scene_rect(self, r):
+        """Set the scene rect to ``r`` if it is not None; print it if the root logging level is DEBUG."""
         if r is not None:
             self.scene().setSceneRect(r)  # self.setSceneRect(r)  # WORKS DIFFERENTLY!
             if logging.root.level == logging.DEBUG:
@@ -126,10 +142,12 @@ class GWView(QGraphicsView):
 
     def set_style(self):
         #logger.debug('GWView.set_style')
+        """Call :meth:`set_background_brush`."""
         self.set_background_brush()
 
 
     def set_background_brush(self):
+        """Set the view background brush from kwa ``bkg_color`` (default ``QColor(50, 5, 50)``) and ``bkg_pattern`` (default ``Qt.SolidPattern``)."""
         self.setBackgroundBrush(QBrush(\
             self.kwa.get('bkg_color', QColor(50,5,50)),\
             self.kwa.get('bkg_pattern', Qt.SolidPattern)))
@@ -163,6 +181,7 @@ class GWView(QGraphicsView):
 
 
     def mousePressEvent(self, e):
+        """On a left click store ``click_pos`` (view coordinates) and ``rs_center`` (scene rect center), then call the base handler."""
         if e.button() == Qt.LeftButton:  # and e.modifiers() & Qt.ControlModifier
             logger.debug('GWView.mousePressEvent on LeftButton')
             #self.click_pos = self.mapToScene(e.pos())
@@ -191,6 +210,10 @@ class GWView(QGraphicsView):
 
 
     def mouseReleaseEvent(self, e):
+        """Call the base handler, move the scene rect by the mouse displacement and reset ``click_pos`` to None.
+
+        The move uses ``click_pos`` and ``rs_center`` set by a preceding left-button press.
+        """
         QGraphicsView.mouseReleaseEvent(self, e)
         logger.debug('mouseReleaseEvent')
         self._move_scene_rect_by_mouse(e)
@@ -198,6 +221,10 @@ class GWView(QGraphicsView):
 
 
     def wheelEvent(self, e):
+        """Zoom the scene rect by factor 1.3 or 0.7 (by wheel direction) about the mouse position along the enabled axes.
+
+        The base ``wheelEvent`` is always called; the zoom is skipped if scale control is 0.
+        """
         ang = e.angleDelta().x()
         if ang != self.ang_wheel_old:
            logger.debug('wheelEvent new direction of e.angleDelta().x(): %.6f' % ang) #+/-120 on each step
@@ -230,6 +257,7 @@ class GWView(QGraphicsView):
 
 
     def add_test_items_to_scene(self, show_mode=3, colori=Qt.red, colfld=Qt.magenta):
+        """Add test rectangles: bit 1 of ``show_mode`` adds (0, 0, 10, 10) filled with ``colfld``, bit 2 adds (-1, -1, 2, 2) filled with ``colori``."""
         if show_mode & 1:
             rs=QRectF(0, 0, 10, 10)
             self.rsi = self.add_rect_to_scene_v1(rs, pen=QPen(Qt.NoPen), brush=QBrush(colfld))
@@ -245,6 +273,10 @@ class GWView(QGraphicsView):
 
 class GWViewImage(GWView):
 
+    """Experimental ``GWView`` that shows a 2-d array as a color-mapped pixmap and emits ``image_pixmap_changed``.
+
+    Its ``set_pixmap_from_arr`` also masks part of the image and draws 100 test points.
+    """
     image_pixmap_changed = pyqtSignal()
 
     def __init__(self, parent=None, arr=None,\
@@ -264,10 +296,12 @@ class GWViewImage(GWView):
 
 
     def set_coltab(self, coltab=ct.color_table_rainbow(ncolors=1000, hang1=250, hang2=-20)):
+        """Set ``self.coltab`` to ``coltab``."""
         self.coltab = coltab
 
 
     def set_style(self):
+        """Call ``GWView.set_style``, set the window title and the ``WA_TranslucentBackground`` attribute."""
         GWView.set_style(self)
         self.setWindowTitle('GWViewImage%s' %(30*' '))
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -276,11 +310,13 @@ class GWViewImage(GWView):
 
 
     def add_pixmap_to_scene(self, pixmap):
+        """Add ``pixmap`` to the scene as a new pixmap item the first time, otherwise replace the pixmap of the existing item ``self.pmi``."""
         if self.pmi is None: self.pmi = self.scene().addPixmap(pixmap)
         else               : self.pmi.setPixmap(pixmap)
 
 
     def paintEvent(self, e):
+        """Print a message and call ``GWView.paintEvent``."""
         print('XXX in GWViewImage.paintEvent') # , dir(e))
         #painter = QPainter(self)
         GWView.paintEvent(self, e)
@@ -289,6 +325,7 @@ class GWViewImage(GWView):
 
 
     def mousePressEvent(self, e):
+        """Map the click to scene coordinates (not used) and call ``GWView.mousePressEvent``."""
         scpoint = self.mapToScene(e.pos())
 
         #print('XXX GWViewImage.mousePressEvent but=%d %s scene x=%.1f y=%.1f'%\
@@ -314,6 +351,7 @@ class GWViewImage(GWView):
 
 
     def draw_something(self):
+        """Add 100 one-pixel rectangles at (2+i, 2+i) for i in 0..99 using ``add_point_to_scene``."""
         for i in range(100):
             self.add_point_to_scene(QPoint(2+i, 2+i))
 
@@ -372,6 +410,10 @@ class GWViewImage(GWView):
 
 
     def array_in_rect(self, rect=None):
+        """Return the part of ``self.arr`` covered by ``rect`` (default the scene rect), at least 2x2, cached by its index limits.
+
+        ``floor`` and ``ceil`` are not imported in this module, so calling this method raises NameError.
+        """
         if rect is None: rect=self.scene().sceneRect()
         x1,y1,x2,y2 = rect.getCoords()
         h,w = self.arr.shape
@@ -394,10 +436,12 @@ class GWViewImage(GWView):
 
 
     def connect_image_pixmap_changed(self, recip):
+        """Connect the ``image_pixmap_changed`` signal to ``recip``."""
         self.image_pixmap_changed.connect(recip)
 
 
     def disconnect_image_pixmap_changed(self, recip):
+        """Disconnect the ``image_pixmap_changed`` signal from ``recip``."""
         self.image_pixmap_changed.disconnect(recip)
 
 
@@ -423,6 +467,7 @@ USAGE = '\nUsage: python %s <tname [0,3]>' %SCRNAME\
       + '\n   where tname=0/1/2/3 stands for scale_ctl "HV"/"H"/"V"/"", respectively'
 
 def image_with_random_peaks(shape=(500, 500)):
+    """Return a random normal image (mu 0, sigma 10) of ``shape`` with 50 random peaks and a ring of radius 300 centered at row 500, column 500 added."""
     import psana.pyalgos.generic.NDArrGenerators as ag
 
     #logger.info('image_with_random_peaks shape: %s' % str(shape))

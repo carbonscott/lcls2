@@ -1,3 +1,9 @@
+"""Script that serves a Wave8 board's pyrogue variables over PVA (`pyrogue.protocols.epicsV4.EpicsPvServer`).
+
+At import time it parses --l, --dev, --hvBay0En, --hvBay1En and --base, creates the
+`wave8.Top` root, sets 1 s poll intervals on selected registers (0 for MasterEnable
+and Blowoff) and creates the PV server excluding group 'NoPVA'.
+"""
 import rogue.hardware.pgp
 import pyrogue
 import pyrogue.utilities.prbs
@@ -89,6 +95,7 @@ for i in range(8):
 
 # handle [x] in attribute names
 def setPollInterval(top,regname,value):
+    """Follow the dotted `regname` from `top` with getattr and set that node's `pollInterval` to `value`."""
     path = regname.split('.')
     v = top
     for arg in path:
@@ -110,6 +117,7 @@ epics = pyrogue.protocols.epicsV4.EpicsPvServer(base=args.base,root=Wave8Board,i
 def main():
 
     # Start the system
+    """Start the board (polling off, initial read), enable the batcher and trigger buffer 0, set XpmMessageAligner.TxId to ``0xfa<<24 | ip[2]<<8 | ip[3]`` of the host IP, then start and dump the PV server."""
     Wave8Board.start(
 #        pollEn   = True,
         pollEn   = False,
@@ -132,6 +140,7 @@ def main():
 
 # Close window and stop polling
 def stop():
+    """Intended to stop the system and exit; it calls `mNode.stop()`, but `mNode` is not defined (NameError)."""
     mNode.stop()
     Wave8Board.stop()
     exit()

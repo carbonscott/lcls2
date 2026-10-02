@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-"""
-"""
+"""Example: display the raw 'xtcav' camera image of the first events of a test xtc2 file with a color bar and save the last figure."""
 from psana.xtcav.examples.ex_utils import data_file, sys
 from psana.pyalgos.generic.NDArrUtils import print_ndarr
 from psana import DataSource
@@ -11,6 +10,7 @@ print('e.g.: [python] %s [test-number]' % sys.argv[0])
 #----------
 
 def test_xtcav_data_access() :
+    """Open the test file selected by ``sys.argv[1]`` (via ``data_file``), and for events 0-10 print ``det.raw(evt)`` and show it with a color range of mean-3*std to mean+5*std; then save the figure as a PNG and show it."""
     tname = sys.argv[1] if len(sys.argv) > 1 else '0'
 
     #fig, axim = fig_axis()

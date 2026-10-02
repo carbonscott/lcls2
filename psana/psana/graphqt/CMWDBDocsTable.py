@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class CMWDBDocsTable(CMWDBDocsBase, QWTable):
+    """``QWTable`` view of the documents of one DB collection: one row per document, one column per key of the first document."""
     def __init__(self):
         QWTable.__init__(self, parent=None)
         CMWDBDocsBase.__init__(self)

@@ -112,11 +112,16 @@ def str_tstamp_v1(fmt='%Y-%m-%dT%H:%M:%S.%f%z', time_sec=None) :
 
 
 def time_and_stamp(fmt='%Y-%m-%dT%H:%M:%S%z', time_sec=None) :
+    """Return ``(tsec, str_tstamp(fmt, tsec))`` where `tsec` is `time_sec` or the current time."""
     tsec = time() if time_sec is None else time_sec
     return tsec, str_tstamp(fmt, tsec)
 
 
 def time_sec_from_stamp(fmt='%Y-%m-%dT%H:%M:%S%z', time_stamp='1970-01-01T00:00:00-0800') :
+    """Parse `time_stamp` with `fmt` and return the local-time epoch seconds as int.
+
+    On a ValueError the exception is logged and `sys.exit()` is called.
+    """
     try : struc = strptime(time_stamp, fmt)
     except ValueError as err:
         logger.exception(err)
@@ -157,6 +162,10 @@ def get_login() :
 
 
 def shell_command_is_available(cmd='mongorestore', verb=True) :
+    """Log a warning (if `verb`) when `cmd` is not found by `shutil.which`.
+
+    Returns None in every case, so the result does not indicate availability.
+    """
     import shutil
     if shutil.which(cmd) is None :
         if verb : logger.warning('shell command "%s" is unavailable.' % cmd)
@@ -214,6 +223,7 @@ def create_path(path, mode=0o377) :
 
 
 def get_list_of_files_in_dir(dirname) :
+    """Return ``os.listdir(dirname)``."""
     return os.listdir(dirname)
 
 
@@ -245,6 +255,7 @@ def get_list_of_files_in_dir_for_part_fname(dirname, pattern='-r0022'):
 
 
 def get_path_owner(path) :
+    """Return the user name owning `path` (from ``os.stat`` and ``pwd.getpwuid``)."""
     import pwd
     stat = os.stat(path)
     #print(' stat =', stat)
@@ -256,16 +267,19 @@ def get_path_owner(path) :
 
 
 def get_path_mode(path) :
+    """Return ``os.stat(path).st_mode``."""
     return os.stat(path).st_mode
 
 
 def get_tempfile(mode='r+b',suffix='.txt') :
+    """Return a `tempfile.NamedTemporaryFile` opened with `mode` and `suffix`."""
     import tempfile
     tf = tempfile.NamedTemporaryFile(mode=mode,suffix=suffix)
     return tf # .name
 
 
 def print_parsed_path(path) :                       # Output for path:
+    """Print os.path properties of `path` (exists, splitext, basename, dirname, lexists, isfile, isdir, split)."""
     print('print_parsed_path(path): path:',)        # path/reg/d/psdm/XCS/xcsi0112/xtc/e167-r0015-s00-c00.xtc
     print('exists(path)  =', os.path.exists(path))  # True
     print('splitext(path)=', os.path.splitext(path))# ('/reg/d/psdm/XCS/xcsi0112/xtc/e167-r0015-s00-c00', '.xtc')
@@ -399,6 +413,14 @@ def _parse_token(token) :
 
 
 def check_token(do_print=False) :
+    """Check for an AFS token using the output of the 'tokens' command.
+
+    Returns
+    -------
+    tuple
+        (status, msg): status is True if 'Expire' occurs in the output; msg gives the
+        validity and expiry text. msg is printed if `do_print`.
+    """
     token = getoutput('tokens')
     #if do_print(: print(token)
     status = True if 'Expire' in token else False
@@ -409,6 +431,7 @@ def check_token(do_print=False) :
 
 
 def get_afs_token(do_print=False) :
+    """Run 'aklog' and return its output (printed if `do_print`)."""
     output = getoutput('aklog')
     if do_print : print(str(output))
     return output
@@ -435,6 +458,7 @@ def text_status_of_queues(lst_of_queues=['psanaq', 'psnehq', 'psfehq', 'psnehpri
 
 
 def print_kwargs(kwargs) :
+    """Print each key/value of `kwargs` between separator lines."""
     print('%s\n  kwargs:' % (40*'_'))
     for k,v in kwargs.items() : print('  %10s : %10s' % (k,v))
     print(40*'_')
@@ -467,11 +491,20 @@ def is_in_command_line(ptrn1=None, ptrn2=None) :
 
 
 def call(command_seq, shell=False) :
+    """Run `command_seq` with ``subprocess.call``; returns None.
+
+    This definition replaces the `call` imported from subprocess at module top, so
+    `has_kerberos_ticket` (which compares ``call(...) == 0``) always gets None and returns False.
+    """
     import subprocess # for subprocess.Popen
     subprocess.call(command_seq, shell=shell) # , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
 
 
 def subproc(command_seq, env=None, shell=False) : # for example, command_seq=['bsub', '-q', cp.batch_queue, '-o', 'log-ls.txt', 'ls -l']
+    """Run `command_seq` with Popen, wait, and return (stdout bytes, stderr bytes).
+
+    Only `Popen` is imported here, so the reference to ``subprocess.PIPE`` raises NameError.
+    """
     from subprocess import Popen
     p = Popen(command_seq, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env, shell=shell) #, stdin=subprocess.STDIN
     p.wait()
@@ -481,6 +514,7 @@ def subproc(command_seq, env=None, shell=False) : # for example, command_seq=['b
 
 
 def path_to_test_data() :
+    """Return '<directory of this module>/data/test'."""
     _ROOT = os.path.abspath(os.path.dirname(__file__))
     #path = 'psdaq/psdaq/control_gui/data/test'
     return '%s/data/test' % _ROOT
@@ -503,6 +537,7 @@ if __name__ == "__main__" :
 
 
   def test_10() :
+    """Test: save a random image as 'image.tiff', 'image.png' and 'image.xyz' (text fallback)."""
     image = random_standard()
     verbosity=True
     save_image_tiff(image, fname='image.tiff', verb=verbosity)
@@ -511,6 +546,7 @@ if __name__ == "__main__" :
 
 
   def test_datetime() :
+    """Test: print the current time in several timestamp formats."""
     from datetime import datetime
     t_sec = time()
     print('t_sec:', t_sec)
@@ -531,6 +567,7 @@ if __name__ == "__main__" :
     #logger.warning('Watch out!')  # will print a message to the console
     #logger.info('I told you so')  # will not print anything
 
+    """Test: print environment, host, cwd, login, timestamps, create './work', and print its mode and the host list."""
     print('get_enviroment("PWD") : %s' % get_enviroment(env='PWD'))
     print('get_hostname()        : %s' % get_hostname())
     print('get_cwd()             : %s' % get_cwd())

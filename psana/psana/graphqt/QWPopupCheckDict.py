@@ -69,6 +69,10 @@ class QWPopupCheckDict(QDialog):
 
 
     def make_gui_checkbox(self):
+        """Add one check box per (name, state) of ``self.dict_in_out``, sorted by name, and record each in ``self.dict_of_items`` as ``[name, state]``.
+
+        Each box's ``stateChanged`` signal is connected to ``onCBox``.
+        """
         self.dict_of_items = {}
         for name,state in sorted(self.dict_in_out.items()):
             cbx = QCheckBox(name)
@@ -82,6 +86,7 @@ class QWPopupCheckDict(QDialog):
 
 
     def showToolTips(self):
+        """Set tool tips on the Apply and Cancel buttons."""
         self.but_apply.setToolTip('Apply changes to the dict')
         self.but_cancel.setToolTip('Use default dict')
 
@@ -89,6 +94,7 @@ class QWPopupCheckDict(QDialog):
     def setStyle(self):
         #self.setFixedWidth(200)
         #self.setMinimumWidth(200)
+        """Clear the dialog style sheet, give both buttons a gray style and style the message box with ``set_style_msg``."""
         styleGray = "background-color: rgb(230, 240, 230); color: rgb(0, 0, 0);" # Gray
         styleDefault = ""
 
@@ -99,6 +105,7 @@ class QWPopupCheckDict(QDialog):
 
 
     def set_style_msg(self, style_bkgd):
+        """Make the message box read-only and frameless, apply ``style_bkgd`` and fix its size to 300x50."""
         self.edi_msg.setReadOnly(True)
         self.edi_msg.setStyleSheet(style_bkgd)
         self.edi_msg.setFrameStyle(QFrame.NoFrame)
@@ -106,6 +113,7 @@ class QWPopupCheckDict(QDialog):
         self.edi_msg.setFixedSize(300,50)
 
     def setIcons(self):
+        """Load the shared icons and set the cancel and ok icons on the Cancel and Apply buttons."""
         from psana.graphqt.QWIcons import icon
         icon.set_icons()
         self.but_cancel.setIcon(icon.icon_button_cancel)
@@ -113,6 +121,7 @@ class QWPopupCheckDict(QDialog):
 
 
     def onCBox(self, tristate):
+        """Record the new checked state of the check box that has focus in ``self.dict_of_items``; ``tristate`` is not used."""
         for cbx in self.dict_of_items.keys():
             if cbx.hasFocus():
                 name,state = self.dict_of_items[cbx]
@@ -123,11 +132,13 @@ class QWPopupCheckDict(QDialog):
 
 
     def onCancel(self):
+        """Log a debug message and reject the dialog; the input dict is not changed."""
         logger.debug('onCancel')
         self.reject()
 
 
     def onApply(self):
+        """Copy the check box states into the input dict with ``fill_output_dict`` and accept the dialog."""
         logger.debug('onApply')
         self.fill_output_dict()
         self.accept()
