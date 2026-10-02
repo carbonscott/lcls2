@@ -3,15 +3,27 @@
 
 Full run (default):
   * Drill test: depth-first from the overview, click every node's box at its
-    level, check that the detail title and body[data-focus] show the node,
-    recurse into its children, then click "Zoom out" and check that the
-    focus is back at the parent (or __root__).
-  * Tour test: click "Tour", check each step's title and focused node, click
-    "Next" (not after the last step), then "Exit tour".
+    level, check that body[data-focus] and #detail-title[data-node-id] show
+    the node AND that the panel's visible title text equals the model title
+    (whitespace-normalized), recurse into its children, then click "Zoom out"
+    and check that the focus is back at the parent (or __root__). A node
+    counts as visited only if all of these hold.
+  * Tour test: click "Tour"; for each step check its title, its focused and
+    highlighted node, and that the visible step text (#tour-step-prose)
+    contains the first 30 characters of the step's prose as plain text;
+    click "Next" (not after the last step), then "Exit tour". A step counts
+    only if all of these hold.
+  * Smoke checks of the reader controls: one stub arrow (a tag at the map
+    edge) leads to its node; one edge label lists the flows it stands for,
+    with links to both ends; the Right and Left arrow keys move between tour
+    steps; the help panel opens and closes; the one-page view (#/read) shows
+    every node title.
   * Counts console errors and warnings, page errors, and failed or HTTP-error
     (>= 400) requests to the viewer's own origin.
   Prints:  nodes_visited=V/N tour_steps=S/T console_errors=C
-  Exit 0 iff N > 0, T > 0, V == N, S == T and C == 0.
+  then:    smoke stub_click=ok|fail edge_label=ok|fail arrow_keys=ok|fail|n/a help=ok|fail read_page=R/N
+  Exit 0 iff N > 0, T > 0, V == N, S == T, C == 0 and every smoke check
+  passes (n/a counts as passing; R == N).
 
 Check one node (for editing tests):
   --check-node ID --expect-title TEXT --expect-prose SUBSTRING
@@ -50,6 +62,18 @@ MAX_DRILL_FAILURES = 8  # stop the drill test early when the viewer is clearly b
 
 def normalize(text):
     return re.sub(r"\s+", " ", text or "").strip()
+
+
+PROSE_PREFIX = 30  # characters of a tour step's prose that must be visible
+
+
+def plain_text(text, titles):
+    """Prose markup reduced to the text the viewer shows."""
+    text = re.sub(r"\[\[([^\]|]+)\|([^\]]+)\]\]", r"\2", text or "")
+    text = re.sub(r"\[\[([^\]|]+)\]\]", lambda m: titles.get(m.group(1).strip(), m.group(0)), text)
+    text = re.sub(r"\[([^\]]+)\]\(([^()\s]+)\)", r"\1", text)
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    return normalize(text)
 
 
 class Session:
@@ -156,6 +180,7 @@ def children_map(model):
 
 def drill_test(s, model):
     children, ids = children_map(model)
+    titles = {n["id"]: n.get("title", "") for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n}
     visited = set()
 
     def visit(node_id, parent_id):
@@ -168,8 +193,14 @@ def drill_test(s, model):
             s.recover_to(parent_id)
             return
         if s.wait_focus(node_id):
-            if node_id not in visited:
+            try:
+                shown = normalize(s.page.locator("#detail-title").inner_text())
+            except PlaywrightError:
+                shown = None
+            if shown == normalize(titles.get(node_id, "")):
                 visited.add(node_id)
+            else:
+                s.fail(f"drill: {node_id}: the panel title reads {shown!r}, expected {titles.get(node_id)!r}")
         else:
             s.fail(f"drill: after clicking {node_id}, focus is {s.focus()!r}")
             s.recover_to(node_id)
@@ -197,6 +228,7 @@ def drill_test(s, model):
 
 def tour_test(s, model):
     steps = model.get("tour", {}).get("steps", [])
+    titles = {n["id"]: n.get("title", "") for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n}
     passed = 0
     if not s.open("#/"):
         return 0, len(steps)
@@ -222,6 +254,14 @@ def tour_test(s, model):
         if s.page.locator(f'#map .node-box.is-highlighted[data-node-id="{step["node"]}"]').count() != 1:
             s.fail(f"tour: step {k} does not highlight the box of {step['node']}")
             ok = False
+        want = plain_text(step.get("prose", ""), titles)[:PROSE_PREFIX].strip()
+        try:
+            shown_prose = normalize(s.page.locator("#tour-step-prose").inner_text())
+        except PlaywrightError:
+            shown_prose = ""
+        if not want or want not in shown_prose:
+            s.fail(f"tour: step {k}: the visible step text does not contain {want!r}")
+            ok = False
         if ok:
             passed += 1
         if k == 1:
@@ -239,6 +279,120 @@ def tour_test(s, model):
         s.fail("tour: tour-exit did not return to browsing")
         passed = min(passed, len(steps) - 1)
     return passed, len(steps)
+
+
+# ---------------------------------------------------------------------------
+# Smoke checks of the reader controls
+# ---------------------------------------------------------------------------
+
+def smoke_test(s, model):
+    """Return a dict of check name -> "ok" / "fail" / "n/a", plus read_page counts."""
+    nodes = [n for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n]
+    children, ids = children_map(model)
+    result = {}
+
+    def attempt(name, func):
+        try:
+            result[name] = func()
+        except (PlaywrightError, AssertionError) as exc:
+            s.fail(f"smoke {name}: {str(exc).splitlines()[0] if str(exc) else type(exc).__name__}")
+            result[name] = "fail"
+
+    def stub_click():
+        # The first level (in model order) that draws a stub arrow.
+        for parent in [n["id"] for n in nodes if children.get(n["id"])]:
+            if not s.open(f"#/node/{parent}"):
+                return "fail"
+            chips = s.page.locator("#map g.stub-chip[data-node-id]")
+            if chips.count() == 0:
+                continue
+            target = chips.first.get_attribute("data-node-id")
+            chips.first.click()
+            assert s.wait_focus(target), f"clicking the stub to {target} at {parent} gave focus {s.focus()!r}"
+            return "ok"
+        return "n/a"
+
+    def edge_label():
+        if not s.open("#/"):
+            return "fail"
+        labels = s.page.locator("#map g.edge-label[data-edge-ids]")
+        if labels.count() == 0:
+            return "n/a"
+        pick = labels.first
+        for i in range(labels.count()):
+            if len(labels.nth(i).get_attribute("data-edge-ids").split()) > 1:
+                pick = labels.nth(i)
+                break
+        edge_ids = pick.get_attribute("data-edge-ids").split()
+        pick.click()
+        s.page.wait_for_selector("#edge-flows")
+        items = s.page.locator("#edge-flows li.flow")
+        shown = [items.nth(i).get_attribute("data-edge-id") for i in range(items.count())]
+        assert sorted(shown) == sorted(edge_ids), f"the label stands for {edge_ids}, the panel lists {shown}"
+        for i in range(items.count()):
+            assert items.nth(i).locator("a.flow-end").count() == 2, f"flow {shown[i]} does not link both ends"
+        s.page.locator("#edge-flows-close").click()
+        s.page.wait_for_selector("#edge-flows", state="detached")
+        return "ok"
+
+    def arrow_keys():
+        steps = model.get("tour", {}).get("steps", [])
+        if len(steps) < 2:
+            return "n/a"
+        if not s.open("#/tour/1"):
+            return "fail"
+        s.page.keyboard.press("ArrowRight")
+        s.page.wait_for_selector('#tour-step-title[data-step-index="2"]')
+        s.page.keyboard.press("ArrowLeft")
+        s.page.wait_for_selector('#tour-step-title[data-step-index="1"]')
+        return "ok"
+
+    def help_panel():
+        if not s.open("#/"):
+            return "fail"
+        s.page.locator("#help-toggle").click()
+        s.page.wait_for_selector("#help", state="visible")
+        s.page.locator("#help-close").click()
+        s.page.wait_for_selector("#help", state="hidden")
+        return "ok"
+
+    if not s.open("#/"):
+        # The viewer does not start at all: every check fails, without waiting for each.
+        return {"stub_click": "fail", "edge_label": "fail", "arrow_keys": "fail", "help": "fail",
+                "read_page": (0, len(nodes))}
+
+    attempt("stub_click", stub_click)
+    attempt("edge_label", edge_label)
+    attempt("arrow_keys", arrow_keys)
+    attempt("help", help_panel)
+
+    shown = 0
+    try:
+        if s.open("#/read"):
+            s.page.wait_for_function("() => document.body.dataset.mode === 'read'")
+            for n in nodes:
+                loc = s.page.locator(f'#read-page section[data-node-id="{n["id"]}"] > .read-title')
+                if loc.count() == 1 and normalize(loc.inner_text()) == normalize(n.get("title", "")):
+                    shown += 1
+                else:
+                    s.fail(f"smoke read_page: the one-page view does not show the title of {n['id']}")
+    except PlaywrightError as exc:
+        s.fail(f"smoke read_page: {str(exc).splitlines()[0]}")
+    result["read_page"] = (shown, len(nodes))
+    return result
+
+
+def smoke_line(result):
+    shown, total = result.get("read_page", (0, 0))
+    return (f"smoke stub_click={result.get('stub_click', 'fail')} edge_label={result.get('edge_label', 'fail')} "
+            f"arrow_keys={result.get('arrow_keys', 'fail')} help={result.get('help', 'fail')} "
+            f"read_page={shown}/{total}")
+
+
+def smoke_ok(result):
+    shown, total = result.get("read_page", (0, 0))
+    checks = [result.get(k, "fail") for k in ("stub_click", "edge_label", "arrow_keys", "help")]
+    return all(c in ("ok", "n/a") for c in checks) and total > 0 and shown == total
 
 
 # ---------------------------------------------------------------------------
@@ -313,6 +467,7 @@ def main(argv=None):
     except Exception as exc:  # noqa: BLE001 - report any load problem
         print(f"ERROR: cannot fetch daq-model.json next to {url}: {exc}")
         print("nodes_visited=0/0 tour_steps=0/0 console_errors=0")
+        print(smoke_line({}))
         return 1
 
     exit_code = 0
@@ -334,11 +489,15 @@ def main(argv=None):
                 s = Session(browser, url, args.screenshot_dir)
                 visited, total = drill_test(s, model)
                 passed, steps = tour_test(s, model)
+                smoke = smoke_test(s, model)
                 errors = len(s.console_problems)
                 for line in (s.failures + s.console_problems)[:MAX_PRINTED_PROBLEMS]:
                     print(f"PROBLEM: {line}")
                 print(f"nodes_visited={visited}/{total} tour_steps={passed}/{steps} console_errors={errors}")
+                print(smoke_line(smoke))
                 if not (total > 0 and steps > 0 and visited == total and passed == steps and errors == 0):
+                    exit_code = 1
+                if not smoke_ok(smoke):
                     exit_code = 1
                 s.page.close()
         finally:

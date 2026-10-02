@@ -1,7 +1,8 @@
 # Editing the design model
 
 The design document [How the DAQ works, detector to disk](index.html) is
-generated from one file: `docs/design/daq-model.json` (the *model*). The
+generated from one file (the viewer's header links here as "Edit this
+model"): `docs/design/daq-model.json` (the *model*). The
 viewer (`index.html`, `viewer.js`, `viewer.css`) only draws the model; it
 contains no text about the DAQ. **To change what the document says, edit
 only `daq-model.json`.** Never edit the viewer files to change content.
@@ -88,11 +89,17 @@ must exist and must not form a cycle.
 
 An edge may connect any two nodes, at any levels, except a node and its own
 ancestor or descendant. The viewer draws an edge between the boxes that
-contain its ends at the current level ("lifted" to the visible ancestors);
-edges with one end outside the current view are listed in the detail panel
-under "Comes from" and "Goes to". Only `data`, `trigger` and `timing` edges
-decide the left-to-right order of the boxes. There are no layout hints:
-the order of nodes in the file is the tie-break.
+contain its ends at the current level ("lifted" to the visible ancestors).
+An edge with one end outside the current view is drawn as a stub arrow to
+the edge of the map, ending at a tag that names the node at the outside end
+(click it to go there), and is listed in the detail panel under "Comes
+from" and "Goes to". Edges between the same two boxes with the same kind are
+drawn as one arrow; its label shows the first edge's label plus "(+N more)",
+and clicking the label lists all of them. Only `data`, `trigger` and
+`timing` edges decide the left-to-right order of the boxes. There are no
+layout hints: the order of nodes in the file is the tie-break. Give an edge
+`prose` (one or two sentences, with a code reference or source): it is what
+a reader sees for the flow in the panel and in the one-page view.
 
 ### Prose markup
 
@@ -131,13 +138,13 @@ git show "$COMMIT:psdaq/drp/FileWriter.cc" | sed -n '108,160p'
 |---|---|---|
 | `site-page` | `../<path>/`, optionally `#anchor`, relative to the viewer, for a page `docs/<path>.md` or `docs/<path>/index.md` of this site | e.g. `../features/xtc2/` |
 | `confluence-public` | `https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=<digits>` | public SLAC Confluence page |
-| `confluence-internal` | same form | needs a SLAC login; the viewer marks it "SLAC login required" |
+| `confluence-internal` | same form | a page in one of SLAC's internal Confluence spaces; the viewer marks it "Confluence, internal space" |
 | `web` | any `https://` URL | |
 
 Rules for sources:
 
-- Internal Confluence pages: **summarize in your own words and link; never
-  copy their text.**
+- Confluence pages, internal and public: **summarize in your own words and
+  link; never copy their sentences.**
 - Never put credentials, hostnames, IP addresses, people's names or other
   personal data in the model (the site is public).
 - Everything except `site-page` counts as an *external* source.
@@ -147,7 +154,11 @@ Rules for sources:
 Set `"outside_repo": true` on a node whose mechanism is not implemented in
 this repository (firmware, other repositories, facility services). Such a
 node needs at least one external source of its own (not a `site-page`). A
-missing `outside_repo` means `false`.
+missing `outside_repo` means `false`. A node may be `outside_repo` and still
+have code references, for example to host software in this repository that
+talks to the firmware; its prose then says which pieces are in this
+repository. Wherever prose (in any node) describes such a mechanism, say in
+the same sentence that it is outside this repository and cite the source.
 
 ### Decisions
 
@@ -168,15 +179,21 @@ Describe what the cited code and sources show. Every factual sentence must
 be supported by a code reference or source attached to the same node (or the
 same decision, edge or tour step). Never guess intent; when you are not sure,
 say so in the prose. Give numbers (rates, sizes, counts) only when the code
-or a source states them. Expand acronyms the first time a node uses them: a
-reader may open any node first.
+or a source states them, with the right unit (1024³ bytes is a GiB). Expand
+acronyms and explain terms of art (field names such as `env`, code names such
+as "pebble") the first time each node, decision, edge or tour step uses
+them: a reader may open any node first.
 
 ### Tour steps
 
-Tour steps follow one event in order. A step's `node` is the box the viewer
-highlights (the map shows that node's level); its `edges` are highlighted
-too. Step links are `#/tour/<k>` with k counted from 1, so inserting a step
-changes the numbers of the steps after it.
+Tour steps follow one event in order, and each step's prose says what
+happens to *that* event at the step (a scene-setting first step is fine if
+its title says so). A step's `node` is the box the viewer highlights (the map
+shows that node's level); its `edges` are highlighted too, including stub
+arrows to other levels. Step links are `#/tour/<k>` with k counted from 1,
+so inserting a step changes the numbers of the steps after it. The browser
+test checks that the first 30 characters of each step's prose (as plain
+text) are visible in the step card.
 
 ## Worked example
 
@@ -274,9 +291,16 @@ cd docs/design && python -m http.server 8000
 ```
 
 Open <http://127.0.0.1:8000/>. Click a box to zoom in; "Zoom out", the
-breadcrumb, Escape or Backspace zoom out; "Tour" follows the event. Reload
-the page after each edit. (Links to other pages of the site work only on the
-published site.)
+breadcrumb, Escape or Backspace zoom out; click an arrow's label to list its
+flows; click a tag at the map edge to go to that part; "Tour" follows the
+event (Left and Right arrow keys move between steps); "Read as one page"
+shows the whole model as one document (`#/read`); "How to read this page"
+explains the controls. Reload the page after each edit.
+
+Links to `../` (Documentation home), `editing-guide/` (Edit this model) and
+`../features/...` (sources of kind `site-page`) work only on the built site
+(`mkdocs serve` or `mkdocs build`), not when `docs/design` is served on its
+own as above.
 
 **Browser test** (with the preview server running, in a second terminal):
 
@@ -289,9 +313,13 @@ python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ \
 ```
 
 The first command clicks through every node and every tour step and prints
-`nodes_visited=V/N tour_steps=S/T console_errors=C`; it passes when V = N,
-S = T and C = 0. The second opens one node (by link and by clicking down
-from the overview) and checks its title and prose.
+`nodes_visited=V/N tour_steps=S/T console_errors=C`, then a line
+`smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N`; it
+passes when V = N, S = T, C = 0 and every smoke check passes (a node counts
+only if the panel shows its title; a step only if its title and the start of
+its prose are visible). The second opens one node (by link and by clicking
+down from the overview) and checks its title and prose. See
+`docs/design/tools/README.md` for the details and the test hooks.
 
 **Single-source check** (that no model text was copied into the viewer):
 
@@ -299,7 +327,10 @@ from the overview) and checks its title and prose.
 python docs/design/tools/check_single_source.py
 ```
 
-It must print `found_in_viewer=0` and `titles_found_in_viewer=0`.
+It must print `found_in_viewer=0`, `titles_found_in_viewer=0` and
+`windows_found_in_viewer=0` (the last one checks every 40-character window of
+the prose, so copying text from the middle of a field into the viewer is
+caught too).
 
 **Site build** (optional; the published site is built the same way):
 

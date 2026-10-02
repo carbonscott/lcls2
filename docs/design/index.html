@@ -16,10 +16,32 @@
     editing guide), never these files.
   -->
   <header class="site-header">
-    <a class="header-link" href="../">&larr; Documentation home</a>
+    <a class="header-link home-link" href="../">&larr; Documentation home</a>
     <h1 id="model-title">Loading the design model&hellip;</h1>
-    <a class="header-link" href="editing-guide/">Editing guide</a>
+    <div class="header-actions">
+      <button id="help-toggle" type="button" aria-expanded="false" aria-controls="help">How to read this page</button>
+      <button id="read-toggle" type="button" aria-pressed="false">Read as one page</button>
+      <a class="header-link edit-link" href="editing-guide/" title="For people who change the model: how to edit daq-model.json and check the change">Edit this model</a>
+    </div>
   </header>
+
+  <section id="help" class="help" hidden aria-labelledby="help-title">
+    <div class="help-inner">
+      <h2 id="help-title" tabindex="-1">How to read this page</h2>
+      <ul>
+        <li><strong>Boxes</strong> are parts of the system. Click a box to zoom in: the map then shows the parts inside it, and the panel describes the part. A box drawn with a second edge behind it has parts inside; hover over a box to see its full title and summary.</li>
+        <li><strong>Zoom out</strong> (or the Backspace or Escape key) goes up one level. The breadcrumb next to it shows where you are; click any of its names to jump back.</li>
+        <li><strong>Arrows</strong> show what flows between the parts; the line style and colour give the kind of flow (see the legend under the map). Each label sits on its own arrow. Click a label to list, in the panel, every flow that the arrow stands for, with links to both ends; "(+N more)" means the arrow bundles several flows.</li>
+        <li><strong>Arrows that end at the edge of the map</strong> lead to parts on another level. The rounded tag at the edge ("from &hellip;" or "to &hellip;") names that part; click it to go there.</li>
+        <li><strong>Dashed boxes</strong> marked "Outside this repo" are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
+        <li><strong>Tour</strong> follows one event step by step. Use Next and Previous, or the Left and Right arrow keys; Escape leaves the tour.</li>
+        <li><strong>Read as one page</strong> shows the same content as one long document, for reading from top to bottom.</li>
+        <li><strong>Edit this model</strong> is for the people who maintain this page: it explains how to change the underlying model file and check the change.</li>
+        <li>Links to other pages of the documentation (Documentation home, Edit this model and sources marked "This site") work on the built documentation site, not when this directory is served on its own.</li>
+      </ul>
+      <button id="help-close" type="button">Close</button>
+    </div>
+  </section>
 
   <div id="message" class="message" role="status" aria-live="polite" hidden></div>
 
@@ -35,6 +57,8 @@
     </section>
     <aside id="detail" class="detail-pane" aria-label="Details"></aside>
   </main>
+
+  <article id="read-page" class="read-page" aria-label="The model as one page" hidden></article>
 
   <noscript><p class="message error">This viewer needs JavaScript.</p></noscript>
 </body>

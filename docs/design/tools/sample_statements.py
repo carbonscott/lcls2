@@ -7,9 +7,12 @@ steps (attached to their node) and the edges (attached to their "from"
 node). Each sentence is tagged with the node id, level (1, 2, 3+),
 outside_repo and field. The sample is stratified over the cells
 (level x outside_repo): n is split across the cells in proportion to their
-size, with at least 2 per non-empty cell, using random.Random(seed).
---reserve extra sentences are drawn the same way (for replacing sentences
-that turn out not to be factual statements).
+size, with at least 2 per non-empty cell when n allows it, using
+random.Random(seed); the sample has exactly n sentences (fewer only if the
+model has fewer). --reserve R extra sentences (for replacing sentences that
+turn out not to be factual statements) are drawn from the rest in proportion
+to the cell sizes, without the per-cell minimum, so there are exactly R of
+them (fewer only if too few sentences are left).
 
 Usage:
     python docs/design/tools/sample_statements.py --seed S --n 40 [--reserve 20]
@@ -136,10 +139,17 @@ def collect(model, schema):
     return items
 
 
-def allocate(cell_sizes, n):
-    """Split n over the cells: proportional to size, at least 2 per non-empty cell."""
+def allocate(cell_sizes, n, minimum=2):
+    """Split n over the cells: proportional to size, at least `minimum` per non-empty cell.
+
+    The total is exactly min(n, number of sentences). The minimum is dropped
+    when the cells' minimums alone would exceed n.
+    """
     cells = [c for c, size in cell_sizes.items() if size > 0]
-    alloc = {c: min(2, cell_sizes[c]) for c in cells}
+    n = min(n, sum(cell_sizes[c] for c in cells))
+    if sum(min(minimum, cell_sizes[c]) for c in cells) > n:
+        minimum = 0
+    alloc = {c: min(minimum, cell_sizes[c]) for c in cells}
     remaining = n - sum(alloc.values())
     total = sum(cell_sizes[c] for c in cells)
     if remaining > 0 and total > 0:
@@ -167,12 +177,12 @@ def cell_key(item):
     return f"level={item['level']} outside_repo={str(item['outside_repo']).lower()}"
 
 
-def stratified(items, n, rng):
+def stratified(items, n, rng, minimum=2):
     cells = {}
     for item in items:
         cells.setdefault(cell_key(item), []).append(item)
     sizes = {c: len(v) for c, v in sorted(cells.items())}
-    alloc = allocate(sizes, n)
+    alloc = allocate(sizes, n, minimum)
     chosen = []
     for c in sorted(alloc):
         chosen.extend(rng.sample(cells[c], alloc[c]))
@@ -206,7 +216,7 @@ def main(argv=None):
     sample, sizes, alloc = stratified(items, args.n, rng)
     picked = {x["id"] for x in sample}
     rest = [x for x in items if x["id"] not in picked]
-    reserve, _, reserve_alloc = stratified(rest, args.reserve, rng) if args.reserve > 0 else ([], {}, {})
+    reserve, _, reserve_alloc = stratified(rest, args.reserve, rng, minimum=0) if args.reserve > 0 else ([], {}, {})
 
     print(f"seed={args.seed} sentences={len(items)} n={len(sample)} reserve={len(reserve)}")
     for c, size in sizes.items():

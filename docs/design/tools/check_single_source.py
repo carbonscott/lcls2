@@ -7,12 +7,16 @@ takes every PROSE field of the model (every field whose schema description
 starts with "PROSE", so new PROSE fields are covered automatically), keeps
 its first 40 characters, and searches the viewer files for that text (also
 HTML-escaped and JSON/JS-escaped). It then does the same for every title
-(and edge label) of 12 or more characters.
+(and edge label) of 12 or more characters. Finally it searches for every
+40-character window of every PROSE field, taken every 20 characters (plus
+the last window of the field), so that text copied from the middle of a
+field is found too.
 
 Output:
     strings_checked=N found_in_viewer=M
     titles_checked=N titles_found_in_viewer=M
-Exit status 0 iff both M are 0.
+    windows_checked=N windows_found_in_viewer=M
+Exit status 0 iff all three M are 0.
 
 Usage:
     python docs/design/tools/check_single_source.py [--model PATH] [--schema PATH] [--viewer-dir DIR]
@@ -30,6 +34,8 @@ from validate import DESIGN_DIR, as_dict, as_list, iter_prose  # noqa: E402
 
 VIEWER_FILES = ("index.html", "viewer.js", "viewer.css")
 SNIPPET_LENGTH = 40
+WINDOW_LENGTH = 40
+WINDOW_STRIDE = 20
 MIN_TITLE_LENGTH = 12
 
 
@@ -52,6 +58,16 @@ def find_in_viewer(text, viewer_texts):
         if any(form in content for form in variants(text)):
             hits.append(name)
     return hits
+
+
+def windows(text):
+    """Every WINDOW_LENGTH-character window of text, every WINDOW_STRIDE characters, plus the last one."""
+    if len(text) <= WINDOW_LENGTH:
+        return [text]
+    starts = list(range(0, len(text) - WINDOW_LENGTH + 1, WINDOW_STRIDE))
+    if starts[-1] != len(text) - WINDOW_LENGTH:
+        starts.append(len(text) - WINDOW_LENGTH)
+    return [text[i:i + WINDOW_LENGTH] for i in starts]
 
 
 def iter_titles(model):
@@ -119,13 +135,27 @@ def main(argv=None):
         if hits:
             titles_found.append((where, text, hits))
 
+    windows_checked = 0
+    windows_found = []
+    for where, text in iter_prose(model, schema):
+        if text.strip() == "":
+            continue
+        for window in windows(text):
+            windows_checked += 1
+            hits = find_in_viewer(window, viewer_texts)
+            if hits:
+                windows_found.append((where, window, hits))
+
     for where, snippet, hits in found:
         print(f"FOUND: {where}: {snippet!r} in {', '.join(hits)}")
     print(f"strings_checked={checked} found_in_viewer={len(found)}")
     for where, text, hits in titles_found:
         print(f"FOUND: {where}: {text!r} in {', '.join(hits)}")
     print(f"titles_checked={titles_checked} titles_found_in_viewer={len(titles_found)}")
-    return 0 if not found and not titles_found else 1
+    for where, window, hits in windows_found[:20]:
+        print(f"FOUND: {where}: window {window!r} in {', '.join(hits)}")
+    print(f"windows_checked={windows_checked} windows_found_in_viewer={len(windows_found)}")
+    return 0 if not found and not titles_found and not windows_found else 1
 
 
 if __name__ == "__main__":
