@@ -102,12 +102,15 @@ files `smalldata/<exp>-r<run>-s<stream>-c<chunk>.smd.xtc2` next to them (see
 
 Adapted from `psana/psana/tests/user_loops.py`. `xpptut15` run 14 is a
 synthetic data set that the tests generate with the `xtcwriter` and `smdwriter`
-tools (`psana/psana/tests/setup_input_files.py`); with real LCLS data you would
-use your experiment name and run number and usually omit `dir`.
+tools; [Synthetic test data](../getting-started.md#synthetic-test-data) shows
+how to write it into `.tmp` with `psana/psana/tests/setup_input_files.py`.
+With real LCLS data you would use your experiment name and run number and
+usually omit `dir`.
 
 ```python
 from psana import DataSource
 
+xtc_dir = ".tmp"   # written by setup_input_files.py (see Getting started)
 ds = DataSource(exp="xpptut15", run=14, dir=xtc_dir)
 for run in ds.runs():
     print(run.expt, run.runnum)
@@ -121,8 +124,8 @@ for run in ds.runs():
 ```
 
 Without steps, iterate `run.events()` directly. Reading one file:
-`DataSource(files="xpptut15-r0014-s000-c000.xtc2")` works the same way but only
-sees the detectors stored in that file.
+`DataSource(files=".tmp/xpptut15-r0014-s000-c000.xtc2")` works the same way but
+only sees the detectors stored in that file.
 
 ## Where in the code
 

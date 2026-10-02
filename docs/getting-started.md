@@ -4,6 +4,23 @@ This page collects the build and setup pointers that exist in the repository
 (`README.md`, `build_all.sh`, `build_psana.sh`, the `setup_env*.sh` scripts and
 the GitHub workflows). It does not replace them: when in doubt, read the script.
 
+## Get the source
+
+Unless a section says otherwise, the commands on this page run from the root
+of a checkout. The `dev` version
+of this site is built from the `better-docs` branch of
+[carbonscott/lcls2](https://github.com/carbonscott/lcls2), the repository
+linked in the page header:
+
+```bash
+git clone -b better-docs https://github.com/carbonscott/lcls2.git
+cd lcls2
+```
+
+`README.md` points to [slac-lcls/lcls2](https://github.com/slac-lcls/lcls2)
+(its build badge) and uses the `master` branch in its NERSC Perlmutter
+procedure.
+
 ## Choose a build
 
 | You want | Script | What it builds | Install location |
@@ -77,12 +94,40 @@ subset of tests that runs in CI is listed in
 paths or the calibration database. Small xtc2 files used by the tests are in
 `psana/psana/tests/test_data/` and `psana/psana/tests/*.xtc2`.
 
-## Wheels
+## Synthetic test data
+
+Several examples on this site use `DataSource(exp="xpptut15", run=14, dir=xtc_dir)`.
+This is a small synthetic run that the tests write with the `xtcwriter` and
+`smdwriter` tools (both installed by the build, see
+`xtcdata/xtcdata/app/meson.build`, and on `PATH` after
+`source ./install_psana/activate.sh`). To make it yourself, run
+`psana/psana/tests/setup_input_files.py` from an empty directory:
+
+```bash
+mkdir ~/psana-tutorial && cd ~/psana-tutorial
+python /path/to/lcls2/psana/psana/tests/setup_input_files.py
+ls .tmp .tmp/smalldata
+```
+
+It creates the directory `.tmp` (the script fails if `.tmp` already exists)
+with two big-data files, `xpptut15-r0014-s000-c000.xtc2` and
+`xpptut15-r0014-s001-c000.xtc2`, and their small-data files in
+`.tmp/smalldata/`. In the examples, set `xtc_dir = ".tmp"` and run them from
+the same directory; the tests do the same
+(`xtc_dir = os.path.join(os.environ.get('TEST_XTC_DIR', os.getcwd()), '.tmp')`
+in `psana/psana/tests/ds.py`).
+
+## Wheels and PyPI
 
 `.github/workflows/release.yml` builds wheels with cibuildwheel on tag pushes
 and has a PyPI publish step. psdaq is not part of the wheel (comment in
-`pyproject.toml`). Whether a particular version is available on PyPI is not
-checked here.
+`pyproject.toml`). On 2026-10-01 the PyPI project
+[`psana`](https://pypi.org/project/psana/) listed version 4.3.4, the version
+and dependency list in this repository's `pyproject.toml`, with wheels for
+CPython 3.11, 3.12 and 3.13 on Linux x86_64 (manylinux_2_28). Installing it
+with `pip install psana` was not tested here; note that the `mpi4py`
+dependency needs an MPI library on the system (comment in `pyproject.toml`).
+The wheel can be older or newer than the `dev` version of this site.
 
 ## Build this documentation
 

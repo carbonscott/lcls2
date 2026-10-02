@@ -9,7 +9,7 @@
 
 namespace Drp {
 
-/** BEBDetector for the epix100. L1Accept data is a 704 x 768 UINT16 frame unscrambled from subframe 3; the monitoring stream is switched with the Python functions `<detType>_enable` and `<detType>_disable`. */
+/** BEBDetector for the epix100. L1Accept data is a 704 x 768 UINT16 frame unscrambled from subframe 3; the monitoring stream is switched with the Python functions `{detType}_enable` and `{detType}_disable`. */
 class Epix100 : public BEBDetector
 {
 public:
@@ -36,9 +36,9 @@ protected:
                               uint64_t l1count,
                               std::vector< XtcData::Array<uint8_t> >&) override;
 public:
-    /** Call the Python function `<detType>_disable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_disable` of the configuration module with the device root object. */
     void           monStreamEnable ();
-    /** Call the Python function `<detType>_enable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_enable` of the configuration module with the device root object. */
     void           monStreamDisable();
 protected:
     Pds::Semaphore    m_env_sem;

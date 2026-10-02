@@ -85,7 +85,7 @@ when the `CALIB_JWT` environment variable is set, otherwise with Kerberos (see
 
 `psana/psana/pscalib/calib/MDBWebUtils.py`:
 
-- `calib_constants(det, exp=None, ctype='pedestals', run=None, time_sec=None, vers=None, dbsuffix='', **kwa)` returns `(data, doc)` for one constant type.
+- `calib_constants(det, exp=None, ctype='pedestals', run=None, time_sec=None, vers=None, dbsuffix='', **kwa)` returns `(data, doc)` for one constant type, or `None` if no document matches the query.
 - `calib_constants_all_types(det, exp=None, run=None, time_sec=None, vers=None, dbsuffix='', **kwa)` returns a dict with all types.
 - `deploy_constants(data, exp, detname_long, **kwa)` writes constants.
 
@@ -125,14 +125,25 @@ for evt in myrun.events():
     img = det.raw.image(evt)       # needs geometry
 ```
 
-Querying one constant directly, as in
-`psana/psana/detector/test_issues_2025.py` (needs access to that experiment's
-data and constants):
+Querying one constant directly, adapted from `issue_2025_03_18` in
+`psana/psana/detector/test_issues_2025.py` (needs access to the data and
+constants of experiment `ued1006477`). The detector name for the database is
+`det.raw._uniqueid`: the detector type followed by the id of each segment,
+joined with `_`; it is the same value (`configinfo.uniqueid`) that psana
+passes as `det_uniqueid` when it opens a run.
+It is an attribute of every detector interface (set in `DetectorImpl._reset`,
+`psana/psana/detector/detector_impl.py`), not a method:
 
 ```python
+from psana import DataSource
 from psana.pscalib.calib.MDBWebUtils import calib_constants
 
-peds, doc = calib_constants(det.raw._uniqueid, exp="ued1006477", ctype="pedestals", run=15)
+ds = DataSource(exp="ued1006477", run=15)
+myrun = next(ds.runs())
+det = myrun.Detector("epixquad")
+resp = calib_constants(det.raw._uniqueid, exp="ued1006477", ctype="pedestals", run=15)
+if resp is not None:          # None if no document matches
+    peds, doc = resp
 ```
 
 ## Where in the code

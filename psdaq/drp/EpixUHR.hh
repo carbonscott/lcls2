@@ -14,7 +14,7 @@
 
 namespace Drp {
 
-/** BEBDetector for the ePixUHR. L1Accept data is a 1D byte array per ASIC (4 x 192 x 168 x 12 / 8 bytes, the code comment says 12-bit packing); the monitoring stream is switched with the Python functions `<detType>_enable` and `<detType>_disable`. */
+/** BEBDetector for the ePixUHR. L1Accept data is a 1D byte array per ASIC (4 x 192 x 168 x 12 / 8 bytes, the code comment says 12-bit packing); the monitoring stream is switched with the Python functions `{detType}_enable` and `{detType}_disable`. */
 class EpixUHR : public BEBDetector
 {
 public:
@@ -47,9 +47,9 @@ private:
     void           __event   (XtcData::Xtc&, const void* bufEnd,
                               std::vector< XtcData::Array<uint8_t> >&);
 public:
-    /** Call the Python function `<detType>_disable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_disable` of the configuration module with the device root object. */
     void           monStreamEnable ();
-    /** Call the Python function `<detType>_enable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_enable` of the configuration module with the device root object. */
     void           monStreamDisable();
 protected:
     Pds::Semaphore    m_env_sem;

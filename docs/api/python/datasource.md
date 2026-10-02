@@ -14,7 +14,12 @@ classes, all derived from
 | `drp=` | `DrpDataSource` | `psana.psexp.drp_ds` |
 
 `PS_PARALLEL` is read in `psana/psana/psexp/tools.py` (default `"mpi"`). If
-none of these keywords is given, `InvalidDataSource` is raised. Importing this
+none of these keywords is given, `InvalidDataSource` is raised. With `exp=` in
+MPI mode with one rank, `DataSource` creates the `SerialDataSource` inside a
+`try`: only if that raises `FileNotFoundError` does it log the error and call
+`sys.exit(1)`. With `PS_PARALLEL=none` there is no such `try`, and the
+exception reaches the caller. The docstring below says the same thing in a
+shorter form. Importing this
 module also sets the environment variable `PS_PROMETHEUS_JOBID`.
 
 See [DataSource, Run and the event loop](../../features/datasource-run-events.md)

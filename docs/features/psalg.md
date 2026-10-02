@@ -52,6 +52,17 @@ Python modules built by `psana/meson.build` (Cython wrappers around C++):
 These modules are compiled; their signatures above are from the `.pyx`
 sources and they do not appear in the generated Python API pages.
 
+The Python class does not mirror the C++ class one to one.
+`peak_finder_algos` is defined in `psana/psana/peakFinder/peakFinder_ext.pyx`
+(`cdef class peak_finder_algos`, `__cinit__(self, seg=0, pbits=0, lim_rank=50, lim_peaks=4096)`)
+and passes all four values to the C++ constructor, so the C++ default
+`lim_peaks=6000` shown on the
+[psalgos::PeakFinderAlgos](../api/cpp/classpsalgos_1_1PeakFinderAlgos.html)
+page does not apply from Python. The Python methods call C++ methods with
+other names: `set_peak_selection_parameters` calls `setPeakSelectionPars`,
+`peak_finder_v3r3_d2` calls `peakFinderV3r3`, and `print_attributes` calls
+`printParameters`.
+
 ## Minimal examples
 
 Peak finding on a 2-D array, from `psana/psana/tests/test_psalg.py`

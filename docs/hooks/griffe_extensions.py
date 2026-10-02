@@ -1,8 +1,8 @@
 """Griffe extensions used by mkdocstrings when building the lcls2 docs.
 
-Both run once per loaded package (``on_package``), after griffe has parsed
-the source and expanded the wildcard imports it could. They only change what
-the API pages show; they never import or modify the code.
+All of them run once per loaded package (``on_package``), after griffe has
+parsed the source and expanded the wildcard imports it could. They only change
+what the API pages show; they never import or modify the code.
 """
 
 from griffe import Extension
@@ -62,3 +62,30 @@ class DropUndocumentedAttributes(Extension):
                 obj.del_member(name)
             elif member.is_module or member.is_class:
                 self._clean(member)
+
+
+class VerbatimDocstrings(Extension):
+    """Show the docstrings of selected objects exactly as written.
+
+    Some module docstrings are plain text laid out for a terminal: ASCII
+    diagrams, or "Usage::" blocks indented by two spaces. Rendered as
+    Markdown, their lines run together and ``*args, **kwa`` turns into
+    italic and bold text. For each object listed in ``paths`` (full dotted
+    paths, set in ``mkdocs.yml``) the docstring is wrapped in a fenced
+    ``text`` block, so the page shows it as preformatted text.
+    """
+
+    def __init__(self, paths=()):
+        super().__init__()
+        self.paths = list(paths)
+
+    def on_package(self, *, pkg, loader, **kwargs):
+        for path in self.paths:
+            # on_package runs once per package (psana, psdaq); only handle
+            # the paths that belong to this one.
+            if path != pkg.path and not path.startswith(pkg.path + "."):
+                continue
+            # A KeyError here means a path in mkdocs.yml does not exist.
+            obj = loader.modules_collection.get_member(path)
+            if obj.docstring is not None:
+                obj.docstring.value = "```text\n" + obj.docstring.value + "\n```"

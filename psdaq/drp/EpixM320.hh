@@ -48,9 +48,9 @@ protected:
 private:
     void           _descramble(uint16_t* dst, const uint16_t* src) const;
 public:
-    /** Call the Python function `<detType>_disable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_disable` of the configuration module with the device root object. */
     void           monStreamEnable ();
-    /** Call the Python function `<detType>_enable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_enable` of the configuration module with the device root object. */
     void           monStreamDisable();
 protected:
     Pds::Semaphore    m_env_sem;

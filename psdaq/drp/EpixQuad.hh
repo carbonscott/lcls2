@@ -9,7 +9,7 @@
 
 namespace Drp {
 
-/** BEBDetector for the ePix quad. L1Accept data comes from the image in subframe 2 of 4 expected subframes; the monitoring stream is switched with the Python functions `<detType>_enable` and `<detType>_disable`. */
+/** BEBDetector for the ePix quad. L1Accept data comes from the image in subframe 2 of 4 expected subframes; the monitoring stream is switched with the Python functions `{detType}_enable` and `{detType}_disable`. */
 class EpixQuad : public BEBDetector
 {
 public:
@@ -17,9 +17,9 @@ public:
     EpixQuad(Parameters* para, MemPool* pool);
     /** Does nothing; empty body. */
     ~EpixQuad();
-    /** Switch the monitoring stream off (calls `<detType>_enable` in Python) and return 0. */
+    /** Switch the monitoring stream off (calls `{detType}_enable` in Python) and return 0. */
     unsigned enable   (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& info) override;
-    /** Switch the monitoring stream on (calls `<detType>_disable` in Python) and return 0. */
+    /** Switch the monitoring stream on (calls `{detType}_disable` in Python) and return 0. */
     unsigned disable  (XtcData::Xtc& xtc, const void* bufEnd, const nlohmann::json& info) override;
     /** Call Detector::slowupdate() (a variant that copies cached environment data is compiled only with SLOW_UPDATE_ENV). */
     void slowupdate(XtcData::Xtc&, const void* bufEnd) override;

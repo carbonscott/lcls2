@@ -21,10 +21,13 @@ LCLS-II (SLAC). It holds four packages that are built together by the root
 - [Python API](api/python/index.md): reference pages generated from the
   docstrings of the main user-facing modules.
 - [C++ API](api/cpp/index.html): Doxygen pages for the public headers of
-  xtcdata, psalg, psdaq and psana.
+  xtcdata, psalg, psdaq and psana. The search box of this site does not cover
+  them; the C++ pages have their own search box.
 
 The site is versioned with [mike](https://github.com/jimporter/mike): `dev`
-follows the `better-docs` branch; tagged releases get their own version.
+follows the `better-docs` branch of
+[carbonscott/lcls2](https://github.com/carbonscott/lcls2); tagged releases get
+their own version. The version selector is next to the site title.
 
 ## Quick start
 
@@ -45,6 +48,12 @@ for nevt, evt in enumerate(myrun.events()):
 ```
 
 For real experiments you normally name the experiment and run instead of a
-file, for example `DataSource(exp='xpptut15', run=14, dir=xtc_dir)` as in
-`psana/psana/tests/ds.py`; this needs access to LCLS data. Continue with
+file, `DataSource(exp=..., run=...)`; psana then finds the run's files itself
+(see the `dir` keyword in
+[DataSource, Run and the event loop](features/datasource-run-events.md)),
+which needs access to LCLS data. Several examples on this site
+use `DataSource(exp='xpptut15', run=14, dir=xtc_dir)` instead, as in
+`psana/psana/tests/ds.py`: a small synthetic run that you can write yourself
+into the directory `xtc_dir` (see
+[Synthetic test data](getting-started.md#synthetic-test-data)). Continue with
 [DataSource, Run and the event loop](features/datasource-run-events.md).

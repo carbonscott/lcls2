@@ -31,7 +31,7 @@ namespace Drp {
         EventNamesIndex  = unsigned(ConfigNamesIndex) + unsigned(MaxSegsPerNode), /**< Event names, starting at 10. */ 
         UpdateNamesIndex = unsigned(EventNamesIndex)  + unsigned(MaxSegsPerNode)  /**< Scan update names, starting at 20; used by configureScan() and stepScan(). */ }; // index for xtc NamesId
 
-/** Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware (per the header comment). Configuration and control go through the Python module `psdaq.configdb.<detType>_config`, and each event is split into batcher subframes that are passed to the subclass _event(). */
+/** Detector base for devices whose event data is formatted by the AxiStreamBatcherEventBuilder firmware (per the header comment). Configuration and control go through the Python module `psdaq.configdb.{detType}_config`, and each event is split into batcher subframes that are passed to the subclass _event(). */
 class BEBDetector : public Detector
 {
 public:
@@ -40,17 +40,17 @@ public:
     /** Delete the config scanner and release the Python module. */
     virtual ~BEBDetector();
 public:  // Implementation of Detector
-    /** Call `<detType>_connectionInfo` in Python with the device handle and msg, store its paddr entry (aborting if it is 0, 0xffffffff or has a low byte above 15), pass the result to _connectionInfo() and return xpmInfo(paddr). */
+    /** Call `{detType}_connectionInfo` in Python with the device handle and msg, store its paddr entry (aborting if it is 0, 0xffffffff or has a low byte above 15), pass the result to _connectionInfo() and return xpmInfo(paddr). */
     nlohmann::json connectionInfo(const nlohmann::json& msg) override;
-    /** Call `<detType>_connectionShutdown` in Python if the module defines it. */
+    /** Call `{detType}_connectionShutdown` in Python if the module defines it. */
     void           connectionShutdown() override;
     /** Keep the connect message and the readout group of this DRP (det_info.readout of entry collectionId). */
     void           connect       (const nlohmann::json&, const std::string& collectionId) override;
-    /** Call `<detType>_config` in Python (with segment and serial numbers in multi-segment mode), translate the returned JSON, or list of JSON per segment, into configuration XTC, let the subclass _configure() add its names, append the configuration to xtc and return the _configure() result. Returns -1 (as unsigned) if translation fails; throws a C string if the result exceeds maxTrSize. */
+    /** Call `{detType}_config` in Python (with segment and serial numbers in multi-segment mode), translate the returned JSON, or list of JSON per segment, into configuration XTC, let the subclass _configure() add its names, append the configuration to xtc and return the _configure() result. Returns -1 (as unsigned) if translation fails; throws a C string if the result exceeds maxTrSize. */
     unsigned       configure     (const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd) override;
     /** Split the DMA buffer of each lane in event->mask into batcher subframes (one more batcher level is unwrapped when m_debatch is set), keep all subframes of the first lane that has more than 2 and subframe 2 of each later one, and pass them to _event(). */
     void           event         (XtcData::Dgram& dgram, const void* bufEnd, PGPEvent* event, uint64_t l1count) override;
-    /** Call `<detType>_unconfig` in Python with the device handle. */
+    /** Call `{detType}_unconfig` in Python with the device handle. */
     void           shutdown      () override;
 
     /** Pass stepInfo to PythonConfigScanner::configure() with the update names ID and return its result. */

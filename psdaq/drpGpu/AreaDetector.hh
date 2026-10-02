@@ -32,9 +32,9 @@ public:
   unsigned     rangeOffset() const override { return 14; }
   /** Return 2. */
   unsigned     rangeBits()   const override { return 2; }
-  /** Return null; not implemented yet (per the @todo). */
+  /** Return null; not implemented yet (per the TODO comment in the code). */
   float const* pedestals_d() const override { return nullptr; }; // @todo: TBD
-  /** Return null; not implemented yet (per the @todo). */
+  /** Return null; not implemented yet (per the TODO comment in the code). */
   float const* gains_d()     const override { return nullptr; }; // @todo: TBD
 
 //  void recordGraph(cudaStream_t          stream,

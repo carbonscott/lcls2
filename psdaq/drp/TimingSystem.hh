@@ -14,11 +14,11 @@
 namespace Drp {
 class PythonConfigScanner;
 
-/** XpmDetector for timing-system data. Configuration comes from the Python module `psdaq.configdb.<detType>_config`; L1Accept data is the timing record that follows the TimingHeader in the DMA buffer, described with TimingDef. */
+/** XpmDetector for timing-system data. Configuration comes from the Python module `psdaq.configdb.{detType}_config`; L1Accept data is the timing record that follows the TimingHeader in the DMA buffer, described with TimingDef. */
 class TimingSystem : public XpmDetector
 {
 public:
-    /** Construct the XpmDetector base, import the module `psdaq.configdb.<detType>_config` and create a PythonConfigScanner for it. Throws a C string if the import fails. */
+    /** Construct the XpmDetector base, import the module `psdaq.configdb.{detType}_config` and create a PythonConfigScanner for it. Throws a C string if the import fails. */
     TimingSystem(Parameters* para, MemPool* pool);
     /** Delete the config scanner and release the module reference. */
     ~TimingSystem();

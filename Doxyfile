@@ -31,12 +31,16 @@ EXTRACT_STATIC         = YES
 EXTRACT_PRIVATE        = NO
 
 #---------------------------------------------------------------------------
-# Input: public headers only
+# Input: public headers only, plus the landing page (index.html)
 #---------------------------------------------------------------------------
-INPUT                  = xtcdata/xtcdata \
+INPUT                  = docs/doxygen/mainpage.md \
+                         xtcdata/xtcdata \
                          psalg/psalg \
                          psdaq \
                          psana/psana
+# The landing page links back to the MkDocs site (docs/api/cpp/ sits two
+# levels below the site root). mkdocs.yml excludes docs/doxygen/ from the site.
+USE_MDFILE_AS_MAINPAGE = docs/doxygen/mainpage.md
 FILE_PATTERNS          = *.h \
                          *.hh \
                          *.hpp \

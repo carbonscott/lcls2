@@ -9,7 +9,7 @@
 
 namespace Drp {
 
-/** BEBDetector for the ePixHR 2x2. L1Accept data is a 288 x 384 UINT16 raw frame assembled from subframes 3 and 4; the monitoring stream is switched with the Python functions `<detType>_enable` and `<detType>_disable`. */
+/** BEBDetector for the ePixHR 2x2. L1Accept data is a 288 x 384 UINT16 raw frame assembled from subframes 3 and 4; the monitoring stream is switched with the Python functions `{detType}_enable` and `{detType}_disable`. */
 class EpixHR2x2 : public BEBDetector
 {
 public:
@@ -42,9 +42,9 @@ private:
     void           __event   (XtcData::Xtc&, const void* bufEnd,
                               std::vector< XtcData::Array<uint8_t> >&);
 public:
-    /** Call the Python function `<detType>_disable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_disable` of the configuration module with the device root object. */
     void           monStreamEnable ();
-    /** Call the Python function `<detType>_enable` of the configuration module with the device root object. */
+    /** Call the Python function `{detType}_enable` of the configuration module with the device root object. */
     void           monStreamDisable();
 protected:
     Pds::Semaphore    m_env_sem;

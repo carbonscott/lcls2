@@ -122,13 +122,15 @@ for nevt, evt in enumerate(myrun.events()):
 
 Calibrated array plus an EPICS variable, adapted from
 `psana/psana/tests/ds.py` (`test_standard`). `xpptut15` run 14 is a synthetic
-data set that the tests write with the `xtcwriter` and `smdwriter` tools (see
-`psana/psana/tests/setup_input_files.py`):
+data set that the tests write with the `xtcwriter` and `smdwriter` tools;
+[Synthetic test data](../getting-started.md#synthetic-test-data) shows how to
+write it into `.tmp`:
 
 ```python
 from psana import DataSource
 
-ds = DataSource(exp="xpptut15", run=14, dir=xtc_dir)   # xtc_dir: where the files are
+xtc_dir = ".tmp"                                       # see Getting started
+ds = DataSource(exp="xpptut15", run=14, dir=xtc_dir)
 for run in ds.runs():
     det = run.Detector("xppcspad")
     edet = run.Detector("HX2:DVD:GCC:01:PMON")         # EPICS variable

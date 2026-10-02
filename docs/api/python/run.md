@@ -15,6 +15,12 @@ subclass you get depends on the data source:
 | `RunSmallData` | created internally (`eventbuilder_manager.py`, `smdreader_manager.py`) and passed to `smd_callback` |
 | `RunParallel` | `MPIDataSource`; defined in [`psana.psexp.mpi_ds`](mpi_ds.md) |
 
+`Run.__init__` also stores `expt`, `runnum` and `timestamp` (the experiment
+name, run number and BeginRun timestamp that the data source passes in; the
+data sources read them from the BeginRun dgrams). They have no docstrings, so
+they are not listed below. `run.run()` returns `runnum`. `RunSmallData` does
+not call `Run.__init__` and does not set these three attributes.
+
 See [DataSource, Run and the event loop](../../features/datasource-run-events.md)
 and [Detector interface](../../features/detector-interface.md).
 

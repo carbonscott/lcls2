@@ -21,7 +21,7 @@ namespace XtcData  {
 
 namespace Drp {
 class Parameters;
-/** Scan support for Python-configured detectors: calls the functions `<detType>_scan_keys` and `<detType>_update` of the given module (per the header comment) and translates their JSON into XTC. */
+/** Scan support for Python-configured detectors: calls the functions `{detType}_scan_keys` and `{detType}_update` of the given module (per the header comment) and translates their JSON into XTC. */
 class PythonConfigScanner
 {
 public:
@@ -30,7 +30,7 @@ public:
     /** Does nothing; empty body. */
     ~PythonConfigScanner();
 public:
-    /** Call `<detType>_scan_keys` with keys, translate the returned JSON (or list of JSON, one per segment) into XTC Names with namesId + segment (segment numbers from detName:RO or from segNos, with serNos), and append them to xtc. Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. */
+    /** Call `{detType}_scan_keys` with keys, translate the returned JSON (or list of JSON, one per segment) into XTC Names with namesId + segment (segment numbers from detName:RO or from segNos, with serNos), and append them to xtc. Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. */
     unsigned configure(const nlohmann::json&    keys,
                        XtcData::Xtc&            xtc,
                        const void*              bufEnd,
@@ -38,7 +38,7 @@ public:
                        XtcData::NamesLookup&    namesLookup,
                        std::vector<unsigned>    segNos={},
                        std::vector<std::string> serNos={});
-    /** Call `<detType>_update` with dict, translate the returned JSON (or list of JSON, one per segment) into XTC, and append it to xtc. Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. */
+    /** Call `{detType}_update` with dict, translate the returned JSON (or list of JSON, one per segment) into XTC, and append it to xtc. Returns 0, or -1 (as unsigned) if translation fails; throws a C string on a Python error or an oversize result. */
     unsigned step     (const nlohmann::json&    dict,
                        XtcData::Xtc&            xtc,
                        const void*              bufEnd,

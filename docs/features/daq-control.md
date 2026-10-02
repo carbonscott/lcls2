@@ -108,7 +108,8 @@ Entry points from `psdaq/pyproject.toml` (`[project.scripts]`):
 
 `TimedRun`, `ConfigScan` and `BlueskyScan` (same directory) are library
 classes used by such scripts; `BlueskyScan` is a DAQ device for the bluesky
-RunEngine.
+RunEngine. `TimedRun` has an API page:
+[psdaq.control.TimedRun](../api/python/timedrun.md).
 
 ### Launching a platform
 
@@ -130,13 +131,25 @@ append `-u <id>` and `-p <platform>`. An excerpt of `tmo.cnf`:
 
 ## Minimal example
 
-Record a timed run from Python, from `psdaq/psdaq/control/lab3_timed_run.py`
-(needs a running platform; `args` comes from `argparse` with `-p`, `-C`, `-t`,
-`--duration`):
+Record a timed run from Python, adapted from
+`psdaq/psdaq/control/lab3_timed_run.py` (needs a running platform). `TimedRun`
+reads `args.v` in its constructor, so the parser must define `-v`; see the
+[psdaq.control.TimedRun](../api/python/timedrun.md) API page:
 
 ```python
+import argparse
+import sys
+
 from psdaq.control.DaqControl import DaqControl
 from psdaq.control.TimedRun import TimedRun
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-p', type=int, choices=range(0, 8), default=1, help='platform')
+parser.add_argument('-C', metavar='COLLECT_HOST', required=True, help='collection host')
+parser.add_argument('-t', type=int, metavar='TIMEOUT', default=10000, help='timeout msec')
+parser.add_argument('-v', action='store_true', help='be verbose')
+parser.add_argument('--duration', type=int, default=10, help='run duration seconds')
+args = parser.parse_args()
 
 control = DaqControl(host=args.C, platform=args.p, timeout=args.t)
 daqState = control.getState()
@@ -165,4 +178,5 @@ example `daqstate -p <platform> -P <instrument> -C <collection host> --state run
 - `psdaq/psdaq/service/Collection.hh`: the C++ side of the protocol (`CollectionApp`).
 
 API pages: [psdaq.control.control](../api/python/control.md),
-[psdaq.control.DaqControl](../api/python/daqcontrol.md).
+[psdaq.control.DaqControl](../api/python/daqcontrol.md),
+[psdaq.control.TimedRun](../api/python/timedrun.md).

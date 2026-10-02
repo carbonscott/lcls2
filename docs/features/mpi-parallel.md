@@ -88,13 +88,15 @@ In parallel mode it raises an exception if `PS_SRV_NODES` is 0.
 Adapted from `psana/psana/tests/run_smalldata.py`, which
 `psana/psana/tests/byhand_mpi.py` runs as
 `PS_SRV_NODES=2 mpirun -n 6 python run_smalldata.py` (1 smd0, 1 eb, 2 bd, 2 srv).
-`xpptut15` run 14 is the synthetic test data set; replace it with your
-experiment and run.
+`xpptut15` run 14 is the synthetic test data set (to write it into `.tmp`,
+see [Synthetic test data](../getting-started.md#synthetic-test-data)); replace
+it with your experiment and run.
 
 ```python
 import numpy as np
 from psana import DataSource
 
+xtc_dir = ".tmp"   # see Getting started
 ds = DataSource(exp="xpptut15", run=14, dir=xtc_dir, batch_size=2)
 smd = ds.smalldata(filename="smalldata_test.h5", batch_size=5)
 
