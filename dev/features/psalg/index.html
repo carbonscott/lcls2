@@ -829,6 +829,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1178,6 +1182,62 @@
     
   
     psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/drp_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.drp_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/null_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.null_ds
   
 
     
@@ -1699,15 +1759,24 @@ other names: <code>set_peak_selection_parameters</code> calls <code>setPeakSelec
 <code>peak_finder_v3r3_d2</code> calls <code>peakFinderV3r3</code>, and <code>print_attributes</code> calls
 <code>printParameters</code>.</p>
 <h2 id="minimal-examples">Minimal examples<a class="headerlink" href="#minimal-examples" title="Permanent link">&para;</a></h2>
-<p>Peak finding on a 2-D array, from <code>psana/psana/tests/test_psalg.py</code>
-(<code>test_peakFinder</code>; <code>data</code> is a small float32 array, <code>mask</code> an array of ones):</p>
+<p>Peak finding on a 2-D array. The calls and parameters are from
+<code>psana/psana/tests/test_psalg.py</code> (<code>test_peakFinder</code>); the test uses a fixed
+9x10 float32 array, which is replaced here by a synthetic image with one
+bright spot:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">psana.peakFinder</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">peakFinder</span>
+
+<span class="c1"># Synthetic float32 image: Gaussian noise plus one bright spot at row 25, column 25.</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">27</span><span class="p">,</span> <span class="mi">24</span><span class="p">:</span><span class="mi">27</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">300</span>
+<span class="n">data</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1200</span>
 
 <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
 <span class="n">pk</span> <span class="o">=</span> <span class="n">peakFinder</span><span class="o">.</span><span class="n">peak_finder_algos</span><span class="p">(</span><span class="n">pbits</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lim_peaks</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span>
 <span class="n">pk</span><span class="o">.</span><span class="n">set_peak_selection_parameters</span><span class="p">(</span><span class="n">npix_min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">npix_max</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">amax_thr</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">atot_thr</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">son_min</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">intens</span> <span class="o">=</span> <span class="n">pk</span><span class="o">.</span><span class="n">peak_finder_v3r3_d2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">r0</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dr</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nsigm</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># one peak, at about row 25, column 25</span>
 </code></pre></div>
 <p>Constant-fraction discrimination on a waveform, from the same file
 (<code>test_cfd</code>):</p>

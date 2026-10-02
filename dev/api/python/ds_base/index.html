@@ -710,6 +710,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1309,6 +1313,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../drp_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.drp_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../null_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.null_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../smalldata/" class="md-nav__link">
         
   
@@ -1801,16 +1861,10 @@ small-data files of a run and provides <code>smalldata()</code>, <code>unique_us
 <code>is_bd()</code> and <code>is_srv()</code>. Subclasses implement <code>runs()</code> and <code>is_mpi()</code>.</p>
 <p><code>DsParms</code> is the dataclass of parameters that is passed from the data source
 to its runs.</p>
-<p>The "Keyword Arguments" list in the <code>DataSourceBase</code> docstring below is not in
-a format the generator recognizes, so it is shown as one paragraph. The table
-of commonly used keywords in
-<a href="../../../features/datasource-run-events/#datasourcekwargs">DataSource, Run and the event loop</a>
-gives the defaults read in <code>__init__</code>. Two entries of the docstring list are
-narrower than the code: <code>run</code> may also be a list of run numbers
-(<code>_setup_runnum_list</code> accepts an int or a list, and any other type raises
-<code>InvalidDataSourceArgument</code>), and <code>skip_calib_load</code> defaults to <code>[]</code>, a list
-of detector names, or may be the string <code>"all"</code> (checked in
-<code>Run._setup_run_calibconst</code>).</p>
+<p>The keyword arguments, with their defaults, are listed under "Other
+Parameters" in the <code>DataSourceBase</code> docstring below. A shorter table of the
+commonly used keywords is in
+<a href="../../../features/datasource-run-events/#datasourcekwargs">DataSource, Run and the event loop</a>.</p>
 <p>See <a href="../../../features/datasource-run-events/">DataSource, Run and the event loop</a>.</p>
 
 
@@ -2363,8 +2417,10 @@ unknown name gives INFO). Default is logging.INFO.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Path of a rotating log file written in addition to the console output on stderr; its name
-gets a <code>.rank&lt;N&gt;</code> suffix (default: None, console only).</p>
+                <p>Path of a rotating log file written in addition to the console output on stderr (default:
+None, console only). The rank is inserted before the file extension, e.g. <code>run.log</code> becomes
+<code>run.rank0.log</code>; the rank is the MPI world rank when PS_PARALLEL is "mpi" (the default) and
+0 otherwise.</p>
               </div>
             </td>
           </tr>
@@ -2511,9 +2567,11 @@ PSPLOT_LIVE_ZMQ_SERVER is set, through a zmq REQ socket to that address with <co
 
     <div class="doc doc-contents ">
 
-        <p>Only applicable to MPIDataSource
-All other types of DataSource always return True.
-For MPIDataSource, only the last bigdata rank returns True.</p>
+        <p>Return whether this rank is the unique user rank.</p>
+<p>When <code>is_mpi()</code> is False this base method returns True; that is the case for <code>SerialDataSource</code>,
+<code>SingleFileDataSource</code>, <code>ShmemDataSource</code> and <code>DrpDataSource</code>. <code>NullDataSource</code> overrides it to
+return False. For <code>MPIDataSource</code> only world rank <code>world_size - PS_SRV_NODES - 1</code> (the highest rank
+that is not a srv rank; PS_SRV_NODES defaults to 0) returns True.</p>
 
 
     </div>

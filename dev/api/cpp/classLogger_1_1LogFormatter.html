@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('classLogger_1_1LogFormatter.html','');
 </div><!--header-->
 <div class="contents">
 
-<p>Formats a <a class="el" href="classLogger_1_1LogRecord.html" title="One log message: logger name (held by reference), level, source file and line, and a pointer to the s...">LogRecord</a> as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, <a href="file:line">file:line</a> for levels other than INFO, and the message text.  
+<p>Formats a <a class="el" href="classLogger_1_1LogRecord.html" title="One log message: logger name (held by reference), level, source file and line, and a pointer to the s...">LogRecord</a> as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, for levels other than INFO the file name (without directories), a colon and the line number, and the message text.  
  <a href="classLogger_1_1LogFormatter.html#details">More...</a></p>
 
 <p><code>#include &lt;Logger.hh&gt;</code></p>
@@ -135,7 +135,7 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a25dbe733cddedf5352e677bb763bb8e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Formats a <a class="el" href="classLogger_1_1LogRecord.html" title="One log message: logger name (held by reference), level, source file and line, and a pointer to the s...">LogRecord</a> as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, <a href="file:line">file:line</a> for levels other than INFO, and the message text. </p>
+<div class="textblock"><p>Formats a <a class="el" href="classLogger_1_1LogRecord.html" title="One log message: logger name (held by reference), level, source file and line, and a pointer to the s...">LogRecord</a> as: the time (if a time format is set), the 4-digit record counter, the 3-letter level, for levels other than INFO the file name (without directories), a colon and the line number, and the message text. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="aeb9abc3e1a6fd58382f567fa4ecd359d" name="aeb9abc3e1a6fd58382f567fa4ecd359d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb9abc3e1a6fd58382f567fa4ecd359d">&#9670;&#160;</a></span>level_t</h2>

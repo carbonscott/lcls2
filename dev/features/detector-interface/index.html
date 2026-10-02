@@ -862,6 +862,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1211,6 +1215,62 @@
     
   
     psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/drp_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.drp_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/python/null_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.null_ds
   
 
     
@@ -1683,7 +1743,8 @@ therefore needs a new class with the right name in one of those modules.</p>
 <p><code>psana/psana/detector/detector_impl.py</code>. The base class of all interfaces.</p>
 <ul>
 <li>Constructor: <code>DetectorImpl(det_name, drp_class_name, configinfo, calibconst, env_store=None, var_name=None, **kwargs)</code>.</li>
-<li><code>config(evt)</code> returns the per-segment configuration objects.</li>
+<li><code>config(evt)</code> returns one dict that merges this detector's per-segment
+  configuration entries from all Configure dgrams; <code>evt</code> is not used.</li>
 <li><code>_segments(evt)</code> returns this detector's data segments for the event, or
   <code>None</code> if any expected segment is missing; most <code>raw</code>/<code>calib</code> methods start
   from it.</li>

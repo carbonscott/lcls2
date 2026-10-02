@@ -854,6 +854,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1203,6 +1207,62 @@
     
   
     psana.psexp.shmem_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/python/drp_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.drp_ds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/python/null_ds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    psana.psexp.null_ds
   
 
     
@@ -1751,9 +1811,10 @@ in <code>psana/psana/tests/ds.py</code>).</p>
 <p><code>.github/workflows/release.yml</code> builds wheels with cibuildwheel on tag pushes
 and has a PyPI publish step. psdaq is not part of the wheel (comment in
 <code>pyproject.toml</code>). On 2026-10-01 the PyPI project
-<a href="https://pypi.org/project/psana/"><code>psana</code></a> listed version 4.3.4, the version
-and dependency list in this repository's <code>pyproject.toml</code>, with wheels for
-CPython 3.11, 3.12 and 3.13 on Linux x86_64 (manylinux_2_28). Installing it
+<a href="https://pypi.org/project/psana/"><code>psana</code></a> listed version 4.3.4. This is the
+same version as in this repository's <code>pyproject.toml</code>, and PyPI lists the same
+dependencies as that file. There were wheels for CPython 3.11, 3.12 and 3.13
+on Linux x86_64 (manylinux_2_28). Installing it
 with <code>pip install psana</code> was not tested here; note that the <code>mpi4py</code>
 dependency needs an MPI library on the system (comment in <code>pyproject.toml</code>).
 The wheel can be older or newer than the <code>dev</code> version of this site.</p>
