@@ -1953,7 +1953,8 @@
 
 <h1 id="editing-the-design-model">Editing the design model<a class="headerlink" href="#editing-the-design-model" title="Permanent link">&para;</a></h1>
 <p>The design document <a href="../">How the DAQ works, detector to disk</a> is
-generated from one file: <code>docs/design/daq-model.json</code> (the <em>model</em>). The
+generated from one file (the viewer's header links here as "Edit this
+model"): <code>docs/design/daq-model.json</code> (the <em>model</em>). The
 viewer (<code>index.html</code>, <code>viewer.js</code>, <code>viewer.css</code>) only draws the model; it
 contains no text about the DAQ. <strong>To change what the document says, edit
 only <code>daq-model.json</code>.</strong> Never edit the viewer files to change content.</p>
@@ -2050,11 +2051,17 @@ shown among its siblings. The model must reach level 3 somewhere. Parents
 must exist and must not form a cycle.</p>
 <p>An edge may connect any two nodes, at any levels, except a node and its own
 ancestor or descendant. The viewer draws an edge between the boxes that
-contain its ends at the current level ("lifted" to the visible ancestors);
-edges with one end outside the current view are listed in the detail panel
-under "Comes from" and "Goes to". Only <code>data</code>, <code>trigger</code> and <code>timing</code> edges
-decide the left-to-right order of the boxes. There are no layout hints:
-the order of nodes in the file is the tie-break.</p>
+contain its ends at the current level ("lifted" to the visible ancestors).
+An edge with one end outside the current view is drawn as a stub arrow to
+the edge of the map, ending at a tag that names the node at the outside end
+(click it to go there), and is listed in the detail panel under "Comes
+from" and "Goes to". Edges between the same two boxes with the same kind are
+drawn as one arrow; its label shows the first edge's label plus "(+N more)",
+and clicking the label lists all of them. Only <code>data</code>, <code>trigger</code> and
+<code>timing</code> edges decide the left-to-right order of the boxes. There are no
+layout hints: the order of nodes in the file is the tie-break. Give an edge
+<code>prose</code> (one or two sentences, with a code reference or source): it is what
+a reader sees for the flow in the panel and in the one-page view.</p>
 <h3 id="prose-markup">Prose markup<a class="headerlink" href="#prose-markup" title="Permanent link">&para;</a></h3>
 <ul>
 <li>A blank line (<code>\n\n</code> in the JSON string) starts a new paragraph.</li>
@@ -2105,7 +2112,7 @@ git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span>
 <tr>
 <td><code>confluence-internal</code></td>
 <td>same form</td>
-<td>needs a SLAC login; the viewer marks it "SLAC login required"</td>
+<td>a page in one of SLAC's internal Confluence spaces; the viewer marks it "Confluence, internal space"</td>
 </tr>
 <tr>
 <td><code>web</code></td>
@@ -2116,8 +2123,8 @@ git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span>
 </table>
 <p>Rules for sources:</p>
 <ul>
-<li>Internal Confluence pages: <strong>summarize in your own words and link; never
-  copy their text.</strong></li>
+<li>Confluence pages, internal and public: <strong>summarize in your own words and
+  link; never copy their sentences.</strong></li>
 <li>Never put credentials, hostnames, IP addresses, people's names or other
   personal data in the model (the site is public).</li>
 <li>Everything except <code>site-page</code> counts as an <em>external</em> source.</li>
@@ -2126,7 +2133,11 @@ git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span>
 <p>Set <code>"outside_repo": true</code> on a node whose mechanism is not implemented in
 this repository (firmware, other repositories, facility services). Such a
 node needs at least one external source of its own (not a <code>site-page</code>). A
-missing <code>outside_repo</code> means <code>false</code>.</p>
+missing <code>outside_repo</code> means <code>false</code>. A node may be <code>outside_repo</code> and still
+have code references, for example to host software in this repository that
+talks to the firmware; its prose then says which pieces are in this
+repository. Wherever prose (in any node) describes such a mechanism, say in
+the same sentence that it is outside this repository and cite the source.</p>
 <h3 id="decisions">Decisions<a class="headerlink" href="#decisions" title="Permanent link">&para;</a></h3>
 <p>A design decision (<code>title</code>, <code>decision</code>, <code>rationale</code>, optional <code>id</code>) needs at
 least one source or code reference of its own: the basis for the
@@ -2143,13 +2154,19 @@ does X; the sources do not say why.").</p>
 be supported by a code reference or source attached to the same node (or the
 same decision, edge or tour step). Never guess intent; when you are not sure,
 say so in the prose. Give numbers (rates, sizes, counts) only when the code
-or a source states them. Expand acronyms the first time a node uses them: a
-reader may open any node first.</p>
+or a source states them, with the right unit (1024³ bytes is a GiB). Expand
+acronyms and explain terms of art (field names such as <code>env</code>, code names such
+as "pebble") the first time each node, decision, edge or tour step uses
+them: a reader may open any node first.</p>
 <h3 id="tour-steps">Tour steps<a class="headerlink" href="#tour-steps" title="Permanent link">&para;</a></h3>
-<p>Tour steps follow one event in order. A step's <code>node</code> is the box the viewer
-highlights (the map shows that node's level); its <code>edges</code> are highlighted
-too. Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1, so inserting a step
-changes the numbers of the steps after it.</p>
+<p>Tour steps follow one event in order, and each step's prose says what
+happens to <em>that</em> event at the step (a scene-setting first step is fine if
+its title says so). A step's <code>node</code> is the box the viewer highlights (the map
+shows that node's level); its <code>edges</code> are highlighted too, including stub
+arrows to other levels. Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1,
+so inserting a step changes the numbers of the steps after it. The browser
+test checks that the first 30 characters of each step's prose (as plain
+text) are visible in the step card.</p>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h2>
 <p>These snippets are made up for this guide: the ids and texts are examples
 only; do not paste them into the model as they are.</p>
@@ -2261,9 +2278,15 @@ step titles.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>docs/design<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
 </code></pre></div>
 <p>Open <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>. Click a box to zoom in; "Zoom out", the
-breadcrumb, Escape or Backspace zoom out; "Tour" follows the event. Reload
-the page after each edit. (Links to other pages of the site work only on the
-published site.)</p>
+breadcrumb, Escape or Backspace zoom out; click an arrow's label to list its
+flows; click a tag at the map edge to go to that part; "Tour" follows the
+event (Left and Right arrow keys move between steps); "Read as one page"
+shows the whole model as one document (<code>#/read</code>); "How to read this page"
+explains the controls. Reload the page after each edit.</p>
+<p>Links to <code>../</code> (Documentation home), <code>editing-guide/</code> (Edit this model) and
+<code>../features/...</code> (sources of kind <code>site-page</code>) work only on the built site
+(<code>mkdocs serve</code> or <code>mkdocs build</code>), not when <code>docs/design</code> is served on its
+own as above.</p>
 <p><strong>Browser test</strong> (with the preview server running, in a second terminal):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/
 python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/<span class="w"> </span><span class="se">\</span>
@@ -2272,13 +2295,20 @@ python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> 
 <span class="w">    </span>--expect-prose<span class="w"> </span><span class="s2">"copies each datagram into a memory buffer"</span>
 </code></pre></div>
 <p>The first command clicks through every node and every tour step and prints
-<code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>; it passes when V = N,
-S = T and C = 0. The second opens one node (by link and by clicking down
-from the overview) and checks its title and prose.</p>
+<code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>, then a line
+<code>smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N</code>; it
+passes when V = N, S = T, C = 0 and every smoke check passes (a node counts
+only if the panel shows its title; a step only if its title and the start of
+its prose are visible). The second opens one node (by link and by clicking
+down from the overview) and checks its title and prose. See
+<code>docs/design/tools/README.md</code> for the details and the test hooks.</p>
 <p><strong>Single-source check</strong> (that no model text was copied into the viewer):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/check_single_source.py
 </code></pre></div>
-<p>It must print <code>found_in_viewer=0</code> and <code>titles_found_in_viewer=0</code>.</p>
+<p>It must print <code>found_in_viewer=0</code>, <code>titles_found_in_viewer=0</code> and
+<code>windows_found_in_viewer=0</code> (the last one checks every 40-character window of
+the prose, so copying text from the middle of a field into the viewer is
+caught too).</p>
 <p><strong>Site build</strong> (optional; the published site is built the same way):</p>
 <div class="highlight"><pre><span></span><code>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict<span class="w"> </span>-d<span class="w"> </span>/tmp/lcls2-site
 </code></pre></div>

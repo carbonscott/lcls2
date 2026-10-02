@@ -62,7 +62,7 @@
         "url": {"type": "string", "minLength": 1, "description": "site-page: a relative URL from the viewer to a page of this site, ../<path>/ (optionally #anchor), where docs/<path>.md or docs/<path>/index.md exists. confluence-*: https://confluence.slac.stanford.edu/pages/viewpage.action?pageId=<digits>. web: an absolute https URL."},
         "kind": {
           "enum": ["site-page", "confluence-public", "confluence-internal", "web"],
-          "description": "site-page = a page of this documentation site (in this repo). The other kinds are external sources (outside this repo). confluence-internal needs a SLAC login; it is summarized, never copied."
+          "description": "site-page = a page of this documentation site (in this repo). The other kinds are external sources (outside this repo). confluence-internal = a page in one of SLAC's internal Confluence spaces; summarize it in your own words and link it, never copy it."
         },
         "note": {"type": "string", "description": "PROSE. Optional: what this source is used for."}
       },

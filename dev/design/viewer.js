@@ -11,11 +11,16 @@
  *                      its siblings, with the leaf highlighted)
  *   #/tour/<k>         tour step k (1-based): the map shows the level of the
  *                      step's node, with the node highlighted
+ *   #/read             the whole model as one page; #/read/<id> scrolls to a node
  *
  * Test hooks (documented in tools/README.md): .node-box[data-node-id] in
  * #map, #detail-title[data-node-id], #zoom-out, #breadcrumb [data-node-id]
  * (root crumb "__root__"), #tour-start, #tour-next, #tour-prev, #tour-exit,
- * #tour-step-title[data-step-index], body[data-ready], body[data-focus].
+ * #tour-step-title[data-step-index], #tour-step-prose, body[data-ready],
+ * body[data-focus], body[data-mode], #map g.edge[data-edge-ids],
+ * #map g.stub[data-node-id], #map g.edge-label[data-edge-ids],
+ * #edge-flows[data-edge-ids], #help-toggle, #help, #read-toggle,
+ * #read-page section[data-node-id].
  */
 (function () {
   'use strict';
@@ -33,20 +38,24 @@
   const SOURCE_KIND_NAMES = {
     'site-page': 'This site',
     'confluence-public': 'Confluence',
-    'confluence-internal': 'Confluence, SLAC login required',
+    'confluence-internal': 'Confluence, internal space',
     'web': 'Web'
   };
 
   // Layout constants (pixels).
   const L = {
-    boxMinW: 140, boxMaxW: 210, boxH: 124,
-    colGap: 92, rowGap: 52,
-    marginX: 16, marginRight: 40, marginTop: 40, marginBottom: 40,
-    maxRows: 4,
-    labelMaxW: 74, labelLineH: 13, labelPadX: 4, labelPadY: 2,  // labelMaxW + 2 * labelPadX < colGap - 6
-    laneTrack: 19, gutterTrack: 8, cornerRadius: 6  // laneTrack > label height: lane labels stay on their own track
+    boxMinW: 150, boxH0: 100, boxHFit: 136, boxHMax: 240,
+    colGapMin: 96, colGapMax: 170, rowGap: 56,
+    marginX: 16, marginRight: 40, marginTop: 36, marginBottom: 36,
+    maxRows: 4, laneExtraMax: 70,
+    labelLineH: 13, labelPadX: 5, labelPadY: 2,
+    laneTrack: 19, gutterTrack: 8, cornerRadius: 6,
+    stubMinW: 100, stubMaxW: 230, stubH: 17, stubGap: 22
   };
-  const LABEL_FONT = '11px system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const FONT_FAMILY = 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const LABEL_FONT = '11px ' + FONT_FAMILY;
+  const TITLE_FONT = '600 14px ' + FONT_FAMILY;
+  const SUMMARY_FONT = '12px ' + FONT_FAMILY;
 
   // ------------------------------------------------------------------
   // Model index
@@ -58,11 +67,13 @@
     order: new Map(),     // id -> position in the JSON node list
     sources: new Map(),   // id -> source
     edges: [],
+    edgeById: new Map(),
     steps: []
   };
   let current = null;            // the state being shown
   let tourReturnHash = '#/';     // where "Exit tour" goes
   let focusMapAfterRender = false;
+  let selectedGroup = null;      // edge ids of the arrow whose flows are listed in the panel
 
   function buildIndex(m) {
     const list = (x) => (Array.isArray(x) ? x : []);
@@ -80,6 +91,7 @@
     }
     list(m.sources).forEach((s) => { if (s && typeof s.id === 'string') idx.sources.set(s.id, s); });
     idx.edges = list(m.edges).filter((e) => e && idx.nodes.has(e.from) && idx.nodes.has(e.to));
+    idx.edges.forEach((e) => idx.edgeById.set(e.id, e));
     idx.steps = list(m.tour && m.tour.steps);
   }
 
@@ -154,6 +166,7 @@
     return a;
   }
   function nodeHash(id) { return id === ROOT ? '#/' : '#/node/' + encodeURIComponent(id); }
+  function readHash(id) { return id === ROOT || !id ? '#/read' : '#/read/' + encodeURIComponent(id); }
   function go(hash) {
     if (location.hash === hash || (hash === '#/' && (location.hash === '' || location.hash === '#'))) render();
     else location.hash = hash;
@@ -164,6 +177,7 @@
   // [[node-id]] and [[node-id|text]]. Everything else is literal text.
   // ------------------------------------------------------------------
   const INLINE_RE = /`([^`]+)`|\[\[([^\]|]+)(?:\|([^\]]+))?\]\]|\[([^\]]+)\]\(([^()\s]+)\)/g;
+  let xrefHash = nodeHash;  // the one-page view links cross-references to its own sections
 
   function safeUrl(url) {
     if (isExternal(url)) return true;
@@ -181,7 +195,7 @@
         parent.append(el('code', { text: m[1] }));
       } else if (m[2] !== undefined) {
         const id = m[2].trim();
-        if (idx.nodes.has(id)) parent.append(link(nodeHash(id), m[3] !== undefined ? m[3] : titleOf(id), 'xref'));
+        if (idx.nodes.has(id)) parent.append(link(xrefHash(id), m[3] !== undefined ? m[3] : titleOf(id), 'xref'));
         else parent.append(m[0]);
       } else if (safeUrl(m[5])) {
         const a = link(m[5], '', 'prose-link');
@@ -213,6 +227,17 @@
     if (typeof text === 'string') appendInline(e, text.replace(/\s*\n\s*/g, ' '));
     return e;
   }
+  // Prose markup reduced to plain text (for tooltips and measuring).
+  function plainText(text) {
+    if (typeof text !== 'string') return '';
+    return text
+      .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2')
+      .replace(/\[\[([^\]|]+)\]\]/g, (all, id) => (idx.nodes.has(id.trim()) ? titleOf(id.trim()) : all))
+      .replace(/\[([^\]]+)\]\(([^()\s]+)\)/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
   // ------------------------------------------------------------------
   // Routing
@@ -233,6 +258,11 @@
       if (k >= 1 && step && idx.nodes.has(step.node)) return { mode: 'tour', step: k, focus: step.node };
       return { mode: 'browse', focus: ROOT, message: 'The tour has no step ' + m[1] + '. Showing the overview.' };
     }
+    m = /^\/read(?:\/(.+?))?\/?$/.exec(h);
+    if (m) {
+      const target = m[1] && idx.nodes.has(m[1]) ? m[1] : null;
+      return { mode: 'read', focus: ROOT, target: target };
+    }
     return { mode: 'browse', focus: ROOT, message: 'Unknown link "#' + h + '". Showing the overview.' };
   }
 
@@ -250,7 +280,7 @@
   }
 
   function zoomOut() {
-    if (!current) return;
+    if (!current || current.mode === 'read') return;
     if (current.focus === ROOT) return;
     go(nodeHash(parentOf(current.focus)));
   }
@@ -260,8 +290,13 @@
     go('#/tour/1');
   }
   function exitTour() {
-    const back = /^#\/tour/.test(tourReturnHash) ? '#/' : tourReturnHash;
+    const back = /^#\/(tour|read)/.test(tourReturnHash) ? '#/' : tourReturnHash;
     go(back);
+  }
+  function tourStep(delta) {
+    if (!current || current.mode !== 'tour') return;
+    const k = current.step + delta;
+    if (k >= 1 && k <= idx.steps.length) go('#/tour/' + k);
   }
 
   // ------------------------------------------------------------------
@@ -270,12 +305,22 @@
   function render() {
     if (!model) return;
     const state = parseHash();
+    if (!current || current.mode !== state.mode || current.focus !== state.focus || current.step !== state.step) selectedGroup = null;
     current = state;
     showMessage(state.message || '');
-    renderBreadcrumb(state);
-    renderMap(state);
-    renderDetail(state);
-    $('zoom-out').disabled = state.focus === ROOT;
+    const reading = state.mode === 'read';
+    $('read-page').hidden = !reading;
+    document.querySelector('main.layout').hidden = reading;
+    $('read-toggle').textContent = reading ? 'Back to the map' : 'Read as one page';
+    $('read-toggle').setAttribute('aria-pressed', reading ? 'true' : 'false');
+    if (reading) {
+      renderReadPage(state);
+    } else {
+      renderBreadcrumb(state);
+      renderMap(state);
+      renderDetail(state);
+      $('zoom-out').disabled = state.focus === ROOT;
+    }
     $('tour-start').setAttribute('aria-pressed', state.mode === 'tour' ? 'true' : 'false');
     document.body.dataset.mode = state.mode;
     document.body.dataset.focus = state.focus;
@@ -310,39 +355,53 @@
     const map = $('map');
     const view = viewOf(state);
     const highlightEdges = new Set(state.mode === 'tour' ? (idx.steps[state.step - 1].edges || []) : []);
+    const selected = new Set(selectedGroup || []);
     const groups = visibleEdgeGroups(view.ids);
-    const availW = Math.max(320, map.clientWidth - 4);
-    const layout = layoutBoxes(view.ids, groups, availW);
+    const stubs = stubGroups(view.ids);
+    const availW = Math.max(300, map.clientWidth - 4);
+    const availH = Math.max(240, map.clientHeight - 4);
+    const layout = layoutBoxes(view.ids, groups, stubs, availW, availH);
     const routes = routeEdges(layout);
 
     const canvas = el('div', { class: 'map-canvas' });
     canvas.style.width = layout.width + 'px';
     canvas.style.height = layout.height + 'px';
 
-    const svgEl = svg('svg', { class: 'edges', width: layout.width, height: layout.height, 'aria-hidden': 'true' });
-    svgEl.append(arrowDefs());
-    const labelRects = [];
-    const boxRects = Array.from(layout.pos.values()).map((p) => ({ x: p.x - 3, y: p.y - 3, w: p.w + 6, h: p.h + 6 }));
+    const lines = svg('svg', { class: 'edges', width: layout.width, height: layout.height, 'aria-hidden': 'true' });
+    lines.append(arrowDefs());
+    const labels = svg('svg', { class: 'edge-labels', width: layout.width, height: layout.height });
+    const placed = [];
+    const boxRects = Array.from(layout.pos.values()).map((p) => ({ x: p.x - 2, y: p.y - 2, w: p.w + 4, h: p.h + 4 }));
+    const bounds = { x: 0, y: 0, w: layout.width, h: layout.height };
+
+    // Stub chips first: they sit at fixed places on the canvas edge.
+    for (const r of routes.filter((x) => x.stub)) placed.push(r.chip);
+
     for (const r of routes) {
       const ids = r.group.items.map((e) => e.id);
       const lit = ids.some((id) => highlightEdges.has(id));
-      const g = svg('g', {
-        class: 'edge kind-' + r.group.kind + (lit ? ' is-highlighted' : '') + (highlightEdges.size && !lit ? ' is-dim' : ''),
-        'data-edge-ids': ids.join(' ')
-      });
-      const tip = svg('title');
-      tip.textContent = r.group.items.map((e) => (EDGE_KIND_NAMES[e.kind] || e.kind) + ': ' + titleOf(e.from) + ' → ' + titleOf(e.to) + ' (' + e.label + ')').join('\n');
-      g.append(tip);
+      const isSel = ids.some((id) => selected.has(id));
+      const flags = ' kind-' + r.group.kind + (lit ? ' is-highlighted' : '') +
+        (isSel ? ' is-selected' : '') + (highlightEdges.size && !lit ? ' is-dim' : '');
+      const g = svg('g', { class: 'edge' + (r.stub ? ' stub' : '') + flags, 'data-edge-ids': ids.join(' ') });
+      if (r.stub) g.setAttribute('data-node-id', r.group.outside);
       g.append(svg('path', { class: 'edge-line', d: r.d, 'marker-end': 'url(#arrow-' + r.group.kind + ')' }));
-      placeLabel(g, r, boxRects, labelRects);
-      svgEl.append(g);
+      lines.append(g);
+      if (r.stub) {
+        labels.append(stubChip(r, 'stub-chip' + flags, ids));
+      } else {
+        const lg = placeLabel(r, boxRects, placed, ids, bounds);
+        lg.setAttribute('class', 'edge-label' + flags);
+        labels.append(lg);
+      }
     }
-    canvas.append(svgEl);
+    canvas.append(lines);
 
     for (const id of view.ids) {
       const p = layout.pos.get(id);
       canvas.append(nodeBox(id, p, id === view.highlight));
     }
+    canvas.append(labels);
 
     map.textContent = '';
     map.append(canvas);
@@ -357,24 +416,33 @@
     }
   }
 
+  function flowText(e) {
+    return (EDGE_KIND_NAMES[e.kind] || e.kind) + ': ' + titleOf(e.from) + ' → ' + titleOf(e.to) + ' (' + e.label + ')';
+  }
+
   function nodeBox(id, p, highlighted) {
     const n = idx.nodes.get(id);
     const kids = childrenOf(id).length;
     const meta = el('span', { class: 'node-meta' }, [
       n.outside_repo === true ? el('span', { class: 'badge badge-outside', text: 'Outside this repo' }) : null,
-      el('span', { class: 'node-count', text: kids ? kids + (kids === 1 ? ' part' : ' parts') : 'Read details' })
+      el('span', { class: 'node-count', text: kids ? kids + (kids === 1 ? ' part' : ' parts') : 'Details' })
     ]);
+    const tip = n.title + (typeof n.summary === 'string' ? '\n\n' + plainText(n.summary) : '') +
+      (kids ? '\n\nClick to zoom in.' : '\n\nClick to show the details.');
     const box = el('button', {
       type: 'button',
       class: 'node-box' + (kids ? ' has-children' : ' is-leaf') + (n.outside_repo === true ? ' is-outside' : '') + (highlighted ? ' is-highlighted' : ''),
       dataset: { nodeId: id },
-      title: typeof n.summary === 'string' ? n.summary : null,
+      title: tip,
       'aria-current': highlighted ? 'true' : null
     }, [
       el('span', { class: 'node-title', text: n.title }),
       inlineProse('span', n.summary, 'node-summary'),
       meta
     ]);
+    const lines = String(summaryLinesFor(id, p.w, p.h));
+    box.querySelector('.node-summary').style.webkitLineClamp = lines;
+    box.querySelector('.node-summary').style.lineClamp = lines;
     box.style.left = p.x + 'px';
     box.style.top = p.y + 'px';
     box.style.width = p.w + 'px';
@@ -396,8 +464,8 @@
   }
 
   // Edges between the boxes in view, lifted to the visible ancestors and
-  // grouped by (from, to, kind). Edges whose lifted ends coincide, or with an
-  // end outside the view, are not drawn (the detail panel lists them).
+  // grouped by (from, to, kind). Edges whose lifted ends coincide are not
+  // drawn; edges with exactly one end in view become stubs (stubGroups).
   function visibleEdgeGroups(ids) {
     const set = new Set(ids);
     const groups = new Map();
@@ -412,6 +480,66 @@
     return Array.from(groups.values());
   }
 
+  // Edges with one end inside the view and the other end outside it (and not
+  // an ancestor of the view): drawn as stub arrows to the canvas edge, named
+  // after the node at the outside end.
+  function stubGroups(ids) {
+    const set = new Set(ids);
+    const groups = new Map();
+    for (const e of idx.edges) {
+      const a = liftTo(e.from, set);
+      const b = liftTo(e.to, set);
+      if ((a && b) || (!a && !b)) continue;
+      const dir = a ? 'out' : 'in';
+      const inside = a || b;
+      const outside = a ? e.to : e.from;
+      const key = dir + '|' + inside + '|' + outside + '|' + e.kind;
+      if (!groups.has(key)) groups.set(key, { key: key, dir: dir, inside: inside, outside: outside, kind: e.kind, items: [], stub: true });
+      groups.get(key).items.push(e);
+    }
+    return Array.from(groups.values());
+  }
+
+  // ---- text measuring ------------------------------------------------
+  let measureCtx = null;
+  function textWidth(text, font) {
+    if (!measureCtx) measureCtx = document.createElement('canvas').getContext('2d');
+    measureCtx.font = font || LABEL_FONT;
+    return measureCtx.measureText(text).width;
+  }
+  function wrapText(text, maxW, font) {
+    const words = text.split(/\s+/).filter(Boolean);
+    const lines = [];
+    let line = '';
+    for (const w of words) {
+      const next = line ? line + ' ' + w : w;
+      if (line && textWidth(next, font) > maxW) { lines.push(line); line = w; } else line = next;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+  function fitText(text, maxW, font) {
+    if (textWidth(text, font) <= maxW) return text;
+    let s = text;
+    while (s.length > 1 && textWidth(s + '…', font) > maxW) s = s.slice(0, -1);
+    return s.replace(/\s+$/, '') + '…';
+  }
+  // Box text metrics (pixels): padding and border, title and summary line
+  // heights, and the meta row; they match viewer.css.
+  const BOX_FIXED = 44;
+  const TITLE_LINE = 17.5;
+  const SUMMARY_LINE = 15.6;
+  function titleLines(id, w) { return Math.min(3, wrapText(idx.nodes.get(id).title || '', w - 24, TITLE_FONT).length); }
+  // Height a box needs to show its title and summary in full at width w.
+  function boxHeightFor(id, w) {
+    const s = Math.min(8, wrapText(plainText(idx.nodes.get(id).summary), w - 24, SUMMARY_FONT).length);
+    return Math.ceil(BOX_FIXED + titleLines(id, w) * TITLE_LINE + s * SUMMARY_LINE);
+  }
+  // Summary lines that fit in a box of size w x h.
+  function summaryLinesFor(id, w, h) {
+    return Math.max(1, Math.floor((h - BOX_FIXED - titleLines(id, w) * TITLE_LINE) / SUMMARY_LINE));
+  }
+
   // ---- layout --------------------------------------------------------
   // Layered left to right by longest path over the data/trigger/timing
   // edges (back edges of cycles ignored), JSON order as tie-break. A layer
@@ -420,8 +548,10 @@
   // every second band running right to left (so that the flow continues
   // under the last column). Boxes without any data/trigger/timing edge have
   // no rank: they fill the free cells of the bands, then rows below, in JSON
-  // order. With no ranking edges at all: a grid in JSON order.
-  function layoutBoxes(ids, groups, availW) {
+  // order. With no ranking edges at all: a grid in JSON order. Box sizes
+  // and gaps grow to use the available area; stubs get a margin on the
+  // side of the canvas they point to.
+  function layoutBoxes(ids, groups, stubs, availW, availH) {
     const order = new Map(ids.map((id, i) => [id, i]));
     const out = new Map(ids.map((id) => [id, []]));
     const ranked = new Set();
@@ -433,7 +563,19 @@
       if (!list.includes(g.to)) list.push(g.to);
     }
     for (const list of out.values()) list.sort((a, b) => order.get(a) - order.get(b));
-    const fit = maxColumnsFor(availW);
+
+    const hasIn = stubs.some((s) => s.dir === 'in');
+    const hasOut = stubs.some((s) => s.dir === 'out');
+    // On a narrow screen (a phone) the stub tags and margins shrink so that
+    // one column of boxes still fits without scrolling sideways.
+    const narrow = availW < 560;
+    const stubW = narrow ? 72 : Math.round(Math.max(L.stubMinW, Math.min(L.stubMaxW, availW * 0.2)));
+    const stubGap = narrow ? 12 : L.stubGap;
+    const baseRight = narrow ? 24 : L.marginRight;
+    const marginLeft = L.marginX + (hasIn ? stubW + stubGap : 0);
+    const marginRight = baseRight + (hasOut ? stubW + stubGap : 0);
+    const usableW = Math.max(L.boxMinW, availW - marginLeft - marginRight);
+    const fit = Math.max(1, Math.floor((usableW + L.colGapMin) / (L.boxMinW + L.colGapMin)));
 
     const cell = new Map();
     let nCols;
@@ -508,18 +650,35 @@
       nRows = rowStart + Math.ceil(extra.length / nCols);
     }
 
+    // Box width and column gap: use the width that is there.
+    const maxW = nCols <= 2 ? 320 : (nCols === 3 ? 270 : 230);
+    let w = Math.floor((usableW - (nCols - 1) * L.colGapMin) / nCols);
+    w = Math.max(L.boxMinW, Math.min(maxW, w));
+    let gap = nCols > 1 ? Math.floor((usableW - nCols * w) / (nCols - 1)) : L.colGapMin;
+    gap = Math.max(L.colGapMin, Math.min(L.colGapMax, gap));
+
     // Decide every route on the grid first; busy lanes get taller.
-    const routes = classifyRoutes(groups, cell);
+    const routes = classifyRoutes(groups, stubs, cell, nRows);
     const laneCount = new Array(nRows + 1).fill(0);
     for (const r of routes) if (r.lane !== undefined) laneCount[r.lane]++;
     const laneH = laneCount.map((n, l) => {
       const base = l === 0 ? L.marginTop : (l === nRows ? L.marginBottom : L.rowGap);
-      return Math.max(base, 12 + n * L.laneTrack);
+      return Math.max(base, 16 + n * L.laneTrack);
     });
+    // Box height: enough for the longest text, but not more than fits the
+    // pane (never below boxHFit); a box that is still too small shows the
+    // full text on hover.
+    const need = Math.max(...ids.map((id) => boxHeightFor(id, w)));
+    const fitH = Math.floor((availH - laneH.reduce((a, b) => a + b, 0)) / nRows);
+    const h = Math.max(L.boxH0, Math.min(L.boxHMax, need, Math.max(L.boxHFit, fitH)));
+    // Spread spare height over the lanes (centred, not stretched to the edge).
+    const used = laneH.reduce((a, b) => a + b, 0) + nRows * h;
+    if (used < availH) {
+      const extraH = Math.min(L.laneExtraMax, Math.floor((availH - used) / (nRows + 1)));
+      for (let l = 1; l < nRows; l++) laneH[l] += extraH;
+    }
 
-    const w = boxWidthFor(availW, nCols);
-    const h = L.boxH;
-    const colX = (c) => L.marginX + c * (w + L.colGap);
+    const colX = (c) => marginLeft + c * (w + gap);
     const rowTop = [];
     let y = laneH[0];
     for (let r = 0; r < nRows; r++) { rowTop.push(y); y += h + laneH[r + 1]; }
@@ -527,23 +686,15 @@
     for (const [id, c] of cell) {
       pos.set(id, { id: id, col: c.col, row: c.row, x: colX(c.col), y: rowTop[c.row], w: w, h: h });
     }
+    const width = colX(nCols - 1) + w + marginRight;
     return {
-      pos: pos, routes: routes, nCols: nCols, nRows: nRows, w: w, h: h,
-      width: colX(nCols - 1) + w + L.marginRight,
-      height: y,
+      pos: pos, routes: routes, nCols: nCols, nRows: nRows, w: w, h: h, gap: gap,
+      width: width, height: y, stubW: stubW,
       // x of the vertical gutter left of column c (c = 0..nCols)
-      gutterX: (c) => (c <= 0 ? L.marginX / 2 : (c >= nCols ? colX(nCols - 1) + w + L.marginRight / 2 : colX(c) - L.colGap / 2)),
+      gutterX: (c) => (c <= 0 ? marginLeft - Math.min(gap, marginLeft) / 2 : (c >= nCols ? colX(nCols - 1) + w + baseRight / 2 : colX(c) - gap / 2)),
       // y of the middle of the horizontal lane above row r (r = 0..nRows)
       laneY: (r) => (r <= 0 ? laneH[0] / 2 : (r >= nRows ? rowTop[nRows - 1] + h + laneH[nRows] / 2 : rowTop[r] - laneH[r] / 2))
     };
-  }
-  function maxColumnsFor(availW) {
-    const usable = availW - L.marginX - L.marginRight + L.colGap;
-    return Math.max(1, Math.floor(usable / (L.boxMinW + L.colGap)));
-  }
-  function boxWidthFor(availW, nCols) {
-    const usable = availW - L.marginX - L.marginRight - (nCols - 1) * L.colGap;
-    return Math.max(L.boxMinW, Math.min(L.boxMaxW, Math.floor(usable / nCols)));
   }
 
   // ---- edge routing --------------------------------------------------
@@ -556,8 +707,11 @@
   //   lane:     same row, further apart; up (or down) into the lane, across
   //   gutter:   otherwise; out of the side into the gutter, along it to the
   //             lane next to the target box, across, into the box
-  function classifyRoutes(groups, cell) {
-    return groups.map((g, i) => {
+  //   stub in:  from a chip at the left edge along the lane above the box
+  //   stub out: from the bottom of the box along the lane below to a chip
+  //             at the right edge
+  function classifyRoutes(groups, stubs, cell, nRows) {
+    const routes = groups.map((g, i) => {
       const A = cell.get(g.from);
       const B = cell.get(g.to);
       const dc = B.col - A.col;
@@ -578,6 +732,13 @@
       }
       return r;
     });
+    stubs.forEach((g, i) => {
+      const C = cell.get(g.inside);
+      const r = { group: g, index: groups.length + i, stub: true, type: 'stub-' + g.dir };
+      if (g.dir === 'in') { r.toSide = 'T'; r.lane = C.row; } else { r.fromSide = 'B'; r.lane = Math.min(nRows, C.row + 1); }
+      routes.push(r);
+    });
+    return routes;
   }
 
   function routeEdges(layout) {
@@ -587,6 +748,15 @@
     const gutters = new Map(); // gutter index -> [route]
     const use = (map, key, r) => { if (!map.has(key)) map.set(key, []); map.get(key).push(r); };
     for (const r of routes) {
+      if (r.stub) {
+        const box = layout.pos.get(r.group.inside);
+        const edgeX = r.group.dir === 'in' ? -1e6 : 1e6;
+        const virtual = { x: edgeX, y: box.y, w: 0, h: 0 };
+        if (r.group.dir === 'in') { r.A = virtual; r.B = box; use(sides, r.group.inside + ':' + r.toSide, { route: r, end: 'to' }); }
+        else { r.A = box; r.B = virtual; use(sides, r.group.inside + ':' + r.fromSide, { route: r, end: 'from' }); }
+        use(lanes, r.lane, r);
+        continue;
+      }
       r.A = layout.pos.get(r.group.from);
       r.B = layout.pos.get(r.group.to);
       if (r.lane !== undefined) use(lanes, r.lane, r);
@@ -600,7 +770,7 @@
       list.forEach((r, k) => { r.ly = layout.laneY(r.lane) + (k - (list.length - 1) / 2) * L.laneTrack; });
     }
     for (const list of gutters.values()) {
-      const spacing = Math.min(L.gutterTrack, (L.colGap - 24) / list.length);
+      const spacing = Math.min(L.gutterTrack, (layout.gap - 24) / list.length);
       list.forEach((r, k) => { r.gx = layout.gutterX(r.gutter) + (k - (list.length - 1) / 2) * spacing; });
     }
 
@@ -626,13 +796,16 @@
         let pt;
         if (side === 'L') pt = { x: box.x, y: box.y + box.h * (0.2 + 0.6 * t) };
         else if (side === 'R') pt = { x: box.x + box.w, y: box.y + box.h * (0.2 + 0.6 * t) };
-        else if (side === 'T') pt = { x: box.x + box.w * (0.15 + 0.7 * t), y: box.y };
-        else pt = { x: box.x + box.w * (0.15 + 0.7 * t), y: box.y + box.h };
+        else if (side === 'T') pt = { x: box.x + box.w * (0.12 + 0.76 * t), y: box.y };
+        else pt = { x: box.x + box.w * (0.12 + 0.76 * t), y: box.y + box.h };
         item.route[item.end === 'from' ? 'S' : 'E'] = pt;
       });
     }
 
-    for (const r of routes) buildPath(r);
+    for (const r of routes) {
+      if (r.stub) buildStub(r, layout);
+      else buildPath(r);
+    }
     return routes;
   }
 
@@ -644,26 +817,64 @@
       const c1 = { x: S.x + dx, y: S.y };
       const c2 = { x: E.x - dx, y: E.y };
       r.d = 'M' + S.x + ',' + S.y + ' C' + c1.x + ',' + c1.y + ' ' + c2.x + ',' + c2.y + ' ' + E.x + ',' + E.y;
-      // A nearly straight curve keeps its label just above the line.
-      const flat = Math.abs(E.y - S.y) < 24;
-      r.label = { x: (S.x + 3 * c1.x + 3 * c2.x + E.x) / 8, y: (S.y + 3 * c1.y + 3 * c2.y + E.y) / 8, axis: 'y', min: Math.min(S.y, E.y) - 60, max: Math.max(S.y, E.y) + 60, above: flat };
+      r.pts = [];
+      for (let i = 0; i <= 16; i++) {
+        const t = i / 16;
+        const u = 1 - t;
+        r.pts.push({
+          x: u * u * u * S.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t * t * t * E.x,
+          y: u * u * u * S.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t * t * t * E.y
+        });
+      }
     } else if (r.type === 'vertical') {
       const dy = (E.y - S.y) / 2;
       r.d = 'M' + S.x + ',' + S.y + ' C' + S.x + ',' + (S.y + dy) + ' ' + E.x + ',' + (E.y - dy) + ' ' + E.x + ',' + E.y;
-      r.label = { x: (S.x + E.x) / 2, y: (S.y + E.y) / 2, axis: 'x', min: Math.min(S.x, E.x) - 60, max: Math.max(S.x, E.x) + 60 };
+      r.pts = [S, { x: S.x, y: S.y + dy }, { x: E.x, y: E.y - dy }, E];
     } else if (r.type === 'lane') {
-      const pts = [S, { x: S.x, y: r.ly }, { x: E.x, y: r.ly }, E];
-      r.d = roundedPath(pts);
-      r.label = { x: (S.x + E.x) / 2, y: r.ly, axis: 'x', min: Math.min(S.x, E.x), max: Math.max(S.x, E.x), inLane: true };
+      r.pts = [S, { x: S.x, y: r.ly }, { x: E.x, y: r.ly }, E];
+      r.d = roundedPath(r.pts);
     } else {
-      const pts = [S, { x: r.gx, y: S.y }, { x: r.gx, y: r.ly }, { x: E.x, y: r.ly }, E];
-      r.d = roundedPath(pts);
-      if (Math.abs(E.x - r.gx) >= 60) {
-        r.label = { x: (r.gx + E.x) / 2, y: r.ly, axis: 'x', min: Math.min(r.gx, E.x), max: Math.max(r.gx, E.x), inLane: true };
-      } else {
-        r.label = { x: r.gx, y: (S.y + r.ly) / 2, axis: 'y', min: Math.min(S.y, r.ly), max: Math.max(S.y, r.ly) };
-      }
+      r.pts = [S, { x: r.gx, y: S.y }, { x: r.gx, y: r.ly }, { x: E.x, y: r.ly }, E];
+      r.d = roundedPath(r.pts);
     }
+  }
+
+  // A stub: a chip at the canvas edge, joined to the box through the lane.
+  function buildStub(r, layout) {
+    const g = r.group;
+    const title = titleOf(g.outside);
+    const prefix = g.dir === 'in' ? 'from ' : 'to ';
+    const text = fitText(prefix + title, layout.stubW - 2 * L.labelPadX - 2, LABEL_FONT);
+    const w = Math.ceil(textWidth(text, LABEL_FONT)) + 2 * L.labelPadX + 2;
+    const h = L.stubH;
+    if (g.dir === 'in') {
+      const x = L.marginX / 2;
+      r.chip = { x: x, y: r.ly - h / 2, w: w, h: h, text: text };
+      r.pts = [{ x: x + w, y: r.ly }, { x: r.E.x, y: r.ly }, r.E];
+    } else {
+      const x = layout.width - L.marginX / 2 - w;
+      r.chip = { x: x, y: r.ly - h / 2, w: w, h: h, text: text };
+      r.pts = [r.S, { x: r.S.x, y: r.ly }, { x: x - 1, y: r.ly }];
+    }
+    r.d = roundedPath(r.pts);
+  }
+
+  function stubChip(r, cls, ids) {
+    const g = r.group;
+    const c = r.chip;
+    const tip = g.items.map(flowText).join('\n') + '\nClick to go to ' + titleOf(g.outside) + '.';
+    const chip = svg('g', {
+      class: cls, 'data-edge-ids': ids.join(' '), 'data-node-id': g.outside,
+      tabindex: '0', role: 'link', 'aria-label': (g.dir === 'in' ? 'Arrow from ' : 'Arrow to ') + titleOf(g.outside) + ', outside this level'
+    });
+    const t = svg('title');
+    t.textContent = tip;
+    chip.append(t);
+    chip.append(svg('rect', { class: 'stub-bg', x: c.x, y: c.y, width: c.w, height: c.h, rx: 9 }));
+    const text = svg('text', { class: 'stub-text', x: c.x + c.w / 2, y: c.y + c.h / 2 + 4 });
+    text.textContent = c.text;
+    chip.append(text);
+    return chip;
   }
 
   // Polyline with rounded corners.
@@ -687,68 +898,86 @@
     const d = dist(p, q) || 1;
     return { x: p.x + (q.x - p.x) * r / d, y: p.y + (q.y - p.y) * r / d };
   }
+  // The point at fraction t of the length of a polyline.
+  function pointAlong(pts, t) {
+    let total = 0;
+    for (let i = 1; i < pts.length; i++) total += dist(pts[i - 1], pts[i]);
+    let want = total * t;
+    for (let i = 1; i < pts.length; i++) {
+      const d = dist(pts[i - 1], pts[i]);
+      if (want <= d || i === pts.length - 1) {
+        const f = d ? Math.min(1, want / d) : 0;
+        return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * f, y: pts[i - 1].y + (pts[i].y - pts[i - 1].y) * f };
+      }
+      want -= d;
+    }
+    return pts[0];
+  }
 
   // ---- edge labels ---------------------------------------------------
-  let measureCtx = null;
-  function textWidth(text) {
-    if (!measureCtx) {
-      measureCtx = document.createElement('canvas').getContext('2d');
-      measureCtx.font = LABEL_FONT;
-    }
-    return measureCtx.measureText(text).width;
-  }
-  function wrapLabel(text, maxW) {
-    const words = text.split(/\s+/).filter(Boolean);
-    const lines = [];
-    let line = '';
-    for (const w of words) {
-      const next = line ? line + ' ' + w : w;
-      if (line && textWidth(next) > maxW) { lines.push(line); line = w; } else line = next;
-    }
-    if (line) lines.push(line);
-    return lines;
-  }
   function overlaps(a, b) {
     return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
   }
-  // Place the label at the middle of its segment; if it would cover a box or
-  // another label, slide it along the segment.
-  function placeLabel(g, r, boxRects, placed) {
+  // The label sits on its own arrow: centred on a point of the path, tried
+  // from the middle outwards until it covers no box and no other label.
+  function placeLabel(r, boxRects, placed, ids, bounds) {
     const items = r.group.items;
     const text = items[0].label + (items.length > 1 ? ' (+' + (items.length - 1) + ' more)' : '');
-    // A label on a lane may be as wide as its horizontal segment (one line
-    // keeps it on its own track); other labels wrap to fit a gutter.
-    const spot0 = r.label;
-    const maxW = spot0.inLane ? Math.max(L.labelMaxW, Math.min(220, spot0.max - spot0.min - 12)) : L.labelMaxW;
-    const lines = wrapLabel(text, maxW);
-    const w = Math.ceil(Math.max(...lines.map(textWidth))) + 2 * L.labelPadX;
-    const h = lines.length * L.labelLineH + 2 * L.labelPadY;
-    const spot = Object.assign({}, r.label);
-    if (spot.above) spot.y -= h / 2 + 2;
-    const step = spot.axis === 'y' ? h + 4 : w / 2 + 6;
-    // Candidates: the middle, then alternately further along the segment.
+    // Two shapes of the text: wide (few lines) and narrow (more lines).
+    const shapes = [190, 70].map((maxW) => {
+      const lines = wrapText(text, maxW, LABEL_FONT);
+      return {
+        lines: lines,
+        w: Math.ceil(Math.max(...lines.map((s) => textWidth(s, LABEL_FONT)))) + 2 * L.labelPadX,
+        h: lines.length * L.labelLineH + 2 * L.labelPadY
+      };
+    });
+    const ts = [0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82];
+    // At each point along the arrow (middle first), the narrow shape comes
+    // first where the arrow runs up or down, the wide one where it runs across.
     const candidates = [];
-    for (let k = 0; k < 9; k++) {
-      const shift = (k % 2 ? 1 : -1) * Math.ceil(k / 2) * step;
-      const cx = spot.axis === 'x' ? spot.x + shift : spot.x;
-      const cy = spot.axis === 'y' ? spot.y + shift : spot.y;
-      const along = spot.axis === 'x' ? cx : cy;
-      if (k > 0 && (along < spot.min || along > spot.max)) continue;
-      candidates.push({ x: cx - w / 2, y: cy - h / 2, w: w, h: h });
+    for (const t of ts) {
+      const p = pointAlong(r.pts, t);
+      const q = pointAlong(r.pts, Math.min(1, t + 0.02));
+      const o = pointAlong(r.pts, Math.max(0, t - 0.02));
+      const upright = Math.abs(q.y - o.y) > Math.abs(q.x - o.x);
+      for (const sh of (upright ? [shapes[1], shapes[0]] : shapes)) {
+        candidates.push({ x: p.x - sh.w / 2, y: p.y - sh.h / 2, w: sh.w, h: sh.h, shape: sh });
+      }
     }
+    // Last resort before overlapping: right beside the arrow.
+    for (const t of ts) {
+      const p = pointAlong(r.pts, t);
+      const sh = shapes[1];
+      candidates.push({ x: p.x + 3, y: p.y - sh.h / 2, w: sh.w, h: sh.h, shape: sh });
+      candidates.push({ x: p.x - 3 - sh.w, y: p.y - sh.h / 2, w: sh.w, h: sh.h, shape: sh });
+      candidates.push({ x: p.x - shapes[0].w / 2, y: p.y + 3, w: shapes[0].w, h: shapes[0].h, shape: shapes[0] });
+    }
+    const inside = (c) => c.x >= bounds.x + 1 && c.y >= bounds.y + 1 && c.x + c.w <= bounds.x + bounds.w - 1 && c.y + c.h <= bounds.y + bounds.h - 1;
     const freeOfLabels = (rect) => !placed.some((b) => overlaps(rect, b));
     const freeOfBoxes = (rect) => !boxRects.some((b) => overlaps(rect, b));
-    const chosen = candidates.find((c) => freeOfLabels(c) && freeOfBoxes(c)) ||
-      candidates.find(freeOfLabels) || candidates[0];
+    const chosen = candidates.find((c) => inside(c) && freeOfLabels(c) && freeOfBoxes(c)) ||
+      candidates.find((c) => inside(c) && freeOfBoxes(c)) || candidates.find(inside) || candidates[0];
     placed.push(chosen);
+    const lines = chosen.shape.lines;
+    const w = chosen.w;
+    const h = chosen.h;
+    const g = svg('g', {
+      'data-edge-ids': ids.join(' '), tabindex: '0', role: 'button',
+      'aria-label': 'List the flows on this arrow: ' + text
+    });
+    const tip = svg('title');
+    tip.textContent = items.map(flowText).join('\n') + '\nClick to list these flows in the panel.';
+    g.append(tip);
     g.append(svg('rect', { class: 'edge-label-bg', x: chosen.x, y: chosen.y, width: w, height: h, rx: 3 }));
-    const t = svg('text', { class: 'edge-label', x: chosen.x + w / 2, y: chosen.y + L.labelPadY + L.labelLineH - 3 });
+    const t = svg('text', { class: 'edge-label-text', x: chosen.x + w / 2, y: chosen.y + L.labelPadY + L.labelLineH - 3 });
     lines.forEach((line, i) => {
       const span = svg('tspan', { x: chosen.x + w / 2, dy: i === 0 ? 0 : L.labelLineH });
       span.textContent = line;
       t.append(span);
     });
     g.append(t);
+    return g;
   }
 
   // ---- the detail panel ----------------------------------------------
@@ -756,6 +985,8 @@
     const panel = $('detail');
     panel.textContent = '';
     if (state.mode === 'tour') panel.append(tourCard(state.step));
+    if (selectedGroup && selectedGroup.length) panel.append(edgeFlows(selectedGroup));
+    if (state.mode === 'tour') panel.append(el('p', { class: 'tour-node-note', text: 'The part this step is about:' }));
     panel.append(state.focus === ROOT ? rootDetail() : nodeDetail(state.focus));
     panel.scrollTop = 0;
   }
@@ -765,7 +996,7 @@
     box.append(el('h2', { id: 'detail-title', class: 'detail-title', dataset: { nodeId: ROOT }, tabindex: '-1', text: model.title }));
     box.append(inlineProse('p', model.question, 'question'));
     box.append(prose(model.summary, { id: 'detail-prose' }));
-    box.append(el('p', { class: 'hint', text: 'Click a box to zoom in; use Zoom out or the breadcrumb to go back. Tour follows one event step by step.' }));
+    box.append(el('p', { class: 'hint', text: 'Click a box to zoom in; use Zoom out or the breadcrumb to go back. Tour follows one event step by step; "How to read this page" explains the map.' }));
     return box;
   }
 
@@ -781,27 +1012,33 @@
       else path.append(link(nodeHash(p), p === ROOT ? 'Overview' : titleOf(p)));
     });
     box.append(path);
+    appendNodeBody(box, n, 'h3', 'h4', true);
+    return box;
+  }
 
+  // The body of a node: outside note, summary, prose, developer notes,
+  // decisions, code references, sources and (optionally) flows.
+  function appendNodeBody(box, n, h3, h4, withFlows, proseId) {
     if (n.outside_repo === true) {
       box.append(el('p', { class: 'outside-note' }, [
         el('span', { class: 'badge badge-outside', text: 'Outside this repo' }),
-        ' This part is not implemented in the lcls2 repository (for example firmware, another repository or a facility service). Its description is based on the external sources listed below.'
+        ' The mechanism of this part is not implemented in the lcls2 repository (for example firmware, another repository or a facility service). Its description is based on the external sources listed below; the text says which pieces, if any, are in this repository.'
       ]));
     }
     box.append(inlineProse('p', n.summary, 'summary'));
-    box.append(prose(n.prose, { id: 'detail-prose' }));
+    box.append(prose(n.prose, proseId === null ? {} : { id: proseId || 'detail-prose' }));
 
     if (typeof n.dev_notes === 'string' && n.dev_notes.trim()) {
-      box.append(el('h3', { text: 'For developers' }));
+      box.append(el(h3, { text: 'For developers' }));
       box.append(prose(n.dev_notes, { class: 'prose dev-notes' }));
     }
 
     const decisions = Array.isArray(n.decisions) ? n.decisions : [];
     if (decisions.length) {
-      box.append(el('h3', { text: 'Design decisions' }));
+      box.append(el(h3, { text: 'Design decisions' }));
       for (const d of decisions) {
         const art = el('article', { class: 'decision' });
-        art.append(el('h4', { text: d.title }));
+        art.append(el(h4, { text: d.title }));
         art.append(el('div', { class: 'decision-label', text: 'Decision' }));
         art.append(prose(d.decision));
         art.append(el('div', { class: 'decision-label', text: 'Why' }));
@@ -814,28 +1051,28 @@
 
     const codeRefs = Array.isArray(n.code_refs) ? n.code_refs : [];
     if (codeRefs.length) {
-      box.append(el('h3', { text: 'Code references' }));
+      box.append(el(h3, { text: 'Code references' }));
       box.append(el('ul', { class: 'ref-list' }, codeRefs.map(codeRefItem)));
     }
     const sourceIds = Array.isArray(n.sources) ? n.sources : [];
     if (sourceIds.length) {
-      box.append(el('h3', { text: 'Sources' }));
+      box.append(el(h3, { text: 'Sources' }));
       box.append(el('ul', { class: 'ref-list' }, sourceIds.map(sourceItem)));
     }
 
-    const flows = flowsOf(id);
+    if (!withFlows) return;
+    const flows = flowsOf(n.id);
     if (flows.incoming.length || flows.outgoing.length) {
-      box.append(el('h3', { text: 'Flows' }));
+      box.append(el(h3, { text: 'Flows' }));
       if (flows.incoming.length) {
-        box.append(el('h4', { class: 'flow-heading', text: 'Comes from' }));
-        box.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', id))));
+        box.append(el(h4, { class: 'flow-heading', text: 'Comes from' }));
+        box.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', n.id))));
       }
       if (flows.outgoing.length) {
-        box.append(el('h4', { class: 'flow-heading', text: 'Goes to' }));
-        box.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', id))));
+        box.append(el(h4, { class: 'flow-heading', text: 'Goes to' }));
+        box.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', n.id))));
       }
     }
-    return box;
   }
 
   function referenceList(codeRefs, sourceIds) {
@@ -880,57 +1117,158 @@
     return { incoming: incoming, outgoing: outgoing };
   }
 
-  function flowItem(e, direction, focusId) {
-    const otherId = direction === 'in' ? e.from : e.to;
-    const insideId = direction === 'in' ? e.to : e.from;
-    const li = el('li', { class: 'flow kind-' + e.kind });
-    const head = el('div', { class: 'flow-head' }, [
-      el('span', { class: 'badge badge-kind kind-' + e.kind, text: EDGE_KIND_NAMES[e.kind] || e.kind }),
-      ' ',
-      el('strong', { text: e.label }),
-      direction === 'in' ? ' from ' : ' to ',
-      link(nodeHash(otherId), titleOf(otherId), 'xref')
-    ]);
-    const where = pathTo(otherId).slice(0, -1);
-    if (where.length) head.append(el('span', { class: 'flow-where', text: ' (in ' + where.map(titleOf).join(' › ') + ')' }));
-    if (insideId !== focusId) {
-      head.append(direction === 'in' ? ', into ' : ', from ');
-      head.append(link(nodeHash(insideId), titleOf(insideId), 'xref'));
-    }
-    li.append(head);
+  function whereText(id) {
+    const where = pathTo(id).slice(0, -1);
+    return where.length ? ' (in ' + where.map(titleOf).join(' › ') + ')' : '';
+  }
+  function flowExtras(li, e) {
+    li.append(el('div', { class: 'flow-label' }, [el('span', { class: 'flow-key', text: 'On the arrow: ' }), e.label]));
     if (typeof e.prose === 'string' && e.prose.trim()) li.append(prose(e.prose, { class: 'prose flow-prose' }));
     const refs = referenceList(e.code_refs, e.sources);
     if (refs) li.append(refs);
+  }
+
+  function flowItem(e, direction, focusId) {
+    const otherId = direction === 'in' ? e.from : e.to;
+    const insideId = direction === 'in' ? e.to : e.from;
+    const li = el('li', { class: 'flow kind-' + e.kind, dataset: { edgeId: e.id } });
+    li.append(el('div', { class: 'flow-head' }, [
+      el('span', { class: 'badge badge-kind kind-' + e.kind, text: EDGE_KIND_NAMES[e.kind] || e.kind }),
+      el('span', { class: 'flow-dir', text: direction === 'in' ? ' ← from ' : ' → to ' }),
+      link(nodeHash(otherId), titleOf(otherId), 'xref flow-end'),
+      el('span', { class: 'flow-where', text: whereText(otherId) })
+    ]));
+    if (insideId !== focusId) {
+      li.append(el('div', { class: 'flow-inside' }, [
+        el('span', { class: 'flow-key', text: direction === 'in' ? 'Arrives at: ' : 'Leaves from: ' }),
+        link(nodeHash(insideId), titleOf(insideId), 'xref')
+      ]));
+    }
+    flowExtras(li, e);
     return li;
+  }
+
+  // The flows an arrow on the map stands for (opened by clicking its label).
+  function edgeFlows(ids) {
+    const edges = ids.map((id) => idx.edgeById.get(id)).filter(Boolean);
+    const sec = el('section', { id: 'edge-flows', class: 'edge-flows', 'aria-label': 'Flows on the selected arrow', dataset: { edgeIds: ids.join(' ') } });
+    sec.append(el('div', { class: 'edge-flows-head' }, [
+      el('h3', { text: edges.length === 1 ? 'The flow on this arrow' : 'The ' + edges.length + ' flows on this arrow' }),
+      el('button', { id: 'edge-flows-close', type: 'button', text: 'Close' })
+    ]));
+    sec.append(el('ul', { class: 'flow-list' }, edges.map((e) => {
+      const li = el('li', { class: 'flow kind-' + e.kind, dataset: { edgeId: e.id } });
+      li.append(el('div', { class: 'flow-head' }, [
+        el('span', { class: 'badge badge-kind kind-' + e.kind, text: EDGE_KIND_NAMES[e.kind] || e.kind }),
+        ' ',
+        link(nodeHash(e.from), titleOf(e.from), 'xref flow-end'),
+        el('span', { class: 'flow-dir', text: ' → ' }),
+        link(nodeHash(e.to), titleOf(e.to), 'xref flow-end')
+      ]));
+      flowExtras(li, e);
+      return li;
+    })));
+    return sec;
   }
 
   function tourCard(k) {
     const tour = model.tour;
     const step = idx.steps[k - 1];
     const T = idx.steps.length;
-    const card = el('section', { class: 'tour-card', 'aria-label': 'Tour' });
+    const card = el('section', { class: 'tour-card', 'aria-label': 'Tour step' });
     card.append(el('div', { class: 'tour-head' }, [
-      el('span', { class: 'tour-name', text: tour.title }),
-      el('span', { class: 'tour-count', text: 'Step ' + k + ' of ' + T })
+      el('span', { class: 'tour-count', text: 'Step ' + k + ' of ' + T }),
+      el('span', { class: 'tour-name', text: tour.title })
     ]));
     card.append(el('div', { class: 'tour-controls' }, [
       el('button', { id: 'tour-prev', type: 'button', disabled: k <= 1, text: '← Previous' }),
       el('button', { id: 'tour-next', type: 'button', class: 'primary', disabled: k >= T, text: 'Next →' }),
       el('button', { id: 'tour-exit', type: 'button', text: 'Exit tour' })
     ]));
-    if (k === 1) {
-      card.append(prose(tour.intro, { class: 'prose tour-intro' }));
-    } else {
-      const about = el('details', { class: 'tour-about' }, [el('summary', { text: 'About this tour' })]);
-      about.append(prose(tour.intro, { class: 'prose tour-intro' }));
-      card.append(about);
-    }
-    card.append(el('h3', { id: 'tour-step-title', class: 'tour-step-title', dataset: { stepIndex: String(k) }, text: step.title }));
+    card.append(el('p', { class: 'tour-keys', text: 'Keys: Left and Right arrows move between steps; Escape leaves the tour.' }));
+    card.append(el('h2', { id: 'tour-step-title', class: 'tour-step-title', dataset: { stepIndex: String(k) }, text: step.title }));
     card.append(prose(step.prose, { id: 'tour-step-prose' }));
     const refs = referenceList(step.code_refs, step.sources);
     if (refs) card.append(refs);
-    card.append(el('p', { class: 'tour-node-note', text: 'The highlighted box on the map is the part this step is about; its details follow.' }));
+    const about = el('details', { class: 'tour-about', open: k === 1 }, [el('summary', { text: 'About this tour' })]);
+    about.append(prose(tour.intro, { class: 'prose tour-intro' }));
+    card.append(about);
     return card;
+  }
+
+  // ---- the one-page view ----------------------------------------------
+  function renderReadPage(state) {
+    const page = $('read-page');
+    page.textContent = '';
+    xrefHash = readHash;
+    try {
+      page.append(el('p', { class: 'read-note', text: 'The whole design model as one page: the overview, then every part with its sub-parts in order, then the tour. Links to parts jump within this page; "Back to the map" returns to the zoomable map.' }));
+      page.append(inlineProse('p', model.question, 'question'));
+      page.append(prose(model.summary, { class: 'prose read-summary' }));
+
+      const toc = el('nav', { class: 'read-toc', 'aria-label': 'Contents' }, [el('h2', { text: 'Contents' })]);
+      const ol = el('ol');
+      for (const id of childrenOf(ROOT)) ol.append(el('li', {}, [link(readHash(id), titleOf(id))]));
+      if (idx.steps.length) ol.append(el('li', {}, [link('#/read/tour', model.tour.title)]));
+      toc.append(ol);
+      page.append(toc);
+
+      const addNode = (id, depth) => {
+        const n = idx.nodes.get(id);
+        const sec = el('section', { class: 'read-node depth-' + depth, id: 'read-' + id, dataset: { nodeId: id } });
+        const hTag = 'h' + Math.min(6, depth + 1);
+        const head = el(hTag, { class: 'read-title' }, [n.title]);
+        sec.append(head);
+        const where = pathTo(id).slice(0, -1);
+        sec.append(el('p', { class: 'read-path' }, [
+          where.length ? 'Part of ' + where.map(titleOf).join(' › ') + '. ' : '',
+          link(nodeHash(id), 'Show on the map', 'read-map-link')
+        ]));
+        appendNodeBody(sec, n, 'h' + Math.min(6, depth + 2), 'h' + Math.min(6, depth + 3), false, null);
+        const out = idx.edges.filter((e) => e.from === id);
+        if (out.length) {
+          sec.append(el('h' + Math.min(6, depth + 2), { text: 'Flows out of this part' }));
+          sec.append(el('ul', { class: 'flow-list' }, out.map((e) => {
+            const li = el('li', { class: 'flow kind-' + e.kind });
+            li.append(el('div', { class: 'flow-head' }, [
+              el('span', { class: 'badge badge-kind kind-' + e.kind, text: EDGE_KIND_NAMES[e.kind] || e.kind }),
+              el('span', { class: 'flow-dir', text: ' → to ' }),
+              link(readHash(e.to), titleOf(e.to), 'xref flow-end'),
+              el('span', { class: 'flow-where', text: whereText(e.to) })
+            ]));
+            flowExtras(li, e);
+            return li;
+          })));
+        }
+        page.append(sec);
+        for (const c of childrenOf(id)) addNode(c, depth + 1);
+      };
+      for (const id of childrenOf(ROOT)) addNode(id, 1);
+
+      if (idx.steps.length) {
+        const sec = el('section', { class: 'read-tour', id: 'read-tour' });
+        sec.append(el('h2', { class: 'read-title' }, [model.tour.title]));
+        sec.append(prose(model.tour.intro, { class: 'prose tour-intro' }));
+        const steps = el('ol', { class: 'read-steps' });
+        idx.steps.forEach((s, i) => {
+          const li = el('li', { class: 'read-step', dataset: { stepIndex: String(i + 1) } });
+          li.append(el('h3', { text: s.title }));
+          li.append(el('p', { class: 'read-path' }, ['Part: ', link(readHash(s.node), titleOf(s.node)), ' · ', link('#/tour/' + (i + 1), 'Show this step on the map')]));
+          li.append(prose(s.prose));
+          const refs = referenceList(s.code_refs, s.sources);
+          if (refs) li.append(refs);
+          steps.append(li);
+        });
+        sec.append(steps);
+        page.append(sec);
+      }
+    } finally {
+      xrefHash = nodeHash;
+    }
+    const targetId = state.target ? 'read-' + state.target : (/^#\/read\/tour$/.test(location.hash) ? 'read-tour' : null);
+    const target = targetId ? $(targetId) : null;
+    if (target) target.scrollIntoView({ block: 'start' });
+    else page.scrollTop = 0;
   }
 
   // ---- legend ----------------------------------------------------------
@@ -953,17 +1291,51 @@
       el('span', { class: 'badge badge-outside', text: 'Outside this repo' }),
       'not implemented in this repository'
     ]));
+    legend.append(el('span', { class: 'legend-item' }, [
+      el('span', { class: 'badge badge-stub', text: 'to …' }),
+      'arrow to a part on another level (click the tag)'
+    ]));
   }
 
   // ------------------------------------------------------------------
   // Events
   // ------------------------------------------------------------------
+  function selectEdges(ids) {
+    selectedGroup = ids;
+    renderMap(current);
+    renderDetail(current);
+    const sec = $('edge-flows');
+    if (sec) {
+      const h = sec.querySelector('h3');
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }
+  }
+  function activateMapItem(target) {
+    const stub = target.closest('.stub-chip');
+    if (stub) { focusMapAfterRender = true; go(nodeHash(stub.getAttribute('data-node-id'))); return true; }
+    const label = target.closest('.edge-label');
+    if (label) { selectEdges(label.getAttribute('data-edge-ids').split(' ')); return true; }
+    const box = target.closest('.node-box');
+    if (box) { focusMapAfterRender = true; go(nodeHash(box.dataset.nodeId)); return true; }
+    return false;
+  }
+  function toggleHelp(show) {
+    const help = $('help');
+    const open = show === undefined ? help.hidden : show;
+    help.hidden = !open;
+    $('help-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) $('help-title').focus({ preventScroll: false });
+  }
+
   function bindEvents() {
-    $('map').addEventListener('click', (ev) => {
-      const box = ev.target.closest('.node-box');
-      if (!box) return;
-      focusMapAfterRender = true;
-      go(nodeHash(box.dataset.nodeId));
+    $('map').addEventListener('click', (ev) => { activateMapItem(ev.target); });
+    $('map').addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const t = ev.target;
+      if (t && t.closest && (t.closest('.stub-chip') || t.closest('.edge-label'))) {
+        ev.preventDefault();
+        activateMapItem(t);
+      }
     });
     $('breadcrumb').addEventListener('click', (ev) => {
       const crumb = ev.target.closest('.crumb');
@@ -971,18 +1343,30 @@
     });
     $('zoom-out').addEventListener('click', zoomOut);
     $('tour-start').addEventListener('click', startTour);
+    $('read-toggle').addEventListener('click', () => go(current && current.mode === 'read' ? '#/' : '#/read'));
+    $('help-toggle').addEventListener('click', () => toggleHelp());
+    $('help-close').addEventListener('click', () => { toggleHelp(false); $('help-toggle').focus(); });
     $('detail').addEventListener('click', (ev) => {
       const btn = ev.target.closest('button');
-      if (!btn || !current || current.mode !== 'tour') return;
-      if (btn.id === 'tour-next') go('#/tour/' + (current.step + 1));
-      else if (btn.id === 'tour-prev') go('#/tour/' + (current.step - 1));
+      if (!btn) return;
+      if (btn.id === 'edge-flows-close') { selectedGroup = null; renderMap(current); renderDetail(current); return; }
+      if (!current || current.mode !== 'tour') return;
+      if (btn.id === 'tour-next') tourStep(1);
+      else if (btn.id === 'tour-prev') tourStep(-1);
       else if (btn.id === 'tour-exit') exitTour();
     });
     document.addEventListener('keydown', (ev) => {
-      if (ev.key !== 'Escape' && ev.key !== 'Backspace') return;
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       const t = ev.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); return; }
+      if (!current || current.mode === 'read') return;
+      if (current && current.mode === 'tour' && (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft')) {
+        ev.preventDefault();
+        tourStep(ev.key === 'ArrowRight' ? 1 : -1);
+        return;
+      }
+      if (ev.key !== 'Escape' && ev.key !== 'Backspace') return;
       ev.preventDefault();
       if (current && current.mode === 'tour' && ev.key === 'Escape') exitTour();
       else zoomOut();
@@ -991,7 +1375,7 @@
     let resizeTimer = null;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { if (current) renderMap(current); }, 150);
+      resizeTimer = setTimeout(() => { if (current && current.mode !== 'read') renderMap(current); }, 150);
     });
   }
 
