@@ -851,6 +851,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#edge-kinds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge kinds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#prose-markup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1806,6 +1817,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#edge-kinds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge kinds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#prose-markup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1952,9 +1974,10 @@
 
 
 <h1 id="editing-the-design-model">Editing the design model<a class="headerlink" href="#editing-the-design-model" title="Permanent link">&para;</a></h1>
-<p>The design document <a href="../">How the DAQ works, detector to disk</a> is
-generated from one file (the viewer's header links here as "Edit this
-model"): <code>docs/design/daq-model.json</code> (the <em>model</em>). The
+<p>The design document
+<a href="../">How the LCLS-II DAQ works, from detector to disk</a> is generated
+from one file (the viewer's header links here as "Edit this model"):
+<code>docs/design/daq-model.json</code> (the <em>model</em>). The
 viewer (<code>index.html</code>, <code>viewer.js</code>, <code>viewer.css</code>) only draws the model; it
 contains no text about the DAQ. <strong>To change what the document says, edit
 only <code>daq-model.json</code>.</strong> Never edit the viewer files to change content.</p>
@@ -2061,6 +2084,19 @@ children are level 2, their children level 3, and so on. The viewer shows
 the children of the node you click; a node without children (a leaf) is
 shown among its siblings. The model must reach level 3 somewhere. Parents
 must exist and must not form a cycle.</p>
+<p>A parent may have a single child: the validator has no rule on the number
+of children, and the viewer then draws a map with one box. A leaf that gets
+its first child becomes a parent: its box says "1 part" ("N parts" for
+more) instead of "Details", clicking it zooms in to its children instead of
+showing it among its siblings, and the panel still shows its own prose,
+code references and sources. Like every node below the top level it
+still needs a code reference of its own (or <code>outside_repo</code> with an external
+source). An edge attached to the node itself is not drawn inside it (on the
+map of its children), not even as a stub, because neither of its ends is a
+box there; the node's panel still lists it under "Flows". To show such a
+flow inside the node, attach the edge to the child instead. A tour step
+whose <code>node</code> is the new parent still shows the parent's own level, with the
+parent highlighted among its siblings.</p>
 <p>An edge may connect any two nodes, at any levels, except a node and its own
 ancestor or descendant. The viewer draws an edge between the boxes that
 contain its ends at the current level ("lifted" to the visible ancestors).
@@ -2068,12 +2104,78 @@ An edge with one end outside the current view is drawn as a stub arrow to
 the edge of the map, ending at a tag that names the node at the outside end
 (click it to go there), and is listed in the detail panel under "Comes
 from" and "Goes to". Edges between the same two boxes with the same kind are
-drawn as one arrow; its label shows the first edge's label plus "(+N more)",
-and clicking the label lists all of them. Only <code>data</code>, <code>trigger</code> and
-<code>timing</code> edges decide the left-to-right order of the boxes. There are no
-layout hints: the order of nodes in the file is the tie-break. Give an edge
-<code>prose</code> (one or two sentences, with a code reference or source): it is what
-a reader sees for the flow in the panel and in the one-page view.</p>
+drawn as one arrow; its label shows the label of the edge that comes first
+in the file plus "(+N more)", and clicking the label lists all of them.
+Only <code>data</code>, <code>trigger</code> and <code>timing</code> edges decide the left-to-right order of
+the boxes (see "Edge kinds" below). There are no layout hints: the order of
+nodes in the file is the tie-break. Give an edge <code>prose</code> (one or two
+sentences, with a code reference or source): it is what a reader sees for
+the flow in the panel and in the one-page view.</p>
+<p>The order of nodes in the file sets:</p>
+<ul>
+<li>the order of the parts in "Read as one page" (<code>#/read</code>): its contents list
+  shows the top-level nodes in file order, and each part is followed by its
+  children in file order (depth first);</li>
+<li>the layout tie-break: boxes in the same column are placed top to bottom
+  in file order, and boxes without a <code>data</code>, <code>trigger</code> or <code>timing</code> arrow to
+  or from another box on the map (stub arrows do not count) fill the free
+  places in file order (with no such arrows at all, the boxes form a grid
+  in file order);</li>
+<li>the order of the <code>top:</code> lines that <code>validate.py --outline</code> prints.</li>
+</ul>
+<p>Lists of flows ("Comes from", "Goes to" and the one-page view's "Flows out
+of this part") follow the order of the edges in the file.</p>
+<h3 id="edge-kinds">Edge kinds<a class="headerlink" href="#edge-kinds" title="Permanent link">&para;</a></h3>
+<p>An edge's <code>kind</code> says what flows. The model's existing edges use the five
+kinds like this:</p>
+<table>
+<thead>
+<tr>
+<th>kind</th>
+<th>What the model's edges of this kind carry</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>Event data on its way to disk and to psana: readouts from the detector into DMA buffers, events through the DRP's threads, datagrams into the files, files to storage, and psana reading and joining the streams.</td>
+<td><code>e-electronics-to-dma</code>, <code>e-drp-to-files</code>, <code>e-reading-to-joining</code></td>
+</tr>
+<tr>
+<td><code>trigger</code></td>
+<td>The trigger decision: the DRPs' trigger inputs to the TEB, the TEB's event building and plugin, and the result back to each DRP.</td>
+<td><code>e-drp-to-teb</code>, <code>e-teb-to-drp</code>, <code>e-result-to-receiver</code></td>
+</tr>
+<tr>
+<td><code>timing</code></td>
+<td>The timing stream and its triggers, from the accelerator through the XPM to the detectors.</td>
+<td><code>e-accelerator-to-xpm</code>, <code>e-xpm-to-electronics</code></td>
+</tr>
+<tr>
+<td><code>control</code></td>
+<td>Run control and setup: transitions from the control process to the processes and the XPM, their answers and reports back, configuration reads, process launching, chunk requests, and what a process sets up at start or at a transition (the detector class, its threads, the next chunk file).</td>
+<td><code>e-control-to-drp</code>, <code>e-configdb-to-control-process</code>, <code>e-launching-to-drp-process</code></td>
+</tr>
+<tr>
+<td><code>monitoring</code></td>
+<td>Live monitoring: monitored events from the DRPs to the MEBs, shared memory and AMI, and the MEBs' free-buffer offers to the TEBs.</td>
+<td><code>e-drp-to-monitoring</code>, <code>e-meb-to-teb-process</code>, <code>e-shmem-to-ami</code></td>
+</tr>
+</tbody>
+</table>
+<p>In the viewer each kind has its own color and line pattern on the map
+(shown in the map's legend) and a badge with its name in the lists of
+flows. Only <code>data</code>, <code>trigger</code> and <code>timing</code> arrows between two boxes of the
+current map rank the layout: the boxes are placed in columns from left to
+right along these arrows (by the longest path; arrows that close a cycle
+are ignored), and columns that do not fit the width wrap into bands below each
+other. <code>control</code> and <code>monitoring</code> arrows, and stub arrows of any kind, do
+not decide the order of the boxes, but they can change the size and place
+of boxes: every arrow and stub adds a track to the lane it runs in, a busy
+lane gets taller, which moves the boxes below it down and can make all
+boxes shorter, and stub tags take width at the left and right edges of the
+map, so fewer columns may fit in a band.</p>
 <h3 id="prose-markup">Prose markup<a class="headerlink" href="#prose-markup" title="Permanent link">&para;</a></h3>
 <ul>
 <li>A blank line (<code>\n\n</code> in the JSON string) starts a new paragraph.</li>
@@ -2091,10 +2193,15 @@ a reader sees for the flow in the panel and in the one-page view.</p>
   (not under <code>docs/</code>).</li>
 <li><code>start</code>, <code>end</code>: line numbers, inclusive, at the pinned commit (not in your
   working tree, which may differ). <code>end - start</code> must be at most 80; keep the
-  range to the function or block that shows the claim.</li>
+  range to the function or block that shows the claim. A single line
+  (<code>start</code> equal to <code>end</code>) is allowed: the validator checks that
+  1 &lt;= <code>start</code> &lt;= <code>end</code> &lt;= the number of lines in the file.</li>
 <li><code>symbol</code>: a name (function, class, variable or key, at least 4
   characters) that appears <strong>verbatim</strong> inside lines <code>start</code> to <code>end</code>. It
-  proves that the range points at the right code.</li>
+  proves that the range points at the right code. The validator only checks
+  that the text is a substring of those lines, so it also passes when the
+  text appears only in a comment or a string; check yourself that it names
+  code.</li>
 <li><code>note</code>: optional, what to look for there.</li>
 </ul>
 <p>Comments are not proof. Choose a range whose executable code shows the
@@ -2143,6 +2250,14 @@ git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span>
 <li>Never put credentials, hostnames, IP addresses, people's names or other
   personal data in the model (the site is public).</li>
 <li>Everything except <code>site-page</code> counts as an <em>external</em> source.</li>
+<li>To check that a <code>site-page</code> source supports a sentence, read the page it
+  names: <code>../&lt;path&gt;/</code> is the file <code>docs/&lt;path&gt;.md</code> (or
+  <code>docs/&lt;path&gt;/index.md</code>) in your checkout. For example
+  <code>../features/daq-control/</code> is <code>docs/features/daq-control.md</code>, which you
+  can search with <code>grep -n -i "beginstep" docs/features/daq-control.md</code>.
+  The validator only checks that the page exists in your working tree (not
+  at the pinned commit); it does not check what the page says or the
+  <code>#anchor</code>.</li>
 </ul>
 <h3 id="outside-the-repository">Outside the repository<a class="headerlink" href="#outside-the-repository" title="Permanent link">&para;</a></h3>
 <p>Set <code>"outside_repo": true</code> on a node whose mechanism is not implemented in
@@ -2174,6 +2289,15 @@ or a source states them, with the right unit (1024³ bytes is a GiB). Expand
 acronyms and explain terms of art (field names such as <code>env</code>, code names such
 as "pebble") the first time each node, decision, edge or tour step uses
 them: a reader may open any node first.</p>
+<p>The rule covers the text fields: a node's <code>prose</code> and <code>dev_notes</code> (counted
+together, <code>prose</code> first), a decision's <code>decision</code> and <code>rationale</code>, an
+edge's <code>prose</code>, a tour step's <code>prose</code>, the top-level <code>summary</code> and the
+tour's <code>intro</code>. The short fields shown on boxes, arrows and in lists
+(<code>title</code>, the top-level <code>question</code>, a node's <code>summary</code>, an edge's <code>label</code>
+and the <code>note</code> of a code reference or source) may use an acronym without
+expanding it, as the existing model does: the node <code>drp</code> has the title "DRP:
+readout and reduction" and a summary that uses DRP and TEB, and its <code>prose</code>
+expands both ("A DRP (data reduction pipeline) ...").</p>
 <h3 id="tour-steps">Tour steps<a class="headerlink" href="#tour-steps" title="Permanent link">&para;</a></h3>
 <p>Tour steps follow one event in order, and each step's prose says what
 happens to <em>that</em> event at the step (a scene-setting first step is fine if
@@ -2306,9 +2430,13 @@ nodes=41 edges=30 levels=3 tour_steps=11 code_refs=60 sources=14 errors=1
 step titles.</p>
 <p><strong>Preview</strong> in a browser. Serve <code>docs/design</code> on a free port, reachable only
 from your own machine (<code>--bind 127.0.0.1</code>), and record the server's process
-ID so that you can stop exactly that process later:</p>
+ID so that you can stop exactly that process later. The server's log goes
+to <code>build/design-preview.log</code>; <code>build</code> is ignored by git (see <code>.gitignore</code>),
+so the log does not show up in <code>git status</code>. Any path outside the checkout
+works too.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">PORT</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])"</span><span class="k">)</span>
-python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--directory<span class="w"> </span>docs/design<span class="w"> </span>&gt;<span class="w"> </span>/tmp/design-preview.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>build
+python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--directory<span class="w"> </span>docs/design<span class="w"> </span>&gt;<span class="w"> </span>build/design-preview.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
 <span class="nv">SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
 <span class="nb">echo</span><span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
 </code></pre></div>
@@ -2368,7 +2496,9 @@ caught too).</p>
 <li>Edit only <code>docs/design/daq-model.json</code>.</li>
 <li>Every factual sentence is backed by a code reference or source on the same
   node, decision, edge or step; say when the reason is not documented.</li>
-<li>Code references point at the pinned commit, with a symbol inside the range.</li>
+<li>Code references point at the pinned commit, with a symbol inside the range.
+  The validator's symbol check is a plain substring match that a comment can
+  satisfy too: check that the symbol names code.</li>
 <li>Internal Confluence: summarize and link, never copy; no credentials or
   personal data.</li>
 <li>Run the validator until it prints <code>errors=0</code>, then preview.</li>

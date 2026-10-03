@@ -3,7 +3,7 @@
   "schema_version": 1,
   "title": "How the LCLS-II DAQ works, from detector to disk",
   "question": "At a high level, how does the LCLS-II DAQ work, from detector to disk?",
-  "summary": "The LCLS-II DAQ (data acquisition system) records detector data one accelerator pulse at a time. The timing system, whose firmware is outside this repository, triggers groups of detectors and gives every event a pulse ID and a timestamp, the keys that later tie the pieces of an event together ([[timing]]). Besides these per-pulse events, called L1Accepts, the same timing stream carries transitions such as Configure, BeginRun and Enable, with which the control process steps every process through a run ([[control]]).\n\nEach detector readout has its own DRP (data reduction pipeline), which builds an XTC2 datagram, the DAQ's self-describing data record, for every event ([[drp]]). The trigger decision is kept off the data path: the DRPs send only small trigger inputs to the TEB (trigger event builder), and the TEB answers the DRPs with a result saying whether to record the event and whether to monitor it ([[teb]]). Each DRP then writes its own file stream, a big-data `.xtc2` file plus a small-data `.smd.xtc2` index ([[files]]), and sends monitored events to live monitoring, where an MEB (monitoring event builder) puts them together for online analysis ([[monitoring]]). For recording, the DAQ never assembles an event in one place: psana later joins the streams by timestamp ([[after-run]]).",
+  "summary": "The LCLS-II DAQ (data acquisition system) records detector data one accelerator pulse at a time. The timing system, whose firmware is outside this repository (the lcls2 repository), triggers groups of detectors and gives every event a pulse ID and a timestamp, the keys that later tie the pieces of an event together ([[timing]]). Besides these per-pulse events, called L1Accepts, the same timing stream carries transitions such as Configure, BeginRun and Enable, with which the control process steps every process through a run ([[control]]).\n\nEach detector readout has its own DRP (data reduction pipeline), which builds an XTC2 datagram, the DAQ's self-describing data record, for every event ([[drp]]). The trigger decision is kept off the data path: the DRPs send only small trigger inputs to the TEB (trigger event builder), and the TEB answers the DRPs with a result saying whether to record the event and whether to monitor it ([[teb]]). Each DRP then writes its own file stream, a big-data `.xtc2` file plus a small-data `.smd.xtc2` index ([[files]]), and sends monitored events to live monitoring, where an MEB (monitoring event builder) puts them together for online analysis ([[monitoring]]). For recording, the DAQ never assembles an event in one place: psana later joins the streams by timestamp ([[after-run]]).",
   "code_base": {
     "repo_url": "https://github.com/carbonscott/lcls2",
     "commit": "09142fd27c503334eeb852182664802b7a10052d"
@@ -2565,7 +2565,7 @@
     "steps": [
       {
         "id": "step-before-the-event",
-        "title": "Before the event: run control configures, begins a run and enables triggers",
+        "title": "Before the event: Configure, BeginRun, BeginStep, then Enable turns on triggers",
         "node": "control-process",
         "edges": [
           "e-control-to-drp",
@@ -2573,7 +2573,7 @@
           "e-control-to-timing",
           "e-control-to-meb"
         ],
-        "prose": "This step sets the scene before our event exists. The control process steps the platform, the DRP (data reduction pipeline), TEB (trigger event builder) and MEB (monitoring event builder) processes it drives, from Connected to Running. These transitions go first to the processes over ZeroMQ (a messaging library), then into the timing stream through the XPM (eXperiment Partition Master). At Configure the TEB loads its trigger plugin; at BeginRun with recording on, a run number is allocated and each recording DRP begins its files with Configure and BeginRun. Enable turns on the XPM's triggers, so per-pulse events, the L1Accepts, can flow.",
+        "prose": "This step sets the scene before our event exists. The control process steps the platform, the DRP (data reduction pipeline), TEB (trigger event builder) and MEB (monitoring event builder) processes it drives, from Connected to Running through four transitions in this order: Configure (Connected to Configured), BeginRun (Configured to Starting), BeginStep (Starting to Paused) and Enable (Paused to Running). These transitions go first to the processes over ZeroMQ (a messaging library), then into the timing stream through the XPM (eXperiment Partition Master). At Configure the TEB loads its trigger plugin; at BeginRun with recording on, a run number is allocated and each recording DRP begins its files with Configure and BeginRun. Enable turns on the XPM's triggers, so per-pulse events, the L1Accepts, can flow.",
         "code_refs": [
           {
             "path": "psdaq/psdaq/control/control.py",
