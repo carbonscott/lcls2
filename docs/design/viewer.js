@@ -48,7 +48,7 @@
     colGapMin: 96, colGapMax: 170, rowGap: 56,
     marginX: 16, marginRight: 40, marginTop: 36, marginBottom: 36,
     maxRows: 4, laneExtraMax: 70,
-    labelLineH: 13, labelPadX: 5, labelPadY: 2,
+    labelLineH: 13, labelPadX: 5, labelPadY: 2, labelSlideMax: 80,
     laneTrack: 19, gutterTrack: 8, cornerRadius: 6,
     stubMinW: 100, stubMaxW: 230, stubH: 17, stubGap: 22
   };
@@ -956,7 +956,24 @@
     const inside = (c) => c.x >= bounds.x + 1 && c.y >= bounds.y + 1 && c.x + c.w <= bounds.x + bounds.w - 1 && c.y + c.h <= bounds.y + bounds.h - 1;
     const freeOfLabels = (rect) => !placed.some((b) => overlaps(rect, b));
     const freeOfBoxes = (rect) => !boxRects.some((b) => overlaps(rect, b));
-    const chosen = candidates.find((c) => inside(c) && freeOfLabels(c) && freeOfBoxes(c)) ||
+    const free = (c) => inside(c) && freeOfLabels(c) && freeOfBoxes(c);
+    // Every place is taken: slide a place right, left, down or up, just past
+    // the labels in its way, and take the shortest slide that ends free.
+    const slide = (c, dx, dy) => {
+      let s = c;
+      for (let k = 0; k < 6; k++) {
+        const b = placed.find((p) => overlaps(s, p));
+        if (!b) break;
+        const x = dx > 0 ? b.x + b.w + 2 : (dx < 0 ? b.x - 2 - s.w : s.x);
+        const y = dy > 0 ? b.y + b.h + 2 : (dy < 0 ? b.y - 2 - s.h : s.y);
+        s = Object.assign({}, s, { x: x, y: y });
+      }
+      return Object.assign({}, s, { move: Math.abs(s.x - c.x) + Math.abs(s.y - c.y) });
+    };
+    const slid = [];
+    for (const c of candidates) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) slid.push(slide(c, dx, dy));
+    slid.sort((a, b) => a.move - b.move);
+    const chosen = candidates.find(free) || slid.find((c) => c.move <= L.labelSlideMax && free(c)) ||
       candidates.find((c) => inside(c) && freeOfBoxes(c)) || candidates.find(inside) || candidates[0];
     placed.push(chosen);
     const lines = chosen.shape.lines;

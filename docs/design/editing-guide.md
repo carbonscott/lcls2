@@ -1,8 +1,9 @@
 # Editing the design model
 
-The design document [How the DAQ works, detector to disk](index.html) is
-generated from one file (the viewer's header links here as "Edit this
-model"): `docs/design/daq-model.json` (the *model*). The
+The design document
+[How the LCLS-II DAQ works, from detector to disk](index.html) is generated
+from one file (the viewer's header links here as "Edit this model"):
+`docs/design/daq-model.json` (the *model*). The
 viewer (`index.html`, `viewer.js`, `viewer.css`) only draws the model; it
 contains no text about the DAQ. **To change what the document says, edit
 only `daq-model.json`.** Never edit the viewer files to change content.
@@ -103,6 +104,20 @@ the children of the node you click; a node without children (a leaf) is
 shown among its siblings. The model must reach level 3 somewhere. Parents
 must exist and must not form a cycle.
 
+A parent may have a single child: the validator has no rule on the number
+of children, and the viewer then draws a map with one box. A leaf that gets
+its first child becomes a parent: its box says "1 part" ("N parts" for
+more) instead of "Details", clicking it zooms in to its children instead of
+showing it among its siblings, and the panel still shows its own prose,
+code references and sources. Like every node below the top level it
+still needs a code reference of its own (or `outside_repo` with an external
+source). An edge attached to the node itself is not drawn inside it (on the
+map of its children), not even as a stub, because neither of its ends is a
+box there; the node's panel still lists it under "Flows". To show such a
+flow inside the node, attach the edge to the child instead. A tour step
+whose `node` is the new parent still shows the parent's own level, with the
+parent highlighted among its siblings.
+
 An edge may connect any two nodes, at any levels, except a node and its own
 ancestor or descendant. The viewer draws an edge between the boxes that
 contain its ends at the current level ("lifted" to the visible ancestors).
@@ -110,12 +125,54 @@ An edge with one end outside the current view is drawn as a stub arrow to
 the edge of the map, ending at a tag that names the node at the outside end
 (click it to go there), and is listed in the detail panel under "Comes
 from" and "Goes to". Edges between the same two boxes with the same kind are
-drawn as one arrow; its label shows the first edge's label plus "(+N more)",
-and clicking the label lists all of them. Only `data`, `trigger` and
-`timing` edges decide the left-to-right order of the boxes. There are no
-layout hints: the order of nodes in the file is the tie-break. Give an edge
-`prose` (one or two sentences, with a code reference or source): it is what
-a reader sees for the flow in the panel and in the one-page view.
+drawn as one arrow; its label shows the label of the edge that comes first
+in the file plus "(+N more)", and clicking the label lists all of them.
+Only `data`, `trigger` and `timing` edges decide the left-to-right order of
+the boxes (see "Edge kinds" below). There are no layout hints: the order of
+nodes in the file is the tie-break. Give an edge `prose` (one or two
+sentences, with a code reference or source): it is what a reader sees for
+the flow in the panel and in the one-page view.
+
+The order of nodes in the file sets:
+
+- the order of the parts in "Read as one page" (`#/read`): its contents list
+  shows the top-level nodes in file order, and each part is followed by its
+  children in file order (depth first);
+- the layout tie-break: boxes in the same column are placed top to bottom
+  in file order, and boxes without a `data`, `trigger` or `timing` arrow to
+  or from another box on the map (stub arrows do not count) fill the free
+  places in file order (with no such arrows at all, the boxes form a grid
+  in file order);
+- the order of the `top:` lines that `validate.py --outline` prints.
+
+Lists of flows ("Comes from", "Goes to" and the one-page view's "Flows out
+of this part") follow the order of the edges in the file.
+
+### Edge kinds
+
+An edge's `kind` says what flows. The model's existing edges use the five
+kinds like this:
+
+| kind | What the model's edges of this kind carry | Examples |
+|---|---|---|
+| `data` | Event data on its way to disk and to psana: readouts from the detector into DMA buffers, events through the DRP's threads, datagrams into the files, files to storage, and psana reading and joining the streams. | `e-electronics-to-dma`, `e-drp-to-files`, `e-reading-to-joining` |
+| `trigger` | The trigger decision: the DRPs' trigger inputs to the TEB, the TEB's event building and plugin, and the result back to each DRP. | `e-drp-to-teb`, `e-teb-to-drp`, `e-result-to-receiver` |
+| `timing` | The timing stream and its triggers, from the accelerator through the XPM to the detectors. | `e-accelerator-to-xpm`, `e-xpm-to-electronics` |
+| `control` | Run control and setup: transitions from the control process to the processes and the XPM, their answers and reports back, configuration reads, process launching, chunk requests, and what a process sets up at start or at a transition (the detector class, its threads, the next chunk file). | `e-control-to-drp`, `e-configdb-to-control-process`, `e-launching-to-drp-process` |
+| `monitoring` | Live monitoring: monitored events from the DRPs to the MEBs, shared memory and AMI, and the MEBs' free-buffer offers to the TEBs. | `e-drp-to-monitoring`, `e-meb-to-teb-process`, `e-shmem-to-ami` |
+
+In the viewer each kind has its own color and line pattern on the map
+(shown in the map's legend) and a badge with its name in the lists of
+flows. Only `data`, `trigger` and `timing` arrows between two boxes of the
+current map rank the layout: the boxes are placed in columns from left to
+right along these arrows (by the longest path; arrows that close a cycle
+are ignored), and columns that do not fit the width wrap into bands below each
+other. `control` and `monitoring` arrows, and stub arrows of any kind, do
+not decide the order of the boxes, but they can change the size and place
+of boxes: every arrow and stub adds a track to the lane it runs in, a busy
+lane gets taller, which moves the boxes below it down and can make all
+boxes shorter, and stub tags take width at the left and right edges of the
+map, so fewer columns may fit in a band.
 
 ### Prose markup
 
@@ -135,10 +192,15 @@ A code reference is
   (not under `docs/`).
 - `start`, `end`: line numbers, inclusive, at the pinned commit (not in your
   working tree, which may differ). `end - start` must be at most 80; keep the
-  range to the function or block that shows the claim.
+  range to the function or block that shows the claim. A single line
+  (`start` equal to `end`) is allowed: the validator checks that
+  1 <= `start` <= `end` <= the number of lines in the file.
 - `symbol`: a name (function, class, variable or key, at least 4
   characters) that appears **verbatim** inside lines `start` to `end`. It
-  proves that the range points at the right code.
+  proves that the range points at the right code. The validator only checks
+  that the text is a substring of those lines, so it also passes when the
+  text appears only in a comment or a string; check yourself that it names
+  code.
 - `note`: optional, what to look for there.
 
 Comments are not proof. Choose a range whose executable code shows the
@@ -168,6 +230,14 @@ Rules for sources:
 - Never put credentials, hostnames, IP addresses, people's names or other
   personal data in the model (the site is public).
 - Everything except `site-page` counts as an *external* source.
+- To check that a `site-page` source supports a sentence, read the page it
+  names: `../<path>/` is the file `docs/<path>.md` (or
+  `docs/<path>/index.md`) in your checkout. For example
+  `../features/daq-control/` is `docs/features/daq-control.md`, which you
+  can search with `grep -n -i "beginstep" docs/features/daq-control.md`.
+  The validator only checks that the page exists in your working tree (not
+  at the pinned commit); it does not check what the page says or the
+  `#anchor`.
 
 ### Outside the repository
 
@@ -204,6 +274,16 @@ or a source states them, with the right unit (1024³ bytes is a GiB). Expand
 acronyms and explain terms of art (field names such as `env`, code names such
 as "pebble") the first time each node, decision, edge or tour step uses
 them: a reader may open any node first.
+
+The rule covers the text fields: a node's `prose` and `dev_notes` (counted
+together, `prose` first), a decision's `decision` and `rationale`, an
+edge's `prose`, a tour step's `prose`, the top-level `summary` and the
+tour's `intro`. The short fields shown on boxes, arrows and in lists
+(`title`, the top-level `question`, a node's `summary`, an edge's `label`
+and the `note` of a code reference or source) may use an acronym without
+expanding it, as the existing model does: the node `drp` has the title "DRP:
+readout and reduction" and a summary that uses DRP and TEB, and its `prose`
+expands both ("A DRP (data reduction pipeline) ...").
 
 ### Tour steps
 
@@ -324,11 +404,15 @@ step titles.
 
 **Preview** in a browser. Serve `docs/design` on a free port, reachable only
 from your own machine (`--bind 127.0.0.1`), and record the server's process
-ID so that you can stop exactly that process later:
+ID so that you can stop exactly that process later. The server's log goes
+to `build/design-preview.log`; `build` is ignored by git (see `.gitignore`),
+so the log does not show up in `git status`. Any path outside the checkout
+works too.
 
 ```bash
 PORT=$(python -c "import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])")
-python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design > /tmp/design-preview.log 2>&1 &
+mkdir -p build
+python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design > build/design-preview.log 2>&1 &
 SERVER_PID=$!
 echo "http://127.0.0.1:$PORT/"
 ```
@@ -406,6 +490,8 @@ mkdocs build --strict -d /tmp/lcls2-site
 - Every factual sentence is backed by a code reference or source on the same
   node, decision, edge or step; say when the reason is not documented.
 - Code references point at the pinned commit, with a symbol inside the range.
+  The validator's symbol check is a plain substring match that a comment can
+  satisfy too: check that the symbol names code.
 - Internal Confluence: summarize and link, never copy; no credentials or
   personal data.
 - Run the validator until it prints `errors=0`, then preview.
