@@ -1962,6 +1962,8 @@ only <code>daq-model.json</code>.</strong> Never edit the viewer files to change
 add a node with a code reference, add an edge, rewrite a node's prose,
 check your change and preview it.</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
+<p>Run every command in this guide from the repository root (the directory
+that contains <code>docs/</code>); the paths assume it.</p>
 <p>You need a <strong>full clone</strong> of the repository (not <code>git clone --depth ...</code>).
 Every code reference is checked against one pinned commit
 (<code>code_base.commit</code> in the model); a shallow clone does not have that
@@ -1972,7 +1974,10 @@ shallow clone, run <code>git fetch --unshallow</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">COMMIT</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json; print(json.load(open('docs/design/daq-model.json'))['code_base']['commit'])"</span><span class="k">)</span>
 git<span class="w"> </span>cat-file<span class="w"> </span>-e<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">^{commit}"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"pinned commit present"</span>
 </code></pre></div>
-<p>Install the tools (Python 3; the site build uses Python 3.12):</p>
+<p>The tools need Python 3 with <code>jsonschema</code> (for the validator) and, for the
+browser test only, <code>playwright</code> with its Chromium browser; the site build
+uses Python 3.12. If you already have an environment with these (for example
+a conda environment), use it and skip the installs. Otherwise:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>docs/requirements.txt<span class="w">        </span><span class="c1"># includes jsonschema, used by the validator</span>
 pip<span class="w"> </span>install<span class="w"> </span>playwright<span class="w">                      </span><span class="c1"># only for the browser test</span>
 python<span class="w"> </span>-m<span class="w"> </span>playwright<span class="w"> </span>install<span class="w"> </span>chromium<span class="w">       </span><span class="c1"># only for the browser test</span>
@@ -2009,6 +2014,13 @@ python<span class="w"> </span>-m<span class="w"> </span>playwright<span class="w
 </tr>
 </tbody>
 </table>
+<p>Keep the model's formatting, so that a diff shows only your change: JSON
+with an indent of 2 spaces, non-ASCII characters written as they are (not as
+<code>\u</code> escapes) and one newline at the end of the file. A script that rewrites
+the file should write <code>json.dumps(model, indent=2, ensure_ascii=False) + "\n"</code>.
+This one-line check prints <code>canonical</code> when the file is in that form:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import json; s = open('docs/design/daq-model.json', encoding='utf-8').read(); print('canonical' if s == json.dumps(json.loads(s), indent=2, ensure_ascii=False) + '\n' else 'NOT canonical')"</span>
+</code></pre></div>
 <h2 id="what-is-in-the-model">What is in the model<a class="headerlink" href="#what-is-in-the-model" title="Permanent link">&para;</a></h2>
 <p>The schema describes every field; this is the overview. Fields whose schema
 description starts with "PROSE" are text for readers and may use the prose
@@ -2085,6 +2097,9 @@ a reader sees for the flow in the panel and in the one-page view.</p>
   proves that the range points at the right code.</li>
 <li><code>note</code>: optional, what to look for there.</li>
 </ul>
+<p>Comments are not proof. Choose a range whose executable code shows the
+claim, not one where only a comment states it, and choose as <code>symbol</code> an
+identifier used in that code, not a word from a comment.</p>
 <p>Find the line numbers at the pinned commit, never in your working tree:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-n<span class="w"> </span><span class="s2">"writeEvent"</span>
 git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'108,160p'</span>
@@ -2141,8 +2156,9 @@ the same sentence that it is outside this repository and cite the source.</p>
 <h3 id="decisions">Decisions<a class="headerlink" href="#decisions" title="Permanent link">&para;</a></h3>
 <p>A design decision (<code>title</code>, <code>decision</code>, <code>rationale</code>, optional <code>id</code>) needs at
 least one source or code reference of its own: the basis for the
-rationale. If the sources do not say why, the rationale says so ("The code
-does X; the sources do not say why.").</p>
+rationale. If neither the code nor the sources show why, the rationale says
+so as a statement about the DAQ, never as a statement about the sources
+("This repository does not show why ...; the code does X.").</p>
 <h3 id="what-every-node-needs">What every node needs<a class="headerlink" href="#what-every-node-needs" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Every node has non-empty <code>prose</code>.</li>
@@ -2198,8 +2214,22 @@ list (the position in the list is the tie-break for layout):</p>
 <span class="w">  </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"files"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Datagram blocks"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span>
+<span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"prose"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When the next datagram does not fit in the buffer, or the batch in it is more than 2 seconds old, the writer writes the buffer to the file with one `_write()` call."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"code_refs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"psdaq/drp/FileWriter.cc"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">133</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"symbol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_write"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"note"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The buffer is written in one call when the next datagram does not fit or the batch is too old."</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
+</code></pre></div>
+<p>Like every edge, it has <code>prose</code> backed by a code reference (or a source).
+Check the reference the same way as the node's:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'123,133p'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-F<span class="w"> </span>--<span class="w"> </span><span class="s1">'_write'</span>
 </code></pre></div>
 <p>On the overview this edge is drawn between the boxes of <code>drp</code> and <code>files</code>
 (the parent of <code>example-buffered-writer</code> is <code>drp</code>). Inside <code>drp</code> it is listed
@@ -2274,33 +2304,54 @@ nodes=41 edges=30 levels=3 tour_steps=11 code_refs=60 sources=14 errors=1
 </table>
 <p><code>--outline</code> also prints the model's sha256, the top-level titles and the tour
 step titles.</p>
-<p><strong>Preview</strong> in a browser:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>docs/design<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="m">8000</span>
+<p><strong>Preview</strong> in a browser. Serve <code>docs/design</code> on a free port, reachable only
+from your own machine (<code>--bind 127.0.0.1</code>), and record the server's process
+ID so that you can stop exactly that process later:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">PORT</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])"</span><span class="k">)</span>
+python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--directory<span class="w"> </span>docs/design<span class="w"> </span>&gt;<span class="w"> </span>/tmp/design-preview.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
 </code></pre></div>
-<p>Open <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>. Click a box to zoom in; "Zoom out", the
+<p>Open the printed URL. Click a box to zoom in; "Zoom out", the
 breadcrumb, Escape or Backspace zoom out; click an arrow's label to list its
 flows; click a tag at the map edge to go to that part; "Tour" follows the
 event (Left and Right arrow keys move between steps); "Read as one page"
 shows the whole model as one document (<code>#/read</code>); "How to read this page"
-explains the controls. Reload the page after each edit.</p>
+explains the controls. Reload the page after each edit. When you are done,
+stop the server by its process ID:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SERVER_PID</span><span class="s2">"</span>
+</code></pre></div>
+<p>Do not stop it with a pattern such as <code>pkill -f http.server</code>: a pattern can
+also match other processes, including the shell that runs the command.</p>
 <p>Links to <code>../</code> (Documentation home), <code>editing-guide/</code> (Edit this model) and
 <code>../features/...</code> (sources of kind <code>site-page</code>) work only on the built site
 (<code>mkdocs serve</code> or <code>mkdocs build</code>), not when <code>docs/design</code> is served on its
 own as above.</p>
-<p><strong>Browser test</strong> (with the preview server running, in a second terminal):</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/
-python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8000/<span class="w"> </span><span class="se">\</span>
+<p><strong>Browser test</strong> (with the preview server running, in the same shell, so
+that <code>$PORT</code> is set):</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
+python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--check-node<span class="w"> </span>example-buffered-writer<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--expect-title<span class="w"> </span><span class="s2">"Example: buffered file writer"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--expect-prose<span class="w"> </span><span class="s2">"copies each datagram into a memory buffer"</span>
+python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--check-edge<span class="w"> </span>example-buffered-writer-to-files
 </code></pre></div>
 <p>The first command clicks through every node and every tour step and prints
 <code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>, then a line
 <code>smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N</code>; it
 passes when V = N, S = T, C = 0 and every smoke check passes (a node counts
-only if the panel shows its title; a step only if its title and the start of
-its prose are visible). The second opens one node (by link and by clicking
-down from the overview) and checks its title and prose. See
+only if the panel shows its title and the start of its prose; a step only if
+its title and the start of its prose are visible). For a model of about 40
+nodes it takes roughly 10 to 60 seconds, depending on the machine. The
+second opens one node (by link and by clicking down from the overview) and
+checks its title and prose. <code>--expect-prose</code> is matched against the
+rendered, visible text of the panel (whitespace-normalized), so pick a
+substring without markup: no backticks, no <code>[[...]]</code> and no link syntax.
+The third opens the level where the edge is drawn between two boxes and,
+for each end that lies deeper, the level where the edge appears as a stub
+arrow, and checks that the arrow and the stubs are there; it prints
+<code>check_edge id=ID drawn=true console_errors=0</code> when they are. See
 <code>docs/design/tools/README.md</code> for the details and the test hooks.</p>
 <p><strong>Single-source check</strong> (that no model text was copied into the viewer):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/check_single_source.py
@@ -2321,6 +2372,9 @@ caught too).</p>
 <li>Internal Confluence: summarize and link, never copy; no credentials or
   personal data.</li>
 <li>Run the validator until it prints <code>errors=0</code>, then preview.</li>
+<li>After adding an edge, check it in the browser with
+  <code>browser_test.py --check-edge &lt;edge id&gt;</code> (it checks the arrow and its stub
+  arrows, not the arrow's label).</li>
 </ul>
 
 
