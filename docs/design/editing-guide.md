@@ -13,6 +13,9 @@ check your change and preview it.
 
 ## Before you start
 
+Run every command in this guide from the repository root (the directory
+that contains `docs/`); the paths assume it.
+
 You need a **full clone** of the repository (not `git clone --depth ...`).
 Every code reference is checked against one pinned commit
 (`code_base.commit` in the model); a shallow clone does not have that
@@ -27,7 +30,10 @@ COMMIT=$(python -c "import json; print(json.load(open('docs/design/daq-model.jso
 git cat-file -e "$COMMIT^{commit}" && echo "pinned commit present"
 ```
 
-Install the tools (Python 3; the site build uses Python 3.12):
+The tools need Python 3 with `jsonschema` (for the validator) and, for the
+browser test only, `playwright` with its Chromium browser; the site build
+uses Python 3.12. If you already have an environment with these (for example
+a conda environment), use it and skip the installs. Otherwise:
 
 ```bash
 pip install -r docs/requirements.txt        # includes jsonschema, used by the validator
@@ -43,6 +49,16 @@ python -m playwright install chromium       # only for the browser test
 | [`daq-model.schema.json`](daq-model.schema.json) | JSON Schema of the model: every field, its type and limits. | No (changes need agreement). |
 | `index.html`, `viewer.js`, `viewer.css` | The viewer. No content. | No, not for content. |
 | `docs/design/tools/` | Validator and test scripts (see `docs/design/tools/README.md`). | No. |
+
+Keep the model's formatting, so that a diff shows only your change: JSON
+with an indent of 2 spaces, non-ASCII characters written as they are (not as
+`\u` escapes) and one newline at the end of the file. A script that rewrites
+the file should write `json.dumps(model, indent=2, ensure_ascii=False) + "\n"`.
+This one-line check prints `canonical` when the file is in that form:
+
+```bash
+python -c "import json; s = open('docs/design/daq-model.json', encoding='utf-8').read(); print('canonical' if s == json.dumps(json.loads(s), indent=2, ensure_ascii=False) + '\n' else 'NOT canonical')"
+```
 
 ## What is in the model
 
@@ -125,6 +141,10 @@ A code reference is
   proves that the range points at the right code.
 - `note`: optional, what to look for there.
 
+Comments are not proof. Choose a range whose executable code shows the
+claim, not one where only a comment states it, and choose as `symbol` an
+identifier used in that code, not a word from a comment.
+
 Find the line numbers at the pinned commit, never in your working tree:
 
 ```bash
@@ -164,8 +184,9 @@ the same sentence that it is outside this repository and cite the source.
 
 A design decision (`title`, `decision`, `rationale`, optional `id`) needs at
 least one source or code reference of its own: the basis for the
-rationale. If the sources do not say why, the rationale says so ("The code
-does X; the sources do not say why.").
+rationale. If neither the code nor the sources show why, the rationale says
+so as a statement about the DAQ, never as a statement about the sources
+("This repository does not show why ...; the code does X.").
 
 ### What every node needs
 
@@ -236,8 +257,25 @@ git show "$COMMIT:psdaq/drp/FileWriter.cc" | sed -n '108,160p' | grep -F -- 'Buf
   "from": "example-buffered-writer",
   "to": "files",
   "label": "Datagram blocks",
-  "kind": "data"
+  "kind": "data",
+  "prose": "When the next datagram does not fit in the buffer, or the batch in it is more than 2 seconds old, the writer writes the buffer to the file with one `_write()` call.",
+  "code_refs": [
+    {
+      "path": "psdaq/drp/FileWriter.cc",
+      "start": 123,
+      "end": 133,
+      "symbol": "_write",
+      "note": "The buffer is written in one call when the next datagram does not fit or the batch is too old."
+    }
+  ]
 }
+```
+
+Like every edge, it has `prose` backed by a code reference (or a source).
+Check the reference the same way as the node's:
+
+```bash
+git show "$COMMIT:psdaq/drp/FileWriter.cc" | sed -n '123,133p' | grep -F -- '_write'
 ```
 
 On the overview this edge is drawn between the boxes of `drp` and `files`
@@ -284,41 +322,65 @@ The exit status is 0 only when `errors=0`. Reading the errors:
 `--outline` also prints the model's sha256, the top-level titles and the tour
 step titles.
 
-**Preview** in a browser:
+**Preview** in a browser. Serve `docs/design` on a free port, reachable only
+from your own machine (`--bind 127.0.0.1`), and record the server's process
+ID so that you can stop exactly that process later:
 
 ```bash
-cd docs/design && python -m http.server 8000
+PORT=$(python -c "import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])")
+python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design > /tmp/design-preview.log 2>&1 &
+SERVER_PID=$!
+echo "http://127.0.0.1:$PORT/"
 ```
 
-Open <http://127.0.0.1:8000/>. Click a box to zoom in; "Zoom out", the
+Open the printed URL. Click a box to zoom in; "Zoom out", the
 breadcrumb, Escape or Backspace zoom out; click an arrow's label to list its
 flows; click a tag at the map edge to go to that part; "Tour" follows the
 event (Left and Right arrow keys move between steps); "Read as one page"
 shows the whole model as one document (`#/read`); "How to read this page"
-explains the controls. Reload the page after each edit.
+explains the controls. Reload the page after each edit. When you are done,
+stop the server by its process ID:
+
+```bash
+kill "$SERVER_PID"
+```
+
+Do not stop it with a pattern such as `pkill -f http.server`: a pattern can
+also match other processes, including the shell that runs the command.
 
 Links to `../` (Documentation home), `editing-guide/` (Edit this model) and
 `../features/...` (sources of kind `site-page`) work only on the built site
 (`mkdocs serve` or `mkdocs build`), not when `docs/design` is served on its
 own as above.
 
-**Browser test** (with the preview server running, in a second terminal):
+**Browser test** (with the preview server running, in the same shell, so
+that `$PORT` is set):
 
 ```bash
-python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/
-python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ \
+python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/"
+python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/" \
     --check-node example-buffered-writer \
     --expect-title "Example: buffered file writer" \
     --expect-prose "copies each datagram into a memory buffer"
+python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/" \
+    --check-edge example-buffered-writer-to-files
 ```
 
 The first command clicks through every node and every tour step and prints
 `nodes_visited=V/N tour_steps=S/T console_errors=C`, then a line
 `smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N`; it
 passes when V = N, S = T, C = 0 and every smoke check passes (a node counts
-only if the panel shows its title; a step only if its title and the start of
-its prose are visible). The second opens one node (by link and by clicking
-down from the overview) and checks its title and prose. See
+only if the panel shows its title and the start of its prose; a step only if
+its title and the start of its prose are visible). For a model of about 40
+nodes it takes roughly 10 to 60 seconds, depending on the machine. The
+second opens one node (by link and by clicking down from the overview) and
+checks its title and prose. `--expect-prose` is matched against the
+rendered, visible text of the panel (whitespace-normalized), so pick a
+substring without markup: no backticks, no `[[...]]` and no link syntax.
+The third opens the level where the edge is drawn between two boxes and,
+for each end that lies deeper, the level where the edge appears as a stub
+arrow, and checks that the arrow and the stubs are there; it prints
+`check_edge id=ID drawn=true console_errors=0` when they are. See
 `docs/design/tools/README.md` for the details and the test hooks.
 
 **Single-source check** (that no model text was copied into the viewer):
@@ -347,3 +409,6 @@ mkdocs build --strict -d /tmp/lcls2-site
 - Internal Confluence: summarize and link, never copy; no credentials or
   personal data.
 - Run the validator until it prints `errors=0`, then preview.
+- After adding an edge, check it in the browser with
+  `browser_test.py --check-edge <edge id>` (it checks the arrow and its stub
+  arrows, not the arrow's label).

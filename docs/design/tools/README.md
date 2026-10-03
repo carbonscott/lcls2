@@ -46,23 +46,28 @@ lines for its hits). Exit 0 iff all three M are 0.
 ## browser_test.py
 
 ```bash
-cd docs/design && python -m http.server 8000          # in one terminal
+python -m http.server 8000 --bind 127.0.0.1 --directory docs/design &   # or a free port, see editing-guide.md
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ [--headed] [--screenshot-dir DIR]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ \
     --check-node ID --expect-title TEXT --expect-prose SUBSTRING [--full]
+python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ --check-edge ID [--full]
 ```
 
 Full run: clicks every node's box depth-first from the overview (drill in,
 check the focus, zoom out, check the parent), then steps through the tour,
 then runs smoke checks of the reader controls. A node counts as visited only
 if `body[data-focus]` and `#detail-title[data-node-id]` name it **and** the
-panel's visible title text equals the model title (whitespace-normalized). A
-tour step counts only if its title, focus and highlighted box are right and
-the visible step text (`#tour-step-prose`) contains the first 30 characters
-of the step's prose as plain text (markup removed, `[[id]]` replaced by the
-node title). Prints `nodes_visited=V/N tour_steps=S/T console_errors=C`,
-where C counts console errors and warnings, page errors, and failed or
-HTTP >= 400 requests to the viewer's origin, and then one more line:
+panel's visible title text equals the model title (whitespace-normalized)
+**and** the visible prose (`#detail-prose`) contains the first 30 characters
+of the node's prose as plain text (markup reduced to the text the viewer
+shows, as for tour steps). A full run takes roughly 10 to 60 seconds for a
+model of about 40 nodes, depending on the machine. A tour step counts only
+if its title, focus and highlighted box are right and the visible step
+text (`#tour-step-prose`) contains the first 30 characters of the step's
+prose as plain text (markup removed, `[[id]]` replaced by the node title).
+Prints `nodes_visited=V/N tour_steps=S/T console_errors=C`, where C counts
+console errors and warnings, page errors, and failed or HTTP >= 400 requests
+to the viewer's origin, and then one more line:
 
 ```text
 smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N
@@ -70,9 +75,15 @@ smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N
 
 - `stub_click`: on the first level (in model order) that draws a stub arrow,
   clicking its tag (`#map g.stub-chip`) focuses the node it names.
-- `edge_label`: on the overview, clicking an edge label (`#map g.edge-label`,
-  preferably one that bundles several flows) lists exactly its flows in
-  `#edge-flows`, each with links to both ends; `#edge-flows-close` closes it.
+- `edge_label`: the overview shows exactly one visible, clickable edge label
+  (`#map g.edge-label` with a non-empty `data-edge-ids`) for each arrow the
+  viewer should label there, derived from the model the way the viewer
+  groups edges (both ends lifted to their top-level boxes; edges whose ends
+  meet in one box are not drawn; one arrow per from, to and kind), and the
+  labels' edge ids are exactly those arrows' ids, all of them edges of the
+  model. Clicking one label (preferably one that bundles several flows)
+  lists exactly its flows in `#edge-flows`, each with links to both ends;
+  `#edge-flows-close` closes it.
 - `arrow_keys`: in the tour, the Right and Left arrow keys move to step 2
   and back (fails with fewer than 2 steps).
 - `help`: `#help-toggle` opens `#help` and `#help-close` closes it.
@@ -80,29 +91,57 @@ smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N
   its title (R of N).
 
 Each check prints `ok` or `fail`; a check that finds nothing to test (no
-stub arrow at any level, no edge label on the overview, fewer than 2 tour
-steps) fails. Exit 0 iff N > 0, T > 0, V = N, S = T, C = 0 and every smoke
-check is `ok` with R = N.
+stub arrow at any level, no labelled arrow on the overview, fewer than 2
+tour steps) fails. Exit 0 iff N > 0, T > 0, V = N, S = T, C = 0 and every
+smoke check is `ok` with R = N.
 `--check-node` opens one node by deep link and by clicking down from the
 overview, and checks its detail title and that its rendered prose contains
 SUBSTRING; prints `check_node id=ID title_ok=<bool> prose_ok=<bool>
-console_errors=C`. `--full` adds the full run. The test also works against
+console_errors=C`. SUBSTRING is matched against the rendered, visible text,
+so it must not contain markup (backticks, `[[...]]`, link syntax).
+`--check-edge ID` opens the level where the edge is drawn between two boxes
+(the children of the lowest common ancestor of its ends, or the overview) and
+checks that `#map g.edge[data-edge-ids~=ID]` is there and is not a stub; then,
+for each end whose own level lies deeper, it opens that level and checks the
+stub arrow (`g.edge.stub` and `g.stub-chip` with the id). It prints
+`check_edge id=ID drawn=<bool> console_errors=C` (drawn is true only if all
+are found) and exits 0 iff drawn is true and C = 0. It checks the arrow and
+the stubs, not the arrow's label (the full run's `edge_label` check covers
+labels on the overview). `--full` adds the full
+run to `--check-node` or `--check-edge`. The test also works against
 the published site (`--url https://carbonscott.github.io/lcls2/dev/design/`).
 
 ## sample_statements.py
 
 ```bash
-python docs/design/tools/sample_statements.py --seed S --n 40 [--reserve 20] [--model PATH] [--out sample.json] [--markdown sample.md]
+python docs/design/tools/sample_statements.py --seed S --n 40 [--reserve 20] [--min-per-cell 2] [--model PATH] [--out sample.json] [--markdown sample.md]
 ```
 
 Splits every PROSE field attached to a node (its own fields and code-ref
 notes, its decisions, the tour steps about it, the edges leaving it) into
 sentences, tags each with node id, level (1, 2, 3+), outside_repo and field,
 and draws a sample stratified over level x outside_repo (proportional, at
-least 2 per non-empty cell when n allows it, `random.Random(S)`; exactly n
-sentences), plus exactly `--reserve` extra sentences drawn from the rest in
-proportion to the cell sizes (no per-cell minimum). Prints the seed, the
-cell counts and markdown tables; `--out` writes JSON.
+least `--min-per-cell` (default 2) per non-empty cell when n allows it,
+`random.Random(S)`; exactly n sentences), plus exactly `--reserve` extra
+sentences drawn from the rest in proportion to the cell sizes (no per-cell
+minimum). Prints the seed, the cell counts and markdown tables; `--out`
+writes JSON.
+
+## plant_viewer_defects.py
+
+```bash
+cp -r docs/design /tmp/viewer-copy
+python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy hide-prose       # or no-edge-labels
+```
+
+Edits `COPY_DIR/viewer.js` of a copy of `docs/design` (it refuses the viewer
+next to the script) to plant a known defect, so that one can show that the
+browser test catches it: `hide-prose` stops the viewer rendering node prose
+(the full run then reports nodes_visited < N), `no-edge-labels` stops it
+drawing the labels of arrows between boxes (the full run then reports
+`edge_label=fail`). Serve the copy and run `browser_test.py` against it; the
+full run must exit nonzero. Exit 0 if the defect was planted, 1 if the code
+to change was not found exactly once or on a usage error.
 
 ## Viewer test hooks
 

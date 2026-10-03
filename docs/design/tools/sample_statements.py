@@ -7,8 +7,8 @@ steps (attached to their node) and the edges (attached to their "from"
 node). Each sentence is tagged with the node id, level (1, 2, 3+),
 outside_repo and field. The sample is stratified over the cells
 (level x outside_repo): n is split across the cells in proportion to their
-size, with at least 2 per non-empty cell when n allows it, using
-random.Random(seed); the sample has exactly n sentences (fewer only if the
+size, with at least K per non-empty cell when n allows it (K is
+--min-per-cell, default 2), using random.Random(seed); the sample has exactly n sentences (fewer only if the
 model has fewer). --reserve R extra sentences (for replacing sentences that
 turn out not to be factual statements) are drawn from the rest in proportion
 to the cell sizes, without the per-cell minimum, so there are exactly R of
@@ -16,7 +16,8 @@ them (fewer only if too few sentences are left).
 
 Usage:
     python docs/design/tools/sample_statements.py --seed S --n 40 [--reserve 20]
-        [--model PATH] [--schema PATH] [--out sample.json] [--markdown sample.md]
+        [--min-per-cell 2] [--model PATH] [--schema PATH] [--out sample.json]
+        [--markdown sample.md]
 """
 
 import argparse
@@ -202,6 +203,8 @@ def main(argv=None):
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--n", type=int, default=40)
     parser.add_argument("--reserve", type=int, default=20)
+    parser.add_argument("--min-per-cell", type=int, default=2,
+                        help="at least this many sampled sentences per non-empty cell when n allows it (default 2)")
     parser.add_argument("--model", default=str(DESIGN_DIR / "daq-model.json"))
     parser.add_argument("--schema", default=str(DESIGN_DIR / "daq-model.schema.json"))
     parser.add_argument("--out", default=None, help="write the sample as JSON to this file")
@@ -213,7 +216,9 @@ def main(argv=None):
     items = collect(as_dict(model), schema)
 
     rng = random.Random(args.seed)
-    sample, sizes, alloc = stratified(items, args.n, rng)
+    if args.min_per_cell < 0:
+        parser.error("--min-per-cell must be 0 or more")
+    sample, sizes, alloc = stratified(items, args.n, rng, minimum=args.min_per_cell)
     picked = {x["id"] for x in sample}
     rest = [x for x in items if x["id"] not in picked]
     reserve, _, reserve_alloc = stratified(rest, args.reserve, rng, minimum=0) if args.reserve > 0 else ([], {}, {})
@@ -228,7 +233,7 @@ def main(argv=None):
     print("## Reserve")
     print(markdown_table(reserve))
 
-    result = {"seed": args.seed, "model": str(args.model), "sentences": len(items),
+    result = {"seed": args.seed, "model": str(args.model), "sentences": len(items), "min_per_cell": args.min_per_cell,
               "cells": {c: {"sentences": s, "sampled": alloc.get(c, 0), "reserve": reserve_alloc.get(c, 0)} for c, s in sizes.items()},
               "sample": sample, "reserve": reserve}
     if args.out:

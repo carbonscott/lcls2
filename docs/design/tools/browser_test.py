@@ -5,19 +5,25 @@ Full run (default):
   * Drill test: depth-first from the overview, click every node's box at its
     level, check that body[data-focus] and #detail-title[data-node-id] show
     the node AND that the panel's visible title text equals the model title
-    (whitespace-normalized), recurse into its children, then click "Zoom out"
-    and check that the focus is back at the parent (or __root__). A node
-    counts as visited only if all of these hold.
+    (whitespace-normalized) AND that the visible prose (#detail-prose)
+    contains the first 30 characters of the node's prose as plain text
+    (markup reduced to the text the viewer shows), recurse into its
+    children, then click "Zoom out" and check that the focus is back at the
+    parent (or __root__). A node counts as visited only if all of these hold.
   * Tour test: click "Tour"; for each step check its title, its focused and
     highlighted node, and that the visible step text (#tour-step-prose)
     contains the first 30 characters of the step's prose as plain text;
     click "Next" (not after the last step), then "Exit tour". A step counts
     only if all of these hold.
   * Smoke checks of the reader controls: one stub arrow (a tag at the map
-    edge) leads to its node; one edge label lists the flows it stands for,
-    with links to both ends; the Right and Left arrow keys move between tour
-    steps; the help panel opens and closes; the one-page view (#/read) shows
-    every node title.
+    edge) leads to its node; the overview draws exactly one visible edge
+    label for every arrow the viewer should label there (the expected
+    arrows are derived from the model the way the viewer groups edges: both
+    ends lifted to their top-level boxes, grouped by from, to and kind), each
+    label names only edge ids of the model, and one clicked label lists the
+    flows it stands for, with links to both ends; the Right and Left arrow
+    keys move between tour steps; the help panel opens and closes; the
+    one-page view (#/read) shows every node title.
   * Counts console errors and warnings, page errors, and failed or HTTP-error
     (>= 400) requests to the viewer's own origin.
   Prints:  nodes_visited=V/N tour_steps=S/T console_errors=C
@@ -34,10 +40,22 @@ Check one node (for editing tests):
   Prints:  check_node id=ID title_ok=<bool> prose_ok=<bool> console_errors=C
   Add --full to run the full test in the same invocation.
 
+Check one edge (for editing tests):
+  --check-edge ID
+  opens the level where the edge is drawn between two boxes (the children of
+  the lowest common ancestor of its ends, or the overview) and checks that
+  #map g.edge[data-edge-ids~=ID] is there and is not a stub; then, for each
+  end whose own level is deeper, opens that level and checks that the stub
+  arrow (#map g.edge.stub and g.stub-chip with data-edge-ids~=ID) is there.
+  Prints:  check_edge id=ID drawn=<bool> console_errors=C
+  (drawn is true only if all of these are found). --full adds the full run;
+  --check-node and --check-edge can be combined.
+
 Usage:
   python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/
       [--headed] [--screenshot-dir DIR] [--full]
       [--check-node ID --expect-title TEXT --expect-prose SUBSTRING]
+      [--check-edge ID]
 
 Needs the playwright package and a Chromium browser
 (python -m playwright install chromium).
@@ -65,7 +83,7 @@ def normalize(text):
     return re.sub(r"\s+", " ", text or "").strip()
 
 
-PROSE_PREFIX = 30  # characters of a tour step's prose that must be visible
+PROSE_PREFIX = 30  # characters of a node's or tour step's prose that must be visible
 
 
 def plain_text(text, titles):
@@ -175,6 +193,46 @@ def children_map(model):
     return children, ids
 
 
+def parent_map(model):
+    """Node id -> parent id, or ROOT when the parent is missing or unknown (as in the viewer)."""
+    nodes = [n for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n]
+    known = {n["id"] for n in nodes}
+    return {n["id"]: (n.get("parent") if n.get("parent") in known else ROOT) for n in nodes}
+
+
+def ancestors(node_id, parents):
+    """[top-level ancestor, ..., node_id] (empty for an unknown id)."""
+    path, cur = [], node_id
+    while cur in parents and cur not in path:
+        path.insert(0, cur)
+        cur = parents[cur]
+    return path
+
+
+def model_edges(model, parents):
+    """The edges the viewer draws: both ends must be nodes."""
+    return [e for e in model.get("edges", [])
+            if isinstance(e, dict) and e.get("from") in parents and e.get("to") in parents]
+
+
+def overview_label_groups(model):
+    """The edge-id lists of the labelled arrows the viewer should draw on the overview.
+
+    Mirrors the viewer's visibleEdgeGroups for the top level: each end is
+    lifted to its top-level ancestor; an edge whose lifted ends coincide is
+    not drawn; the others are grouped by (from, to, kind), one label each.
+    """
+    parents = parent_map(model)
+    groups = {}
+    for e in model_edges(model, parents):
+        a = ancestors(e["from"], parents)[:1]
+        b = ancestors(e["to"], parents)[:1]
+        if not a or not b or a == b:
+            continue
+        groups.setdefault((a[0], b[0], e.get("kind")), []).append(e["id"])
+    return list(groups.values())
+
+
 # ---------------------------------------------------------------------------
 # Full test
 # ---------------------------------------------------------------------------
@@ -182,7 +240,21 @@ def children_map(model):
 def drill_test(s, model):
     children, ids = children_map(model)
     titles = {n["id"]: n.get("title", "") for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n}
+    proses = {n["id"]: n.get("prose", "") for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n}
     visited = set()
+
+    def prose_shown(node_id):
+        """True if the start of the node's prose (plain text) is visible in #detail-prose."""
+        want = plain_text(proses.get(node_id, ""), titles)[:PROSE_PREFIX].strip()
+        try:
+            panel = s.page.locator("#detail-prose")
+            shown = normalize(panel.inner_text()) if panel.count() == 1 and panel.is_visible() else ""
+        except PlaywrightError:
+            shown = ""
+        if want and want in shown:
+            return True
+        s.fail(f"drill: {node_id}: the visible prose (#detail-prose) does not contain {want!r}")
+        return False
 
     def visit(node_id, parent_id):
         if len(s.failures) >= MAX_DRILL_FAILURES:
@@ -199,7 +271,8 @@ def drill_test(s, model):
             except PlaywrightError:
                 shown = None
             if shown == normalize(titles.get(node_id, "")):
-                visited.add(node_id)
+                if prose_shown(node_id):
+                    visited.add(node_id)
             else:
                 s.fail(f"drill: {node_id}: the panel title reads {shown!r}, expected {titles.get(node_id)!r}")
         else:
@@ -289,8 +362,8 @@ def tour_test(s, model):
 def smoke_test(s, model):
     """Return a dict of check name -> "ok" / "fail", plus read_page counts.
 
-    A check that finds nothing to test (no stub arrow at any level, no edge
-    label on the overview, fewer than 2 tour steps) fails.
+    A check that finds nothing to test (no stub arrow at any level, no
+    labelled arrow on the overview, fewer than 2 tour steps) fails.
     """
     nodes = [n for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n]
     children, ids = children_map(model)
@@ -313,7 +386,9 @@ def smoke_test(s, model):
                 continue
             target = chips.first.get_attribute("data-node-id")
             chips.first.click()
-            assert s.wait_focus(target), f"clicking the stub to {target} at {parent} gave focus {s.focus()!r}"
+            if not s.wait_focus(target):
+                s.fail(f"smoke stub_click: clicking the stub to {target} at {parent} gave focus {s.focus()!r}")
+                return "fail"
             return "ok"
         s.fail("smoke stub_click: no level draws a stub arrow (#map g.stub-chip)")
         return "fail"
@@ -321,23 +396,44 @@ def smoke_test(s, model):
     def edge_label():
         if not s.open("#/"):
             return "fail"
-        labels = s.page.locator("#map g.edge-label[data-edge-ids]")
-        if labels.count() == 0:
-            s.fail("smoke edge_label: the overview draws no edge label (#map g.edge-label)")
+        expected = overview_label_groups(model)
+        if not expected:
+            s.fail("smoke edge_label: the model gives no labelled arrow on the overview; nothing to test")
             return "fail"
-        pick = labels.first
+        known = {e.get("id") for e in model.get("edges", []) if isinstance(e, dict)}
+        labels = s.page.locator("#map g.edge-label[data-edge-ids]")
+        found = []  # (locator, edge ids) of the visible labels that name at least one edge
         for i in range(labels.count()):
-            if len(labels.nth(i).get_attribute("data-edge-ids").split()) > 1:
-                pick = labels.nth(i)
+            ids = (labels.nth(i).get_attribute("data-edge-ids") or "").split()
+            if ids and labels.nth(i).is_visible():
+                found.append((labels.nth(i), ids))
+        unknown = sorted({i for _, ids in found for i in ids if i not in known})
+        if unknown:
+            s.fail(f"smoke edge_label: edge labels name ids that are not edges of the model: {unknown}")
+            return "fail"
+        if len(found) != len(expected):
+            s.fail(f"smoke edge_label: the overview shows {len(found)} clickable edge labels; "
+                   f"the model gives {len(expected)} labelled arrows")
+            return "fail"
+        if sorted(sorted(ids) for _, ids in found) != sorted(sorted(ids) for ids in expected):
+            s.fail("smoke edge_label: the overview's edge labels do not stand for the arrows the model gives")
+            return "fail"
+        pick, edge_ids = found[0]
+        for loc, ids in found:
+            if len(ids) > 1:
+                pick, edge_ids = loc, ids
                 break
-        edge_ids = pick.get_attribute("data-edge-ids").split()
         pick.click()
         s.page.wait_for_selector("#edge-flows")
         items = s.page.locator("#edge-flows li.flow")
         shown = [items.nth(i).get_attribute("data-edge-id") for i in range(items.count())]
-        assert sorted(shown) == sorted(edge_ids), f"the label stands for {edge_ids}, the panel lists {shown}"
+        if sorted(shown) != sorted(edge_ids):
+            s.fail(f"smoke edge_label: the label stands for {edge_ids}, the panel lists {shown}")
+            return "fail"
         for i in range(items.count()):
-            assert items.nth(i).locator("a.flow-end").count() == 2, f"flow {shown[i]} does not link both ends"
+            if items.nth(i).locator("a.flow-end").count() != 2:
+                s.fail(f"smoke edge_label: flow {shown[i]} does not link both ends")
+                return "fail"
         s.page.locator("#edge-flows-close").click()
         s.page.wait_for_selector("#edge-flows", state="detached")
         return "ok"
@@ -453,6 +549,59 @@ def check_node(s, model, node_id, expect_title, expect_prose):
 
 
 # ---------------------------------------------------------------------------
+# Check one edge
+# ---------------------------------------------------------------------------
+
+def check_edge(s, model, edge_id):
+    """True if the edge is drawn at the level of its ends' lowest common ancestor
+    and appears as a stub at the level of each end that lies deeper."""
+    parents = parent_map(model)
+    edge = next((e for e in model_edges(model, parents) if e.get("id") == edge_id), None)
+    if edge is None:
+        s.fail(f"check-edge: {edge_id!r} is not an edge of the model between two nodes")
+        return False
+    path_from = ancestors(edge["from"], parents)
+    path_to = ancestors(edge["to"], parents)
+    common = ROOT
+    for a, b in zip(path_from, path_to):
+        if a != b:
+            break
+        common = a
+    if common in (edge["from"], edge["to"]):
+        s.fail(f"check-edge: {edge_id} connects a node and its own ancestor; the viewer does not draw it")
+        return False
+
+    def open_level(level):
+        if not s.open("#/" if level == ROOT else f"#/node/{level}"):
+            return False
+        if not s.wait_focus(level):
+            s.fail(f"check-edge: opening the level of {level} gives focus {s.focus()!r}")
+            return False
+        return True
+
+    selector = f'#map g.edge[data-edge-ids~="{edge_id}"]'
+    drawn = True
+    # 1. Between two boxes, at the level of the lowest common ancestor.
+    if not open_level(common):
+        return False
+    if s.page.locator(selector + ":not(.stub)").count() != 1:
+        s.fail(f"check-edge: at the level of {common}, no arrow {selector} between two boxes")
+        drawn = False
+    # 2. As a stub at the level of each end that lies below that level.
+    for end in (edge["from"], edge["to"]):
+        level = parents[end]
+        if level == common:
+            continue
+        if not open_level(level):
+            return False
+        if (s.page.locator(selector + ".stub").count() != 1 or
+                s.page.locator(f'#map g.stub-chip[data-edge-ids~="{edge_id}"]').count() != 1):
+            s.fail(f"check-edge: at the level of {level}, no stub arrow and tag for {edge_id}")
+            drawn = False
+    return drawn
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -464,7 +613,9 @@ def main(argv=None):
     parser.add_argument("--check-node", default=None, metavar="ID")
     parser.add_argument("--expect-title", default=None)
     parser.add_argument("--expect-prose", default=None)
-    parser.add_argument("--full", action="store_true", help="with --check-node: also run the full test")
+    parser.add_argument("--check-edge", default=None, metavar="ID")
+    parser.add_argument("--full", action="store_true",
+                        help="with --check-node or --check-edge: also run the full test")
     args = parser.parse_args(argv)
     if args.check_node and (args.expect_title is None or args.expect_prose is None):
         parser.error("--check-node needs --expect-title and --expect-prose")
@@ -493,7 +644,17 @@ def main(argv=None):
                 if not (title_ok and prose_ok and errors == 0):
                     exit_code = 1
                 s.page.close()
-            if not args.check_node or args.full:
+            if args.check_edge:
+                s = Session(browser, url, args.screenshot_dir)
+                drawn = check_edge(s, model, args.check_edge)
+                errors = len(s.console_problems)
+                for line in (s.failures + s.console_problems)[:MAX_PRINTED_PROBLEMS]:
+                    print(f"PROBLEM: {line}")
+                print(f"check_edge id={args.check_edge} drawn={str(drawn).lower()} console_errors={errors}")
+                if not (drawn and errors == 0):
+                    exit_code = 1
+                s.page.close()
+            if not (args.check_node or args.check_edge) or args.full:
                 s = Session(browser, url, args.screenshot_dir)
                 visited, total = drill_test(s, model)
                 passed, steps = tour_test(s, model)
