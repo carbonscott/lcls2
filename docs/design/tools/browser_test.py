@@ -21,9 +21,10 @@ Full run (default):
   * Counts console errors and warnings, page errors, and failed or HTTP-error
     (>= 400) requests to the viewer's own origin.
   Prints:  nodes_visited=V/N tour_steps=S/T console_errors=C
-  then:    smoke stub_click=ok|fail edge_label=ok|fail arrow_keys=ok|fail|n/a help=ok|fail read_page=R/N
+  then:    smoke stub_click=ok|fail edge_label=ok|fail arrow_keys=ok|fail help=ok|fail read_page=R/N
   Exit 0 iff N > 0, T > 0, V == N, S == T, C == 0 and every smoke check
-  passes (n/a counts as passing; R == N).
+  is ok (R == N). A check that finds nothing to test (no stub arrow, no
+  edge label, fewer than 2 tour steps) fails.
 
 Check one node (for editing tests):
   --check-node ID --expect-title TEXT --expect-prose SUBSTRING
@@ -286,7 +287,11 @@ def tour_test(s, model):
 # ---------------------------------------------------------------------------
 
 def smoke_test(s, model):
-    """Return a dict of check name -> "ok" / "fail" / "n/a", plus read_page counts."""
+    """Return a dict of check name -> "ok" / "fail", plus read_page counts.
+
+    A check that finds nothing to test (no stub arrow at any level, no edge
+    label on the overview, fewer than 2 tour steps) fails.
+    """
     nodes = [n for n in model.get("nodes", []) if isinstance(n, dict) and "id" in n]
     children, ids = children_map(model)
     result = {}
@@ -310,14 +315,16 @@ def smoke_test(s, model):
             chips.first.click()
             assert s.wait_focus(target), f"clicking the stub to {target} at {parent} gave focus {s.focus()!r}"
             return "ok"
-        return "n/a"
+        s.fail("smoke stub_click: no level draws a stub arrow (#map g.stub-chip)")
+        return "fail"
 
     def edge_label():
         if not s.open("#/"):
             return "fail"
         labels = s.page.locator("#map g.edge-label[data-edge-ids]")
         if labels.count() == 0:
-            return "n/a"
+            s.fail("smoke edge_label: the overview draws no edge label (#map g.edge-label)")
+            return "fail"
         pick = labels.first
         for i in range(labels.count()):
             if len(labels.nth(i).get_attribute("data-edge-ids").split()) > 1:
@@ -338,7 +345,8 @@ def smoke_test(s, model):
     def arrow_keys():
         steps = model.get("tour", {}).get("steps", [])
         if len(steps) < 2:
-            return "n/a"
+            s.fail(f"smoke arrow_keys: the tour has {len(steps)} step(s); at least 2 are needed")
+            return "fail"
         if not s.open("#/tour/1"):
             return "fail"
         s.page.keyboard.press("ArrowRight")
@@ -392,7 +400,7 @@ def smoke_line(result):
 def smoke_ok(result):
     shown, total = result.get("read_page", (0, 0))
     checks = [result.get(k, "fail") for k in ("stub_click", "edge_label", "arrow_keys", "help")]
-    return all(c in ("ok", "n/a") for c in checks) and total > 0 and shown == total
+    return all(c == "ok" for c in checks) and total > 0 and shown == total
 
 
 # ---------------------------------------------------------------------------

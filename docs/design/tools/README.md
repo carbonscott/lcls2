@@ -74,13 +74,15 @@ smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N
   preferably one that bundles several flows) lists exactly its flows in
   `#edge-flows`, each with links to both ends; `#edge-flows-close` closes it.
 - `arrow_keys`: in the tour, the Right and Left arrow keys move to step 2
-  and back (`n/a` with fewer than 2 steps).
+  and back (fails with fewer than 2 steps).
 - `help`: `#help-toggle` opens `#help` and `#help-close` closes it.
 - `read_page`: in the one-page view (`#/read`) every node has a section with
   its title (R of N).
 
-Each check prints `ok`, `fail` or `n/a`. Exit 0 iff N > 0, T > 0, V = N,
-S = T, C = 0 and every smoke check is `ok` or `n/a` with R = N.
+Each check prints `ok` or `fail`; a check that finds nothing to test (no
+stub arrow at any level, no edge label on the overview, fewer than 2 tour
+steps) fails. Exit 0 iff N > 0, T > 0, V = N, S = T, C = 0 and every smoke
+check is `ok` with R = N.
 `--check-node` opens one node by deep link and by clicking down from the
 overview, and checks its detail title and that its rendered prose contains
 SUBSTRING; prints `check_node id=ID title_ok=<bool> prose_ok=<bool>
