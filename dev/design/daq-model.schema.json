@@ -2,10 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://carbonscott.github.io/lcls2/dev/design/daq-model.schema.json",
   "title": "LCLS-II DAQ design model",
-  "description": "The single source of truth for the DAQ design document. The viewer (index.html, viewer.js, viewer.css) renders this file and contains no content of its own. Fields whose description starts with 'PROSE' are reader-facing text. Prose markup: paragraphs are separated by a blank line (\\n\\n); `code` is inline code; [text](https://...) is a link; [[some-id]] or [[some-id|text]] links to another node. Nothing else is markup: **bold**, lists and HTML are shown literally. All ids (nodes, edges, tour steps, sources, decisions) are unique across the whole file.",
+  "description": "The single source of truth for the DAQ design document. The viewer (index.html, viewer.js, viewer.css) renders this file and contains no content of its own. Fields whose description starts with 'PROSE' are reader-facing text. Prose markup: paragraphs are separated by a blank line (\\n\\n); `code` is inline code; [text](https://...) is a link; [[some-id]] or [[some-id|text]] links to another node. Nothing else is markup: **bold**, lists and HTML are shown literally. Fields whose description starts with 'LAYOUT TEXT' are short reader-facing strings of the map and its figures (plain text, no markup). All ids (nodes, edges, tour steps, sources, decisions) are unique across the whole file.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "title", "question", "summary", "code_base", "sources", "nodes", "edges", "tour"],
+  "required": ["schema_version", "title", "question", "summary", "code_base", "sources", "nodes", "edges", "tour", "map"],
   "properties": {
     "$schema": {"type": "string"},
     "schema_version": {"const": 1},
@@ -48,7 +48,8 @@
           "items": {"$ref": "#/$defs/step"}
         }
       }
-    }
+    },
+    "map": {"$ref": "#/$defs/map", "description": "Layout of the page: the fixed map, the tour on it, the small multiples, the sequence chart and the section texts. Numbers are SVG user units in the viewbox. Content about the DAQ stays in nodes, edges and tour; strings here are short LAYOUT TEXT."}
   },
   "$defs": {
     "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 60},
@@ -111,7 +112,9 @@
         "outside_repo": {"type": "boolean", "description": "true if the mechanism is not implemented in this repository (firmware, other repositories, facility services). Such nodes need at least one external source. Missing means false."},
         "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
         "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}},
-        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}},
+        "place": {"$ref": "#/$defs/place"},
+        "detail": {"$ref": "#/$defs/detail"}
       }
     },
     "edge": {
@@ -136,11 +139,191 @@
       "properties": {
         "id": {"$ref": "#/$defs/id"},
         "title": {"type": "string", "minLength": 1, "maxLength": 80},
-        "node": {"$ref": "#/$defs/id", "description": "The node this step is about; the viewer zooms to it."},
+        "node": {"$ref": "#/$defs/id", "description": "The node this step is about; the viewer highlights it in the detail under the tour map."},
         "edges": {"type": "array", "items": {"$ref": "#/$defs/id"}, "description": "Optional edge ids to highlight in this step."},
         "prose": {"type": "string", "minLength": 1, "description": "PROSE. What happens to the event at this step."},
         "code_refs": {"type": "array", "items": {"$ref": "#/$defs/code_ref"}},
         "sources": {"type": "array", "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "kind": {"enum": ["data", "trigger", "timing", "control", "monitoring"]},
+    "num": {"type": "number"},
+    "box_key": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*(@[0-9]+)?$", "description": "A map box id. In a shared (not per_lane) line, a per_lane box is named with its lane: <box id>@<lane>, lanes counted from 0. In a per_lane line, a per_lane box is named without @ and means the copy in the line's own lane."},
+    "text_lines": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["viewbox", "default_detail", "kinds", "columns", "bands", "lanes", "lines", "labels", "notes", "omitted", "ladder", "tour", "multiples", "sequence", "sections"],
+      "properties": {
+        "viewbox": {"type": "object", "additionalProperties": false, "required": ["w", "h"], "properties": {"w": {"type": "number", "exclusiveMinimum": 0}, "h": {"type": "number", "exclusiveMinimum": 0}}},
+        "default_detail": {"$ref": "#/$defs/id", "description": "The top-level part (with children) whose detail is shown under the map on #/."},
+        "kinds": {
+          "type": "array", "minItems": 5, "maxItems": 5,
+          "items": {"type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": {
+            "id": {"$ref": "#/$defs/kind"},
+            "name": {"type": "string", "minLength": 1, "maxLength": 20, "description": "LAYOUT TEXT. The kind's name on the emphasis chips, legends and small multiples."}}}
+        },
+        "columns": {
+          "type": "array", "minItems": 1,
+          "items": {"type": "object", "additionalProperties": false, "required": ["n", "name", "x", "w"], "properties": {
+            "n": {"type": "integer", "minimum": 1, "description": "Column number, 1 = left; boxes name their column by n."},
+            "name": {"type": "string", "minLength": 1, "maxLength": 30, "description": "LAYOUT TEXT. Column heading: one stage of the event's trip (the viewer may print it in capitals)."},
+            "x": {"$ref": "#/$defs/num"},
+            "w": {"type": "number", "exclusiveMinimum": 0}}}
+        },
+        "bands": {
+          "type": "array", "minItems": 1,
+          "items": {"type": "object", "additionalProperties": false, "required": ["id", "y", "h", "labels"], "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "y": {"$ref": "#/$defs/num"},
+            "h": {"type": "number", "exclusiveMinimum": 0},
+            "labels": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["text", "x", "y"], "properties": {
+              "text": {"type": "string", "minLength": 1, "maxLength": 60, "description": "LAYOUT TEXT. A band label: the kind of path this band holds (the viewer may print it in capitals)."},
+              "x": {"$ref": "#/$defs/num"},
+              "y": {"$ref": "#/$defs/num"}}}}}}
+        },
+        "lanes": {"type": "object", "additionalProperties": false, "required": ["count", "y"], "properties": {
+          "count": {"type": "integer", "minimum": 1, "description": "Number of example readout lanes drawn (generic: readout 1, 2, N)."},
+          "y": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/num"}, "description": "The centre y of each lane; per_lane boxes and lines are drawn once per lane."}}},
+        "lines": {"type": "array", "items": {"$ref": "#/$defs/map_line"}},
+        "labels": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["line", "text", "x", "y", "anchor"], "properties": {
+          "line": {"$ref": "#/$defs/id", "description": "The map line this label names; it is dimmed and emphasized with that line."},
+          "text": {"$ref": "#/$defs/text_lines", "description": "LAYOUT TEXT. The label, one string per text line."},
+          "x": {"$ref": "#/$defs/num"},
+          "y": {"$ref": "#/$defs/num", "description": "Baseline of the first text line."},
+          "anchor": {"enum": ["start", "middle", "end"]},
+          "out": {"type": "boolean", "description": "true: drawn in the outside-this-repository colour (the label names a mechanism outside this repository)."}}}},
+        "notes": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["text", "x", "y"], "properties": {
+          "text": {"$ref": "#/$defs/text_lines", "description": "LAYOUT TEXT. A free note on the map (not tied to a line), one string per text line."},
+          "x": {"$ref": "#/$defs/num"},
+          "y": {"$ref": "#/$defs/num"}}}},
+        "omitted": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["edge", "reason"], "properties": {
+          "edge": {"$ref": "#/$defs/id", "description": "A cross-part edge that no map line draws."},
+          "reason": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Why the map does not draw it, and where the reader finds it instead."}}}},
+        "ladder": {"type": "object", "additionalProperties": false, "required": ["node", "states", "transitions", "x", "dx", "y", "caption", "note"], "properties": {
+          "node": {"$ref": "#/$defs/id", "description": "The node whose state machine the ladder draws."},
+          "states": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}, "description": "LAYOUT TEXT. The states, in order, as named in the code. Station k is drawn at (x + k*dx, y)."},
+          "transitions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "description": "LAYOUT TEXT. The transition from state k to state k+1, as named in the code. Its segment is highlighted as lad-<k>."},
+          "x": {"$ref": "#/$defs/num"},
+          "dx": {"type": "number", "exclusiveMinimum": 0},
+          "y": {"$ref": "#/$defs/num"},
+          "caption": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Drawn above the ladder."},
+          "note": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Drawn below the ladder."}}},
+        "tour": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["step", "tokens", "highlight"], "properties": {
+          "step": {"$ref": "#/$defs/id", "description": "The tour step (same order as tour.steps)."},
+          "tokens": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["t", "lane", "x", "y"], "properties": {
+            "t": {"enum": ["b", "k", "r", "g", "v", "s"], "description": "Token type: b data, k small-data record, r trigger input or result, g monitored copy, v timing, s control (diamond)."},
+            "lane": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}], "description": "The lane this token belongs to, or null for a token shared by all lanes. x and y are absolute either way."},
+            "x": {"$ref": "#/$defs/num"},
+            "y": {"$ref": "#/$defs/num"}}}},
+          "highlight": {"type": "array", "items": {"type": "string", "pattern": "^(box:)?[a-z0-9]+(-[a-z0-9]+)*$"}, "description": "What the step highlights: a map line id (all lane copies), box:<box id> (all lane copies) or lad-<k> (ladder segment of transitions[k])."}}}},
+        "multiples": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["kind", "caption"], "properties": {
+          "kind": {"enum": ["data", "trigger", "timing", "control", "monitoring", "all"]},
+          "title": {"type": "string", "minLength": 1, "maxLength": 40, "description": "LAYOUT TEXT. Panel title; a kind's panel uses the kind's name instead."},
+          "caption": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. What this copy of the map shows."}}}},
+        "sequence": {"type": "object", "additionalProperties": false, "required": ["lifelines", "rows"], "properties": {
+          "lifelines": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["id", "name", "part", "out", "multi"], "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "name": {"type": "string", "minLength": 1, "maxLength": 20, "description": "LAYOUT TEXT. The lifeline's heading."},
+            "part": {"$ref": "#/$defs/id", "description": "The top-level part this lifeline stands for."},
+            "out": {"type": "boolean", "description": "true: drawn as outside this repository."},
+            "multi": {"type": "boolean", "description": "true: drawn as several parallel lines (one process per readout)."}}}},
+          "rows": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["step", "from", "to", "kind", "label", "dots", "out"], "properties": {
+            "step": {"$ref": "#/$defs/id", "description": "The tour step of this row (same order as tour.steps)."},
+            "from": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "A lifeline id, or start (an arrow from outside the chart)."},
+            "to": {"$ref": "#/$defs/id"},
+            "kind": {"$ref": "#/$defs/kind"},
+            "label": {"type": "string", "minLength": 1, "maxLength": 60, "description": "LAYOUT TEXT. The arrow's label in the sequence chart."},
+            "dots": {"type": "array", "items": {"$ref": "#/$defs/id"}, "description": "Lifelines the arrow reaches on its way (drawn as dots)."},
+            "out": {"type": "boolean", "description": "true: drawn as outside this repository."}}}}}},
+        "sections": {"type": "object", "additionalProperties": false, "required": ["map", "tour", "multiples", "sequence", "matrix"], "properties": {
+          "map": {"$ref": "#/$defs/section"},
+          "tour": {"$ref": "#/$defs/section"},
+          "multiples": {"$ref": "#/$defs/section"},
+          "sequence": {"$ref": "#/$defs/section"},
+          "matrix": {"$ref": "#/$defs/section"}}}
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eyebrow", "title", "intro"],
+      "properties": {
+        "eyebrow": {"type": "string", "minLength": 1, "maxLength": 40, "description": "LAYOUT TEXT. Small label above the section title."},
+        "title": {"type": "string", "minLength": 1, "maxLength": 80, "description": "LAYOUT TEXT. The section's heading."},
+        "intro": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. What the figure shows and how to read it, for the doc reader."},
+        "caption": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Caption under the figure (how to use it)."}
+      }
+    },
+    "map_line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "edges", "d", "arrow", "per_lane", "through", "ends"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id", "description": "Unique among the map's lines; lad-<k> is reserved for the ladder."},
+        "kind": {"$ref": "#/$defs/kind"},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/id"}, "description": "The model edges this line draws."},
+        "d": {"type": "string", "minLength": 2, "pattern": "^M[-0-9 .,MLHVC{}y+]*$", "description": "SVG path with absolute M, L, H, V and C commands. Its end points lie on the borders of its ends boxes. A per_lane line writes the lane's y as {y} (offsets as {y-28}, {y+28})."},
+        "arrow": {"enum": ["end", "start", "both", "none"]},
+        "per_lane": {"type": "boolean", "description": "true: drawn once per lane."},
+        "through": {"type": "array", "items": {"$ref": "#/$defs/box_key"}, "description": "Boxes the line crosses border to border (a port is drawn at each crossing)."},
+        "ends": {"type": "array", "maxItems": 2, "items": {"$ref": "#/$defs/box_key"}, "description": "Boxes whose borders the line's end points touch."},
+        "out": {"type": "boolean", "description": "true: drawn in the outside-this-repository colour."}
+      }
+    },
+    "place": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["short", "boxes"],
+      "description": "Top-level nodes only: where the part sits on the map.",
+      "properties": {
+        "short": {"type": "string", "minLength": 1, "maxLength": 20, "description": "LAYOUT TEXT. The part's short name (callout tags, matrix headers, detail tags, sequence chart)."},
+        "boxes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/map_box"}}
+      }
+    },
+    "map_box": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "node", "column", "span", "band", "slot", "per_lane", "x", "w", "h", "title", "sub", "out"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id", "description": "Unique on the map."},
+        "node": {"$ref": "#/$defs/id", "description": "What the box stands for: the part or one of its descendants."},
+        "column": {"type": "integer", "minimum": 1, "description": "First column (map.columns[].n) of the box's cell."},
+        "span": {"type": "integer", "minimum": 1, "description": "Number of columns the cell spans."},
+        "band": {"$ref": "#/$defs/id", "description": "map.bands[].id of the box's cell."},
+        "slot": {"type": "integer", "minimum": 0, "description": "Which cell of (column, band): 0, 1, ... No two boxes share a (column, band, slot)."},
+        "per_lane": {"type": "boolean", "description": "true: one copy per lane, centred on the lane's y (then y is omitted)."},
+        "x": {"$ref": "#/$defs/num"},
+        "y": {"$ref": "#/$defs/num"},
+        "w": {"type": "number", "exclusiveMinimum": 0},
+        "h": {"type": "number", "exclusiveMinimum": 0},
+        "title": {"type": "string", "minLength": 1, "maxLength": 30, "description": "LAYOUT TEXT. The box's title on the map."},
+        "sub": {"type": "array", "items": {"type": "string", "minLength": 1}, "description": "LAYOUT TEXT. Lines under the title; for a per_lane box, one line per lane (or one line for all lanes)."},
+        "title_x": {"$ref": "#/$defs/num", "description": "Optional x of the title and sub lines (default x + 11), to keep them clear of lines that pass through the box."},
+        "out": {"type": "boolean", "description": "true: the box carries the outside-this-repository tag."},
+        "mini": {"type": "string", "minLength": 1, "maxLength": 14, "description": "LAYOUT TEXT. Optional shorter title for the small multiples."}
+      }
+    },
+    "detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["columns", "rows", "sides"],
+      "description": "Top-level nodes with children only: the grid of the detail view. Every descendant appears exactly once, as a node item, a group or a kid of a group.",
+      "properties": {
+        "columns": {"type": "integer", "minimum": 1},
+        "rows": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 1, "items": {"oneOf": [
+          {"type": "object", "additionalProperties": false, "required": ["node", "col"], "properties": {
+            "node": {"$ref": "#/$defs/id"},
+            "col": {"type": "integer", "minimum": 0}}},
+          {"type": "object", "additionalProperties": false, "required": ["group", "col", "span", "kids"], "properties": {
+            "group": {"$ref": "#/$defs/id", "description": "A node with children, drawn as a frame around them; groups do not nest."},
+            "col": {"type": "integer", "minimum": 0},
+            "span": {"type": "integer", "minimum": 1},
+            "kids": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["node", "col"], "properties": {
+              "node": {"$ref": "#/$defs/id"},
+              "col": {"type": "integer", "minimum": 0, "description": "A column inside the group's col..col+span-1."}}}}}}
+        ]}}},
+        "sides": {"type": "object", "propertyNames": {"$ref": "#/$defs/id"}, "additionalProperties": {"enum": ["left", "right", "top", "bottom"]}, "description": "Neighbour top-level part -> the side of the detail where its tags sit."}
       }
     }
   }

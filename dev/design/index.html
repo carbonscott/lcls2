@@ -5,61 +5,100 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Design model viewer</title>
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap">
   <link rel="stylesheet" href="viewer.css">
   <script src="viewer.js" defer></script>
 </head>
 <body>
   <!--
     Static viewer for daq-model.json. Every piece of text about the DAQ comes
-    from daq-model.json; this file, viewer.js and viewer.css hold only the
-    user interface. To change the content, edit daq-model.json (see the
-    editing guide), never these files.
+    from daq-model.json (the map, its labels and the section texts included);
+    this file, viewer.js and viewer.css hold only the user interface. To change
+    the content or the layout, edit daq-model.json (see the editing guide),
+    never these files.
   -->
-  <header class="site-header">
-    <a class="header-link home-link" href="../">&larr; Documentation home</a>
-    <h1 id="model-title">Loading the design model&hellip;</h1>
-    <div class="header-actions">
-      <button id="help-toggle" type="button" aria-expanded="false" aria-controls="help">How to read this page</button>
-      <button id="read-toggle" type="button" aria-pressed="false">Read as one page</button>
-      <a class="header-link edit-link" href="editing-guide/" title="For people who change the model: how to edit daq-model.json and check the change">Edit this model</a>
-    </div>
-  </header>
+  <div class="wrap">
+    <header class="site-header">
+      <nav class="topbar" aria-label="Page">
+        <a class="header-link home-link" href="../">&larr; Documentation home</a>
+        <span class="header-actions">
+          <button id="help-toggle" class="btn" type="button" aria-expanded="false" aria-controls="help">How to read this page</button>
+          <button id="read-toggle" class="btn" type="button" aria-pressed="false">Read as one page</button>
+          <a class="header-link edit-link" href="editing-guide/" title="For people who change the model: how to edit daq-model.json and check the change">Edit this model</a>
+        </span>
+      </nav>
+      <h1 id="model-title">Loading the design model&hellip;</h1>
+      <div id="model-lede" class="lede" hidden></div>
+    </header>
 
-  <section id="help" class="help" hidden aria-labelledby="help-title">
-    <div class="help-inner">
+    <section id="help" class="help" hidden aria-labelledby="help-title">
       <h2 id="help-title" tabindex="-1">How to read this page</h2>
       <ul>
-        <li><strong>Boxes</strong> are parts of the system. Click a box to zoom in: the map then shows the parts inside it, and the panel describes the part. A box drawn with a second edge behind it has parts inside; hover over a box to see its full title and summary.</li>
-        <li><strong>Zoom out</strong> (or the Backspace or Escape key) goes up one level. The breadcrumb next to it shows where you are; click any of its names to jump back.</li>
-        <li><strong>Arrows</strong> show what flows between the parts; the line style and colour give the kind of flow (see the legend under the map). Each label sits on its own arrow. Click a label to list, in the panel, every flow that the arrow stands for, with links to both ends; "(+N more)" means the arrow bundles several flows.</li>
-        <li><strong>Arrows that end at the edge of the map</strong> lead to parts on another level. The rounded tag at the edge ("from &hellip;" or "to &hellip;") names that part; click it to go there.</li>
-        <li><strong>Dashed boxes</strong> marked "Outside this repo" are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
-        <li><strong>Tour</strong> follows one event step by step. Use Next and Previous, or the Left and Right arrow keys; Escape leaves the tour.</li>
-        <li><strong>Read as one page</strong> shows the same content as one long document, for reading from top to bottom.</li>
-        <li><strong>Edit this model</strong> is for the people who maintain this page: it explains how to change the underlying model file and check the change.</li>
-        <li>Links to other pages of the documentation (Documentation home, Edit this model and sources marked "This site") work on the built documentation site, not when this directory is served on its own.</li>
+        <li><strong>One fixed map</strong> keeps the same layout on every screen. Columns are stages from left to right; bands separate kinds of path. Each kind of relation has its own colour and line pattern, listed on the buttons above the map.</li>
+        <li><strong>Emphasize</strong> buttons dim every relation except one kind; All shows them all again.</li>
+        <li><strong>Click or tap a box</strong> (or focus it and press Enter) to open its detail under the map. The detail shows the parts inside, the arrows between them, and tags that name the neighbours outside. A tag sits on the side where that neighbour is on the map; click a tag to open the neighbour.</li>
+        <li><strong>The panel</strong> under the detail describes the selected part in full: what it does, design decisions, code references with links, sources and its flows. Click any box or dashed group in the detail to show it there.</li>
+        <li><strong>A guided tour</strong> follows one event step by step over the same map. Use Back and Next, the numbered buttons, or the Left and Right arrow keys.</li>
+        <li><strong>Small copies of the map</strong> each show one kind of relation; <strong>the sequence chart</strong> shows the tour in one figure (click a row to open that step); <strong>the matrix</strong> lists every relation between two parts, with no lines.</li>
+        <li><strong>Boxes marked "outside repo"</strong> are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
+        <li><strong>Read as one page</strong> shows the same content as one long document. <strong>Edit this model</strong> is for the people who maintain this page.</li>
+        <li>Wide figures scroll sideways inside their own frame on narrow screens. Links to other pages of the documentation work on the built documentation site, not when this directory is served on its own.</li>
       </ul>
-      <button id="help-close" type="button">Close</button>
-    </div>
-  </section>
-
-  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
-
-  <main class="layout">
-    <section class="map-pane" aria-label="Map">
-      <div class="toolbar">
-        <button id="zoom-out" type="button" title="Zoom out (Escape or Backspace)">&uarr; Zoom out</button>
-        <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
-        <button id="tour-start" type="button">Tour</button>
-      </div>
-      <div id="map" class="map" tabindex="-1"></div>
-      <div id="legend" class="legend" aria-label="Legend"></div>
+      <button id="help-close" class="btn" type="button">Close</button>
     </section>
-    <aside id="detail" class="detail-pane" aria-label="Details"></aside>
-  </main>
 
-  <article id="read-page" class="read-page" aria-label="The model as one page" hidden></article>
+    <div id="message" class="message" role="status" aria-live="polite" hidden></div>
 
-  <noscript><p class="message error">This viewer needs JavaScript.</p></noscript>
+    <main id="studies" class="studies">
+      <section id="map-section" aria-labelledby="map-section-title">
+        <div class="sec-head" data-section="map"></div>
+        <div class="bar" id="chips" role="group" aria-label="Emphasize one relation"><span class="lbl">Emphasize</span></div>
+        <figure>
+          <div class="sheet" id="map"></div>
+          <figcaption class="sec-caption" data-section="map"></figcaption>
+        </figure>
+        <div class="detail-wrap" id="detail-view"></div>
+        <aside id="detail" class="panel" aria-label="Details"></aside>
+      </section>
+
+      <section id="tour" aria-labelledby="tour-title">
+        <div class="sec-head" data-section="tour"></div>
+        <figure>
+          <div class="sheet" id="tour-map"></div>
+        </figure>
+        <div class="tourbar">
+          <button class="btn" id="tour-prev" type="button">&larr; Back</button>
+          <div class="pips" id="pips" role="group" aria-label="Tour steps"></div>
+          <button class="btn" id="tour-next" type="button">Next &rarr;</button>
+        </div>
+        <div class="stepcard" id="stepcard" aria-live="polite"></div>
+        <div class="detail-wrap" id="tour-detail"></div>
+      </section>
+
+      <section id="multiples" aria-labelledby="multiples-title">
+        <div class="sec-head" data-section="multiples"></div>
+        <div class="mult-grid" id="mult"></div>
+      </section>
+
+      <section id="sequence" aria-labelledby="sequence-title">
+        <div class="sec-head" data-section="sequence"></div>
+        <figure>
+          <div class="sheet" id="seq"></div>
+          <figcaption class="sec-caption" data-section="sequence"></figcaption>
+        </figure>
+      </section>
+
+      <section id="matrix" aria-labelledby="matrix-title">
+        <div class="sec-head" data-section="matrix"></div>
+        <div class="tbl" id="nsq"></div>
+      </section>
+    </main>
+
+    <article id="read-page" class="read-page" aria-label="The model as one page" hidden></article>
+
+    <noscript><p class="message error">This viewer needs JavaScript.</p></noscript>
+  </div>
 </body>
 </html>

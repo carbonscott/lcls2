@@ -263,7 +263,72 @@
             }
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "Timing",
+        "boxes": [
+          {
+            "id": "acc",
+            "node": "accelerator-timing",
+            "column": 1,
+            "span": 1,
+            "band": "live",
+            "slot": 0,
+            "per_lane": false,
+            "x": 40,
+            "y": 72,
+            "w": 175,
+            "h": 44,
+            "title": "Accelerator",
+            "sub": [
+              "pulses · event codes"
+            ],
+            "out": true,
+            "mini": "Accel."
+          },
+          {
+            "id": "xpm",
+            "node": "xpm",
+            "column": 1,
+            "span": 1,
+            "band": "live",
+            "slot": 1,
+            "per_lane": false,
+            "x": 40,
+            "y": 142,
+            "w": 175,
+            "h": 48,
+            "title": "XPM",
+            "sub": [
+              "picks L0 triggers"
+            ],
+            "out": true
+          }
+        ]
+      },
+      "detail": {
+        "columns": 3,
+        "rows": [
+          [
+            {
+              "node": "accelerator-timing",
+              "col": 0
+            },
+            {
+              "node": "xpm",
+              "col": 1
+            },
+            {
+              "node": "pulse-id",
+              "col": 2
+            }
+          ]
+        ],
+        "sides": {
+          "front-ends": "bottom",
+          "control": "bottom"
+        }
+      }
     },
     {
       "id": "accelerator-timing",
@@ -455,7 +520,50 @@
             "conf-standalone-detectors"
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "Front-ends",
+        "boxes": [
+          {
+            "id": "fe",
+            "node": "front-ends",
+            "column": 2,
+            "span": 1,
+            "band": "lanes",
+            "slot": 0,
+            "per_lane": true,
+            "x": 255,
+            "w": 160,
+            "h": 56,
+            "title": "Front-end",
+            "sub": [
+              "readout 1 · PGP → DMA",
+              "readout 2",
+              "readout N"
+            ],
+            "out": true
+          }
+        ]
+      },
+      "detail": {
+        "columns": 2,
+        "rows": [
+          [
+            {
+              "node": "detector-electronics",
+              "col": 0
+            },
+            {
+              "node": "pgp-dma",
+              "col": 1
+            }
+          ]
+        ],
+        "sides": {
+          "timing": "top",
+          "drp": "right"
+        }
+      }
     },
     {
       "id": "detector-electronics",
@@ -541,7 +649,79 @@
             }
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "DRP",
+        "boxes": [
+          {
+            "id": "drp",
+            "node": "drp",
+            "column": 3,
+            "span": 1,
+            "band": "lanes",
+            "slot": 0,
+            "per_lane": true,
+            "x": 445,
+            "w": 255,
+            "h": 56,
+            "title": "DRP",
+            "sub": [
+              "reader → workers → collector",
+              "one per detector readout",
+              "readout N"
+            ],
+            "title_x": 525,
+            "out": false
+          }
+        ]
+      },
+      "detail": {
+        "columns": 4,
+        "rows": [
+          [
+            {
+              "group": "drp-pipeline",
+              "col": 0,
+              "span": 4,
+              "kids": [
+                {
+                  "node": "drp-pgp-reader",
+                  "col": 0
+                },
+                {
+                  "node": "drp-workers",
+                  "col": 1
+                },
+                {
+                  "node": "drp-collector",
+                  "col": 2
+                },
+                {
+                  "node": "drp-result-receiver",
+                  "col": 3
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "node": "drp-process",
+              "col": 0
+            },
+            {
+              "node": "detector-classes",
+              "col": 1
+            }
+          ]
+        ],
+        "sides": {
+          "front-ends": "left",
+          "teb": "top",
+          "monitoring": "top",
+          "files": "right",
+          "control": "bottom"
+        }
+      }
     },
     {
       "id": "drp-process",
@@ -850,7 +1030,62 @@
             }
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "TEB",
+        "boxes": [
+          {
+            "id": "teb",
+            "node": "teb",
+            "column": 3,
+            "span": 1,
+            "band": "live",
+            "slot": 0,
+            "per_lane": false,
+            "x": 445,
+            "y": 72,
+            "w": 100,
+            "h": 60,
+            "title": "TEB",
+            "sub": [
+              "trigger",
+              "decision"
+            ],
+            "out": false
+          }
+        ]
+      },
+      "detail": {
+        "columns": 3,
+        "rows": [
+          [
+            {
+              "group": "teb-process",
+              "col": 0,
+              "span": 2,
+              "kids": [
+                {
+                  "node": "teb-event-building",
+                  "col": 0
+                },
+                {
+                  "node": "teb-trigger-plugin",
+                  "col": 1
+                }
+              ]
+            },
+            {
+              "node": "teb-result",
+              "col": 2
+            }
+          ]
+        ],
+        "sides": {
+          "drp": "bottom",
+          "monitoring": "top",
+          "control": "left"
+        }
+      }
     },
     {
       "id": "teb-process",
@@ -1082,7 +1317,73 @@
           "symbol": "run_number",
           "note": "A monitor-only DRP sets run_number to 0 and opens no files; files are opened only when recording."
         }
-      ]
+      ],
+      "place": {
+        "short": "Files",
+        "boxes": [
+          {
+            "id": "files",
+            "node": "files",
+            "column": 4,
+            "span": 1,
+            "band": "lanes",
+            "slot": 0,
+            "per_lane": true,
+            "x": 735,
+            "w": 155,
+            "h": 56,
+            "title": ".xtc2 + .smd.xtc2",
+            "sub": [
+              "the DRP's own files",
+              "stream 2",
+              "stream N"
+            ],
+            "out": false,
+            "mini": "Files"
+          }
+        ]
+      },
+      "detail": {
+        "columns": 3,
+        "rows": [
+          [
+            {
+              "group": "file-writer",
+              "col": 0,
+              "span": 3,
+              "kids": [
+                {
+                  "node": "chunking",
+                  "col": 0
+                },
+                {
+                  "node": "bigdata-file",
+                  "col": 1
+                },
+                {
+                  "node": "smalldata-file",
+                  "col": 2
+                }
+              ]
+            }
+          ],
+          [
+            {
+              "node": "xtc2-format",
+              "col": 1
+            },
+            {
+              "node": "ffb",
+              "col": 2
+            }
+          ]
+        ],
+        "sides": {
+          "drp": "left",
+          "control": "bottom",
+          "after-run": "right"
+        }
+      }
     },
     {
       "id": "file-writer",
@@ -1273,7 +1574,93 @@
             }
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "Monitoring",
+        "boxes": [
+          {
+            "id": "meb",
+            "node": "meb",
+            "column": 3,
+            "span": 1,
+            "band": "live",
+            "slot": 1,
+            "per_lane": false,
+            "x": 592,
+            "y": 72,
+            "w": 103,
+            "h": 60,
+            "title": "MEB",
+            "sub": [
+              "monitoring",
+              "event builder"
+            ],
+            "out": false
+          },
+          {
+            "id": "shm",
+            "node": "shared-memory",
+            "column": 4,
+            "span": 1,
+            "band": "live",
+            "slot": 0,
+            "per_lane": false,
+            "x": 740,
+            "y": 72,
+            "w": 150,
+            "h": 60,
+            "title": "Shared memory",
+            "sub": [
+              "clients on the same",
+              "machine read it"
+            ],
+            "out": false,
+            "mini": "Shmem"
+          },
+          {
+            "id": "ami",
+            "node": "ami",
+            "column": 5,
+            "span": 1,
+            "band": "live",
+            "slot": 0,
+            "per_lane": false,
+            "x": 935,
+            "y": 72,
+            "w": 235,
+            "h": 60,
+            "title": "AMI",
+            "sub": [
+              "online analysis"
+            ],
+            "out": true
+          }
+        ]
+      },
+      "detail": {
+        "columns": 3,
+        "rows": [
+          [
+            {
+              "node": "meb",
+              "col": 0
+            },
+            {
+              "node": "shared-memory",
+              "col": 1
+            },
+            {
+              "node": "ami",
+              "col": 2
+            }
+          ]
+        ],
+        "sides": {
+          "drp": "bottom",
+          "teb": "left",
+          "control": "top"
+        }
+      }
     },
     {
       "id": "meb",
@@ -1415,7 +1802,61 @@
             }
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "Run control",
+        "boxes": [
+          {
+            "id": "ctl",
+            "node": "control",
+            "column": 1,
+            "span": 2,
+            "band": "control",
+            "slot": 0,
+            "per_lane": false,
+            "x": 40,
+            "y": 560,
+            "w": 375,
+            "h": 80,
+            "title": "Run control",
+            "sub": [
+              "state machine · config DB · procmgr",
+              "drives every DRP, TEB and MEB"
+            ],
+            "out": false
+          }
+        ]
+      },
+      "detail": {
+        "columns": 4,
+        "rows": [
+          [
+            {
+              "node": "launching",
+              "col": 0
+            },
+            {
+              "node": "config-db",
+              "col": 1
+            },
+            {
+              "node": "control-process",
+              "col": 2
+            },
+            {
+              "node": "collection-protocol",
+              "col": 3
+            }
+          ]
+        ],
+        "sides": {
+          "timing": "top",
+          "drp": "top",
+          "teb": "top",
+          "monitoring": "top",
+          "files": "top"
+        }
+      }
     },
     {
       "id": "control-process",
@@ -1552,7 +1993,53 @@
             "site-xtc2"
           ]
         }
-      ]
+      ],
+      "place": {
+        "short": "After the run",
+        "boxes": [
+          {
+            "id": "psana",
+            "node": "after-run",
+            "column": 5,
+            "span": 1,
+            "band": "lanes",
+            "slot": 0,
+            "per_lane": false,
+            "x": 975,
+            "y": 315,
+            "w": 200,
+            "h": 82,
+            "title": "psana",
+            "sub": [
+              "joins streams by timestamp,",
+              "then reads bytes by offset"
+            ],
+            "out": false
+          }
+        ]
+      },
+      "detail": {
+        "columns": 3,
+        "rows": [
+          [
+            {
+              "node": "data-movement",
+              "col": 0
+            },
+            {
+              "node": "psana-reading",
+              "col": 1
+            },
+            {
+              "node": "stream-joining",
+              "col": 2
+            }
+          ]
+        ],
+        "sides": {
+          "files": "left"
+        }
+      }
     },
     {
       "id": "data-movement",
@@ -2908,5 +3395,1241 @@
         ]
       }
     ]
+  },
+  "map": {
+    "viewbox": {
+      "w": 1200,
+      "h": 690
+    },
+    "default_detail": "drp",
+    "kinds": [
+      {
+        "id": "data",
+        "name": "Data"
+      },
+      {
+        "id": "trigger",
+        "name": "Trigger"
+      },
+      {
+        "id": "timing",
+        "name": "Timing"
+      },
+      {
+        "id": "monitoring",
+        "name": "Monitoring"
+      },
+      {
+        "id": "control",
+        "name": "Control"
+      }
+    ],
+    "columns": [
+      {
+        "n": 1,
+        "name": "Trigger",
+        "x": 20,
+        "w": 205
+      },
+      {
+        "n": 2,
+        "name": "Read out",
+        "x": 235,
+        "w": 190
+      },
+      {
+        "n": 3,
+        "name": "Reduce & decide",
+        "x": 435,
+        "w": 270
+      },
+      {
+        "n": 4,
+        "name": "Record · serve",
+        "x": 715,
+        "w": 190
+      },
+      {
+        "n": 5,
+        "name": "Analyze",
+        "x": 915,
+        "w": 265
+      }
+    ],
+    "bands": [
+      {
+        "id": "live",
+        "y": 36,
+        "h": 174,
+        "labels": [
+          {
+            "text": "Timing",
+            "x": 30,
+            "y": 52
+          },
+          {
+            "text": "Live monitoring · event builders",
+            "x": 445,
+            "y": 52
+          }
+        ]
+      },
+      {
+        "id": "lanes",
+        "y": 210,
+        "h": 295,
+        "labels": [
+          {
+            "text": "Recorded",
+            "x": 70,
+            "y": 228
+          },
+          {
+            "text": "One lane per detector readout",
+            "x": 70,
+            "y": 242
+          }
+        ]
+      },
+      {
+        "id": "control",
+        "y": 505,
+        "h": 175,
+        "labels": [
+          {
+            "text": "Run control",
+            "x": 70,
+            "y": 528
+          }
+        ]
+      }
+    ],
+    "lanes": {
+      "count": 3,
+      "y": [
+        275,
+        355,
+        435
+      ]
+    },
+    "lines": [
+      {
+        "id": "acc-xpm",
+        "kind": "timing",
+        "edges": [
+          "e-accelerator-to-xpm"
+        ],
+        "d": "M120,116 V142",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "acc",
+          "xpm"
+        ],
+        "out": false
+      },
+      {
+        "id": "tim-rail",
+        "kind": "timing",
+        "edges": [
+          "e-timing-to-front-ends",
+          "e-xpm-to-electronics"
+        ],
+        "d": "M215,166 H335 V407",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [
+          "fe@0",
+          "fe@1"
+        ],
+        "ends": [
+          "xpm",
+          "fe@2"
+        ],
+        "out": false
+      },
+      {
+        "id": "fe-drp",
+        "kind": "data",
+        "edges": [
+          "e-front-ends-to-drp",
+          "e-dma-to-reader"
+        ],
+        "d": "M415,{y} H445",
+        "arrow": "end",
+        "per_lane": true,
+        "through": [],
+        "ends": [
+          "fe",
+          "drp"
+        ],
+        "out": false
+      },
+      {
+        "id": "drp-files",
+        "kind": "data",
+        "edges": [
+          "e-drp-to-files",
+          "e-receiver-to-bigdata",
+          "e-receiver-to-smalldata"
+        ],
+        "d": "M700,{y} H735",
+        "arrow": "end",
+        "per_lane": true,
+        "through": [],
+        "ends": [
+          "drp",
+          "files"
+        ],
+        "out": false
+      },
+      {
+        "id": "fp-0",
+        "kind": "data",
+        "edges": [
+          "e-files-to-after-run",
+          "e-ffb-to-movement",
+          "e-ffb-to-reading"
+        ],
+        "d": "M890,275 C932,275 940,343 975,343",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "files@0",
+          "psana"
+        ],
+        "out": false
+      },
+      {
+        "id": "fp-1",
+        "kind": "data",
+        "edges": [
+          "e-files-to-after-run",
+          "e-ffb-to-movement",
+          "e-ffb-to-reading"
+        ],
+        "d": "M890,355 C932,355 940,355 975,355",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "files@1",
+          "psana"
+        ],
+        "out": false
+      },
+      {
+        "id": "fp-2",
+        "kind": "data",
+        "edges": [
+          "e-files-to-after-run",
+          "e-ffb-to-movement",
+          "e-ffb-to-reading"
+        ],
+        "d": "M890,435 C932,435 940,367 975,367",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "files@2",
+          "psana"
+        ],
+        "out": false
+      },
+      {
+        "id": "trig-up",
+        "kind": "trigger",
+        "edges": [
+          "e-drp-to-teb",
+          "e-collector-to-teb-eb"
+        ],
+        "d": "M510,407 V132",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [
+          "drp@0",
+          "drp@1"
+        ],
+        "ends": [
+          "drp@2",
+          "teb"
+        ],
+        "out": false
+      },
+      {
+        "id": "trig-down",
+        "kind": "trigger",
+        "edges": [
+          "e-teb-to-drp",
+          "e-result-to-receiver"
+        ],
+        "d": "M498,132 V407",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [
+          "drp@0",
+          "drp@1"
+        ],
+        "ends": [
+          "teb",
+          "drp@2"
+        ],
+        "out": false
+      },
+      {
+        "id": "mon-up",
+        "kind": "monitoring",
+        "edges": [
+          "e-drp-to-monitoring",
+          "e-receiver-to-meb"
+        ],
+        "d": "M685,407 V132",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [
+          "drp@0",
+          "drp@1"
+        ],
+        "ends": [
+          "drp@2",
+          "meb"
+        ],
+        "out": false
+      },
+      {
+        "id": "meb-teb",
+        "kind": "monitoring",
+        "edges": [
+          "e-monitoring-to-teb",
+          "e-meb-to-teb-process"
+        ],
+        "d": "M592,100 H545",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "meb",
+          "teb"
+        ],
+        "out": false
+      },
+      {
+        "id": "meb-shm",
+        "kind": "monitoring",
+        "edges": [
+          "e-meb-to-shmem"
+        ],
+        "d": "M695,100 H740",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "meb",
+          "shm"
+        ],
+        "out": false
+      },
+      {
+        "id": "shm-ami",
+        "kind": "monitoring",
+        "edges": [
+          "e-shmem-to-ami"
+        ],
+        "d": "M890,100 H935",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "shm",
+          "ami"
+        ],
+        "out": false
+      },
+      {
+        "id": "ctl-main",
+        "kind": "control",
+        "edges": [
+          "e-control-to-drp",
+          "e-control-to-teb",
+          "e-drp-to-control",
+          "e-control-to-meb",
+          "e-teb-to-control",
+          "e-meb-to-control",
+          "e-receiver-to-collection",
+          "e-configdb-to-detectors",
+          "e-launching-to-drp-process"
+        ],
+        "d": "M415,600 H465 V62 H645 V72",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [
+          "teb",
+          "drp@0",
+          "drp@1",
+          "drp@2"
+        ],
+        "ends": [
+          "ctl",
+          "meb"
+        ],
+        "out": false
+      },
+      {
+        "id": "ctl-xpm",
+        "kind": "control",
+        "edges": [
+          "e-control-to-timing",
+          "e-control-process-to-xpm"
+        ],
+        "d": "M55,560 V190",
+        "arrow": "end",
+        "per_lane": false,
+        "through": [],
+        "ends": [
+          "ctl",
+          "xpm"
+        ],
+        "out": false
+      }
+    ],
+    "labels": [
+      {
+        "line": "acc-xpm",
+        "text": [
+          "timing frames, ~929 kHz"
+        ],
+        "x": 128,
+        "y": 133,
+        "anchor": "start"
+      },
+      {
+        "line": "tim-rail",
+        "text": [
+          "L0 triggers per",
+          "readout group"
+        ],
+        "x": 342,
+        "y": 187,
+        "anchor": "start"
+      },
+      {
+        "line": "fe-drp",
+        "text": [
+          "DMA buffers"
+        ],
+        "x": 430,
+        "y": 239,
+        "anchor": "middle"
+      },
+      {
+        "line": "trig-up",
+        "text": [
+          "trigger input ↑"
+        ],
+        "x": 518,
+        "y": 172,
+        "anchor": "start"
+      },
+      {
+        "line": "trig-down",
+        "text": [
+          "result: record? monitor? ↓"
+        ],
+        "x": 518,
+        "y": 187,
+        "anchor": "start"
+      },
+      {
+        "line": "mon-up",
+        "text": [
+          "monitored parts ↑",
+          "(RDMA, if asked)"
+        ],
+        "x": 692,
+        "y": 186,
+        "anchor": "start"
+      },
+      {
+        "line": "drp-files",
+        "text": [
+          "recorded events"
+        ],
+        "x": 704,
+        "y": 236,
+        "anchor": "start"
+      },
+      {
+        "line": "meb-teb",
+        "text": [
+          "free",
+          "buffers"
+        ],
+        "x": 568.5,
+        "y": 117,
+        "anchor": "middle"
+      },
+      {
+        "line": "meb-shm",
+        "text": [
+          "built",
+          "events"
+        ],
+        "x": 717.5,
+        "y": 117,
+        "anchor": "middle"
+      },
+      {
+        "line": "shm-ami",
+        "text": [
+          "psana",
+          "shmem"
+        ],
+        "x": 912,
+        "y": 117,
+        "anchor": "middle"
+      },
+      {
+        "line": "ctl-xpm",
+        "text": [
+          "insert transitions,",
+          "L0 enable"
+        ],
+        "x": 63,
+        "y": 430,
+        "anchor": "start"
+      },
+      {
+        "line": "ctl-main",
+        "text": [
+          "transitions to every process,",
+          "replies back (ZeroMQ)"
+        ],
+        "x": 473,
+        "y": 524,
+        "anchor": "start"
+      },
+      {
+        "line": "fp-0",
+        "text": [
+          "data movers copy files to storage",
+          "(facility service, outside repo)"
+        ],
+        "x": 900,
+        "y": 226,
+        "anchor": "start",
+        "out": true
+      }
+    ],
+    "notes": [
+      {
+        "text": [
+          "The first place where the recorded",
+          "parts of an event come together."
+        ],
+        "x": 975,
+        "y": 422
+      }
+    ],
+    "omitted": [
+      {
+        "edge": "e-chunking-to-control-process",
+        "reason": "Every route from the Files lanes down to the Run control box would cross the state ladder or the DRP lanes, so the map leaves this line out; the Files and Run control details show the chunk request as tags, and the matrix lists it."
+      }
+    ],
+    "ladder": {
+      "node": "control-process",
+      "states": [
+        "reset",
+        "unallocated",
+        "allocated",
+        "connected",
+        "configured",
+        "starting",
+        "paused",
+        "running"
+      ],
+      "transitions": [
+        "rollcall",
+        "alloc",
+        "connect",
+        "configure",
+        "beginrun",
+        "beginstep",
+        "enable"
+      ],
+      "x": 545,
+      "dx": 88,
+      "y": 612,
+      "caption": "States of control.py · each transition steps the platform up one state",
+      "note": "down transitions (disable … dealloc) step back; reset returns from any state"
+    },
+    "tour": [
+      {
+        "step": "step-before-the-event",
+        "tokens": [
+          {
+            "t": "s",
+            "lane": null,
+            "x": 1161,
+            "y": 612
+          }
+        ],
+        "highlight": [
+          "ctl-main",
+          "ctl-xpm",
+          "lad-3",
+          "lad-4",
+          "lad-5",
+          "lad-6",
+          "box:ctl"
+        ]
+      },
+      {
+        "step": "step-pulse",
+        "tokens": [
+          {
+            "t": "v",
+            "lane": null,
+            "x": 200,
+            "y": 104
+          }
+        ],
+        "highlight": [
+          "acc-xpm",
+          "box:acc"
+        ]
+      },
+      {
+        "step": "step-trigger",
+        "tokens": [
+          {
+            "t": "v",
+            "lane": null,
+            "x": 200,
+            "y": 178
+          }
+        ],
+        "highlight": [
+          "tim-rail",
+          "box:xpm"
+        ]
+      },
+      {
+        "step": "step-readout",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 430,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 430,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 430,
+            "y": 435
+          }
+        ],
+        "highlight": [
+          "fe-drp",
+          "box:fe"
+        ]
+      },
+      {
+        "step": "step-dma",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 483,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 483,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 483,
+            "y": 435
+          }
+        ],
+        "highlight": [
+          "box:drp"
+        ]
+      },
+      {
+        "step": "step-datagram",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 483,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 483,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 483,
+            "y": 435
+          }
+        ],
+        "highlight": [
+          "box:drp"
+        ]
+      },
+      {
+        "step": "step-trigger-input",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 483,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 483,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 483,
+            "y": 435
+          },
+          {
+            "t": "r",
+            "lane": 0,
+            "x": 510,
+            "y": 150
+          },
+          {
+            "t": "r",
+            "lane": 1,
+            "x": 510,
+            "y": 166
+          },
+          {
+            "t": "r",
+            "lane": 2,
+            "x": 510,
+            "y": 182
+          }
+        ],
+        "highlight": [
+          "trig-up"
+        ]
+      },
+      {
+        "step": "step-teb-decides",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 483,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 483,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 483,
+            "y": 435
+          },
+          {
+            "t": "r",
+            "lane": null,
+            "x": 530,
+            "y": 92
+          }
+        ],
+        "highlight": [
+          "box:teb"
+        ]
+      },
+      {
+        "step": "step-result",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 483,
+            "y": 275
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 483,
+            "y": 355
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 483,
+            "y": 435
+          },
+          {
+            "t": "r",
+            "lane": 0,
+            "x": 498,
+            "y": 247
+          },
+          {
+            "t": "r",
+            "lane": 1,
+            "x": 498,
+            "y": 327
+          },
+          {
+            "t": "r",
+            "lane": 2,
+            "x": 498,
+            "y": 407
+          }
+        ],
+        "highlight": [
+          "trig-down"
+        ]
+      },
+      {
+        "step": "step-write",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 872,
+            "y": 263
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 872,
+            "y": 343
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 872,
+            "y": 423
+          }
+        ],
+        "highlight": [
+          "drp-files",
+          "box:files"
+        ]
+      },
+      {
+        "step": "step-smalldata",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 872,
+            "y": 263
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 872,
+            "y": 343
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 872,
+            "y": 423
+          },
+          {
+            "t": "k",
+            "lane": 0,
+            "x": 872,
+            "y": 288
+          },
+          {
+            "t": "k",
+            "lane": 1,
+            "x": 872,
+            "y": 368
+          },
+          {
+            "t": "k",
+            "lane": 2,
+            "x": 872,
+            "y": 448
+          }
+        ],
+        "highlight": [
+          "box:files"
+        ]
+      },
+      {
+        "step": "step-monitor",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 872,
+            "y": 263
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 872,
+            "y": 343
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 872,
+            "y": 423
+          },
+          {
+            "t": "k",
+            "lane": 0,
+            "x": 872,
+            "y": 288
+          },
+          {
+            "t": "k",
+            "lane": 1,
+            "x": 872,
+            "y": 368
+          },
+          {
+            "t": "k",
+            "lane": 2,
+            "x": 872,
+            "y": 448
+          },
+          {
+            "t": "g",
+            "lane": null,
+            "x": 682,
+            "y": 90
+          }
+        ],
+        "highlight": [
+          "mon-up",
+          "meb-shm",
+          "shm-ami",
+          "box:meb"
+        ]
+      },
+      {
+        "step": "step-move",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": 0,
+            "x": 929.4,
+            "y": 300.9
+          },
+          {
+            "t": "b",
+            "lane": 1,
+            "x": 929.4,
+            "y": 355.0
+          },
+          {
+            "t": "b",
+            "lane": 2,
+            "x": 929.4,
+            "y": 409.1
+          }
+        ],
+        "highlight": [
+          "fp-0",
+          "fp-1",
+          "fp-2"
+        ]
+      },
+      {
+        "step": "step-psana",
+        "tokens": [
+          {
+            "t": "b",
+            "lane": null,
+            "x": 1155,
+            "y": 333
+          }
+        ],
+        "highlight": [
+          "box:psana"
+        ]
+      }
+    ],
+    "multiples": [
+      {
+        "kind": "data",
+        "caption": "Each readout's data stay in their own lane, from the front-end to its own files. psana joins the streams by timestamp."
+      },
+      {
+        "kind": "trigger",
+        "caption": "The DRPs that provide trigger input send the TEB a small input per event; the TEB sends back the result: record? monitor?"
+      },
+      {
+        "kind": "timing",
+        "caption": "The XPM picks, per readout group, the pulses that trigger a readout. Its firmware is outside this repository."
+      },
+      {
+        "kind": "monitoring",
+        "caption": "The MEB offers free buffers through the TEB. The DRPs write the parts of a monitored event into one, and AMI reads the built events from shared memory."
+      },
+      {
+        "kind": "control",
+        "caption": "One control process sends transitions to every DRP, TEB and MEB, collects their replies, and inserts timing transitions through the XPM."
+      },
+      {
+        "kind": "all",
+        "title": "All relations",
+        "caption": "Every relation on one map; each keeps the route and line style it has in its own copy."
+      }
+    ],
+    "sequence": {
+      "lifelines": [
+        {
+          "id": "control",
+          "name": "Run control",
+          "part": "control",
+          "out": false,
+          "multi": false
+        },
+        {
+          "id": "xpm",
+          "name": "Timing · XPM",
+          "part": "timing",
+          "out": true,
+          "multi": false
+        },
+        {
+          "id": "fe",
+          "name": "Front-end",
+          "part": "front-ends",
+          "out": true,
+          "multi": false
+        },
+        {
+          "id": "drp",
+          "name": "DRP ×N",
+          "part": "drp",
+          "out": false,
+          "multi": true
+        },
+        {
+          "id": "teb",
+          "name": "TEB",
+          "part": "teb",
+          "out": false,
+          "multi": false
+        },
+        {
+          "id": "meb",
+          "name": "MEB",
+          "part": "monitoring",
+          "out": false,
+          "multi": false
+        },
+        {
+          "id": "files",
+          "name": "Files",
+          "part": "files",
+          "out": false,
+          "multi": false
+        },
+        {
+          "id": "psana",
+          "name": "psana",
+          "part": "after-run",
+          "out": false,
+          "multi": false
+        }
+      ],
+      "rows": [
+        {
+          "step": "step-before-the-event",
+          "from": "control",
+          "to": "meb",
+          "kind": "control",
+          "label": "transitions: Configure, BeginRun, BeginStep, Enable",
+          "dots": [
+            "xpm",
+            "drp",
+            "teb",
+            "meb"
+          ],
+          "out": false
+        },
+        {
+          "step": "step-pulse",
+          "from": "start",
+          "to": "xpm",
+          "kind": "timing",
+          "label": "accelerator pulse",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-trigger",
+          "from": "xpm",
+          "to": "fe",
+          "kind": "timing",
+          "label": "L0 trigger",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-readout",
+          "from": "fe",
+          "to": "drp",
+          "kind": "data",
+          "label": "data over PGP → DMA",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-dma",
+          "from": "drp",
+          "to": "drp",
+          "kind": "data",
+          "label": "reader checks the timing header",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-datagram",
+          "from": "drp",
+          "to": "drp",
+          "kind": "data",
+          "label": "worker builds the XTC2 datagram",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-trigger-input",
+          "from": "drp",
+          "to": "teb",
+          "kind": "trigger",
+          "label": "trigger input",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-teb-decides",
+          "from": "teb",
+          "to": "teb",
+          "kind": "trigger",
+          "label": "build by pulse ID, plugin decides",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-result",
+          "from": "teb",
+          "to": "drp",
+          "kind": "trigger",
+          "label": "result: record? monitor?",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-write",
+          "from": "drp",
+          "to": "files",
+          "kind": "data",
+          "label": "datagram → .xtc2",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-smalldata",
+          "from": "drp",
+          "to": "files",
+          "kind": "data",
+          "label": "offset + size → .smd.xtc2",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-monitor",
+          "from": "drp",
+          "to": "meb",
+          "kind": "monitoring",
+          "label": "part via RDMA, if monitored",
+          "dots": [],
+          "out": false
+        },
+        {
+          "step": "step-move",
+          "from": "files",
+          "to": "psana",
+          "kind": "data",
+          "label": "data movers",
+          "dots": [],
+          "out": true
+        },
+        {
+          "step": "step-psana",
+          "from": "psana",
+          "to": "psana",
+          "kind": "data",
+          "label": "join by timestamp, read by offset",
+          "dots": [],
+          "out": false
+        }
+      ]
+    },
+    "sections": {
+      "map": {
+        "eyebrow": "The map",
+        "title": "The DAQ on one fixed map",
+        "intro": "Columns are the stages of an event's trip, from the trigger on the left to analysis on the right. Bands are kinds of path: timing, the event builders and live monitoring along the top, one recorded lane per detector readout in the middle, and run control along the bottom. Data move sideways along the lanes. Trigger, timing, monitoring and control are shared lines: each one passes through the parts it reaches, with a port where it crosses a box. Run control is drawn as the ladder of states of the control process, with one shared line to the processes it drives.",
+        "caption": "Click or tap a part to open its detail below the map. The tags around the detail name the parts it connects to; click a tag to open that part."
+      },
+      "tour": {
+        "eyebrow": "The tour",
+        "title": "One event across the map",
+        "intro": "The map stays in place while one event moves across it. The diamond marks the state of run control; the violet dot is the accelerator pulse and its trigger; blue dots are the detector data, one per lane, and the smaller blue dots their small-data records; red dots are the trigger inputs and the result; the green dot is the copy sent to live monitoring. From the front-ends on, each readout's data stay in their own lane, and the recorded parts of the event come together only in psana. The detail under the map follows the step."
+      },
+      "multiples": {
+        "eyebrow": "Relations",
+        "title": "One relation per copy of the map",
+        "intro": "The same map is drawn once for each kind of relation, with the other kinds dimmed, and once with all of them. Every copy has the same layout, so the copies can be compared by position alone."
+      },
+      "sequence": {
+        "eyebrow": "Sequence",
+        "title": "One event over time",
+        "intro": "The tour as one sequence chart: one column per part, time running down, one row per tour step. The DRP column is drawn as several lines, one per readout, because each DRP does the same steps for its own part of the event. The trigger round trip shows as a pair of opposite arrows.",
+        "caption": "Click or tap a row to open that step of the tour."
+      },
+      "matrix": {
+        "eyebrow": "Interfaces",
+        "title": "Every interface between the parts",
+        "intro": "Each row is what one part sends and each column what it receives. A cell lists the labels of the relations from the row's part to the column's part, so the table is an index of every boundary in the model."
+      }
+    }
   }
 }

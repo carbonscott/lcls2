@@ -955,6 +955,89 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#layout-the-map-places-and-detail-grids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout: the map, places and detail grids
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Layout: the map, places and detail grids">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-map-block-map-at-the-top-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The map block (map, at the top level)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#places-place-on-every-top-level-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Places (place, on every top-level node)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detail-grids-detail-on-every-top-level-node-with-children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detail grids (detail, on every top-level node with children)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-lines-and-mapomitted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map lines and map.omitted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layout-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-validator-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the validator checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#worked-example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1921,6 +2004,89 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#layout-the-map-places-and-detail-grids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout: the map, places and detail grids
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Layout: the map, places and detail grids">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-map-block-map-at-the-top-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The map block (map, at the top level)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#places-place-on-every-top-level-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Places (place, on every top-level node)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detail-grids-detail-on-every-top-level-node-with-children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detail grids (detail, on every top-level node with children)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-lines-and-mapomitted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map lines and map.omitted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layout-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-validator-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the validator checks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#worked-example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1982,8 +2148,14 @@ viewer (<code>index.html</code>, <code>viewer.js</code>, <code>viewer.css</code>
 contains no text about the DAQ. <strong>To change what the document says, edit
 only <code>daq-model.json</code>.</strong> Never edit the viewer files to change content.</p>
 <p>This guide is for people and for AI agents. With it and a checkout you can
-add a node with a code reference, add an edge, rewrite a node's prose,
-check your change and preview it.</p>
+add a node with a code reference, give it its place in the layout, add an
+edge, rewrite a node's prose, check your change and preview it.</p>
+<p>The page is laid out by hand, not by an algorithm: one fixed map of the
+whole DAQ (the top-level parts), a detail view under the map for the part
+you open, the tour drawn on that same map, small copies of the map with one
+relation each ("small multiples"), a sequence chart of the tour, and an N²
+matrix of every interface between the parts. Where everything sits is
+stored in the model too (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>Run every command in this guide from the repository root (the directory
 that contains <code>docs/</code>); the paths assume it.</p>
@@ -2017,7 +2189,7 @@ python<span class="w"> </span>-m<span class="w"> </span>playwright<span class="w
 <tbody>
 <tr>
 <td><code>docs/design/daq-model.json</code></td>
-<td>The model: all content.</td>
+<td>The model: all content and the layout.</td>
 <td>Yes, this is the only file you edit.</td>
 </tr>
 <tr>
@@ -2049,7 +2221,8 @@ This one-line check prints <code>canonical</code> when the file is in that form:
 description starts with "PROSE" are text for readers and may use the prose
 markup below.</p>
 <ul>
-<li><code>title</code>, <code>question</code>, <code>summary</code>: shown on the overview (the top level).</li>
+<li><code>title</code>, <code>question</code>, <code>summary</code>: shown at the top of the page
+  (TODO-VIEWER: confirm where the new page shows <code>question</code> and <code>summary</code>).</li>
 <li><code>code_base</code>: <code>repo_url</code> and the full 40-character <code>commit</code> that every code
   reference points into. Code links are built as
   <code>&lt;repo_url&gt;/blob/&lt;commit&gt;/&lt;path&gt;#L&lt;start&gt;-L&lt;end&gt;</code>.</li>
@@ -2058,8 +2231,9 @@ markup below.</p>
   steps refer to sources by id.</li>
 <li><code>nodes</code>: the components, as a flat list. Each node has:<ul>
 <li><code>id</code>, <code>parent</code> (the parent's id, or <code>null</code> for a top-level node),
-  <code>title</code> (at most 40 characters, shown on the box), <code>summary</code> (one
-  sentence, at most 160 characters, shown on the box), <code>prose</code> (the
+  <code>title</code> (at most 40 characters, shown on the node's box in its part's
+  detail view and in the panel), <code>summary</code> (one sentence, at most 160
+  characters; TODO-VIEWER: where the new page shows it), <code>prose</code> (the
   concept, shown first);</li>
 <li>optional <code>dev_notes</code> (shown under "For developers"), <code>outside_repo</code>,
   <code>decisions</code>, <code>code_refs</code>, <code>sources</code>.</li>
@@ -2072,6 +2246,9 @@ markup below.</p>
 <li><code>tour</code>: <code>title</code>, <code>intro</code> and <code>steps</code> that follow one event. Each step has
   an <code>id</code>, a <code>title</code>, the <code>node</code> it is about, <code>prose</code>, and optional <code>edges</code>
   (edge ids to highlight), <code>code_refs</code> and <code>sources</code>.</li>
+<li>Layout (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>): the
+  top-level <code>map</code> block, a <code>place</code> on every top-level node and a <code>detail</code>
+  grid on every top-level node that has children.</li>
 </ul>
 <h3 id="ids">Ids<a class="headerlink" href="#ids" title="Permanent link">&para;</a></h3>
 <p>Ids are lowercase words joined by hyphens (<code>drp-file-writer</code>), at most 60
@@ -2079,50 +2256,43 @@ characters. Nodes, edges, tour steps, sources and decisions (decisions may
 have an id) share <strong>one</strong> namespace: an id must be unique in the whole file.
 Ids appear in links (<code>#/node/&lt;id&gt;</code>), so do not rename an existing id.</p>
 <h3 id="parents-and-levels">Parents and levels<a class="headerlink" href="#parents-and-levels" title="Permanent link">&para;</a></h3>
-<p>A node with <code>"parent": null</code> is at level 1 (a box on the overview). Its
-children are level 2, their children level 3, and so on. The viewer shows
-the children of the node you click; a node without children (a leaf) is
-shown among its siblings. The model must reach level 3 somewhere. Parents
-must exist and must not form a cycle.</p>
+<p>A node with <code>"parent": null</code> is at level 1: a <em>part</em>, drawn on the fixed
+map at the place its <code>place</code> names. Its children are level 2, their
+children level 3, and so on. The descendants of a part are drawn in the
+part's detail view, at the cells its <code>detail</code> grid names; a level-2 node
+with children is drawn there as a group (a frame around its children). The
+model must reach level 3 somewhere. Parents must exist and must not form a
+cycle.</p>
 <p>A parent may have a single child: the validator has no rule on the number
-of children, and the viewer then draws a map with one box. A leaf that gets
-its first child becomes a parent: its box says "1 part" ("N parts" for
-more) instead of "Details", clicking it zooms in to its children instead of
-showing it among its siblings, and the panel still shows its own prose,
-code references and sources. Like every node below the top level it
-still needs a code reference of its own (or <code>outside_repo</code> with an external
-source). An edge attached to the node itself is not drawn inside it (on the
-map of its children), not even as a stub, because neither of its ends is a
-box there; the node's panel still lists it under "Flows". To show such a
-flow inside the node, attach the edge to the child instead. A tour step
-whose <code>node</code> is the new parent still shows the parent's own level, with the
-parent highlighted among its siblings.</p>
+of children. A leaf that gets its first child becomes a parent, and its
+part's detail grid must change with it: a level-2 node turns from a node
+item into a group whose kids are its children (see "Detail grids" below).
+Groups do not nest, so a level-3 node cannot get children without a change
+to the layout schema. The new parent's panel still shows its own prose,
+code references and sources. Like every node below the top level it still
+needs a code reference of its own (or <code>outside_repo</code> with an external
+source).</p>
 <p>An edge may connect any two nodes, at any levels, except a node and its own
-ancestor or descendant. The viewer draws an edge between the boxes that
-contain its ends at the current level ("lifted" to the visible ancestors).
-An edge with one end outside the current view is drawn as a stub arrow to
-the edge of the map, ending at a tag that names the node at the outside end
-(click it to go there), and is listed in the detail panel under "Comes
-from" and "Goes to". Edges between the same two boxes with the same kind are
-drawn as one arrow; its label shows the label of the edge that comes first
-in the file plus "(+N more)", and clicking the label lists all of them.
-Only <code>data</code>, <code>trigger</code> and <code>timing</code> edges decide the left-to-right order of
-the boxes (see "Edge kinds" below). There are no layout hints: the order of
-nodes in the file is the tie-break. Give an edge <code>prose</code> (one or two
-sentences, with a code reference or source): it is what a reader sees for
-the flow in the panel and in the one-page view.</p>
+ancestor or descendant. In a part's detail view, an edge between two of the
+part's descendants is drawn between their boxes (or a group's frame); an
+edge with one end in another part is drawn as a tag on the side of the
+detail that the grid's <code>sides</code> names for that part (click it to go there).
+On the map, an edge between two parts is drawn only by a map line that
+lists it, or is listed in <code>map.omitted</code> with a reason (see "Map lines"
+below); the N² matrix lists every such edge by its label. Give an edge
+<code>prose</code> (one or two sentences, with a code reference or source): it is what
+a reader sees for the flow in the panel and in the one-page view.
+(TODO-VIEWER: describe how the detail view merges several edges between the
+same two boxes and where the panel lists a node's flows.)</p>
 <p>The order of nodes in the file sets:</p>
 <ul>
 <li>the order of the parts in "Read as one page" (<code>#/read</code>): its contents list
   shows the top-level nodes in file order, and each part is followed by its
   children in file order (depth first);</li>
-<li>the layout tie-break: boxes in the same column are placed top to bottom
-  in file order, and boxes without a <code>data</code>, <code>trigger</code> or <code>timing</code> arrow to
-  or from another box on the map (stub arrows do not count) fill the free
-  places in file order (with no such arrows at all, the boxes form a grid
-  in file order);</li>
 <li>the order of the <code>top:</code> lines that <code>validate.py --outline</code> prints.</li>
 </ul>
+<p>The order of nodes does not move anything on the map or in a detail view:
+positions come only from <code>place</code> and <code>detail</code>.</p>
 <p>Lists of flows ("Comes from", "Goes to" and the one-page view's "Flows out
 of this part") follow the order of the edges in the file.</p>
 <h3 id="edge-kinds">Edge kinds<a class="headerlink" href="#edge-kinds" title="Permanent link">&para;</a></h3>
@@ -2164,18 +2334,10 @@ kinds like this:</p>
 </tr>
 </tbody>
 </table>
-<p>In the viewer each kind has its own color and line pattern on the map
-(shown in the map's legend) and a badge with its name in the lists of
-flows. Only <code>data</code>, <code>trigger</code> and <code>timing</code> arrows between two boxes of the
-current map rank the layout: the boxes are placed in columns from left to
-right along these arrows (by the longest path; arrows that close a cycle
-are ignored), and columns that do not fit the width wrap into bands below each
-other. <code>control</code> and <code>monitoring</code> arrows, and stub arrows of any kind, do
-not decide the order of the boxes, but they can change the size and place
-of boxes: every arrow and stub adds a track to the lane it runs in, a busy
-lane gets taller, which moves the boxes below it down and can make all
-boxes shorter, and stub tags take width at the left and right edges of the
-map, so fewer columns may fit in a band.</p>
+<p>In the viewer each kind has its own color and line pattern, and its name
+(from <code>map.kinds</code>) on the buttons that emphasize one kind on the map and on
+the small multiples. No edge moves a box: the map and the detail views are
+laid out by hand (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).</p>
 <h3 id="prose-markup">Prose markup<a class="headerlink" href="#prose-markup" title="Permanent link">&para;</a></h3>
 <ul>
 <li>A blank line (<code>\n\n</code> in the JSON string) starts a new paragraph.</li>
@@ -2301,17 +2463,221 @@ expands both ("A DRP (data reduction pipeline) ...").</p>
 <h3 id="tour-steps">Tour steps<a class="headerlink" href="#tour-steps" title="Permanent link">&para;</a></h3>
 <p>Tour steps follow one event in order, and each step's prose says what
 happens to <em>that</em> event at the step (a scene-setting first step is fine if
-its title says so). A step's <code>node</code> is the box the viewer highlights (the map
-shows that node's level); its <code>edges</code> are highlighted too, including stub
-arrows to other levels. Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1,
-so inserting a step changes the numbers of the steps after it. The browser
-test checks that the first 30 characters of each step's prose (as plain
-text) are visible in the step card.</p>
+its title says so). The tour is drawn on the fixed map: for each step,
+<code>map.tour</code> (one entry per step, in the same order, naming the step's <code>id</code>)
+gives the tokens that show where the event's parts are and the map lines
+and boxes to highlight, and <code>map.sequence.rows</code> has the step's row of the
+sequence chart. A step's <code>node</code> is highlighted in the detail view under the
+tour map, and the part that contains it is outlined on the map.
+(TODO-VIEWER: say whether and where a step's <code>edges</code> are highlighted.)
+Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1, so inserting a step
+changes the numbers of the steps after it, and a new step needs its
+<code>map.tour</code> entry and sequence row at the same position (the validator
+reports <code>E-TOUR-MAP</code> and <code>E-SEQUENCE</code> otherwise). The browser test checks
+that the first 30 characters of each step's prose (as plain text) are
+visible in the step card.</p>
+<h2 id="layout-the-map-places-and-detail-grids">Layout: the map, places and detail grids<a class="headerlink" href="#layout-the-map-places-and-detail-grids" title="Permanent link">&para;</a></h2>
+<p>Nothing on the page is placed by an algorithm. Three kinds of fields hold
+the layout; the schema (<code>daq-model.schema.json</code>) describes every field of
+them, and the validator checks them (see "What the validator checks"
+below). Numbers are SVG user units in the map's <code>viewbox</code> (1200 by 690):
+x grows to the right, y grows down.</p>
+<h3 id="the-map-block-map-at-the-top-level">The map block (<code>map</code>, at the top level)<a class="headerlink" href="#the-map-block-map-at-the-top-level" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>columns</code>: the stages of the event's trip, left to right, each with a
+  number <code>n</code>, a <code>name</code>, an <code>x</code> and a width <code>w</code>.</li>
+<li><code>bands</code>: horizontal bands that hold kinds of path (<code>live</code> at the top,
+  <code>lanes</code> in the middle, <code>control</code> at the bottom), each with <code>y</code>, height <code>h</code>
+  and its <code>labels</code>.</li>
+<li><code>lanes</code>: the example readout lanes (<code>count</code> and the centre <code>y</code> of each).
+  A box or line that is <code>per_lane</code> is drawn once per lane. Lanes stay
+  generic ("readout 1", "readout 2", "readout N"); the model names no
+  detector.</li>
+<li><code>lines</code>: the map's lines. Each has an <code>id</code>, a <code>kind</code>, the model <code>edges</code> it
+  draws, an SVG path <code>d</code> (absolute <code>M</code>, <code>L</code>, <code>H</code>, <code>V</code>, <code>C</code> commands only),
+  an <code>arrow</code>, <code>per_lane</code>, and the boxes it touches: <code>ends</code> (the boxes whose
+  borders its two end points lie on) and <code>through</code> (the boxes it crosses
+  from border to border; the viewer draws a port where it crosses). In a
+  per-lane line, <code>d</code> writes the lane's y as <code>{y}</code> (<code>{y-28}</code>, <code>{y+28}</code> for
+  offsets) and a per-lane box is named by its id alone. In a shared line, a
+  per-lane box is named with its lane, <code>&lt;box id&gt;@&lt;lane&gt;</code>, lanes counted
+  from 0 (for example <code>drp@2</code> is the DRP box of the third lane).</li>
+<li><code>labels</code>: the text on a line, with the <code>line</code> it names; <code>notes</code>: free
+  text on the map.</li>
+<li><code>omitted</code>: edges between two parts that no line draws, each with a
+  <code>reason</code> (see "Map lines" below).</li>
+<li><code>ladder</code>: the states of the control process drawn as stations on one
+  line, with the transitions between them (names as in <code>control.py</code>); a
+  tour step highlights the segment of transition k as <code>lad-&lt;k&gt;</code>.</li>
+<li><code>tour</code>: one entry per tour step, in order: the step's <code>id</code>, the <code>tokens</code>
+  (dots that show where the event's parts are, each with a type <code>t</code>, a
+  <code>lane</code> or null, and an absolute <code>x</code>, <code>y</code>) and the <code>highlight</code> list (line
+  ids, <code>box:&lt;box id&gt;</code>, <code>lad-&lt;k&gt;</code>).</li>
+<li><code>multiples</code>: the caption of each small copy of the map (one per kind of
+  edge, and one with all of them).</li>
+<li><code>sequence</code>: the sequence chart: <code>lifelines</code> (each standing for a part) and
+  one row per tour step, in order.</li>
+<li><code>sections</code>: the eyebrow, title, introduction and caption of each section
+  of the page; <code>kinds</code>: the names of the edge kinds; <code>default_detail</code>: the
+  part whose detail the page opens with.</li>
+</ul>
+<h3 id="places-place-on-every-top-level-node">Places (<code>place</code>, on every top-level node)<a class="headerlink" href="#places-place-on-every-top-level-node" title="Permanent link">&para;</a></h3>
+<p><code>place.short</code> is the part's short name (on tags, in the matrix and the
+sequence chart). <code>place.boxes</code> lists the part's boxes on the map: usually
+one, but a part may be drawn as several boxes, each standing for the part or
+one of its descendants (<code>node</code>); the timing part, for example, is drawn as
+an Accelerator box and an XPM box. A box has a map-wide unique <code>id</code>, its
+cell (<code>column</code>, <code>span</code>, <code>band</code>, <code>slot</code>), <code>per_lane</code>, its rectangle (<code>x</code>,
+<code>y</code>, <code>w</code>, <code>h</code>; no <code>y</code> when <code>per_lane</code>, which centres each copy on its lane),
+a <code>title</code>, <code>sub</code> lines (for a per-lane box one line per lane, or one line
+for all lanes), <code>out</code> (the outside-this-repository tag), and optional
+<code>title_x</code> (to keep the text clear of lines that cross the box) and <code>mini</code>
+(a shorter title for the small multiples).</p>
+<p><strong>The cell rule.</strong> A box's cell is its columns <code>column</code> to
+<code>column + span - 1</code>, its <code>band</code> and its <code>slot</code> (0, 1, ... for several boxes
+in one column and band; for a per-lane box, one cell per lane). The box's
+rectangle must lie inside its columns' x range and its band's y range, no
+two boxes may share a cell, and no two box rectangles may overlap.</p>
+<h3 id="detail-grids-detail-on-every-top-level-node-with-children">Detail grids (<code>detail</code>, on every top-level node with children)<a class="headerlink" href="#detail-grids-detail-on-every-top-level-node-with-children" title="Permanent link">&para;</a></h3>
+<p>The detail view of a part is a grid with <code>columns</code> columns and a list of
+<code>rows</code>. Each row lists items:</p>
+<ul>
+<li>a node item <code>{"node": &lt;id&gt;, "col": &lt;c&gt;}</code> for a descendant without
+  children;</li>
+<li>a group <code>{"group": &lt;id&gt;, "col": &lt;c&gt;, "span": &lt;s&gt;, "kids": [...]}</code> for a
+  descendant with children: its <code>kids</code> are exactly its children, each
+  <code>{"node": &lt;id&gt;, "col": &lt;c&gt;}</code> with a column inside the group's columns.
+  Groups do not nest.</li>
+</ul>
+<p>Every descendant of the part appears exactly once (as a node item, a group
+or a kid), and no two items share a row and column. <code>sides</code> names, for each
+neighbouring part, the side of the detail (<code>left</code>, <code>right</code>, <code>top</code>,
+<code>bottom</code>) where the tags for its edges sit; choose the side where that part
+is on the map, or where its line arrives.</p>
+<p><strong>Give a new node a cell.</strong> Find the top-level part that contains the new
+node (follow <code>parent</code> up to the node with <code>"parent": null</code>) and edit that
+part's <code>detail</code>:</p>
+<ul>
+<li>a child of the part itself: add a node item to a row, in a column that is
+  free in that row (or add a new row);</li>
+<li>a child of a group (a level-2 node that already has children): add a kid
+  to the group, in a free column inside the group's <code>col</code> to
+  <code>col + span - 1</code> (widen the group with <code>span</code>, and the grid with
+  <code>columns</code>, if there is none);</li>
+<li>a first child of a level-2 node item: turn the item into a group whose
+  kids are its children, for example
+  <code>{"node": "x", "col": 1}</code> becomes
+  <code>{"group": "x", "col": 1, "span": 1, "kids": [{"node": "new-child", "col": 1}]}</code>.</li>
+</ul>
+<p><strong>Pick a cell for a new top-level part.</strong> A new part needs a <code>place</code> (and,
+if it has children, a <code>detail</code>), and nothing moves out of its way:</p>
+<ol>
+<li>Choose the column by the stage of the event's trip where the part acts,
+   and the band by the kind of path it is on (the live path and event
+   builders on top, the recorded lanes in the middle, run control at the
+   bottom). Use <code>per_lane</code> only for a part that exists once per readout.</li>
+<li>Find a free <code>slot</code> in that column and band, and a rectangle inside the
+   cell that overlaps no box, no line and no label. If there is no room,
+   move boxes in the same edit, and then move the ends of the lines that
+   touch them (their <code>d</code>, <code>ends</code> and <code>through</code>), their labels and the tour
+   tokens near them.</li>
+<li>Add a line for each pair of parts the new part has edges with (or list
+   the edges in <code>map.omitted</code> with a reason), give the part a <code>short</code> name,
+   and add its tags' sides to the <code>detail</code> of each neighbouring part.</li>
+<li>Run the validator, then the geometry check in the browser (see
+   <code>docs/design/tools/README.md</code>), which finds lines that cross boxes they
+   do not name and text that does not fit.</li>
+</ol>
+<h3 id="map-lines-and-mapomitted">Map lines and <code>map.omitted</code><a class="headerlink" href="#map-lines-and-mapomitted" title="Permanent link">&para;</a></h3>
+<p>Every pair of parts with an edge between them must be drawn: at least one
+of the pair's edges is listed in the <code>edges</code> of a map line, or in
+<code>map.omitted</code> with a <code>reason</code> that says why the map leaves it out and where
+the reader finds it instead (the detail views' tags and the matrix always
+show it). The model omits one edge this way: the chunk request from the
+files part to the control process, because every route from the file lanes
+to the run-control box would cross the state ladder or the DRP lanes. A
+line's <code>edges</code> must have the line's <code>kind</code>, and both ends of each edge must
+lie in parts that the line touches (<code>ends</code> or <code>through</code>). An edge between
+two nodes of one part may also be drawn by a line between that part's
+boxes (for example <code>meb-shm</code> inside the monitoring part).</p>
+<h3 id="layout-text">Layout text<a class="headerlink" href="#layout-text" title="Permanent link">&para;</a></h3>
+<p>Strings in <code>map</code>, <code>place</code> and <code>detail</code> (box titles and sub lines, labels,
+notes, band and column names, ladder names, captions, section texts) are
+reader-facing text, so the accuracy rule applies to them as to prose: each
+one must be supported by the model's own prose, summaries or edge labels,
+or by the code at the pinned commit. No counts ("14 steps"), no rates other
+than the ~929 kHz bucket rate, no claim stronger than the model's. Write
+them for the reader of the doc, without layout jargon. The single-source
+check finds each of these strings if it is copied into the viewer.</p>
+<h3 id="what-the-validator-checks">What the validator checks<a class="headerlink" href="#what-the-validator-checks" title="Permanent link">&para;</a></h3>
+<p>Every layout error line starts with a code:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>E-PLACE-MISSING</code></td>
+<td>A top-level part has no <code>place</code> (or no boxes), or the model has no <code>map</code>.</td>
+</tr>
+<tr>
+<td><code>E-CELL-SHARED</code></td>
+<td>Two boxes share a cell, two box rectangles overlap, or two grid items share a row and column.</td>
+</tr>
+<tr>
+<td><code>E-CHILD-TWICE</code></td>
+<td>A descendant appears more than once in its part's detail grid.</td>
+</tr>
+<tr>
+<td><code>E-CHILD-MISSING</code></td>
+<td>A descendant has no cell in its part's detail grid, or a group's kids miss one of its children.</td>
+</tr>
+<tr>
+<td><code>E-GRID-FOREIGN</code></td>
+<td>A grid or box names a node that is not in the part, a group without children or a nested group, a <code>sides</code> key that is not another part, or <code>place</code>/<code>detail</code> on a node below the top level.</td>
+</tr>
+<tr>
+<td><code>E-BOX-OUTSIDE-CELL</code></td>
+<td>A box rectangle is not inside its columns and band, a box names a column or band that does not exist, or a grid item lies outside the grid's columns or its group.</td>
+</tr>
+<tr>
+<td><code>E-LINE-REF</code></td>
+<td>A line names an edge or box that does not exist, an edge of another kind, a lane that does not exist, or a label names an unknown line.</td>
+</tr>
+<tr>
+<td><code>E-LINE-ENDS</code></td>
+<td>An end point of a line is not on the border of one of its <code>ends</code> boxes (within 2 units), or <code>d</code> cannot be parsed.</td>
+</tr>
+<tr>
+<td><code>E-LINE-THROUGH</code></td>
+<td>A <code>through</code> box is not crossed from border to border.</td>
+</tr>
+<tr>
+<td><code>E-TOUR-MAP</code></td>
+<td><code>map.tour</code> does not have one entry per tour step in order, a highlight names nothing, nothing highlighted belongs to the step's part, or a token lies off the map.</td>
+</tr>
+<tr>
+<td><code>E-SEQUENCE</code></td>
+<td>The sequence chart does not have one row per tour step in order, or a row names an unknown lifeline.</td>
+</tr>
+<tr>
+<td><code>E-LADDER</code></td>
+<td>The ladder's node does not exist, it has the wrong number of transitions, or its stations leave the map.</td>
+</tr>
+<tr>
+<td><code>E-MAP-EDGES</code></td>
+<td>A pair of parts with an edge has no map line and no <code>map.omitted</code> entry, or a line's edge reaches a part the line does not touch.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="worked-example">Worked example<a class="headerlink" href="#worked-example" title="Permanent link">&para;</a></h2>
 <p>These snippets are made up for this guide: the ids and texts are examples
 only; do not paste them into the model as they are.</p>
 <p><strong>1. Add a node with a code reference.</strong> Append an object to the <code>nodes</code>
-list (the position in the list is the tie-break for layout):</p>
+list (the position in the list sets its order in the one-page view):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"parent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"drp"</span><span class="p">,</span>
@@ -2332,6 +2698,18 @@ list (the position in the list is the tie-break for layout):</p>
 <p>Check the reference before you validate:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'108,160p'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-F<span class="w"> </span>--<span class="w"> </span><span class="s1">'BufferedFileWriter::writeEvent'</span>
 </code></pre></div>
+<p>Then give the node a cell in its part's detail grid. Its parent is <code>drp</code>, a
+top-level part, so it goes into the <code>rows</code> of the <code>detail</code> of the node
+<code>drp</code>. Its second row holds <code>drp-process</code> (col 0) and <code>detector-classes</code>
+(col 1), so col 2 is free:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"drp-process"</span><span class="p">,</span><span class="w"> </span><span class="nt">"col"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"detector-classes"</span><span class="p">,</span><span class="w"> </span><span class="nt">"col"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="nt">"node"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span><span class="w"> </span><span class="nt">"col"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>Without this the validator reports
+<code>ERROR [E-CHILD-MISSING]: node drp.detail: descendant "example-buffered-writer" has no cell in the grid</code>.</p>
 <p><strong>2. Add an edge.</strong> Append to the <code>edges</code> list:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer-to-files"</span><span class="p">,</span>
@@ -2355,9 +2733,15 @@ list (the position in the list is the tie-break for layout):</p>
 Check the reference the same way as the node's:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>show<span class="w"> </span><span class="s2">"</span><span class="nv">$COMMIT</span><span class="s2">:psdaq/drp/FileWriter.cc"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s1">'123,133p'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-F<span class="w"> </span>--<span class="w"> </span><span class="s1">'_write'</span>
 </code></pre></div>
-<p>On the overview this edge is drawn between the boxes of <code>drp</code> and <code>files</code>
-(the parent of <code>example-buffered-writer</code> is <code>drp</code>). Inside <code>drp</code> it is listed
-under "Goes to" in the detail panel.</p>
+<p>This edge goes from the part <code>drp</code> (the parent of
+<code>example-buffered-writer</code>) to the part <code>files</code>. The map already has a line
+for that pair: the <code>data</code> line <code>drp-files</code> lists <code>e-drp-to-files</code> among its
+<code>edges</code>, so the validator's <code>map_edges</code> count does not change. Add the new
+edge's id to that line's <code>edges</code> if the line should count it as one of the
+edges it draws. In the DRP's detail view its label joins the tag for Files
+(one tag per neighbouring part and direction), on the side that <code>sides</code>
+names for <code>files</code> (<code>right</code>), and the N² matrix lists it in the DRP-to-Files
+cell.</p>
 <p><strong>3. Rewrite a node's prose.</strong> Find the node by its <code>id</code> and replace its
 <code>prose</code> string. Keep every sentence supported by the node's own code
 references or sources; add a code reference or source if a new sentence
@@ -2367,11 +2751,19 @@ to related nodes.</p>
 <p><strong>Validate</strong> (always; the site build runs the same check):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/validate.py
 </code></pre></div>
-<p>It prints one line per problem and a summary line last, for example:</p>
+<p>It prints one line per problem and two summary lines last, for example:</p>
 <div class="highlight"><pre><span></span><code>ERROR: node example-buffered-writer.code_refs[0]: psdaq/drp/FileWriter.cc:108-160: symbol "writeEvnt" does not appear in lines 108-160
-nodes=41 edges=30 levels=3 tour_steps=11 code_refs=60 sources=14 errors=1
+nodes=41 edges=49 levels=3 tour_steps=14 code_refs=183 sources=26 placed=41/41 grids=8/8 errors=1
+layout_text=146 map_edges=16/16
 </code></pre></div>
-<p>The exit status is 0 only when <code>errors=0</code>. Reading the errors:</p>
+<p><code>placed=X/N</code>: top-level parts with a valid place plus lower nodes with
+exactly one cell in their part's detail grid, out of all nodes. <code>grids=G/P</code>:
+parts with children whose detail grid has no error, out of all such parts.
+<code>layout_text</code>: the number of layout strings. <code>map_edges=A/B</code>: of the B pairs
+of parts that have an edge between them, the A that a map line draws or
+<code>map.omitted</code> lists.</p>
+<p>The exit status is 0 only when <code>errors=0</code>. Reading the errors (the layout
+error codes are explained in "What the validator checks" above):</p>
 <table>
 <thead>
 <tr>
@@ -2424,6 +2816,30 @@ nodes=41 edges=30 levels=3 tour_steps=11 code_refs=60 sources=14 errors=1
 <td><code>site page ... has no docs/....md</code></td>
 <td>Fix the <code>../&lt;path&gt;/</code> URL of the site-page source.</td>
 </tr>
+<tr>
+<td><code>[E-CHILD-MISSING] ... has no cell in the grid</code></td>
+<td>Give the node a cell in its part's <code>detail</code> (see "Detail grids").</td>
+</tr>
+<tr>
+<td><code>[E-PLACE-MISSING]</code></td>
+<td>Give the top-level part a <code>place</code> (see "Pick a cell for a new top-level part").</td>
+</tr>
+<tr>
+<td><code>[E-CELL-SHARED]</code>, <code>[E-BOX-OUTSIDE-CELL]</code></td>
+<td>Move the box or grid item to a free cell inside its columns and band.</td>
+</tr>
+<tr>
+<td><code>[E-LINE-ENDS]</code>, <code>[E-LINE-THROUGH]</code></td>
+<td>Fix the line's <code>d</code>, <code>ends</code> or <code>through</code> so that its ends sit on its <code>ends</code> boxes and it crosses each <code>through</code> box.</td>
+</tr>
+<tr>
+<td><code>[E-MAP-EDGES] no map line draws an edge from ...</code></td>
+<td>Add the edge to a map line's <code>edges</code>, or list it in <code>map.omitted</code> with a reason.</td>
+</tr>
+<tr>
+<td><code>[E-TOUR-MAP]</code>, <code>[E-SEQUENCE]</code></td>
+<td>Add or move the step's <code>map.tour</code> entry or sequence row to the step's position.</td>
+</tr>
 </tbody>
 </table>
 <p><code>--outline</code> also prints the model's sha256, the top-level titles and the tour
@@ -2440,12 +2856,18 @@ python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="
 <span class="nv">SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
 <span class="nb">echo</span><span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
 </code></pre></div>
-<p>Open the printed URL. Click a box to zoom in; "Zoom out", the
-breadcrumb, Escape or Backspace zoom out; click an arrow's label to list its
-flows; click a tag at the map edge to go to that part; "Tour" follows the
-event (Left and Right arrow keys move between steps); "Read as one page"
-shows the whole model as one document (<code>#/read</code>); "How to read this page"
-explains the controls. Reload the page after each edit. When you are done,
+<p>Open the printed URL. The page shows the fixed map with the detail of one
+part under it: click a part's box on the map to open its detail, click a
+box in the detail to show that node in the panel, and click a tag on the
+detail's edge to go to that neighbouring part. The buttons above the map
+emphasize one kind of edge. Further down, the tour moves one event across
+the same map (Back and Next, or the Left and Right arrow keys), the small
+multiples show one kind of edge per copy of the map, the sequence chart
+shows the tour in one figure (click a row to open that step), and the N²
+matrix lists every interface between the parts. "Read as one page" shows
+the whole model as one document (<code>#/read</code>); "How to read this page"
+explains the controls. (TODO-VIEWER: check these names and controls against
+the finished viewer.) Reload the page after each edit. When you are done,
 stop the server by its process ID:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SERVER_PID</span><span class="s2">"</span>
 </code></pre></div>
@@ -2465,29 +2887,33 @@ python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> 
 python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--check-edge<span class="w"> </span>example-buffered-writer-to-files
 </code></pre></div>
-<p>The first command clicks through every node and every tour step and prints
-<code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>, then a line
-<code>smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N</code>; it
-passes when V = N, S = T, C = 0 and every smoke check passes (a node counts
-only if the panel shows its title and the start of its prose; a step only if
-its title and the start of its prose are visible). For a model of about 40
-nodes it takes roughly 10 to 60 seconds, depending on the machine. The
-second opens one node (by link and by clicking down from the overview) and
-checks its title and prose. <code>--expect-prose</code> is matched against the
+<p>The first command clicks through every node (a part's box on the map, a
+lower node's box or group in its part's detail) and every tour step and
+prints <code>nodes_visited=V/N tour_steps=S/T console_errors=C</code>, then a smoke
+line and one line each for the map, the detail views, the tour, the small
+multiples, the sequence chart and the matrix; it passes when V = N, S = T,
+C = 0 and every check passes (a node counts only if the panel shows its
+title and the start of its prose; a step only if its title and the start of
+its prose are visible). The second opens one node (by link and by clicking)
+and checks its title and prose. <code>--expect-prose</code> is matched against the
 rendered, visible text of the panel (whitespace-normalized), so pick a
 substring without markup: no backticks, no <code>[[...]]</code> and no link syntax.
-The third opens the level where the edge is drawn between two boxes and,
-for each end that lies deeper, the level where the edge appears as a stub
-arrow, and checks that the arrow and the stubs are there; it prints
-<code>check_edge id=ID drawn=true console_errors=0</code> when they are. See
-<code>docs/design/tools/README.md</code> for the details and the test hooks.</p>
+The third checks that the edge is drawn: as a line inside its part's
+detail, as the tags in both parts' details, or, for an edge between two
+parts, on a map line or in a matrix cell. See <code>docs/design/tools/README.md</code>
+for the exact output lines, the timing and the test hooks
+(TODO-VIEWER: copy the final output lines here once the tests are
+rewritten).</p>
 <p><strong>Single-source check</strong> (that no model text was copied into the viewer):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/check_single_source.py
 </code></pre></div>
 <p>It must print <code>found_in_viewer=0</code>, <code>titles_found_in_viewer=0</code> and
 <code>windows_found_in_viewer=0</code> (the last one checks every 40-character window of
 the prose, so copying text from the middle of a field into the viewer is
-caught too).</p>
+caught too). It also checks every layout string (box titles, labels,
+captions, section texts and the other strings of <code>map</code> and <code>place</code>) and
+that no node id is written into <code>viewer.js</code>; see
+<code>docs/design/tools/README.md</code> for its output lines.</p>
 <p><strong>Site build</strong> (optional; the published site is built the same way):</p>
 <div class="highlight"><pre><span></span><code>mkdocs<span class="w"> </span>build<span class="w"> </span>--strict<span class="w"> </span>-d<span class="w"> </span>/tmp/lcls2-site
 </code></pre></div>
@@ -2501,10 +2927,13 @@ caught too).</p>
   satisfy too: check that the symbol names code.</li>
 <li>Internal Confluence: summarize and link, never copy; no credentials or
   personal data.</li>
+<li>Give every new node a cell in its part's <code>detail</code> grid, and every new
+  top-level part a <code>place</code> in a free cell of the map; draw or omit (with a
+  reason) every new pair of parts that an edge connects.</li>
 <li>Run the validator until it prints <code>errors=0</code>, then preview.</li>
 <li>After adding an edge, check it in the browser with
-  <code>browser_test.py --check-edge &lt;edge id&gt;</code> (it checks the arrow and its stub
-  arrows, not the arrow's label).</li>
+  <code>browser_test.py --check-edge &lt;edge id&gt;</code> (it checks that the edge is
+  drawn, not its label).</li>
 </ul>
 
 

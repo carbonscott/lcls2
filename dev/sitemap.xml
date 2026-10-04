@@ -2,142 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/getting-started/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/areadetector/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/calibconstants/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/control/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/daqcontrol/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/datasource/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/detector_impl/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/dgrammanager/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/drp_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/ds_base/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/envstore/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/event/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/mpi_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/null_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/run/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/serial_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/shmem_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/singlefile_ds/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/smalldata/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/step/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/timedrun/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/api/python/transitionid/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/design/editing-guide/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/calibration/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/daq-control/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/datasource-run-events/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/detector-interface/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/drp-eventbuilding/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/mpi-parallel/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/psalg/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/shmem-live/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
     <url>
          <loc>https://carbonscott.github.io/lcls2/dev/features/xtc2/</loc>
-         <lastmod>2026-10-03</lastmod>
+         <lastmod>2026-10-04</lastmod>
     </url>
 </urlset>
