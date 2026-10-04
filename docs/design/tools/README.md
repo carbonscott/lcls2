@@ -6,9 +6,18 @@ This directory is excluded from the MkDocs site (`exclude_docs` in
 `mkdocs.yml`). See `docs/design/editing-guide.md` for how to edit the model.
 
 Requirements: Python 3 with `jsonschema` (in `docs/requirements.txt`); for
-the browser test also `playwright` and its Chromium
-(`pip install playwright && python -m playwright install chromium`). The
-validator needs a full clone (the pinned commit's files are read with git).
+the browser tests (`browser_test.py`, `geometry_check.py`) also `playwright`
+and its Chromium (`pip install playwright && python -m playwright install
+chromium`). The validator needs a full clone (the pinned commit's files are
+read with git). The page loads its fonts (Archivo, Source Serif 4, IBM Plex
+Mono) from Google Fonts, so the browser tests need network access to
+fonts.googleapis.com and fonts.gstatic.com.
+
+To serve the viewer for the browser tests:
+
+```bash
+python -m http.server 8000 --bind 127.0.0.1 --directory docs/design &   # or a free port
+```
 
 ## validate.py
 
@@ -18,13 +27,27 @@ python docs/design/tools/validate.py [--model PATH] [--schema PATH] [--repo PATH
 
 Schema check (every error, with its JSON path) plus the semantic rules (ids,
 parents and levels, edges, tour, sources and cross-links, code references at
-`code_base.commit`, node rules, decisions, site-page URLs). Prints
-`ERROR: <where>: <what>` lines, then one summary line:
-`nodes=N edges=E levels=L tour_steps=T code_refs=R sources=S errors=K`.
-Exit 0 iff `errors=0`; 1 if there are errors; 2 if a file cannot be read or
-parsed. `--outline` also prints `model_sha256=...`, the top-level titles
-(`top: 1. ...`) and the tour step titles (`tour: 1. ...`). The default
-`--repo` is the git checkout that contains this script.
+`code_base.commit`, node rules, decisions, site-page URLs) and the layout
+rules (the `map` block, each top-level part's `place`, each detail grid).
+Prints `ERROR: <where>: <what>` lines (a layout error starts with its code,
+e.g. `ERROR [E-CELL-SHARED]`), then the summary lines
+
+```text
+nodes=N edges=E levels=L tour_steps=T code_refs=R sources=S placed=X/N grids=G/P errors=K
+layout_text=M map_edges=A/B
+```
+
+`placed`: top-level parts with a valid place plus lower nodes with exactly
+one cell in their part's detail grid; `grids`: parts with children whose
+detail grid is valid; `layout_text`: the human-readable strings of the layout
+(see `iter_layout_text`); `map_edges`: of the B pairs of different top-level
+parts joined by an edge, the A that a map line draws or `map.omitted` lists
+with a reason. Exit 0 iff `errors=0`; 1 if there are errors; 2 if a file
+cannot be read or parsed. `--outline` also prints `model_sha256=...`, the
+top-level titles (`top: 1. ...`) and the tour step titles (`tour: 1. ...`).
+The default `--repo` is the git checkout that contains this script.
+`validate.iter_layout_text(model)` yields `(where, text, role)` for every
+string of the layout (used by `check_single_source.py`).
 
 ## check_single_source.py
 
@@ -32,84 +55,189 @@ parsed. `--outline` also prints `model_sha256=...`, the top-level titles
 python docs/design/tools/check_single_source.py [--model PATH] [--schema PATH] [--viewer-dir DIR]
 ```
 
-Takes the first 40 characters of every PROSE field (fields whose schema
-description starts with "PROSE") and searches the viewer files for them
-(also HTML- and JSON-escaped); then the same for every title and edge label
-of 12 or more characters; then every 40-character window of every PROSE
-field, taken every 20 characters (plus the last window of each field), so
-that text copied from the middle of a field is caught too. Prints, in this
-order, `strings_checked=N found_in_viewer=M`,
-`titles_checked=N titles_found_in_viewer=M` and
-`windows_checked=N windows_found_in_viewer=M` (each preceded by `FOUND:`
-lines for its hits). Exit 0 iff all three M are 0.
+Checks that the viewer files hold no model content:
+
+1. The first 40 characters of every PROSE field (fields whose schema
+   description starts with "PROSE"), and every layout string from
+   `validate.iter_layout_text` (map labels, captions, section texts, state
+   and transition names, short names, lane, column, band and kind names).
+   A layout string of 8 or more characters with more than one word is
+   searched as a substring; a shorter one, or a single word, only as a
+   quoted literal (`'...'`, `"..."`, `` `...` `` or `>...<`), so `'DRP'` is
+   caught but not "DRP" inside a longer word, and a box line "decision" is
+   not found in the model field name `decisions`. A layout string equal to a
+   kind id is not searched (kind ids are UI enums the viewer may hold). All
+   searches are case-sensitive and also cover the HTML- and JSON-escaped
+   forms.
+2. Every title and edge label of 12 or more characters.
+3. Every 40-character window of every PROSE field, taken every 20 characters
+   (plus the last window of each field), so that text copied from the middle
+   of a field is caught too.
+4. Every model node id (other than the kind ids `data`, `trigger`, `timing`,
+   `control`, `monitoring`, which are UI enums) as a quoted literal in
+   `viewer.js`: the viewer must not hard-code the model's structure.
+
+Prints, in this order (each count preceded by `FOUND:` lines for its hits):
+
+```text
+strings_checked=N found_in_viewer=M        # N = prose prefixes + layout strings
+titles_checked=N titles_found_in_viewer=M
+windows_checked=N windows_found_in_viewer=M
+layout_checked=L                           # the layout strings among the N above
+node_ids_in_viewer=K
+```
+
+Exit 0 iff every M and K is 0.
 
 ## browser_test.py
 
 ```bash
-python -m http.server 8000 --bind 127.0.0.1 --directory docs/design &   # or a free port, see editing-guide.md
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ [--headed] [--screenshot-dir DIR]
+python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ --layout [--full]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ \
     --check-node ID --expect-title TEXT --expect-prose SUBSTRING [--full]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ --check-edge ID [--full]
 ```
 
-Full run: clicks every node's box depth-first from the overview (drill in,
-check the focus, zoom out, check the parent), then steps through the tour,
-then runs smoke checks of the reader controls. A node counts as visited only
-if `body[data-focus]` and `#detail-title[data-node-id]` name it **and** the
-panel's visible title text equals the model title (whitespace-normalized)
-**and** the visible prose (`#detail-prose`) contains the first 30 characters
-of the node's prose as plain text (markup reduced to the text the viewer
-shows, as for tour steps). A full run takes roughly 10 to 60 seconds for a
-model of about 40 nodes, depending on the machine. A tour step counts only
-if its title, focus and highlighted box are right and the visible step
-text (`#tour-step-prose`) contains the first 30 characters of the step's
-prose as plain text (markup removed, `[[id]]` replaced by the node title).
-Prints `nodes_visited=V/N tour_steps=S/T console_errors=C`, where C counts
-console errors and warnings, page errors, and failed or HTTP >= 400 requests
-to the viewer's origin, and then one more line:
+Full run (default). The page is driven only by clicks and keys, as a reader
+would. It prints:
 
 ```text
-smoke stub_click=ok edge_label=ok arrow_keys=ok help=ok read_page=R/N
+nodes_visited=V/N tour_steps=S/T console_errors=C
+smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q
+map parts=A/8 lanes=L bands=B columns=K
+detail opened=X/P
+tour steps=S/T highlighted=H/T
+multiples panels=M/6
+sequence rows=R/T
+matrix cells=C2/C
+console_errors=C
 ```
 
-- `stub_click`: on the first level (in model order) that draws a stub arrow,
-  clicking its tag (`#map g.stub-chip`) focuses the node it names.
-- `edge_label`: the overview shows exactly one visible, clickable edge label
-  (`#map g.edge-label` with a non-empty `data-edge-ids`) for each arrow the
-  viewer should label there, derived from the model the way the viewer
-  groups edges (both ends lifted to their top-level boxes; edges whose ends
-  meet in one box are not drawn; one arrow per from, to and kind), and the
-  labels' edge ids are exactly those arrows' ids, all of them edges of the
-  model. Clicking one label (preferably one that bundles several flows)
-  lists exactly its flows in `#edge-flows`, each with links to both ends;
-  `#edge-flows-close` closes it.
-- `arrow_keys`: in the tour, the Right and Left arrow keys move to step 2
-  and back (fails with fewer than 2 steps).
-- `help`: `#help-toggle` opens `#help` and `#help-close` closes it.
-- `read_page`: in the one-page view (`#/read`) every node has a section with
-  its title (R of N).
+- `nodes_visited`: a node counts when it is reached by clicking (its map box
+  for a top-level part; its box or its group's title strip in its part's
+  detail, opened by clicking the part's map box, for a lower node) **and**
+  `#detail-title[data-node-id]` names it **and** the panel's visible title
+  equals the model title (whitespace-normalized) **and** the visible prose
+  (`#detail-prose`) contains the first 30 characters of the node's prose as
+  plain text (markup reduced to the text the viewer shows).
+- `tour_steps`: stepping with the pips and `#tour-next`, step k counts when
+  `#tour-step-title[data-step-index=k]` shows its title, `#tour-step-prose`
+  contains the first 30 characters of its prose as plain text (markup
+  removed, `[[id]]` replaced by the node title) and the tour map shows a
+  callout (`g.callout[data-part]`) on the top-level part of the step's node.
+- `smoke`: `stub_click` = clicking the first neighbour tag (`g.stub`) of the
+  detail shown on `#/` opens the detail of the part it names; `arrow_keys` =
+  with focus in the tour, Right and Left move to step 2 and back; `help` =
+  `#help-toggle` opens `#help` and `#help-close` (or the toggle) closes it;
+  `read_page` = in `#/read` every node has one `section[data-node-id]` whose
+  title (`.read-title`, else its first heading) is the node title (R of N);
+  `third_party` = requests to hosts other than the page's own origin,
+  fonts.googleapis.com and fonts.gstatic.com (must be 0).
+- `map`: parts with a map box (`g.box[data-part]`) of the top-level parts;
+  distinct `data-lane` values (must equal `map.lanes.count`); band label
+  groups (must equal the number of `map.bands`); column label groups (must
+  equal the number of `map.columns`). The map's viewBox must be
+  `map.viewbox`, and boxes, lines and labels carry no transform attribute.
+- `detail`: a part with children counts when clicking its map box opens
+  `#detail-view svg.detail[data-detail=part]` drawing every descendant as a
+  `g.box[data-node]` or `g.dgroup[data-node]`. On `#/` the detail shown must
+  be `map.default_detail`.
+- `tour highlighted`: step k counts when the callout is on the step node's
+  top-level part **and** the `.hot` elements of the tour map (line ids of
+  `path.ln.hot`, `box:<id>` of `g.box.hot`) are exactly the step's
+  `map.tour` highlight list, with every lane copy hot, **and** at least one
+  hot box or line belongs to that part **and** the visible tokens (`g.tok`
+  at opacity 1; `data-t`, `data-target="x,y"`) are the step's `map.tour`
+  tokens **and** the step node is `.hot` in `#tour-detail`.
+- `multiples`: figure i counts when it holds `svg.map.mini[data-kind]` with
+  the kind of `map.multiples[i]`, a figcaption, and its undimmed lines are
+  exactly the lines of that kind, at least one (`all`: none dimmed).
+- `sequence`: row k (`#sequence svg .row[data-step-index=k]`) counts when it
+  is there once, its aria-label contains the step title, and clicking it
+  opens tour step k.
+- `matrix`: C is the number of (from part, to part) pairs of model edges
+  whose top-level parts differ; the cell `td[data-from][data-to]` of a pair
+  counts when its relation items (`.ni[data-edge-ids]`) show exactly those
+  edges' labels, deduplicated by kind and label, and name only edges of that
+  pair. Cells of other pairs must be empty and the headers must show every
+  part's `place.short`.
+- `console_errors`: console errors and warnings, page errors, and failed or
+  HTTP >= 400 requests to the page's own origin.
 
-Each check prints `ok` or `fail`; a check that finds nothing to test (no
-stub arrow at any level, no labelled arrow on the overview, fewer than 2
-tour steps) fails. Exit 0 iff N > 0, T > 0, V = N, S = T, C = 0 and every
-smoke check is `ok` with R = N.
-`--check-node` opens one node by deep link and by clicking down from the
-overview, and checks its detail title and that its rendered prose contains
-SUBSTRING; prints `check_node id=ID title_ok=<bool> prose_ok=<bool>
-console_errors=C`. SUBSTRING is matched against the rendered, visible text,
-so it must not contain markup (backticks, `[[...]]`, link syntax).
-`--check-edge ID` opens the level where the edge is drawn between two boxes
-(the children of the lowest common ancestor of its ends, or the overview) and
-checks that `#map g.edge[data-edge-ids~=ID]` is there and is not a stub; then,
-for each end whose own level lies deeper, it opens that level and checks the
-stub arrow (`g.edge.stub` and `g.stub-chip` with the id). It prints
-`check_edge id=ID drawn=<bool> console_errors=C` (drawn is true only if all
-are found) and exits 0 iff drawn is true and C = 0. It checks the arrow and
-the stubs, not the arrow's label (the full run's `edge_label` check covers
-labels on the overview). `--full` adds the full
-run to `--check-node` or `--check-edge`. The test also works against
-the published site (`--url https://carbonscott.github.io/lcls2/dev/design/`).
+Exit 0 iff every count is complete, every smoke check is `ok` with R = N,
+Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
+about one to two minutes.
+
+`--layout` loads the page at 744x1000 and 1440x900 and compares, on the
+map, each top-level part's union box (viewBox units), the set of rendered
+text strings and the number of visible elements; it prints
+`layout_identical=<bool> parts=<n>`. Then, at widths 400, 744 and 1440, it
+prints `width=<w> page_hscroll=<px>` (the page's horizontal overflow, the
+maximum over the loaded page, a detail opened and a tour step), after the
+744 line the informational `inner_scroll=<section:px,...> min_text_px=<px>`
+(horizontal scroll inside each figure container; the smallest rendered SVG
+text in CSS px), and finally `console_errors=C`. It fails if the layouts
+differ, any `page_hscroll` > 0, `html`, `body` or an element around a section
+sets `overflow-x: hidden` or `clip`, or C > 0.
+
+`--check-node` opens the node by deep link (`#/node/ID`) and by clicking
+(its part's map box, then its box or group in the detail), and checks the
+panel title and that the rendered prose contains SUBSTRING; it prints
+`check_node id=ID title_ok=<bool> prose_ok=<bool> console_errors=C`.
+SUBSTRING is matched against the rendered, visible text, so it must not
+contain markup (backticks, `[[...]]`, link syntax).
+`--check-edge ID` looks for the edge where the page draws it: an edge inside
+one part as a `path.ln[data-edge-ids~=ID]` in that part's detail; an edge
+between two parts with a lower-level end as the neighbour tag
+(`g.stub[data-other][data-dir][data-edge-ids~=ID]`) in the detail of each
+part whose end is a lower node; an edge between two top-level parts as a map
+line or a matrix relation. It prints `check_edge id=ID drawn=<bool>
+console_errors=C`. `--full` adds the full run to `--check-node`,
+`--check-edge` or `--layout`. The test also works against the published site
+(`--url https://carbonscott.github.io/lcls2/dev/design/`).
+
+## geometry_check.py
+
+```bash
+python docs/design/tools/geometry_check.py --url http://127.0.0.1:8000/ [--model PATH_OR_URL] [--verbose]
+```
+
+Waits for the first render and `document.fonts.ready`, checks that the
+Archivo font is loaded (`document.fonts.check('600 15px Archivo')` and a
+loaded Archivo face) and prints `font=Archivo`. It then measures the map
+(`#map svg.map`) and the detail of every top-level part with children
+(opened by clicking the part's map box), all in SVG viewBox units:
+
+- `line_through_box`: (line, box) pairs where a point sampled every 2 units
+  along a `path.ln` lies inside the box rect shrunk by 3 units and the box
+  (its `data-box`, with `@<lane>` for a per-lane box; its `data-node` in a
+  detail) is not in the line's `data-through`, `data-ends`, `data-from-box`
+  or `data-to-box`. A per-lane copy of a line (`data-lane=i`) may name its
+  own lane's box `b` for `b@i`. Neighbour tags count as boxes (their own
+  connector may touch them); for a group only its title strip
+  (`rect.gtitle`) counts, and lines ending on a kid of the group are exempt.
+- `text_overflow`: texts that extend more than 1 unit past their container
+  (the rect of their box, tag or group), plus free labels (`text.lab`,
+  notes, band and column labels) that extend past the viewBox or overlap a
+  box, tag or group title strip.
+- informational: `crossings_allowed` (pairs that would count but the box is
+  listed for the line), `line_over_text` (a line drawn across a text other
+  than its own label), `label_on_box` (the free labels on a box, also
+  counted in `text_overflow`).
+
+Tour tokens (`g.tok`) and selection callouts (`g.callout`) are not measured.
+It prints `font=Archivo`, one `view=<map|detail:ID> ...` line per view with
+`PROBLEM:` lines naming each counted line, box and text, then
+
+```text
+views=V line_through_box=X text_overflow=Y
+crossings_allowed=K line_over_text=J label_on_box=Q
+```
+
+with V = 1 + P (P: top-level parts with children). Exit 0 iff the font is
+Archivo, V = 1 + P, every view has a box, X = 0 and Y = 0. `--verbose`
+also lists the allowed crossings and the `line_over_text` pairs.
 
 ## sample_statements.py
 
@@ -131,17 +259,24 @@ writes JSON.
 
 ```bash
 cp -r docs/design /tmp/viewer-copy
-python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy hide-prose       # or no-edge-labels
+python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy hide-prose       # or no-multiples
 ```
 
 Edits `COPY_DIR/viewer.js` of a copy of `docs/design` (it refuses the viewer
 next to the script) to plant a known defect, so that one can show that the
-browser test catches it: `hide-prose` stops the viewer rendering node prose
-(the full run then reports nodes_visited < N), `no-edge-labels` stops it
-drawing the labels of arrows between boxes (the full run then reports
-`edge_label=fail`). Serve the copy and run `browser_test.py` against it; the
-full run must exit nonzero. Exit 0 if the defect was planted, 1 if the code
-to change was not found exactly once or on a usage error.
+browser test catches it:
+
+- `hide-prose`: the viewer stops rendering node prose in the panel; the full
+  run then reports `nodes_visited` < N.
+- `no-multiples`: the viewer stops drawing the small multiples (the
+  `#multiples` figures); the full run then reports `multiples panels=0/6`.
+
+Serve the copy and run `browser_test.py` against it; the full run must exit
+nonzero. Exit 0 if the defect was planted, 1 if the code to change was not
+found exactly once or on a usage error. A copy whose `viewer.js` starts with
+an undefined call (`plantedUndefinedFunction();`) must also make the full
+run exit nonzero (the page never becomes ready and the page error is
+counted).
 
 ## Viewer test hooks
 
@@ -149,31 +284,34 @@ Stable attributes for tests (the UI works the same for people):
 
 | Hook | Meaning |
 |---|---|
-| `#map .node-box[data-node-id="ID"]` | the box (a `<button>`) of node ID on the map; `.is-highlighted` marks the focused leaf or the tour step's node |
-| `#detail-title[data-node-id]` | detail panel title; `__root__` on the overview |
-| `#detail-prose` | the rendered prose of the node (or the overview summary) |
-| `#zoom-out` | zoom out one level (disabled on the overview) |
-| `#breadcrumb [data-node-id]` | breadcrumb buttons; the root crumb has `data-node-id="__root__"` |
-| `#tour-start`, `#tour-next`, `#tour-prev`, `#tour-exit` | tour controls |
-| `#tour-step-title[data-step-index="k"]` | title of tour step k (1-based) |
-| `body[data-ready="true"]` | set once the model is rendered |
-| `body[data-focus]` | the focused node id, or `__root__` |
-| `body[data-mode]` | `browse` or `tour` |
-| `body[data-error="true"]` | the model failed to load |
-| `#map g.edge[data-edge-ids]` | a drawn arrow (its line) and the model edge ids it stands for; `.is-highlighted` in a tour step, `.is-selected` while its flows are listed; stub arrows also have `.stub` and `data-node-id` |
-| `#map g.edge-label[data-edge-ids]` | the label of an arrow between two boxes in view; click (or Enter) lists its flows in `#edge-flows` |
-| `#map g.stub-chip[data-node-id][data-edge-ids]` | the tag at the map edge of a stub arrow to a node outside the current level; `data-node-id` is that node; click (or Enter) goes there |
-| `#edge-flows[data-edge-ids]`, `#edge-flows li.flow[data-edge-id]`, `#edge-flows-close` | the flows of the clicked arrow, at the top of the detail panel; each item links both ends (`a.flow-end`) |
-| `#tour-step-prose` | the rendered prose of the current tour step |
+| `body[data-ready="true"]` | set after the first render |
+| `body[data-mode]` | `browse`, `tour` or `read` |
+| `#map-section`, `#tour`, `#multiples`, `#sequence`, `#matrix` | the five figures, in this order; `#read-page` replaces them in read mode |
+| `#map svg.map` | the map, with the viewBox of `map.viewbox` |
+| `g.box[data-part][data-node][data-box]` (+ `[data-lane]`) with `rect.b` | a map box: its top-level part, the node it stands for, its box id (and lane) |
+| `g.column-label[data-column]`, `g.band-label[data-band]` | column headers; one group per band |
+| `path.ln[data-line][data-kind][data-edge-ids][data-through][data-ends]` (+ `[data-lane]`) | a map line; through/ends list box keys `<box id>` or `<box id>@<lane>` |
+| `circle.port[data-line]`, `text.lab[data-line]` | ports and labels of a line |
+| `#chips button.chip[data-kind][aria-pressed]` | the "Emphasize" chips (`all` or a kind) |
+| `#detail-view svg.detail[data-detail]` | the detail of a top-level part under the map |
+| `g.box[data-node]` (`.hot` when highlighted), `g.dgroup[data-node]` with `rect.gtitle` | detail boxes; groups and their clickable title strip |
+| `path.ln[data-edge-ids][data-from-box][data-to-box]` | an edge inside the detail |
+| `g.stub[data-other][data-dir][data-edge-ids]` with `rect` and a connector `path.ln` | one neighbour tag per (neighbour part, direction) |
+| `#detail-title[data-node-id]`, `#detail-prose` | the node panel: title and rendered prose |
+| `#tour svg.map`, `#tour-prev`, `#tour-next`, `#pips button.pip[aria-current]` | tour map and controls |
+| `#tour-step-title[data-step-index]`, `#tour-step-prose` | title (k is 1-based) and text of the current step |
+| `g.callout[data-part]`, `g.tok[data-t][data-target]` | the step's callout; event tokens (visible ones have opacity 1) |
+| `#tour-detail svg.detail[data-detail]` | the detail under the tour map, step node `.hot` |
+| `#multiples figure` with `svg.map.mini[data-kind]` and `figcaption` | the six small multiples |
+| `#sequence svg .row[data-step-index]` | one row per tour step; click opens that step |
+| `#matrix table.nsq td[data-from][data-to]`, `.ni[data-edge-ids]` | matrix cells and their listed relations |
+| `#read-page section[data-node-id]` | one section per node in the one-page view |
 | `#help-toggle`, `#help`, `#help-close` | "How to read this page": the button, the panel (hidden until opened) and its close button |
-| `#read-toggle` | "Read as one page" / "Back to the map" |
-| `#read-page section[data-node-id] > .read-title` | one section per node in the one-page view, with the node title |
 
-URL routes: `#/` (overview), `#/node/<id>`, `#/tour/<k>`, `#/read` (the
-whole model as one page) and `#/read/<id>` (the one-page view, scrolled to a
-node). Keys: Escape or Backspace zoom out (Escape leaves the tour); in the
-tour, Left and Right arrows move between steps; Enter on a focused edge label
-or stub tag activates it.
+URL routes: `#/` (top; the map's detail shows `map.default_detail`),
+`#/node/<id>` (the detail of the node's part, node highlighted, panel on the
+node), `#/tour/<k>` (tour step k), `#/read` (the whole model as one page)
+and `#/read/<id>` (the one-page view, scrolled to a node).
 
 Links in the page header (`../`, `editing-guide/`) and `site-page` sources
 (`../features/...`) work only on the built site (`mkdocs serve` or
