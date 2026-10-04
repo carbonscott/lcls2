@@ -46,6 +46,9 @@ a { color: var(--data); }
 code { font-family: var(--f-mono); font-size: .86em; background: var(--grid); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
 section { margin-top: 72px; }
 :focus-visible { outline: 2px solid var(--data); outline-offset: 2px; }
+/* the tour section takes the focus (tabindex="-1") so that the arrow keys move
+   the tour; it draws no focus ring of its own */
+#tour:focus { outline: none; }
 
 /* ---- header ---------------------------------------------------------- */
 .topbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; font-family: var(--f-ui); }
@@ -288,9 +291,17 @@ table.nsq thead tr > :first-child { background: var(--paper); }
   table.nsq th { white-space: normal; padding: 6px 5px; font-size: 11px; letter-spacing: .04em; }
   table.nsq td { padding: 6px 5px; min-width: 0; }
   table.nsq tr > :first-child { min-width: 0; width: 76px; }
-  table.nsq .ni { display: block; margin: 3px 0; }
-  table.nsq .ni svg { display: inline-block; width: 16px; margin-right: 4px; vertical-align: middle; }
+  /* the line sample stays on the first line of its label; the label's
+     further lines are indented under its start */
+  table.nsq .ni { gap: 4px; margin: 3px 0; }
+  table.nsq .ni svg { width: 16px; }
 }
+/* the key under the matrix: what the shading means */
+/* (on the sheet colour, as the cells are, so the swatches look like them) */
+.nsq-key { font: 14px/1.5 var(--f-ui); font-stretch: 90%; color: var(--ink2); margin: 0; padding: 6px 10px; background: var(--sheet); border: 1px solid var(--rule); border-top: 0; }
+.nsq-key .sw { display: inline-block; width: 22px; height: 15px; margin: 0 6px 0 0; vertical-align: -3px; border: 1px solid var(--rule); font-size: 11px; line-height: 13px; text-align: center; color: var(--ink3); }
+.nsq-key .sw.ctl { background: color-mix(in srgb, var(--ctrl) 7%, var(--sheet)); }
+.nsq-key .sw.diag { background: var(--paper); margin-left: 4px; }
 
 /* ---- one-page view ------------------------------------------------------------- */
 .read-page { margin-top: 28px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 14px clamp(16px, 4vw, 40px) 40px; font-size: 16.5px; }
