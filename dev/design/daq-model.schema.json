@@ -199,7 +199,7 @@
           "y": {"$ref": "#/$defs/num"}}}},
         "omitted": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["edge", "reason"], "properties": {
           "edge": {"$ref": "#/$defs/id", "description": "A cross-part edge that no map line draws."},
-          "reason": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Why the map does not draw it, and where the reader finds it instead."}}}},
+          "reason": {"type": "string", "minLength": 1, "description": "LAYOUT TEXT. Why the map does not draw it, and where the reader finds it instead; shown under the map's caption."}}}},
         "ladder": {"type": "object", "additionalProperties": false, "required": ["node", "states", "transitions", "x", "dx", "y", "caption", "note"], "properties": {
           "node": {"$ref": "#/$defs/id", "description": "The node whose state machine the ladder draws."},
           "states": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}, "description": "LAYOUT TEXT. The states, in order, as named in the code. Station k is drawn at (x + k*dx, y)."},
@@ -263,10 +263,10 @@
         "id": {"$ref": "#/$defs/id", "description": "Unique among the map's lines; lad-<k> is reserved for the ladder."},
         "kind": {"$ref": "#/$defs/kind"},
         "edges": {"type": "array", "items": {"$ref": "#/$defs/id"}, "description": "The model edges this line draws."},
-        "d": {"type": "string", "minLength": 2, "pattern": "^M[-0-9 .,MLHVC{}y+]*$", "description": "SVG path with absolute M, L, H, V and C commands. Its end points lie on the borders of its ends boxes. A per_lane line writes the lane's y as {y} (offsets as {y-28}, {y+28})."},
+        "d": {"type": "string", "minLength": 2, "pattern": "^M[-0-9 .,MLHVC{}y+]*$", "description": "SVG path with absolute M, L, H, V and C commands. It may hold several subpaths (one M each), for example one per lane for a shared line that enters each lane's box; the viewer draws each subpath with its own arrowhead when arrow is end, start or both. Every end point of a subpath lies on the border of one of its ends or through boxes. A per_lane line writes the lane's y as {y} (offsets as {y-28}, {y+28})."},
         "arrow": {"enum": ["end", "start", "both", "none"]},
         "per_lane": {"type": "boolean", "description": "true: drawn once per lane."},
-        "through": {"type": "array", "items": {"$ref": "#/$defs/box_key"}, "description": "Boxes the line crosses border to border (a port is drawn at each crossing)."},
+        "through": {"type": "array", "items": {"$ref": "#/$defs/box_key"}, "description": "Boxes the line crosses border to border, with one subpath or across the gap between a subpath that ends on the box's border and one that starts on it (a port is drawn at each crossing)."},
         "ends": {"type": "array", "maxItems": 2, "items": {"$ref": "#/$defs/box_key"}, "description": "Boxes whose borders the line's end points touch."},
         "out": {"type": "boolean", "description": "true: drawn in the outside-this-repository colour."}
       }
@@ -323,7 +323,7 @@
               "node": {"$ref": "#/$defs/id"},
               "col": {"type": "integer", "minimum": 0, "description": "A column inside the group's col..col+span-1."}}}}}}
         ]}}},
-        "sides": {"type": "object", "propertyNames": {"$ref": "#/$defs/id"}, "additionalProperties": {"enum": ["left", "right", "top", "bottom"]}, "description": "Neighbour top-level part -> the side of the detail where its tags sit."}
+        "sides": {"type": "object", "propertyNames": {"$ref": "#/$defs/id"}, "additionalProperties": {"enum": ["left", "right", "top", "bottom"]}, "description": "Neighbour top-level part -> the side of the detail where its tags sit. The side must agree with the map: that part's boxes lie on that side of this part's boxes (for a diagonal neighbour, either side that agrees)."}
       }
     }
   }
