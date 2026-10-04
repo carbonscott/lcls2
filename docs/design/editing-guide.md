@@ -15,8 +15,9 @@ edge, rewrite a node's prose, check your change and preview it.
 The page is laid out by hand, not by an algorithm: one fixed map of the
 whole DAQ (the top-level parts), a detail view under the map for the part
 you open, the tour drawn on that same map, small copies of the map with one
-relation each ("small multiples"), a sequence chart of the tour, and an N²
-matrix of every interface between the parts. Where everything sits is
+kind of relation each and one with all of them ("small multiples"), a
+sequence chart of the tour, and an N² matrix of every relation between two
+parts. Where everything sits is
 stored in the model too (see [Layout](#layout-the-map-places-and-detail-grids)).
 
 ## Before you start
@@ -39,14 +40,14 @@ git cat-file -e "$COMMIT^{commit}" && echo "pinned commit present"
 ```
 
 The tools need Python 3 with `jsonschema` (for the validator) and, for the
-browser test only, `playwright` with its Chromium browser; the site build
+geometry check and the browser test, `playwright` with its Chromium browser; the site build
 uses Python 3.12. If you already have an environment with these (for example
 a conda environment), use it and skip the installs. Otherwise:
 
 ```bash
 pip install -r docs/requirements.txt        # includes jsonschema, used by the validator
-pip install playwright                      # only for the browser test
-python -m playwright install chromium       # only for the browser test
+pip install playwright                      # for the geometry check and the browser test
+python -m playwright install chromium       # for the geometry check and the browser test
 ```
 
 ## The files
@@ -74,8 +75,10 @@ The schema describes every field; this is the overview. Fields whose schema
 description starts with "PROSE" are text for readers and may use the prose
 markup below.
 
-- `title`, `question`, `summary`: shown at the top of the page
-  (TODO-VIEWER: confirm where the new page shows `question` and `summary`).
+- `title`, `question`, `summary`: `title` is the page's main heading (and
+  the browser tab's title); `question` and `summary` fill the box under it.
+  In "Read as one page" that box is hidden and the one-page view starts with
+  the `question` and the `summary` instead.
 - `code_base`: `repo_url` and the full 40-character `commit` that every code
   reference points into. Code links are built as
   `<repo_url>/blob/<commit>/<path>#L<start>-L<end>`.
@@ -86,8 +89,10 @@ markup below.
     - `id`, `parent` (the parent's id, or `null` for a top-level node),
       `title` (at most 40 characters, shown on the node's box in its part's
       detail view and in the panel), `summary` (one sentence, at most 160
-      characters; TODO-VIEWER: where the new page shows it), `prose` (the
-      concept, shown first);
+      characters, shown in bold at the top of the node's panel and of its
+      section in the one-page view, and with the title in the short panel
+      under the tour's detail), `prose` (the concept, shown under the
+      summary);
     - optional `dev_notes` (shown under "For developers"), `outside_repo`,
       `decisions`, `code_refs`, `sources`.
 - `edges`: flows between nodes: `id`, `from`, `to`, `label` (at most 30
@@ -129,17 +134,33 @@ needs a code reference of its own (or `outside_repo` with an external
 source).
 
 An edge may connect any two nodes, at any levels, except a node and its own
-ancestor or descendant. In a part's detail view, an edge between two of the
-part's descendants is drawn between their boxes (or a group's frame); an
-edge with one end in another part is drawn as a tag on the side of the
-detail that the grid's `sides` names for that part (click it to go there).
-On the map, an edge between two parts is drawn only by a map line that
-lists it, or is listed in `map.omitted` with a reason (see "Map lines"
-below); the N² matrix lists every such edge by its label. Give an edge
-`prose` (one or two sentences, with a code reference or source): it is what
-a reader sees for the flow in the panel and in the one-page view.
-(TODO-VIEWER: describe how the detail view merges several edges between the
-same two boxes and where the panel lists a node's flows.)
+ancestor or descendant. Where the page draws an edge depends on its ends:
+
+- Both ends below the same part: an arrow in that part's detail view,
+  between the two boxes (or a group's frame). Edges of one kind from the
+  same box to the same box are merged into one arrow that carries their
+  labels (each different label once); edges of another kind, or in the
+  other direction, get an arrow of their own.
+- One end below a part and the other end in another part: a tag on the side
+  of the part's detail view that the grid's `sides` names for the other part
+  (click the tag to go there). A detail has one tag per neighbouring part and
+  direction ("from DRP ›", "to Files ›") that lists the labels of all such
+  edges, with one connector to each box (and kind) they reach. If an end is a
+  top-level part itself, not a node below it, that part's own detail shows no
+  tag for the edge.
+- Ends in two different parts: on the map, only a map line that lists the
+  edge in its `edges` draws it, and every pair of parts that an edge connects
+  needs such a line or an entry in `map.omitted` with a reason (see "Map
+  lines" below); the N² matrix lists every edge between two parts by its
+  label.
+
+The panel under the detail lists the node's flows under "Flows", a section
+that is folded until the reader opens it: "Comes from" and "Goes to" list the
+edges that cross the boundary of the node and its descendants, each with its
+kind, the node at the other end, the label, the edge's `prose` and its
+references. The one-page view lists each node's outgoing edges under "Flows
+out of this part". Give an edge `prose` (one or two sentences, with a code
+reference or source): it is what a reader sees for the flow in both places.
 
 The order of nodes in the file sets:
 
@@ -292,8 +313,12 @@ its title says so). The tour is drawn on the fixed map: for each step,
 gives the tokens that show where the event's parts are and the map lines
 and boxes to highlight, and `map.sequence.rows` has the step's row of the
 sequence chart. A step's `node` is highlighted in the detail view under the
-tour map, and the part that contains it is outlined on the map.
-(TODO-VIEWER: say whether and where a step's `edges` are highlighted.)
+tour map, and the part that contains it is outlined on the map ("THIS
+STEP"). The lines and boxes highlighted on the tour map come only from the
+`highlight` list of the step's `map.tour` entry: the viewer does not draw a
+step's `edges` (the validator only checks that those edge ids exist), so
+when you change a step's `edges`, list the map lines that draw them in its
+`highlight` as well.
 Step links are `#/tour/<k>` with k counted from 1, so inserting a step
 changes the numbers of the steps after it, and a new step needs its
 `map.tour` entry and sequence row at the same position (the validator
@@ -323,8 +348,16 @@ x grows to the right, y grows down.
 - `lines`: the map's lines. Each has an `id`, a `kind`, the model `edges` it
   draws, an SVG path `d` (absolute `M`, `L`, `H`, `V`, `C` commands only),
   an `arrow`, `per_lane`, and the boxes it touches: `ends` (the boxes whose
-  borders its two end points lie on) and `through` (the boxes it crosses
-  from border to border; the viewer draws a port where it crosses). In a
+  borders its end points lie on) and `through` (the boxes it crosses from
+  border to border; the viewer draws a port where a shared line crosses a
+  box border). A `d` may hold several subpaths, one `M` each: the viewer
+  draws each subpath with its own arrowhead. A shared line that enters each
+  lane's box uses one subpath per lane, for example the timing line
+  `tim-rail`, `M215,166 H335 V247 M335,303 V327 M335,383 V407`: each
+  subpath starts and ends on the border of an `ends` or `through` box, and
+  the gap between one subpath and the next runs across exactly one `through`
+  box, from the border where the first subpath ends to the border where the
+  next one starts. In a
   per-lane line, `d` writes the lane's y as `{y}` (`{y-28}`, `{y+28}` for
   offsets) and a per-lane box is named by its id alone. In a shared line, a
   per-lane box is named with its lane, `<box id>@<lane>`, lanes counted
@@ -383,8 +416,14 @@ The detail view of a part is a grid with `columns` columns and a list of
 Every descendant of the part appears exactly once (as a node item, a group
 or a kid), and no two items share a row and column. `sides` names, for each
 neighbouring part, the side of the detail (`left`, `right`, `top`,
-`bottom`) where the tags for its edges sit; choose the side where that part
-is on the map, or where its line arrives.
+`bottom`) where the tags for its edges sit. The side must agree with the
+map, because the page tells the reader that a tag sits on the side where
+that neighbour is on the map: `left` when the centres of all the
+neighbour's boxes lie left of this part's leftmost box edge, `right`, `top`
+(above) and `bottom` (below) likewise. For a neighbour that lies
+diagonally, either side that agrees will do. Every neighbour that gets a
+tag in the detail needs an entry. The validator reports `E-SIDES`
+otherwise.
 
 **Give a new node a cell.** Find the top-level part that contains the new
 node (follow `parent` up to the node with `"parent": null`) and edit that
@@ -417,22 +456,43 @@ if it has children, a `detail`), and nothing moves out of its way:
    the edges in `map.omitted` with a reason), give the part a `short` name,
    and add its tags' sides to the `detail` of each neighbouring part.
 4. Run the validator, then the geometry check in the browser (see
-   `docs/design/tools/README.md`), which finds lines that cross boxes they
-   do not name and text that does not fit.
+   "Geometry check" under "Check your change"), which finds lines that
+   cross boxes they do not name, text that does not fit, and texts that lie
+   on top of each other.
 
 ### Map lines and `map.omitted`
 
 Every pair of parts with an edge between them must be drawn: at least one
 of the pair's edges is listed in the `edges` of a map line, or in
 `map.omitted` with a `reason` that says why the map leaves it out and where
-the reader finds it instead (the detail views' tags and the matrix always
-show it). The model omits one edge this way: the chunk request from the
-files part to the control process, because every route from the file lanes
-to the run-control box would cross the state ladder or the DRP lanes. A
-line's `edges` must have the line's `kind`, and both ends of each edge must
-lie in parts that the line touches (`ends` or `through`). An edge between
+the reader finds it instead (the matrix always lists it, and the detail of
+each part whose end is a node below the part shows it as a tag). The model
+omits one edge this way: the chunk request from the files part to the
+control process, which the map leaves out to keep the lanes and the state
+ladder clear. A line's `edges` must have the line's `kind`, and both
+ends of each edge must lie in parts that the line touches (`ends` or `through`). An edge between
 two nodes of one part may also be drawn by a line between that part's
-boxes (for example `meb-shm` inside the monitoring part).
+boxes (for example `meb-shm` inside the monitoring part). The page lists
+every `map.omitted` entry under the map's caption ("Not drawn on the map")
+as the two parts, the edge's label and the `reason`.
+
+**After adding an edge**, decide what the map needs:
+
+1. Both ends in one part: the map needs nothing; the part's detail view
+   draws the arrow.
+2. Ends in two parts that a map line already connects with an edge of the
+   same kind (both parts among the line's `ends` or `through`): the pair is
+   already drawn. Add the new edge's id to that line's `edges` so that the
+   line names every edge it stands for.
+3. Ends in two parts with no such line: add a line (its `d`, `kind`,
+   `ends`, `through`, `arrow`, and a label if it needs one) on a route that
+   crosses no box it does not name and no text, or, when no clear route
+   exists, add `{"edge": "<edge id>", "reason": "..."}` to `map.omitted`,
+   with a reason that says why the map leaves it out and where the reader
+   finds it (the matrix always lists it, and the detail of each part whose
+   end is a node below the part shows it as a tag). The validator reports
+   `E-MAP-EDGES` while a pair is neither drawn nor omitted; the geometry
+   check (below) finds a new line that crosses a box it does not name.
 
 ### Layout text
 
@@ -441,7 +501,12 @@ notes, band and column names, ladder names, captions, section texts) are
 reader-facing text, so the accuracy rule applies to them as to prose: each
 one must be supported by the model's own prose, summaries or edge labels,
 or by the code at the pinned commit. No counts ("14 steps"), no rates other
-than the ~929 kHz bucket rate, no claim stronger than the model's. Write
+than the ~929 kHz bucket rate, no claim stronger than the model's. A
+universal word (every, each, all, only, never, no, one per) must hold for
+every case the string covers: for example a DRP selected as monitor-only
+writes no files, the map leaves out the edges in `map.omitted`, and the
+matrix leaves out the edges inside one part; narrow or hedge the string
+when a case breaks it. Write
 them for the reader of the doc, without layout jargon. The single-source
 check finds each of these strings if it is copied into the viewer.
 
@@ -458,12 +523,13 @@ Every layout error line starts with a code:
 | `E-GRID-FOREIGN` | A grid or box names a node that is not in the part, a group without children or a nested group, a `sides` key that is not another part, or `place`/`detail` on a node below the top level. |
 | `E-BOX-OUTSIDE-CELL` | A box rectangle is not inside its columns and band, a box names a column or band that does not exist, or a grid item lies outside the grid's columns or its group. |
 | `E-LINE-REF` | A line names an edge or box that does not exist, an edge of another kind, a lane that does not exist, or a label names an unknown line. |
-| `E-LINE-ENDS` | An end point of a line is not on the border of one of its `ends` boxes (within 2 units), or `d` cannot be parsed. |
-| `E-LINE-THROUGH` | A `through` box is not crossed from border to border. |
-| `E-TOUR-MAP` | `map.tour` does not have one entry per tour step in order, a highlight names nothing, nothing highlighted belongs to the step's part, or a token lies off the map. |
+| `E-LINE-ENDS` | An end point of a line (of each subpath, when `d` has several) is not on the border of one of its `ends` boxes (or, for a subpath, of an `ends` or `through` box) within 2 units, an `ends` box is touched by no end point, or `d` cannot be parsed. |
+| `E-LINE-THROUGH` | A `through` box is not crossed from border to border, by one subpath or across the gap between two subpaths; or the gap between two consecutive subpaths does not run across exactly one `through` box (part of the line would not be drawn). |
+| `E-TOUR-MAP` | `map.tour` does not have one entry per tour step in order, a `highlight` list is empty or names nothing, nothing highlighted belongs to the step's part, or a token lies off the map. |
 | `E-SEQUENCE` | The sequence chart does not have one row per tour step in order, or a row names an unknown lifeline. |
 | `E-LADDER` | The ladder's node does not exist, it has the wrong number of transitions, or its stations leave the map. |
 | `E-MAP-EDGES` | A pair of parts with an edge has no map line and no `map.omitted` entry, or a line's edge reaches a part the line does not touch. |
+| `E-SIDES` | A `sides` entry of a part's `detail` names a side that does not agree with where that neighbour's boxes are on the map, or a neighbour that has tags in the detail has no `sides` entry (see "Detail grids"). |
 
 ## Worked example
 
@@ -545,13 +611,15 @@ git show "$COMMIT:psdaq/drp/FileWriter.cc" | sed -n '123,133p' | grep -F -- '_wr
 
 This edge goes from the part `drp` (the parent of
 `example-buffered-writer`) to the part `files`. The map already has a line
-for that pair: the `data` line `drp-files` lists `e-drp-to-files` among its
+for that pair (case 2 of "After adding an edge"): the `data` line
+`drp-files` touches both parts and lists `e-drp-to-files` among its
 `edges`, so the validator's `map_edges` count does not change. Add the new
-edge's id to that line's `edges` if the line should count it as one of the
-edges it draws. In the DRP's detail view its label joins the tag for Files
-(one tag per neighbouring part and direction), on the side that `sides`
-names for `files` (`right`), and the N² matrix lists it in the DRP-to-Files
-cell.
+edge's id to that line's `edges`, since the line stands for it too. In the
+DRP's detail view its label joins the tag for Files (one tag per
+neighbouring part and direction), on the side that `sides` names for
+`files` (`right`, where the Files boxes are on the map); the Files detail
+shows no tag for it, because its end there is the part `files` itself, not
+a node below it. The N² matrix lists it in the DRP-to-Files cell.
 
 **3. Rewrite a node's prose.** Find the node by its `id` and replace its
 `prose` string. Keep every sentence supported by the node's own code
@@ -602,7 +670,10 @@ error codes are explained in "What the validator checks" above):
 | `[E-PLACE-MISSING]` | Give the top-level part a `place` (see "Pick a cell for a new top-level part"). |
 | `[E-CELL-SHARED]`, `[E-BOX-OUTSIDE-CELL]` | Move the box or grid item to a free cell inside its columns and band. |
 | `[E-LINE-ENDS]`, `[E-LINE-THROUGH]` | Fix the line's `d`, `ends` or `through` so that its ends sit on its `ends` boxes and it crosses each `through` box. |
-| `[E-MAP-EDGES] no map line draws an edge from ...` | Add the edge to a map line's `edges`, or list it in `map.omitted` with a reason. |
+| `[E-MAP-EDGES] no map line draws an edge from ...` | Add the edge to a map line's `edges`, or list it in `map.omitted` with a reason (see "After adding an edge"). |
+| `[E-SIDES] ... but on the map the box centres of ... are ...` | Change the side to the one the message names (where that part is on the map). |
+| `[E-SIDES] ... no side for "...", whose tags this detail shows` | Add a `sides` entry for that part, on the side where it is on the map. |
+| `[E-LINE-THROUGH] ... the gap from subpath ... does not run across a through box` | Make each subpath end on a `through` box's border where the next subpath starts across the box, or join the subpaths. |
 | `[E-TOUR-MAP]`, `[E-SEQUENCE]` | Add or move the step's `map.tour` entry or sequence row to the step's position. |
 
 `--outline` also prints the model's sha256, the top-level titles and the tour
@@ -623,19 +694,34 @@ SERVER_PID=$!
 echo "http://127.0.0.1:$PORT/"
 ```
 
-Open the printed URL. The page shows the fixed map with the detail of one
-part under it: click a part's box on the map to open its detail, click a
-box in the detail to show that node in the panel, and click a tag on the
-detail's edge to go to that neighbouring part. The buttons above the map
-emphasize one kind of edge. Further down, the tour moves one event across
-the same map (Back and Next, or the Left and Right arrow keys), the small
-multiples show one kind of edge per copy of the map, the sequence chart
-shows the tour in one figure (click a row to open that step), and the N²
-matrix lists every interface between the parts. "Read as one page" shows
-the whole model as one document (`#/read`); "How to read this page"
-explains the controls. (TODO-VIEWER: check these names and controls against
-the finished viewer.) Reload the page after each edit. When you are done,
-stop the server by its process ID:
+Open the printed URL. The page shows the fixed map, the detail of one part
+under it and the panel that describes the selected node:
+
+- Click (or tap) a part's box on the map to open its detail. Click a box or
+  a dashed group in the detail to show that node in the panel, and click a
+  tag on the detail's edge ("from DRP ›") to go to that neighbouring part.
+  A link to a node (`#/node/<id>`) opens the same view and scrolls to the
+  detail.
+- "Emphasize" (All, and one button per kind of edge, named from
+  `map.kinds`) dims every other kind on the map.
+- "Full size", above the map, the tour map and the sequence chart, draws
+  that figure at its natural size (the figure then scrolls sideways in its
+  frame); press it again to fit the figure to the page.
+- "Not drawn on the map", under the map's caption, lists the `map.omitted`
+  entries.
+- In the panel, the flows are folded under "Flows".
+- Further down: the tour moves one event across the same map ("Back" and
+  "Next", the numbered step buttons, or the Left and Right arrow keys); the
+  small multiples show one kind of edge per copy of the map, and the last
+  copy shows all of them; the sequence
+  chart shows the tour in one figure (click a row to open that step); the
+  N² matrix lists every relation between two parts.
+- "Read as one page" shows the whole model as one document (`#/read`);
+  "How to read this page" explains the controls.
+
+A figure that is wider than its frame (on a phone, or at full size) says
+"Scroll sideways" above it. Reload the page after each edit. When you are
+done, stop the server by its process ID:
 
 ```bash
 kill "$SERVER_PID"
@@ -649,11 +735,57 @@ Links to `../` (Documentation home), `editing-guide/` (Edit this model) and
 (`mkdocs serve` or `mkdocs build`), not when `docs/design` is served on its
 own as above.
 
-**Browser test** (with the preview server running, in the same shell, so
-that `$PORT` is set):
+**Geometry check** (with the preview server running, in the same shell, so
+that `$PORT` is set). It opens the map and the detail view of every part
+that has children, and measures them in SVG units:
+
+```bash
+python docs/design/tools/geometry_check.py --url "http://127.0.0.1:$PORT/"
+python docs/design/tools/geometry_check.py --url "http://127.0.0.1:$PORT/" --width 744 --height 1000
+```
+
+Run it at both widths: the default window is 1440 by 900; 744 is a tablet
+held upright, where the map is drawn smallest. It prints:
+
+| Line | Meaning |
+|---|---|
+| `font=Archivo` | The page's web font is loaded (the measurements depend on it). `font=missing ...` fails the run. |
+| `view=<map or detail:ID> boxes=B lines=L texts=T line_through_box=X text_overflow=Y crossings_allowed=K line_over_text=J label_on_box=Q box_overlap=O line_over_label=W small_text=S text_overlap=E min_text_px=P` | One line for the map, then one per detail view. |
+| `PROBLEM: ...` | One line per counted element, naming the view, the line, the box or the text. |
+| `INFO: smallest text ...` | The smallest text at this width and where it is. |
+| `views=V line_through_box=X text_overflow=Y` | Totals. V is 1 plus the number of parts that have children. |
+| `crossings_allowed=K ... small_text=S text_overlap=E min_text_px=P` | Totals of the other counts. |
+
+What the counts mean, and what to do:
+
+- `line_through_box`: a line passes over a box that it does not name (in its
+  `through` or `ends` on the map; in a detail, its own end boxes). Change the
+  line's `d`, or name the box in `through` if the line should cross it.
+- `text_overflow`: a text sticks out of its box, tag or group title, or a free
+  label (a line's label, a note, a band or column name) leaves the map or
+  covers a box. Shorten the text (box `sub` lines are not wrapped) or move
+  the label.
+- `box_overlap`: two boxes, tags or groups overlap; move one.
+- `line_over_label`: a line is painted over a text; move the label or the
+  line.
+- `text_overlap`: two texts of one view lie on top of each other (for
+  example a line's label moved onto another label, or a label on a box's
+  title); move one of them.
+- `small_text`: texts drawn smaller than 7 px at this width; a detail view
+  that grows very wide (for example because of a long word in a title) makes
+  its text small.
+- Informational only: `crossings_allowed` (crossings of boxes that a line
+  names, drawn as ports), `line_over_text` (a line that runs under a text
+  but is hidden by an opaque box) and `label_on_box`.
+
+The exit status is 0 only when the font is Archivo, V is right and X, Y, O,
+W, S and E are all 0.
+
+**Browser test** (with the preview server running, in the same shell):
 
 ```bash
 python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/"
+python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/" --layout
 python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/" \
     --check-node example-buffered-writer \
     --expect-title "Example: buffered file writer" \
@@ -662,23 +794,46 @@ python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/" \
     --check-edge example-buffered-writer-to-files
 ```
 
-The first command clicks through every node (a part's box on the map, a
-lower node's box or group in its part's detail) and every tour step and
-prints `nodes_visited=V/N tour_steps=S/T console_errors=C`, then a smoke
-line and one line each for the map, the detail views, the tour, the small
-multiples, the sequence chart and the matrix; it passes when V = N, S = T,
-C = 0 and every check passes (a node counts only if the panel shows its
-title and the start of its prose; a step only if its title and the start of
-its prose are visible). The second opens one node (by link and by clicking)
-and checks its title and prose. `--expect-prose` is matched against the
-rendered, visible text of the panel (whitespace-normalized), so pick a
-substring without markup: no backticks, no `[[...]]` and no link syntax.
-The third checks that the edge is drawn: as a line inside its part's
-detail, as the tags in both parts' details, or, for an edge between two
-parts, on a map line or in a matrix cell. See `docs/design/tools/README.md`
-for the exact output lines, the timing and the test hooks
-(TODO-VIEWER: copy the final output lines here once the tests are
-rewritten).
+The first command drives the page by clicking, as a reader would, and
+prints these lines:
+
+| Line | It passes when |
+|---|---|
+| `nodes_visited=V/N tour_steps=S/T console_errors=C` | V = N: every node was reached by clicking (a part's box on the map; a lower node's box or group in its part's detail) and the panel then showed its title and the first 30 characters of its prose. S = T: every tour step showed its title, the start of its prose and the "THIS STEP" mark on the map. C = 0. |
+| `smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q` | A tag opens its part, the arrow keys move the tour, the help opens and closes, the one-page view has a section with the right title for every node (R = N), and the page loads nothing from other sites except the fonts (Q = 0). |
+| `map parts=A/P lanes=L bands=B columns=K boxes=O/Q` | Every part has a box on the map, the lanes, bands and columns match `map`, and every box is drawn exactly where its `place` says (O = Q). |
+| `detail opened=X/P` | Clicking each part that has children opens its detail with every descendant drawn. |
+| `tour steps=S/T highlighted=H/T` | For every step, the highlighted lines and boxes are exactly the step's `highlight` list, the dots are its `tokens`, and the step's node is highlighted in the detail under the tour map. |
+| `multiples panels=M/6` | Each small copy of the map leaves exactly its kind of line undimmed. |
+| `sequence rows=R/T` | Each row of the sequence chart draws its step's arrow between the right lifelines, with its label, and opens that step when clicked. |
+| `matrix cells=C2/C` | Each cell of the matrix lists exactly the labels of the edges between its two parts. |
+| `console_errors=C` | No errors or warnings in the browser console, and no failed requests. |
+
+`--layout` loads the page at several window sizes and prints
+`layout_identical=true parts=P` (the map is the same at 744 and 1440 pixels
+wide), `width=W page_hscroll=0` for widths 400, 744 and 1440 (the page itself
+never scrolls sideways), the informational
+`inner_scroll=<section:px,...> min_text_px=P` at 744 (`none` when no figure
+scrolls inside its frame), `fullsize map-section=ok tour=ok sequence=ok` (the
+"Full size" buttons work, and the map and the tour map fit a 744-pixel window)
+and `console_errors=0`.
+
+`--check-node` opens one node by its link and by clicking, and prints
+`check_node id=ID title_ok=true prose_ok=true console_errors=0` when the
+panel shows the title and the prose contains the text. `--expect-prose` is
+matched against the rendered, visible text of the panel
+(whitespace-normalized), so pick a substring without markup: no backticks,
+no `[[...]]` and no link syntax.
+
+`--check-edge` prints `check_edge id=ID drawn=true console_errors=0` when the
+edge is drawn: an edge inside one part as an arrow in that part's detail; an
+edge between two parts with an end below a part as the tag in the detail of
+each such part; an edge between two top-level parts on a map line or in its
+matrix cell. It checks that the edge is drawn, not its label.
+
+Every run exits with status 0 only when all of its lines pass.
+`docs/design/tools/README.md` describes the tools, their options and the
+test hooks in full.
 
 **Single-source check** (that no model text was copied into the viewer):
 
@@ -713,7 +868,8 @@ mkdocs build --strict -d /tmp/lcls2-site
 - Give every new node a cell in its part's `detail` grid, and every new
   top-level part a `place` in a free cell of the map; draw or omit (with a
   reason) every new pair of parts that an edge connects.
-- Run the validator until it prints `errors=0`, then preview.
+- Run the validator until it prints `errors=0`, then preview, and run the
+  geometry check (at 1440 and at 744 pixels wide) and the browser test.
 - After adding an edge, check it in the browser with
   `browser_test.py --check-edge <edge id>` (it checks that the edge is
   drawn, not its label).

@@ -39,12 +39,13 @@
         <li><strong>One fixed map</strong> keeps the same layout on every screen. Columns are stages from left to right; bands separate kinds of path. Each kind of relation has its own colour and line pattern, listed on the buttons above the map.</li>
         <li><strong>Emphasize</strong> buttons dim every relation except one kind; All shows them all again.</li>
         <li><strong>Click or tap a box</strong> (or focus it and press Enter) to open its detail under the map. The detail shows the parts inside, the arrows between them, and tags that name the neighbours outside. A tag sits on the side where that neighbour is on the map; click a tag to open the neighbour.</li>
-        <li><strong>The panel</strong> under the detail describes the selected part in full: what it does, design decisions, code references with links, sources and its flows. Click any box or dashed group in the detail to show it there.</li>
+        <li><strong>The panel</strong> under the detail describes the selected part in full: what it does, design decisions, code references with links and sources. Its flows (what comes in and goes out, with their descriptions) are folded under "Flows"; open that line to list them. Click any box or dashed group in the detail to show it there.</li>
         <li><strong>A guided tour</strong> follows one event step by step over the same map. Use Back and Next, the numbered buttons, or the Left and Right arrow keys.</li>
-        <li><strong>Small copies of the map</strong> each show one kind of relation; <strong>the sequence chart</strong> shows the tour in one figure (click a row to open that step); <strong>the matrix</strong> lists every relation between two parts, with no lines.</li>
+        <li><strong>Small copies of the map</strong> each show one kind of relation, and the last one shows all of them together; <strong>the sequence chart</strong> shows the tour in one figure (click a row to open that step); <strong>the matrix</strong> lists every relation between two parts, with no lines.</li>
         <li><strong>Boxes marked "outside repo"</strong> are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
         <li><strong>Read as one page</strong> shows the same content as one long document. <strong>Edit this model</strong> is for the people who maintain this page.</li>
-        <li>Wide figures scroll sideways inside their own frame on narrow screens. Links to other pages of the documentation work on the built documentation site, not when this directory is served on its own.</li>
+        <li><strong>Full size</strong> draws the map, the tour map or the sequence chart at its natural size, so that small text is easier to read; the figure then scrolls sideways inside its frame. Press it again to fit the figure to the width of the page.</li>
+        <li>A figure that is wider than its frame scrolls sideways inside the frame and says so above it ("Scroll sideways"). Below the map, a note lists any relation between two parts that the map does not draw, and why. Links to other pages of the documentation work on the built documentation site, not when this directory is served on its own.</li>
       </ul>
       <button id="help-close" class="btn" type="button">Close</button>
     </section>
@@ -56,8 +57,10 @@
         <div class="sec-head" data-section="map"></div>
         <div class="bar" id="chips" role="group" aria-label="Emphasize one relation"><span class="lbl">Emphasize</span></div>
         <figure>
+          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="map">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
           <div class="sheet" id="map"></div>
           <figcaption class="sec-caption" data-section="map"></figcaption>
+          <div class="omitted" id="map-omitted" hidden></div>
         </figure>
         <div class="detail-wrap" id="detail-view"></div>
         <aside id="detail" class="panel" aria-label="Details"></aside>
@@ -66,6 +69,7 @@
       <section id="tour" aria-labelledby="tour-title">
         <div class="sec-head" data-section="tour"></div>
         <figure>
+          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="tour-map">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
           <div class="sheet" id="tour-map"></div>
         </figure>
         <div class="tourbar">
@@ -85,6 +89,7 @@
       <section id="sequence" aria-labelledby="sequence-title">
         <div class="sec-head" data-section="sequence"></div>
         <figure>
+          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="seq">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
           <div class="sheet" id="seq"></div>
           <figcaption class="sec-caption" data-section="sequence"></figcaption>
         </figure>
@@ -92,6 +97,7 @@
 
       <section id="matrix" aria-labelledby="matrix-title">
         <div class="sec-head" data-section="matrix"></div>
+        <div class="figbar"><span class="scroll-hint" hidden>Scroll sideways to see every column &rarr;</span></div>
         <div class="tbl" id="nsq"></div>
       </section>
     </main>

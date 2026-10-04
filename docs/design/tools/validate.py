@@ -28,7 +28,28 @@ at least one edge drawn by a map line or listed in map.omitted.
 
 Layout error codes: E-PLACE-MISSING, E-CELL-SHARED, E-CHILD-TWICE,
 E-CHILD-MISSING, E-GRID-FOREIGN, E-BOX-OUTSIDE-CELL, E-LINE-REF,
-E-LINE-ENDS, E-LINE-THROUGH, E-TOUR-MAP, E-SEQUENCE, E-LADDER, E-MAP-EDGES.
+E-LINE-ENDS, E-LINE-THROUGH, E-TOUR-MAP, E-SEQUENCE, E-LADDER, E-MAP-EDGES,
+E-SIDES.
+
+A line's "d" may hold several subpaths (one M each, e.g. one per lane
+segment). With one subpath, its two end points lie on the border (+-2) of
+"ends" boxes; with several, each subpath's two end points lie on the border of
+an "ends" or a "through" box (E-LINE-ENDS). Every "ends" box is touched by an
+end point, and every "through" box is crossed border to border by the line as
+a whole: by one subpath, or across the gap between a subpath that ends on its
+border and one that starts on its border (E-LINE-THROUGH). In a line with
+several subpaths, the gap from each subpath's end to the next subpath's start
+must run across exactly one "through" box, from border to border; a gap
+anywhere else leaves part of the line undrawn (E-LINE-THROUGH).
+E-TOUR-MAP also flags an empty map.tour[i].highlight. E-SIDES: in a part's
+detail.sides, the side given for a neighbour must agree with the map: "left"
+means every box centre of the neighbour lies left of the part's leftmost box
+edge, "right" right of its rightmost edge, "top" above its top edge, "bottom"
+below its bottom edge (all lane copies count); a diagonal neighbour may use
+either side that agrees. Every neighbour that gets a tag in a part's detail
+(an edge with one end on a node below the part and the other end in that
+neighbour) needs a sides entry (E-SIDES). The grids count is about the grid
+cells only; an E-SIDES error does not lower it.
 
 Exit status: 0 if there are no errors, 1 if there are errors, 2 if the
 model or schema cannot be read at all (missing file, JSON syntax error).
@@ -515,11 +536,14 @@ def number(value):
 
 
 def parse_path_d(d, lane_y=None):
-    """Parse an absolute M/L/H/V/C path. Returns (segments, None) or (None, problem).
+    """Parse an absolute M/L/H/V/C path. Returns (subpaths, None) or (None, problem).
 
     lane_y: the lane's y for a per-lane line ({y}, {y-28}, {y+28} tokens);
     None for a shared line, where a lane token is a problem.
-    Segments: ("L", p0, p1) or ("C", p0, c1, c2, p3) with points as (x, y)."""
+    A path may hold several subpaths (each starts with its own M), e.g. one
+    per lane segment of a rail, so that every segment gets its own arrowhead.
+    subpaths: a list with one list of segments per subpath; a segment is
+    ("L", p0, p1) or ("C", p0, c1, c2, p3) with points as (x, y)."""
     if not isinstance(d, str) or not d.strip():
         return None, "d is empty"
     if LANE_TOKEN_RE.search(d):
@@ -533,7 +557,7 @@ def parse_path_d(d, lane_y=None):
     if "{" in d or not PATH_SYNTAX_RE.match(d):
         return None, f"cannot parse d {d!r} (absolute M, L, H, V, C commands and numbers only)"
     tokens = PATH_TOKEN_RE.findall(d)
-    segments, i, cur, command = [], 0, None, None
+    subpaths, segments, i, cur, command = [], None, 0, None, None
     arity = {"M": 2, "L": 2, "H": 1, "V": 1, "C": 6}
     while i < len(tokens):
         if tokens[i] in arity:
@@ -541,15 +565,17 @@ def parse_path_d(d, lane_y=None):
             i += 1
         if command is None or (command != "M" and cur is None):
             return None, f"cannot parse d {d!r}: it must start with M"
-        if command == "M" and cur is not None:
-            return None, f"cannot parse d {d!r}: a line is one path (one M)"
         raw = tokens[i:i + arity[command]]
         if len(raw) != arity[command] or any(t in arity for t in raw):
             return None, f"cannot parse d {d!r}: {command} needs {arity[command]} numbers"
         args = [float(t) for t in raw]
         i += arity[command]
         if command == "M":
+            if segments is not None and not segments:
+                return None, f"cannot parse d {d!r}: subpath {len(subpaths) + 1} is an M that draws nothing"
             cur = (args[0], args[1])
+            segments = []
+            subpaths.append(segments)
             command = "L"
             continue
         if command == "L":
@@ -562,9 +588,10 @@ def parse_path_d(d, lane_y=None):
             seg = ("C", cur, (args[0], args[1]), (args[2], args[3]), (args[4], args[5]))
         segments.append(seg)
         cur = seg[-1]
-    if not segments:
-        return None, f"d {d!r} draws nothing"
-    return segments, None
+    if not subpaths or not all(subpaths):
+        return None, f"d {d!r} draws nothing" if len(subpaths) <= 1 else \
+            f"cannot parse d {d!r}: subpath {len(subpaths)} is an M that draws nothing"
+    return subpaths, None
 
 
 def sample_path(segments, step=1.0):
@@ -609,6 +636,57 @@ def crosses_border_to_border(points, rect):
                 return True
         k += 1
     return False
+
+
+def line_crosses_box(subpath_points, rect):
+    """True if the line as a whole crosses the rect border to border.
+
+    Either one subpath enters the rect through its border and leaves it again,
+    or the line is split at the rect: one subpath ends on the rect's border and
+    another subpath starts on the border at a point across the rect, so that the
+    gap between the two (a straight join) runs through the rect's inside."""
+    if any(crosses_border_to_border(points, rect) for points in subpath_points):
+        return True
+    x0, y0, x1, y1 = rect
+    ins = [(k, pts[-1]) for k, pts in enumerate(subpath_points) if on_border(pts[-1], rect)]
+    outs = [(k, pts[0]) for k, pts in enumerate(subpath_points) if on_border(pts[0], rect)]
+    for k, p in ins:
+        for j, q in outs:
+            if j == k:
+                continue
+            for s in range(1, 20):
+                x, y = p[0] + (q[0] - p[0]) * s / 20, p[1] + (q[1] - p[1]) * s / 20
+                if x0 + 0.5 < x < x1 - 0.5 and y0 + 0.5 < y < y1 - 0.5:
+                    return True
+    return False
+
+
+def gap_across(p, q, rect):
+    """True if p and q both lie on the rect's border and the straight join from
+    p to q runs through the rect's inside (the gap of a line split at the box)."""
+    if not (on_border(p, rect) and on_border(q, rect)):
+        return False
+    x0, y0, x1, y1 = rect
+    for s in range(1, 20):
+        x, y = p[0] + (q[0] - p[0]) * s / 20, p[1] + (q[1] - p[1]) * s / 20
+        if x0 + 0.5 < x < x1 - 0.5 and y0 + 0.5 < y < y1 - 0.5:
+            return True
+    return False
+
+
+def side_agreement(part_rects, other_rects):
+    """The sides (left/right/top/bottom) of the part's boxes on which every one of
+    the other part's box centres lies: left = every centre left of the part's
+    leftmost box edge, right = right of its rightmost edge, top = above its
+    topmost edge, bottom = below its bottommost edge (SVG y grows downwards)."""
+    px0 = min(r[0] for r in part_rects)
+    py0 = min(r[1] for r in part_rects)
+    px1 = max(r[2] for r in part_rects)
+    py1 = max(r[3] for r in part_rects)
+    centres = [((r[0] + r[2]) / 2, (r[1] + r[3]) / 2) for r in other_rects]
+    tests = {"left": lambda c: c[0] < px0, "right": lambda c: c[0] > px1,
+             "top": lambda c: c[1] < py0, "bottom": lambda c: c[1] > py1}
+    return [side for side, test in tests.items() if all(test(c) for c in centres)], (px0, py0, px1, py1), centres
 
 
 def rects_overlap(a, b):
@@ -881,6 +959,56 @@ def check_layout(model, report):
         if len(report.errors) == errors_before:
             counts["grids"] += 1
 
+    # ---- detail sides agree with the map ------------------------------
+    # A neighbour's tags sit on the side of the detail where that neighbour is
+    # on the map. A diagonal neighbour may use either side that agrees. A part
+    # without a valid place is skipped (E-PLACE-MISSING says so already).
+    part_rects = {}
+    for box_id, entry in boxes.items():
+        part_rects.setdefault(entry["part"], []).extend(
+            (box_id if lane is None else f"{box_id}@{lane}", rect) for lane, rect in entry["rects"].items())
+    for part in tops:
+        sides = as_dict(as_dict(node_by_id[part].get("detail")).get("sides"))
+        # every neighbour that gets a tag in this part's detail (an edge with
+        # one end on a node below the part and the other end in that
+        # neighbour) needs a sides entry; without one the viewer would put
+        # its "from" tag on the left and its "to" tag on the right
+        if children.get(part):
+            inside = set(descendants(part))
+            tagged = {}
+            for edge in edges:
+                ends = (edge.get("from"), edge.get("to"))
+                if not all(e in node_by_id for e in ends):
+                    continue
+                inner = [e in inside for e in ends]
+                if inner[0] == inner[1]:
+                    continue
+                other_end = ends[1] if inner[0] else ends[0]
+                other = top_of(other_end)
+                if other != part:
+                    tagged.setdefault(other, []).append(edge.get("id"))
+            for other, ids in tagged.items():
+                if other not in sides:
+                    report.layout_error("E-SIDES", f"{label_of[part]}.detail.sides",
+                                        f'no side for "{other}", whose tags this detail shows (edges {", ".join(map(str, ids))})')
+        for other, side in sides.items():
+            where = f"{label_of[part]}.detail.sides.{other}"
+            if other not in top_set or other == part:
+                continue  # E-GRID-FOREIGN above
+            if side not in ("left", "right", "top", "bottom"):
+                report.layout_error("E-SIDES", where, f'side "{side}" is not left, right, top or bottom')
+                continue
+            if part in bad_place or other in bad_place or not part_rects.get(part) or not part_rects.get(other):
+                continue
+            agree, (px0, py0, px1, py1), centres = side_agreement(
+                [r for _, r in part_rects[part]], [r for _, r in part_rects[other]])
+            if side not in agree:
+                where_other = ", ".join(f"{key} ({c[0]:g},{c[1]:g})" for (key, _), c in zip(part_rects[other], centres))
+                report.layout_error("E-SIDES", where,
+                                    f'"{other}": "{side}", but on the map the box centres of {other} [{where_other}] are '
+                                    f"{' or '.join(agree) if agree else 'on no single side'} of {part}'s boxes "
+                                    f"(x {px0:g}..{px1:g}, y {py0:g}..{py1:g})")
+
     default_detail = m.get("default_detail")
     if "default_detail" in m and (default_detail not in top_set or not children.get(default_detail)):
         report.layout_error("E-GRID-FOREIGN", "$.map.default_detail", f'"{default_detail}" is not a top-level part with children')
@@ -951,12 +1079,11 @@ def check_layout(model, report):
                                 f"edges {', '.join(dict.fromkeys(ids))} reach part {other}, which has no box among the line's ends and through")
         lanes_to_check = list(enumerate(lane_ys)) if per_lane_line else [(None, None)]
         for lane, lane_y in lanes_to_check:
-            segments, problem = parse_path_d(line.get("d"), lane_y)
+            subpaths, problem = parse_path_d(line.get("d"), lane_y)
             if problem:
                 report.layout_error("E-LINE-ENDS", f"{where}.d", problem)
                 break
-            points = sample_path(segments)
-            start, end = points[0], points[-1]
+            subpath_points = [sample_path(segments) for segments in subpaths]
             lane_note = "" if lane is None else f" (lane {lane})"
 
             def rect_of(ref):
@@ -964,17 +1091,41 @@ def check_layout(model, report):
                 return boxes[box_id]["rects"].get(lane if ref_lane is None and boxes[box_id]["per_lane"] else ref_lane)
 
             ends_rects = [(key, rect_of(ref)) for key, ref in resolved["ends"]]
-            for name, point in (("start", start), ("end", end)):
-                if not any(rect is not None and on_border(point, rect) for _, rect in ends_rects):
-                    report.layout_error("E-LINE-ENDS", where,
-                                        f"{name} point ({point[0]:g},{point[1]:g}){lane_note} is not on the border of an ends box "
-                                        f"({', '.join(k for k, _ in ends_rects) or 'none listed'})")
+            through_rects = [(key, rect_of(ref)) for key, ref in resolved["through"]]
+            endpoints = [p for points in subpath_points for p in (points[0], points[-1])]
+            if len(subpath_points) == 1:
+                # one path: its two end points lie on ends boxes
+                for name, point in (("start", endpoints[0]), ("end", endpoints[1])):
+                    if not any(rect is not None and on_border(point, rect) for _, rect in ends_rects):
+                        report.layout_error("E-LINE-ENDS", where,
+                                            f"{name} point ({point[0]:g},{point[1]:g}){lane_note} is not on the border of an ends box "
+                                            f"({', '.join(k for k, _ in ends_rects) or 'none listed'})")
+            else:
+                # several subpaths: each subpath's two end points lie on an ends or a through box
+                for k, points in enumerate(subpath_points):
+                    for name, point in (("start", points[0]), ("end", points[-1])):
+                        if not any(rect is not None and on_border(point, rect) for _, rect in ends_rects + through_rects):
+                            report.layout_error("E-LINE-ENDS", where,
+                                                f"subpath {k + 1} {name} point ({point[0]:g},{point[1]:g}){lane_note} is not on the "
+                                                f"border of an ends or through box "
+                                                f"({', '.join(key for key, _ in ends_rects + through_rects) or 'none listed'})")
+                # a gap between two consecutive subpaths runs across exactly one
+                # through box (the line is split at that box); a gap anywhere else
+                # would leave a piece of the line undrawn
+                for k in range(len(subpath_points) - 1):
+                    p, q = subpath_points[k][-1], subpath_points[k + 1][0]
+                    across = [key for key, rect in through_rects if rect is not None and gap_across(p, q, rect)]
+                    if len(across) != 1:
+                        report.layout_error("E-LINE-THROUGH", where,
+                                            f"the gap from subpath {k + 1}'s end ({p[0]:g},{p[1]:g}) to subpath {k + 2}'s start "
+                                            f"({q[0]:g},{q[1]:g}){lane_note} does not run across a through box "
+                                            f"({', '.join(key for key, _ in through_rects) or 'none listed'}): "
+                                            f"that part of the line is not drawn")
             for key, rect in ends_rects:
-                if rect is not None and not (on_border(start, rect) or on_border(end, rect)):
-                    report.layout_error("E-LINE-ENDS", where, f"ends box {key}{lane_note} is not touched by either end point")
-            for key, ref in resolved["through"]:
-                rect = rect_of(ref)
-                if rect is not None and not crosses_border_to_border(points, rect):
+                if rect is not None and not any(on_border(p, rect) for p in endpoints):
+                    report.layout_error("E-LINE-ENDS", where, f"ends box {key}{lane_note} is not touched by any end point")
+            for key, rect in through_rects:
+                if rect is not None and not line_crosses_box(subpath_points, rect):
                     report.layout_error("E-LINE-THROUGH", where, f"through box {key}{lane_note} is not crossed border to border")
 
     for i, label in enumerate(as_list(m.get("labels"))):
@@ -1048,6 +1199,9 @@ def check_layout(model, report):
             report.layout_error("E-TOUR-MAP", where, f'step "{entry.get("step")}" is not tour step {i + 1} ("{step.get("id")}")')
         step_part = top_of(step["node"]) if step.get("node") in node_by_id else None
         belongs = False
+        if not as_list(entry.get("highlight")):
+            report.layout_error("E-TOUR-MAP", f"{where}.highlight",
+                                "highlight is empty; list at least one line, box:<id> or lad-<k> for the step")
         for h in as_list(entry.get("highlight")):
             if isinstance(h, str) and h.startswith("box:"):
                 box = boxes.get(h[4:])

@@ -368,13 +368,17 @@
       renderReadPage(state);
       return;
     }
+    updateCuesSoon();
     if (state.mode === 'tour') {
       if (d1 && !d1.current()) openNode(defaultPart());
       tourGo(state.step - 1, false);
       if (scroll) scrollToSection('tour');
     } else if (state.focus !== ROOT) {
       openNode(state.focus);
-      if (scroll) scrollToSection('map-section');
+      // a link to a node (a deep link, a cross-reference, "Show on the map")
+      // brings the node's detail view and the panel under it into view; a
+      // click on the map itself does not scroll (it changes no hash)
+      if (scroll) scrollToSection('detail-view');
     } else {
       openNode(defaultPart());
       if (scroll && prev && prev.mode === 'read') window.scrollTo(0, 0);
@@ -695,8 +699,9 @@
           else lines = subs;
           lines.forEach((s, i) => stext(g, tx0, c.y + 38 + i * 15, s, 't-sub'));
           if (out) {
-            S('rect', { x: c.x + c.w - 72, y: c.y + 7, width: 64, height: 15, rx: 2, class: 'otag' }, g);
-            stext(g, c.x + c.w - 40, c.y + 18, 'outside repo', 't-out', { 'text-anchor': 'middle' });
+            const ow = r1(measure('outside repo', 't-out') + 10);
+            S('rect', { x: r1(c.x + c.w - 7 - ow), y: c.y + 5, width: ow, height: 17, rx: 2, class: 'otag' }, g);
+            stext(g, r1(c.x + c.w - 7 - ow / 2), c.y + 18, 'outside repo', 't-out', { 'text-anchor': 'middle' });
           }
         }
         reg.boxes.set(c.key, g);
@@ -763,9 +768,9 @@
       S('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, rx: 5, class: 'cbox' }, g);
       const w = measure(tag, 'calltxt') + 14;
       const tx = Math.min(x0, vb.w - w - 2);
-      const ty = y1 + 16 <= vb.h ? y1 - 1 : y0 - 15;
-      S('rect', { x: tx, y: ty, width: r1(w), height: 16, class: 'ctag' }, g);
-      stext(g, tx + 7, ty + 12, tag, 'calltxt');
+      const ty = y1 + 18 <= vb.h ? y1 - 1 : y0 - 17;
+      S('rect', { x: tx, y: ty, width: r1(w), height: 18, class: 'ctag' }, g);
+      stext(g, tx + 7, ty + 13.5, tag, 'calltxt');
     }
     // tour tokens: one element per (kind of dot, lane, occurrence)
     const tokEls = new Map();
@@ -927,8 +932,12 @@
     conns.forEach((c) => {
       const it = items.get(c.inner);
       c.att = c.tag.side;
-      if ((c.att === 'left' || c.att === 'right') && it.type !== 'group') {
-        const blocked = boxes.some((o) => o.id !== it.id && o.row === it.row && (c.att === 'left' ? o.col < it.col : o.col > it.col));
+      if (c.att === 'left' || c.att === 'right') {
+        // a box of the same row between the item (a box or a group, over all
+        // of its columns) and that side blocks the straight way in
+        const lo = it.col;
+        const hi = it.col + (it.span || 1) - 1;
+        const blocked = boxes.some((o) => o.id !== it.id && o.group !== it.id && o.row === it.row && (c.att === 'left' ? o.col < lo : o.col > hi));
         if (blocked) c.att = 'top';
       }
       c.over = c.att === 'top' && (c.tag.side === 'left' || c.tag.side === 'right');
@@ -939,7 +948,11 @@
     // tag texts and sizes
     const sideTags = (s) => tags.filter((t) => t.side === s);
     const headOf = (t) => (t.dir === 'in' ? 'from ' : 'to ') + shortOf(t.other) + ' \u203a';
-    const tagMinW = (t) => Math.max(measure(headOf(t), 't-shead', 'stub'), ...t.labels.map((l) => longestWord(l, 't-slab', 'stub'))) + 18;
+    // a tag that lists several labels starts each one with a bullet; the
+    // label's further lines are indented by the bullet's width
+    const bulletW = measure('\u2022 x', 't-slab', 'stub') - measure('x', 't-slab', 'stub');
+    const bw = (t) => (t.labels.length > 1 ? bulletW : 0);
+    const tagMinW = (t) => Math.max(measure(headOf(t), 't-shead', 'stub'), ...t.labels.map((l) => longestWord(l, 't-slab', 'stub') + bw(t))) + 18;
 
     // widths
     const padL = has.left ? EDGE_M + TAG_SIDE_W + ZONE_GAP : 30;
@@ -1000,7 +1013,12 @@
     // tag heights (top/bottom tags get their width later; estimate with the
     // narrowest width they may get)
     const tagH = (t, tw) => {
-      t.lines = [].concat(...t.labels.map((l) => wrapText(l, tw - 16, 't-slab', 'stub')));
+      const multi = t.labels.length > 1;
+      t.bulletW = bw(t);
+      t.lines = [];
+      t.labels.forEach((l) => wrapText(l, tw - 16 - t.bulletW, 't-slab', 'stub').forEach((ln, i) => {
+        t.lines.push({ s: (multi && i === 0 ? '\u2022 ' : '') + ln, indent: multi && i > 0 });
+      }));
       return 12 + 16 * (t.lines.length + 1);
     };
     const xminTB = has.left ? EDGE_M + TAG_SIDE_W + 10 : 20;
@@ -1184,9 +1202,19 @@
         return s.ref.end === 'a' ? cxOf(ie.b) : cxOf(ie.a);
       };
       list.sort((p, q) => keyOf(p) - keyOf(q));
+      // each end moves toward what it reaches (the tag's centre, the other
+      // box's centre), inside the box and in order, at least `step` apart;
+      // this keeps connectors short and stops them crossing under the box
+      const lo = r.x + 12;
+      const hi = r.x + r.w - 12;
+      const n = list.length;
+      const step = n > 1 ? Math.min(22, (hi - lo) / (n - 1)) : 0;
+      const xs = list.map((s) => Math.min(hi, Math.max(lo, Math.abs(keyOf(s)) >= 1e5 ? (keyOf(s) < 0 ? lo : hi) : keyOf(s))));
+      for (let i = 1; i < n; i++) xs[i] = Math.max(xs[i], xs[i - 1] + step);
+      if (n) xs[n - 1] = Math.min(xs[n - 1], hi);
+      for (let i = n - 2; i >= 0; i--) xs[i] = Math.min(xs[i], xs[i + 1] - step);
       list.forEach((s, i) => {
-        const f = (i + 1) / (list.length + 1);
-        const pt = [r.x + r.w * f, side === 'top' ? r.y : r.y + r.h];
+        const pt = [r1(xs[i]), side === 'top' ? r.y : r.y + r.h];
         if (s.ref.conn) s.ref.conn.ap = pt;
         else s.ref.ie[s.ref.end === 'a' ? 'pa' : 'pb'] = pt;
       });
@@ -1280,9 +1308,11 @@
       cur = part;
       const hotSet = new Set((Array.isArray(hot) ? hot : (hot ? [hot] : [])).filter((id) => idx.nodes.has(id)));
       host.textContent = '';
+      const hint = el('span', { class: 'scroll-hint', hidden: true, text: 'Scroll sideways to see the whole detail \u2192' });
       const head = el('div', { class: 'dhead' }, [
         el('span', { class: 'eyebrow', text: 'Detail' }),
-        el('h3', { text: titleOf(part), tabindex: '-1' })
+        el('h3', { text: titleOf(part), tabindex: '-1' }),
+        hint
       ]);
       host.append(head);
       const L = layoutDetail(part);
@@ -1325,9 +1355,10 @@
         const lines = L.titleLines.get(it.id);
         lines.forEach((s, i) => stext(g, r1(r.x + 10), r.y + 22 + i * 19, s, 't-title'));
         if (isOut(it.id)) {
-          const yy = r.y + 22 + lines.length * 19 - 5;
-          S('rect', { x: r1(r.x + 10), y: yy, width: 64, height: 15, rx: 2, class: 'otag' }, g);
-          stext(g, r1(r.x + 42), yy + 11, 'outside repo', 't-out', { 'text-anchor': 'middle' });
+          const yy = r.y + 22 + lines.length * 19 - 6;
+          const ow = r1(measure('outside repo', 't-out') + 10);
+          S('rect', { x: r1(r.x + 10), y: yy, width: ow, height: 17, rx: 2, class: 'otag' }, g);
+          stext(g, r1(r.x + 10 + ow / 2), yy + 13, 'outside repo', 't-out', { 'text-anchor': 'middle' });
         }
         onActivate(g, () => { if (opt.onNode) opt.onNode(it.id, part); });
       });
@@ -1442,9 +1473,16 @@
         });
         S('rect', { x: r1(t.x), y: r1(t.y), width: r1(t.w), height: r1(t.h), rx: 3, class: 'tag' }, g);
         stext(g, r1(t.x + 8), r1(t.y + 18), (t.dir === 'in' ? 'from ' : 'to ') + shortOf(t.other) + ' \u203a', 't-shead');
-        if (t.lines.length) stextLines(g, r1(t.x + 8), r1(t.y + 34), t.lines, 't-slab', 16);
+        if (t.lines.length) {
+          const tl = S('text', { x: r1(t.x + 8), y: r1(t.y + 34), class: 't-slab' }, g);
+          t.lines.forEach((ln, i) => {
+            const ts = S('tspan', { x: r1(t.x + 8 + (ln.indent ? t.bulletW : 0)), dy: i ? 16 : 0 }, tl);
+            ts.textContent = i < t.lines.length - 1 ? ln.s + ' ' : ln.s;
+          });
+        }
         onActivate(g, () => { if (opt.onStub) opt.onStub(t.other, t.others, part); });
       });
+      scrollCue(sheet, hint);
       if (opt.onShown) opt.onShown(part);
     }
     // The tail of a polyline (after its first point), with rounded corners.
@@ -1519,17 +1557,20 @@
     }
 
     if (!withFlows) return;
+    // The flows are folded (closed by default) so that the panel under the
+    // map stays short; the reader opens them on demand.
     const flows = flowsOf(n.id);
     if (flows.incoming.length || flows.outgoing.length) {
-      box.append(el(h3, { text: 'Flows' }));
+      const fold = el('details', { class: 'flows' }, [el('summary', {}, [el(h3, { text: 'Flows' })])]);
       if (flows.incoming.length) {
-        box.append(el(h4, { class: 'flow-heading', text: 'Comes from' }));
-        box.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', n.id))));
+        fold.append(el(h4, { class: 'flow-heading', text: 'Comes from' }));
+        fold.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', n.id))));
       }
       if (flows.outgoing.length) {
-        box.append(el(h4, { class: 'flow-heading', text: 'Goes to' }));
-        box.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', n.id))));
+        fold.append(el(h4, { class: 'flow-heading', text: 'Goes to' }));
+        fold.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', n.id))));
       }
+      box.append(fold);
     }
   }
 
@@ -1751,7 +1792,8 @@
       const f = el('figure');
       const sheet = el('div', { class: 'sheet' });
       f.append(sheet);
-      const api = buildMap(sheet, { mini: true, kind: mm.kind, label: 'Small copy of the map showing only the ' + name + ' relation.' });
+      const label = mm.kind === 'all' ? 'Small copy of the map showing every kind of relation together.' : 'Small copy of the map showing only the ' + name + ' relation.';
+      const api = buildMap(sheet, { mini: true, kind: mm.kind, label: label });
       api.setFocus(mm.kind);
       const cap = el('figcaption', {}, [el('b', { text: name + '.' }), ' ']);
       if (mm.caption) appendInline(cap, mm.caption);
@@ -1872,6 +1914,86 @@
     });
     table.append(tb);
     host.append(table);
+  }
+
+  // ------------------------------------------------------------------
+  // Figure frames: the scroll cue and the Full size buttons
+  // ------------------------------------------------------------------
+  // A frame (a .sheet, or the matrix's .tbl) whose content is wider than the
+  // frame gets data-scrolls="true", a visible hint (.scroll-hint) and a fade
+  // on the side where more of the figure is.
+  const cues = new Set();
+  function scrollCue(box, hint, o) {
+    if (!box) return;
+    const c = { box: box, hint: hint || null, leftFade: !(o && o.noLeftFade) };
+    cues.add(c);
+    box.addEventListener('scroll', () => updateCue(c), { passive: true });
+    updateCue(c);
+  }
+  function updateCue(c) {
+    const b = c.box;
+    const over = b.clientWidth > 0 && b.scrollWidth - b.clientWidth > 1;
+    if (over) b.setAttribute('data-scrolls', 'true'); else b.removeAttribute('data-scrolls');
+    b.classList.toggle('more-right', over && b.scrollLeft + b.clientWidth < b.scrollWidth - 1);
+    b.classList.toggle('more-left', over && c.leftFade && b.scrollLeft > 1);
+    if (c.hint) c.hint.hidden = !over;
+  }
+  function updateCues() {
+    cues.forEach((c) => { if (!c.box.isConnected) cues.delete(c); else updateCue(c); });
+  }
+  let cueFrame = 0;
+  function updateCuesSoon() {
+    if (cueFrame) return;
+    cueFrame = requestAnimationFrame(() => { cueFrame = 0; updateCues(); });
+  }
+  // "Full size": the figure at its natural size (1 viewBox unit = 1 CSS px)
+  // inside its scrolling frame; pressed again, it fits the frame (default).
+  function setFull(sheet, on) {
+    const svg = sheet.querySelector(':scope > svg');
+    const w = svg && svg.viewBox && svg.viewBox.baseVal ? svg.viewBox.baseVal.width : 0;
+    const full = !!(on && w);
+    sheet.classList.toggle('full', full);
+    if (svg) svg.style.width = full ? w + 'px' : '';
+    updateCues();
+    return full;
+  }
+  function bindFrames() {
+    document.querySelectorAll('button.fullsize').forEach((b) => {
+      const sheet = $(b.getAttribute('aria-controls'));
+      if (!sheet) { b.hidden = true; return; }
+      b.addEventListener('click', () => {
+        const full = setFull(sheet, b.getAttribute('aria-pressed') !== 'true');
+        b.setAttribute('aria-pressed', full ? 'true' : 'false');
+      });
+    });
+    document.querySelectorAll('.figbar').forEach((bar) => {
+      const box = bar.nextElementSibling;
+      if (box) scrollCue(box, bar.querySelector('.scroll-hint'), { noLeftFade: box.classList.contains('tbl') });
+    });
+    window.addEventListener('resize', updateCuesSoon);
+  }
+
+  // Relations between two parts that the map does not draw (map.omitted),
+  // listed under the map's caption with the model's reason.
+  function renderOmitted() {
+    const host = $('map-omitted');
+    if (!host) return;
+    host.textContent = '';
+    const list = (Array.isArray(lay.map.omitted) ? lay.map.omitted : []).filter((o) => o && idx.edgeById.has(o.edge));
+    host.hidden = !list.length;
+    if (!list.length) return;
+    host.append(el('div', { class: 'omitted-head', text: 'Not drawn on the map' }));
+    const ul = el('ul');
+    list.forEach((o) => {
+      const e = idx.edgeById.get(o.edge);
+      const a = topOf(e.from);
+      const b = topOf(e.to);
+      const li = el('li', { dataset: { edgeId: e.id }, 'data-kind': e.kind });
+      li.append(el('span', { class: 'om-pair' }, [link(nodeHash(a), shortOf(a)), ' \u2192 ', link(nodeHash(b), shortOf(b))]), ': ', e.label, ' \u2014 ');
+      if (typeof o.reason === 'string') appendInline(li, o.reason);
+      ul.append(li);
+    });
+    host.append(ul);
   }
 
   // ------------------------------------------------------------------
@@ -2043,6 +2165,8 @@
       buildMultiples();
       buildSequence();
       buildMatrix();
+      renderOmitted();
+      bindFrames();
     } else {
       showMessage('The design model has no map layout ("map" block); only the one-page view is available.', true);
     }

@@ -1082,8 +1082,8 @@
         ],
         "sides": {
           "drp": "bottom",
-          "monitoring": "top",
-          "control": "left"
+          "monitoring": "right",
+          "control": "bottom"
         }
       }
     },
@@ -1658,7 +1658,7 @@
         "sides": {
           "drp": "bottom",
           "teb": "left",
-          "control": "top"
+          "control": "bottom"
         }
       }
     },
@@ -3048,7 +3048,7 @@
   ],
   "tour": {
     "title": "Follow one L1Accept from the pulse to psana",
-    "intro": "This tour follows one L1Accept, the readout of a single accelerator pulse, from the timing system through the DAQ (data acquisition system) to the files, live monitoring and psana. The first step sets the scene: before any event is read out, the control process has configured the system, begun a run and enabled triggers. Each later step zooms the map to the component it is about, highlights the flows involved and says what happens to our event there; the component's own description follows the step text.",
+    "intro": "This tour follows one L1Accept, the readout of a single accelerator pulse, from the timing system through the DAQ (data acquisition system) to the files, live monitoring and psana. The first step sets the scene: before any event is read out, the control process has configured the system, begun a run and enabled triggers. Each later step marks its part on the map and the component itself in the detail below it, highlights the flows involved and says what happens to our event there; the component's own description follows the step text.",
     "steps": [
       {
         "id": "step-before-the-event",
@@ -3536,7 +3536,7 @@
           "e-timing-to-front-ends",
           "e-xpm-to-electronics"
         ],
-        "d": "M215,166 H335 V407",
+        "d": "M215,166 H335 V247 M335,303 V327 M335,383 V407",
         "arrow": "end",
         "per_lane": false,
         "through": [
@@ -3665,7 +3665,7 @@
           "e-teb-to-drp",
           "e-result-to-receiver"
         ],
-        "d": "M498,132 V407",
+        "d": "M498,132 V247 M498,303 V327 M498,383 V407",
         "arrow": "end",
         "per_lane": false,
         "through": [
@@ -3935,7 +3935,7 @@
     "omitted": [
       {
         "edge": "e-chunking-to-control-process",
-        "reason": "Every route from the Files lanes down to the Run control box would cross the state ladder or the DRP lanes, so the map leaves this line out; the Files and Run control details show the chunk request as tags, and the matrix lists it."
+        "reason": "The map leaves this line out to keep the lanes and the state ladder clear; the Files and Run control details show the chunk request as tags, and the matrix lists it."
       }
     ],
     "ladder": {
@@ -3962,7 +3962,7 @@
       "x": 545,
       "dx": 88,
       "y": 612,
-      "caption": "States of control.py · each transition steps the platform up one state",
+      "caption": "States of control.py, with the transition from each state to the next",
       "note": "down transitions (disable … dealloc) step back; reset returns from any state"
     },
     "tour": [
@@ -4385,7 +4385,7 @@
     "multiples": [
       {
         "kind": "data",
-        "caption": "Each readout's data stay in their own lane, from the front-end to its own files. psana joins the streams by timestamp."
+        "caption": "Each readout's data stay in their own lane, from the front-end to the files its DRP writes while recording (a monitor-only DRP writes none). psana joins the streams by timestamp."
       },
       {
         "kind": "trigger",
@@ -4405,8 +4405,8 @@
       },
       {
         "kind": "all",
-        "title": "All relations",
-        "caption": "Every relation on one map; each keeps the route and line style it has in its own copy."
+        "title": "All kinds",
+        "caption": "The lines of every kind together; each keeps the route and line style it has in its own copy."
       }
     ],
     "sequence": {
@@ -4462,7 +4462,7 @@
         },
         {
           "id": "psana",
-          "name": "psana",
+          "name": "After the run",
           "part": "after-run",
           "out": false,
           "multi": false
@@ -4606,29 +4606,29 @@
       "map": {
         "eyebrow": "The map",
         "title": "The DAQ on one fixed map",
-        "intro": "Columns are the stages of an event's trip, from the trigger on the left to analysis on the right. Bands are kinds of path: timing, the event builders and live monitoring along the top, one recorded lane per detector readout in the middle, and run control along the bottom. Data move sideways along the lanes. Trigger, timing, monitoring and control are shared lines: each one passes through the parts it reaches, with a port where it crosses a box. Run control is drawn as the ladder of states of the control process, with one shared line to the processes it drives.",
+        "intro": "Columns are the stages of an event's trip, from the trigger on the left to analysis on the right. Bands are kinds of path: timing, the event builders and live monitoring along the top, one lane per detector readout in the middle (the path that recorded data take to the files), and run control along the bottom. Data move sideways along the lanes. Some trigger, timing, monitoring and control lines are shared: such a line passes through several boxes, with a port where it crosses a box. Run control is drawn as a box and the ladder of states of the control process, with one shared line to the processes it drives.",
         "caption": "Click or tap a part to open its detail below the map. The tags around the detail name the parts it connects to; click a tag to open that part."
       },
       "tour": {
         "eyebrow": "The tour",
         "title": "One event across the map",
-        "intro": "The map stays in place while one event moves across it. The diamond marks the state of run control; the violet dot is the accelerator pulse and its trigger; blue dots are the detector data, one per lane, and the smaller blue dots their small-data records; red dots are the trigger inputs and the result; the green dot is the copy sent to live monitoring. From the front-ends on, each readout's data stay in their own lane, and the recorded parts of the event come together only in psana. The detail under the map follows the step."
+        "intro": "The map stays in place while one event moves across it. The diamond marks the state of run control; the violet dot is the accelerator pulse and its trigger; blue dots are the detector data, one per lane, and the smaller blue dots their small-data records; red dots are the trigger inputs and the result; the green dot is the copy sent to live monitoring. From the front-ends on, each readout's data stay in their own lane, and the parts of the event recorded to disk come together only in psana. The detail under the map follows the step."
       },
       "multiples": {
         "eyebrow": "Relations",
-        "title": "One relation per copy of the map",
+        "title": "One kind of relation per copy, then all of them",
         "intro": "The same map is drawn once for each kind of relation, with the other kinds dimmed, and once with all of them. Every copy has the same layout, so the copies can be compared by position alone."
       },
       "sequence": {
         "eyebrow": "Sequence",
         "title": "One event over time",
-        "intro": "The tour as one sequence chart: one column per part, time running down, one row per tour step. The DRP column is drawn as several lines, one per readout, because each DRP does the same steps for its own part of the event. The trigger round trip shows as a pair of opposite arrows.",
+        "intro": "The tour as one sequence chart: one column per part, time running down, one row per tour step. The DRP column is drawn as several lines that stand for the readouts, because each detector readout has its own DRP. The trigger round trip shows as a pair of opposite arrows.",
         "caption": "Click or tap a row to open that step of the tour."
       },
       "matrix": {
         "eyebrow": "Interfaces",
         "title": "Every interface between the parts",
-        "intro": "Each row is what one part sends and each column what it receives. A cell lists the labels of the relations from the row's part to the column's part, so the table is an index of every boundary in the model."
+        "intro": "Each row is what one part sends and each column what it receives. A cell lists the labels of the relations from the row's part to the column's part, so the table is an index of every relation between two different parts."
       }
     }
   }

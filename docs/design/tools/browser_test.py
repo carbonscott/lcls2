@@ -10,7 +10,7 @@ clicking, as a reader would.
 Full run (default) prints, in this order:
   nodes_visited=V/N tour_steps=S/T console_errors=C
   smoke stub_click=ok|fail arrow_keys=ok|fail help=ok|fail read_page=R/N third_party=Q
-  map parts=A/P0 lanes=L bands=B columns=K
+  map parts=A/P0 lanes=L bands=B columns=K boxes=O/Q
   detail opened=X/P
   tour steps=S/T highlighted=H/T
   multiples panels=M/6
@@ -41,6 +41,12 @@ Full run (default) prints, in this order:
     equal map.lanes.count); bands = g.band-label groups (must equal the
     number of map.bands); columns = g.column-label groups (must equal the
     number of map.columns); the map's viewBox must be map.viewbox.
+    boxes = map box copies (g.box[data-box], +[data-lane] per lane) whose
+    rendered rect.b, in viewBox units with CSS transforms included, equals
+    the JSON rect within 0.5 units: x, w, h from place.boxes, y from the box
+    (or lanes.y[i] - h/2 for a per-lane box), out of Q = all box copies the
+    JSON lists; each copy must be drawn exactly once and no other box drawn.
+    A CSS shift of a map box fails here.
   * detail: a part with children counts when clicking its map box opens
     #detail-view svg.detail[data-detail=part] drawing every descendant as a
     g.box[data-node] or g.dgroup[data-node]. On #/ the detail shown must be
@@ -59,8 +65,12 @@ Full run (default) prints, in this order:
     its undimmed lines (effective opacity > 0.5) are exactly the lines of
     that kind, at least one (for "all": no line dimmed).
   * sequence: row k counts when #sequence svg .row[data-step-index=k] is
-    there once, its aria-label contains step k's title, and clicking it
-    opens tour step k.
+    there once, its aria-label contains step k's title, it draws one arrow
+    (path.ln) whose start lies on the "from" lifeline and whose end lies on
+    the "to" lifeline of step k's row in map.sequence (an end within 10
+    units of a lifeline header's centre, g.hdr[data-lifeline]; no lifeline
+    there = "start"), its label (text.lab) is that row's label, and clicking
+    it opens tour step k.
   * matrix: C = distinct (top(from), top(to)) pairs of model edges whose
     tops differ; a cell #matrix table.nsq td[data-from][data-to] counts when
     its relation items (.ni[data-edge-ids]) show exactly those edges'
@@ -69,7 +79,7 @@ Full run (default) prints, in this order:
     show every part's place.short.
   * console_errors: console errors and warnings, page errors, and failed or
     HTTP-error (>= 400) requests to the page's own origin.
-  Exit 0 iff every count is complete (V = N, S = T, A = P0, X = P, H = T,
+  Exit 0 iff every count is complete (V = N, S = T, A = P0, O = Q, X = P, H = T,
   M = 6, R = T, C2 = C), every smoke check is ok with R = N, Q = 0 and
   C = 0. A check that finds nothing to test fails.
 
@@ -84,8 +94,17 @@ Full run (default) prints, in this order:
   opened, a tour step), after the 744 line the informational
     inner_scroll=<section:px,...> min_text_px=<px>
   (horizontal scroll inside each figure container, smallest rendered SVG
-  text size), and finally console_errors=C. Fails if the layouts differ,
-  any page_hscroll > 0, html, body or any element around a section sets
+  text size), then
+    fullsize map-section=ok|fail tour=ok|fail sequence=ok|fail
+  and finally console_errors=C. fullsize: at 744x1000, each section has one
+  button.fullsize with aria-pressed="false" on load and its figure (#map
+  svg.map, #tour svg.map, #sequence svg) fitted: no horizontal scroll in the
+  sheet and the svg no wider than the sheet's content box; pressing it sets
+  aria-pressed="true", the svg's width equals its viewBox width (1 px), the
+  sheet scrolls and the page does not; pressing it again fits it again.
+  Fails if the layouts differ, any page_hscroll > 0, the map sheet of
+  #map-section or of #tour scrolls horizontally at 744 (on load), a
+  fullsize check fails, html, body or any element around a section sets
   overflow-x hidden or clip, or C > 0.
 
 --check-node ID --expect-title TEXT --expect-prose SUBSTRING
@@ -665,24 +684,83 @@ def smoke_ok(result):
 # Map, detail, multiples, sequence, matrix
 # ---------------------------------------------------------------------------
 
+BOX_RECT_TOLERANCE = 0.5  # viewBox units between a map box's rendered rect and its JSON rect
+
+MAP_INFO_JS = r"""(sel) => {
+  const svg = document.querySelector(sel);
+  if (!svg) return null;
+  const parts = new Set(), lanes = new Set();
+  svg.querySelectorAll('g.box[data-part]').forEach(g => { parts.add(g.dataset.part); if (g.dataset.lane != null && g.dataset.lane !== '') lanes.add(g.dataset.lane); });
+  const bands = new Set([...svg.querySelectorAll('g.band-label[data-band]')].map(g => g.dataset.band));
+  const cols = new Set([...svg.querySelectorAll('g.column-label[data-column]')].map(g => g.dataset.column));
+  const transformed = [...svg.querySelectorAll('g.box[transform], g.box [transform], path.ln[transform], text.lab[transform]')].length;
+  // each map box's rendered rect in viewBox units (CSS transforms included)
+  const inv = svg.getScreenCTM().inverse();
+  const rects = [...svg.querySelectorAll('g.box[data-box]')].map(g => {
+    const r = g.querySelector('rect.b') || g.querySelector('rect');
+    const lane = g.dataset.lane != null && g.dataset.lane !== '' ? g.dataset.lane : null;
+    const key = g.dataset.box + (lane !== null ? '@' + lane : '');
+    if (!r) return { key, rect: null };
+    const mm = inv.multiply(r.getScreenCTM()), b = r.getBBox();
+    const p = [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]
+      .map(([x, y]) => [mm.a * x + mm.c * y + mm.e, mm.b * x + mm.d * y + mm.f]);
+    const x0 = Math.min(...p.map(q => q[0])), y0 = Math.min(...p.map(q => q[1]));
+    return { key, rect: [x0, y0, Math.max(...p.map(q => q[0])) - x0, Math.max(...p.map(q => q[1])) - y0] };
+  });
+  return { parts: [...parts], lanes: lanes.size, bands: bands.size, nbandgroups: svg.querySelectorAll('g.band-label').length,
+           columns: cols.size, viewBox: svg.getAttribute('viewBox'), transformed, rects };
+}"""
+
+
+def expected_box_rects(m):
+    """box key (id, or id@lane for a per-lane box) -> (x, y, w, h) from the JSON."""
+    lane_ys = (m.map.get("lanes") or {}).get("y") or []
+    out = {}
+    for part in m.tops:
+        for box in ((m.node[part].get("place") or {}).get("boxes") or []):
+            if not isinstance(box, dict) or not isinstance(box.get("id"), str):
+                continue
+            x, w, h = box.get("x"), box.get("w"), box.get("h")
+            if box.get("per_lane"):
+                for lane, ly in enumerate(lane_ys):
+                    out[f"{box['id']}@{lane}"] = (x, ly - h / 2, w, h)
+            else:
+                out[box["id"]] = (x, box.get("y"), w, h)
+    return out
+
+
 def map_test(s, m):
-    """Return (parts A, P0, lanes, bands, columns, ok)."""
+    """Return (parts A, P0, lanes, bands, columns, boxes matching M, boxes Q, ok)."""
+    want_rects = expected_box_rects(m)
     if not s.open("#/"):
-        return 0, len(m.tops), 0, 0, 0, False
-    info = s.page.evaluate(r"""(sel) => {
-      const svg = document.querySelector(sel);
-      if (!svg) return null;
-      const parts = new Set(), lanes = new Set();
-      svg.querySelectorAll('g.box[data-part]').forEach(g => { parts.add(g.dataset.part); if (g.dataset.lane != null && g.dataset.lane !== '') lanes.add(g.dataset.lane); });
-      const bands = new Set([...svg.querySelectorAll('g.band-label[data-band]')].map(g => g.dataset.band));
-      const cols = new Set([...svg.querySelectorAll('g.column-label[data-column]')].map(g => g.dataset.column));
-      const transformed = [...svg.querySelectorAll('g.box[transform], g.box [transform], path.ln[transform], text.lab[transform]')].length;
-      return { parts: [...parts], lanes: lanes.size, bands: bands.size, nbandgroups: svg.querySelectorAll('g.band-label').length,
-               columns: cols.size, viewBox: svg.getAttribute('viewBox'), transformed };
-    }""", MAP)
+        return 0, len(m.tops), 0, 0, 0, 0, len(want_rects), False
+    info = s.page.evaluate(MAP_INFO_JS, MAP)
     if info is None:
         s.fail(f"map: no {MAP}")
-        return 0, len(m.tops), 0, 0, 0, False
+        return 0, len(m.tops), 0, 0, 0, 0, len(want_rects), False
+    # every map box's rendered rect equals its JSON rect (x, y, w, h; per-lane y from lanes.y)
+    drawn = {}
+    for r in info["rects"]:
+        drawn.setdefault(r["key"], []).append(r["rect"])
+    matching = 0
+    rect_ok = True
+    for key, want in want_rects.items():
+        got = drawn.get(key, [])
+        if len(got) != 1 or got[0] is None:
+            s.fail(f"map: box {key} is drawn {len(got)} times (g.box[data-box][data-lane] with rect.b), expected once")
+            rect_ok = False
+            continue
+        if any(not isinstance(v, (int, float)) for v in want) or \
+                any(abs(a - b) > BOX_RECT_TOLERANCE for a, b in zip(got[0], want)):
+            s.fail(f"map: box {key} rendered at x,y,w,h=({','.join(f'{v:.1f}' for v in got[0])}), "
+                   f"the JSON gives ({','.join(str(v) for v in want)})")
+            rect_ok = False
+            continue
+        matching += 1
+    extra = sorted(k for k in drawn if k not in want_rects)
+    if extra:
+        s.fail(f"map: boxes drawn that the JSON does not list: {extra}")
+        rect_ok = False
     ok = True
     a = len([p for p in m.tops if p in info["parts"]])
     missing = [p for p in m.tops if p not in info["parts"]]
@@ -709,7 +787,7 @@ def map_test(s, m):
     if info["transformed"]:
         s.fail(f"map: {info['transformed']} boxes, lines or labels carry a transform attribute")
         ok = False
-    return a, len(m.tops), info["lanes"], info["bands"], info["columns"], ok
+    return a, len(m.tops), info["lanes"], info["bands"], info["columns"], matching, len(want_rects), ok and rect_ok
 
 
 def detail_test(s, m):
@@ -793,9 +871,57 @@ def multiples_test(s, m):
     return good, total
 
 
+LIFELINE_TOLERANCE = 10  # viewBox units between a row arrow's end and a lifeline header's centre
+
+# The drawn arrow of sequence row k: which lifeline (g.hdr[data-lifeline]) its
+# start and end lie on, and the text of its label (text.lab).
+SEQ_ROW_JS = r"""
+([k, tol]) => {
+  const svg = document.querySelector('#sequence svg');
+  const row = svg && svg.querySelector('.row[data-step-index="' + k + '"]');
+  if (!row) return null;
+  const inv = svg.getScreenCTM().inverse();
+  const at = (el, x, y) => { const mm = inv.multiply(el.getScreenCTM()); return [mm.a * x + mm.c * y + mm.e, mm.b * x + mm.d * y + mm.f]; };
+  const heads = [...svg.querySelectorAll('g.hdr[data-lifeline]')].map(g => {
+    const r = g.querySelector('rect'); const b = r.getBBox();
+    return { id: g.dataset.lifeline, x: at(r, b.x + b.width / 2, b.y)[0] };
+  });
+  const near = x => { let best = null; heads.forEach(h => { const d = Math.abs(h.x - x); if (d <= tol && (!best || d < best.d)) best = { id: h.id, d }; }); return best ? best.id : 'start'; };
+  const paths = [...row.querySelectorAll('path.ln')];
+  if (paths.length !== 1) return { paths: paths.length };
+  const p = paths[0], L = p.getTotalLength();
+  const a = p.getPointAtLength(0), b = p.getPointAtLength(L);
+  const p0 = at(p, a.x, a.y), p1 = at(p, b.x, b.y);
+  const labels = [...row.querySelectorAll('text.lab')].map(t => t.textContent.replace(/\s+/g, ' ').trim());
+  return { paths: 1, from: near(p0[0]), to: near(p1[0]), x0: Math.round(p0[0]), x1: Math.round(p1[0]), labels,
+           heads: heads.map(h => h.id + '@' + Math.round(h.x)).join(' ') };
+}
+"""
+
+
+def sequence_row_problem(s, k, want):
+    """None if row k draws want's from -> to arrow with want's label, else the problem."""
+    got = s.page.evaluate(SEQ_ROW_JS, [k, LIFELINE_TOLERANCE])
+    if got is None:
+        return "no row"
+    if got["paths"] != 1:
+        return f"{got['paths']} arrows (path.ln) in the row, expected 1"
+    want_from = want.get("from") if want.get("from") in {l.get("id") for l in want["_lifelines"]} else "start"
+    problems = []
+    if got["from"] != want_from or got["to"] != want.get("to"):
+        problems.append(f"arrow runs from {got['from']} (x={got['x0']}) to {got['to']} (x={got['x1']}), "
+                        f"map.sequence gives {want.get('from')} -> {want.get('to')} (lifelines {got['heads']})")
+    if got["labels"] != [normalize(want.get("label", ""))]:
+        problems.append(f"label {got['labels']} is not map.sequence's {want.get('label')!r}")
+    return "; ".join(problems) or None
+
+
 def sequence_test(s, m):
     if not s.open("#/"):
         return 0, len(m.steps)
+    seq = m.map.get("sequence") or {}
+    lifelines = [x for x in (seq.get("lifelines") or []) if isinstance(x, dict)]
+    rows_by_step = {r.get("step"): dict(r, _lifelines=lifelines) for r in (seq.get("rows") or []) if isinstance(r, dict)}
     good = 0
     for k, step in enumerate(m.steps, 1):
         rows = s.page.locator(f'#sequence svg .row[data-step-index="{k}"]')
@@ -805,6 +931,14 @@ def sequence_test(s, m):
         label = normalize(rows.first.get_attribute("aria-label"))
         if normalize(step.get("title", "")) not in label:
             s.fail(f"sequence: row {k} aria-label {label!r} does not contain the step title")
+            continue
+        want = rows_by_step.get(step.get("id"))
+        if want is None:
+            s.fail(f"sequence: map.sequence has no row for step {k} ({step.get('id')})")
+            continue
+        problem = sequence_row_problem(s, k, want)
+        if problem:
+            s.fail(f"sequence: row {k}: {problem}")
             continue
         if not s.click(rows.first, f"sequence row {k}"):
             continue
@@ -981,6 +1115,91 @@ INNER_JS = r"""
 """
 
 
+# Sections with a "Full size" toggle (button.fullsize[aria-pressed]) and the figure it sizes.
+FULLSIZE = (("map-section", "#map svg.map"), ("tour", "#tour svg.map"), ("sequence", "#sequence svg"))
+# The figures that must fit (no inner horizontal scroll) at 744 when no toggle is pressed.
+MUST_FIT_744 = (("map-section", "#map svg.map"), ("tour", "#tour svg.map"))
+
+# The svg's rendered width, its viewBox width, and the horizontal scroll of every
+# scroll container between it and its section (the sheet).
+SHEET_JS = r"""
+(sel) => {
+  const svg = document.querySelector(sel);
+  if (!svg) return null;
+  const vb = svg.viewBox && svg.viewBox.baseVal;
+  const scrolls = [];
+  let room = null;
+  for (let e = svg.parentElement; e && e.tagName !== 'SECTION'; e = e.parentElement) {
+    const cs = getComputedStyle(e);
+    if (room === null) room = e.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    if (cs.overflowX === 'auto' || cs.overflowX === 'scroll')
+      scrolls.push({ el: (e.id ? '#' + e.id : e.tagName.toLowerCase() + '.' + (e.className || '').toString().trim().split(/\s+/).join('.')), px: e.scrollWidth - e.clientWidth });
+  }
+  const d = document.documentElement;
+  return { width: Math.round(svg.getBoundingClientRect().width * 10) / 10, vbw: vb ? vb.width : null, room: room === null ? null : Math.round(room * 10) / 10,
+           scroll: Math.max(0, ...scrolls.map(x => x.px)), scrolls: scrolls.map(x => x.el + ':' + x.px).join(','),
+           page: Math.max(d.scrollWidth, document.body ? document.body.scrollWidth : 0) - d.clientWidth };
+}
+"""
+
+
+def fullsize_test(browser, url, screenshot_dir):
+    """At 744x1000: each section's Full size toggle. Return ({section: 'ok'|'fail'}, problems)."""
+    result, problems = {}, []
+    s = Session(browser, url, screenshot_dir, {"width": 744, "height": 1000})
+    if not s.open("#/"):
+        return {sec: "fail" for sec, _ in FULLSIZE}, [f"fullsize: {x}" for x in s.failures]
+    s.page.evaluate(FONTS_READY_JS)
+    s.settle(300)
+
+    def fitted(sec, sel, when):
+        g = s.page.evaluate(SHEET_JS, sel)
+        if g is None:
+            return [f"fullsize {sec}: no {sel}"]
+        out = []
+        if g["scroll"] > 0:
+            out.append(f"fullsize {sec} {when}: the sheet scrolls by {g['scroll']} px ({g['scrolls']}), expected fitted")
+        if g["room"] is not None and g["width"] > g["room"] + 1:
+            out.append(f"fullsize {sec} {when}: the svg is {g['width']} px wide, the sheet has {g['room']} px")
+        return out
+
+    for sec, sel in FULLSIZE:
+        btn = s.page.locator(f"#{sec} button.fullsize")
+        bad = []
+        if btn.count() != 1:
+            bad.append(f"fullsize {sec}: {btn.count()} buttons #{sec} button.fullsize, expected 1")
+        elif btn.get_attribute("aria-pressed") != "false":
+            bad.append(f"fullsize {sec}: aria-pressed is {btn.get_attribute('aria-pressed')!r} on load, expected 'false'")
+        else:
+            bad += fitted(sec, sel, "on load")
+            btn.scroll_into_view_if_needed()
+            if s.click(btn, f"#{sec} button.fullsize"):
+                s.settle(300)
+                g = s.page.evaluate(SHEET_JS, sel)
+                if btn.get_attribute("aria-pressed") != "true":
+                    bad.append(f"fullsize {sec}: after a click aria-pressed is {btn.get_attribute('aria-pressed')!r}, expected 'true'")
+                if g is None:
+                    bad.append(f"fullsize {sec}: no {sel} when pressed")
+                else:
+                    if g["vbw"] is None or abs(g["width"] - g["vbw"]) > 1:
+                        bad.append(f"fullsize {sec} pressed: the svg is {g['width']} px wide, its viewBox {g['vbw']} units")
+                    if g["scroll"] <= 0:
+                        bad.append(f"fullsize {sec} pressed: the sheet does not scroll ({g['scrolls'] or 'no scroll container'})")
+                    if g["page"] > 0:
+                        bad.append(f"fullsize {sec} pressed: the page scrolls horizontally by {g['page']} px")
+                s.screenshot(f"fullsize-{sec}.png")
+                if s.click(btn, f"#{sec} button.fullsize (again)"):
+                    s.settle(300)
+                    if btn.get_attribute("aria-pressed") != "false":
+                        bad.append(f"fullsize {sec}: after a second click aria-pressed is {btn.get_attribute('aria-pressed')!r}")
+                    bad += fitted(sec, sel, "unpressed again")
+        result[sec] = "fail" if bad else "ok"
+        problems += bad
+    problems += [f"fullsize: {x}" for x in s.failures + s.console_problems]
+    s.page.close()
+    return result, problems
+
+
 def layout_test(browser, url, screenshot_dir, m):
     """Run the --layout checks; return (lines to print, ok, console problems)."""
     out, ok, problems = [], True, []
@@ -1032,6 +1251,15 @@ def layout_test(browser, url, screenshot_dir, m):
                 ok = False
             if w == 744:
                 extra = s.page.evaluate(INNER_JS)
+                for sec, sel in MUST_FIT_744:
+                    g = s.page.evaluate(SHEET_JS, sel)
+                    if g is None:
+                        problems.append(f"layout 744: no {sel} in #{sec}")
+                        ok = False
+                    elif g["scroll"] > 0:
+                        problems.append(f"layout 744: the map sheet of #{sec} scrolls horizontally by {g['scroll']} px "
+                                        f"({g['scrolls']}); it must fit")
+                        ok = False
             s.screenshot(f"layout-{w}.png")
             if other and open_part(s, other):
                 s.settle(300)
@@ -1056,6 +1284,11 @@ def layout_test(browser, url, screenshot_dir, m):
         problems += [f"layout {w}: {x}" for x in s.failures]
         problems += [f"layout {w}: {x}" for x in s.console_problems]
         s.page.close()
+    sizes, size_problems = fullsize_test(browser, url, screenshot_dir)
+    out.append("fullsize " + " ".join(f"{sec}={state}" for sec, state in sizes.items()))
+    if any(state != "ok" for state in sizes.values()):
+        ok = False
+    problems += size_problems
     return out, ok, problems
 
 
@@ -1167,7 +1400,7 @@ def full_run(browser, url, screenshot_dir, m):
     visited, total = drill_test(s, m)
     steps_ok, highlighted, steps = tour_test(s, m)
     smoke = smoke_test(s, m)
-    parts, top_total, lanes, bands, columns, map_ok = map_test(s, m)
+    parts, top_total, lanes, bands, columns, box_rects, box_total, map_ok = map_test(s, m)
     opened, with_kids, default_ok = detail_test(s, m)
     panels, panel_total = multiples_test(s, m)
     rows, row_total = sequence_test(s, m)
@@ -1176,7 +1409,7 @@ def full_run(browser, url, screenshot_dir, m):
     print_problems(s, [f"third-party request: {u}" for u in s.third_party])
     print(f"nodes_visited={visited}/{total} tour_steps={steps_ok}/{steps} console_errors={errors}")
     print(smoke_line(smoke, len(s.third_party)))
-    print(f"map parts={parts}/{top_total} lanes={lanes} bands={bands} columns={columns}")
+    print(f"map parts={parts}/{top_total} lanes={lanes} bands={bands} columns={columns} boxes={box_rects}/{box_total}")
     print(f"detail opened={opened}/{with_kids}")
     print(f"tour steps={steps_ok}/{steps} highlighted={highlighted}/{steps}")
     print(f"multiples panels={panels}/{panel_total}")
@@ -1185,7 +1418,7 @@ def full_run(browser, url, screenshot_dir, m):
     print(f"console_errors={errors}")
     ok = (total > 0 and steps > 0 and visited == total and steps_ok == steps and errors == 0
           and smoke_ok(smoke) and not s.third_party
-          and map_ok and parts == top_total and top_total > 0
+          and map_ok and parts == top_total and top_total > 0 and box_rects == box_total and box_total > 0
           and default_ok and opened == with_kids and with_kids > 0
           and highlighted == steps
           and panels == panel_total and panel_total == 6

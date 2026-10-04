@@ -49,6 +49,39 @@ The default `--repo` is the git checkout that contains this script.
 `validate.iter_layout_text(model)` yields `(where, text, role)` for every
 string of the layout (used by `check_single_source.py`).
 
+Layout codes: `E-PLACE-MISSING`, `E-CELL-SHARED`, `E-CHILD-TWICE`,
+`E-CHILD-MISSING`, `E-GRID-FOREIGN`, `E-BOX-OUTSIDE-CELL`, `E-LINE-REF`,
+`E-LINE-ENDS`, `E-LINE-THROUGH`, `E-TOUR-MAP`, `E-SEQUENCE`, `E-LADDER`,
+`E-MAP-EDGES`, `E-SIDES`. Some rules in detail:
+
+- Map lines: a line's `d` may hold several subpaths, each starting with its
+  own `M` (for example one per lane segment of a rail, so that each segment
+  gets its own arrowhead). With one subpath, its two end points lie on the
+  border (+-2 units) of `ends` boxes. With several, each subpath's two end
+  points lie on the border of an `ends` box or a `through` box; an `M` that
+  draws nothing is an error (`E-LINE-ENDS`). Every `ends` box is touched by
+  an end point. Every `through` box is crossed border to border by the line
+  as a whole: by one subpath, or across the gap between a subpath that ends
+  on its border and another that starts on its border on the far side
+  (`E-LINE-THROUGH`). The gap from each subpath's end to the next
+  subpath's start must run across exactly one `through` box, border to
+  border; a gap anywhere else (outside every box) means part of the line is
+  not drawn (`E-LINE-THROUGH`). Per-lane lines (`{y}`, `{y-28}`, `{y+28}`) are checked
+  once per lane, as before.
+- `E-TOUR-MAP` also flags an empty `map.tour[i].highlight`.
+- `E-SIDES`: in a part's `detail.sides`, the side given for a neighbour must
+  agree with where the neighbour is on the map. `left` means every box
+  centre of the neighbour (all lane copies) lies left of the part's leftmost
+  box edge; `right`, `top` and `bottom` likewise (SVG y grows downwards). A
+  diagonal neighbour may use either side that agrees. The error line names
+  the entry, the neighbour's box centres and the sides that would agree. A
+  part without a valid place is skipped (its own error says why). Every
+  neighbour that gets a tag in a part's detail (an edge with one end on a
+  node below the part and the other end in that neighbour) needs a `sides`
+  entry: without one the viewer would put its "from" tag on the left and
+  its "to" tag on the right (`E-SIDES`, "no side for ...").
+  `E-SIDES` does not lower the `grids` count, which is about grid cells.
+
 ## check_single_source.py
 
 ```bash
@@ -66,7 +99,8 @@ Checks that the viewer files hold no model content:
    quoted literal (`'...'`, `"..."`, `` `...` `` or `>...<`), so `'DRP'` is
    caught but not "DRP" inside a longer word, and a box line "decision" is
    not found in the model field name `decisions`. A layout string equal to a
-   kind id is not searched (kind ids are UI enums the viewer may hold). All
+   kind id is not searched (kind ids are UI enums the viewer may hold) and
+   is not counted as checked: it is counted in `skipped_kind_ids`. All
    searches are case-sensitive and also cover the HTML- and JSON-escaped
    forms.
 2. Every title and edge label of 12 or more characters.
@@ -80,14 +114,18 @@ Checks that the viewer files hold no model content:
 Prints, in this order (each count preceded by `FOUND:` lines for its hits):
 
 ```text
-strings_checked=N found_in_viewer=M        # N = prose prefixes + layout strings
+strings_checked=N found_in_viewer=M        # N = prose prefixes + layout strings searched
 titles_checked=N titles_found_in_viewer=M
 windows_checked=N windows_found_in_viewer=M
-layout_checked=L                           # the layout strings among the N above
+layout_checked=L skipped_kind_ids=S        # L: layout strings searched (among the N above)
 node_ids_in_viewer=K
 ```
 
-Exit 0 iff every M and K is 0.
+Every "checked" count counts only strings that were actually searched. S is
+the number of layout strings equal to a kind id, which are not searched;
+L + S equals validate.py's `layout_text` (an empty layout string, if there
+ever is one, is also skipped and reported as `skipped_blank=B` on the same
+line). Exit 0 iff every M and K is 0.
 
 ## browser_test.py
 
@@ -105,7 +143,7 @@ would. It prints:
 ```text
 nodes_visited=V/N tour_steps=S/T console_errors=C
 smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q
-map parts=A/8 lanes=L bands=B columns=K
+map parts=A/8 lanes=L bands=B columns=K boxes=O/Q
 detail opened=X/P
 tour steps=S/T highlighted=H/T
 multiples panels=M/6
@@ -139,6 +177,13 @@ console_errors=C
   groups (must equal the number of `map.bands`); column label groups (must
   equal the number of `map.columns`). The map's viewBox must be
   `map.viewbox`, and boxes, lines and labels carry no transform attribute.
+  `boxes=O/Q`: Q is the number of map box copies the JSON lists (a per-lane
+  box once per lane); O counts those drawn exactly once as
+  `g.box[data-box]` (`[data-lane=i]` for lane i) whose `rect.b`, measured in
+  viewBox units with CSS transforms included, equals the JSON rect within
+  0.5 units (x, w, h from `place.boxes`; y from the box, or
+  `lanes.y[i] - h/2` for a per-lane box). A box the JSON does not list also
+  fails. So a CSS shift of a map box fails the map check.
 - `detail`: a part with children counts when clicking its map box opens
   `#detail-view svg.detail[data-detail=part]` drawing every descendant as a
   `g.box[data-node]` or `g.dgroup[data-node]`. On `#/` the detail shown must
@@ -154,8 +199,12 @@ console_errors=C
   the kind of `map.multiples[i]`, a figcaption, and its undimmed lines are
   exactly the lines of that kind, at least one (`all`: none dimmed).
 - `sequence`: row k (`#sequence svg .row[data-step-index=k]`) counts when it
-  is there once, its aria-label contains the step title, and clicking it
-  opens tour step k.
+  is there once, its aria-label contains the step title, it draws one arrow
+  (`path.ln`) that starts on the `from` lifeline and ends on the `to`
+  lifeline of the step's row in `map.sequence` (an end point within 10
+  units of the centre of a lifeline header `g.hdr[data-lifeline]`; no
+  lifeline there means `start`), its label (`text.lab`) is that row's
+  `label`, and clicking it opens tour step k.
 - `matrix`: C is the number of (from part, to part) pairs of model edges
   whose top-level parts differ; the cell `td[data-from][data-to]` of a pair
   counts when its relation items (`.ni[data-edge-ids]`) show exactly those
@@ -165,8 +214,8 @@ console_errors=C
 - `console_errors`: console errors and warnings, page errors, and failed or
   HTTP >= 400 requests to the page's own origin.
 
-Exit 0 iff every count is complete, every smoke check is `ok` with R = N,
-Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
+Exit 0 iff every count is complete (including `boxes` O = Q), every smoke
+check is `ok` with R = N, Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
 about one to two minutes.
 
 `--layout` loads the page at 744x1000 and 1440x900 and compares, on the
@@ -177,9 +226,25 @@ prints `width=<w> page_hscroll=<px>` (the page's horizontal overflow, the
 maximum over the loaded page, a detail opened and a tour step), after the
 744 line the informational `inner_scroll=<section:px,...> min_text_px=<px>`
 (horizontal scroll inside each figure container; the smallest rendered SVG
-text in CSS px), and finally `console_errors=C`. It fails if the layouts
-differ, any `page_hscroll` > 0, `html`, `body` or an element around a section
-sets `overflow-x: hidden` or `clip`, or C > 0.
+text in CSS px), then
+
+```text
+fullsize map-section=ok|fail tour=ok|fail sequence=ok|fail
+```
+
+and finally `console_errors=C`. The `fullsize` check runs at 744x1000: each
+of `#map-section`, `#tour` and `#sequence` has one `button.fullsize` with
+`aria-pressed="false"` on load, and its figure (`#map svg.map`,
+`#tour svg.map`, `#sequence svg`) is fitted: no horizontal scroll in any
+scroll container between the svg and its section, and the svg no wider
+than its sheet's content box. Pressing the button sets
+`aria-pressed="true"`, makes the svg exactly as wide (1 px) as its viewBox
+and makes the sheet scroll, while the page itself does not scroll;
+pressing it again fits the figure again. `--layout` fails if the layouts
+differ, any `page_hscroll` > 0, the map sheet of `#map-section` or of
+`#tour` scrolls horizontally at 744 on load (a `PROBLEM:` line gives the
+pixels), a `fullsize` check fails, `html`, `body` or an element around a
+section sets `overflow-x: hidden` or `clip`, or C > 0.
 
 `--check-node` opens the node by deep link (`#/node/ID`) and by clicking
 (its part's map box, then its box or group in the detail), and checks the
@@ -200,8 +265,13 @@ console_errors=C`. `--full` adds the full run to `--check-node`,
 ## geometry_check.py
 
 ```bash
-python docs/design/tools/geometry_check.py --url http://127.0.0.1:8000/ [--model PATH_OR_URL] [--verbose]
+python docs/design/tools/geometry_check.py --url http://127.0.0.1:8000/ [--model PATH_OR_URL] [--width 1440] [--height 900] [--verbose]
 ```
+
+Run it at each width that matters, e.g. `--width 744` and `--width 1440`:
+every count except `small_text` is in viewBox units and does not depend on
+the width. The page is measured in its default state (no "Full size"
+toggle pressed).
 
 Waits for the first render and `document.fonts.ready`, checks that the
 Archivo font is loaded (`document.fonts.check('600 15px Archivo')` and a
@@ -218,9 +288,30 @@ loaded Archivo face) and prints `font=Archivo`. It then measures the map
   connector may touch them); for a group only its title strip
   (`rect.gtitle`) counts, and lines ending on a kid of the group are exempt.
 - `text_overflow`: texts that extend more than 1 unit past their container
-  (the rect of their box, tag or group), plus free labels (`text.lab`,
-  notes, band and column labels) that extend past the viewBox or overlap a
-  box, tag or group title strip.
+  (the rect of their box or tag; a group's own texts, i.e. its title,
+  against the group's title strip `rect.gtitle`, not the whole group rect),
+  plus free labels (`text.lab`, notes, band and column labels) that extend
+  past the viewBox or overlap a box, tag or group title strip.
+- `box_overlap`: pairs of rects of one view that overlap by more than 1 unit
+  in both directions: box rects, tag rects and whole group rects. A box
+  inside the group of its own parent node is not an overlap (a kid that
+  sticks out of its group is).
+- `line_over_label`: (line, text) pairs where the line is painted above the
+  text (later in document order, which is SVG paint order), a point sampled
+  every 2 units along the line lies in the text's bounding box shrunk by 1
+  unit, and no opaque rect painted after the line covers that point; for
+  example a tag connector drawn over a group title. A line painted under an
+  opaque box (or under the text) does not count, nor a line's own labels.
+- `small_text`: texts in the map or a detail whose rendered size is below
+  `MIN_TEXT_PX` (7 CSS px) at the run's viewport: the computed font size
+  times the text's screen scale. `min_text_px` is the smallest rendered
+  size; the `PROBLEM: small_text` line of a view lists its smallest texts
+  (all of them with `--verbose`), and an `INFO: smallest text ...` line
+  names the smallest text of the run.
+- `text_overlap`: pairs of visible texts of one view whose bounding boxes
+  overlap by more than 1 unit in both directions (box titles and sub lines,
+  tag texts, group titles, line labels, notes, band, column and ladder
+  labels), so that one is printed over the other.
 - informational: `crossings_allowed` (pairs that would count but the box is
   listed for the line), `line_over_text` (a line drawn across a text other
   than its own label), `label_on_box` (the free labels on a box, also
@@ -232,12 +323,23 @@ It prints `font=Archivo`, one `view=<map|detail:ID> ...` line per view with
 
 ```text
 views=V line_through_box=X text_overflow=Y
-crossings_allowed=K line_over_text=J label_on_box=Q
+crossings_allowed=K line_over_text=J label_on_box=Q box_overlap=O line_over_label=W small_text=S text_overlap=E min_text_px=P
 ```
 
-with V = 1 + P (P: top-level parts with children). Exit 0 iff the font is
-Archivo, V = 1 + P, every view has a box, X = 0 and Y = 0. `--verbose`
-also lists the allowed crossings and the `line_over_text` pairs.
+with V = 1 + P (P: top-level parts with children). The view lines carry the
+same new fields. Exit 0 iff the font is Archivo, V = 1 + P, every view has
+a box, and X, Y, O, W, S and E are all 0 (K, J and Q are informational).
+`--verbose` also lists the allowed crossings, the `line_over_text` pairs and
+every small text.
+
+Each failing count has been shown to fail on a planted copy (the planting
+script lives outside the repository): a box moved onto a line plus a sub
+line too long for its box (`line_through_box`, `text_overflow`); a map box
+moved over its neighbour (`box_overlap`); a long group title that wraps
+under the tag connectors (`line_over_label`); an unbreakable 70-character
+kid title that makes the detail wide and its text small (`small_text`);
+two pairs of map labels moved on top of each other (`text_overlap`, kind
+`text-overlap`).
 
 ## sample_statements.py
 
@@ -259,24 +361,30 @@ writes JSON.
 
 ```bash
 cp -r docs/design /tmp/viewer-copy
-python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy hide-prose       # or no-multiples
+python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy KIND
 ```
 
-Edits `COPY_DIR/viewer.js` of a copy of `docs/design` (it refuses the viewer
-next to the script) to plant a known defect, so that one can show that the
-browser test catches it:
+Edits one file (`viewer.js`, or `viewer.css` for `shift-map-box`) of a copy
+of `docs/design` (it refuses the viewer next to the script) to plant a known
+defect, so that one can show that the browser test catches it. KIND:
 
 - `hide-prose`: the viewer stops rendering node prose in the panel; the full
   run then reports `nodes_visited` < N.
 - `no-multiples`: the viewer stops drawing the small multiples (the
   `#multiples` figures); the full run then reports `multiples panels=0/6`.
+- `page-error`: `plantedUndefinedFunction();` at the top of `viewer.js`; the
+  page never becomes ready, every count is 0 and the page error is counted
+  (`console_errors=1`).
+- `shift-map-box`: a CSS rule shifts the TEB's map box 30 px to the right
+  (a CSS transform, no transform attribute); the full run reports
+  `map ... boxes=16/17` and names the box.
+- `sequence-reversed`: the sequence chart draws each arrow between two
+  lifelines backwards; the full run reports `sequence rows` < T and names
+  each row's drawn and expected lifelines.
 
 Serve the copy and run `browser_test.py` against it; the full run must exit
 nonzero. Exit 0 if the defect was planted, 1 if the code to change was not
-found exactly once or on a usage error. A copy whose `viewer.js` starts with
-an undefined call (`plantedUndefinedFunction();`) must also make the full
-run exit nonzero (the page never becomes ready and the page error is
-counted).
+found exactly once or on a usage error.
 
 ## Viewer test hooks
 
@@ -303,7 +411,9 @@ Stable attributes for tests (the UI works the same for people):
 | `g.callout[data-part]`, `g.tok[data-t][data-target]` | the step's callout; event tokens (visible ones have opacity 1) |
 | `#tour-detail svg.detail[data-detail]` | the detail under the tour map, step node `.hot` |
 | `#multiples figure` with `svg.map.mini[data-kind]` and `figcaption` | the six small multiples |
-| `#sequence svg .row[data-step-index]` | one row per tour step; click opens that step |
+| `#sequence svg .row[data-step-index]` | one row per tour step (its arrow `path.ln`, label `text.lab`); click opens that step |
+| `#sequence svg g.hdr[data-lifeline]` with `rect` | a lifeline header; its centre is the lifeline's x |
+| `button.fullsize[aria-pressed]` in `#map-section`, `#tour`, `#sequence` | "Full size": pressed, the figure is drawn at its viewBox width and its sheet scrolls; unpressed, it fits |
 | `#matrix table.nsq td[data-from][data-to]`, `.ni[data-edge-ids]` | matrix cells and their listed relations |
 | `#read-page section[data-node-id]` | one section per node in the one-page view |
 | `#help-toggle`, `#help`, `#help-close` | "How to read this page": the button, the panel (hidden until opened) and its close button |

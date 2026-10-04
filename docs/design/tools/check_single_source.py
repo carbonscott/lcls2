@@ -28,11 +28,15 @@ searches the viewer files for model text in four ways:
    viewer.js as a quoted literal ('id', "id" or `id`).
 
 Output:
-    strings_checked=N found_in_viewer=M          (N = prose prefixes + layout strings)
+    strings_checked=N found_in_viewer=M          (N = prose prefixes + layout strings searched)
     titles_checked=N titles_found_in_viewer=M
     windows_checked=N windows_found_in_viewer=M
-    layout_checked=L                             (the layout strings among the N above)
+    layout_checked=L skipped_kind_ids=S          (L: the layout strings searched, among the N above;
+                                                  S: layout strings equal to a kind id, not searched)
     node_ids_in_viewer=K
+Every count of checked strings counts only the strings actually searched;
+L + S (+ skipped_blank=B, printed only when an empty layout string exists)
+equals validate.py's layout_text.
 each count preceded by FOUND: lines naming what was found where.
 Exit status 0 iff every M and K is 0.
 
@@ -165,11 +169,17 @@ def main(argv=None):
         if hits:
             found.append((where, snippet, hits, "prose"))
     layout_checked = 0
+    skipped_kind_ids = 0
+    skipped_blank = 0
     for where, text, role in iter_layout_text(model):
+        if not isinstance(text, str) or text.strip() == "":
+            skipped_blank += 1
+            continue
+        if text in KIND_IDS:
+            skipped_kind_ids += 1
+            continue  # a kind id is a UI enum, allowed in the viewer; not searched, not counted
         layout_checked += 1
         checked += 1
-        if not isinstance(text, str) or text.strip() == "" or text in KIND_IDS:
-            continue  # a kind id is a UI enum, allowed in the viewer
         if len(text) >= MIN_SUBSTRING_LENGTH and re.search(r"\s", text.strip()):
             hits = find_in_viewer(text, viewer_texts)
             how = f"layout {role}"
@@ -221,7 +231,8 @@ def main(argv=None):
     for where, window, hits in windows_found[:20]:
         print(f"FOUND: {where}: window {window!r} in {', '.join(hits)}")
     print(f"windows_checked={windows_checked} windows_found_in_viewer={len(windows_found)}")
-    print(f"layout_checked={layout_checked}")
+    print(f"layout_checked={layout_checked} skipped_kind_ids={skipped_kind_ids}"
+          + (f" skipped_blank={skipped_blank}" if skipped_blank else ""))
     for node_id, hits in ids_found:
         print(f"FOUND: node id {node_id!r} as {' '.join(hits)} in viewer.js")
     print(f"node_ids_in_viewer={len(ids_found)}")
