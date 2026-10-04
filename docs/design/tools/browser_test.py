@@ -9,10 +9,10 @@ clicking, as a reader would.
 
 Full run (default) prints, in this order:
   nodes_visited=V/N tour_steps=S/T console_errors=C
-  smoke stub_click=ok|fail arrow_keys=ok|fail help=ok|fail read_page=R/N third_party=Q
+  smoke stub_click=ok|fail arrow_keys=ok|fail help=ok|fail read_page=R/N third_party=Q arrow_scope=ok|fail
   map parts=A/P0 lanes=L bands=B columns=K boxes=O/Q
   detail opened=X/P
-  tour steps=S/T highlighted=H/T
+  tour steps=S/T highlighted=H/T tag_clear=K/T
   multiples panels=M/6
   sequence rows=R/T
   matrix cells=C2/C
@@ -30,12 +30,17 @@ Full run (default) prints, in this order:
     map shows a callout (g.callout) on the top-level part of the step's node.
   * smoke: stub_click = clicking the first neighbour tag (g.stub) of the
     detail shown on #/ opens the detail of the part it names (data-other);
-    arrow_keys = with focus in the tour, Right then Left move to step 2 and
-    back; help = #help-toggle opens #help, #help-close (or the toggle) closes
-    it; read_page = in #/read, every node has a section[data-node-id] whose
-    title (.read-title, else its first heading) is the node title;
-    third_party = requests during the run to hosts other than the page's own
-    origin, fonts.googleapis.com and fonts.gstatic.com.
+    arrow_keys = with the focus in the tour (on #tour-next), Right then Left
+    move to step 2 and back; help = #help-toggle opens #help, #help-close (or
+    the toggle) closes it; read_page = in #/read, every node has a
+    section[data-node-id] whose title (.read-title, else its first heading)
+    is the node title; third_party = requests during the run to hosts other
+    than the page's own origin, fonts.googleapis.com and fonts.gstatic.com;
+    arrow_scope = after the tour has been used (pip 3 clicked), the page
+    scrolled to the matrix and its heading clicked (the focus then on the
+    body, outside #tour), ArrowRight pressed twice leaves the tour at step 3
+    and no handler calls preventDefault on those keys (so the browser can
+    scroll sideways).
   * map: parts = top-level parts with a map box (g.box[data-part]) out of P0
     top-level parts; lanes = distinct data-lane values of the map boxes (must
     equal map.lanes.count); bands = g.band-label groups (must equal the
@@ -60,6 +65,11 @@ Full run (default) prints, in this order:
     visible tokens (g.tok with opacity 1: data-t and data-target "x,y")
     equal the step's map.tour tokens (t, x, y) AND the step node is .hot in
     #tour-detail svg.detail[data-detail=<top part>].
+  * tour tag_clear: step k counts when the tour map has one callout tag
+    (g.callout rect.ctag) and its box overlaps (by more than 0.5 units in
+    both directions, viewBox units) no visible text of the tour map (every
+    text outside g.callout and g.tok that is displayed, dimmed ones
+    included).
   * multiples: panel i counts when #multiples figure i holds svg.map.mini
     with data-kind = map.multiples[i].kind and a non-empty figcaption, and
     its undimmed lines (effective opacity > 0.5) are exactly the lines of
@@ -80,7 +90,7 @@ Full run (default) prints, in this order:
   * console_errors: console errors and warnings, page errors, and failed or
     HTTP-error (>= 400) requests to the page's own origin.
   Exit 0 iff every count is complete (V = N, S = T, A = P0, O = Q, X = P, H = T,
-  M = 6, R = T, C2 = C), every smoke check is ok with R = N, Q = 0 and
+  K = T, M = 6, R = T, C2 = C), every smoke check is ok with R = N, Q = 0 and
   C = 0. A check that finds nothing to test fails.
 
 --layout (layout checks; add --full to also run the full test):
@@ -468,17 +478,50 @@ TOUR_STATE_JS = r"""
 """
 
 
+# The callout tag of the tour map and the visible map texts its box overlaps
+# (viewBox units, CSS transforms included).
+TAG_JS = r"""
+(sel) => {
+  const svg = document.querySelector(sel);
+  if (!svg) return { error: 'no tour map ' + sel };
+  const tags = [...svg.querySelectorAll('g.callout rect.ctag')];
+  if (tags.length !== 1) return { error: tags.length + ' callout tags (g.callout rect.ctag), expected 1' };
+  const inv = svg.getScreenCTM().inverse();
+  const bb = el => {
+    const m = inv.multiply(el.getScreenCTM()), b = el.getBBox();
+    const p = [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]
+      .map(([x, y]) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+    const x0 = Math.min(...p.map(q => q[0])), y0 = Math.min(...p.map(q => q[1]));
+    return { x: x0, y: y0, w: Math.max(...p.map(q => q[0])) - x0, h: Math.max(...p.map(q => q[1])) - y0 };
+  };
+  const shown = el => { for (let e = el; e && e !== svg.parentNode; e = e.parentElement) { const cs = getComputedStyle(e);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return false; } return true; };
+  const t0 = bb(tags[0]);
+  const hits = [];
+  svg.querySelectorAll('text').forEach(t => {
+    if (t.closest('g.callout, g.tok, defs, mask') || !shown(t)) return;
+    const r = bb(t);
+    if (!r.w || !r.h) return;
+    const ox = Math.min(t0.x + t0.w, r.x + r.w) - Math.max(t0.x, r.x);
+    const oy = Math.min(t0.y + t0.h, r.y + r.h) - Math.max(t0.y, r.y);
+    if (ox > 0.5 && oy > 0.5) hits.push((t.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60));
+  });
+  return { tag: [t0.x, t0.y, t0.w, t0.h].map(v => Math.round(v * 10) / 10), hits };
+}
+"""
+
+
 def tour_test(s, m):
-    """Return (steps shown S, highlighted H, T)."""
+    """Return (steps shown S, highlighted H, tag clear K, T)."""
     steps = m.steps
-    shown_ok = highlighted = 0
+    shown_ok = highlighted = tag_clear = 0
     if not s.open("#/"):
-        return 0, 0, len(steps)
+        return 0, 0, 0, len(steps)
     pips = s.page.locator("#pips button.pip")
     if pips.count() != len(steps):
         s.fail(f"tour: {pips.count()} pips (#pips button.pip) for {len(steps)} steps")
     if pips.count() and not s.click(pips.first, "tour: pip 1"):
-        return 0, 0, len(steps)
+        return 0, 0, 0, len(steps)
     for k, step in enumerate(steps, 1):
         title = s.page.locator(f'#tour-step-title[data-step-index="{k}"]')
         try:
@@ -513,6 +556,14 @@ def tour_test(s, m):
             shown_ok += 1
         if state is not None and callout_ok and highlight_ok(s, m, k, step, top, state):
             highlighted += 1
+        tag = s.page.evaluate(TAG_JS, TOUR_MAP)
+        if "error" in tag:
+            s.fail(f"tour: step {k}: {tag['error']}")
+        elif tag["hits"]:
+            s.fail(f"tour: step {k}: the callout tag (g.callout rect.ctag at x,y,w,h={tag['tag']}) "
+                   f"covers map text {tag['hits']}")
+        else:
+            tag_clear += 1
         if k == 1:
             s.screenshot("tour-step-1.png")
         if k < len(steps):
@@ -521,7 +572,7 @@ def tour_test(s, m):
             except PlaywrightError as exc:
                 s.fail(f"tour: cannot click #tour-next at step {k}: {first_line(exc)}")
                 break
-    return shown_ok, highlighted, len(steps)
+    return shown_ok, highlighted, tag_clear, len(steps)
 
 
 def highlight_ok(s, m, k, step, top, state):
@@ -619,11 +670,50 @@ def smoke_test(s, m):
             return "fail"
         s.page.wait_for_selector('#tour-step-title[data-step-index="1"]')
         s.page.locator("#tour-next").focus()
+        if not s.page.evaluate("() => !!(document.activeElement && document.activeElement.closest('#tour'))"):
+            s.fail("smoke arrow_keys: could not put the focus in the tour (#tour-next)")
+            return "fail"
         s.page.keyboard.press("ArrowRight")
         s.page.wait_for_selector('#tour-step-title[data-step-index="2"]')
         s.page.keyboard.press("ArrowLeft")
         s.page.wait_for_selector('#tour-step-title[data-step-index="1"]')
         return "ok"
+
+    def arrow_scope():
+        if len(m.steps) < 3:
+            s.fail(f"smoke arrow_scope: the tour has {len(m.steps)} step(s); at least 3 are needed")
+            return "fail"
+        if not s.open("#/"):
+            return "fail"
+        if not s.click(s.page.locator("#pips button.pip").nth(2), "smoke arrow_scope: pip 3"):
+            return "fail"
+        s.page.wait_for_selector('#tour-step-title[data-step-index="3"]')
+        # scroll to the matrix and click its heading (not focusable): the focus leaves the tour
+        s.page.locator("#matrix").scroll_into_view_if_needed()
+        s.page.locator("#matrix h2").first.click()
+        s.page.evaluate("() => { const a = document.activeElement; if (a && a !== document.body && a.closest('#tour')) a.blur(); }")
+        where = s.page.evaluate("() => { const a = document.activeElement; return a ? (a.id ? '#' + a.id : a.tagName) : 'none'; }")
+        if s.page.evaluate("() => !!(document.activeElement && document.activeElement.closest('#tour'))"):
+            s.fail(f"smoke arrow_scope: the focus stayed in the tour ({where})")
+            return "fail"
+        # counts the arrow keys that reach the window already default-prevented
+        s.page.evaluate("""() => { window.__arrows = { seen: 0, prevented: 0 };
+          window.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            window.__arrows.seen++; if (e.defaultPrevented) window.__arrows.prevented++; } }); }""")
+        s.page.keyboard.press("ArrowRight")
+        s.page.keyboard.press("ArrowRight")
+        s.settle(300)
+        step = s.page.evaluate("() => { const t = document.querySelector('#tour-step-title'); return t ? t.dataset.stepIndex : null; }")
+        arrows = s.page.evaluate("() => window.__arrows")
+        good = True
+        if step != "3":
+            s.fail(f"smoke arrow_scope: with the focus on {where} (outside #tour), ArrowRight x2 moved the tour from step 3 to step {step}")
+            good = False
+        if arrows["prevented"]:
+            s.fail(f"smoke arrow_scope: {arrows['prevented']} of {arrows['seen']} arrow keys pressed outside the tour "
+                   f"were default-prevented (the browser cannot scroll sideways with them)")
+            good = False
+        return "ok" if good else "fail"
 
     def help_panel():
         if not s.open("#/"):
@@ -639,9 +729,11 @@ def smoke_test(s, m):
         return "ok"
 
     if not s.open("#/"):
-        return {"stub_click": "fail", "arrow_keys": "fail", "help": "fail", "read_page": (0, len(m.ids))}
+        return {"stub_click": "fail", "arrow_keys": "fail", "help": "fail", "read_page": (0, len(m.ids)),
+                "arrow_scope": "fail"}
     attempt("stub_click", stub_click)
     attempt("arrow_keys", arrow_keys)
+    attempt("arrow_scope", arrow_scope)
     attempt("help", help_panel)
 
     shown = 0
@@ -672,12 +764,14 @@ def smoke_test(s, m):
 def smoke_line(result, third_party):
     shown, total = result.get("read_page", (0, 0))
     return (f"smoke stub_click={result.get('stub_click', 'fail')} arrow_keys={result.get('arrow_keys', 'fail')} "
-            f"help={result.get('help', 'fail')} read_page={shown}/{total} third_party={third_party}")
+            f"help={result.get('help', 'fail')} read_page={shown}/{total} third_party={third_party} "
+            f"arrow_scope={result.get('arrow_scope', 'fail')}")
 
 
 def smoke_ok(result):
     shown, total = result.get("read_page", (0, 0))
-    return all(result.get(k) == "ok" for k in ("stub_click", "arrow_keys", "help")) and total > 0 and shown == total
+    return (all(result.get(k) == "ok" for k in ("stub_click", "arrow_keys", "arrow_scope", "help"))
+            and total > 0 and shown == total)
 
 
 # ---------------------------------------------------------------------------
@@ -1398,7 +1492,7 @@ def print_problems(s, extra=()):
 def full_run(browser, url, screenshot_dir, m):
     s = Session(browser, url, screenshot_dir)
     visited, total = drill_test(s, m)
-    steps_ok, highlighted, steps = tour_test(s, m)
+    steps_ok, highlighted, tags_clear, steps = tour_test(s, m)
     smoke = smoke_test(s, m)
     parts, top_total, lanes, bands, columns, box_rects, box_total, map_ok = map_test(s, m)
     opened, with_kids, default_ok = detail_test(s, m)
@@ -1411,7 +1505,7 @@ def full_run(browser, url, screenshot_dir, m):
     print(smoke_line(smoke, len(s.third_party)))
     print(f"map parts={parts}/{top_total} lanes={lanes} bands={bands} columns={columns} boxes={box_rects}/{box_total}")
     print(f"detail opened={opened}/{with_kids}")
-    print(f"tour steps={steps_ok}/{steps} highlighted={highlighted}/{steps}")
+    print(f"tour steps={steps_ok}/{steps} highlighted={highlighted}/{steps} tag_clear={tags_clear}/{steps}")
     print(f"multiples panels={panels}/{panel_total}")
     print(f"sequence rows={rows}/{row_total}")
     print(f"matrix cells={cells}/{cell_total}")
@@ -1420,7 +1514,7 @@ def full_run(browser, url, screenshot_dir, m):
           and smoke_ok(smoke) and not s.third_party
           and map_ok and parts == top_total and top_total > 0 and box_rects == box_total and box_total > 0
           and default_ok and opened == with_kids and with_kids > 0
-          and highlighted == steps
+          and highlighted == steps and tags_clear == steps
           and panels == panel_total and panel_total == 6
           and rows == row_total
           and matrix_ok and cells == cell_total and cell_total > 0)

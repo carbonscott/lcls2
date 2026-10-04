@@ -188,6 +188,13 @@ kinds like this:
 | `control` | Run control and setup: transitions from the control process to the processes and the XPM, their answers and reports back, configuration reads, process launching, chunk requests, and what a process sets up at start or at a transition (the detector class, its threads, the next chunk file). | `e-control-to-drp`, `e-configdb-to-control-process`, `e-launching-to-drp-process` |
 | `monitoring` | Live monitoring: monitored events from the DRPs to the MEBs, shared memory and AMI, and the MEBs' free-buffer offers to the TEBs. | `e-drp-to-monitoring`, `e-meb-to-teb-process`, `e-shmem-to-ami` |
 
+A flow that fits none of the five kinds well (run-time metrics or other
+telemetry, for example) still takes one of them: the schema allows only
+these five, and the viewer has a color, a line pattern and an emphasize
+button for each. Pick the kind whose row above is closest to what the flow
+does, and say in the edge's `prose` what it carries and where it goes, so
+that nobody reads the kind as more than it is.
+
 In the viewer each kind has its own color and line pattern, and its name
 (from `map.kinds`) on the buttons that emphasize one kind on the map and on
 the small multiples. No edge moves a box: the map and the detail views are
@@ -294,6 +301,11 @@ acronyms and explain terms of art (field names such as `env`, code names such
 as "pebble") the first time each node, decision, edge or tour step uses
 them: a reader may open any node first.
 
+A universal ("every metric carries ...", "all DRPs ...", "never") needs
+every case checked in the code: cite the one place that every case goes
+through, or check each case, or narrow the sentence to the cases you
+checked ("the metrics in `<file>` carry ...").
+
 The rule covers the text fields: a node's `prose` and `dev_notes` (counted
 together, `prose` first), a decision's `decision` and `rationale`, an
 edge's `prose`, a tour step's `prose`, the top-level `summary` and the
@@ -368,7 +380,10 @@ x grows to the right, y grows down.
   `reason` (see "Map lines" below).
 - `ladder`: the states of the control process drawn as stations on one
   line, with the transitions between them (names as in `control.py`); a
-  tour step highlights the segment of transition k as `lad-<k>`.
+  tour step highlights the segment of transition k as `lad-<k>`. The
+  top-level part that holds the ladder's `node` also gets the shaded row and
+  column of the N² matrix, and the line under the matrix names it by its
+  `place.short`.
 - `tour`: one entry per tour step, in order: the step's `id`, the `tokens`
   (dots that show where the event's parts are, each with a type `t`, a
   `lane` or null, and an absolute `x`, `y`) and the `highlight` list (line
@@ -680,19 +695,25 @@ error codes are explained in "What the validator checks" above):
 step titles.
 
 **Preview** in a browser. Serve `docs/design` on a free port, reachable only
-from your own machine (`--bind 127.0.0.1`), and record the server's process
-ID so that you can stop exactly that process later. The server's log goes
-to `build/design-preview.log`; `build` is ignored by git (see `.gitignore`),
-so the log does not show up in `git status`. Any path outside the checkout
-works too.
+from your own machine (`--bind 127.0.0.1`), and record the server's port
+and process ID so that you can stop exactly that process later. Save both
+to files: each command below may run in a fresh shell (a new terminal, or
+a tool that runs every command on its own), where `$PORT` and `$!` are no
+longer set. The server's log, port and process ID go to `build/`; `build`
+is ignored by git (see `.gitignore`), so they do not show up in
+`git status`. Any path outside the checkout works too.
 
 ```bash
 PORT=$(python -c "import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])")
 mkdir -p build
 python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design > build/design-preview.log 2>&1 &
-SERVER_PID=$!
+echo $! > build/design-preview.pid
+echo "$PORT" > build/design-preview.port
 echo "http://127.0.0.1:$PORT/"
 ```
+
+In any later shell, set the port again first:
+`PORT=$(cat build/design-preview.port)`.
 
 Open the printed URL. The page shows the fixed map, the detail of one part
 under it and the panel that describes the selected node:
@@ -711,20 +732,22 @@ under it and the panel that describes the selected node:
   entries.
 - In the panel, the flows are folded under "Flows".
 - Further down: the tour moves one event across the same map ("Back" and
-  "Next", the numbered step buttons, or the Left and Right arrow keys); the
+  "Next", the numbered step buttons, or the Left and Right arrow keys once
+  the focus is in the tour: click anywhere in it first); the
   small multiples show one kind of edge per copy of the map, and the last
   copy shows all of them; the sequence
   chart shows the tour in one figure (click a row to open that step); the
-  N² matrix lists every relation between two parts.
+  N² matrix lists every relation between two parts, with a line under it
+  that says what its shading means.
 - "Read as one page" shows the whole model as one document (`#/read`);
   "How to read this page" explains the controls.
 
 A figure that is wider than its frame (on a phone, or at full size) says
 "Scroll sideways" above it. Reload the page after each edit. When you are
-done, stop the server by its process ID:
+done, stop the server by its process ID (saved above):
 
 ```bash
-kill "$SERVER_PID"
+kill "$(cat build/design-preview.pid)"
 ```
 
 Do not stop it with a pattern such as `pkill -f http.server`: a pattern can
@@ -735,8 +758,8 @@ Links to `../` (Documentation home), `editing-guide/` (Edit this model) and
 (`mkdocs serve` or `mkdocs build`), not when `docs/design` is served on its
 own as above.
 
-**Geometry check** (with the preview server running, in the same shell, so
-that `$PORT` is set). It opens the map and the detail view of every part
+**Geometry check** (with the preview server running; in a fresh shell, set
+`PORT=$(cat build/design-preview.port)` first). It opens the map and the detail view of every part
 that has children, and measures them in SVG units:
 
 ```bash
@@ -781,7 +804,8 @@ What the counts mean, and what to do:
 The exit status is 0 only when the font is Archivo, V is right and X, Y, O,
 W, S and E are all 0.
 
-**Browser test** (with the preview server running, in the same shell):
+**Browser test** (with the preview server running; in a fresh shell, set
+`PORT=$(cat build/design-preview.port)` first):
 
 ```bash
 python docs/design/tools/browser_test.py --url "http://127.0.0.1:$PORT/"
@@ -800,10 +824,10 @@ prints these lines:
 | Line | It passes when |
 |---|---|
 | `nodes_visited=V/N tour_steps=S/T console_errors=C` | V = N: every node was reached by clicking (a part's box on the map; a lower node's box or group in its part's detail) and the panel then showed its title and the first 30 characters of its prose. S = T: every tour step showed its title, the start of its prose and the "THIS STEP" mark on the map. C = 0. |
-| `smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q` | A tag opens its part, the arrow keys move the tour, the help opens and closes, the one-page view has a section with the right title for every node (R = N), and the page loads nothing from other sites except the fonts (Q = 0). |
+| `smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok` | A tag opens its part, the arrow keys move the tour when the focus is in it, the help opens and closes, the one-page view has a section with the right title for every node (R = N), the page loads nothing from other sites except the fonts (Q = 0), and the arrow keys pressed elsewhere on the page (on the matrix) neither move the tour nor stop the browser's sideways scroll. |
 | `map parts=A/P lanes=L bands=B columns=K boxes=O/Q` | Every part has a box on the map, the lanes, bands and columns match `map`, and every box is drawn exactly where its `place` says (O = Q). |
 | `detail opened=X/P` | Clicking each part that has children opens its detail with every descendant drawn. |
-| `tour steps=S/T highlighted=H/T` | For every step, the highlighted lines and boxes are exactly the step's `highlight` list, the dots are its `tokens`, and the step's node is highlighted in the detail under the tour map. |
+| `tour steps=S/T highlighted=H/T tag_clear=K/T` | For every step, the highlighted lines and boxes are exactly the step's `highlight` list, the dots are its `tokens`, and the step's node is highlighted in the detail under the tour map. K = T: the "THIS STEP" tag covers no text of the tour map. The viewer puts the tag at the first place around the part's dashed outline that is free of text (under it, over it, then beside it); if no place is free, move a label or note away from that part. |
 | `multiples panels=M/6` | Each small copy of the map leaves exactly its kind of line undimmed. |
 | `sequence rows=R/T` | Each row of the sequence chart draws its step's arrow between the right lifelines, with its label, and opens that step when clicked. |
 | `matrix cells=C2/C` | Each cell of the matrix lists exactly the labels of the edges between its two parts. |

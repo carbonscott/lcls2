@@ -142,10 +142,10 @@ would. It prints:
 
 ```text
 nodes_visited=V/N tour_steps=S/T console_errors=C
-smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q
+smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok
 map parts=A/8 lanes=L bands=B columns=K boxes=O/Q
 detail opened=X/P
-tour steps=S/T highlighted=H/T
+tour steps=S/T highlighted=H/T tag_clear=K/T
 multiples panels=M/6
 sequence rows=R/T
 matrix cells=C2/C
@@ -166,7 +166,12 @@ console_errors=C
   callout (`g.callout[data-part]`) on the top-level part of the step's node.
 - `smoke`: `stub_click` = clicking the first neighbour tag (`g.stub`) of the
   detail shown on `#/` opens the detail of the part it names; `arrow_keys` =
-  with focus in the tour, Right and Left move to step 2 and back; `help` =
+  with the focus in the tour (on `#tour-next`), Right and Left move to step
+  2 and back; `arrow_scope` = after the tour has been used (pip 3 clicked),
+  the page scrolled to the matrix and its heading clicked (the focus is then
+  outside `#tour`, on the body), ArrowRight pressed twice leaves the tour at
+  step 3 and reaches the window not default-prevented (the browser can
+  still scroll sideways with it); `help` =
   `#help-toggle` opens `#help` and `#help-close` (or the toggle) closes it;
   `read_page` = in `#/read` every node has one `section[data-node-id]` whose
   title (`.read-title`, else its first heading) is the node title (R of N);
@@ -195,6 +200,12 @@ console_errors=C
   hot box or line belongs to that part **and** the visible tokens (`g.tok`
   at opacity 1; `data-t`, `data-target="x,y"`) are the step's `map.tour`
   tokens **and** the step node is `.hot` in `#tour-detail`.
+- `tour tag_clear`: step k counts when the tour map has one callout tag
+  (`g.callout rect.ctag`) and its box overlaps no visible text of the tour
+  map by more than 0.5 units in both directions (viewBox units; every
+  displayed text outside `g.callout` and `g.tok`, dimmed ones included).
+  The viewer puts the tag at the first place around the part's dashed
+  outline that covers no text (under it, over it, then beside it).
 - `multiples`: figure i counts when it holds `svg.map.mini[data-kind]` with
   the kind of `map.multiples[i]`, a figcaption, and its undimmed lines are
   exactly the lines of that kind, at least one (`all`: none dimmed).
@@ -214,8 +225,8 @@ console_errors=C
 - `console_errors`: console errors and warnings, page errors, and failed or
   HTTP >= 400 requests to the page's own origin.
 
-Exit 0 iff every count is complete (including `boxes` O = Q), every smoke
-check is `ok` with R = N, Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
+Exit 0 iff every count is complete (including `boxes` O = Q and
+`tag_clear` K = T), every smoke check is `ok` with R = N, Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
 about one to two minutes.
 
 `--layout` loads the page at 744x1000 and 1440x900 and compares, on the
@@ -381,6 +392,13 @@ defect, so that one can show that the browser test catches it. KIND:
 - `sequence-reversed`: the sequence chart draws each arrow between two
   lifelines backwards; the full run reports `sequence rows` < T and names
   each row's drawn and expected lifelines.
+- `arrow-global`: a keydown listener on the whole document moves the tour
+  with Left and Right wherever the focus is (once the tour has been used)
+  and calls preventDefault; the full run reports `arrow_scope=fail` (the
+  tour moves from step 3 to step 5, and both keys are default-prevented).
+- `callout-tag-fixed`: the callout tag goes back to one fixed place (under
+  the dashed outline at its left); the full run reports `tag_clear=12/14`
+  (on the last two steps the tag covers the note next to the last part).
 
 Serve the copy and run `browser_test.py` against it; the full run must exit
 nonzero. Exit 0 if the defect was planted, 1 if the code to change was not
@@ -408,13 +426,15 @@ Stable attributes for tests (the UI works the same for people):
 | `#detail-title[data-node-id]`, `#detail-prose` | the node panel: title and rendered prose |
 | `#tour svg.map`, `#tour-prev`, `#tour-next`, `#pips button.pip[aria-current]` | tour map and controls |
 | `#tour-step-title[data-step-index]`, `#tour-step-prose` | title (k is 1-based) and text of the current step |
-| `g.callout[data-part]`, `g.tok[data-t][data-target]` | the step's callout; event tokens (visible ones have opacity 1) |
+| `g.callout[data-part]` with `rect.cbox` and `rect.ctag`, `g.tok[data-t][data-target]` | the step's callout (its dashed outline, with a mask that leaves a gap where the outline would cross a text, and its tag); event tokens (visible ones have opacity 1) |
+| `#tour[tabindex="-1"]` | the tour section takes the focus when clicked; Left and Right move the tour only while the focus is in it |
 | `#tour-detail svg.detail[data-detail]` | the detail under the tour map, step node `.hot` |
 | `#multiples figure` with `svg.map.mini[data-kind]` and `figcaption` | the six small multiples |
 | `#sequence svg .row[data-step-index]` | one row per tour step (its arrow `path.ln`, label `text.lab`); click opens that step |
 | `#sequence svg g.hdr[data-lifeline]` with `rect` | a lifeline header; its centre is the lifeline's x |
 | `button.fullsize[aria-pressed]` in `#map-section`, `#tour`, `#sequence` | "Full size": pressed, the figure is drawn at its viewBox width and its sheet scrolls; unpressed, it fits |
 | `#matrix table.nsq td[data-from][data-to]`, `.ni[data-edge-ids]` | matrix cells and their listed relations |
+| `#nsq-key` | the line under the matrix that names the shaded row and column (the part of `map.ladder.node`, by its `place.short`) and the diagonal |
 | `#read-page section[data-node-id]` | one section per node in the one-page view |
 | `#help-toggle`, `#help`, `#help-close` | "How to read this page": the button, the panel (hidden until opened) and its close button |
 

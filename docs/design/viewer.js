@@ -372,7 +372,9 @@
     if (state.mode === 'tour') {
       if (d1 && !d1.current()) openNode(defaultPart());
       tourGo(state.step - 1, false);
-      if (scroll) scrollToSection('tour');
+      // a link to a tour step brings the tour into view and puts the focus
+      // in it, so that the Left and Right keys move the tour at once
+      if (scroll) { scrollToSection('tour'); $('tour').focus({ preventScroll: true }); }
     } else if (state.focus !== ROOT) {
       openNode(state.focus);
       // a link to a node (a deep link, a cross-reference, "Show on the map")
@@ -756,21 +758,75 @@
         if (e.classList.contains('ln')) e.classList.toggle('focus', !!k && k !== 'all' && e.dataset.k === k);
       });
     }
+    // The texts of the figure (not the selection's, not the tour dots') as
+    // rectangles in viewBox units. They do not move once drawn; measured the
+    // first time the figure is rendered (a hidden figure measures nothing).
+    let textRects = null;
+    function figureTexts() {
+      if (textRects) return textRects;
+      const list = [];
+      svg.querySelectorAll('text').forEach((t) => {
+        if (t.closest('.callout, .tok')) return;
+        let b = null;
+        try { b = t.getBBox(); } catch (e) { b = null; }
+        if (b && b.width > 0 && b.height > 0) list.push({ x: b.x, y: b.y, w: b.width, h: b.height });
+      });
+      if (list.length) textRects = list;
+      return list;
+    }
+    const meets = (a, b, pad) => a.x < b.x + b.w + pad && b.x < a.x + a.w + pad && a.y < b.y + b.h + pad && b.y < a.y + a.h + pad;
+    // The tag of the selection goes to the first place around the dashed
+    // outline (under it at the left, then at the right; over it at the left,
+    // then at the right; then beside it) that covers no text of the figure
+    // and no box; failing that, the first that covers no text.
+    function placeTag(o, w, h) {
+      const texts = figureTexts();
+      const boxes = [].concat(...Array.from(reg.parts.values()));
+      const cands = [];
+      [[o.x0, o.y1 - 1], [o.x1 - w, o.y1 - 1], [o.x0, o.y0 - h + 1], [o.x1 - w, o.y0 - h + 1],
+        [o.x1 - 1, o.y0], [o.x0 - w + 1, o.y0], [o.x1 - 1, o.y1 - h], [o.x0 - w + 1, o.y1 - h]].forEach(([x, y]) => {
+        if (y >= 0 && y + h <= vb.h) cands.push({ x: Math.max(2, Math.min(x, vb.w - w - 2)), y: y, w: w, h: h });
+      });
+      if (!cands.length) cands.push({ x: Math.max(2, Math.min(o.x0, vb.w - w - 2)), y: Math.max(0, o.y0 - h + 1), w: w, h: h });
+      const clear = (c, list, pad) => !list.some((r) => meets(c, r, pad));
+      return cands.find((c) => clear(c, texts, 1) && clear(c, boxes, 0)) || cands.find((c) => clear(c, texts, 1)) || cands[0];
+    }
+    // Where the dashed outline would run through a text of the figure (a band
+    // label, a line label), a mask leaves a gap in it, so that the text stays
+    // readable.
+    function gapsAtTexts(g, rect, o) {
+      const pad = 2;
+      const crossed = figureTexts().filter((r) => {
+        const inX = (x) => x > r.x - pad && x < r.x + r.w + pad;
+        const inY = (y) => y > r.y - pad && y < r.y + r.h + pad;
+        const alongX = o.x0 < r.x + r.w && o.x1 > r.x;
+        const alongY = o.y0 < r.y + r.h && o.y1 > r.y;
+        return ((inY(o.y0) || inY(o.y1)) && alongX) || ((inX(o.x0) || inX(o.x1)) && alongY);
+      });
+      if (!crossed.length) return;
+      const id = 'gap' + (++markerUid);
+      const mask = S('mask', { id: id, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: vb.w, height: vb.h }, S('defs', null, g));
+      S('rect', { x: 0, y: 0, width: vb.w, height: vb.h, fill: '#fff' }, mask);
+      crossed.forEach((r) => S('rect', { x: r1(r.x - 3), y: r1(r.y - 1), width: r1(r.w + 6), height: r1(r.h + 2), fill: '#000' }, mask));
+      rect.setAttribute('mask', 'url(#' + id + ')');
+    }
     function select(part, tag) {
       G.call.textContent = '';
       const rs = reg.parts.get(part);
       if (!rs || !rs.length) return;
-      const x0 = Math.min(...rs.map((r) => r.x)) - 7;
-      const y0 = Math.min(...rs.map((r) => r.y)) - 7;
-      const x1 = Math.max(...rs.map((r) => r.x + r.w)) + 7;
-      const y1 = Math.max(...rs.map((r) => r.y + r.h)) + 7;
+      const o = {
+        x0: Math.min(...rs.map((r) => r.x)) - 7,
+        y0: Math.min(...rs.map((r) => r.y)) - 7,
+        x1: Math.max(...rs.map((r) => r.x + r.w)) + 7,
+        y1: Math.max(...rs.map((r) => r.y + r.h)) + 7
+      };
       const g = S('g', { class: 'callout', 'data-part': part }, G.call);
-      S('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0, rx: 5, class: 'cbox' }, g);
+      const outline = S('rect', { x: o.x0, y: o.y0, width: o.x1 - o.x0, height: o.y1 - o.y0, rx: 5, class: 'cbox' }, g);
+      gapsAtTexts(g, outline, o);
       const w = measure(tag, 'calltxt') + 14;
-      const tx = Math.min(x0, vb.w - w - 2);
-      const ty = y1 + 18 <= vb.h ? y1 - 1 : y0 - 17;
-      S('rect', { x: tx, y: ty, width: r1(w), height: 18, class: 'ctag' }, g);
-      stext(g, tx + 7, ty + 13.5, tag, 'calltxt');
+      const pos = placeTag(o, w, 18);
+      S('rect', { x: r1(pos.x), y: r1(pos.y), width: r1(w), height: 18, class: 'ctag' }, g);
+      stext(g, r1(pos.x + 7), r1(pos.y + 13.5), tag, 'calltxt');
     }
     // tour tokens: one element per (kind of dot, lane, occurrence)
     const tokEls = new Map();
@@ -1866,6 +1922,7 @@
       onActivate(g, () => {
         tourGo(k, true);
         $('tour').scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        $('tour').focus({ preventScroll: true });
       });
     });
   }
@@ -1914,6 +1971,14 @@
     });
     table.append(tb);
     host.append(table);
+    // one line under the table that says what the shading means
+    const key = $('nsq-key');
+    if (key) {
+      key.textContent = '';
+      if (tint) key.append(el('span', { class: 'sw ctl', 'aria-hidden': 'true' }), 'Shaded: the ' + shortOf(tint) + ' row and column. ');
+      key.append(el('span', { class: 'sw diag', 'aria-hidden': 'true', text: '—' }), 'The diagonal: a part with itself.');
+      key.hidden = false;
+    }
   }
 
   // ------------------------------------------------------------------
@@ -2120,12 +2185,20 @@
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       const t = ev.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); $('help-toggle').focus(); return; }
+      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); $('help-toggle').focus(); }
+    });
+    // Left and Right move the tour only while the focus is in the tour
+    // section (a click anywhere in it puts the focus there: it has
+    // tabindex="-1"). Elsewhere the keys keep their own meaning (sideways
+    // scrolling), and so do they on a box, group or tag of the tour's detail
+    // and on a figure frame that scrolls sideways.
+    $('tour').addEventListener('keydown', (ev) => {
+      if (ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
       if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
       if (!state || state.mode === 'read') return;
-      const inTour = t && t.closest && t.closest('#tour');
-      if (document.body.dataset.mode !== 'tour' && !inTour) return;
-      if (t && t.closest && t.closest('.box, .stub, .dgroup') && !inTour) return;
+      const t = ev.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if (t && t.closest && t.closest('.box, .stub, .dgroup, [data-scrolls="true"]')) return;
       ev.preventDefault();
       tourGo(tourIndex + (ev.key === 'ArrowRight' ? 1 : -1), true);
     });

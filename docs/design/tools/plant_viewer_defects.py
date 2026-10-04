@@ -23,6 +23,14 @@ to this script. KIND is one of:
   sequence-reversed  the sequence chart draws every arrow between two lifelines
                      backwards (from "to" to "from"); browser_test: sequence
                      rows < T.
+  arrow-global       a keydown listener on the whole document moves the tour
+                     with Left/Right wherever the focus is once the tour has
+                     been used, and calls preventDefault (the bug of an
+                     earlier version); browser_test: smoke arrow_scope=fail.
+  callout-tag-fixed  the callout tag goes back to one fixed place (under the
+                     outline at its left, or over it when there is no room
+                     below) whatever text is there; browser_test: tour
+                     tag_clear < T (it covers a map note on some steps).
 
 Serve COPY_DIR and run browser_test.py against it: the full run must exit
 nonzero. Each kind has one or more anchors in its file (tried in order); the
@@ -56,6 +64,17 @@ PLANTS = {
         (re.escape("S('path', { d: 'M' + xf + ',' + y + ' H' + xt,"),
          "S('path', { d: 'M' + xt + ',' + y + ' H' + xf,  /* planted: sequence-reversed */"),
         (r"d: 'M' \+ xf \+ ',' \+ y \+ ' H' \+ xt\b", "d: 'M' + xt + ',' + y + ' H' + xf /* planted: sequence-reversed */"),
+    ]),
+    "arrow-global": ("viewer.js", [
+        (r"function bindEvents\(\) \{",
+         "function bindEvents() {\n    // planted: arrow-global\n"
+         "    document.addEventListener('keydown', (ev) => { if ((ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') "
+         "&& document.body.dataset.mode === 'tour' && !(ev.target && ev.target.closest && ev.target.closest('#tour'))) "
+         "{ ev.preventDefault(); tourGo(tourIndex + (ev.key === 'ArrowRight' ? 1 : -1), true); } });"),
+    ]),
+    "callout-tag-fixed": ("viewer.js", [
+        (re.escape("const pos = placeTag(o, w, 18);"),
+         "const pos = { x: Math.min(o.x0, vb.w - w - 2), y: o.y1 + 18 <= vb.h ? o.y1 - 1 : o.y0 - 17 };  // planted: callout-tag-fixed"),
     ]),
 }
 

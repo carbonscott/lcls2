@@ -40,7 +40,7 @@
         <li><strong>Emphasize</strong> buttons dim every relation except one kind; All shows them all again.</li>
         <li><strong>Click or tap a box</strong> (or focus it and press Enter) to open its detail under the map. The detail shows the parts inside, the arrows between them, and tags that name the neighbours outside. A tag sits on the side where that neighbour is on the map; click a tag to open the neighbour.</li>
         <li><strong>The panel</strong> under the detail describes the selected part in full: what it does, design decisions, code references with links and sources. Its flows (what comes in and goes out, with their descriptions) are folded under "Flows"; open that line to list them. Click any box or dashed group in the detail to show it there.</li>
-        <li><strong>A guided tour</strong> follows one event step by step over the same map. Use Back and Next, the numbered buttons, or the Left and Right arrow keys.</li>
+        <li><strong>A guided tour</strong> follows one event step by step over the same map. Use Back and Next, the numbered buttons, or the Left and Right arrow keys while the focus is in the tour (click anywhere in the tour first).</li>
         <li><strong>Small copies of the map</strong> each show one kind of relation, and the last one shows all of them together; <strong>the sequence chart</strong> shows the tour in one figure (click a row to open that step); <strong>the matrix</strong> lists every relation between two parts, with no lines.</li>
         <li><strong>Boxes marked "outside repo"</strong> are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
         <li><strong>Read as one page</strong> shows the same content as one long document. <strong>Edit this model</strong> is for the people who maintain this page.</li>
@@ -66,7 +66,7 @@
         <aside id="detail" class="panel" aria-label="Details"></aside>
       </section>
 
-      <section id="tour" aria-labelledby="tour-title">
+      <section id="tour" tabindex="-1" aria-labelledby="tour-title">
         <div class="sec-head" data-section="tour"></div>
         <figure>
           <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="tour-map">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
@@ -99,6 +99,7 @@
         <div class="sec-head" data-section="matrix"></div>
         <div class="figbar"><span class="scroll-hint" hidden>Scroll sideways to see every column &rarr;</span></div>
         <div class="tbl" id="nsq"></div>
+        <p class="nsq-key" id="nsq-key" hidden></p>
       </section>
     </main>
 
