@@ -829,6 +829,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#where-each-text-shows-on-the-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where each text shows on the page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ids" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1878,6 +1889,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#where-each-text-shows-on-the-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where each text shows on the page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ids" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2150,13 +2172,20 @@ only <code>daq-model.json</code>.</strong> Never edit the viewer files to change
 <p>This guide is for people and for AI agents. With it and a checkout you can
 add a node with a code reference, give it its place in the layout, add an
 edge, rewrite a node's prose, check your change and preview it.</p>
-<p>The page is laid out by hand, not by an algorithm: one fixed map of the
-whole DAQ (the top-level parts), a detail view under the map for the part
-you open, the tour drawn on that same map, small copies of the map with one
-kind of relation each and one with all of them ("small multiples"), a
-sequence chart of the tour, and an N² matrix of every relation between two
-parts. Where everything sits is
-stored in the model too (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).</p>
+<p>The page is laid out by hand, not by an algorithm. It has one fixed map of
+the whole DAQ (the top-level parts), and the map has three modes:
+"Explore the parts" (the page opens in it), "Follow one event" (the tour,
+drawn on the same map; a sequence chart is a second view of the tour) and
+"Compare kinds" (small copies of the map, one with one kind of relation each
+and one with all of them). Under the map sits one card. With no part open it
+is the overview of the whole system; when you open a part it shows that
+part's <em>detail</em> (a drawing of everything inside the part) and the panel that
+describes the selected node. After a "Reference" divider comes the N²
+matrix of every relation between two parts. Where everything sits is
+stored in the model too (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).
+The words that name the modes, buttons and cards ("Explore the parts",
+"Overview", "Selected part", "Back to the map") are the viewer's: they say
+how to use the page. Every sentence about the DAQ comes from the model.</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>Run every command in this guide from the repository root (the directory
 that contains <code>docs/</code>); the paths assume it.</p>
@@ -2223,8 +2252,9 @@ description starts with "PROSE" are text for readers and may use the prose
 markup below.</p>
 <ul>
 <li><code>title</code>, <code>question</code>, <code>summary</code>: <code>title</code> is the page's main heading (and
-  the browser tab's title); <code>question</code> and <code>summary</code> fill the box under it.
-  In "Read as one page" that box is hidden and the one-page view starts with
+  the browser tab's title); <code>question</code> and <code>summary</code> fill the overview, the
+  card under the map when no part is open: <code>question</code> is its first line and
+  <code>summary</code> follows it. The one-page view ("Read as one page") starts with
   the <code>question</code> and the <code>summary</code> instead.</li>
 <li><code>code_base</code>: <code>repo_url</code> and the full 40-character <code>commit</code> that every code
   reference points into. Code links are built as
@@ -2235,13 +2265,14 @@ markup below.</p>
 <li><code>nodes</code>: the components, as a flat list. Each node has:<ul>
 <li><code>id</code>, <code>parent</code> (the parent's id, or <code>null</code> for a top-level node),
   <code>title</code> (at most 40 characters, shown on the node's box in its part's
-  detail view and in the panel), <code>summary</code> (one sentence, at most 160
+  detail and in the panel), <code>summary</code> (one sentence, at most 160
   characters, shown in bold at the top of the node's panel and of its
-  section in the one-page view, and with the title in the short panel
-  under the tour's detail), <code>prose</code> (the concept, shown under the
+  section in the one-page view, and with the title in the tour card,
+  under the step's text), <code>prose</code> (the concept, shown under the
   summary);</li>
-<li>optional <code>dev_notes</code> (shown under "For developers"), <code>outside_repo</code>,
-  <code>decisions</code>, <code>code_refs</code>, <code>sources</code>.</li>
+<li>optional <code>dev_notes</code> (shown in a folded section "For developers"),
+  <code>outside_repo</code>, <code>decisions</code>, <code>code_refs</code>, <code>sources</code> (each of the three
+  lists is shown in a folded section of the panel).</li>
 </ul>
 </li>
 <li><code>edges</code>: flows between nodes: <code>id</code>, <code>from</code>, <code>to</code>, <code>label</code> (at most 30
@@ -2255,6 +2286,76 @@ markup below.</p>
   top-level <code>map</code> block, a <code>place</code> on every top-level node and a <code>detail</code>
   grid on every top-level node that has children.</li>
 </ul>
+<h3 id="where-each-text-shows-on-the-page">Where each text shows on the page<a class="headerlink" href="#where-each-text-shows-on-the-page" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Model field</th>
+<th>Where the page shows it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>The page's heading.</td>
+</tr>
+<tr>
+<td><code>question</code></td>
+<td>The first line of the overview (the card under the map when no part is open).</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>The overview, after the question.</td>
+</tr>
+<tr>
+<td><code>map.sections.map</code>: <code>eyebrow</code>, <code>title</code>, <code>intro</code></td>
+<td>The overview, after the summary, as "how to read the map": the eyebrow and title as a sub-heading, then the intro.</td>
+</tr>
+<tr>
+<td><code>map.sections.map.caption</code>, <code>map.omitted</code></td>
+<td>Under the map in "Explore the parts": the caption, then the list "Not drawn on the map".</td>
+</tr>
+<tr>
+<td><code>tour.title</code></td>
+<td>The second line of the "Follow one event" button, with the number of steps.</td>
+</tr>
+<tr>
+<td><code>map.sections.tour</code>: <code>eyebrow</code>, <code>title</code>, <code>intro</code></td>
+<td>Above the map in "Follow one event": the eyebrow and title as one heading line. The <code>intro</code>, together with <code>tour.intro</code>, is in a folded section next to it. <code>tour.intro</code> also starts the tour in the one-page view.</td>
+</tr>
+<tr>
+<td><code>map.sections.multiples</code>: <code>eyebrow</code>, <code>title</code>, <code>intro</code></td>
+<td>Above the small maps in "Compare kinds".</td>
+</tr>
+<tr>
+<td><code>map.multiples[i].caption</code></td>
+<td>Under its small map in "Compare kinds". For a kind, also under the map in "Explore the parts" while that kind's Emphasize button is pressed.</td>
+</tr>
+<tr>
+<td><code>map.sections.sequence</code></td>
+<td>Around the sequence chart (in "Follow one event", with the steps shown on the sequence chart): eyebrow, title, intro and caption.</td>
+</tr>
+<tr>
+<td><code>map.sections.matrix</code>: <code>eyebrow</code>, <code>title</code>, <code>intro</code></td>
+<td>The matrix card (under the "Reference" divider): the eyebrow and title in its head, the intro in its body.</td>
+</tr>
+<tr>
+<td>A top-level node</td>
+<td>The card when you open the part: the part's detail drawing, then its panel.</td>
+</tr>
+<tr>
+<td>A node below the top level</td>
+<td>The panel below the drawing, when you select the node in the drawing.</td>
+</tr>
+<tr>
+<td>A tour step</td>
+<td>The tour card: the step's title and <code>prose</code>, then the title and <code>summary</code> of the step's <code>node</code>, then the step's detail drawing ("Where this step happens").</td>
+</tr>
+</tbody>
+</table>
+<p>"Overview", "Selected part", "Reference", "Where this step happens" and the
+footers ("End of ...", "Back to the map") are the viewer's words around
+these texts, not model fields.</p>
 <h3 id="ids">Ids<a class="headerlink" href="#ids" title="Permanent link">&para;</a></h3>
 <p>Ids are lowercase words joined by hyphens (<code>drp-file-writer</code>), at most 60
 characters. Nodes, edges, tour steps, sources and decisions (decisions may
@@ -2264,10 +2365,10 @@ Ids appear in links (<code>#/node/&lt;id&gt;</code>), so do not rename an existi
 <p>A node with <code>"parent": null</code> is at level 1: a <em>part</em>, drawn on the fixed
 map at the place its <code>place</code> names. Its children are level 2, their
 children level 3, and so on. The descendants of a part are drawn in the
-part's detail view, at the cells its <code>detail</code> grid names; a level-2 node
-with children is drawn there as a group (a frame around its children). The
-model must reach level 3 somewhere. Parents must exist and must not form a
-cycle.</p>
+part's detail (the card under the map shows it when the part is open), at
+the cells its <code>detail</code> grid names; a level-2 node with children is drawn
+there as a group (a frame around its children). The model must reach level 3
+somewhere. Parents must exist and must not form a cycle.</p>
 <p>A parent may have a single child: the validator has no rule on the number
 of children. A leaf that gets its first child becomes a parent, and its
 part's detail grid must change with it: a level-2 node turns from a node
@@ -2280,39 +2381,43 @@ source).</p>
 <p>An edge may connect any two nodes, at any levels, except a node and its own
 ancestor or descendant. Where the page draws an edge depends on its ends:</p>
 <ul>
-<li>Both ends below the same part: an arrow in that part's detail view,
+<li>Both ends below the same part: an arrow in that part's detail,
   between the two boxes (or a group's frame). Edges of one kind from the
   same box to the same box are merged into one arrow that carries their
   labels (each different label once); edges of another kind, or in the
   other direction, get an arrow of their own.</li>
 <li>One end below a part and the other end in another part: a tag on the side
-  of the part's detail view that the grid's <code>sides</code> names for the other part
-  (click the tag to go there). A detail has one tag per neighbouring part and
-  direction ("from DRP ›", "to Files ›") that lists the labels of all such
-  edges, with one connector to each box (and kind) they reach. If an end is a
-  top-level part itself, not a node below it, that part's own detail shows no
-  tag for the edge.</li>
+  of the part's detail that the grid's <code>sides</code> names for the other part
+  (click the tag to open that part in the card). A detail has one tag per
+  neighbouring part and direction ("from DRP ›", "to Files ›") that lists
+  the labels of all such edges, with one connector to each box (and kind)
+  they reach. If an end is a top-level part itself, not a node below it,
+  that part's own detail shows no tag for the edge.</li>
 <li>Ends in two different parts: on the map, only a map line that lists the
   edge in its <code>edges</code> draws it, and every pair of parts that an edge connects
   needs such a line or an entry in <code>map.omitted</code> with a reason (see "Map
   lines" below); the N² matrix lists every edge between two parts by its
   label.</li>
 </ul>
-<p>The panel under the detail lists the node's flows under "Flows", a section
-that is folded until the reader opens it: "Comes from" and "Goes to" list the
-edges that cross the boundary of the node and its descendants, each with its
-kind, the node at the other end, the label, the edge's <code>prose</code> and its
-references. The one-page view lists each node's outgoing edges under "Flows
-out of this part". Give an edge <code>prose</code> (one or two sentences, with a code
-reference or source): it is what a reader sees for the flow in both places.</p>
+<p>The node's panel (it follows the detail drawing in the card) lists the
+node's flows in the section "Flows", which is folded until the reader opens
+it. The section is there when the node has an edge into or out of it.
+"Comes from" and "Goes to" list the edges that cross the boundary of the
+node and its descendants, each with its kind, the node at the other end, the
+label, the edge's <code>prose</code> and its references. The one-page view lists each
+node's outgoing edges under "Flows out of this part". Give an edge <code>prose</code>
+(one or two sentences, with a code reference or source): it is what a reader
+sees for the flow in both places.</p>
 <p>The order of nodes in the file sets:</p>
 <ul>
 <li>the order of the parts in "Read as one page" (<code>#/read</code>): its contents list
   shows the top-level nodes in file order, and each part is followed by its
   children in file order (depth first);</li>
+<li>the order of the card's previous and next arrows: the overview, then the
+  top-level nodes in file order, and back to the overview;</li>
 <li>the order of the <code>top:</code> lines that <code>validate.py --outline</code> prints.</li>
 </ul>
-<p>The order of nodes does not move anything on the map or in a detail view:
+<p>The order of nodes does not move anything on the map or in a detail:
 positions come only from <code>place</code> and <code>detail</code>.</p>
 <p>Lists of flows ("Comes from", "Goes to" and the one-page view's "Flows out
 of this part") follow the order of the edges in the file.</p>
@@ -2362,16 +2467,19 @@ button for each. Pick the kind whose row above is closest to what the flow
 does, and say in the edge's <code>prose</code> what it carries and where it goes, so
 that nobody reads the kind as more than it is.</p>
 <p>In the viewer each kind has its own color and line pattern, and its name
-(from <code>map.kinds</code>) on the buttons that emphasize one kind on the map and on
-the small multiples. No edge moves a box: the map and the detail views are
-laid out by hand (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).</p>
+(from <code>map.kinds</code>) on the Emphasize buttons (they dim the other kinds on the
+map) and on the small maps of "Compare kinds". No edge moves a box: the map
+and the details are laid out by hand (see
+<a href="#layout-the-map-places-and-detail-grids">Layout</a>).</p>
 <h3 id="prose-markup">Prose markup<a class="headerlink" href="#prose-markup" title="Permanent link">&para;</a></h3>
 <ul>
 <li>A blank line (<code>\n\n</code> in the JSON string) starts a new paragraph.</li>
 <li><code>`code`</code> is inline code.</li>
 <li><code>[text](https://example.org/page)</code> is a link (http, https or a relative URL).</li>
 <li><code>[[node-id]]</code> links to another node (the link text is the node's title);
-  <code>[[node-id|some text]]</code> uses your text. The id must exist.</li>
+  <code>[[node-id|some text]]</code> uses your text. The id must exist. In the card, the
+  link opens the card on that node's part with the node selected; it can
+  scroll the page so that the card's head is in view.</li>
 <li>Nothing else is markup: <code>**bold**</code>, lists and HTML are shown as typed.</li>
 </ul>
 <h3 id="code-references">Code references<a class="headerlink" href="#code-references" title="Permanent link">&para;</a></h3>
@@ -2494,17 +2602,19 @@ expands both ("A DRP (data reduction pipeline) ...").</p>
 <h3 id="tour-steps">Tour steps<a class="headerlink" href="#tour-steps" title="Permanent link">&para;</a></h3>
 <p>Tour steps follow one event in order, and each step's prose says what
 happens to <em>that</em> event at the step (a scene-setting first step is fine if
-its title says so). The tour is drawn on the fixed map: for each step,
-<code>map.tour</code> (one entry per step, in the same order, naming the step's <code>id</code>)
-gives the tokens that show where the event's parts are and the map lines
-and boxes to highlight, and <code>map.sequence.rows</code> has the step's row of the
-sequence chart. A step's <code>node</code> is highlighted in the detail view under the
-tour map, and the part that contains it is outlined on the map ("THIS
-STEP"). The lines and boxes highlighted on the tour map come only from the
-<code>highlight</code> list of the step's <code>map.tour</code> entry: the viewer does not draw a
-step's <code>edges</code> (the validator only checks that those edge ids exist), so
-when you change a step's <code>edges</code>, list the map lines that draw them in its
-<code>highlight</code> as well.
+its title says so). In "Follow one event" the tour is drawn on the fixed
+map itself (there is no second map): for each step, <code>map.tour</code> (one entry
+per step, in the same order, naming the step's <code>id</code>) gives the tokens that
+show where the event's parts are and the map lines and boxes to highlight,
+and <code>map.sequence.rows</code> has the step's row of the sequence chart, the
+tour's second view ("Show the steps on: A sequence chart"). The part that
+contains a step's <code>node</code> is outlined on the map ("THIS STEP"), and the
+step's card under the map shows the step's text and that part's detail with
+the <code>node</code> highlighted ("Where this step happens"). The lines and boxes
+highlighted on the map come only from the <code>highlight</code> list of the step's
+<code>map.tour</code> entry: the viewer does not draw a step's <code>edges</code> (the validator
+only checks that those edge ids exist), so when you change a step's <code>edges</code>,
+list the map lines that draw them in its <code>highlight</code> as well.
 Step links are <code>#/tour/&lt;k&gt;</code> with k counted from 1, so inserting a step
 changes the numbers of the steps after it, and a new step needs its
 <code>map.tour</code> entry and sequence row at the same position (the validator
@@ -2560,12 +2670,18 @@ x grows to the right, y grows down.</p>
   <code>lane</code> or null, and an absolute <code>x</code>, <code>y</code>) and the <code>highlight</code> list (line
   ids, <code>box:&lt;box id&gt;</code>, <code>lad-&lt;k&gt;</code>).</li>
 <li><code>multiples</code>: the caption of each small copy of the map (one per kind of
-  edge, and one with all of them).</li>
-<li><code>sequence</code>: the sequence chart: <code>lifelines</code> (each standing for a part) and
-  one row per tour step, in order.</li>
-<li><code>sections</code>: the eyebrow, title, introduction and caption of each section
-  of the page; <code>kinds</code>: the names of the edge kinds; <code>default_detail</code>: the
-  part whose detail the page opens with.</li>
+  edge, and one with all of them). The page shows a caption under its small
+  map in "Compare kinds", and under the map in "Explore the parts" while the
+  Emphasize button of its kind is pressed.</li>
+<li><code>sequence</code>: the sequence chart, the tour's second view: <code>lifelines</code> (each
+  standing for a part) and one row per tour step, in order.</li>
+<li><code>sections</code>: the eyebrow, title, introduction and (for the map and the
+  sequence chart) caption of the map, the tour, the small maps, the sequence
+  chart and the matrix; "Where each text shows on the page" above says where
+  each one appears. <code>kinds</code>: the names of the edge kinds. <code>default_detail</code>:
+  kept for compatibility; the page does not use it any more (it opens on the
+  overview, not on a part). Leave it as it is: the validator still requires
+  it to name a top-level part that has children.</li>
 </ul>
 <h3 id="places-place-on-every-top-level-node">Places (<code>place</code>, on every top-level node)<a class="headerlink" href="#places-place-on-every-top-level-node" title="Permanent link">&para;</a></h3>
 <p><code>place.short</code> is the part's short name (on tags, in the matrix and the
@@ -2578,14 +2694,14 @@ cell (<code>column</code>, <code>span</code>, <code>band</code>, <code>slot</cod
 a <code>title</code>, <code>sub</code> lines (for a per-lane box one line per lane, or one line
 for all lanes), <code>out</code> (the outside-this-repository tag), and optional
 <code>title_x</code> (to keep the text clear of lines that cross the box) and <code>mini</code>
-(a shorter title for the small multiples).</p>
+(a shorter title for the small maps of "Compare kinds").</p>
 <p><strong>The cell rule.</strong> A box's cell is its columns <code>column</code> to
 <code>column + span - 1</code>, its <code>band</code> and its <code>slot</code> (0, 1, ... for several boxes
 in one column and band; for a per-lane box, one cell per lane). The box's
 rectangle must lie inside its columns' x range and its band's y range, no
 two boxes may share a cell, and no two box rectangles may overlap.</p>
 <h3 id="detail-grids-detail-on-every-top-level-node-with-children">Detail grids (<code>detail</code>, on every top-level node with children)<a class="headerlink" href="#detail-grids-detail-on-every-top-level-node-with-children" title="Permanent link">&para;</a></h3>
-<p>The detail view of a part is a grid with <code>columns</code> columns and a list of
+<p>The detail of a part is a grid with <code>columns</code> columns and a list of
 <code>rows</code>. Each row lists items:</p>
 <ul>
 <li>a node item <code>{"node": &lt;id&gt;, "col": &lt;c&gt;}</code> for a descendant without
@@ -2652,12 +2768,13 @@ control process, which the map leaves out to keep the lanes and the state
 ladder clear. A line's <code>edges</code> must have the line's <code>kind</code>, and both
 ends of each edge must lie in parts that the line touches (<code>ends</code> or <code>through</code>). An edge between
 two nodes of one part may also be drawn by a line between that part's
-boxes (for example <code>meb-shm</code> inside the monitoring part). The page lists
-every <code>map.omitted</code> entry under the map's caption ("Not drawn on the map")
-as the two parts, the edge's label and the <code>reason</code>.</p>
+boxes (for example <code>meb-shm</code> inside the monitoring part). In
+"Explore the parts" the page lists every <code>map.omitted</code> entry under the map's
+caption ("Not drawn on the map") as the two parts, the edge's label and the
+<code>reason</code>.</p>
 <p><strong>After adding an edge</strong>, decide what the map needs:</p>
 <ol>
-<li>Both ends in one part: the map needs nothing; the part's detail view
+<li>Both ends in one part: the map needs nothing; the part's detail
    draws the arrow.</li>
 <li>Ends in two parts that a map line already connects with an edge of the
    same kind (both parts among the line's <code>ends</code> or <code>through</code>): the pair is
@@ -2821,16 +2938,30 @@ for that pair (case 2 of "After adding an edge"): the <code>data</code> line
 <code>drp-files</code> touches both parts and lists <code>e-drp-to-files</code> among its
 <code>edges</code>, so the validator's <code>map_edges</code> count does not change. Add the new
 edge's id to that line's <code>edges</code>, since the line stands for it too. In the
-DRP's detail view its label joins the tag for Files (one tag per
-neighbouring part and direction), on the side that <code>sides</code> names for
-<code>files</code> (<code>right</code>, where the Files boxes are on the map); the Files detail
-shows no tag for it, because its end there is the part <code>files</code> itself, not
-a node below it. The N² matrix lists it in the DRP-to-Files cell.</p>
+DRP's detail its label joins the tag for Files (one tag per neighbouring
+part and direction), on the side that <code>sides</code> names for <code>files</code> (<code>right</code>,
+where the Files boxes are on the map); the Files detail shows no tag for it,
+because its end there is the part <code>files</code> itself, not a node below it. The
+N² matrix lists it in the DRP-to-Files cell.</p>
 <p><strong>3. Rewrite a node's prose.</strong> Find the node by its <code>id</code> and replace its
 <code>prose</code> string. Keep every sentence supported by the node's own code
 references or sources; add a code reference or source if a new sentence
 needs one. Use <code>\n\n</code> between paragraphs and <code>[[other-node-id]]</code> to point
 to related nodes.</p>
+<p><strong>4. Find your change on the page.</strong> Preview the page (see "Check your
+change" below). In "Explore the parts", click the DRP box on the map: the
+card under the map opens on the DRP, because the new node's parent is the
+part <code>drp</code>. The detail drawing in the card now has a box "Example: buffered
+file writer" in its second row, third column, after the boxes of
+<code>drp-process</code> and <code>detector-classes</code>. The tag "to Files ›" on the drawing's
+right side lists the label "Datagram blocks" with the other labels of the
+edges to Files. Click the new box: the panel under the drawing shows the
+node's title, its <code>summary</code> in bold and its <code>prose</code>. Its code reference is in
+the panel's folded section for code references, and the new edge is in the
+folded "Flows" section, under "Goes to". (If the box is missing from the
+drawing, the node has no cell in the <code>detail</code> grid: the validator reports
+<code>E-CHILD-MISSING</code>.) <code>browser_test.py --check-node</code> (below) makes the same
+walk in a browser and checks it.</p>
 <h2 id="check-your-change">Check your change<a class="headerlink" href="#check-your-change" title="Permanent link">&para;</a></h2>
 <p><strong>Validate</strong> (always; the site build runs the same check):</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/validate.py
@@ -2957,36 +3088,58 @@ python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="
 </code></pre></div>
 <p>In any later shell, set the port again first:
 <code>PORT=$(cat build/design-preview.port)</code>.</p>
-<p>Open the printed URL. The page shows the fixed map, the detail of one part
-under it and the panel that describes the selected node:</p>
+<p>Open the printed URL. The page starts with the map: the three mode buttons
+and the Emphasize buttons are right above it, and the card is under it.
+Clicking on the map, the buttons or inside the card does not scroll the
+page.</p>
 <ul>
-<li>Click (or tap) a part's box on the map to open its detail. Click a box or
-  a dashed group in the detail to show that node in the panel, and click a
-  tag on the detail's edge ("from DRP ›") to go to that neighbouring part.
-  A link to a node (<code>#/node/&lt;id&gt;</code>) opens the same view and scrolls to the
-  detail.</li>
+<li>The mode buttons: "Explore the parts" (the page opens in it), "Follow one
+  event" and "Compare kinds".</li>
+<li><strong>Explore the parts.</strong> Click (or tap) a part's box on the map to open it
+  in the card under the map. The card shows the part's detail drawing and,
+  under it, the panel for the selected node. Click a box or a dashed group
+  in the drawing to show that node in the panel, and click a tag on the
+  drawing's edge ("from DRP ›") to open that neighbouring part. The card's
+  head stays in view while you scroll the card. Its arrows go to the
+  previous or next card (the overview, then the top-level parts in the
+  order of the model, then the overview again). "Close", shown only while a
+  part is open, returns the card to the overview. Design decisions, code
+  references, sources and flows are folded: open one with its heading. A
+  card ends with "End of ..." and a "Back to the map" link.</li>
+<li>A link to a node (<code>#/node/&lt;id&gt;</code>) opens the card on that node's part, with
+  the node highlighted in the drawing and its panel shown, and brings the
+  card into view. The other addresses are <code>#/</code> (the overview),
+  <code>#/tour/&lt;k&gt;</code> (the tour at step k), <code>#/compare</code>, <code>#/read</code> and
+  <code>#/read/&lt;id&gt;</code> (the one-page view). A click on the page changes the address
+  without adding a history entry, so the browser's Back button leaves the
+  page.</li>
 <li>"Emphasize" (All, and one button per kind of edge, named from
-  <code>map.kinds</code>) dims every other kind on the map.</li>
-<li>"Full size", above the map, the tour map and the sequence chart, draws
-  that figure at its natural size (the figure then scrolls sideways in its
-  frame); press it again to fit the figure to the page.</li>
-<li>"Not drawn on the map", under the map's caption, lists the <code>map.omitted</code>
-  entries.</li>
-<li>In the panel, the flows are folded under "Flows".</li>
-<li>Further down: the tour moves one event across the same map ("Back" and
-  "Next", the numbered step buttons, or the Left and Right arrow keys once
-  the focus is in the tour: click anywhere in it first); the
-  small multiples show one kind of edge per copy of the map, and the last
-  copy shows all of them; the sequence
-  chart shows the tour in one figure (click a row to open that step); the
-  N² matrix lists every relation between two parts, with a line under it
-  that says what its shading means.</li>
+  <code>map.kinds</code>) dims every other kind on the map and, for a kind, shows that
+  kind's caption under the map. All shows no caption.</li>
+<li>Under the map: its caption, then "Not drawn on the map", which lists the
+  <code>map.omitted</code> entries. "Full size", in a bar under the map's frame, draws
+  the map at its natural size (the map then scrolls sideways in its frame);
+  press it again to fit the map to the page.</li>
+<li><strong>Follow one event.</strong> The tour moves one event across the same map; the
+  page has no second map. Use "Back" and "Next", the numbered step buttons,
+  or the Left and Right arrow keys once the focus is in the map section
+  (click in it first). The card under the map holds the step's text, the
+  description of the step's node and its detail drawing ("Where this step
+  happens"). "Show the steps on: A sequence chart" swaps the map for the
+  sequence chart (it has its own "Full size" button); click a row to change
+  the step, and the card and a line under the chart name the new step.</li>
+<li><strong>Compare kinds.</strong> The small maps replace the map: one for each kind of
+  edge and one with all of them. Click one to go back to "Explore the
+  parts" with that kind emphasized.</li>
+<li>After the "Reference" divider, the N² matrix lists every relation between
+  two parts in a card of its own, with a line under the table that says what
+  its shading means.</li>
 <li>"Read as one page" shows the whole model as one document (<code>#/read</code>);
   "How to read this page" explains the controls.</li>
 </ul>
 <p>A figure that is wider than its frame (on a phone, or at full size) says
-"Scroll sideways" above it. Reload the page after each edit. When you are
-done, stop the server by its process ID (saved above):</p>
+"Scroll sideways" next to its "Full size" button. Reload the page after each
+edit. When you are done, stop the server by its process ID (saved above):</p>
 <div class="highlight"><pre><span></span><code><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>build/design-preview.pid<span class="k">)</span><span class="s2">"</span>
 </code></pre></div>
 <p>Do not stop it with a pattern such as <code>pkill -f http.server</code>: a pattern can
@@ -2996,8 +3149,10 @@ also match other processes, including the shell that runs the command.</p>
 (<code>mkdocs serve</code> or <code>mkdocs build</code>), not when <code>docs/design</code> is served on its
 own as above.</p>
 <p><strong>Geometry check</strong> (with the preview server running; in a fresh shell, set
-<code>PORT=$(cat build/design-preview.port)</code> first). It opens the map and the detail view of every part
-that has children, and measures them in SVG units:</p>
+<code>PORT=$(cat build/design-preview.port)</code> first). It measures the map, then
+clicks the map box of each part that has children, in "Explore the parts",
+so that the part's detail drawing opens in the card, and measures that
+drawing. All measures are in SVG units:</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>docs/design/tools/geometry_check.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
 python<span class="w"> </span>docs/design/tools/geometry_check.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span><span class="w"> </span>--width<span class="w"> </span><span class="m">744</span><span class="w"> </span>--height<span class="w"> </span><span class="m">1000</span>
 </code></pre></div>
@@ -3017,7 +3172,7 @@ held upright, where the map is drawn smallest. It prints:</p>
 </tr>
 <tr>
 <td><code>view=&lt;map or detail:ID&gt; boxes=B lines=L texts=T line_through_box=X text_overflow=Y crossings_allowed=K line_over_text=J label_on_box=Q box_overlap=O line_over_label=W small_text=S text_overlap=E min_text_px=P</code></td>
-<td>One line for the map, then one per detail view.</td>
+<td>One line for the map, then one per detail drawing (each opened in the card).</td>
 </tr>
 <tr>
 <td><code>PROBLEM: ...</code></td>
@@ -3052,9 +3207,9 @@ held upright, where the map is drawn smallest. It prints:</p>
 <li><code>text_overlap</code>: two texts of one view lie on top of each other (for
   example a line's label moved onto another label, or a label on a box's
   title); move one of them.</li>
-<li><code>small_text</code>: texts drawn smaller than 7 px at this width; a detail view
-  that grows very wide (for example because of a long word in a title) makes
-  its text small.</li>
+<li><code>small_text</code>: texts drawn smaller than 7 px at this width; a detail
+  drawing that grows very wide (for example because of a long word in a
+  title) makes its text small.</li>
 <li>Informational only: <code>crossings_allowed</code> (crossings of boxes that a line
   names, drawn as ports), <code>line_over_text</code> (a line that runs under a text
   but is hidden by an opaque box) and <code>label_on_box</code>.</li>
@@ -3072,8 +3227,10 @@ python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> 
 python<span class="w"> </span>docs/design/tools/browser_test.py<span class="w"> </span>--url<span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--check-edge<span class="w"> </span>example-buffered-writer-to-files
 </code></pre></div>
-<p>The first command drives the page by clicking, as a reader would, and
-prints these lines:</p>
+<p>The first command drives the page by clicking, as a reader would. It
+reloads the page between groups of checks, so that one failure does not
+hide the others, and it takes several minutes. It prints these lines, in
+this order (a line that appears twice is checked at two window sizes):</p>
 <table>
 <thead>
 <tr>
@@ -3084,11 +3241,19 @@ prints these lines:</p>
 <tbody>
 <tr>
 <td><code>nodes_visited=V/N tour_steps=S/T console_errors=C</code></td>
-<td>V = N: every node was reached by clicking (a part's box on the map; a lower node's box or group in its part's detail) and the panel then showed its title and the first 30 characters of its prose. S = T: every tour step showed its title, the start of its prose and the "THIS STEP" mark on the map. C = 0.</td>
+<td>V = N: every node was reached by clicking (a part's box on the map; a lower node's box or group in its part's detail, in the card) and the panel then showed its title and the first 30 characters of its prose, with a folded section for each non-empty list of decisions, code references and sources, for the flows when the node has an edge, and for the developer notes when the node has <code>dev_notes</code>. S = T: every tour step showed its title, the start of its prose and the "THIS STEP" mark on the map. C = 0.</td>
 </tr>
 <tr>
 <td><code>smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok</code></td>
-<td>A tag opens its part, the arrow keys move the tour when the focus is in it, the help opens and closes, the one-page view has a section with the right title for every node (R = N), the page loads nothing from other sites except the fonts (Q = 0), and the arrow keys pressed elsewhere on the page (on the matrix) neither move the tour nor stop the browser's sideways scroll.</td>
+<td>A tag opens its part, the arrow keys move the tour when the focus is in the map section in "Follow one event", the help opens and closes, the one-page view has a section with the right title for every node (R = N), the page loads nothing from other sites except the fonts (Q = 0), and the arrow keys pressed elsewhere on the page (on the matrix) neither move the tour nor stop the browser's sideways scroll.</td>
+</tr>
+<tr>
+<td><code>map_first viewport=744x1000 map_top=A map_bottom=B frame_top=F above_map=&lt;names&gt;</code>, then the same at <code>viewport=1440x900</code></td>
+<td>The map comes first: <code>above_map</code> is exactly <code>modes,chips</code>, so the mode switch and the Emphasize buttons are the only blocks between the page title and the map's frame. At 744x1000 the map's bottom B is at most 1000; at 1440x900 its top A is at most 450.</td>
+</tr>
+<tr>
+<td><code>modes=M full_maps=F</code></td>
+<td>M = 3: the three mode buttons each switch the mode and press themselves. F = 1: in every mode, and in the tour's sequence view, the document holds exactly one full-size map drawing (not a small map, not a detail drawing), and in "Explore the parts" and in the tour's map view that map is displayed.</td>
 </tr>
 <tr>
 <td><code>map parts=A/P lanes=L bands=B columns=K boxes=O/Q</code></td>
@@ -3096,23 +3261,47 @@ prints these lines:</p>
 </tr>
 <tr>
 <td><code>detail opened=X/P</code></td>
-<td>Clicking each part that has children opens its detail with every descendant drawn.</td>
+<td>Clicking each part that has children, in "Explore the parts", opens its detail in the card with every descendant drawn.</td>
 </tr>
 <tr>
-<td><code>tour steps=S/T highlighted=H/T tag_clear=K/T</code></td>
-<td>For every step, the highlighted lines and boxes are exactly the step's <code>highlight</code> list, the dots are its <code>tokens</code>, and the step's node is highlighted in the detail under the tour map. K = T: the "THIS STEP" tag covers no text of the tour map. The viewer puts the tag at the first place around the part's dashed outline that is free of text (under it, over it, then beside it); if no place is free, move a label or note away from that part.</td>
+<td><code>tour steps=S/T highlighted=H/T on_main_map=G/T tag_clear=K/T</code></td>
+<td>For every step, the highlighted lines and boxes are exactly the step's <code>highlight</code> list and the dots are its <code>tokens</code>. G = T: for every step the outline of the step's part and the dots are on the one map (<code>#map</code>), the map holds no other outline, and the page has no other full-size map. K = T: the "THIS STEP" tag covers no text of the map. The viewer puts the tag at the first place around the part's dashed outline that is free of text (under it, over it, then beside it); if no place is free, move a label or note away from that part.</td>
 </tr>
 <tr>
-<td><code>multiples panels=M/6</code></td>
-<td>Each small copy of the map leaves exactly its kind of line undimmed.</td>
+<td><code>tour_card text=X/T detail=Y/T</code></td>
+<td>For every step, the step card lies below the map's frame. X = T: it shows the step's title and the first 30 characters of its prose. Y = T: it shows the detail of the part that holds the step's node, with the node highlighted.</td>
 </tr>
 <tr>
-<td><code>sequence rows=R/T</code></td>
-<td>Each row of the sequence chart draws its step's arrow between the right lifelines, with its label, and opens that step when clicked.</td>
+<td><code>multiples panels=M/6 mode=compare</code></td>
+<td>Each of the six small maps leaves exactly its kind of line undimmed (the sixth shows all kinds), and the small maps are displayed only in "Compare kinds".</td>
 </tr>
 <tr>
-<td><code>matrix cells=C2/C</code></td>
-<td>Each cell of the matrix lists exactly the labels of the edges between its two parts.</td>
+<td><code>sequence rows=R/T mode=tour</code></td>
+<td>Each row of the sequence chart draws its step's arrow between the right lifelines, with its label; clicking a row shows that step in the card and keeps the sequence chart. The rows are displayed only in "Follow one event" with the steps shown on the sequence chart.</td>
+</tr>
+<tr>
+<td><code>emphasize captions=K/K</code></td>
+<td>K is the number of edge kinds whose <code>map.multiples</code> entry has a caption. A kind counts when its Emphasize button shows that caption under the map (the first 30 characters of it) and dims the lines of the other kinds.</td>
+</tr>
+<tr>
+<td><code>card default=overview after_close=overview nav=X/9 sticky_head=&lt;bool&gt; end_footer=&lt;bool&gt; folded=&lt;bool&gt;</code></td>
+<td>See "The card line" below. It passes when <code>default</code> and <code>after_close</code> print <code>overview</code> (a failing run prints the card that showed instead), X = 9 and every bool is true.</td>
+</tr>
+<tr>
+<td><code>matrix cells=C2/C hscroll=&lt;px&gt; sticky_head=&lt;bool&gt; close_buttons=&lt;n&gt; end_footer=&lt;bool&gt;</code></td>
+<td>See "The matrix line" below: it passes when C2 = C, hscroll is 0, close_buttons is 0 and every bool is true.</td>
+</tr>
+<tr>
+<td><code>deeplinks=D/4</code></td>
+<td>Each of these four addresses, loaded in a fresh page, counts when it sets the right mode, shows the right content and lands in view: <code>#/node/&lt;a lower node's id&gt;</code> (the card on that node's part, the node highlighted, its panel shown, the card's head within 120 px of the top of the window); <code>#/tour/3</code> (the card of step 3) and <code>#/compare</code> (the six small maps), each with the map section at the top of the window (or the page cannot scroll that far); <code>#/read</code> (the one-page view, at the top of the page).</td>
+</tr>
+<tr>
+<td><code>page_height=H</code></td>
+<td>The page is at most 4000 px high at 744x1000 on <code>#/</code>.</td>
+</tr>
+<tr>
+<td><code>scroll_jumps=J/N viewport=744x1000 moves_page_ok=true control_moved=K/N</code>, then the same at <code>viewport=1440x900</code></td>
+<td>No in-page click moves the page: J = 0 (see "The scroll_jumps line" below), N is at least 40, and <code>moves_page_ok=true</code>.</td>
 </tr>
 <tr>
 <td><code>console_errors=C</code></td>
@@ -3120,25 +3309,115 @@ prints these lines:</p>
 </tr>
 </tbody>
 </table>
+<p><strong>The card line.</strong></p>
+<ul>
+<li><code>default=overview</code>: on <code>#/</code> the card is the overview, and it shows the
+  model's <code>question</code> and the start of its <code>summary</code>.</li>
+<li><code>after_close=overview</code>: after a part is opened and Close is pressed, the
+  card is the overview again, shown and not empty.</li>
+<li><code>nav=X/9</code>: pressing the card's next arrow nine times from the overview
+  visits the overview, the eight top-level parts in the order of the model,
+  and the overview again, and the previous arrow gives the exact reverse.
+  X counts the presses that land on the right card.</li>
+<li><code>sticky_head=true</code>: with the largest part card scrolled so that its top is
+  300 px above the window, the card's head is at the top of the window (within
+  2 px) and inside the card, and no element around the head clips it. It is
+  checked at 744 and at 1440 px.</li>
+<li><code>end_footer=true</code>: the overview and each part's card end with a footer
+  that starts with "End of": "End of the overview." or "End of <the part's
+  title>.", with a "Back to the map" link. The tour card's footer ("End of
+  step k of T.") is checked the same way.</li>
+<li><code>folded=true</code>: in every part's card, the sections for decisions, code
+  references, sources and flows are closed folds, and every non-empty list
+  of the node in the model has its fold.</li>
+</ul>
+<p><strong>The matrix line.</strong></p>
+<ul>
+<li><code>cells=C2/C</code>: each cell of the matrix lists exactly the labels of the
+  edges between its two parts.</li>
+<li><code>hscroll=0</code>: at 744 px the table needs no sideways scroll, no cell ends
+  beyond the card, and no element around the table clips it sideways.</li>
+<li><code>sticky_head=true</code>: as for the card.</li>
+<li><code>close_buttons=0</code>: the matrix card has no button in it.</li>
+<li><code>end_footer=true</code>: the card ends with "End of the interfaces." (its
+  eyebrow, in lower case) and a "Back to the map" link.</li>
+</ul>
+<p><strong>The scroll_jumps line.</strong> The test clicks, with the mouse, every mode
+button, Emphasize button, step button, Back and Next, both buttons that
+switch the tour's view, every sequence row, every map part, detail box,
+group and tag, both "Full size" buttons (and presses them again), the
+card's arrows and Close, and the help button. It also presses Enter on a
+focused map box, a sequence row and a tag, and it clicks the card's arrows
+and Close when the card's top is 300 px above the window, so that its head
+is stuck at the top. J is the number of clicks after which the window
+scrolled by more than 1 px, and N the number of clicks. Only four kinds of
+control may scroll the page: the "Back to the map" links, the button of the
+tour card that opens the step's part, the small maps of "Compare kinds", and
+the links in the text of a card or of the one-page view that open a node. The
+test skips them and checks that no other control carries the mark that lets
+it scroll (<code>moves_page_ok</code>). <code>control_moved=K/N</code> is informational: the number
+of clicked controls that moved on the screen by more than 2 px.</p>
+<p><strong>Informational lines</strong> (they never fail the run):</p>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>full_map_count explore=1 tour_map=1 tour_seq=1 compare=1 displayed=explore,tour_map</code></td>
+<td>The number of full-size map drawings in each mode and view, and the ones where the map is displayed.</td>
+</tr>
+<tr>
+<td><code>card_head_px=H</code></td>
+<td>The height of the card's head at 744 px (the target is at most 100).</td>
+</tr>
+<tr>
+<td><code>matrix_min_text_px=P</code></td>
+<td>The smallest text in the matrix at 744 px (about 12 or more).</td>
+</tr>
+<tr>
+<td><code>tour_fit viewport=744x1000 tourbar_bottom=.. step_title_bottom=..</code></td>
+<td>Where the tour's Back and Next bar and the step's title end at 744x1000 (the target is at most 1000 for both).</td>
+</tr>
+<tr>
+<td><code>min_tap_px=P</code></td>
+<td>The smaller side of the smallest control at 744 px (the target is at least 32).</td>
+</tr>
+<tr>
+<td><code>elapsed group=s,...</code></td>
+<td>The seconds each group of checks took.</td>
+</tr>
+</tbody>
+</table>
+<p>A failing check also prints <code>PROBLEM: &lt;check&gt;: &lt;detail&gt;</code>. A check that finds
+nothing to test fails.</p>
 <p><code>--layout</code> loads the page at several window sizes and prints
 <code>layout_identical=true parts=P</code> (the map is the same at 744 and 1440 pixels
 wide), <code>width=W page_hscroll=0</code> for widths 400, 744 and 1440 (the page itself
 never scrolls sideways), the informational
 <code>inner_scroll=&lt;section:px,...&gt; min_text_px=P</code> at 744 (<code>none</code> when no figure
-scrolls inside its frame), <code>fullsize map-section=ok tour=ok sequence=ok</code> (the
-"Full size" buttons work, and the map and the tour map fit a 744-pixel window)
-and <code>console_errors=0</code>.</p>
-<p><code>--check-node</code> opens one node by its link and by clicking, and prints
-<code>check_node id=ID title_ok=true prose_ok=true console_errors=0</code> when the
-panel shows the title and the prose contains the text. <code>--expect-prose</code> is
-matched against the rendered, visible text of the panel
-(whitespace-normalized), so pick a substring without markup: no backticks,
-no <code>[[...]]</code> and no link syntax.</p>
+scrolls inside its frame), <code>fullsize map=ok sequence=ok</code> (the "Full size"
+buttons of the map and of the sequence chart work, the sequence chart's
+checked in "Follow one event" with the steps shown on the sequence chart, and
+the map fits a 744-pixel window) and <code>console_errors=0</code>.</p>
+<p><code>--check-node</code> opens one node by its link and by clicking (the part's box on
+the map, then the node's box or group in the card), and prints
+<code>check_node id=ID title_ok=true prose_ok=true in_detail=true console_errors=0</code>
+when the panel shows the title, the prose contains the text, and the node's
+box (or its group's frame) is drawn in its part's detail drawing inside the
+card. <code>--expect-prose</code> is matched against the rendered, visible text of the
+panel (whitespace-normalized), so pick a substring without markup: no
+backticks, no <code>[[...]]</code> and no link syntax.</p>
 <p><code>--check-edge</code> prints <code>check_edge id=ID drawn=true console_errors=0</code> when the
 edge is drawn: an edge inside one part as an arrow in that part's detail; an
 edge between two parts with an end below a part as the tag in the detail of
 each such part; an edge between two top-level parts on a map line or in its
 matrix cell. It checks that the edge is drawn, not its label.</p>
+<p>Add <code>--full</code> to a <code>--layout</code>, <code>--check-node</code> or <code>--check-edge</code> command to run
+the full run as well.</p>
 <p>Every run exits with status 0 only when all of its lines pass.
 <code>docs/design/tools/README.md</code> describes the tools, their options and the
 test hooks in full.</p>

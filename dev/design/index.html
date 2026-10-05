@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Design model viewer</title>
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +18,10 @@
     this file, viewer.js and viewer.css hold only the user interface. To change
     the content or the layout, edit daq-model.json (see the editing guide),
     never these files.
+
+    The page: the title, then one map with three modes (#modes) and one card
+    under it (#part-card, or #step-card in the tour), then the matrix as a
+    reference card (#matrix). viewer.js fills every element from the model.
   -->
   <div class="wrap">
     <header class="site-header">
@@ -30,22 +34,24 @@
         </span>
       </nav>
       <h1 id="model-title">Loading the design model&hellip;</h1>
-      <div id="model-lede" class="lede" hidden></div>
     </header>
 
     <section id="help" class="help" hidden aria-labelledby="help-title">
       <h2 id="help-title" tabindex="-1">How to read this page</h2>
       <ul>
-        <li><strong>One fixed map</strong> keeps the same layout on every screen. Columns are stages from left to right; bands separate kinds of path. Each kind of relation has its own colour and line pattern, listed on the buttons above the map.</li>
-        <li><strong>Emphasize</strong> buttons dim every relation except one kind; All shows them all again.</li>
-        <li><strong>Click or tap a box</strong> (or focus it and press Enter) to open its detail under the map. The detail shows the parts inside, the arrows between them, and tags that name the neighbours outside. A tag sits on the side where that neighbour is on the map; click a tag to open the neighbour.</li>
-        <li><strong>The panel</strong> under the detail describes the selected part in full: what it does, design decisions, code references with links and sources. Its flows (what comes in and goes out, with their descriptions) are folded under "Flows"; open that line to list them. Click any box or dashed group in the detail to show it there.</li>
-        <li><strong>A guided tour</strong> follows one event step by step over the same map. Use Back and Next, the numbered buttons, or the Left and Right arrow keys while the focus is in the tour (click anywhere in the tour first).</li>
-        <li><strong>Small copies of the map</strong> each show one kind of relation, and the last one shows all of them together; <strong>the sequence chart</strong> shows the tour in one figure (click a row to open that step); <strong>the matrix</strong> lists every relation between two parts, with no lines.</li>
+        <li><strong>One fixed map</strong> keeps the same layout on every screen. Columns are stages from left to right; bands separate kinds of path. Each kind of relation has its own colour and line pattern, shown on the Emphasize buttons.</li>
+        <li><strong>Three modes</strong> above the map change what it shows. <strong>Explore the parts</strong> (the first view): click or tap a part on the map, or focus it and press Enter, to open it in the card under the map. <strong>Follow one event</strong>: a tour moves one event across the same map, one step at a time. <strong>Compare kinds</strong>: small copies of the map, one for each kind of relation and one with all of them.</li>
+        <li><strong>The card</strong> under the map starts with the overview: the question this page answers, a summary, and how to read the map. A part's card shows the part's detail, its inside drawn with the arrows between its pieces and tags that name the neighbours outside it (a tag sits on the side where that neighbour is on the map; click a tag to open the neighbour), and then its description. Click any box or dashed group in the detail to describe it in the card. Design decisions, code references, sources, flows and notes for developers are folded: open a line to read it.</li>
+        <li><strong>The card's head</strong> stays in view while you scroll through the card. Its arrows move to the previous or next part, in the order of the model, with the overview before the first part; Close returns the card to the overview. A line at the bottom marks the end of the card.</li>
+        <li><strong>Emphasize</strong> buttons dim every relation except one kind and show what that kind means under the map; All shows them all again.</li>
+        <li><strong>In Follow one event</strong>, use Back and Next, the numbered step buttons, or the Left and Right arrow keys while the focus is in the map section (click in it first; they do not move the tour inside a figure that scrolls sideways). The card under the map gives the step (its code references and sources folded), then a short description of the component it happens in, then the detail of its part with that component marked; "Read the full description" opens the component in Explore the parts. "Show the steps on" switches the figure between the map and a sequence chart of every step; click or tap a row to open that step.</li>
+        <li><strong>In Compare kinds</strong>, click or tap a copy to go back to Explore the parts with its kind emphasized.</li>
         <li><strong>Boxes marked "outside repo"</strong> are mechanisms that are not implemented in this repository, such as firmware or facility services.</li>
+        <li><strong>The matrix</strong>, after the line marked Reference, lists every relation between two parts, with no lines.</li>
+        <li><strong>Full size</strong>, under the map and under the sequence chart, draws the figure at its natural size, so that small text is easier to read; the figure then scrolls sideways inside its frame, and a note next to the button says so. Press it again to fit the figure to the width of the page.</li>
         <li><strong>Read as one page</strong> shows the same content as one long document. <strong>Edit this model</strong> is for the people who maintain this page.</li>
-        <li><strong>Full size</strong> draws the map, the tour map or the sequence chart at its natural size, so that small text is easier to read; the figure then scrolls sideways inside its frame. Press it again to fit the figure to the width of the page.</li>
-        <li>A figure that is wider than its frame scrolls sideways inside the frame and says so above it ("Scroll sideways"). Below the map, a note lists any relation between two parts that the map does not draw, and why. Links to other pages of the documentation work on the built documentation site, not when this directory is served on its own.</li>
+        <li><strong>The page stays where it is</strong> when you click the map, the buttons around it or the card. Only "Back to the map", "Read the full description", a copy in Compare kinds and a link to a part can move it, to bring the map or the card into view. Clicks on the map, the modes and the card change the page's address without adding entries to the browser's history, so the browser's Back button leaves this page instead of undoing them.</li>
+        <li>Below the map, a note lists any relation between two parts that the map does not draw, and why. Links to other pages of the documentation work on the built documentation site, not when this directory is served on its own.</li>
       </ul>
       <button id="help-close" class="btn" type="button">Close</button>
     </section>
@@ -53,53 +59,83 @@
     <div id="message" class="message" role="status" aria-live="polite" hidden></div>
 
     <main id="studies" class="studies">
-      <section id="map-section" aria-labelledby="map-section-title">
-        <div class="sec-head" data-section="map"></div>
-        <div class="bar" id="chips" role="group" aria-label="Emphasize one relation"><span class="lbl">Emphasize</span></div>
-        <figure>
-          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="map">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
+      <section id="map-section" tabindex="-1" aria-label="Map">
+        <div id="modes" class="modes" role="group" aria-label="What the map shows"></div>
+        <div id="mode-note" class="mode-note" hidden></div>
+        <div id="chips" class="bar" role="group" aria-label="Emphasize one kind of relation"><span class="lbl">Emphasize</span></div>
+        <div id="tour-controls" class="bar" role="group" aria-label="Show the steps on" hidden>
+          <span class="lbl">Show the steps on</span>
+          <button class="chip view" type="button" data-view="map" aria-pressed="true">Map</button>
+          <button class="chip view" type="button" data-view="seq" aria-pressed="false">Sequence chart</button>
+        </div>
+
+        <figure id="stage" class="stage">
           <div class="sheet" id="map"></div>
-          <figcaption class="sec-caption" data-section="map"></figcaption>
+          <div class="figbar" id="bar-map"><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="map">Full size</button></div>
+          <div class="sheet" id="seq" hidden></div>
+          <div class="figbar" id="bar-seq" hidden><p id="seq-status" class="seq-status" aria-live="polite"></p><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="seq">Full size</button></div>
+          <figcaption id="seq-caption" class="seq-caption" hidden></figcaption>
+          <div class="mult-grid" id="mult" hidden></div>
+          <p id="kind-caption" class="kind-caption" aria-live="polite" hidden></p>
+          <figcaption id="map-caption" class="sec-caption"></figcaption>
           <div class="omitted" id="map-omitted" hidden></div>
         </figure>
-        <div class="detail-wrap" id="detail-view"></div>
-        <aside id="detail" class="panel" aria-label="Details"></aside>
-      </section>
 
-      <section id="tour" tabindex="-1" aria-labelledby="tour-title">
-        <div class="sec-head" data-section="tour"></div>
-        <figure>
-          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="tour-map">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
-          <div class="sheet" id="tour-map"></div>
-        </figure>
-        <div class="tourbar">
+        <div class="tourbar" id="tourbar" hidden>
           <button class="btn" id="tour-prev" type="button">&larr; Back</button>
           <div class="pips" id="pips" role="group" aria-label="Tour steps"></div>
           <button class="btn" id="tour-next" type="button">Next &rarr;</button>
         </div>
-        <div class="stepcard" id="stepcard" aria-live="polite"></div>
-        <div class="detail-wrap" id="tour-detail"></div>
+
+        <article class="card" id="part-card" data-card="overview" aria-labelledby="card-title">
+          <header class="card-head" id="card-head">
+            <div class="card-title">
+              <span class="eyebrow" id="card-eyebrow" hidden>Selected part</span>
+              <h2 id="card-title" tabindex="-1" data-card="overview">Overview</h2>
+              <span class="otxt" id="card-out" hidden>outside this repo</span>
+              <span class="card-hint" id="card-hint">Tap a part on the map to open it here.</span>
+            </div>
+            <div class="card-nav" id="card-nav">
+              <button id="card-prev" class="btn btn-small" type="button">&larr;</button>
+              <button id="card-next" class="btn btn-small" type="button">&rarr;</button>
+            </div>
+          </header>
+          <div class="card-body">
+            <div id="overview" class="overview"></div>
+            <div class="detail-wrap" id="detail-view" hidden></div>
+            <div id="detail" class="panel" role="region" aria-label="Description" hidden></div>
+            <div class="card-fill" aria-hidden="true"></div>
+          </div>
+          <footer class="card-foot" id="card-foot"><span class="end" id="card-end"></span> <a class="back-to-map ui" href="#map-section" data-moves-page>&uarr; Back to the map</a></footer>
+        </article>
+
+        <article class="card" id="step-card" aria-labelledby="tour-step-title" hidden>
+          <div class="card-body">
+            <div class="step-text" id="step-text" aria-live="polite"></div>
+            <div class="step-refs" id="step-refs"></div>
+            <div class="step-node" id="step-node"></div>
+            <div class="where-label eyebrow">Where this step happens</div>
+            <div class="detail-wrap" id="tour-detail"></div>
+            <div class="step-pick" id="tour-pick" hidden></div>
+            <div class="card-fill" aria-hidden="true"></div>
+          </div>
+          <footer class="card-foot" id="step-foot"><span class="end" id="step-end"></span> <a class="back-to-map ui" href="#map-section" data-moves-page>&uarr; Back to the map</a></footer>
+        </article>
       </section>
 
-      <section id="multiples" aria-labelledby="multiples-title">
-        <div class="sec-head" data-section="multiples"></div>
-        <div class="mult-grid" id="mult"></div>
-      </section>
+      <div class="ref-divider" role="separator" aria-label="Reference"><span>Reference</span></div>
 
-      <section id="sequence" aria-labelledby="sequence-title">
-        <div class="sec-head" data-section="sequence"></div>
-        <figure>
-          <div class="figbar"><button class="btn btn-small fullsize" type="button" aria-pressed="false" aria-controls="seq">Full size</button><span class="scroll-hint" hidden>Scroll sideways to see the whole figure &rarr;</span></div>
-          <div class="sheet" id="seq"></div>
-          <figcaption class="sec-caption" data-section="sequence"></figcaption>
-        </figure>
-      </section>
-
-      <section id="matrix" aria-labelledby="matrix-title">
-        <div class="sec-head" data-section="matrix"></div>
-        <div class="figbar"><span class="scroll-hint" hidden>Scroll sideways to see every column &rarr;</span></div>
-        <div class="tbl" id="nsq"></div>
-        <p class="nsq-key" id="nsq-key" hidden></p>
+      <section id="matrix" class="card ref-card" aria-labelledby="matrix-title">
+        <header class="card-head">
+          <div class="card-title"><span class="eyebrow" id="matrix-eyebrow"></span><h2 id="matrix-title"></h2></div>
+        </header>
+        <div class="card-body">
+          <div class="matrix-intro" id="matrix-intro"></div>
+          <div class="figbar" id="bar-nsq"><span class="scroll-hint" hidden>Scroll sideways to see every column &rarr;</span></div>
+          <div class="tbl" id="nsq"></div>
+          <p class="nsq-key" id="nsq-key" hidden></p>
+        </div>
+        <footer class="card-foot" id="matrix-foot"><span class="end" id="matrix-end"></span> <a class="back-to-map ui" href="#map-section" data-moves-page>&uarr; Back to the map</a></footer>
       </section>
     </main>
 
