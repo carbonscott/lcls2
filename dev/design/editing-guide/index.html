@@ -2914,7 +2914,7 @@ top-level part, so it goes into the <code>rows</code> of the <code>detail</code>
 <span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer-to-files"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-buffered-writer"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"files"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Datagram blocks"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datagram blocks"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"prose"</span><span class="p">:</span><span class="w"> </span><span class="s2">"When the next datagram does not fit in the buffer, or the batch in it is more than 2 seconds old, the writer writes the buffer to the file with one `_write()` call."</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">"code_refs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -2954,7 +2954,7 @@ card under the map opens on the DRP, because the new node's parent is the
 part <code>drp</code>. The detail drawing in the card now has a box "Example: buffered
 file writer" in its second row, third column, after the boxes of
 <code>drp-process</code> and <code>detector-classes</code>. The tag "to Files ›" on the drawing's
-right side lists the label "Datagram blocks" with the other labels of the
+right side lists the label "datagram blocks" with the other labels of the
 edges to Files. Click the new box: the panel under the drawing shows the
 node's title, its <code>summary</code> in bold and its <code>prose</code>. Its code reference is in
 the panel's folded section for code references, and the new edge is in the
@@ -3078,10 +3078,15 @@ to files: each command below may run in a fresh shell (a new terminal, or
 a tool that runs every command on its own), where <code>$PORT</code> and <code>$!</code> are no
 longer set. The server's log, port and process ID go to <code>build/</code>; <code>build</code>
 is ignored by git (see <code>.gitignore</code>), so they do not show up in
-<code>git status</code>. Any path outside the checkout works too.</p>
+<code>git status</code>. Any path outside the checkout works too. The server reads
+its input from <code>/dev/null</code> (<code>&lt; /dev/null</code>) and writes its output to the
+log, so that it holds neither the input nor the output of the shell that
+started it: a tool that runs commands without a terminal (a script, a
+remote shell, an agent) may otherwise wait for the server to end before it
+returns.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">PORT</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])"</span><span class="k">)</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span>build
-python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--directory<span class="w"> </span>docs/design<span class="w"> </span>&gt;<span class="w"> </span>build/design-preview.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
+python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--directory<span class="w"> </span>docs/design<span class="w"> </span>&lt;<span class="w"> </span>/dev/null<span class="w"> </span>&gt;<span class="w"> </span>build/design-preview.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span>
 <span class="nb">echo</span><span class="w"> </span><span class="nv">$!</span><span class="w"> </span>&gt;<span class="w"> </span>build/design-preview.pid
 <span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PORT</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span>build/design-preview.port
 <span class="nb">echo</span><span class="w"> </span><span class="s2">"http://127.0.0.1:</span><span class="nv">$PORT</span><span class="s2">/"</span>
@@ -3120,9 +3125,14 @@ map section to the top (see below).</p>
   short note shows one, saying why the space is blank, with a "Back to the
   map" link; the note stays under the head while you scroll back up through
   the blank. A shorter blank (the card's top was only just above the
-  window) has no note and no link. The blank goes once the card's top is
-  back in view, and when the window is resized or turned the new content
-  stays right under the head. Design
+  window) has no note and no link. As you scroll back up, the blank
+  shrinks only where that moves nothing on screen: its part below the
+  bottom of the window goes, and the rest goes once it is all below the
+  window, or once the card's top is back in view and what is left of the
+  blank at the bottom of the window is too short for its note. When the
+  window gets wider or narrower (a tablet turned, for example) while the
+  head is stuck, a blank under the head closes up, so that the content
+  starts right under the head again. Design
   decisions, code references, sources and flows are folded: open one with
   its heading. A card ends with "End of ..." and a "Back to the map" link.</li>
 <li>A link to a node (<code>#/node/&lt;id&gt;</code>) opens the card on that node's part, with
