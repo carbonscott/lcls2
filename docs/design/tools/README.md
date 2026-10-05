@@ -130,148 +130,348 @@ line). Exit 0 iff every M and K is 0.
 ## browser_test.py
 
 ```bash
-python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ [--headed] [--screenshot-dir DIR]
+python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ [--headed] [--screenshot-dir DIR] [--only GROUP[,GROUP]]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ --layout [--full]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ \
     --check-node ID --expect-title TEXT --expect-prose SUBSTRING [--full]
 python docs/design/tools/browser_test.py --url http://127.0.0.1:8000/ --check-edge ID [--full]
 ```
 
-Full run (default). The page is driven only by clicks and keys, as a reader
-would. It prints:
+The page is one map with three modes ("Explore the parts", "Follow one
+event", "Compare kinds") and one card under it, then the N-squared matrix as
+a reference card. The test drives it only by clicks and keys, as a reader
+would. The primary viewport is 744x1000 (an iPad held upright); some checks
+also run at 1440x900. The page is loaded afresh for each check group, so
+that one failure does not cascade.
+
+Full run (default). It prints `PROBLEM:` lines (one per failure, naming the
+element) and `NOTE:` lines, then, in this order:
 
 ```text
 nodes_visited=V/N tour_steps=S/T console_errors=C
 smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok
+map_first viewport=744x1000 map_top=A map_bottom=B frame_top=F above_map=<names>
+map_first viewport=1440x900 map_top=A map_bottom=B frame_top=F above_map=<names>
+modes=M full_maps=F
+full_map_count explore=1 tour_map=1 tour_seq=1 compare=1 displayed=explore,tour_map
 map parts=A/8 lanes=L bands=B columns=K boxes=O/Q
 detail opened=X/P
-tour steps=S/T highlighted=H/T tag_clear=K/T
-multiples panels=M/6
-sequence rows=R/T
-matrix cells=C2/C
+tour steps=S/T highlighted=H/T on_main_map=G/T tag_clear=K/T
+tour_card text=X/T detail=Y/T
+tour_fit viewport=744x1000 tourbar_bottom=Y1 step_title_bottom=Y2
+multiples panels=M/6 mode=<compare|FAIL:...>
+sequence rows=R/T mode=<tour|FAIL:...>
+emphasize captions=K/K hidden_ok=<bool>
+card default=<overview|FAIL:...> after_close=<overview|FAIL:...> nav=X/9 sticky_head=<bool> end_footer=<bool> folded=<bool>
+card_head_px=H
+matrix cells=C2/C hscroll=<px> sticky_head=<bool> close_buttons=<n> end_footer=<bool>
+matrix_min_text_px=P
+deeplinks=D/4
+page_height=H
+min_tap_px=P
+scroll_jumps=J/N viewport=744x1000 moves_page_ok=<bool> control_moved=K/N
+scroll_jumps=J/N viewport=1440x900 moves_page_ok=<bool> control_moved=K/N
 console_errors=C
+elapsed nodes=s,tour=s,...
 ```
 
-- `nodes_visited`: a node counts when it is reached by clicking (its map box
-  for a top-level part; its box or its group's title strip in its part's
-  detail, opened by clicking the part's map box, for a lower node) **and**
-  `#detail-title[data-node-id]` names it **and** the panel's visible title
-  equals the model title (whitespace-normalized) **and** the visible prose
-  (`#detail-prose`) contains the first 30 characters of the node's prose as
-  plain text (markup reduced to the text the viewer shows).
-- `tour_steps`: stepping with the pips and `#tour-next`, step k counts when
-  `#tour-step-title[data-step-index=k]` shows its title, `#tour-step-prose`
-  contains the first 30 characters of its prose as plain text (markup
-  removed, `[[id]]` replaced by the node title) and the tour map shows a
-  callout (`g.callout[data-part]`) on the top-level part of the step's node.
-- `smoke`: `stub_click` = clicking the first neighbour tag (`g.stub`) of the
-  detail shown on `#/` opens the detail of the part it names; `arrow_keys` =
-  with the focus in the tour (on `#tour-next`), Right and Left move to step
-  2 and back; `arrow_scope` = after the tour has been used (pip 3 clicked),
-  the page scrolled to the matrix and its heading clicked (the focus is then
-  outside `#tour`, on the body), ArrowRight pressed twice leaves the tour at
-  step 3 and reaches the window not default-prevented (the browser can
-  still scroll sideways with it); `help` =
-  `#help-toggle` opens `#help` and `#help-close` (or the toggle) closes it;
-  `read_page` = in `#/read` every node has one `section[data-node-id]` whose
-  title (`.read-title`, else its first heading) is the node title (R of N);
-  `third_party` = requests to hosts other than the page's own origin,
-  fonts.googleapis.com and fonts.gstatic.com (must be 0).
-- `map`: parts with a map box (`g.box[data-part]`) of the top-level parts;
-  distinct `data-lane` values (must equal `map.lanes.count`); band label
-  groups (must equal the number of `map.bands`); column label groups (must
-  equal the number of `map.columns`). The map's viewBox must be
-  `map.viewbox`, and boxes, lines and labels carry no transform attribute.
-  `boxes=O/Q`: Q is the number of map box copies the JSON lists (a per-lane
-  box once per lane); O counts those drawn exactly once as
-  `g.box[data-box]` (`[data-lane=i]` for lane i) whose `rect.b`, measured in
-  viewBox units with CSS transforms included, equals the JSON rect within
-  0.5 units (x, w, h from `place.boxes`; y from the box, or
-  `lanes.y[i] - h/2` for a per-lane box). A box the JSON does not list also
-  fails. So a CSS shift of a map box fails the map check.
-- `detail`: a part with children counts when clicking its map box opens
-  `#detail-view svg.detail[data-detail=part]` drawing every descendant as a
-  `g.box[data-node]` or `g.dgroup[data-node]`. On `#/` the detail shown must
-  be `map.default_detail`.
-- `tour highlighted`: step k counts when the callout is on the step node's
-  top-level part **and** the `.hot` elements of the tour map (line ids of
-  `path.ln.hot`, `box:<id>` of `g.box.hot`) are exactly the step's
-  `map.tour` highlight list, with every lane copy hot, **and** at least one
-  hot box or line belongs to that part **and** the visible tokens (`g.tok`
-  at opacity 1; `data-t`, `data-target="x,y"`) are the step's `map.tour`
-  tokens **and** the step node is `.hot` in `#tour-detail`.
-- `tour tag_clear`: step k counts when the tour map has one callout tag
-  (`g.callout rect.ctag`) and its box overlaps no visible text of the tour
-  map by more than 0.5 units in both directions (viewBox units; every
-  displayed text outside `g.callout` and `g.tok`, dimmed ones included).
-  The viewer puts the tag at the first place around the part's dashed
-  outline that covers no text (under it, over it, then beside it).
-- `multiples`: figure i counts when it holds `svg.map.mini[data-kind]` with
-  the kind of `map.multiples[i]`, a figcaption, and its undimmed lines are
-  exactly the lines of that kind, at least one (`all`: none dimmed).
-- `sequence`: row k (`#sequence svg .row[data-step-index=k]`) counts when it
-  is there once, its aria-label contains the step title, it draws one arrow
-  (`path.ln`) that starts on the `from` lifeline and ends on the `to`
-  lifeline of the step's row in `map.sequence` (an end point within 10
-  units of the centre of a lifeline header `g.hdr[data-lifeline]`; no
-  lifeline there means `start`), its label (`text.lab`) is that row's
-  `label`, and clicking it opens tour step k.
-- `matrix`: C is the number of (from part, to part) pairs of model edges
-  whose top-level parts differ; the cell `td[data-from][data-to]` of a pair
-  counts when its relation items (`.ni[data-edge-ids]`) show exactly those
-  edges' labels, deduplicated by kind and label, and name only edges of that
-  pair. Cells of other pairs must be empty and the headers must show every
-  part's `place.short`.
-- `console_errors`: console errors and warnings, page errors, and failed or
-  HTTP >= 400 requests to the page's own origin.
+`full_map_count`, `tour_fit`, `card_head_px`, `matrix_min_text_px`,
+`min_tap_px`, `control_moved` and `elapsed` are informational (they never
+fail the run); every other value is a check.
 
-Exit 0 iff every count is complete (including `boxes` O = Q and
-`tag_clear` K = T), every smoke check is `ok` with R = N, Q = 0 and C = 0. A check that finds nothing to test fails. A full run takes
-about one to two minutes.
+- `nodes_visited` (group `nodes`): in Explore mode, a node counts when it is
+  reached by clicking (its map box for a top-level part; for a lower node,
+  its box or its group's title strip in the detail drawing of its part,
+  `#part-card #detail-view svg.detail[data-detail=part]`, opened by clicking
+  the part's map box) **and** `#part-card #detail-title[data-node-id]` names
+  it **and** the visible title equals the model title (whitespace-normalized;
+  when `#detail-title` is visually hidden, class `vh`, as for a top-level
+  part, both it and `#card-title` must read the title) **and** the visible
+  prose (`#detail-prose`) contains the first 30 characters of the node's
+  prose as plain text (markup reduced to the text the viewer shows). The
+  same walk checks the folds of all N panels (see `card folded`).
+- `tour_steps` (group `tour`): after pressing "Follow one event"
+  (`#modes button.mode[data-mode=tour]`), stepping with the pips and
+  `#tour-next`, step k counts when `#tour-step-title[data-step-index=k]`
+  shows its title, `#tour-step-prose` contains the first 30 characters of
+  its prose as plain text, and `#map svg.map` shows a callout
+  (`g.callout[data-part]`) on the step node's top-level part.
+- `smoke`: `stub_click` = in the detail of the first part that has a
+  neighbour tag (`g.stub[data-other]`), clicking the tag opens the card of
+  the part it names; `arrow_keys` = on `#/tour/1`, with the focus in
+  `#map-section` (on `#tour-next`), Right then Left move to step 2 and back;
+  `arrow_scope` = in tour mode at step 3 (pip 3), after the matrix head is
+  clicked (the focus is then outside `#map-section`), ArrowRight pressed
+  twice leaves the tour at step 3 and reaches the window not
+  default-prevented (the browser can still scroll sideways with it);
+  `help` = `#help-toggle` opens `#help` and `#help-close` (or the toggle)
+  closes it; `read_page` = in `#/read` every node has one
+  `section[data-node-id]` whose title (`.read-title`, else its first
+  heading) is the node title (R of N); `third_party` = requests during the
+  whole run to hosts other than the page's own origin, fonts.googleapis.com
+  and fonts.gstatic.com (must be 0).
+- `map_first`: on `#/` after the page is ready, at 744x1000 and at
+  1440x900. `map_top`/`map_bottom` are the top and bottom of the
+  `#map svg.map` bounding box and `frame_top` the top of its frame `#map`
+  (CSS px, page coordinates, rounded). `above_map` names the blocks between
+  the h1 and the frame: walking down from `.wrap`, the candidates are the
+  displayed elements (not `display: none`, not `visibility: hidden`) larger
+  than 1 px in both directions (a zero-size or visually hidden element does
+  not count; the walk goes into it) that are not ancestors of
+  `h1#model-title` or of `#map`; the outermost candidate counts iff its top
+  >= h1 bottom - 1 and its bottom <= frame top + 1; its name is its id, else
+  its first class, else its tag. Pass iff `above_map` is exactly
+  `modes,chips`, `#modes` and `#chips` are direct children of
+  `#map-section`, at 744x1000 B <= 1000 and at 1440x900 A <= 450.
+- `modes`/`full_maps` (group `modes`): M counts the `#modes button.mode`
+  buttons whose press sets `body[data-mode]` to their `data-mode`, puts
+  `aria-pressed="true"` on that button only, shows `#chips` only in explore,
+  `#tour-controls` only in tour and `#mode-note` only in tour and compare
+  (the buttons must be exactly explore, tour and compare). A full-size map
+  drawing is any `svg` that is not `.mini` and not `.detail` and either has
+  the viewBox of `map.viewbox` or contains `g.box[data-part]` for every
+  top-level part. F is the largest number of them in the document over
+  explore, tour (map view), tour (sequence view) and compare;
+  `full_map_count` prints each count and the states in which `#map svg.map`
+  is displayed. Pass iff M = 3, F = 1, every state has exactly one drawing,
+  it is `#map svg.map`, and it is displayed in explore and tour (map view)
+  only.
+- `map`: as before, on `#/`: parts with a map box (`g.box[data-part]`) of
+  the top-level parts; distinct `data-lane` values (must equal
+  `map.lanes.count`); band label groups (must equal the number of
+  `map.bands`); column label groups (must equal the number of
+  `map.columns`). The map's viewBox must be `map.viewbox`, and boxes, lines
+  and labels carry no transform attribute. `boxes=O/Q`: Q is the number of
+  map box copies the JSON lists (a per-lane box once per lane); O counts
+  those drawn exactly once as `g.box[data-box]` (`[data-lane=i]` for lane
+  i) whose `rect.b`, measured in viewBox units with CSS transforms
+  included, equals the JSON rect within 0.5 units (x, w, h from
+  `place.boxes`; y from the box, or `lanes.y[i] - h/2` for a per-lane box).
+  A box the JSON does not list also fails, so a CSS shift of a map box fails
+  the map check.
+- `detail`: a part with children counts when clicking its map box opens
+  its card (`#part-card[data-card=part]`) with
+  `#part-card #detail-view svg.detail[data-detail=part]` drawing every
+  descendant as a `g.box[data-node]` or `g.dgroup[data-node]`. (The page no
+  longer opens a part on `#/`: `map.default_detail` is kept in the model for
+  compatibility and not used.)
+- `tour`, measured on `#map svg.map` in tour mode: `highlighted` = step k
+  counts when the callout is on the step node's top-level part **and** the
+  `.hot` elements of the map (line ids of `path.ln.hot`, `box:<id>` of
+  `g.box.hot`) are exactly the step's `map.tour` highlight list, with every
+  lane copy hot, **and** at least one hot box or line belongs to that part
+  **and** the visible tokens (`g.tok` at opacity 1; `data-t`,
+  `data-target="x,y"`) are the step's `map.tour` tokens **and** the step
+  node is `.hot` in `#step-card #tour-detail svg.detail[data-detail=part]`.
+  `on_main_map` = step k counts when `#map svg.map` holds exactly one
+  displayed `g.callout`, on the step's part (no leftover selection outline
+  of Explore), no displayed callout or visible token is anywhere else, the
+  map shows at least one visible token when the step has tokens, the only
+  full-size map drawing is `#map svg.map` and it is displayed.
+  `tag_clear` = step k counts when the map has one callout tag
+  (`g.callout rect.ctag`) and its box overlaps no visible text of the map by
+  more than 0.5 units in both directions (viewBox units; every displayed
+  text outside `g.callout` and `g.tok`, dimmed ones included).
+- `tour_card`: `text` = step k counts when `#step-card` is displayed and
+  holds `#tour-step-title[data-step-index=k]` with the step title and
+  `#tour-step-prose` with the first 30 characters of the step prose, and the
+  card also shows the step node's own description: its title, the first 30
+  characters of its summary (plain text) and a displayed `button.open-part`
+  (the model's `tour.intro` says the component's description follows the
+  step text). `detail` = `#step-card #tour-detail
+  svg.detail[data-detail=<top part of the step node>]` is there with the
+  step node `.hot` (for a step on a top-level part, the detail is there),
+  and the top of `#step-card` is not above the bottom of the map frame
+  `#map`. `tour_fit` (informational): right after "Follow one event" is
+  pressed on `#/` at 744x1000, the page y of the bottom of `#tourbar` and of
+  `#tour-step-title` (targets <= 1000: the step controls and the step title
+  in the first screen).
+- `multiples panels=M/6 mode=...`: in compare mode, figure i of `#mult
+  figure` counts when it holds `svg.map.mini[data-kind]` with the kind of
+  `map.multiples[i]`, a figcaption, and its undimmed lines are exactly the
+  lines of that kind, at least one (`all`: none dimmed). `mode=compare` iff
+  the figures are displayed in compare mode (all six) and in neither
+  explore nor tour; otherwise `mode=FAIL:<where>`.
+- `sequence rows=R/T mode=...`: in tour mode with the sequence view
+  (`#tour-controls button.view[data-view=seq]`), row k
+  (`#seq svg.seq .row[data-step-index=k]`) counts when it is there once,
+  its aria-label contains the step title, it draws one arrow (`path.ln`)
+  that starts on the `from` lifeline and ends on the `to` lifeline of the
+  step's row in `map.sequence` (an end point within 10 units of the centre
+  of a lifeline header `g.hdr[data-lifeline]`; no lifeline there means
+  `start`), its label (`text.lab`) is that row's `label`, and clicking it
+  shows step k in the step card while the view stays the sequence chart.
+  `mode=tour` iff the rows are displayed (all T) only in tour mode with the
+  sequence view (not in explore, the tour's map view or compare).
+- `emphasize captions=K/K hidden_ok=...`: K is the number of kinds of
+  `map.kinds` whose `map.multiples` entry has a caption. A kind counts when
+  clicking its chip (`#chips button.chip[data-kind]`) shows
+  `#kind-caption[data-kind=kind]` containing the first 30 characters of
+  that caption (plain text) and leaves undimmed (effective opacity > 0.5)
+  on `#map svg.map` only lines of that kind, at least one. `hidden_ok` =
+  the All chip hides `#kind-caption`, and the caption of an emphasized kind
+  is hidden in tour and in compare mode.
+- `card`: `default` = on `#/` the card is `#part-card[data-card=overview]`
+  (and `#card-title[data-card=overview]`), displayed, without a displayed
+  `#card-close`, and `#overview` shows `question` and the first 30
+  characters of `summary` (else `FAIL:` and what is wrong). `after_close` =
+  after opening a part (its map box) and pressing `#card-close`, the card is
+  `data-card=overview`, displayed, `#overview` is displayed and not empty
+  and Close is gone (else `FAIL:hidden`, `FAIL:empty`, ...). `nav` = from
+  the overview, `#card-next` pressed 9 times must give the top-level parts
+  in model order and then the overview, and `#card-prev` pressed 9 times
+  the exact reverse; X counts the positions where both match. `sticky_head`
+  = on the largest part card (the tallest seen during `nav`), at 744x1000
+  and 1440x900, with the card's top 300 px above the viewport (less for a
+  card too short for that), the top of `#card-head` is within 2 px of the
+  viewport top, the head is inside the card, and no ancestor of the head has
+  `overflow` other than `visible` or `clip`. `end_footer` = the footer
+  starts with "End of the overview." on the overview, "End of <part
+  title>." on each of the 8 part cards (`#card-foot`), "End of step k of
+  T." on the step card (`#step-foot`, steps 1 and 2), each with a displayed
+  `a.back-to-map[data-moves-page]`. `folded` = in the node walk, every one
+  of the N panels has exactly its folds, each a `details.fold[data-fold]`,
+  displayed and closed when the node opens, and no other `<details>` of the
+  card is open: `decisions`, `code` and `sources` iff the node's
+  `decisions`, `code_refs` and `sources` lists are non-empty, `flows` iff an
+  edge crosses the border of the node's subtree (one end inside, one
+  outside), `dev` iff `dev_notes` is non-empty. `card_head_px`
+  (informational): the tallest card head at 744 (overview and the 8 parts;
+  target <= 100).
+- `matrix`: `cells` as before: C is the number of (from part, to part)
+  pairs of model edges whose top-level parts differ; the cell
+  `#matrix table.nsq td[data-from][data-to]` of a pair counts when its
+  relation items (`.ni[data-edge-ids]`) show exactly those edges' labels,
+  deduplicated by kind and label, and name only edges of that pair; cells of
+  other pairs must be empty and the headers must show every part's
+  `place.short`. `hscroll` = at 744 the larger of the sideways scroll of the
+  table's container (its nearest ancestor with `overflow-x: auto|scroll`;
+  `scrollWidth - clientWidth`) and how far the rightmost cell ends past the
+  card's content box (`#matrix`), must be 0; no ancestor of the table may
+  clip horizontally (`overflow-x: hidden|clip`). `sticky_head` as the
+  card's, for `#matrix .card-head` at 744 and 1440 (a spacer is added under
+  the page when it cannot scroll far enough). `close_buttons` = buttons in
+  `#matrix` (must be 0). `end_footer` = `#matrix-foot` displayed, starting
+  with "End of the <`map.sections.matrix.eyebrow` in lower case>.", with a
+  displayed `a.back-to-map[data-moves-page]`. `matrix_min_text_px`
+  (informational): the smallest font size of the table's text at 744
+  (floor about 12).
+- `deeplinks`: each route is loaded in a fresh page and must land in view.
+  `#/node/<id>` (the deepest lower node): explore mode, the card on the
+  node's top-level part, the node `.hot` in its detail, the panel on the
+  node, and the top of `#card-head` within [0, 120] px of the viewport top;
+  `#/tour/3`: tour mode, step 3, `#map-section` top at the viewport top
+  (+-2 px, or the page cannot scroll that far); `#/compare`: compare mode,
+  six small maps displayed, `#map-section` top at the viewport top;
+  `#/read`: read mode, the one-page view with a section per node, at the
+  page top.
+- `page_height`: the document's `scrollHeight` at 744x1000 on `#/` (must
+  be <= 4000). `min_tap_px` (informational): the smaller side of the
+  smallest displayed control (`button`, `summary`, `[role=button]`, form
+  fields, links that are not inline text) at 744, over the overview, a part
+  card, tour and compare (target >= 32); a `NOTE:` names the smallest ones
+  and the smallest focusable shapes of the drawings.
+- `scroll_jumps`: at each viewport the test activates controls with real
+  mouse clicks at a point of the control that receives the click (or, as a
+  key, Enter on the focused control), after scrolling the control into
+  view **before** recording `window.scrollY`, and reads `scrollY` again
+  400 ms and two animation frames later (so a smooth scroll is caught). The
+  controls: every Emphasize chip (then All); every map part; in each part's
+  detail a box, a group title strip (if any) and every neighbour tag (the
+  part's map box is pressed again before each tag); Close, then `#card-next`
+  9 times and `#card-prev` 9 times; with the card's top 300 px above the
+  viewport (the head stuck) `#card-next`, `#card-prev` and `#card-close` on
+  the largest part card, and `#card-close` near the card's footer with every
+  fold open; the map's Full size button (`#bar-map
+  button.fullsize[aria-controls=map]`) twice; Enter on a focused map box and
+  on a focused detail tag; the "Follow one event" button, every pip,
+  `#tour-prev`, `#tour-next`, the sequence view button, every sequence row,
+  Enter on a focused row, the sequence chart's Full size button
+  (`button.fullsize[aria-controls=seq]`) twice, the map view button; the
+  "Compare kinds" and "Explore the parts" buttons; last `#help-toggle` and
+  `#help-close`. N = activations; J = activations after which `scrollY`
+  changed by more than 1 px (each named in a `PROBLEM:` line).
+  `moves_page_ok` = in the overview, a part card, tour and compare, every
+  `[data-moves-page]` element is one of `a.back-to-map`,
+  `button.open-part`, `#mult figure`, an `a[href^="#/node/"]` inside
+  `#part-card` or `#step-card`, or an `a[href^="#/"]` inside `#read-page`,
+  and every `a.back-to-map`, `button.open-part` and `#mult figure` carries
+  it (these are the only controls that may move the page; the test does
+  not press them). `control_moved` (informational): activations after which
+  the activated control's own viewport position moved by more than 2 px
+  while it is still displayed (the map's Full size button below the map is
+  an expected mover). Pass iff J = 0, N >= 40 and `moves_page_ok`.
+- `console_errors`: console errors and warnings, page errors, and failed or
+  HTTP >= 400 requests to the page's own origin, over the whole run.
+- `elapsed` (informational): seconds per check group.
+
+Exit 0 iff every check passes: every count complete (V = N, S = T, A = P0,
+O = Q, X = P, every tour and tour_card count = T, M = 6 panels, R = T,
+captions K = K, nav = 9, C2 = C, D = 4), every bool `true`, both `mode=`
+values set, `default` and `after_close` `overview`, `above_map=modes,chips`
+with the map_first thresholds, M = 3 and F = 1, `hscroll=0`,
+`close_buttons=0`, `page_height` <= 4000, J = 0 with N >= 40 at both
+viewports, every smoke check `ok` with R = N, Q = 0 and C = 0. A check that
+finds nothing to test fails. A full run takes about four to six minutes
+(`elapsed` gives the seconds per group).
+
+`--only GROUP[,GROUP]` runs only the named check groups: `nodes`, `tour`,
+`smoke`, `map_first`, `modes`, `map`, `detail`, `multiples`, `sequence`,
+`emphasize`, `card`, `matrix`, `deeplinks`, `page_height`, `scroll_jumps`
+(aliases: `full_maps` = `modes`, `after_close` = `card`, `close_buttons` =
+`matrix`, `tour_card` = `tour`). It prints only those groups' lines, in the
+same formats and order (the first line when `nodes` or `tour` runs, with
+`-` for the one not run), then `console_errors=C` and `elapsed`; exit 0 iff
+they pass and C = 0. `card` without `nodes` walks the nodes for the folds.
 
 `--layout` loads the page at 744x1000 and 1440x900 and compares, on the
 map, each top-level part's union box (viewBox units), the set of rendered
 text strings and the number of visible elements; it prints
-`layout_identical=<bool> parts=<n>`. Then, at widths 400, 744 and 1440, it
-prints `width=<w> page_hscroll=<px>` (the page's horizontal overflow, the
-maximum over the loaded page, a detail opened and a tour step), after the
-744 line the informational `inner_scroll=<section:px,...> min_text_px=<px>`
-(horizontal scroll inside each figure container; the smallest rendered SVG
-text in CSS px), then
+`layout_identical=<bool> parts=<n>`. Then, at widths 400, 744 and 1440,
+it prints `width=<w> page_hscroll=<px>` (the page's horizontal overflow,
+the maximum over the loaded page, a part opened, tour step 2, the sequence
+view and compare), after the 744 line the informational
+`inner_scroll=<section:px,...> min_text_px=<px>` (horizontal scroll inside
+each section's containers; the smallest rendered SVG text in CSS px), then
 
 ```text
-fullsize map-section=ok|fail tour=ok|fail sequence=ok|fail
+fullsize map=ok|fail sequence=ok|fail
 ```
 
-and finally `console_errors=C`. The `fullsize` check runs at 744x1000: each
-of `#map-section`, `#tour` and `#sequence` has one `button.fullsize` with
-`aria-pressed="false"` on load, and its figure (`#map svg.map`,
-`#tour svg.map`, `#sequence svg`) is fitted: no horizontal scroll in any
-scroll container between the svg and its section, and the svg no wider
-than its sheet's content box. Pressing the button sets
-`aria-pressed="true"`, makes the svg exactly as wide (1 px) as its viewBox
-and makes the sheet scroll, while the page itself does not scroll;
-pressing it again fits the figure again. `--layout` fails if the layouts
-differ, any `page_hscroll` > 0, the map sheet of `#map-section` or of
-`#tour` scrolls horizontally at 744 on load (a `PROBLEM:` line gives the
-pixels), a `fullsize` check fails, `html`, `body` or an element around a
-section sets `overflow-x: hidden` or `clip`, or C > 0.
+and finally `console_errors=C`. The `fullsize` check runs at 744x1000 for
+the map's button (`#bar-map button.fullsize[aria-controls=map]`, in
+explore) and the sequence chart's (`button.fullsize[aria-controls=seq]`,
+in tour mode with the sequence view): there is one button with
+`aria-pressed="false"` on load and its figure (`#map svg.map`,
+`#seq svg.seq`) is fitted: no horizontal scroll in any scroll container
+between the svg and `#map-section`, and the svg no wider than its sheet's
+content box. Pressing the button sets `aria-pressed="true"`, makes the svg
+exactly as wide (1 px) as its viewBox and makes the sheet scroll, while
+the page itself does not scroll; pressing it again fits the figure again.
+`--layout` fails if the layouts differ, any `page_hscroll` > 0, the map
+sheet scrolls horizontally at 744 on load (a `PROBLEM:` line gives the
+pixels), a `fullsize` check fails, `html`, `body` or an element around
+`#map-section` or `#matrix` sets `overflow-x: hidden` or `clip`, or C > 0.
 
 `--check-node` opens the node by deep link (`#/node/ID`) and by clicking
-(its part's map box, then its box or group in the detail), and checks the
-panel title and that the rendered prose contains SUBSTRING; it prints
-`check_node id=ID title_ok=<bool> prose_ok=<bool> console_errors=C`.
-SUBSTRING is matched against the rendered, visible text, so it must not
-contain markup (backticks, `[[...]]`, link syntax).
+(its part's map box, then its box or group in the detail in the card), and
+checks the panel title and that the rendered prose contains SUBSTRING; it
+prints `check_node id=ID title_ok=<bool> prose_ok=<bool> in_detail=<bool>
+console_errors=C`. `in_detail` = both times, the node is drawn as a
+`g.box[data-node=ID]` or `g.dgroup[data-node=ID]` inside `#part-card
+#detail-view svg.detail[data-detail=<its top-level part>]` (for a
+top-level part: its card is open with its detail drawing). SUBSTRING is
+matched against the rendered, visible text, so it must not contain markup
+(backticks, `[[...]]`, link syntax).
 `--check-edge ID` looks for the edge where the page draws it: an edge inside
-one part as a `path.ln[data-edge-ids~=ID]` in that part's detail; an edge
-between two parts with a lower-level end as the neighbour tag
-(`g.stub[data-other][data-dir][data-edge-ids~=ID]`) in the detail of each
-part whose end is a lower node; an edge between two top-level parts as a map
-line or a matrix relation. It prints `check_edge id=ID drawn=<bool>
+one part as a `path.ln[data-edge-ids~=ID]` in that part's detail (in the
+card); an edge between two parts with a lower-level end as the neighbour
+tag (`g.stub[data-other][data-dir][data-edge-ids~=ID]`) in the detail of
+each part whose end is a lower node; an edge between two top-level parts as
+a map line or a matrix relation. It prints `check_edge id=ID drawn=<bool>
 console_errors=C`. `--full` adds the full run to `--check-node`,
-`--check-edge` or `--layout`. The test also works against the published site
-(`--url https://carbonscott.github.io/lcls2/dev/design/`).
+`--check-edge` or `--layout`. The test also works against the published
+site (`--url https://carbonscott.github.io/lcls2/dev/design/`).
 
 ## geometry_check.py
 
@@ -287,8 +487,12 @@ toggle pressed).
 Waits for the first render and `document.fonts.ready`, checks that the
 Archivo font is loaded (`document.fonts.check('600 15px Archivo')` and a
 loaded Archivo face) and prints `font=Archivo`. It then measures the map
-(`#map svg.map`) and the detail of every top-level part with children
-(opened by clicking the part's map box), all in SVG viewBox units:
+(`#map svg.map`) and the detail drawing of every top-level part with
+children: in Explore mode (the default on `#/`; another mode is a
+`PROBLEM:` and fails the run) it clicks the part's map box, which opens the
+part in the card under the map, and measures
+`#part-card #detail-view svg.detail[data-detail=<part>]`, all in SVG
+viewBox units:
 
 - `line_through_box`: (line, box) pairs where a point sampled every 2 units
   along a `path.ln` lies inside the box rect shrunk by 3 units and the box
@@ -337,9 +541,9 @@ views=V line_through_box=X text_overflow=Y
 crossings_allowed=K line_over_text=J label_on_box=Q box_overlap=O line_over_label=W small_text=S text_overlap=E min_text_px=P
 ```
 
-with V = 1 + P (P: top-level parts with children). The view lines carry the
-same new fields. Exit 0 iff the font is Archivo, V = 1 + P, every view has
-a box, and X, Y, O, W, S and E are all 0 (K, J and Q are informational).
+with V = 1 + P (P: top-level parts with children). Exit 0 iff the font is
+Archivo, the page opens in Explore mode, V = 1 + P, every view has a box,
+and X, Y, O, W, S and E are all 0 (K, J and Q are informational).
 `--verbose` also lists the allowed crossings, the `line_over_text` pairs and
 every small text.
 
@@ -372,37 +576,74 @@ writes JSON.
 
 ```bash
 cp -r docs/design /tmp/viewer-copy
-python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy KIND
+python docs/design/tools/plant_viewer_defects.py /tmp/viewer-copy KIND [KIND ...]
 ```
 
-Edits one file (`viewer.js`, or `viewer.css` for `shift-map-box`) of a copy
-of `docs/design` (it refuses the viewer next to the script) to plant a known
-defect, so that one can show that the browser test catches it. KIND:
+Plants known defects in a copy of `docs/design` (it refuses the viewer next
+to the script), so that one can show that the browser test catches them.
+Several kinds may be planted in one call. Most kinds append a small
+self-contained script to `viewer.js` (or a rule to `viewer.css`) that acts
+on the page's hooks once `body[data-ready]` is set, so they do not depend on
+the viewer's internals; the others change one line of `viewer.js` (the
+first anchor that occurs exactly once is used; some kinds have a CSS
+fallback). Serve the copy and run `browser_test.py` against it; the full
+run must exit nonzero.
 
-- `hide-prose`: the viewer stops rendering node prose in the panel; the full
-  run then reports `nodes_visited` < N.
-- `no-multiples`: the viewer stops drawing the small multiples (the
-  `#multiples` figures); the full run then reports `multiples panels=0/6`.
-- `page-error`: `plantedUndefinedFunction();` at the top of `viewer.js`; the
-  page never becomes ready, every count is 0 and the page error is counted
-  (`console_errors=1`).
+The six kinds of the map-modes checks, each caught by one check:
+
+- `map-below-fold`: the card (the overview on `#/`) is moved above the mode
+  switch; `map_first` fails (`above_map` names `part-card`, and
+  `map_bottom` > 1000 at 744x1000).
+- `second-map`: a copy of `#map svg.map` is put right after the map once
+  the page is ready; `full_maps=2`.
+- `card-empty-on-close`: Close hides the card instead of showing the
+  overview; `card ... after_close=FAIL:hidden`.
+- `click-scrolls`: an Emphasize chip click scrolls the card into view with
+  smooth scrolling; `scroll_jumps` J > 0 at both viewports (each chip is
+  named).
+- `matrix-close`: a Close button is added to the matrix card's head;
+  `matrix ... close_buttons=1`.
+- `broken-deeplink`: `#/compare` opens Explore (the hash is replaced before
+  the viewer reads it); `deeplinks=3/4`.
+
+Extra kinds, one more check each:
+
+- `nav-order`: `#card-next` pressed on the overview skips the first part;
+  `card ... nav` < 9.
+- `head-not-sticky`: the card heads lose `position: sticky`; `card` and
+  `matrix` `sticky_head=false`.
+- `folds-open`: every fold of the card is opened when it appears;
+  `card ... folded=false`.
+- `matrix-hscroll`: the matrix table gets `min-width: 1100px`;
+  `matrix hscroll` > 0.
+- `moves-page-abuse`: `#card-next` carries `[data-moves-page]`;
+  `scroll_jumps ... moves_page_ok=false` (a test that trusted the
+  attribute would skip the arrow).
+- `tour-card-stale`: the step text is not updated on Next;
+  `tour_card text` < T (and `tour_steps` < T).
+
+Kinds kept from the earlier checks:
+
+- `page-error`: `plantedUndefinedFunction();` at the top of `viewer.js`;
+  the page never becomes ready, every count is 0 and the page error is
+  counted (`console_errors` >= 1).
+- `hide-prose`: the node panel shows no prose; `nodes_visited` < N.
+- `no-multiples`: the small maps of Compare kinds are not drawn (or not
+  displayed); `multiples panels=0/6` or `mode=FAIL:...`.
 - `shift-map-box`: a CSS rule shifts the TEB's map box 30 px to the right
-  (a CSS transform, no transform attribute); the full run reports
-  `map ... boxes=16/17` and names the box.
+  (a CSS transform, no transform attribute); `map ... boxes=16/17`, naming
+  the box.
 - `sequence-reversed`: the sequence chart draws each arrow between two
-  lifelines backwards; the full run reports `sequence rows` < T and names
-  each row's drawn and expected lifelines.
+  lifelines backwards; `sequence rows` < T, naming each row's drawn and
+  expected lifelines.
 - `arrow-global`: a keydown listener on the whole document moves the tour
-  with Left and Right wherever the focus is (once the tour has been used)
-  and calls preventDefault; the full run reports `arrow_scope=fail` (the
-  tour moves from step 3 to step 5, and both keys are default-prevented).
+  with Left and Right in tour mode wherever the focus is and calls
+  preventDefault; `smoke ... arrow_scope=fail`.
 - `callout-tag-fixed`: the callout tag goes back to one fixed place (under
-  the dashed outline at its left); the full run reports `tag_clear=12/14`
-  (on the last two steps the tag covers the note next to the last part).
+  the dashed outline at its left); `tour ... tag_clear` < T.
 
-Serve the copy and run `browser_test.py` against it; the full run must exit
-nonzero. Exit 0 if the defect was planted, 1 if the code to change was not
-found exactly once or on a usage error.
+Exit 0 if every defect was planted, 1 if the code to change was not found
+exactly once for a kind or on a usage error.
 
 ## Viewer test hooks
 
@@ -410,38 +651,47 @@ Stable attributes for tests (the UI works the same for people):
 
 | Hook | Meaning |
 |---|---|
-| `body[data-ready="true"]` | set after the first render |
-| `body[data-mode]` | `browse`, `tour` or `read` |
-| `#map-section`, `#tour`, `#multiples`, `#sequence`, `#matrix` | the five figures, in this order; `#read-page` replaces them in read mode |
-| `#map svg.map` | the map, with the viewBox of `map.viewbox` |
+| `body[data-ready="true"]` | set after the first render (fonts ready, map drawn) |
+| `body[data-mode]` | `explore`, `tour`, `compare` or `read` |
+| `h1#model-title` | page title (the model's `title`) |
+| `#map-section` (`tabindex=-1`) | the map section: modes, chips, stage, tour bar, cards |
+| `#modes button.mode[data-mode=explore\|tour\|compare][aria-pressed]` | the mode switch: exactly 3 buttons, one pressed; `#modes` and `#chips` are direct children of `#map-section` |
+| `#mode-note` | the tour or compare intro (hidden in explore) |
+| `#chips button.chip[data-kind][aria-pressed]` | Emphasize: `all` and the 5 kinds; displayed in explore only |
+| `#kind-caption[data-kind]` | the caption of the emphasized kind (its `map.multiples` caption); displayed in explore when a kind other than `all` is emphasized |
+| `#tour-controls button.view[data-view=map\|seq][aria-pressed]` | tour only: show the steps on the map or on the sequence chart |
+| `#stage` | the figure frame the modes swap |
+| `#map svg.map` | THE map (the only full-size map drawing in the document, in any mode); viewBox = `map.viewbox`; hidden only in compare mode and in the tour's sequence view |
 | `g.box[data-part][data-node][data-box]` (+ `[data-lane]`) with `rect.b` | a map box: its top-level part, the node it stands for, its box id (and lane) |
 | `g.column-label[data-column]`, `g.band-label[data-band]` | column headers; one group per band |
 | `path.ln[data-line][data-kind][data-edge-ids][data-through][data-ends]` (+ `[data-lane]`) | a map line; through/ends list box keys `<box id>` or `<box id>@<lane>` |
 | `circle.port[data-line]`, `text.lab[data-line]` | ports and labels of a line |
-| `#chips button.chip[data-kind][aria-pressed]` | the "Emphasize" chips (`all` or a kind) |
-| `#detail-view svg.detail[data-detail]` | the detail of a top-level part under the map |
-| `g.box[data-node]` (`.hot` when highlighted), `g.dgroup[data-node]` with `rect.gtitle` | detail boxes; groups and their clickable title strip |
-| `path.ln[data-edge-ids][data-from-box][data-to-box]` | an edge inside the detail |
-| `g.stub[data-other][data-dir][data-edge-ids]` with `rect` and a connector `path.ln` | one neighbour tag per (neighbour part, direction) |
-| `#detail-title[data-node-id]`, `#detail-prose` | the node panel: title and rendered prose |
-| `#tour svg.map`, `#tour-prev`, `#tour-next`, `#pips button.pip[aria-current]` | tour map and controls |
-| `#tour-step-title[data-step-index]`, `#tour-step-prose` | title (k is 1-based) and text of the current step |
-| `g.callout[data-part]` with `rect.cbox` and `rect.ctag`, `g.tok[data-t][data-target]` | the step's callout (its dashed outline, with a mask that leaves a gap where the outline would cross a text, and its tag); event tokens (visible ones have opacity 1) |
-| `#tour[tabindex="-1"]` | the tour section takes the focus when clicked; Left and Right move the tour only while the focus is in it |
-| `#tour-detail svg.detail[data-detail]` | the detail under the tour map, step node `.hot` |
-| `#multiples figure` with `svg.map.mini[data-kind]` and `figcaption` | the six small multiples |
-| `#sequence svg .row[data-step-index]` | one row per tour step (its arrow `path.ln`, label `text.lab`); click opens that step |
-| `#sequence svg g.hdr[data-lifeline]` with `rect` | a lifeline header; its centre is the lifeline's x |
-| `button.fullsize[aria-pressed]` in `#map-section`, `#tour`, `#sequence` | "Full size": pressed, the figure is drawn at its viewBox width and its sheet scrolls; unpressed, it fits |
-| `#matrix table.nsq td[data-from][data-to]`, `.ni[data-edge-ids]` | matrix cells and their listed relations |
-| `#nsq-key` | the line under the matrix that names the shaded row and column (the part of `map.ladder.node`, by its `place.short`) and the diagonal |
-| `#read-page section[data-node-id]` | one section per node in the one-page view |
+| `g.callout[data-part]` with `rect.cbox` and `rect.ctag`; `g.tok[data-t][data-target]` | in `#map svg.map`: the tour step's callout (dashed outline and tag; Explore's selection outline uses `g.callout` too) and the event tokens (visible ones have opacity 1) |
+| `#bar-map button.fullsize[aria-controls=map][aria-pressed]` | "Full size" for the map, below the map frame (with its scroll hint); not between the h1 and the map |
+| `button.fullsize[aria-controls=seq][aria-pressed]` | "Full size" for the sequence chart (`#bar-seq`, or `#tour-controls`) |
+| `#seq svg.seq .row[data-step-index]` (+ `g.hdr[data-lifeline]` with `rect`, `path.ln`, `text.lab`) | the sequence chart (tour mode, sequence view): one row per step (its arrow and label); a click shows that step; a lifeline header's centre is the lifeline's x |
+| `#mult figure[data-kind]` with `svg.map.mini[data-kind]` and `figcaption` | the six small maps (compare mode only); a tap or Enter goes to Explore with that kind emphasized (carries `data-moves-page`) |
+| `#tourbar`: `#tour-prev`, `#tour-next`, `#pips button.pip[aria-current]` | tour controls (tour mode) |
+| `#part-card[data-card]` | the card (explore); `data-card` = `overview` or the open part's id |
+| `#card-head` (`position: sticky`) with `.eyebrow`, `#card-title[data-card]`, `#card-prev`, `#card-next`, `#card-close` | the card head; `#card-close` absent on the overview; prev/next cycle through the overview and the 8 top-level parts |
+| `#overview` | the overview inside the card: the model question, the summary, how to read the map |
+| `#detail-view svg.detail[data-detail]` | the part's detail drawing in the card: `g.box[data-node]` (`.hot` when highlighted), `g.dgroup[data-node]` with `rect.gtitle`, `g.stub[data-other][data-dir][data-edge-ids]` (neighbour tag, with `rect` and a connector `path.ln`), `path.ln[data-edge-ids][data-from-box][data-to-box]` |
+| `#detail-title[data-node-id]`, `#detail-prose` | the node panel in the card; for a top-level part `#detail-title` may be visually hidden (class `vh`) because `#card-title` shows the same title |
+| `details.fold[data-fold=decisions\|code\|sources\|flows\|dev]` | the folded sections of the node panel; closed when a node opens |
+| `#card-foot` | the card's footer: "End of the overview." or "End of <part title>." plus `a.back-to-map[data-moves-page]` |
+| `#step-card` | the tour card (tour mode): `#tour-step-title[data-step-index]` (k is 1-based), `#tour-step-prose`, the step node's title and summary with `button.open-part[data-moves-page]`, `#tour-detail svg.detail[data-detail]` (step node `.hot`), `#step-foot` ("End of step k of T.") |
+| `.ref-divider` | the "Reference" divider |
+| `#matrix.ref-card` with `.card-head` (sticky), `table.nsq td[data-from][data-to]`, `.ni[data-edge-ids]`, `#nsq-key`, `#matrix-foot` | the matrix reference card; no buttons in it; footer "End of the <eyebrow>." plus `a.back-to-map` |
+| `#read-page section[data-node-id]` | one section per node in the one-page view (read mode replaces `#studies`) |
 | `#help-toggle`, `#help`, `#help-close` | "How to read this page": the button, the panel (hidden until opened) and its close button |
+| `[data-moves-page]` | marks the only controls allowed to scroll the page: `a.back-to-map`, `button.open-part`, `#mult figure`, links to `#/node/...` in the cards, links in the one-page view |
 
-URL routes: `#/` (top; the map's detail shows `map.default_detail`),
-`#/node/<id>` (the detail of the node's part, node highlighted, panel on the
-node), `#/tour/<k>` (tour step k), `#/read` (the whole model as one page)
-and `#/read/<id>` (the one-page view, scrolled to a node).
+URL routes: `#/` (explore, the overview card), `#/node/<id>` (explore, the
+card on the node's top-level part, the node `.hot` in its detail, the panel
+on the node), `#/tour/<k>` (tour mode, map view, step k), `#/compare`
+(compare mode), `#/read` (the whole model as one page) and `#/read/<id>`
+(the one-page view, scrolled to a node). In-page clicks update the address
+with `history.replaceState`, so they add no history entries.
 
 Links in the page header (`../`, `editing-guide/`) and `site-page` sources
 (`../features/...`) work only on the built site (`mkdocs serve` or

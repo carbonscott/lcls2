@@ -3,12 +3,14 @@
 
 Loads the viewer, waits for the first render and for document.fonts.ready,
 and checks that the Archivo web font is loaded (document.fonts.check('600
-15px Archivo') and a loaded Archivo face). It then measures the Study-1 map
-(#map svg.map) and the detail view of every top-level part that has children,
-opening each detail by clicking the part's first box on the map and measuring
-#detail-view svg.detail[data-detail=<part>], in the page's default state
-(no "Full size" toggle pressed). All coordinates are SVG user units (viewBox
-units), so every count but small_text does not depend on the window size.
+15px Archivo') and a loaded Archivo face). It then measures the map
+(#map svg.map) and the detail drawing of every top-level part that has
+children: in Explore mode (the default on #/) it clicks the part's first box
+on the map, which opens the part in the card under the map, and measures
+#part-card #detail-view svg.detail[data-detail=<part>], in the page's default
+state (no "Full size" toggle pressed). All coordinates are SVG user units
+(viewBox units), so every count but small_text does not depend on the window
+size.
 
 Counts per view:
   line_through_box  (line, box) pairs where a point sampled every 2 units
@@ -103,7 +105,7 @@ STEP_TIMEOUT_MS = 8000
 # the run's viewport width) is counted.
 MIN_TEXT_PX = 7.0
 MAP_SELECTOR = "#map svg.map"
-DETAIL_SELECTOR = '#detail-view svg.detail[data-detail="{part}"]'
+DETAIL_SELECTOR = '#part-card #detail-view svg.detail[data-detail="{part}"]'
 
 FONT_JS = r"""
 async () => {
@@ -465,6 +467,7 @@ def run_check(url, model_ref=None, width=1440, height=900, verbose=False, init_s
         if r[10] is not None and (smallest is None or r[10] < smallest[0]):
             smallest = (r[10], view, r[11])
     font_ok = False
+    mode_ok = False
     font_line = "font=missing"
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not headed)
@@ -494,6 +497,10 @@ def run_check(url, model_ref=None, width=1440, height=900, verbose=False, init_s
                 r = report_view("map", res, verbose, out)
                 if r:
                     add("map", r)
+                mode = page.evaluate("() => document.body.dataset.mode || null")
+                mode_ok = mode == "explore"
+                if not mode_ok:
+                    out.append(f"PROBLEM: on #/ body[data-mode={mode}], expected explore (the details are opened from the map)")
                 for part in parts:
                     box = page.locator(f'{MAP_SELECTOR} g.box[data-part="{part}"]').first
                     try:
@@ -522,7 +529,7 @@ def run_check(url, model_ref=None, width=1440, height=900, verbose=False, init_s
     print(f"views={views} line_through_box={x} text_overflow={y}")
     print(f"crossings_allowed={k} line_over_text={j} label_on_box={q} box_overlap={o} line_over_label={w} "
           f"small_text={s} text_overlap={e} min_text_px={smallest[0] if smallest is not None else 'none'}")
-    ok = (font_ok and views == 1 + len(parts) and x == 0 and y == 0 and not empty_view
+    ok = (font_ok and mode_ok and views == 1 + len(parts) and x == 0 and y == 0 and not empty_view
           and o == 0 and w == 0 and s == 0 and e == 0)
     return 0 if ok else 1
 

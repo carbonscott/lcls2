@@ -7,32 +7,44 @@
  * names) and every map coordinate is read from the JSON. Model text enters
  * the page only as DOM text nodes (never as HTML).
  *
- * The page has five sections, in this order:
- *   #map-section  the fixed map (model "map" block and each part's "place"),
- *                 with the detail of one part under it (its "detail" grid)
- *                 and the node panel (#detail)
- *   #tour         the tour moves the event over the same map
- *   #multiples    one small copy of the map per relation kind
- *   #sequence     the tour as one sequence chart
- *   #matrix       every relation between two parts, with no lines
+ * The page is one map with three modes and one card under it:
+ *   #map-section  #modes (Explore the parts, Follow one event, Compare
+ *                 kinds), #mode-note, #chips (Emphasize), #tour-controls,
+ *                 #stage (the map #map; the sequence chart #seq; the small
+ *                 multiples #mult; captions), #tourbar, and the card:
+ *                 #part-card in Explore (the overview, or one top-level part:
+ *                 its detail #detail-view and the node panel #detail) or
+ *                 #step-card in Follow one event (the step, its component
+ *                 and its detail #tour-detail)
+ *   #matrix       after the "Reference" divider: every relation between two
+ *                 parts, as a reference card
+ * There is one full-size map drawing in every mode: the tour runs on it.
  *
  * State: one hash route.
- *   #/              top; the detail shows map.default_detail
- *   #/node/<id>     the detail of the node's top-level part, node highlighted;
- *                   the panel describes the node
- *   #/tour/<k>      tour step k (1-based)
+ *   #/              Explore; the card shows the overview
+ *   #/node/<id>     Explore; the card shows the node's top-level part, the
+ *                   node highlighted in its detail, the panel on the node
+ *   #/tour/<k>      Follow one event, tour step k (1-based)
+ *   #/compare       Compare kinds
  *   #/read          the whole model as one page; #/read/<id> scrolls to a node
- * Clicks change the hash with history.replaceState (no scroll jump).
+ * No in-page click moves the page: clicks change the hash with
+ * history.replaceState, focus() always uses preventScroll, and only the
+ * controls marked [data-moves-page] (Back to the map, Read the full
+ * description, a small multiple, a link to a part) or a link from outside
+ * the page scroll it.
  *
- * Test hooks: see tools/README.md and the interface spec (body[data-ready],
- * body[data-mode], #map svg.map g.box[data-part][data-node][data-box],
- * path.ln[data-line], #chips .chip[data-kind], #detail-view svg.detail
- * [data-detail], g.stub[data-other][data-dir], #detail-title[data-node-id],
- * #detail-prose, #tour-prev, #tour-next, #pips .pip, #tour-step-title
- * [data-step-index], #tour-step-prose, g.callout[data-part], g.tok
- * [data-t][data-target], #multiples svg.mini[data-kind], #sequence .row
- * [data-step-index], #matrix table.nsq td[data-from][data-to], #read-page
- * section[data-node-id], #help-toggle, #help).
+ * Test hooks: see tools/README.md ("Viewer test hooks") and the interface
+ * spec: body[data-ready], body[data-mode], #modes button.mode[data-mode],
+ * #chips button.chip[data-kind], #kind-caption[data-kind], #map svg.map and
+ * its g.box/path.ln/g.callout/g.tok, #part-card[data-card], #card-head,
+ * #card-title[data-card], #card-prev, #card-next, #card-close, #overview,
+ * #detail-view svg.detail[data-detail], #detail-title[data-node-id],
+ * details.fold[data-fold], #card-foot, #step-card, #tour-step-title
+ * [data-step-index], #tour-step-prose, #tour-detail svg.detail, #step-foot,
+ * button.open-part, #tour-controls button.view[data-view], #seq .row
+ * [data-step-index], #mult figure[data-kind], #tourbar, #pips button.pip,
+ * button.fullsize, #matrix table.nsq td[data-from][data-to], #matrix-foot,
+ * #read-page section[data-node-id], #help-toggle, #help, [data-moves-page].
  */
 (function () {
   'use strict';
@@ -211,9 +223,19 @@
     if (location.hash === hash || (hash === '#/' && (location.hash === '' || location.hash === '#'))) route(true);
     else location.hash = hash;
   }
-  function setHash(hash, mode) {
-    if (location.hash !== hash) history.replaceState(null, '', hash);
-    document.body.dataset.mode = mode;
+  // In-page clicks change the address without a history entry and without
+  // a hashchange (so nothing scrolls).
+  function setHash(hash) {
+    if (location.hash === hash) return;
+    try { history.replaceState(null, '', hash); } catch (e) { /* a sandboxed frame */ }
+  }
+  // Move the focus without scrolling the page.
+  function focusQuietly(node) {
+    if (node && typeof node.focus === 'function') node.focus({ preventScroll: true });
+  }
+  // The only scrolls of the page: deep links and [data-moves-page] controls.
+  function scrollToTop(node, smooth) {
+    if (node) node.scrollIntoView({ block: 'start', behavior: smooth && !reducedMotion() ? 'smooth' : 'auto' });
   }
   function onActivate(node, fn) {
     node.addEventListener('click', fn);
@@ -287,7 +309,7 @@
         parent.append(el('code', { text: m[1] }));
       } else if (m[2] !== undefined) {
         const id = m[2].trim();
-        if (idx.nodes.has(id)) parent.append(link(xrefHash(id), m[3] !== undefined ? m[3] : titleOf(id), 'xref'));
+        if (idx.nodes.has(id)) parent.append(nodeLink(id, m[3] !== undefined ? m[3] : titleOf(id), 'xref'));
         else parent.append(m[0]);
       } else if (safeUrl(m[5])) {
         const a = link(m[5], '', 'prose-link');
@@ -298,6 +320,14 @@
       }
     }
     if (last < text.length) parent.append(text.slice(last));
+  }
+  // A link to a node is a deep link: it may bring the node's card (or, in
+  // the one-page view, its section) into view, so it is marked
+  // [data-moves-page].
+  function nodeLink(id, text, cls) {
+    const a = link(xrefHash(id), text, cls);
+    a.setAttribute('data-moves-page', '');
+    return a;
   }
   function appendCodeOnly(parent, text) {
     const parts = text.split(/`([^`]+)`/);
@@ -319,71 +349,77 @@
     if (typeof text === 'string') appendInline(e, text.replace(/\s*\n\s*/g, ' '));
     return e;
   }
-
   // ------------------------------------------------------------------
   // Routing
   // ------------------------------------------------------------------
   let state = null;
 
-  function parseHash() {
-    let h = location.hash.replace(/^#/, '');
+  function parseHash(hash) {
+    let h = String(hash === undefined ? location.hash : hash).replace(/^#/, '');
     try { h = decodeURIComponent(h); } catch (e) { /* keep the raw text */ }
-    if (h === '' || h === '/') return { mode: 'browse', focus: ROOT };
+    if (h === '' || h === '/') return { mode: 'explore', focus: ROOT };
     let m = /^\/node\/(.+)$/.exec(h);
     if (m) {
-      if (idx.nodes.has(m[1])) return { mode: 'browse', focus: m[1] };
-      return { mode: 'browse', focus: ROOT, message: 'There is no part with the id "' + m[1] + '" in the design model. Showing the top of the page.' };
+      if (idx.nodes.has(m[1])) return { mode: 'explore', focus: m[1] };
+      return { mode: 'explore', focus: ROOT, message: 'There is no part with the id "' + m[1] + '" in the design model. Showing the overview.' };
     }
     m = /^\/tour(?:\/(\d+))?\/?$/.exec(h);
     if (m) {
       const k = m[1] === undefined ? 1 : parseInt(m[1], 10);
-      if (k >= 1 && k <= idx.steps.length) return { mode: 'tour', step: k, focus: idx.steps[k - 1].node };
-      return { mode: 'browse', focus: ROOT, message: 'There is no tour step ' + m[1] + '. Showing the top of the page.' };
+      if (k >= 1 && k <= idx.steps.length) return { mode: 'tour', step: k, focus: ROOT };
+      return { mode: 'explore', focus: ROOT, message: 'There is no tour step ' + m[1] + '. Showing the overview.' };
     }
+    if (/^\/compare\/?$/.test(h)) return { mode: 'compare', focus: ROOT };
     m = /^\/read(?:\/(.+?))?\/?$/.exec(h);
     if (m) {
       const target = m[1] && idx.nodes.has(m[1]) ? m[1] : null;
       return { mode: 'read', focus: ROOT, target: target };
     }
-    return { mode: 'browse', focus: ROOT, message: 'Unknown link "#' + h + '". Showing the top of the page.' };
+    return { mode: 'explore', focus: ROOT, message: 'Unknown link "#' + h + '". Showing the overview.' };
   }
 
-  function scrollToSection(id) {
-    const sec = $(id);
-    if (sec) sec.scrollIntoView({ block: 'start', behavior: 'auto' });
-  }
-
-  function route(scroll) {
+  // Show the state of the address. `land` is true for a deep link (the page
+  // was opened at this address, or the address changed from outside): the
+  // page then scrolls to what the link names. In-page clicks never call
+  // route(); they change the state directly and replace the address.
+  function route(land) {
     if (!model) return;
     const prev = state;
     state = parseHash();
     showMessage(state.message || '');
     const reading = state.mode === 'read';
     $('read-page').hidden = !reading;
-    $('studies').hidden = reading;
+    $('studies').hidden = reading || !lay.map;
     $('read-toggle').textContent = reading ? 'Back to the map' : 'Read as one page';
     $('read-toggle').setAttribute('aria-pressed', reading ? 'true' : 'false');
-    document.body.dataset.mode = state.mode;
     if (reading) {
+      document.body.dataset.mode = 'read';
       renderReadPage(state);
       return;
     }
-    updateCuesSoon();
+    if (!lay.map) { document.body.dataset.mode = 'explore'; return; }
+    // a deep link scrolls to what it names, so no filler is kept for it
+    if (land) clearFills();
     if (state.mode === 'tour') {
-      if (d1 && !d1.current()) openNode(defaultPart());
-      tourGo(state.step - 1, false);
-      // a link to a tour step brings the tour into view and puts the focus
-      // in it, so that the Left and Right keys move the tour at once
-      if (scroll) { scrollToSection('tour'); $('tour').focus({ preventScroll: true }); }
-    } else if (state.focus !== ROOT) {
-      openNode(state.focus);
-      // a link to a node (a deep link, a cross-reference, "Show on the map")
-      // brings the node's detail view and the panel under it into view; a
-      // click on the map itself does not scroll (it changes no hash)
-      if (scroll) scrollToSection('detail-view');
+      ui.view = 'map';
+      tourIndex = state.step - 1;
+      setMode('tour');
+      // a link to a tour step brings the map section to the top of the
+      // window and puts the focus in it, so that Left and Right move the tour
+      if (land) { scrollToTop($('map-section')); focusQuietly($('map-section')); }
+    } else if (state.mode === 'compare') {
+      setMode('compare');
+      if (land) scrollToTop($('map-section'));
     } else {
-      openNode(defaultPart());
-      if (scroll && prev && prev.mode === 'read') window.scrollTo(0, 0);
+      setMode('explore');
+      if (state.focus !== ROOT) {
+        openNode(state.focus);
+        // a link to a node brings its card to the top of the window
+        if (land) { scrollToTop($('part-card')); focusQuietly($('card-title')); }
+      } else {
+        showOverview();
+        if (land && prev && prev.mode === 'read') window.scrollTo(0, 0);
+      }
     }
   }
 
@@ -392,12 +428,6 @@
     box.textContent = text;
     box.hidden = !text;
     box.classList.toggle('error', !!isError);
-  }
-
-  function defaultPart() {
-    const d = lay.map && lay.map.default_detail;
-    if (d && idx.nodes.has(d)) return topOf(d);
-    return childrenOf(ROOT)[0];
   }
 
   // ------------------------------------------------------------------
@@ -1365,12 +1395,9 @@
       const hotSet = new Set((Array.isArray(hot) ? hot : (hot ? [hot] : [])).filter((id) => idx.nodes.has(id)));
       host.textContent = '';
       const hint = el('span', { class: 'scroll-hint', hidden: true, text: 'Scroll sideways to see the whole detail \u2192' });
-      const head = el('div', { class: 'dhead' }, [
-        el('span', { class: 'eyebrow', text: 'Detail' }),
-        el('h3', { text: titleOf(part), tabindex: '-1' }),
-        hint
-      ]);
-      host.append(head);
+      // (the card's head names the part; the detail's own head only says
+      // when the drawing scrolls sideways)
+      host.append(el('div', { class: 'dhead' }, [hint]));
       const L = layoutDetail(part);
       const sheet = el('div', { class: 'sheet' });
       host.append(sheet);
@@ -1557,20 +1584,36 @@
     panel.textContent = '';
     const n = idx.nodes.get(id);
     if (!n) return;
-    panel.append(el('h2', { id: 'detail-title', class: 'detail-title', dataset: { nodeId: id }, tabindex: '-1', text: n.title }));
+    const title = el('h2', { id: 'detail-title', class: 'detail-title', dataset: { nodeId: id }, tabindex: '-1', text: n.title });
+    // the card's head already names a top-level part; a node inside it shows
+    // its own title
+    if (id === topOf(id)) title.classList.add('vh');
+    panel.append(title);
     const path = el('nav', { class: 'detail-path', 'aria-label': 'Location in the model' });
     [ROOT].concat(pathTo(id)).forEach((p, i, all) => {
-      if (i > 0) path.append(el('span', { class: 'crumb-sep', 'aria-hidden': 'true', text: ' \u203a ' }));
+      if (i > 0) path.append(el('span', { class: 'crumb-sep', 'aria-hidden': 'true', text: ' › ' }));
       if (i === all.length - 1) path.append(el('span', { text: titleOf(p) }));
-      else path.append(link(nodeHash(p), p === ROOT ? 'Top of the page' : titleOf(p)));
+      else if (p === ROOT) path.append(link('#/', 'Overview', 'crumb-overview'));
+      else path.append(nodeLink(p, titleOf(p)));
     });
     panel.append(path);
-    appendNodeBody(panel, n, 'h3', 'h4', true);
+    appendNodeBody(panel, n, 'h3', 'h4', { flows: true, fold: true });
+  }
+
+  // A folded section (closed until the reader opens it): its line names it
+  // and, for a list, says how many items it holds.
+  function foldBox(kind, h3, title, count) {
+    const summary = el('summary', {}, [el(h3, { text: title })]);
+    if (count) summary.append(el('span', { class: 'fold-count', 'aria-label': count + (count === 1 ? ' item' : ' items'), text: String(count) }));
+    return el('details', { class: 'fold', 'data-fold': kind }, [summary]);
   }
 
   // The body of a node: outside note, summary, prose, developer notes,
-  // decisions, code references, sources and (optionally) flows.
-  function appendNodeBody(box, n, h3, h4, withFlows, proseId) {
+  // decisions, code references, sources and (o.flows) flows. With o.fold
+  // (the card) each of the last five is folded under a line of its own;
+  // without it (the one-page view) each has a heading.
+  function appendNodeBody(box, n, h3, h4, o) {
+    o = o || {};
     if (n.outside_repo === true) {
       box.append(el('p', { class: 'outside-note' }, [
         el('span', { class: 'badge-outside', text: 'Outside this repo' }),
@@ -1578,16 +1621,21 @@
       ]));
     }
     box.append(inlineProse('p', n.summary, 'summary'));
-    box.append(prose(n.prose, proseId === null ? {} : { id: proseId || 'detail-prose' }));
+    box.append(prose(n.prose, o.proseId === null ? {} : { id: o.proseId || 'detail-prose' }));
+    // a section: folded in the card, under a heading elsewhere
+    const sectionBox = (kind, title, count) => {
+      if (o.fold) { const d = foldBox(kind, h3, title, count); box.append(d); return d; }
+      box.append(el(h3, { text: title }));
+      return box;
+    };
 
     if (typeof n.dev_notes === 'string' && n.dev_notes.trim()) {
-      box.append(el(h3, { text: 'For developers' }));
-      box.append(prose(n.dev_notes, { class: 'prose dev-notes' }));
+      sectionBox('dev', 'For developers').append(prose(n.dev_notes, { class: 'prose dev-notes' }));
     }
 
     const decisions = Array.isArray(n.decisions) ? n.decisions : [];
     if (decisions.length) {
-      box.append(el(h3, { text: 'Design decisions' }));
+      const sec = sectionBox('decisions', 'Design decisions', decisions.length);
       for (const d of decisions) {
         const art = el('article', { class: 'decision-card' });
         art.append(el(h4, { text: d.title }));
@@ -1597,36 +1645,32 @@
         art.append(prose(d.rationale));
         const refs = referenceList(d.code_refs, d.sources);
         if (refs) art.append(refs);
-        box.append(art);
+        sec.append(art);
       }
     }
 
     const codeRefs = Array.isArray(n.code_refs) ? n.code_refs : [];
     if (codeRefs.length) {
-      box.append(el(h3, { text: 'Code references' }));
-      box.append(el('ul', { class: 'ref-list' }, codeRefs.map(codeRefItem)));
+      sectionBox('code', 'Code references', codeRefs.length).append(el('ul', { class: 'ref-list' }, codeRefs.map(codeRefItem)));
     }
     const sourceIds = Array.isArray(n.sources) ? n.sources : [];
     if (sourceIds.length) {
-      box.append(el(h3, { text: 'Sources' }));
-      box.append(el('ul', { class: 'ref-list' }, sourceIds.map(sourceItem)));
+      sectionBox('sources', 'Sources', sourceIds.length).append(el('ul', { class: 'ref-list' }, sourceIds.map(sourceItem)));
     }
 
-    if (!withFlows) return;
-    // The flows are folded (closed by default) so that the panel under the
-    // map stays short; the reader opens them on demand.
+    if (!o.flows) return;
+    // the flows: what crosses the border of the node (and its inside)
     const flows = flowsOf(n.id);
     if (flows.incoming.length || flows.outgoing.length) {
-      const fold = el('details', { class: 'flows' }, [el('summary', {}, [el(h3, { text: 'Flows' })])]);
+      const sec = sectionBox('flows', 'Flows', flows.incoming.length + flows.outgoing.length);
       if (flows.incoming.length) {
-        fold.append(el(h4, { class: 'flow-heading', text: 'Comes from' }));
-        fold.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', n.id))));
+        sec.append(el(h4, { class: 'flow-heading', text: 'Comes from' }));
+        sec.append(el('ul', { class: 'flow-list' }, flows.incoming.map((e) => flowItem(e, 'in', n.id))));
       }
       if (flows.outgoing.length) {
-        fold.append(el(h4, { class: 'flow-heading', text: 'Goes to' }));
-        fold.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', n.id))));
+        sec.append(el(h4, { class: 'flow-heading', text: 'Goes to' }));
+        sec.append(el('ul', { class: 'flow-list' }, flows.outgoing.map((e) => flowItem(e, 'out', n.id))));
       }
-      box.append(fold);
     }
   }
 
@@ -1690,66 +1734,90 @@
     li.append(el('div', { class: 'flow-head' }, [
       el('span', { class: 'badge badge-kind kind-' + e.kind, text: kindName(e.kind) }),
       el('span', { class: 'flow-dir', text: direction === 'in' ? ' \u2190 from ' : ' \u2192 to ' }),
-      link(nodeHash(otherId), titleOf(otherId), 'xref flow-end'),
+      nodeLink(otherId, titleOf(otherId), 'xref flow-end'),
       el('span', { class: 'flow-where', text: whereText(otherId) })
     ]));
     if (insideId !== focusId) {
       li.append(el('div', { class: 'flow-inside' }, [
         el('span', { class: 'flow-key', text: direction === 'in' ? 'Arrives at: ' : 'Leaves from: ' }),
-        link(nodeHash(insideId), titleOf(insideId), 'xref')
+        nodeLink(insideId, titleOf(insideId), 'xref')
       ]));
     }
     flowExtras(li, e);
     return li;
   }
-
   // ------------------------------------------------------------------
-  // Study 1: map, detail under it, panel
+  // Keeping the page in place
   // ------------------------------------------------------------------
-  let m1 = null;
-  let d1 = null;
-  let focusAfter = null;   // {sel} to focus after a re-render (keyboard users)
-
-  function openNode(id, o) {
-    o = o || {};
-    if (!idx.nodes.has(id)) return;
-    const part = topOf(id);
-    if (m1) m1.select(part, 'DETAIL BELOW');
-    if (d1) d1.show(part, o.hot || (id === part ? null : id));
-    renderPanel(id);
-    if (focusAfter) {
-      const target = document.querySelector(focusAfter);
-      focusAfter = null;
-      if (target) target.focus({ preventScroll: true });
+  // Content that changes in a card must not move the page. The browser
+  // clamps the scroll position when the page gets shorter than the part a
+  // reader is looking at; and a card whose head is stuck at the top of the
+  // window should still reach the window's bottom after it changes, so that
+  // its head stays in view. A filler at the end of the card's body keeps
+  // those heights until the card changes again (or the mode changes).
+  function keepPlace(card, change) {
+    const fill = card.querySelector('.card-fill');
+    if (!fill || card.hidden) {
+      if (fill) fill.style.height = '';
+      change();
+      return;
     }
+    const y = window.scrollY;
+    const winBottom = y + window.innerHeight;
+    // while the content changes, the page may only get longer
+    fill.style.height = Math.ceil(fill.offsetHeight + card.offsetHeight) + 'px';
+    change();
+    const fillH = fill.offsetHeight;
+    const natural = card.offsetHeight - fillH;
+    const top = card.getBoundingClientRect().top + y;
+    const pageH = document.documentElement.scrollHeight - fillH;
+    let need = winBottom - pageH;
+    // (a card with a head that sticks: #part-card)
+    if (top < y - 1 && card.querySelector(':scope > .card-head')) need = Math.max(need, winBottom - (top + natural));
+    fill.style.height = need > 0 ? Math.ceil(need) + 'px' : '';
+  }
+  function clearFills() {
+    document.querySelectorAll('.card-fill').forEach((f) => { f.style.height = ''; });
   }
 
-  function buildStudy1() {
-    const host = $('map');
-    m1 = buildMap(host, {
+  // ------------------------------------------------------------------
+  // One map, three modes
+  // ------------------------------------------------------------------
+  const ui = { mode: 'explore', view: 'map', kind: 'all' };
+  let m1 = null;          // the map (one full-size drawing, in every mode)
+  let d1 = null;          // the part's detail, in the card
+  let cur = ROOT;         // what the card shows: ROOT (the overview) or a node
+  let focusAfter = null;  // a selector to focus after a re-render (keyboard users)
+
+  function cssEsc(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, '\\$&'); }
+
+  function buildExplore() {
+    m1 = buildMap($('map'), {
       pick: true,
-      label: 'Map of the parts of the system and the relations between them. Each part is a button that opens its detail below the map.',
+      tour: true,
+      label: 'Map of the parts of the system and the relations between them. Each part is a button that opens it in the card below the map.',
       onPick: (part) => {
+        if (ui.mode !== 'explore') setMode('explore');
         openNode(part);
-        setHash(nodeHash(part), 'browse');
+        setHash(nodeHash(part));
       }
     });
     d1 = buildDetail($('detail-view'), {
       onNode: (id) => {
         focusAfter = '#detail-view [data-node="' + cssEsc(id) + '"]';
         openNode(id);
-        setHash(nodeHash(id), 'browse');
+        setHash(nodeHash(id));
       },
       onStub: (otherPart, otherNodes, fromPart) => {
+        // the new detail's tag that leads back has the focus
         focusAfter = '#detail-view g.stub[data-other="' + cssEsc(fromPart) + '"]';
         openNode(otherPart, { hot: otherNodes });
-        setHash(nodeHash(otherPart), 'browse');
-        if (!document.querySelector(':focus')) { const h = document.querySelector('#detail-view .dhead h3'); if (h) h.focus({ preventScroll: true }); }
+        setHash(nodeHash(otherPart));
       }
     });
-    // chips: emphasize one relation kind
+    // Emphasize: all, or one kind of relation
     const chips = $('chips');
-    const kinds = [{ id: 'all', name: 'All' }].concat((lay.map.kinds || []).filter((k) => k && k.id));
+    const kinds = [{ id: 'all', name: 'All' }].concat((Array.isArray(lay.map.kinds) ? lay.map.kinds : []).filter((k) => k && k.id));
     kinds.forEach((k) => {
       const b = el('button', { type: 'button', class: 'chip', 'data-kind': k.id, 'aria-pressed': k.id === 'all' ? 'true' : 'false' });
       if (k.id !== 'all') {
@@ -1758,43 +1826,305 @@
         b.append(s);
       }
       b.append(k.name);
-      b.addEventListener('click', () => {
-        chips.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', c === b ? 'true' : 'false'));
-        m1.setFocus(k.id);
-      });
+      b.addEventListener('click', () => setKind(k.id));
       chips.append(b);
     });
   }
-  function cssEsc(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, '\\$&'); }
+
+  // The caption of a kind: the caption of its small multiple (map.multiples).
+  function kindCaption(k) {
+    if (!k || k === 'all') return null;
+    const mm = (Array.isArray(lay.map.multiples) ? lay.map.multiples : []).find((x) => x && x.kind === k);
+    return mm && typeof mm.caption === 'string' && mm.caption.trim() ? mm.caption : null;
+  }
+
+  function setKind(k) {
+    ui.kind = k;
+    $('chips').querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', c.dataset.kind === k ? 'true' : 'false'));
+    const cap = $('kind-caption');
+    cap.textContent = '';
+    const text = kindCaption(k);
+    if (text) {
+      cap.dataset.kind = k;
+      cap.append(el('b', { text: kindName(k) + '.' }), ' ');
+      appendInline(cap, text);
+    } else {
+      cap.removeAttribute('data-kind');
+    }
+    cap.hidden = ui.mode !== 'explore' || !text;
+    if (m1 && ui.mode === 'explore') m1.setFocus(k);
+  }
+
+  function setMode(mode) {
+    ui.mode = mode;
+    document.body.dataset.mode = mode;
+    document.querySelectorAll('#modes .mode').forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'));
+    const explore = mode === 'explore';
+    const tour = mode === 'tour';
+    const compare = mode === 'compare';
+    const seqView = tour && ui.view === 'seq';
+    $('mode-note').hidden = explore;
+    $('note-tour').hidden = !tour;
+    $('note-compare').hidden = !compare;
+    $('chips').hidden = !explore;
+    $('tour-controls').hidden = !tour;
+    document.querySelectorAll('#tour-controls .view').forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === ui.view ? 'true' : 'false'));
+    // the stage: the map (Explore, the tour on the map), the sequence chart
+    // (the tour's other view) or the small multiples (Compare kinds)
+    $('map').hidden = compare || seqView;
+    $('bar-map').hidden = compare || seqView;
+    $('seq').hidden = !seqView;
+    $('bar-seq').hidden = !seqView;
+    $('seq-caption').hidden = !seqView;
+    $('mult').hidden = !compare;
+    $('kind-caption').hidden = !explore || !kindCaption(ui.kind);
+    $('map-caption').hidden = !explore || !$('map-caption').childNodes.length;
+    $('map-omitted').hidden = !explore || !$('map-omitted').childNodes.length;
+    $('tourbar').hidden = !tour;
+    $('part-card').hidden = !explore;
+    $('step-card').hidden = !tour;
+    clearFills();
+    if (m1) {
+      if (tour) {
+        m1.setFocus(null);
+        tourGo(tourIndex, false);
+      } else {
+        m1.setTour(null);
+        m1.setFocus(explore ? ui.kind : null);
+        m1.select(explore && cur !== ROOT ? topOf(cur) : null, 'DETAIL BELOW');
+      }
+    }
+    updateCuesSoon();
+  }
+
+  // A click on a mode button: the mode changes, the page stays.
+  function switchMode(mode) {
+    setMode(mode);
+    if (mode === 'tour') setHash('#/tour/' + (tourIndex + 1));
+    else if (mode === 'compare') setHash('#/compare');
+    else setHash(cur === ROOT ? '#/' : nodeHash(cur));
+  }
+
+  function buildModes() {
+    const host = $('modes');
+    host.textContent = '';
+    const T = idx.steps.length;
+    const tourTitle = model.tour && typeof model.tour.title === 'string' ? model.tour.title : '';
+    const defs = [
+      { mode: 'explore', name: 'Explore the parts', sub: 'Tap a part to open its detail' },
+      { mode: 'tour', name: 'Follow one event', sub: [tourTitle, T + (T === 1 ? ' step' : ' steps')].filter(Boolean).join(' \u00b7 ') },
+      { mode: 'compare', name: 'Compare kinds', sub: 'One small map per kind of relation, and one with all' }
+    ];
+    defs.forEach((d) => {
+      const b = el('button', { type: 'button', class: 'mode', 'data-mode': d.mode, 'aria-pressed': d.mode === ui.mode ? 'true' : 'false' }, [
+        el('span', { class: 'mode-name', text: d.name }),
+        el('span', { class: 'mode-sub', text: d.sub })
+      ]);
+      b.addEventListener('click', () => switchMode(d.mode));
+      host.append(b);
+    });
+    document.querySelectorAll('#tour-controls .view').forEach((b) => b.addEventListener('click', () => {
+      ui.view = b.dataset.view === 'seq' ? 'seq' : 'map';
+      setMode('tour');
+    }));
+  }
+
+  // The note above the stage in the tour and in Compare kinds: the section's
+  // eyebrow and title as one heading line, then its text (the tour's texts
+  // folded, so that the map and the step buttons stay in the first screen).
+  function buildModeNote() {
+    const note = $('mode-note');
+    note.textContent = '';
+    const head = (s) => {
+      const h = el('h2', { class: 'note-head' });
+      if (s.eyebrow) h.append(el('span', { class: 'eyebrow', text: s.eyebrow }));
+      if (s.title) h.append(el('span', { text: s.title }));
+      return h;
+    };
+    const st = section('tour');
+    const tourNote = el('div', { id: 'note-tour' }, [head(st)]);
+    const tourIntro = model.tour && typeof model.tour.intro === 'string' ? model.tour.intro : '';
+    if (st.intro || tourIntro) {
+      const about = el('details', { class: 'tour-about' }, [el('summary', { text: 'About this tour' })]);
+      if (st.intro) about.append(prose(st.intro));
+      if (tourIntro) about.append(prose(tourIntro, { class: 'prose tour-intro' }));
+      tourNote.append(about);
+    }
+    const sm = section('multiples');
+    const cmpNote = el('div', { id: 'note-compare' }, [head(sm)]);
+    if (sm.intro) cmpNote.append(prose(sm.intro));
+    cmpNote.append(el('p', { class: 'ui-note', text: 'Click or tap a copy to see the map in Explore the parts with that kind emphasized.' }));
+    note.append(tourNote, cmpNote);
+  }
 
   // ------------------------------------------------------------------
-  // Study 2: the tour
+  // The card under the map (Explore the parts): the overview, or one part
   // ------------------------------------------------------------------
-  let m2 = null;
+  let closeBtn = null;
+  const cardList = () => [ROOT].concat(childrenOf(ROOT));
+  const cardName = (p) => (p === ROOT ? 'Overview' : shortOf(p));
+  const cardTitle = (p) => (p === ROOT ? 'Overview' : titleOf(p));
+
+  function buildCard() {
+    // the overview: the model's question, its summary, how to read the map
+    const ov = $('overview');
+    ov.textContent = '';
+    if (model.question) ov.append(inlineProse('p', model.question, 'question'));
+    if (model.summary) ov.append(prose(model.summary, { class: 'prose overview-summary' }));
+    const sm = section('map');
+    if (sm.title || sm.intro) {
+      const h = el('h3');
+      if (sm.eyebrow) h.append(el('span', { class: 'eyebrow', text: sm.eyebrow }));
+      if (sm.title) h.append(el('span', { text: sm.title }));
+      ov.append(el('div', { class: 'read-map' }, [h, prose(sm.intro)]));
+    }
+    // the head: previous and next go around the overview and the parts in
+    // model order; Close (on a part only) returns to the overview
+    $('card-prev').addEventListener('click', () => stepCard(-1));
+    $('card-next').addEventListener('click', () => stepCard(1));
+    closeBtn = el('button', { id: 'card-close', class: 'btn btn-small btn-close', type: 'button', 'aria-label': 'Close this part and show the overview' }, ['Close \u2715']);
+    closeBtn.addEventListener('click', () => {
+      showOverview();
+      setHash('#/');
+      focusQuietly($('card-title'));
+    });
+  }
+
+  function stepCard(d) {
+    const list = cardList();
+    const at = list.indexOf(cur === ROOT ? ROOT : topOf(cur));
+    const next = list[(at + d + list.length) % list.length];
+    if (next === ROOT) { showOverview(); setHash('#/'); }
+    else { openNode(next); setHash(nodeHash(next)); }
+  }
+
+  function renderHead() {
+    const over = cur === ROOT;
+    const part = over ? ROOT : topOf(cur);
+    const id = over ? 'overview' : part;
+    $('part-card').dataset.card = id;
+    const t = $('card-title');
+    t.dataset.card = id;
+    t.textContent = cardTitle(part);
+    $('card-eyebrow').hidden = over;
+    $('card-hint').hidden = !over;
+    const out = $('card-out');
+    if (out) out.hidden = over || !isOut(part);
+    const list = cardList();
+    const i = list.indexOf(part);
+    const prev = list[(i - 1 + list.length) % list.length];
+    const next = list[(i + 1) % list.length];
+    $('card-prev').textContent = '\u2190 ' + cardName(prev);
+    $('card-prev').setAttribute('aria-label', 'Previous: ' + cardTitle(prev));
+    $('card-next').textContent = cardName(next) + ' \u2192';
+    $('card-next').setAttribute('aria-label', 'Next: ' + cardTitle(next));
+    if (over) closeBtn.remove();
+    else if (!closeBtn.isConnected) $('card-nav').append(closeBtn);
+    $('card-end').textContent = over ? 'End of the overview.' : 'End of ' + titleOf(part) + '.';
+  }
+
+  function restoreFocus() {
+    if (!focusAfter) return;
+    const target = document.querySelector(focusAfter);
+    focusAfter = null;
+    focusQuietly(target || $('card-title'));
+  }
+
+  // Open a node in the card: its top-level part's detail (the node
+  // highlighted) and the panel on the node.
+  function openNode(id, o) {
+    o = o || {};
+    if (!idx.nodes.has(id)) return;
+    const part = topOf(id);
+    cur = id;
+    keepPlace($('part-card'), () => {
+      $('overview').hidden = true;
+      $('detail-view').hidden = false;
+      $('detail').hidden = false;
+      if (d1) d1.show(part, o.hot || (id === part ? null : id));
+      renderPanel(id);
+      renderHead();
+    });
+    if (m1 && ui.mode === 'explore') m1.select(part, 'DETAIL BELOW');
+    restoreFocus();
+  }
+
+  // The card with no part open: the overview (on load and after Close).
+  function showOverview() {
+    cur = ROOT;
+    keepPlace($('part-card'), () => {
+      $('overview').hidden = false;
+      $('detail-view').hidden = true;
+      $('detail-view').textContent = '';
+      $('detail').hidden = true;
+      $('detail').textContent = '';
+      renderHead();
+    });
+    if (m1 && ui.mode === 'explore') m1.select(null);
+  }
+
+  // A link to a node inside the page: the node opens in the card. A deep
+  // link (a link in a card's text, flows or location line, marked
+  // [data-moves-page]) also brings the card's head back to the top of the
+  // window when it is above it; the links under the map never move the page.
+  function followNodeLink(id, mayMove) {
+    if (ui.mode !== 'explore') setMode('explore');
+    openNode(id);
+    setHash(nodeHash(id));
+    const card = $('part-card');
+    if (mayMove && card.getBoundingClientRect().top < 0) scrollToTop(card);
+    focusQuietly($('card-title'));
+  }
+
+  // ------------------------------------------------------------------
+  // Follow one event: the tour on the map, its card under it
+  // ------------------------------------------------------------------
   let d2 = null;
   let tourIndex = 0;
 
-  function shortPanel(host, id) {
-    let p = host.querySelector('.panel-short');
-    if (!p) { p = el('div', { class: 'panel panel-short' }); host.append(p); }
-    p.textContent = '';
+  // A node's title and summary, and a button that opens its full
+  // description in Explore the parts.
+  function nodeSummary(id) {
+    const frag = document.createDocumentFragment();
     const t = el('span', { class: 'pt', text: titleOf(id) });
     if (isOut(id)) t.append(el('span', { class: 'otxt', text: 'outside this repo' }));
-    p.append(t);
-    p.append(inlineProse('span', (idx.nodes.get(id) || {}).summary, 'ps'));
-    p.append(' ', link(nodeHash(id), 'Open in the map \u2191', 'ui'));
+    frag.append(t, inlineProse('p', (idx.nodes.get(id) || {}).summary, 'ps'));
+    const b = el('button', { type: 'button', class: 'open-part linkish ui', 'data-moves-page': '', 'aria-label': 'Read the full description of ' + titleOf(id) + ' in Explore the parts' }, ['Read the full description']);
+    b.addEventListener('click', () => openPart(id));
+    frag.append(b);
+    return frag;
+  }
+
+  function openPart(id) {
+    setMode('explore');
+    openNode(id);
+    setHash(nodeHash(id));
+    const card = $('part-card');
+    if (card.getBoundingClientRect().top < 0) scrollToTop(card);
+    focusQuietly($('card-title'));
+  }
+
+  // a box of the step's detail, or a tag's neighbour, described under it
+  function tourPick(id) {
+    keepPlace($('step-card'), () => {
+      const box = $('tour-pick');
+      box.textContent = '';
+      box.append(nodeSummary(id));
+      box.hidden = false;
+    });
   }
 
   function buildTour() {
-    m2 = buildMap($('tour-map'), { tour: true, label: 'The same map, used for the tour: dots show where the parts of one event are at the current step.' });
     d2 = buildDetail($('tour-detail'), {
-      onNode: (id) => shortPanel($('tour-detail'), id),
-      onStub: (otherPart, otherNodes) => {
-        d2.show(otherPart, otherNodes);
-        shortPanel($('tour-detail'), otherPart);
+      onNode: (id) => tourPick(id),
+      onStub: (otherPart, otherNodes, fromPart) => {
+        keepPlace($('step-card'), () => d2.show(otherPart, otherNodes));
+        tourPick(otherPart);
+        focusQuietly(document.querySelector('#tour-detail g.stub[data-other="' + cssEsc(fromPart) + '"]') || $('tour-step-title'));
       }
     });
     const pips = $('pips');
+    pips.textContent = '';
     idx.steps.forEach((s, i) => {
       const b = el('button', { type: 'button', class: 'pip', text: String(i + 1), 'aria-label': 'Step ' + (i + 1) + ': ' + s.title });
       b.addEventListener('click', () => tourGo(i, true));
@@ -1804,62 +2134,121 @@
     $('tour-next').addEventListener('click', () => tourGo(tourIndex + 1, true));
   }
 
+  function renderStep(s, k, T) {
+    const text = $('step-text');
+    text.textContent = '';
+    text.append(el('div', { class: 'eyebrow', text: 'Step ' + k + ' of ' + T + ' \u00b7 in ' + titleOf(topOf(s.node)) }));
+    text.append(el('h2', { id: 'tour-step-title', tabindex: '-1', dataset: { stepIndex: String(k) }, text: s.title }));
+    text.append(prose(s.prose, { id: 'tour-step-prose' }));
+    // the step's code references and sources, folded
+    const refs = $('step-refs');
+    refs.textContent = '';
+    const fold = (kind, title, items) => {
+      if (!items.length) return;
+      const d = foldBox(kind, 'h3', title, items.length);
+      d.append(el('ul', { class: 'ref-list' }, items));
+      refs.append(d);
+    };
+    fold('code', 'Code references', (Array.isArray(s.code_refs) ? s.code_refs : []).map(codeRefItem));
+    fold('sources', 'Sources', (Array.isArray(s.sources) ? s.sources : []).map(sourceItem));
+    // the component the step happens in: its own description follows the step
+    const nd = $('step-node');
+    nd.textContent = '';
+    nd.append(nodeSummary(s.node));
+    if (d2) d2.show(topOf(s.node), s.node);
+    $('tour-pick').hidden = true;
+    $('tour-pick').textContent = '';
+    $('step-end').textContent = 'End of step ' + k + ' of ' + T + '.';
+  }
+
   function tourGo(i, fromClick) {
     if (!idx.steps.length) return;
     tourIndex = Math.max(0, Math.min(idx.steps.length - 1, i));
     const k = tourIndex + 1;
     const s = idx.steps[tourIndex];
     const T = idx.steps.length;
-    $('pips').querySelectorAll('.pip').forEach((p, j) => { if (j === tourIndex) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current'); });
-    $('tour-prev').disabled = tourIndex === 0;
-    $('tour-next').disabled = tourIndex === T - 1;
-    const card = $('stepcard');
-    card.textContent = '';
-    card.append(el('div', { class: 'eyebrow', text: 'Step ' + k + ' of ' + T + ' \u00b7 in ' + titleOf(topOf(s.node)) }));
-    card.append(el('h3', { id: 'tour-step-title', dataset: { stepIndex: String(k) }, text: s.title }));
-    card.append(prose(s.prose, { id: 'tour-step-prose' }));
-    const refs = referenceList(s.code_refs, s.sources);
-    if (refs) card.append(refs);
-    if (model.tour && model.tour.intro) {
-      const about = el('details', { class: 'tour-about' }, [el('summary', { text: 'About this tour' })]);
-      about.append(prose(model.tour.intro, { class: 'prose tour-intro' }));
-      card.append(about);
+    const pips = Array.from($('pips').querySelectorAll('.pip'));
+    pips.forEach((p, j) => { if (j === tourIndex) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current'); });
+    // a Back or Next button that becomes disabled hands its focus to the pip
+    [['tour-prev', tourIndex === 0], ['tour-next', tourIndex === T - 1]].forEach(([bid, off]) => {
+      const b = $(bid);
+      if (off && document.activeElement === b) focusQuietly(pips[tourIndex]);
+      b.disabled = off;
+    });
+    keepPlace($('step-card'), () => renderStep(s, k, T));
+    if (m1 && ui.mode === 'tour') {
+      m1.setTour(lay.tourByStep.get(s.id) || null);
+      m1.select(topOf(s.node), 'THIS STEP');
     }
-    if (m2) {
-      m2.setTour(lay.tourByStep.get(s.id) || null);
-      m2.select(topOf(s.node), 'THIS STEP');
-    }
-    if (d2) {
-      d2.show(topOf(s.node), s.node);
-      shortPanel($('tour-detail'), s.node);
-    }
-    document.querySelectorAll('#sequence .row').forEach((r) => r.classList.toggle('cur', r.dataset.stepIndex === String(k)));
-    if (fromClick) setHash('#/tour/' + k, 'tour');
+    document.querySelectorAll('#seq .row').forEach((r) => r.classList.toggle('cur', r.dataset.stepIndex === String(k)));
+    $('seq-status').textContent = 'Step ' + k + ' of ' + T + ': ' + s.title;
+    if (fromClick) setHash('#/tour/' + k);
   }
 
   // ------------------------------------------------------------------
-  // Study 3: small multiples
+  // Compare kinds: one small copy of the map per kind of relation, and
+  // one with all of them; a copy opens Explore with its kind emphasized
   // ------------------------------------------------------------------
   function buildMultiples() {
     const host = $('mult');
     host.textContent = '';
     (Array.isArray(lay.map.multiples) ? lay.map.multiples : []).forEach((mm) => {
-      const name = mm.kind === 'all' ? (mm.title || 'All') : kindName(mm.kind);
-      const f = el('figure');
+      if (!mm || !mm.kind) return;
+      const isKind = lay.kindName.has(mm.kind);
+      const name = isKind ? kindName(mm.kind) : (mm.title || 'All');
+      const f = el('figure', {
+        'data-kind': mm.kind, tabindex: '0', role: 'button', 'data-moves-page': '',
+        'aria-label': name + ': show the map in Explore the parts with ' + (isKind ? 'this kind' : 'every kind') + ' emphasized'
+      });
       const sheet = el('div', { class: 'sheet' });
       f.append(sheet);
-      const label = mm.kind === 'all' ? 'Small copy of the map showing every kind of relation together.' : 'Small copy of the map showing only the ' + name + ' relation.';
+      const label = isKind ? 'Small copy of the map showing only the ' + name + ' relation.' : 'Small copy of the map showing every kind of relation together.';
       const api = buildMap(sheet, { mini: true, kind: mm.kind, label: label });
       api.setFocus(mm.kind);
       const cap = el('figcaption', {}, [el('b', { text: name + '.' }), ' ']);
       if (mm.caption) appendInline(cap, mm.caption);
       f.append(cap);
+      onActivate(f, () => {
+        setKind(isKind ? mm.kind : 'all');
+        setMode('explore');
+        setHash(cur === ROOT ? '#/' : nodeHash(cur));
+        const stage = $('stage');
+        if (stage.getBoundingClientRect().top < 0) scrollToTop(stage);
+        focusQuietly($('chips').querySelector('.chip[aria-pressed="true"]'));
+      });
       host.append(f);
     });
   }
 
   // ------------------------------------------------------------------
-  // Study 4: the tour as one sequence chart
+  // Texts around the figures (from map.sections)
+  // ------------------------------------------------------------------
+  function renderCaptions() {
+    const mc = $('map-caption');
+    mc.textContent = '';
+    if (section('map').caption) appendInline(mc, section('map').caption);
+    // the sequence chart: its heading line, its intro and its caption
+    const sq = section('sequence');
+    const sc = $('seq-caption');
+    sc.textContent = '';
+    const head = [sq.eyebrow, sq.title].filter(Boolean).join(' \u00b7 ');
+    if (head) sc.append(el('b', { text: head + '.' }), ' ');
+    if (sq.intro) { appendInline(sc, sq.intro.replace(/\s*\n\s*/g, ' ')); sc.append(' '); }
+    if (sq.caption) appendInline(sc, sq.caption);
+    // the matrix card
+    const sx = section('matrix');
+    $('matrix-eyebrow').textContent = sx.eyebrow || '';
+    $('matrix-eyebrow').hidden = !sx.eyebrow;
+    $('matrix-title').textContent = sx.title || '';
+    const intro = $('matrix-intro');
+    intro.textContent = '';
+    if (sx.intro) intro.append(prose(sx.intro));
+    $('matrix-end').textContent = 'End of the ' + (sx.eyebrow ? sx.eyebrow.toLowerCase() : 'matrix') + '.';
+  }
+
+  // ------------------------------------------------------------------
+  // The sequence chart (the other view of Follow one event): one row per
+  // step; a row opens its step
   // ------------------------------------------------------------------
   function buildSequence() {
     const host = $('seq');
@@ -1919,16 +2308,13 @@
         });
         [m.from, m.to].filter((n) => multi.has(n)).forEach((n) => [-6, 0, 6].forEach((o) => S('circle', { cx: X.get(n) + o, cy: y, r: 2.6, class: 'dot ' + kind }, g)));
       }
-      onActivate(g, () => {
-        tourGo(k, true);
-        $('tour').scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
-        $('tour').focus({ preventScroll: true });
-      });
+      // a row opens its step in place: the card under the chart and the
+      // status line change, the page does not move
+      onActivate(g, () => tourGo(k, true));
     });
   }
-
   // ------------------------------------------------------------------
-  // Study 5: the N² matrix
+  // The N² matrix (the reference card after the map section)
   // ------------------------------------------------------------------
   function buildMatrix() {
     const host = $('nsq');
@@ -1980,7 +2366,6 @@
       key.hidden = false;
     }
   }
-
   // ------------------------------------------------------------------
   // Figure frames: the scroll cue and the Full size buttons
   // ------------------------------------------------------------------
@@ -2031,9 +2416,10 @@
         b.setAttribute('aria-pressed', full ? 'true' : 'false');
       });
     });
-    document.querySelectorAll('.figbar').forEach((bar) => {
-      const box = bar.nextElementSibling;
-      if (box) scrollCue(box, bar.querySelector('.scroll-hint'), { noLeftFade: box.classList.contains('tbl') });
+    // each frame's bar (under the map and the sequence chart, above the
+    // matrix) holds the hint that the frame scrolls sideways
+    [['map', 'bar-map'], ['seq', 'bar-seq'], ['nsq', 'bar-nsq']].forEach(([box, bar]) => {
+      if ($(box) && $(bar)) scrollCue($(box), $(bar).querySelector('.scroll-hint'), { noLeftFade: box === 'nsq' });
     });
     window.addEventListener('resize', updateCuesSoon);
   }
@@ -2054,36 +2440,25 @@
       const a = topOf(e.from);
       const b = topOf(e.to);
       const li = el('li', { dataset: { edgeId: e.id }, 'data-kind': e.kind });
+      // (not deep links: the part opens in the card right under this list,
+      // and the page stays where it is)
       li.append(el('span', { class: 'om-pair' }, [link(nodeHash(a), shortOf(a)), ' \u2192 ', link(nodeHash(b), shortOf(b))]), ': ', e.label, ' \u2014 ');
       if (typeof o.reason === 'string') appendInline(li, o.reason);
       ul.append(li);
     });
     host.append(ul);
   }
-
-  // ------------------------------------------------------------------
-  // Section heads (texts from map.sections)
-  // ------------------------------------------------------------------
-  function renderSectionHeads() {
-    document.querySelectorAll('.sec-head[data-section]').forEach((h) => {
-      const key = h.dataset.section;
-      const s = section(key);
-      const sec = h.closest('section');
-      h.textContent = '';
-      if (s.eyebrow) h.append(el('div', { class: 'eyebrow', text: s.eyebrow }));
-      h.append(el('h2', { id: sec.id + '-title', text: s.title || '' }));
-      if (s.intro) h.append(prose(s.intro));
-    });
-    document.querySelectorAll('.sec-caption[data-section]').forEach((c) => {
-      const s = section(c.dataset.section);
-      c.textContent = '';
-      if (s.caption) appendInline(c, s.caption);
-    });
-  }
-
   // ------------------------------------------------------------------
   // The one-page view
   // ------------------------------------------------------------------
+  // A link from the one-page view back to the map: a deep link (the page
+  // moves to what it names).
+  function mapLink(hash, text, cls) {
+    const a = link(hash, text, cls);
+    a.setAttribute('data-moves-page', '');
+    return a;
+  }
+
   function renderReadPage(st) {
     const page = $('read-page');
     page.textContent = '';
@@ -2107,9 +2482,9 @@
         const where = pathTo(id).slice(0, -1);
         sec.append(el('p', { class: 'read-path' }, [
           where.length ? 'Part of ' + where.map(titleOf).join(' \u203a ') + '. ' : '',
-          link(nodeHash(id), 'Show on the map', 'read-map-link')
+          mapLink(nodeHash(id), 'Show on the map', 'read-map-link')
         ]));
-        appendNodeBody(sec, n, 'h' + Math.min(6, depth + 2), 'h' + Math.min(6, depth + 3), false, null);
+        appendNodeBody(sec, n, 'h' + Math.min(6, depth + 2), 'h' + Math.min(6, depth + 3), { proseId: null });
         const out = idx.edges.filter((e) => e.from === id);
         if (out.length) {
           sec.append(el('h' + Math.min(6, depth + 2), { text: 'Flows out of this part' }));
@@ -2138,7 +2513,7 @@
         idx.steps.forEach((s, i) => {
           const li = el('li', { class: 'read-step', dataset: { stepIndex: String(i + 1) } });
           li.append(el('h3', { text: s.title }));
-          li.append(el('p', { class: 'read-path' }, ['Part: ', link(readHash(s.node), titleOf(s.node)), ' \u00b7 ', link('#/tour/' + (i + 1), 'Show this step on the map')]));
+          li.append(el('p', { class: 'read-path' }, ['Part: ', link(readHash(s.node), titleOf(s.node)), ' \u00b7 ', mapLink('#/tour/' + (i + 1), 'Show this step on the map')]));
           li.append(prose(s.prose));
           const refs = referenceList(s.code_refs, s.sources);
           if (refs) li.append(refs);
@@ -2155,18 +2530,12 @@
     if (target) target.scrollIntoView({ block: 'start' });
     else window.scrollTo(0, 0);
   }
-
   // ------------------------------------------------------------------
   // Header, help and events
   // ------------------------------------------------------------------
   function renderHeader() {
     $('model-title').textContent = model.title;
     document.title = model.title;
-    const lede = $('model-lede');
-    lede.textContent = '';
-    if (model.question) lede.append(inlineProse('p', model.question, 'question'));
-    if (model.summary) lede.append(prose(model.summary));
-    lede.hidden = !lede.childNodes.length;
   }
 
   function toggleHelp(show) {
@@ -2174,31 +2543,64 @@
     const open = show === undefined ? help.hidden : show;
     help.hidden = !open;
     $('help-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open) $('help-title').focus({ preventScroll: false });
+    if (open) focusQuietly($('help-title'));
   }
 
   function bindEvents() {
     $('read-toggle').addEventListener('click', () => go(state && state.mode === 'read' ? '#/' : '#/read'));
     $('help-toggle').addEventListener('click', () => toggleHelp());
-    $('help-close').addEventListener('click', () => { toggleHelp(false); $('help-toggle').focus(); });
+    $('help-close').addEventListener('click', () => { toggleHelp(false); focusQuietly($('help-toggle')); });
     document.addEventListener('keydown', (ev) => {
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       const t = ev.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); $('help-toggle').focus(); }
+      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); focusQuietly($('help-toggle')); }
     });
-    // Left and Right move the tour only while the focus is in the tour
-    // section (a click anywhere in it puts the focus there: it has
-    // tabindex="-1"). Elsewhere the keys keep their own meaning (sideways
-    // scrolling), and so do they on a box, group or tag of the tour's detail
-    // and on a figure frame that scrolls sideways.
-    $('tour').addEventListener('keydown', (ev) => {
+    // Links inside the map section and the matrix card: "Back to the map"
+    // scrolls to the map; a link to a node opens it in the card (see
+    // followNodeLink); the link to the overview in a part's location line
+    // closes the part. None of them adds a history entry.
+    $('studies').addEventListener('click', (ev) => {
+      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      const a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+      if (!a) return;
+      if (a.classList.contains('back-to-map')) {
+        ev.preventDefault();
+        scrollToTop($('map-section'), true);
+        focusQuietly($('map-section'));
+        return;
+      }
+      const href = a.getAttribute('href');
+      if (!/^#\//.test(href)) return;
+      const target = parseHash(href);
+      if (target.mode === 'explore' && !target.message) {
+        ev.preventDefault();
+        if (target.focus !== ROOT) followNodeLink(target.focus, a.hasAttribute('data-moves-page'));
+        else {
+          if (ui.mode !== 'explore') setMode('explore');
+          showOverview();
+          setHash('#/');
+          focusQuietly($('card-title'));
+        }
+      }
+    });
+    // Left and Right move the tour only in Follow one event, and only while
+    // the focus is in the map section (a click anywhere in it puts the focus
+    // there: it has tabindex="-1"). Elsewhere the keys keep their own
+    // meaning, and so they do in a frame that scrolls sideways (the map or
+    // the chart at full size, or on a narrow screen).
+    let pointerFrame = null;
+    $('map-section').addEventListener('pointerdown', (ev) => {
+      pointerFrame = ev.target && ev.target.closest ? ev.target.closest('.sheet') : null;
+    });
+    $('map-section').addEventListener('keydown', (ev) => {
       if (ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
       if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
-      if (!state || state.mode === 'read') return;
+      if (!state || state.mode === 'read' || ui.mode !== 'tour') return;
       const t = ev.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-      if (t && t.closest && t.closest('.box, .stub, .dgroup, [data-scrolls="true"]')) return;
+      if (t && t.closest && t.closest('[data-scrolls="true"]')) return;
+      if (t === $('map-section') && pointerFrame && pointerFrame.getAttribute('data-scrolls') === 'true') return;
       ev.preventDefault();
       tourGo(tourIndex + (ev.key === 'ArrowRight' ? 1 : -1), true);
     });
@@ -2213,7 +2615,6 @@
       await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f).catch(() => null))).then(() => document.fonts.ready), timeout]);
     } catch (e) { /* draw with the fallback fonts */ }
   }
-
   async function start() {
     bindEvents();
     try {
@@ -2232,20 +2633,26 @@
     renderHeader();
     await fontsReady();
     if (lay.map) {
-      renderSectionHeads();
-      buildStudy1();
+      buildExplore();
+      buildCard();
+      buildModes();
+      buildModeNote();
       buildTour();
       buildMultiples();
       buildSequence();
       buildMatrix();
+      renderCaptions();
       renderOmitted();
       bindFrames();
+      setKind('all');
     } else {
+      $('studies').hidden = true;
       showMessage('The design model has no map layout ("map" block); only the one-page view is available.', true);
     }
     const initial = parseHash();
     if (initial.mode !== 'tour') tourGo(0, false);
-    route(initial.mode !== 'browse' || initial.focus !== ROOT);
+    // a page opened at a deep link lands on what it names; #/ stays at the top
+    route(initial.mode !== 'explore' || initial.focus !== ROOT);
     document.body.dataset.ready = 'true';
   }
 
