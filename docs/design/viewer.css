@@ -275,7 +275,7 @@ svg.map .t-lab { font-size: 12.5px; }
    same gap above the content. Its note stays under the head while a reader
    scrolls back up through the blank. */
 .card-spacer { box-sizing: content-box; margin-top: -12px; padding-bottom: 12px; }
-.spacer-note { position: sticky; top: 8px; margin: 0; padding: 6px 0; font: 14px/1.4 var(--f-ui); font-stretch: 92%; color: var(--ink3); text-align: center; }
+.spacer-note { position: sticky; top: 8px; margin: 0; padding: 6px 0; font: 14px/1.4 var(--f-ui); font-stretch: 92%; color: var(--ink2); text-align: center; }
 .spacer-note a { font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; min-height: 32px; }
 /* the step card's end: the previous and the next step */
 .foot-nav { display: inline-flex; flex-wrap: wrap; gap: 6px; }

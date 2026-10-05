@@ -806,11 +806,13 @@ map section to the top (see below).
   only while a part is open, returns the card to the overview. When the card
   changes while you are further down in it (its head stuck at the top of the
   window), the new card starts right under the head and the page does not
-  move; the space above it is left blank, with a short note and a "Back to
-  the map" link that stay under the head while you scroll back up through
-  the blank. The blank goes once the card's top is back in view, and when
-  the window is resized or turned the new content stays right under the
-  head. Design
+  move; the space above it is left blank. A blank tall enough to hold a
+  short note shows one, saying why the space is blank, with a "Back to the
+  map" link; the note stays under the head while you scroll back up through
+  the blank. A shorter blank (the card's top was only just above the
+  window) has no note and no link. The blank goes once the card's top is
+  back in view, and when the window is resized or turned the new content
+  stays right under the head. Design
   decisions, code references, sources and flows are folded: open one with
   its heading. A card ends with "End of ..." and a "Back to the map" link.
 - A link to a node (`#/node/<id>`) opens the card on that node's part, with
@@ -1061,13 +1063,16 @@ A failing check also prints `PROBLEM: <check>: <detail>`, and every
 `PROBLEM:` line fails the run, also when all the lines above pass. `NOTE:`
 lines are informational. A check that finds nothing to test fails.
 
-Where a line says that something is shown (displayed), the test means what a
-reader sees: the element has a size, is not hidden or transparent, is not
-cut away by a box around it that clips its content (for example a wrapper
-with `max-height: 0` and `overflow: hidden`), and a point of it is on top
-(nothing covers all of it). Every click of the test is a real mouse click
-on a point of the control that receives it; a control that cannot be
-clicked that way fails the run.
+Where a line says that something is shown (displayed), the test checks that
+the element has a size, is not hidden or transparent, is not cut away by a
+box around it that clips its content (for example a wrapper with
+`max-height: 0` and `overflow: hidden`), and passes a hit test: at some
+point of its visible part in the window, the browser's `elementFromPoint`
+gives the element or something inside it. A layer on top that lets clicks
+through (`pointer-events: none`) is not seen by that hit test, so an element
+under such a layer still counts as shown. Every click of the test is a real
+mouse click on a point of the control that receives it; a control that
+cannot be clicked that way fails the run.
 
 `--layout` loads the page at several window sizes and prints
 `layout_identical=true parts=P` (the map is the same at 744 and 1440 pixels
