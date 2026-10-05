@@ -2031,6 +2031,7 @@
     $('tourbar').hidden = !tour;
     $('part-card').hidden = !explore;
     $('step-card').hidden = !tour;
+    setBackLabels();
     if (m1) {
       if (tour) {
         m1.setFocus(null);
@@ -2046,6 +2047,20 @@
     if (explore && was !== 'explore') turnCard($('part-card'));
     setFloor(y);
     updateCuesSoon();
+  }
+
+  // The "Back to the map" links name what they go back to: the map, the
+  // sequence chart (the tour's other view) or the small maps (Compare
+  // kinds). A shown blank whose note's link changed fits its note again.
+  function setBackLabels() {
+    const text = ui.mode === 'compare' ? '\u2191 Back to the small maps'
+      : ui.mode === 'tour' && ui.view === 'seq' ? '\u2191 Back to the sequence chart' : '\u2191 Back to the map';
+    document.querySelectorAll('#studies a.back-to-map').forEach((a) => {
+      if (a.textContent === text) return;
+      a.textContent = text;
+      const sp = a.closest('.card-spacer');
+      if (sp && !sp.hidden && !sp.closest('.card').hidden) setSpacer(sp, sp.offsetHeight - SPACER_PAD);
+    });
   }
 
   // A click on a mode button: the mode changes, the page stays.
@@ -2287,7 +2302,12 @@
     d2 = buildDetail($('tour-detail'), {
       onNode: (id) => tourPick(id),
       onStub: (otherPart, otherNodes, fromPart) => {
-        keepPlace($('step-card'), () => d2.show(otherPart, otherNodes));
+        keepPlace($('step-card'), () => {
+          d2.show(otherPart, otherNodes);
+          // "Where this step happens" names the step's own part only; its
+          // place stays, so that the drawing under it does not move
+          $('where-label').style.visibility = otherPart === topOf(idx.steps[tourIndex].node) ? '' : 'hidden';
+        });
         tourPick(otherPart);
         focusQuietly(document.querySelector('#tour-detail g.stub[data-other="' + cssEsc(fromPart) + '"]') || $('tour-step-title'));
       }
@@ -2332,6 +2352,7 @@
     nd.textContent = '';
     nd.append(nodeSummary(s.node));
     if (d2) d2.show(topOf(s.node), s.node);
+    $('where-label').style.visibility = '';
     $('tour-pick').hidden = true;
     $('tour-pick').textContent = '';
     $('step-end').textContent = 'End of step ' + k + ' of ' + T + '.';
@@ -2667,7 +2688,7 @@
     page.textContent = '';
     xrefHash = readHash;
     try {
-      page.append(el('p', { class: 'read-note', text: 'The design model as one document: the question and the summary, then every part with its sub-parts in order, then the tour. The map, the sequence chart and the matrix are not on this page. "Back to the map", "Open in Explore the parts" and "Show this step on the map" leave this page; the other links to parts jump within it.' }));
+      page.append(el('p', { class: 'read-note', text: 'The design model as one document: the question and the summary, then every part with its sub-parts in order, then the tour. The map, the sequence chart and the matrix are not on this page.' }));
       page.append(inlineProse('p', model.question, 'question'));
       page.append(prose(model.summary, { class: 'prose read-summary' }));
 
@@ -2728,6 +2749,11 @@
     } finally {
       xrefHash = nodeHash;
     }
+    scrollToReadPlace(st);
+  }
+  // Bring what a #/read address names to the top of the window: a node's
+  // section, the tour, or the top of the page.
+  function scrollToReadPlace(st) {
     const targetId = st.target ? 'read-' + st.target : (/^#\/read\/tour$/.test(location.hash) ? 'read-tour' : null);
     const target = targetId ? $(targetId) : null;
     if (target) target.scrollIntoView({ block: 'start' });
@@ -2823,6 +2849,16 @@
       if (t === $('map-section') && pointerFrame && pointerFrame.getAttribute('data-scrolls') === 'true') return;
       ev.preventDefault();
       tourGo(tourIndex + (ev.key === 'ArrowRight' ? 1 : -1), true);
+    });
+    // A link in the one-page view to the address it already has fires no
+    // hashchange: it brings its place to the top of the window here (no
+    // re-render, no history entry).
+    $('read-page').addEventListener('click', (ev) => {
+      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      const a = ev.target && ev.target.closest ? ev.target.closest('a[href^="#/read"]') : null;
+      if (!a || a.getAttribute('href') !== location.hash) return;
+      ev.preventDefault();
+      scrollToReadPlace(parseHash());
     });
     window.addEventListener('hashchange', () => route(true));
   }

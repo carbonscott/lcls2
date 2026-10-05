@@ -2184,8 +2184,9 @@ describes the selected node. After a "Reference" divider comes the N²
 matrix of every relation between two parts. Where everything sits is
 stored in the model too (see <a href="#layout-the-map-places-and-detail-grids">Layout</a>).
 The words that name the modes, buttons and cards ("Explore the parts",
-"Overview", "Selected part", "Back to the map") are the viewer's: they say
-how to use the page. Every sentence about the DAQ comes from the model.</p>
+"Overview", "Selected part", "Back to the map", "Back to the sequence
+chart", "Back to the small maps") are the viewer's: they say how to use the
+page. Every sentence about the DAQ comes from the model.</p>
 <h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <p>Run every command in this guide from the repository root (the directory
 that contains <code>docs/</code>); the paths assume it.</p>
@@ -2354,8 +2355,9 @@ markup below.</p>
 </tbody>
 </table>
 <p>"Overview", "Selected part", "Reference", "Where this step happens" and the
-footers ("End of ...", "Back to the map") are the viewer's words around
-these texts, not model fields.</p>
+footers ("End of ...", "Back to the map", "Back to the sequence chart",
+"Back to the small maps") are the viewer's words around these texts, not
+model fields.</p>
 <h3 id="ids">Ids<a class="headerlink" href="#ids" title="Permanent link">&para;</a></h3>
 <p>Ids are lowercase words joined by hyphens (<code>drp-file-writer</code>), at most 60
 characters. Nodes, edges, tour steps, sources and decisions (decisions may
@@ -2715,8 +2717,7 @@ two boxes may share a cell, and no two box rectangles may overlap.</p>
 or a kid), and no two items share a row and column. <code>sides</code> names, for each
 neighbouring part, the side of the detail (<code>left</code>, <code>right</code>, <code>top</code>,
 <code>bottom</code>) where the tags for its edges sit. The side must agree with the
-map, because the page tells the reader that a tag sits on the side where
-that neighbour is on the map: <code>left</code> when the centres of all the
+map: <code>left</code> when the centres of all the
 neighbour's boxes lie left of this part's leftmost box edge, <code>right</code>, <code>top</code>
 (above) and <code>bottom</code> (below) likewise. For a neighbour that lies
 diagonally, either side that agrees will do. Every neighbour that gets a
@@ -3142,8 +3143,8 @@ map section to the top (see below).</p>
   <code>#/read/&lt;id&gt;</code> (the one-page view). Clicks on the map, the modes and the
   card replace the address without adding a history entry, so the
   browser's Back button does not undo them (it leaves the page). "Read as
-  one page", and a link you follow in the one-page view, add an entry, so
-  Back from the one-page view returns to the page.</li>
+  one page", and a link to another place in the one-page view, add an
+  entry, so Back from the one-page view returns to the page.</li>
 <li>"Emphasize" (All, and one button per kind of edge, named from
   <code>map.kinds</code>) dims every other kind on the map and, for a kind, shows that
   kind's caption under the map. All shows no caption.</li>
