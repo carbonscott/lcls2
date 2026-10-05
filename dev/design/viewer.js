@@ -361,13 +361,13 @@
     let m = /^\/node\/(.+)$/.exec(h);
     if (m) {
       if (idx.nodes.has(m[1])) return { mode: 'explore', focus: m[1] };
-      return { mode: 'explore', focus: ROOT, message: 'There is no part with the id "' + m[1] + '" in the design model. Showing the overview.' };
+      return { mode: 'explore', focus: ROOT, message: 'There is no part with the id "' + m[1] + '" in the design model.' };
     }
     m = /^\/tour(?:\/(\d+))?\/?$/.exec(h);
     if (m) {
       const k = m[1] === undefined ? 1 : parseInt(m[1], 10);
       if (k >= 1 && k <= idx.steps.length) return { mode: 'tour', step: k, focus: ROOT };
-      return { mode: 'explore', focus: ROOT, message: 'There is no tour step ' + m[1] + '. Showing the overview.' };
+      return { mode: 'explore', focus: ROOT, message: 'There is no tour step ' + m[1] + '.' };
     }
     if (/^\/compare\/?$/.test(h)) return { mode: 'compare', focus: ROOT };
     m = /^\/read(?:\/(.+?))?\/?$/.exec(h);
@@ -375,7 +375,7 @@
       const target = m[1] && idx.nodes.has(m[1]) ? m[1] : null;
       return { mode: 'read', focus: ROOT, target: target };
     }
-    return { mode: 'explore', focus: ROOT, message: 'Unknown link "#' + h + '". Showing the overview.' };
+    return { mode: 'explore', focus: ROOT, message: 'Unknown link "#' + h + '".' };
   }
 
   // Show the state of the address. `land` is true for a deep link (the page
@@ -2531,7 +2531,7 @@
     if (rows.some((m) => m.out) || life.some((l) => l.out)) {
       const sw = S('svg', { viewBox: '0 0 28 8', 'aria-hidden': 'true' });
       S('line', { x1: 0, y1: 4, x2: 28, y2: 4, class: 'ln out' }, sw);
-      key.append(sw, 'Outside this repository: an arrow drawn in this colour, or a column head framed by a dashed line of this colour.');
+      key.append(sw, 'Marked "outside repo" on the map: an arrow drawn in this colour, or a column head framed by a dashed line of this colour.');
     }
   }
   // ------------------------------------------------------------------
