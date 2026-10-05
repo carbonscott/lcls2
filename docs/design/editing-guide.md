@@ -24,8 +24,9 @@ describes the selected node. After a "Reference" divider comes the N²
 matrix of every relation between two parts. Where everything sits is
 stored in the model too (see [Layout](#layout-the-map-places-and-detail-grids)).
 The words that name the modes, buttons and cards ("Explore the parts",
-"Overview", "Selected part", "Back to the map") are the viewer's: they say
-how to use the page. Every sentence about the DAQ comes from the model.
+"Overview", "Selected part", "Back to the map", "Back to the sequence
+chart", "Back to the small maps") are the viewer's: they say how to use the
+page. Every sentence about the DAQ comes from the model.
 
 ## Before you start
 
@@ -135,8 +136,9 @@ markup below.
 | A tour step | The tour card: the step's title and `prose`, then the title and `summary` of the step's `node`, then the step's detail drawing ("Where this step happens"). |
 
 "Overview", "Selected part", "Reference", "Where this step happens" and the
-footers ("End of ...", "Back to the map") are the viewer's words around
-these texts, not model fields.
+footers ("End of ...", "Back to the map", "Back to the sequence chart",
+"Back to the small maps") are the viewer's words around these texts, not
+model fields.
 
 ### Ids
 
@@ -479,8 +481,7 @@ Every descendant of the part appears exactly once (as a node item, a group
 or a kid), and no two items share a row and column. `sides` names, for each
 neighbouring part, the side of the detail (`left`, `right`, `top`,
 `bottom`) where the tags for its edges sit. The side must agree with the
-map, because the page tells the reader that a tag sits on the side where
-that neighbour is on the map: `left` when the centres of all the
+map: `left` when the centres of all the
 neighbour's boxes lie left of this part's leftmost box edge, `right`, `top`
 (above) and `bottom` (below) likewise. For a neighbour that lies
 diagonally, either side that agrees will do. Every neighbour that gets a
@@ -832,8 +833,8 @@ map section to the top (see below).
   `#/read/<id>` (the one-page view). Clicks on the map, the modes and the
   card replace the address without adding a history entry, so the
   browser's Back button does not undo them (it leaves the page). "Read as
-  one page", and a link you follow in the one-page view, add an entry, so
-  Back from the one-page view returns to the page.
+  one page", and a link to another place in the one-page view, add an
+  entry, so Back from the one-page view returns to the page.
 - "Emphasize" (All, and one button per kind of edge, named from
   `map.kinds`) dims every other kind on the map and, for a kind, shows that
   kind's caption under the map. All shows no caption.
