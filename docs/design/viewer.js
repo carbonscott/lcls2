@@ -393,31 +393,32 @@
     $('read-toggle').textContent = reading ? 'Back to the map' : 'Read as one page';
     $('read-toggle').setAttribute('aria-pressed', reading ? 'true' : 'false');
     if (reading) {
+      clearPlace();
       document.body.dataset.mode = 'read';
       renderReadPage(state);
       return;
     }
     if (!lay.map) { document.body.dataset.mode = 'explore'; return; }
-    // a deep link scrolls to what it names, so no filler is kept for it
-    if (land) clearFills();
+    // a deep link scrolls to what it names, so no spacer is kept for it
     if (state.mode === 'tour') {
       ui.view = 'map';
       tourIndex = state.step - 1;
       setMode('tour');
       // a link to a tour step brings the map section to the top of the
       // window and puts the focus in it, so that Left and Right move the tour
-      if (land) { scrollToTop($('map-section')); focusQuietly($('map-section')); }
+      if (land) { clearPlace(); scrollToTop($('map-section')); focusQuietly($('map-section')); }
     } else if (state.mode === 'compare') {
       setMode('compare');
-      if (land) scrollToTop($('map-section'));
+      if (land) { clearPlace(); scrollToTop($('map-section')); }
     } else {
       setMode('explore');
       if (state.focus !== ROOT) {
         openNode(state.focus);
         // a link to a node brings its card to the top of the window
-        if (land) { scrollToTop($('part-card')); focusQuietly($('card-title')); }
+        if (land) { clearPlace(); scrollToTop($('part-card')); focusQuietly($('card-title')); }
       } else {
         showOverview();
+        if (land) clearPlace();
         if (land && prev && prev.mode === 'read') window.scrollTo(0, 0);
       }
     }
@@ -1749,36 +1750,108 @@
   // ------------------------------------------------------------------
   // Keeping the page in place
   // ------------------------------------------------------------------
-  // Content that changes in a card must not move the page. The browser
-  // clamps the scroll position when the page gets shorter than the part a
-  // reader is looking at; and a card whose head is stuck at the top of the
-  // window should still reach the window's bottom after it changes, so that
-  // its head stays in view. A filler at the end of the card's body keeps
-  // those heights until the card changes again (or the mode changes).
-  function keepPlace(card, change) {
-    const fill = card.querySelector('.card-fill');
-    if (!fill || card.hidden) {
-      if (fill) fill.style.height = '';
-      change();
-      return;
+  // A click that changes a card never moves the page (window.scrollY stays
+  // the same), and the reader sees the start of the new content where they
+  // were reading:
+  // - When a card turns to new content (another part, the overview, another
+  //   tour step, or the card a mode brings back) while the card's top is
+  //   above the window, a spacer at the top of the card's body
+  //   (.card-spacer) takes the height of the part of the card that is above
+  //   the window. The new content then starts right under the card's head,
+  //   which is stuck at the top of the window. The spacer stays until the
+  //   card turns again. A reader who scrolls back up passes through it, and
+  //   a note in it, under the head, says why it is blank. As the reader
+  //   scrolls, the part of the spacer below the window is dropped (that
+  //   changes nothing in view), and once the card's top is back in view
+  //   the rest of it goes too (the card's content then follows its head
+  //   again), so it is gone by the time the reader is back at the map.
+  // - While content changes, the page may only get longer: the browser
+  //   pulls the page up when it gets shorter than the window's bottom. A
+  //   minimum height on the body holds that bottom until the reader scrolls
+  //   back above it.
+  // Deep links and "Back to the map", which move the page anyway, drop the
+  // spacers and the minimum height first.
+  let floorPx = 0;
+  function naturalBottom() {
+    const wrap = document.querySelector('.wrap');
+    return wrap ? wrap.getBoundingClientRect().bottom + window.scrollY : 0;
+  }
+  // the page may only get longer from here on
+  function holdFloor() {
+    document.body.style.minHeight = Math.ceil(document.documentElement.scrollHeight) + 'px';
+  }
+  // the page reaches at least the window's bottom at scroll position y
+  function setFloor(y) {
+    const need = Math.ceil(y + window.innerHeight);
+    floorPx = naturalBottom() < need ? need : 0;
+    document.body.style.minHeight = floorPx ? floorPx + 'px' : '';
+  }
+  // where a card's head sticks (the window's top, below a notch's inset)
+  function stickTop(head) {
+    const h = head || $('card-head');
+    const v = h ? parseFloat(getComputedStyle(h).top) : 0;
+    return Number.isFinite(v) ? v : 0;
+  }
+  function spacerOf(card) { return card ? card.querySelector(':scope > .card-body > .card-spacer') : null; }
+  function setSpacer(sp, px, noteTop) {
+    if (!sp) return;
+    if (px >= 1) {
+      sp.style.height = Math.round(px) + 'px';
+      const note = sp.querySelector('.spacer-note');
+      if (note && noteTop !== undefined) note.style.top = Math.round(noteTop) + 'px';
+      sp.hidden = false;
+    } else {
+      sp.style.height = '';
+      sp.hidden = true;
     }
+  }
+  // The card turned to new content: if its top is above the window, its
+  // new content starts right under its stuck head (or the window's top).
+  // The spacer's box starts at the top of the card's body (it covers the
+  // body's top padding) and its padding keeps that gap above the content.
+  function turnCard(card) {
+    if (!card || card.hidden) return;
+    const sp = spacerOf(card);
+    if (!sp) return;
+    const head = card.querySelector(':scope > .card-head');
+    const under = stickTop(head) + (head ? head.offsetHeight : 0);
+    setSpacer(sp, under - sp.parentElement.getBoundingClientRect().top, under + 8);
+  }
+  function keepPlace(card, change, turn) {
     const y = window.scrollY;
-    const winBottom = y + window.innerHeight;
-    // while the content changes, the page may only get longer
-    fill.style.height = Math.ceil(fill.offsetHeight + card.offsetHeight) + 'px';
+    holdFloor();
     change();
-    const fillH = fill.offsetHeight;
-    const natural = card.offsetHeight - fillH;
-    const top = card.getBoundingClientRect().top + y;
-    const pageH = document.documentElement.scrollHeight - fillH;
-    let need = winBottom - pageH;
-    // (a card with a head that sticks: #part-card)
-    if (top < y - 1 && card.querySelector(':scope > .card-head')) need = Math.max(need, winBottom - (top + natural));
-    fill.style.height = need > 0 ? Math.ceil(need) + 'px' : '';
+    if (turn) turnCard(card);
+    setFloor(y);
   }
-  function clearFills() {
-    document.querySelectorAll('.card-fill').forEach((f) => { f.style.height = ''; });
+  function clearPlace() {
+    document.querySelectorAll('.card-spacer').forEach((sp) => setSpacer(sp, 0));
+    floorPx = 0;
+    document.body.style.minHeight = '';
   }
+  // As the reader scrolls, drop what lies below the window: the part of a
+  // spacer under the window's bottom, and the body's minimum height.
+  const SPACER_PAD = 12;  // the spacer's bottom padding (viewer.css: .card-spacer)
+  let trimFrame = 0;
+  function trimPlace() {
+    trimFrame = 0;
+    const vh = window.innerHeight;
+    document.querySelectorAll('.card-spacer:not([hidden])').forEach((sp) => {
+      const r = sp.getBoundingClientRect();
+      if (!r.height) return;
+      const head = sp.closest('.card').querySelector(':scope > .card-head');
+      // the card's top is back in view (its head no longer stuck): the reader
+      // has passed the blank, and the card's content follows its head again
+      if (r.top >= stickTop(head) + (head ? head.offsetHeight : 0)) setSpacer(sp, 0);
+      else if (r.bottom > vh) setSpacer(sp, Math.min(sp.offsetHeight, vh - r.top) - SPACER_PAD);
+    });
+    if (floorPx) {
+      const need = Math.ceil(window.scrollY + vh);
+      if (naturalBottom() >= need) { floorPx = 0; document.body.style.minHeight = ''; }
+      else if (need < floorPx) { floorPx = need; document.body.style.minHeight = need + 'px'; }
+    }
+  }
+  window.addEventListener('scroll', () => { if (!trimFrame) trimFrame = requestAnimationFrame(trimPlace); }, { passive: true });
 
   // ------------------------------------------------------------------
   // One map, three modes
@@ -1856,6 +1929,9 @@
   }
 
   function setMode(mode) {
+    const was = ui.mode;
+    const y = window.scrollY;
+    holdFloor();
     ui.mode = mode;
     document.body.dataset.mode = mode;
     document.querySelectorAll('#modes .mode').forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'));
@@ -1876,6 +1952,7 @@
     $('seq').hidden = !seqView;
     $('bar-seq').hidden = !seqView;
     $('seq-caption').hidden = !seqView;
+    $('seq-key').hidden = !seqView || !$('seq-key').childNodes.length;
     $('mult').hidden = !compare;
     $('kind-caption').hidden = !explore || !kindCaption(ui.kind);
     $('map-caption').hidden = !explore || !$('map-caption').childNodes.length;
@@ -1883,10 +1960,10 @@
     $('tourbar').hidden = !tour;
     $('part-card').hidden = !explore;
     $('step-card').hidden = !tour;
-    clearFills();
     if (m1) {
       if (tour) {
         m1.setFocus(null);
+        if (was !== 'tour') stepShown = -1;
         tourGo(tourIndex, false);
       } else {
         m1.setTour(null);
@@ -1894,6 +1971,9 @@
         m1.select(explore && cur !== ROOT ? topOf(cur) : null, 'DETAIL BELOW');
       }
     }
+    // the card that a mode brings back starts under the window's top
+    if (explore && was !== 'explore') turnCard($('part-card'));
+    setFloor(y);
     updateCuesSoon();
   }
 
@@ -1945,7 +2025,7 @@
     const tourNote = el('div', { id: 'note-tour' }, [head(st)]);
     const tourIntro = model.tour && typeof model.tour.intro === 'string' ? model.tour.intro : '';
     if (st.intro || tourIntro) {
-      const about = el('details', { class: 'tour-about' }, [el('summary', { text: 'About this tour' })]);
+      const about = el('details', { class: 'tour-about' }, [el('summary', { text: 'About this tour: what the dots and the diamond mean' })]);
       if (st.intro) about.append(prose(st.intro));
       if (tourIntro) about.append(prose(tourIntro, { class: 'prose tour-intro' }));
       tourNote.append(about);
@@ -2006,7 +2086,12 @@
     const t = $('card-title');
     t.dataset.card = id;
     t.textContent = cardTitle(part);
-    $('card-eyebrow').hidden = over;
+    // a box inside the part is open: the head names it after the part
+    const node = $('card-node');
+    const lower = !over && cur !== part;
+    node.textContent = lower ? '\u203a ' + titleOf(cur) : '';
+    node.hidden = !lower;
+    $('card-eyebrow').hidden = over || lower;
     $('card-hint').hidden = !over;
     const out = $('card-out');
     if (out) out.hidden = over || !isOut(part);
@@ -2037,6 +2122,7 @@
     if (!idx.nodes.has(id)) return;
     const part = topOf(id);
     cur = id;
+    const turn = $('part-card').dataset.card !== part;
     keepPlace($('part-card'), () => {
       $('overview').hidden = true;
       $('detail-view').hidden = false;
@@ -2044,7 +2130,7 @@
       if (d1) d1.show(part, o.hot || (id === part ? null : id));
       renderPanel(id);
       renderHead();
-    });
+    }, turn);
     if (m1 && ui.mode === 'explore') m1.select(part, 'DETAIL BELOW');
     restoreFocus();
   }
@@ -2052,6 +2138,7 @@
   // The card with no part open: the overview (on load and after Close).
   function showOverview() {
     cur = ROOT;
+    const turn = $('part-card').dataset.card !== 'overview';
     keepPlace($('part-card'), () => {
       $('overview').hidden = false;
       $('detail-view').hidden = true;
@@ -2059,7 +2146,7 @@
       $('detail').hidden = true;
       $('detail').textContent = '';
       renderHead();
-    });
+    }, turn);
     if (m1 && ui.mode === 'explore') m1.select(null);
   }
 
@@ -2072,7 +2159,7 @@
     openNode(id);
     setHash(nodeHash(id));
     const card = $('part-card');
-    if (mayMove && card.getBoundingClientRect().top < 0) scrollToTop(card);
+    if (mayMove && card.getBoundingClientRect().top < 0) { clearPlace(); scrollToTop(card); }
     focusQuietly($('card-title'));
   }
 
@@ -2081,6 +2168,7 @@
   // ------------------------------------------------------------------
   let d2 = null;
   let tourIndex = 0;
+  let stepShown = -1;  // the step that the shown step card holds (-1: none)
 
   // A node's title and summary, and a button that opens its full
   // description in Explore the parts.
@@ -2100,7 +2188,7 @@
     openNode(id);
     setHash(nodeHash(id));
     const card = $('part-card');
-    if (card.getBoundingClientRect().top < 0) scrollToTop(card);
+    if (card.getBoundingClientRect().top < 0) { clearPlace(); scrollToTop(card); }
     focusQuietly($('card-title'));
   }
 
@@ -2132,12 +2220,16 @@
     });
     $('tour-prev').addEventListener('click', () => tourGo(tourIndex - 1, true));
     $('tour-next').addEventListener('click', () => tourGo(tourIndex + 1, true));
+    // the step card's head (it stays in view while the step is read)
+    $('step-prev').addEventListener('click', () => tourGo(tourIndex - 1, true));
+    $('step-next').addEventListener('click', () => tourGo(tourIndex + 1, true));
   }
 
   function renderStep(s, k, T) {
     const text = $('step-text');
     text.textContent = '';
-    text.append(el('div', { class: 'eyebrow', text: 'Step ' + k + ' of ' + T + ' \u00b7 in ' + titleOf(topOf(s.node)) }));
+    $('step-count').textContent = 'Step ' + k + ' of ' + T;
+    text.append(el('div', { class: 'eyebrow', text: 'In ' + titleOf(topOf(s.node)) }));
     text.append(el('h2', { id: 'tour-step-title', tabindex: '-1', dataset: { stepIndex: String(k) }, text: s.title }));
     text.append(prose(s.prose, { id: 'tour-step-prose' }));
     // the step's code references and sources, folded
@@ -2169,13 +2261,18 @@
     const T = idx.steps.length;
     const pips = Array.from($('pips').querySelectorAll('.pip'));
     pips.forEach((p, j) => { if (j === tourIndex) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current'); });
-    // a Back or Next button that becomes disabled hands its focus to the pip
-    [['tour-prev', tourIndex === 0], ['tour-next', tourIndex === T - 1]].forEach(([bid, off]) => {
+    // a Back or Next button that becomes disabled hands its focus to the
+    // pip (under the map) or to the other button of the card's head
+    [['tour-prev', tourIndex === 0, pips[tourIndex]], ['tour-next', tourIndex === T - 1, pips[tourIndex]],
+     ['step-prev', tourIndex === 0, $('step-next')], ['step-next', tourIndex === T - 1, $('step-prev')]].forEach(([bid, off, heir]) => {
       const b = $(bid);
-      if (off && document.activeElement === b) focusQuietly(pips[tourIndex]);
+      if (off && document.activeElement === b) focusQuietly(heir);
       b.disabled = off;
     });
-    keepPlace($('step-card'), () => renderStep(s, k, T));
+    // another step (or the card shown again) starts under the window's top
+    const turn = tourIndex !== stepShown;
+    stepShown = tourIndex;
+    keepPlace($('step-card'), () => renderStep(s, k, T), turn);
     if (m1 && ui.mode === 'tour') {
       m1.setTour(lay.tourByStep.get(s.id) || null);
       m1.select(topOf(s.node), 'THIS STEP');
@@ -2212,8 +2309,10 @@
         setKind(isKind ? mm.kind : 'all');
         setMode('explore');
         setHash(cur === ROOT ? '#/' : nodeHash(cur));
-        const stage = $('stage');
-        if (stage.getBoundingClientRect().top < 0) scrollToTop(stage);
+        // the mode switch and the pressed kind are in view: the map
+        // section's top comes to the top of the window if it is above it
+        const sec = $('map-section');
+        if (sec.getBoundingClientRect().top < 0) { clearPlace(); scrollToTop(sec); }
         focusQuietly($('chips').querySelector('.chip[aria-pressed="true"]'));
       });
       host.append(f);
@@ -2312,6 +2411,14 @@
       // status line change, the page does not move
       onActivate(g, () => tourGo(k, true));
     });
+    // the key to the colour of what lies outside this repository
+    const key = $('seq-key');
+    key.textContent = '';
+    if (rows.some((m) => m.out) || life.some((l) => l.out)) {
+      const sw = S('svg', { viewBox: '0 0 28 8', 'aria-hidden': 'true' });
+      S('line', { x1: 0, y1: 4, x2: 28, y2: 4, class: 'ln out' }, sw);
+      key.append(sw, 'Outside this repository: an arrow drawn in this colour, or a column head framed by a dashed line of this colour.');
+    }
   }
   // ------------------------------------------------------------------
   // The N² matrix (the reference card after the map section)
@@ -2464,7 +2571,7 @@
     page.textContent = '';
     xrefHash = readHash;
     try {
-      page.append(el('p', { class: 'read-note', text: 'The whole design model as one page: the overview, then every part with its sub-parts in order, then the tour. Links to parts jump within this page; "Back to the map" returns to the map.' }));
+      page.append(el('p', { class: 'read-note', text: 'The design model as one document: the question and the summary, then every part with its sub-parts in order, then the tour. The map, the sequence chart and the matrix are not on this page. Links to parts jump within this page; "Back to the map" returns to the map.' }));
       page.append(inlineProse('p', model.question, 'question'));
       page.append(prose(model.summary, { class: 'prose read-summary' }));
 
@@ -2482,7 +2589,7 @@
         const where = pathTo(id).slice(0, -1);
         sec.append(el('p', { class: 'read-path' }, [
           where.length ? 'Part of ' + where.map(titleOf).join(' \u203a ') + '. ' : '',
-          mapLink(nodeHash(id), 'Show on the map', 'read-map-link')
+          mapLink(nodeHash(id), 'Open in Explore the parts', 'read-map-link')
         ]));
         appendNodeBody(sec, n, 'h' + Math.min(6, depth + 2), 'h' + Math.min(6, depth + 3), { proseId: null });
         const out = idx.edges.filter((e) => e.from === id);
@@ -2538,23 +2645,39 @@
     document.title = model.title;
   }
 
+  // The help is an overlay over the page (fixed; it scrolls inside
+  // itself), so that opening and closing it never moves the page. Close
+  // (at its top and bottom), Escape or a click beside the panel closes it,
+  // and the focus goes back to "How to read this page".
   function toggleHelp(show) {
     const help = $('help');
     const open = show === undefined ? help.hidden : show;
     help.hidden = !open;
     $('help-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open) focusQuietly($('help-title'));
+    if (open) { help.scrollTop = 0; focusQuietly($('help-title')); }
+    else focusQuietly($('help-toggle'));
   }
 
   function bindEvents() {
     $('read-toggle').addEventListener('click', () => go(state && state.mode === 'read' ? '#/' : '#/read'));
     $('help-toggle').addEventListener('click', () => toggleHelp());
-    $('help-close').addEventListener('click', () => { toggleHelp(false); focusQuietly($('help-toggle')); });
+    $('help').querySelectorAll('#help-close, .help-close').forEach((b) => b.addEventListener('click', () => toggleHelp(false)));
+    $('help').addEventListener('click', (ev) => { if (ev.target === $('help')) toggleHelp(false); });
+    // the keyboard stays in the help while it is open
+    $('help').addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Tab') return;
+      const f = Array.from($('help').querySelectorAll('button, a[href], summary, [tabindex="0"]')).filter((x) => x.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (ev.shiftKey && (document.activeElement === first || document.activeElement === $('help-title'))) { ev.preventDefault(); focusQuietly(last); }
+      else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); focusQuietly(first); }
+    });
     document.addEventListener('keydown', (ev) => {
       if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
       const t = ev.target;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); focusQuietly($('help-toggle')); }
+      if (ev.key === 'Escape' && !$('help').hidden) { ev.preventDefault(); toggleHelp(false); }
     });
     // Links inside the map section and the matrix card: "Back to the map"
     // scrolls to the map; a link to a node opens it in the card (see
@@ -2566,6 +2689,7 @@
       if (!a) return;
       if (a.classList.contains('back-to-map')) {
         ev.preventDefault();
+        clearPlace();
         scrollToTop($('map-section'), true);
         focusQuietly($('map-section'));
         return;

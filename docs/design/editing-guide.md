@@ -790,12 +790,16 @@ page.
   under it, the panel for the selected node. Click a box or a dashed group
   in the drawing to show that node in the panel, and click a tag on the
   drawing's edge ("from DRP ›") to open that neighbouring part. The card's
-  head stays in view while you scroll the card. Its arrows go to the
-  previous or next card (the overview, then the top-level parts in the
-  order of the model, then the overview again). "Close", shown only while a
-  part is open, returns the card to the overview. Design decisions, code
-  references, sources and flows are folded: open one with its heading. A
-  card ends with "End of ..." and a "Back to the map" link.
+  head stays in view while you scroll the card; when a box or dashed group
+  inside the part is open, the head shows its title after the part's. Its
+  arrows go to the previous or next card (the overview, then the top-level
+  parts in the order of the model, then the overview again). "Close", shown
+  only while a part is open, returns the card to the overview. When the card
+  changes while you are further down in it (its head stuck at the top of the
+  window), the new card starts right under the head and the page does not
+  move; the space above it is left blank, with a short note. Design
+  decisions, code references, sources and flows are folded: open one with
+  its heading. A card ends with "End of ..." and a "Back to the map" link.
 - A link to a node (`#/node/<id>`) opens the card on that node's part, with
   the node highlighted in the drawing and its panel shown, and brings the
   card into view. The other addresses are `#/` (the overview),
@@ -813,19 +817,26 @@ page.
 - **Follow one event.** The tour moves one event across the same map; the
   page has no second map. Use "Back" and "Next", the numbered step buttons,
   or the Left and Right arrow keys once the focus is in the map section
-  (click in it first). The card under the map holds the step's text, the
-  description of the step's node and its detail drawing ("Where this step
-  happens"). "Show the steps on: A sequence chart" swaps the map for the
-  sequence chart (it has its own "Full size" button); click a row to change
-  the step, and the card and a line under the chart name the new step.
+  (click in it first; they do not move the tour inside a figure that scrolls
+  sideways). The card under the map holds the step's text, the description
+  of the step's node and its detail drawing ("Where this step happens"). It
+  has its own head ("Step k of T", with "Back" and "Next") that stays in view
+  while you scroll the card. "Show the steps on: A sequence chart" swaps the
+  map for the sequence chart (it has its own "Full size" button); click a row
+  to change the step, and the card and a line under the chart name the new
+  step.
 - **Compare kinds.** The small maps replace the map: one for each kind of
   edge and one with all of them. Click one to go back to "Explore the
-  parts" with that kind emphasized.
+  parts" with that kind emphasized (if the top of the map section is above
+  the window, the page brings it to the top, so that the buttons above the
+  map are in view).
 - After the "Reference" divider, the N² matrix lists every relation between
   two parts in a card of its own, with a line under the table that says what
   its shading means.
-- "Read as one page" shows the whole model as one document (`#/read`);
-  "How to read this page" explains the controls.
+- "Read as one page" shows the model's question, summary, every part with
+  its sub-parts and the tour as one document (`#/read`; the map, the
+  sequence chart and the matrix are not on it); "How to read this page"
+  opens a panel over the page that explains the controls.
 
 A figure that is wider than its frame (on a phone, or at full size) says
 "Scroll sideways" next to its "Full size" button. Reload the page after each
@@ -913,29 +924,39 @@ this order (a line that appears twice is checked at two window sizes):
 | Line | It passes when |
 |---|---|
 | `nodes_visited=V/N tour_steps=S/T console_errors=C` | V = N: every node was reached by clicking (a part's box on the map; a lower node's box or group in its part's detail, in the card) and the panel then showed its title and the first 30 characters of its prose, with a folded section for each non-empty list of decisions, code references and sources, for the flows when the node has an edge, and for the developer notes when the node has `dev_notes`. S = T: every tour step showed its title, the start of its prose and the "THIS STEP" mark on the map. C = 0. |
-| `smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok` | A tag opens its part, the arrow keys move the tour when the focus is in the map section in "Follow one event", the help opens and closes, the one-page view has a section with the right title for every node (R = N), the page loads nothing from other sites except the fonts (Q = 0), and the arrow keys pressed elsewhere on the page (on the matrix) neither move the tour nor stop the browser's sideways scroll. |
-| `map_first viewport=744x1000 map_top=A map_bottom=B frame_top=F above_map=<names>`, then the same at `viewport=1440x900` | The map comes first: `above_map` is exactly `modes,chips`, so the mode switch and the Emphasize buttons are the only blocks between the page title and the map's frame. At 744x1000 the map's bottom B is at most 1000; at 1440x900 its top A is at most 450. |
+| `smoke stub_click=ok arrow_keys=ok help=ok read_page=R/N third_party=Q arrow_scope=ok compare_tap=ok fullsize_keys=ok` | A tag opens its part, the arrow keys move the tour when the focus is in the map section in "Follow one event", the help opens and closes, the one-page view has a section with the right title for every node (R = N), the page loads nothing from other sites except the fonts (Q = 0), and the arrow keys pressed elsewhere on the page (on the matrix) neither move the tour nor stop the browser's sideways scroll. `compare_tap`: a tap on a small map in "Compare kinds" opens "Explore the parts" with that kind's Emphasize button pressed and its caption shown; the page stays where it is, or, when the top of the map section was above the window, brings it to the top of the window. `fullsize_keys`: with the map at full size (so that it scrolls sideways in its frame), Left and Right pressed with the focus in the frame do not change the tour's step. |
+| `map_first viewport=744x1000 map_top=A map_bottom=B above_map=<names> frame_top=F`, then the same at `viewport=1440x900` | The map comes first: `above_map` is exactly `modes,chips`, so the mode switch and the Emphasize buttons are the only blocks between the page title and the map's frame. At 744x1000 the map's bottom B is at most 1000; at 1440x900 its top A is at most 450. |
 | `modes=M full_maps=F` | M = 3: the three mode buttons each switch the mode and press themselves. F = 1: in every mode, and in the tour's sequence view, the document holds exactly one full-size map drawing (not a small map, not a detail drawing), and in "Explore the parts" and in the tour's map view that map is displayed. |
 | `map parts=A/P lanes=L bands=B columns=K boxes=O/Q` | Every part has a box on the map, the lanes, bands and columns match `map`, and every box is drawn exactly where its `place` says (O = Q). |
 | `detail opened=X/P` | Clicking each part that has children, in "Explore the parts", opens its detail in the card with every descendant drawn. |
 | `tour steps=S/T highlighted=H/T on_main_map=G/T tag_clear=K/T` | For every step, the highlighted lines and boxes are exactly the step's `highlight` list and the dots are its `tokens`. G = T: for every step the outline of the step's part and the dots are on the one map (`#map`), the map holds no other outline, and the page has no other full-size map. K = T: the "THIS STEP" tag covers no text of the map. The viewer puts the tag at the first place around the part's dashed outline that is free of text (under it, over it, then beside it); if no place is free, move a label or note away from that part. |
-| `tour_card text=X/T detail=Y/T` | For every step, the step card lies below the map's frame. X = T: it shows the step's title and the first 30 characters of its prose. Y = T: it shows the detail of the part that holds the step's node, with the node highlighted. |
+| `tour_card text=X/T detail=Y/T` | For every step, the step card lies below the map's frame. X = T: it shows (displayed, under the map's frame) the step's title and the first 30 characters of its prose. Y = T: it shows, displayed and under the map's frame, the detail of the part that holds the step's node, with the node highlighted. |
 | `multiples panels=M/6 mode=compare` | Each of the six small maps leaves exactly its kind of line undimmed (the sixth shows all kinds), and the small maps are displayed only in "Compare kinds". |
-| `sequence rows=R/T mode=tour` | Each row of the sequence chart draws its step's arrow between the right lifelines, with its label; clicking a row shows that step in the card and keeps the sequence chart. The rows are displayed only in "Follow one event" with the steps shown on the sequence chart. |
-| `emphasize captions=K/K` | K is the number of edge kinds whose `map.multiples` entry has a caption. A kind counts when its Emphasize button shows that caption under the map (the first 30 characters of it) and dims the lines of the other kinds. |
-| `card default=overview after_close=overview nav=X/9 sticky_head=<bool> end_footer=<bool> folded=<bool>` | See "The card line" below. It passes when `default` and `after_close` print `overview` (a failing run prints the card that showed instead), X = 9 and every bool is true. |
-| `matrix cells=C2/C hscroll=<px> sticky_head=<bool> close_buttons=<n> end_footer=<bool>` | See "The matrix line" below: it passes when C2 = C, hscroll is 0, close_buttons is 0 and every bool is true. |
+| `sequence rows=R/T mode=tour` | Each row of the sequence chart draws its step's arrow between the right lifelines, with its label; clicking a row shows that step in the card, keeps the sequence chart, and the line under the chart reads "Step k of T: <the step's title>" inside the window. The rows are displayed only in "Follow one event" with the steps shown on the sequence chart. |
+| `emphasize captions=K/K` | K is the number of edge kinds whose `map.multiples` entry has a caption. A kind counts when its Emphasize button shows that caption under the map's frame (the first 30 characters of it) and dims the lines of the other kinds. |
+| `card default=overview after_close=overview nav=X/9 sticky_head=<bool> end_footer=<bool> folded=<bool> stuck_view=K/K` | See "The card line" below. It passes when `default` and `after_close` print `overview` (a failing run prints what was wrong instead), X = 9, every bool is true and `stuck_view` counts every case. |
+| `matrix cells=C2/C hscroll=<px> sticky_head=<bool> close_buttons=<n> end_footer=<bool> divider=<bool>` | See "The matrix line" below: it passes when C2 = C, hscroll is 0, close_buttons is 0 and every bool is true. |
 | `deeplinks=D/4` | Each of these four addresses, loaded in a fresh page, counts when it sets the right mode, shows the right content and lands in view: `#/node/<a lower node's id>` (the card on that node's part, the node highlighted, its panel shown, the card's head within 120 px of the top of the window); `#/tour/3` (the card of step 3) and `#/compare` (the six small maps), each with the map section at the top of the window (or the page cannot scroll that far); `#/read` (the one-page view, at the top of the page). |
 | `page_height=H` | The page is at most 4000 px high at 744x1000 on `#/`. |
-| `scroll_jumps=J/N viewport=744x1000 moves_page_ok=true control_moved=K/N`, then the same at `viewport=1440x900` | No in-page click moves the page: J = 0 (see "The scroll_jumps line" below), N is at least 40, and `moves_page_ok=true`. |
+| `scroll_jumps=J/N viewport=744x1000 failed=F expected=E moves_page_ok=true control_moved=K/N`, then the same at `viewport=1440x900` | No in-page click moves the page: J = 0 and F = 0, N = E and N is at least 40, and `moves_page_ok=true` (see "The scroll_jumps line" below). |
 | `console_errors=C` | No errors or warnings in the browser console, and no failed requests. |
 
 **The card line.**
 
-- `default=overview`: on `#/` the card is the overview, and it shows the
-  model's `question` and the start of its `summary`.
+- `default=overview`: on `#/` the card is the overview, under the map's
+  frame, and it shows the model's `question`, the start of its `summary`
+  and how to read the map (the title of `map.sections.map` and the start of
+  its `intro`).
 - `after_close=overview`: after a part is opened and Close is pressed, the
-  card is the overview again, shown and not empty.
+  card is the overview again, shown and not empty; and also when Close is
+  pressed while the card's head is stuck at the top of the window (the
+  card's top 300 px above it, and again near the card's end with every fold
+  open): the page does not move, and what shows right under the head is the
+  start of the overview, not blank space.
+- `stuck_view=K/K`: the same for the card's arrows: with the head stuck,
+  the next or previous card starts right under the head and the page does
+  not move. It is checked at 744 and 1440 px for the next and the previous
+  arrow (and for the step card's own Back and Next, when it has them).
 - `nav=X/9`: pressing the card's next arrow nine times from the overview
   visits the overview, the eight top-level parts in the order of the model,
   and the overview again, and the previous arrow gives the exact reverse.
@@ -962,22 +983,34 @@ this order (a line that appears twice is checked at two window sizes):
 - `close_buttons=0`: the matrix card has no button in it.
 - `end_footer=true`: the card ends with "End of the interfaces." (its
   eyebrow, in lower case) and a "Back to the map" link.
+- `divider=true`: the "Reference" divider is shown between the card and the
+  matrix.
 
-**The scroll_jumps line.** The test clicks, with the mouse, every mode
-button, Emphasize button, step button, Back and Next, both buttons that
-switch the tour's view, every sequence row, every map part, detail box,
-group and tag, both "Full size" buttons (and presses them again), the
-card's arrows and Close, and the help button. It also presses Enter on a
-focused map box, a sequence row and a tag, and it clicks the card's arrows
-and Close when the card's top is 300 px above the window, so that its head
-is stuck at the top. J is the number of clicks after which the window
-scrolled by more than 1 px, and N the number of clicks. Only four kinds of
-control may scroll the page: the "Back to the map" links, the button of the
-tour card that opens the step's part, the small maps of "Compare kinds", and
-the links in the text of a card or of the one-page view that open a node. The
-test skips them and checks that no other control carries the mark that lets
-it scroll (`moves_page_ok`). `control_moved=K/N` is informational: the number
-of clicked controls that moved on the screen by more than 2 px.
+**The scroll_jumps line.** The test first lists every press it will make,
+from the model and the page (E, `expected`), then makes each one for real:
+a mouse click on a point of the control that receives it, or a key pressed
+with the focus on the control. It presses every mode button, Emphasize
+button, step button, Back and Next, both buttons that switch the tour's
+view, every sequence row, every map part (in "Explore the parts" and in
+"Follow one event"), detail box, group and tag, a box and a tag of the tour
+card's detail, "About this tour", both "Full size" buttons (and presses them
+again), the card's arrows and Close, the step card's own Back and Next when
+it has them, and the help button. It also presses Enter on a focused map
+box, a sequence row and a tag, and it clicks the card's arrows and Close
+when the card's top is 300 px above the window, so that its head is stuck at
+the top. After each press it waits 600 ms. J is the number of presses after
+which the window scrolled by more than 1 px, right away or later (before
+the next press, or 1.5 s after the last one); F is the number of presses
+that could not be made (the control is missing, covered, or the page is not
+in the state the press needs); N is the number of presses made. Only four
+kinds of control may scroll the page: the "Back to the map" links, the
+button of the tour card that opens the step's part, the small maps of
+"Compare kinds", and the links in the text of a card or of the one-page
+view that open a node. The test does not press them (nor "Read as one
+page", which changes the address to the one-page view), and before every
+press it checks that these carry the mark that lets them scroll and that no
+other control does (`moves_page_ok`). `control_moved=K/N` is informational: the
+number of pressed controls that moved on the screen by more than 2 px.
 
 **Informational lines** (they never fail the run):
 
@@ -990,8 +1023,9 @@ of clicked controls that moved on the screen by more than 2 px.
 | `min_tap_px=P` | The smaller side of the smallest control at 744 px (the target is at least 32). |
 | `elapsed group=s,...` | The seconds each group of checks took. |
 
-A failing check also prints `PROBLEM: <check>: <detail>`. A check that finds
-nothing to test fails.
+A failing check also prints `PROBLEM: <check>: <detail>`, and every
+`PROBLEM:` line fails the run, also when all the lines above pass. `NOTE:`
+lines are informational. A check that finds nothing to test fails.
 
 `--layout` loads the page at several window sizes and prints
 `layout_identical=true parts=P` (the map is the same at 744 and 1440 pixels
@@ -1001,7 +1035,10 @@ never scrolls sideways), the informational
 scrolls inside its frame), `fullsize map=ok sequence=ok` (the "Full size"
 buttons of the map and of the sequence chart work, the sequence chart's
 checked in "Follow one event" with the steps shown on the sequence chart, and
-the map fits a 744-pixel window) and `console_errors=0`.
+the map fits a 744-pixel window), `theme dark=ok light=ok override=ok` (with
+the system set to dark the page and the map use the dark colours, with it set
+to light the light ones, and a `data-theme` of `light` or `dark` on the
+page's root element wins over the system setting) and `console_errors=0`.
 
 `--check-node` opens one node by its link and by clicking (the part's box on
 the map, then the node's box or group in the card), and prints
@@ -1021,7 +1058,8 @@ matrix cell. It checks that the edge is drawn, not its label.
 Add `--full` to a `--layout`, `--check-node` or `--check-edge` command to run
 the full run as well.
 
-Every run exits with status 0 only when all of its lines pass.
+Every run exits with status 0 only when all of its lines pass and it
+printed no `PROBLEM:` line.
 `docs/design/tools/README.md` describes the tools, their options and the
 test hooks in full.
 

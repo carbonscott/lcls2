@@ -44,6 +44,44 @@ The extra kinds (each makes one more check fail):
   tour-card-stale      the step text is not updated when Next is pressed;
                        tour_card text < T (and tour_steps < T).
 
+The kinds of the hardened checks (one per check):
+
+  unclickable-control  a transparent overlay covers the second Emphasize
+                       button; scroll_jumps failed > 0 (no point of it
+                       receives a click; the test does not dispatch events).
+  deferred-scroll      an Emphasize click scrolls the card into view 700 ms
+                       later; scroll_jumps J > 0 (a deferred jump).
+  moves-page-late      the sequence rows carry [data-moves-page] only while
+                       the tour shows the sequence chart; scroll_jumps
+                       moves_page_ok=false (the mark is audited before every
+                       press, in every state).
+  tour-detail-hidden   #tour-detail is not displayed; tour_card detail=0/T.
+  overview-no-howto    the overview loses "how to read the map" (the
+                       elements showing map.sections.map's title and intro);
+                       card default=FAIL:no-howto-title,no-howto-intro.
+  stuck-blank          a Close pressed while the card's top is above the
+                       viewport leaves a blank under the head (as 8c02c6ec
+                       did); card after_close=FAIL:stuck-...
+  stuck-turn-blank     the same for the card's and the step card's arrows
+                       (#card-next/prev, #step-next/prev); card stuck_view < K.
+  caption-above-map    #kind-caption is moved above the map; emphasize
+                       captions=0/K.
+  divider-missing      the "Reference" divider is not displayed; matrix
+                       divider=false.
+  compare-tap-broken   a tap on a small map of Compare kinds does nothing;
+                       smoke compare_tap=fail.
+  seq-status-stale     the status line under the sequence chart keeps its
+                       first text; sequence rows < T.
+  fullsize-keys-move   Left/Right move the tour even with the focus in a
+                       frame that scrolls sideways; smoke fullsize_keys=fail.
+  dark-ignored         the page forces the light palette under a dark system
+                       setting; --layout theme dark=fail.
+  override-ignored     data-theme on the root element is removed;
+                       --layout theme override=fail.
+  close-invisible      #card-close is transparent (it still works): only
+                       PROBLEM lines ("#card-close is not displayed ..."),
+                       every printed value passes, and the run exits 1.
+
 Kinds kept from the earlier viewer checks:
 
   page-error           "plantedUndefinedFunction();" is put at the top of
@@ -162,6 +200,101 @@ PLANTS = {
             "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#tour-next'))) return;"
             " const p = document.getElementById('tour-step-prose'); if (!p) return; const old = p.innerHTML;"
             " setTimeout(() => { const q = document.getElementById('tour-step-prose'); if (q) q.innerHTML = old; }, 0); }, true);")),
+    ],
+    # the kinds of the hardened checks (decisions-2 T12)
+    "unclickable-control": [
+        ("viewer.js", APPEND_JS, snippet("unclickable-control",
+            "onReady(() => { const chips = document.getElementById('chips'); const chip = chips && chips.querySelectorAll('button.chip')[1];"
+            " if (!chip) return; chips.style.position = 'relative'; const o = document.createElement('span'); o.className = 'planted-overlay';"
+            " o.style.cssText = 'position:absolute;z-index:50;background:transparent;'; chips.append(o);"
+            " const place = () => { o.style.left = chip.offsetLeft - 2 + 'px'; o.style.top = chip.offsetTop - 2 + 'px';"
+            " o.style.width = chip.offsetWidth + 4 + 'px'; o.style.height = chip.offsetHeight + 4 + 'px'; };"
+            " place(); new ResizeObserver(place).observe(chips); window.addEventListener('resize', place); });")),
+    ],
+    "deferred-scroll": [
+        ("viewer.js", APPEND_JS, snippet("deferred-scroll",
+            "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#chips button.chip'))) return;"
+            " setTimeout(() => { const c = document.getElementById('part-card'); if (c) c.scrollIntoView({ behavior: 'instant', block: 'start' }); }, 700); });")),
+    ],
+    "tour-detail-hidden": [
+        ("viewer.css", r"\Z", "\n/* planted: tour-detail-hidden */\n#tour-detail { display: none !important; }\n"),
+    ],
+    "overview-no-howto": [
+        ("viewer.js", APPEND_JS, snippet("overview-no-howto",
+            "fetch('daq-model.json').then((r) => r.json()).then((mdl) => {"
+            " const titles = {}; (mdl.nodes || []).forEach((n) => { titles[n.id] = n.title; });"
+            " const plain = (t) => String(t || '').replace(/\\[\\[([^\\]|]+)\\|([^\\]]+)\\]\\]/g, '$2')"
+            ".replace(/\\[\\[([^\\]]+)\\]\\]/g, (m0, id) => titles[id.trim()] || m0).replace(/\\[([^\\]]+)\\]\\([^()\\s]+\\)/g, '$1')"
+            ".replace(/`([^`]+)`/g, '$1').replace(/\\*\\*([^*]+)\\*\\*/g, '$1').replace(/\\s+/g, ' ').trim();"
+            " const sec = ((mdl.map || {}).sections || {}).map || {};"
+            " const keys = [plain(sec.title), plain(sec.intro).slice(0, 24)].filter(Boolean).map((k) => k.toLowerCase());"
+            " const strip = () => { const ov = document.getElementById('overview'); if (!ov) return;"
+            " const hit = [...ov.querySelectorAll('*')].filter((e) => keys.some((k) => (e.textContent || '').replace(/\\s+/g, ' ').toLowerCase().includes(k)));"
+            " hit.filter((e) => !hit.some((x) => x !== e && e.contains(x))).forEach((e) => e.remove()); };"
+            " onReady(() => { strip(); new MutationObserver(strip).observe(document.getElementById('overview'), { childList: true, subtree: true }); }); });")),
+    ],
+    "stuck-blank": [
+        ("viewer.js", APPEND_JS, snippet("stuck-blank",
+            "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#card-close'))) return;"
+            " setTimeout(() => { const c = document.getElementById('part-card'); const body = c && c.querySelector('.card-body');"
+            " const top = c ? c.getBoundingClientRect().top : 0; if (!body || top >= 0) return;"
+            " const d = document.createElement('div'); d.className = 'planted-blank'; d.style.height = Math.ceil(-top + window.innerHeight) + 'px';"
+            " body.prepend(d); }, 100); }, true);")),
+    ],
+    "stuck-turn-blank": [
+        ("viewer.js", APPEND_JS, snippet("stuck-turn-blank",
+            "document.addEventListener('click', (ev) => { const b = ev.target.closest && ev.target.closest('#card-next, #card-prev, #step-next, #step-prev');"
+            " if (!b) return; const c = b.closest('#part-card, #step-card');"
+            " setTimeout(() => { const body = c && c.querySelector('.card-body'); const top = c ? c.getBoundingClientRect().top : 0;"
+            " if (!body || top >= 0) return; const d = document.createElement('div'); d.className = 'planted-blank';"
+            " d.style.height = Math.ceil(-top + window.innerHeight) + 'px'; body.prepend(d); }, 100); }, true);")),
+    ],
+    "caption-above-map": [
+        ("viewer.js", APPEND_JS, snippet("caption-above-map",
+            "onReady(() => { const cap = document.getElementById('kind-caption'), map = document.getElementById('map');"
+            " if (cap && map && map.parentNode) map.parentNode.insertBefore(cap, map); });")),
+    ],
+    "divider-missing": [
+        ("viewer.css", r"\Z", "\n/* planted: divider-missing */\n.ref-divider { display: none !important; }\n"),
+    ],
+    "compare-tap-broken": [
+        ("viewer.js", APPEND_JS, snippet("compare-tap-broken",
+            "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#mult figure'))) return;"
+            " ev.stopPropagation(); ev.preventDefault(); }, true);")),
+    ],
+    "seq-status-stale": [
+        ("viewer.js", APPEND_JS, snippet("seq-status-stale",
+            "onReady(() => { const st = document.getElementById('seq-status'); if (!st) return; const old = st.textContent;"
+            " new MutationObserver(() => { if (st.textContent !== old) st.textContent = old; })"
+            ".observe(st, { childList: true, characterData: true, subtree: true }); });")),
+    ],
+    "dark-ignored": [
+        ("viewer.js", APPEND_JS, snippet("dark-ignored",
+            "if (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches && !document.documentElement.dataset.theme)"
+            " document.documentElement.dataset.theme = 'light';")),
+    ],
+    "override-ignored": [
+        ("viewer.js", APPEND_JS, snippet("override-ignored",
+            "const drop = () => { if (document.documentElement.hasAttribute('data-theme')) document.documentElement.removeAttribute('data-theme'); };"
+            " drop(); new MutationObserver(drop).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });")),
+    ],
+    "fullsize-keys-move": [
+        ("viewer.js", APPEND_JS, snippet("fullsize-keys-move",
+            "document.addEventListener('keydown', (ev) => { if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;"
+            " if (document.body.dataset.mode !== 'tour') return; const t = ev.target;"
+            " if (!(t && t.closest && (t.closest('#map, #seq') || t.id === 'map-section'))) return;"
+            " ev.preventDefault(); ev.stopImmediatePropagation();"
+            " const b = document.getElementById(ev.key === 'ArrowRight' ? 'tour-next' : 'tour-prev'); if (b && !b.disabled) b.click(); }, true);")),
+    ],
+    "moves-page-late": [
+        ("viewer.js", APPEND_JS, snippet("moves-page-late",
+            "const mark = () => { const seqView = document.body.dataset.mode === 'tour' && !!document.querySelector('#tour-controls button.view[data-view=\"seq\"][aria-pressed=\"true\"]');"
+            " document.querySelectorAll('#seq .row').forEach((r) => { if (seqView && !r.hasAttribute('data-moves-page')) r.setAttribute('data-moves-page', '');"
+            " if (!seqView && r.hasAttribute('data-moves-page')) r.removeAttribute('data-moves-page'); }); };"
+            " onReady(() => { mark(); new MutationObserver(mark).observe(document.body, { attributes: true, subtree: true, attributeFilter: ['data-mode', 'aria-pressed'] }); });")),
+    ],
+    "close-invisible": [
+        ("viewer.css", r"\Z", "\n/* planted: close-invisible */\n#card-close { opacity: 0 !important; }\n"),
     ],
     "page-error": [
         ("viewer.js", PREPEND, "plantedUndefinedFunction();  // planted: page-error\n"),
