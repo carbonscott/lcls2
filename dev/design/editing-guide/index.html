@@ -2607,7 +2607,7 @@ map itself (there is no second map): for each step, <code>map.tour</code> (one e
 per step, in the same order, naming the step's <code>id</code>) gives the tokens that
 show where the event's parts are and the map lines and boxes to highlight,
 and <code>map.sequence.rows</code> has the step's row of the sequence chart, the
-tour's second view ("Show the steps on: A sequence chart"). The part that
+tour's second view ("Show the steps on: Sequence chart"). The part that
 contains a step's <code>node</code> is outlined on the map ("THIS STEP"), and the
 step's card under the map shows the step's text and that part's detail with
 the <code>node</code> highlighted ("Where this step happens"). The lines and boxes
@@ -3091,7 +3091,13 @@ python<span class="w"> </span>-m<span class="w"> </span>http.server<span class="
 <p>Open the printed URL. The page starts with the map: the three mode buttons
 and the Emphasize buttons are right above it, and the card is under it.
 Clicking on the map, the buttons or inside the card does not scroll the
-page.</p>
+page. The exceptions are the links that take you somewhere: a link to a
+node in a card (in its text, its Flows or the line that says where the node
+is) opens that node and, when the card's top is above the window, brings
+the card's head back to the top; "Read the full description" in the tour's
+card opens the part in "Explore the parts" in the same way; "Back to the
+map" scrolls to the map; and a small map in "Compare kinds" may bring the
+map section to the top (see below).</p>
 <ul>
 <li>The mode buttons: "Explore the parts" (the page opens in it), "Follow one
   event" and "Compare kinds".</li>
@@ -3101,29 +3107,40 @@ page.</p>
   in the drawing to show that node in the panel, and click a tag on the
   drawing's edge ("from DRP ›") to open that neighbouring part. The card's
   head stays in view while you scroll the card; when a box or dashed group
-  inside the part is open, the head shows its title after the part's. Its
+  inside the part is open, the head shows the part's short name (its
+  <code>place.short</code>) and then that node's title, for example "DRP › Result
+  receiver: record and monitor"; a long name wraps onto a second line
+  instead of being cut. Its
   arrows go to the previous or next card (the overview, then the top-level
   parts in the order of the model, then the overview again). "Close", shown
   only while a part is open, returns the card to the overview. When the card
   changes while you are further down in it (its head stuck at the top of the
   window), the new card starts right under the head and the page does not
-  move; the space above it is left blank, with a short note. Design
+  move; the space above it is left blank, with a short note and a "Back to
+  the map" link that stay under the head while you scroll back up through
+  the blank. The blank goes once the card's top is back in view, and when
+  the window is resized or turned the new content stays right under the
+  head. Design
   decisions, code references, sources and flows are folded: open one with
   its heading. A card ends with "End of ..." and a "Back to the map" link.</li>
 <li>A link to a node (<code>#/node/&lt;id&gt;</code>) opens the card on that node's part, with
   the node highlighted in the drawing and its panel shown, and brings the
   card into view. The other addresses are <code>#/</code> (the overview),
   <code>#/tour/&lt;k&gt;</code> (the tour at step k), <code>#/compare</code>, <code>#/read</code> and
-  <code>#/read/&lt;id&gt;</code> (the one-page view). A click on the page changes the address
-  without adding a history entry, so the browser's Back button leaves the
-  page.</li>
+  <code>#/read/&lt;id&gt;</code> (the one-page view). Clicks on the map, the modes and the
+  card replace the address without adding a history entry, so the
+  browser's Back button does not undo them (it leaves the page). "Read as
+  one page", and a link you follow in the one-page view, add an entry, so
+  Back from the one-page view returns to the page.</li>
 <li>"Emphasize" (All, and one button per kind of edge, named from
   <code>map.kinds</code>) dims every other kind on the map and, for a kind, shows that
   kind's caption under the map. All shows no caption.</li>
 <li>Under the map: its caption, then "Not drawn on the map", which lists the
-  <code>map.omitted</code> entries. "Full size", in a bar under the map's frame, draws
-  the map at its natural size (the map then scrolls sideways in its frame);
-  press it again to fit the map to the page.</li>
+  <code>map.omitted</code> entries. "Full size", in a bar under the map's frame,
+  enlarges the map to its natural size when the page draws it smaller (if it
+  is then wider than its frame, it scrolls sideways in the frame and a note
+  next to the button says so); a figure already drawn at its natural size
+  or larger stays as it is. Press it again for the usual size.</li>
 <li><strong>Follow one event.</strong> The tour moves one event across the same map; the
   page has no second map. Use "Back" and "Next", the numbered step buttons,
   or the Left and Right arrow keys once the focus is in the map section
@@ -3131,7 +3148,9 @@ page.</p>
   sideways). The card under the map holds the step's text, the description
   of the step's node and its detail drawing ("Where this step happens"). It
   has its own head ("Step k of T", with "Back" and "Next") that stays in view
-  while you scroll the card. "Show the steps on: A sequence chart" swaps the
+  while you scroll the card, and its footer, after "End of step k of T.",
+  has "Previous step" and "Next step" too, so that you can go on from the
+  end of the card. "Show the steps on: Sequence chart" swaps the
   map for the sequence chart (it has its own "Full size" button); click a row
   to change the step, and the card and a line under the chart name the new
   step.</li>
@@ -3295,8 +3314,8 @@ this order (a line that appears twice is checked at two window sizes):</p>
 <td>K is the number of edge kinds whose <code>map.multiples</code> entry has a caption. A kind counts when its Emphasize button shows that caption under the map's frame (the first 30 characters of it) and dims the lines of the other kinds.</td>
 </tr>
 <tr>
-<td><code>card default=overview after_close=overview nav=X/9 sticky_head=&lt;bool&gt; end_footer=&lt;bool&gt; folded=&lt;bool&gt; stuck_view=K/K</code></td>
-<td>See "The card line" below. It passes when <code>default</code> and <code>after_close</code> print <code>overview</code> (a failing run prints what was wrong instead), X = 9, every bool is true and <code>stuck_view</code> counts every case.</td>
+<td><code>card default=overview after_close=overview nav=X/9 sticky_head=&lt;bool&gt; end_footer=&lt;bool&gt; folded=&lt;bool&gt; stuck_view=K/K head_names=K/N spacer_note=ok</code></td>
+<td>See "The card line" below. It passes when <code>default</code> and <code>after_close</code> print <code>overview</code> (a failing run prints what was wrong instead), X = 9, every bool is true, <code>stuck_view</code> counts every case, <code>head_names</code> counts every node and <code>spacer_note</code> is <code>ok</code>.</td>
 </tr>
 <tr>
 <td><code>matrix cells=C2/C hscroll=&lt;px&gt; sticky_head=&lt;bool&gt; close_buttons=&lt;n&gt; end_footer=&lt;bool&gt; divider=&lt;bool&gt;</code></td>
@@ -3336,6 +3355,17 @@ this order (a line that appears twice is checked at two window sizes):</p>
   the next or previous card starts right under the head and the page does
   not move. It is checked at 744 and 1440 px for the next and the previous
   arrow (and for the step card's own Back and Next, when it has them).</li>
+<li><code>head_names=K/N</code>: every node is opened (its part's box on the map, then
+  its box or group in the card), at 744 px and at 400 px wide, and no text
+  in the card's head is cut (no "..." and nothing hidden past the edge); at
+  744 px the head is also at most 100 px tall. K counts the nodes for which
+  both sizes pass.</li>
+<li><code>spacer_note=ok</code>: after each of the stuck cases above (at 744 px), the
+  test scrolls back up with the mouse wheel; while the space under the head
+  is blank, the blank's note and its "Back to the map" link must show under
+  the head. The link is also pressed once from the blank (and once from the
+  step card's blank): the map section must then be at the top of the window.
+  An informational <code>NOTE: spacer_blank_px=&lt;px&gt;</code> gives the tallest blank.</li>
 <li><code>nav=X/9</code>: pressing the card's next arrow nine times from the overview
   visits the overview, the eight top-level parts in the order of the model,
   and the overview again, and the previous arrow gives the exact reverse.
@@ -3377,9 +3407,13 @@ again), the card's arrows and Close, the step card's own Back and Next when
 it has them, and the help button. It also presses Enter on a focused map
 box, a sequence row and a tag, and it clicks the card's arrows and Close
 when the card's top is 300 px above the window, so that its head is stuck at
-the top. After each press it waits 600 ms. J is the number of presses after
-which the window scrolled by more than 1 px, right away or later (before
-the next press, or 1.5 s after the last one); F is the number of presses
+the top. It also presses the step card's "Next step" and "Previous step"
+at the end of the card, when the card has them. After each press it waits
+600 ms, and it logs every scroll event of the window from the press to the
+end of that wait. J is the number of presses after which the window
+scrolled by more than 1 px: during the wait (even if the page came back
+before the wait ended), right away, or later (before the next press, or
+1.5 s after the last one); F is the number of presses
 that could not be made (the control is missing, covered, or the page is not
 in the state the press needs); N is the number of presses made. Only four
 kinds of control may scroll the page: the "Back to the map" links, the
@@ -3428,15 +3462,25 @@ number of pressed controls that moved on the screen by more than 2 px.</p>
 <p>A failing check also prints <code>PROBLEM: &lt;check&gt;: &lt;detail&gt;</code>, and every
 <code>PROBLEM:</code> line fails the run, also when all the lines above pass. <code>NOTE:</code>
 lines are informational. A check that finds nothing to test fails.</p>
+<p>Where a line says that something is shown (displayed), the test means what a
+reader sees: the element has a size, is not hidden or transparent, is not
+cut away by a box around it that clips its content (for example a wrapper
+with <code>max-height: 0</code> and <code>overflow: hidden</code>), and a point of it is on top
+(nothing covers all of it). Every click of the test is a real mouse click
+on a point of the control that receives it; a control that cannot be
+clicked that way fails the run.</p>
 <p><code>--layout</code> loads the page at several window sizes and prints
 <code>layout_identical=true parts=P</code> (the map is the same at 744 and 1440 pixels
 wide), <code>width=W page_hscroll=0</code> for widths 400, 744 and 1440 (the page itself
 never scrolls sideways), the informational
 <code>inner_scroll=&lt;section:px,...&gt; min_text_px=P</code> at 744 (<code>none</code> when no figure
-scrolls inside its frame), <code>fullsize map=ok sequence=ok</code> (the "Full size"
+scrolls inside its frame), <code>fullsize map=ok sequence=ok desktop=ok</code> (the "Full size"
 buttons of the map and of the sequence chart work, the sequence chart's
 checked in "Follow one event" with the steps shown on the sequence chart, and
-the map fits a 744-pixel window), <code>theme dark=ok light=ok override=ok</code> (with
+the map fits a 744-pixel window; <code>desktop=ok</code>: at 1440 pixels, "Full size"
+never draws a figure narrower than before and draws it at least at its
+natural size, and the note next to the button shows exactly when the figure
+then scrolls sideways), <code>theme dark=ok light=ok override=ok</code> (with
 the system set to dark the page and the map use the dark colours, with it set
 to light the light ones, and a <code>data-theme</code> of <code>light</code> or <code>dark</code> on the
 page's root element wins over the system setting) and <code>console_errors=0</code>.</p>
