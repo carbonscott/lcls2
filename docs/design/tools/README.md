@@ -434,9 +434,9 @@ control that cannot be clicked at a hit-tested point is a `PROBLEM:`.
   filler or spacer (the note included) or an empty block of the card body;
   at every blank step `.spacer-note` and its `a.back-to-map[data-moves-page]`
   (in the note or in `.card-spacer`) must be displayed, under the head
-  (top >= head bottom - 1) and inside the viewport. The walk ends when the
-  view under the head is not blank any more (or the card's top is in view,
-  or the page is at its top). Then the `#card-next` case and the
+  (top >= head bottom - 1) and inside the viewport. The walk ends at the
+  first step that is not blank once a blank step was seen or the card's top
+  is in view, or when the page is at its top. Then the `#card-next` case and the
   `#step-next` case are repeated and the note's link is pressed for real at
   the first blank step: `#map-section`'s top must then be at the viewport's
   top (+-2 px, or the page cannot scroll that far). `ok` iff every blank

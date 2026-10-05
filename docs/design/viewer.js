@@ -1762,10 +1762,11 @@
   //   card turns again. A reader who scrolls back up passes through it, and
   //   a note in it, under the head, says why it is blank and links back to
   //   the map ("Back to the map", one tap out of the blank). As the reader
-  //   scrolls, the part of the spacer below the window is dropped (that
-  //   changes nothing in view), and once the card's top is back in view
-  //   the rest of it goes too (the card's content then follows its head
-  //   again), so it is gone by the time the reader is back at the map.
+  //   scrolls, only what moves nothing in view is dropped: the part of the
+  //   spacer below the window's bottom; the whole spacer once it is all
+  //   below the window; and, once the card's top is back in view, the rest
+  //   of the spacer when what is left of it, down to the window's bottom,
+  //   is too short for its note (what was under it was below the window).
   // - While content changes, the page may only get longer: the browser
   //   pulls the page up when it gets shorter than the window's bottom. A
   //   minimum height on the body holds that bottom until the reader scrolls
@@ -1847,10 +1848,23 @@
     floorPx = 0;
     document.body.style.minHeight = '';
   }
-  // As the reader scrolls, drop what lies below the window: the part of a
-  // spacer under the window's bottom, and the body's minimum height.
+  // As the reader scrolls, drop what lies below the window: what cutBelow
+  // drops of each spacer, and the body's minimum height.
   let trimFrame = 0;
   let fitFrame = 0;
+  // Drop what of a spacer lies below the window's bottom (r: its box, under:
+  // the stuck head's bottom, vh: the window's height); nothing in view
+  // moves. A spacer all below the window goes. When the card's top is back
+  // in view (the spacer's top at or under the stuck head's bottom), a rest
+  // that reaches the window's bottom but is too short for its note goes
+  // too: what was under it was below the window. False when it is gone.
+  function cutBelow(sp, r, under, vh) {
+    if (r.top >= vh) { setSpacer(sp, 0); return false; }
+    if (r.bottom > vh) setSpacer(sp, vh - r.top - SPACER_PAD);
+    const note = sp.querySelector('.spacer-note');
+    if (!sp.hidden && r.top >= under && r.bottom >= vh - 1 && note && note.hidden) setSpacer(sp, 0);
+    return !sp.hidden;
+  }
   function trimPlace() {
     trimFrame = 0;
     const vh = window.innerHeight;
@@ -1859,10 +1873,7 @@
       if (!r.height) return;
       const head = sp.closest('.card').querySelector(':scope > .card-head');
       const under = stickTop(head) + (head ? head.offsetHeight : 0);
-      // the card's top is back in view (its head no longer stuck): the reader
-      // has passed the blank, and the card's content follows its head again
-      if (r.top >= under) { setSpacer(sp, 0); return; }
-      if (r.bottom > vh) setSpacer(sp, Math.min(sp.offsetHeight, vh - r.top) - SPACER_PAD);
+      if (!cutBelow(sp, r, under, vh)) return;
       // (a pending refit needs the place the reader had before the resize)
       if (!fitFrame) spacerAt.set(sp, { gap: Math.min(r.bottom, vh) - under, top: r.top + window.scrollY });
     });
@@ -1881,7 +1892,8 @@
   // - when only the height changed (a browser's bars, a window made taller),
   //   the content keeps its place in the page: the spacer takes up what the
   //   things above it gained or lost, if anything.
-  // When the card's top is in view, the spacer goes.
+  // When the card's top is in view, the spacer keeps what of it is in view,
+  // and what is below the window goes as when the reader scrolls (cutBelow).
   let fitWidth = window.innerWidth;
   function refitPlace() {
     fitFrame = 0;
@@ -1896,7 +1908,12 @@
       const under = stickTop(head) + (head ? head.offsetHeight : 0);
       const r = sp.getBoundingClientRect();
       if (!changed) { holdFloor(); changed = true; }
-      if (r.top >= under) { setSpacer(sp, 0); return; }
+      if (r.top >= under) {
+        // (the note's place and size at the window's new size first)
+        setSpacer(sp, sp.offsetHeight - SPACER_PAD, under + 8);
+        if (cutBelow(sp, sp.getBoundingClientRect(), under, window.innerHeight)) notePlace(sp, under);
+        return;
+      }
       const at = spacerAt.get(sp) || { gap: SPACER_PAD, top: r.top + y };
       // the content starts at the spacer's bottom
       if (widthChanged) setSpacer(sp, sp.offsetHeight - SPACER_PAD + (under + Math.min(at.gap, SPACER_PAD) - r.bottom), under + 8);
@@ -2650,7 +2667,7 @@
     page.textContent = '';
     xrefHash = readHash;
     try {
-      page.append(el('p', { class: 'read-note', text: 'The design model as one document: the question and the summary, then every part with its sub-parts in order, then the tour. The map, the sequence chart and the matrix are not on this page. Links to parts jump within this page; "Back to the map" returns to the map.' }));
+      page.append(el('p', { class: 'read-note', text: 'The design model as one document: the question and the summary, then every part with its sub-parts in order, then the tour. The map, the sequence chart and the matrix are not on this page. "Back to the map", "Open in Explore the parts" and "Show this step on the map" leave this page; the other links to parts jump within it.' }));
       page.append(inlineProse('p', model.question, 'question'));
       page.append(prose(model.summary, { class: 'prose read-summary' }));
 

@@ -650,7 +650,7 @@ Without this the validator reports
   "id": "example-buffered-writer-to-files",
   "from": "example-buffered-writer",
   "to": "files",
-  "label": "Datagram blocks",
+  "label": "datagram blocks",
   "kind": "data",
   "prose": "When the next datagram does not fit in the buffer, or the batch in it is more than 2 seconds old, the writer writes the buffer to the file with one `_write()` call.",
   "code_refs": [
@@ -696,7 +696,7 @@ card under the map opens on the DRP, because the new node's parent is the
 part `drp`. The detail drawing in the card now has a box "Example: buffered
 file writer" in its second row, third column, after the boxes of
 `drp-process` and `detector-classes`. The tag "to Files ›" on the drawing's
-right side lists the label "Datagram blocks" with the other labels of the
+right side lists the label "datagram blocks" with the other labels of the
 edges to Files. Click the new box: the panel under the drawing shows the
 node's title, its `summary` in bold and its `prose`. Its code reference is in
 the panel's folded section for code references, and the new edge is in the
@@ -764,12 +764,17 @@ to files: each command below may run in a fresh shell (a new terminal, or
 a tool that runs every command on its own), where `$PORT` and `$!` are no
 longer set. The server's log, port and process ID go to `build/`; `build`
 is ignored by git (see `.gitignore`), so they do not show up in
-`git status`. Any path outside the checkout works too.
+`git status`. Any path outside the checkout works too. The server reads
+its input from `/dev/null` (`< /dev/null`) and writes its output to the
+log, so that it holds neither the input nor the output of the shell that
+started it: a tool that runs commands without a terminal (a script, a
+remote shell, an agent) may otherwise wait for the server to end before it
+returns.
 
 ```bash
 PORT=$(python -c "import socket; s = socket.socket(); s.bind(('127.0.0.1', 0)); print(s.getsockname()[1])")
 mkdir -p build
-python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design > build/design-preview.log 2>&1 &
+python -m http.server "$PORT" --bind 127.0.0.1 --directory docs/design < /dev/null > build/design-preview.log 2>&1 &
 echo $! > build/design-preview.pid
 echo "$PORT" > build/design-preview.port
 echo "http://127.0.0.1:$PORT/"
@@ -810,9 +815,14 @@ map section to the top (see below).
   short note shows one, saying why the space is blank, with a "Back to the
   map" link; the note stays under the head while you scroll back up through
   the blank. A shorter blank (the card's top was only just above the
-  window) has no note and no link. The blank goes once the card's top is
-  back in view, and when the window is resized or turned the new content
-  stays right under the head. Design
+  window) has no note and no link. As you scroll back up, the blank
+  shrinks only where that moves nothing on screen: its part below the
+  bottom of the window goes, and the rest goes once it is all below the
+  window, or once the card's top is back in view and what is left of the
+  blank at the bottom of the window is too short for its note. When the
+  window gets wider or narrower (a tablet turned, for example) while the
+  head is stuck, a blank under the head closes up, so that the content
+  starts right under the head again. Design
   decisions, code references, sources and flows are folded: open one with
   its heading. A card ends with "End of ..." and a "Back to the map" link.
 - A link to a node (`#/node/<id>`) opens the card on that node's part, with
