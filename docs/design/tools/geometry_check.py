@@ -376,13 +376,12 @@ def first_line(exc):
 
 
 def click(page, locator):
-    """A real click; if something else covers the element, dispatch the click on it. Returns a note or ''."""
-    try:
-        locator.click(timeout=3000)
-        return ""
-    except PlaywrightError as exc:
-        locator.dispatch_event("click")
-        return f"real click failed ({first_line(exc)}); dispatched a click event instead"
+    """A real click at a hit-tested point (Playwright's click checks that the element receives it).
+    There is no dispatch fallback: a box that cannot be clicked raises, and the caller prints a
+    PROBLEM line for its view (which is then not measured, so views < 1 + P and the exit is 1).
+    Returns '' (kept for the caller's note)."""
+    locator.click(timeout=3000)
+    return ""
 
 
 def measure(page, selector, parents):
@@ -509,8 +508,8 @@ def run_check(url, model_ref=None, width=1440, height=900, verbose=False, init_s
                             out.append(f"NOTE: view=detail:{part}: {note}")
                         page.wait_for_selector(DETAIL_SELECTOR.format(part=part), state="attached")
                     except PlaywrightError as exc:
-                        out.append(f"PROBLEM: view=detail:{part}: clicking its map box did not open "
-                                   f"{DETAIL_SELECTOR.format(part=part)}: {first_line(exc)}")
+                        out.append(f"PROBLEM: view=detail:{part}: its map box could not be clicked at a hit-tested point, "
+                                   f"or the click did not open {DETAIL_SELECTOR.format(part=part)}: {first_line(exc)}")
                         continue
                     res = measure(page, DETAIL_SELECTOR.format(part=part), parents)
                     r = report_view(f"detail:{part}", res, verbose, out)

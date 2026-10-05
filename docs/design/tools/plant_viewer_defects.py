@@ -82,6 +82,40 @@ The kinds of the hardened checks (one per check):
                        PROBLEM lines ("#card-close is not displayed ..."),
                        every printed value passes, and the run exits 1.
 
+The kinds of the checks of the third round (decisions-3 T15-T20):
+
+  ancestor-clip        the tour card's detail wrapper (#tour-detail) gets
+                       max-height: 0 and overflow: hidden, so its drawing has
+                       a box but is clipped away; tour_card detail=0/T (T15).
+  step-text-clip-path  the step text (#tour-step-prose) gets a clip-path the
+                       test cannot compute (an empty polygon); only the hit
+                       test finds it; tour_card text=0/T (T15).
+  scroll-bounce        tour Next scrolls the page 500 px down 100 ms after the
+                       click and back 350 ms after it, within the settle;
+                       scroll_jumps J > 0 (T16).
+  click-dead           #card-next gets pointer-events: none (it is drawn but
+                       a click falls through to its parent): the card's nav
+                       check cannot click it at a hit-tested point (no
+                       dispatch fallback): PROBLEM, card nav < 9, exit 1 (T18).
+  head-truncated       the card head's texts are cut with an ellipsis again
+                       (one line, at most 9em each); card head_names < N (T17).
+  spacer-note-no-link  the spacer note's "Back to the map" link is not
+                       displayed; card spacer_note=fail (T19).
+  fullsize-shrinks     Full size draws a figure at its viewBox width even when
+                       the page draws it wider (the sequence chart at 1440 px:
+                       1110 < 1150 px); --layout fullsize desktop=fail (T20).
+  fullsize-hint-missing  the note next to a Full size button ("Scroll
+                       sideways ...") is never displayed, also when the frame
+                       scrolls (the map at 1440 px); --layout fullsize
+                       desktop=fail (T20).
+  step-foot-scrolls    the step card footer's "Next step" scrolls the page by
+                       400 px; scroll_jumps J > 0 (the footer's buttons are
+                       pressed when the viewer has them).
+  map-box-dead         the DRP's map box ignores the pointer (pointer-events:
+                       none): geometry_check.py cannot click it at a
+                       hit-tested point (no dispatch fallback), so the DRP's
+                       detail is not measured: views=V-1, exit 1 (T18).
+
 Kinds kept from the earlier viewer checks:
 
   page-error           "plantedUndefinedFunction();" is put at the top of
@@ -295,6 +329,49 @@ PLANTS = {
     ],
     "close-invisible": [
         ("viewer.css", r"\Z", "\n/* planted: close-invisible */\n#card-close { opacity: 0 !important; }\n"),
+    ],
+    # the kinds of the third round (decisions-3 T21)
+    "ancestor-clip": [
+        ("viewer.css", r"\Z", "\n/* planted: ancestor-clip */\n#tour-detail { max-height: 0 !important; overflow: hidden !important; }\n"),
+    ],
+    "step-text-clip-path": [
+        ("viewer.css", r"\Z", "\n/* planted: step-text-clip-path */\n#tour-step-prose { clip-path: polygon(0 0, 0 0, 0 0) !important; }\n"),
+    ],
+    "scroll-bounce": [
+        ("viewer.js", APPEND_JS, snippet("scroll-bounce",
+            "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#tour-next'))) return;"
+            " const y = window.scrollY;"
+            " setTimeout(() => window.scrollTo({ top: y + 500, behavior: 'instant' }), 100);"
+            " setTimeout(() => window.scrollTo({ top: y, behavior: 'instant' }), 350); });")),
+    ],
+    "click-dead": [
+        ("viewer.css", r"\Z", "\n/* planted: click-dead */\n#card-next { pointer-events: none !important; }\n"),
+    ],
+    "head-truncated": [
+        ("viewer.css", r"\Z", "\n/* planted: head-truncated */\n#card-head .card-title { flex-wrap: nowrap !important; overflow: hidden !important; }\n"
+         "#card-head #card-title, #card-head .card-node { white-space: nowrap !important; overflow: hidden !important;"
+         " text-overflow: ellipsis !important; max-width: 9em !important; }\n"),
+    ],
+    "spacer-note-no-link": [
+        ("viewer.css", r"\Z", "\n/* planted: spacer-note-no-link */\n.card-spacer a.back-to-map { display: none !important; }\n"),
+    ],
+    "fullsize-shrinks": [
+        ("viewer.js", APPEND_JS, snippet("fullsize-shrinks",
+            "document.addEventListener('click', (ev) => { const b = ev.target.closest && ev.target.closest('button.fullsize'); if (!b) return;"
+            " setTimeout(() => { const sheet = document.getElementById(b.getAttribute('aria-controls')); const svg = sheet && sheet.querySelector(':scope > svg');"
+            " if (!svg || b.getAttribute('aria-pressed') !== 'true' || !svg.viewBox || !svg.viewBox.baseVal) return;"
+            " svg.style.width = svg.viewBox.baseVal.width + 'px'; window.dispatchEvent(new Event('resize')); }, 0); });")),
+    ],
+    "fullsize-hint-missing": [
+        ("viewer.css", r"\Z", "\n/* planted: fullsize-hint-missing */\n.figbar .scroll-hint { display: none !important; }\n"),
+    ],
+    "step-foot-scrolls": [
+        ("viewer.js", APPEND_JS, snippet("step-foot-scrolls",
+            "document.addEventListener('click', (ev) => { if (!(ev.target.closest && ev.target.closest('#step-foot-next'))) return;"
+            " setTimeout(() => window.scrollBy({ top: 400, behavior: 'instant' }), 0); });")),
+    ],
+    "map-box-dead": [
+        ("viewer.css", r"\Z", "\n/* planted: map-box-dead */\n#map svg.map g.box[data-part=\"drp\"], #map svg.map g.box[data-part=\"drp\"] * { pointer-events: none !important; }\n"),
     ],
     "page-error": [
         ("viewer.js", PREPEND, "plantedUndefinedFunction();  // planted: page-error\n"),

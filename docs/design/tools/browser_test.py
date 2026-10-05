@@ -98,7 +98,7 @@ Options:
       layout_identical=<bool> parts=<n>
       width=<w> page_hscroll=<px>          (400, 744, 1440)
       inner_scroll=<section:px,...> min_text_px=<px>   (informational, after 744)
-      fullsize map=ok|fail sequence=ok|fail
+      fullsize map=ok|fail sequence=ok|fail desktop=ok|fail
       theme dark=ok|fail light=ok|fail override=ok|fail
       console_errors=C
   --check-node ID --expect-title TEXT --expect-prose SUBSTRING
@@ -286,6 +286,63 @@ def load_model(url):
 # ---------------------------------------------------------------------------
 
 PRELUDE = r"""
+// T15: the part of el's box that no ancestor clips away, in viewport coordinates: its border box
+// cut by the padding box of every ancestor whose overflow clips (hidden or clip, per axis; contain:
+// paint; an auto/scroll box only when its own client box is empty, since a reader can scroll
+// it), by clip-path: inset(...) and by clip: rect(...) (on el or an ancestor). html and body are
+// not cut (their overflow belongs to the viewport); the viewport does not cut either. by names the
+// element that cut it to nothing; other is true when a clip-path the test cannot compute applies
+// (the hit test of seen() judges that case).
+const visibleRect = (el) => {
+  const b = el.getBoundingClientRect();
+  let r = { left: b.left, top: b.top, right: b.right, bottom: b.bottom }, by = null, other = false;
+  const cut = (c, who) => {
+    r = { left: Math.max(r.left, c.left), top: Math.max(r.top, c.top), right: Math.min(r.right, c.right), bottom: Math.min(r.bottom, c.bottom) };
+    if (by === null && !(r.right - r.left > 0 && r.bottom - r.top > 0)) by = who;
+  };
+  const len = (s, ref) => /%$/.test(s) ? parseFloat(s) / 100 * ref : (parseFloat(s) || 0);
+  const dsc = (e) => (e.id ? '#' + e.id : e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim() ? '.' + e.className.trim().split(/\s+/).join('.') : ''));
+  for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
+    if (e === document.documentElement || e === document.body) break;
+    const cs = getComputedStyle(e), er = e.getBoundingClientRect();
+    if (e !== el) {
+      const paint = /\b(paint|strict|content)\b/.test(cs.contain || '');
+      const clipX = paint || cs.overflowX === 'hidden' || cs.overflowX === 'clip';
+      const clipY = paint || cs.overflowY === 'hidden' || cs.overflowY === 'clip';
+      const scrollX = !paint && (cs.overflowX === 'auto' || cs.overflowX === 'scroll');
+      const scrollY = !paint && (cs.overflowY === 'auto' || cs.overflowY === 'scroll');
+      if (clipX || clipY || scrollX || scrollY) {
+        const svg = e instanceof SVGElement;
+        const L = svg ? er.left : er.left + e.clientLeft, T = svg ? er.top : er.top + e.clientTop;
+        const W = svg ? er.width : e.clientWidth, H = svg ? er.height : e.clientHeight;
+        const c = { left: -Infinity, top: -Infinity, right: Infinity, bottom: Infinity };
+        if (clipX || (scrollX && W <= 0)) { c.left = L; c.right = L + W; }
+        if (clipY || (scrollY && H <= 0)) { c.top = T; c.bottom = T + H; }
+        cut(c, dsc(e) + ' (overflow ' + cs.overflowX + '/' + cs.overflowY + (cs.maxHeight !== 'none' ? ', max-height ' + cs.maxHeight : '') + ')');
+      }
+    }
+    if (cs.clipPath && cs.clipPath !== 'none') {
+      const mm = cs.clipPath.match(/^inset\(([^)]*)\)/);
+      if (!mm) other = true;
+      else {
+        const v = mm[1].split(/\s+round\s+/)[0].trim().split(/\s+/);
+        const t = v[0], rr = v[1] ?? v[0], bb = v[2] ?? v[0], l = v[3] ?? v[1] ?? v[0];
+        cut({ left: er.left + len(l, er.width), top: er.top + len(t, er.height), right: er.right - len(rr, er.width), bottom: er.bottom - len(bb, er.height) },
+            dsc(e) + ' (clip-path ' + cs.clipPath + ')');
+      }
+    }
+    if ((cs.position === 'absolute' || cs.position === 'fixed') && /^rect\(/.test(cs.clip || '')) {
+      const v = cs.clip.slice(5, -1).split(/\s*,\s*|\s+/);
+      if (v.length === 4) {
+        const at = (s, d) => s === 'auto' ? d : parseFloat(s);
+        cut({ left: er.left + at(v[3], 0), top: er.top + at(v[0], 0), right: er.left + at(v[1], er.width), bottom: er.top + at(v[2], er.height) },
+            dsc(e) + ' (clip ' + cs.clip + ')');
+      }
+    }
+  }
+  const area = Math.max(0, r.right - r.left) * Math.max(0, r.bottom - r.top);
+  return { rect: r, area, by, other };
+};
 const shown = (el) => {
   if (!el || !el.isConnected) return false;
   const r = el.getBoundingClientRect();
@@ -294,7 +351,52 @@ const shown = (el) => {
     const cs = getComputedStyle(e);
     if (cs.display === 'none' || parseFloat(cs.opacity) === 0) return false;
   }
-  return getComputedStyle(el).visibility !== 'hidden';
+  if (getComputedStyle(el).visibility === 'hidden') return false;
+  return visibleRect(el).area > 0;  // T15: not clipped away by an ancestor
+};
+// T15: a point of el's visible part inside the viewport (a 5 x 5 grid, centre first) where
+// elementFromPoint gives el or one of its descendants; while testing, an el with pointer-events: none
+// takes them (restored at once).
+const hitPoint = (el) => {
+  const w = visibleRect(el).rect;
+  const v = { left: Math.max(w.left, 0), top: Math.max(w.top, 0), right: Math.min(w.right, innerWidth), bottom: Math.min(w.bottom, innerHeight) };
+  if (!(v.right - v.left > 0 && v.bottom - v.top > 0)) return { pt: null, last: null };
+  const prev = el.style.getPropertyValue('pointer-events'), prio = el.style.getPropertyPriority('pointer-events');
+  const pe = getComputedStyle(el).pointerEvents === 'none';
+  if (pe) el.style.setProperty('pointer-events', 'auto', 'important');
+  let last = null, pt = null;
+  const fr = [.5, .3, .7, .12, .88];
+  for (const fy of fr) { for (const fx of fr) {
+    const x = v.left + (v.right - v.left) * fx, y = v.top + (v.bottom - v.top) * fy;
+    if (!(x >= 0 && y >= 0 && x < innerWidth && y < innerHeight)) continue;
+    const t = document.elementFromPoint(x, y);
+    if (t && (t === el || el.contains(t))) { pt = [x, y]; break; }
+    if (t) last = t;
+  } if (pt) break; }
+  if (pe) { if (prev) el.style.setProperty('pointer-events', prev, prio); else el.style.removeProperty('pointer-events'); }
+  return { pt, last };
+};
+// T15: null when el is displayed for a reader, else why not: shown() (a box, no display:none,
+// opacity 0 or visibility hidden, not clipped away by an ancestor), no [hidden] ancestor, and a
+// hit test on a point of its visible part. When no such point is in the viewport the window is
+// scrolled (instantly) to centre it for the hit test and scrolled back at once.
+const seen = (el) => {
+  if (!el || !el.isConnected) return 'not found';
+  if (!shown(el)) {
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) {
+      const v = visibleRect(el);
+      if (v.area <= 0 && v.by) return 'clipped away by ' + v.by;
+    }
+    return 'not displayed (no box, display:none, opacity 0 or visibility hidden)';
+  }
+  for (let e = el; e && e.nodeType === 1; e = e.parentElement) if (e.hidden) return 'inside a [hidden] element ' + (e.id ? '#' + e.id : e.tagName.toLowerCase());
+  let h = hitPoint(el);
+  if (h.pt) return null;
+  const y0 = window.scrollY, v = visibleRect(el).rect;
+  window.scrollTo({ top: Math.max(0, y0 + (v.top + Math.min(v.bottom, v.top + innerHeight)) / 2 - innerHeight / 2), behavior: 'instant' });
+  if (window.scrollY !== y0) { const h2 = hitPoint(el); window.scrollTo({ top: y0, behavior: 'instant' }); if (h2.pt) return null; h = h2.last ? h2 : h; }
+  return 'no point of it is hit (covered or clipped' + (h.last ? '; the point hits ' + desc(h.last) : '') + ')';
 };
 const desc = (el) => {
   if (!el || el.nodeType !== 1) return 'none';
@@ -417,25 +519,21 @@ class Session:
             return 0
 
     def click(self, locator, what):
-        """Click like a reader; if another element covers the target, try a corner, then dispatch."""
+        """Click like a reader: a real mouse click at a point of the control that receives it
+        (Playwright's click, which scrolls it into view and hit-tests its centre; else another point
+        of it that elementFromPoint gives back, as real_click finds). There is no dispatch fallback
+        (T18): a control that cannot be clicked at a hit-tested point is a PROBLEM."""
         try:
             locator.click(timeout=2000)
             return True
         except PlaywrightError as exc:
             first = first_line(exc)
-        try:
-            locator.click(position={"x": 6, "y": 6}, timeout=1500)
-            self.note(f"{what}: the centre is covered ({first}); clicked near its top-left corner")
+        ok, why = real_click(self, locator)
+        if ok:
+            self.note(f"{what}: its centre could not be clicked ({first}); clicked another point of it that receives the click")
             return True
-        except PlaywrightError:
-            pass
-        try:
-            locator.dispatch_event("click")
-            self.note(f"{what}: no visible point could be clicked ({first}); dispatched a click event")
-            return True
-        except PlaywrightError as exc:
-            self.fail(f"{what}: cannot click: {first_line(exc)}")
-            return False
+        self.fail(f"{what}: cannot be clicked at a hit-tested point (no dispatch fallback): {why}; {first}")
+        return False
 
     def body_mode(self):
         return self.page.evaluate("() => document.body.dataset.mode || null")
@@ -586,10 +684,11 @@ const t = document.querySelector('#part-card #detail-title');
 const c = document.querySelector('#part-card #card-title');
 const p = document.querySelector('#part-card #detail-prose');
 const r = t ? t.getBoundingClientRect() : null;
-return { id: t ? (t.dataset.nodeId || null) : null, title: t ? t.textContent : null,
-         vh: !!t && (t.classList.contains('vh') || r.width <= 1 || r.height <= 1),
-         titleShown: shown(t), card: c && shown(c) ? c.innerText : null,
-         prose: p && shown(p) ? p.innerText : '' };
+const vh = !!t && (t.classList.contains('vh') || r.width <= 1 || r.height <= 1);
+const tWhy = vh ? null : seen(t), cWhy = seen(c), pWhy = seen(p);  // displayed for a reader (T15)
+return { id: t ? (t.dataset.nodeId || null) : null, title: t ? t.textContent : null, vh,
+         titleShown: !vh && !tWhy, titleWhy: tWhy, card: c && !cWhy ? c.innerText : null, cardWhy: cWhy,
+         prose: p && !pWhy ? p.innerText : '', proseWhy: pWhy };
 """, "")
 
 FOLD_JS = js(r"""
@@ -611,15 +710,17 @@ def check_panel(s, m, node_id, how):
     if p["vh"]:
         if normalize(p["title"]) != want or normalize(p["card"]) != want:
             s.fail(f"{how}: {node_id}: #detail-title (visually hidden) reads {normalize(p['title'])!r} and "
-                   f"#card-title {normalize(p['card'])!r}, expected {want!r}")
+                   f"#card-title {normalize(p['card'])!r}, expected {want!r}"
+                   + (f" (#card-title: {p['cardWhy']})" if p["cardWhy"] else ""))
             return False
     elif not p["titleShown"] or normalize(p["title"]) != want:
         s.fail(f"{how}: {node_id}: the panel title reads {normalize(p['title'])!r} "
-               f"(shown={b(p['titleShown'])}), expected {want!r}")
+               f"(shown={b(p['titleShown'])}{': ' + p['titleWhy'] if p['titleWhy'] else ''}), expected {want!r}")
         return False
     prefix = plain_text(m.node[node_id].get("prose", ""), m.titles)[:PROSE_PREFIX].strip()
     if not prefix or prefix not in normalize(p["prose"]):
-        s.fail(f"{how}: {node_id}: the visible prose (#part-card #detail-prose) does not contain {prefix!r}")
+        s.fail(f"{how}: {node_id}: the visible prose (#part-card #detail-prose) does not contain {prefix!r}"
+               + (f" (#detail-prose: {p['proseWhy']})" if p["proseWhy"] else ""))
         return False
     return True
 
@@ -780,17 +881,18 @@ const card = document.querySelector('#step-card'), frame = document.querySelecto
 const t = document.querySelector('#tour-step-title'), p = document.querySelector('#tour-step-prose');
 const foot = document.querySelector('#step-foot');
 const det = document.querySelector('#step-card #tour-detail svg.detail');
-// displayed: a non-zero box, visible, no hidden or display:none ancestor (T4)
-const disp = el => { if (!shown(el)) return false; for (let e = el; e && e.nodeType === 1; e = e.parentElement) if (e.hidden) return false; return true; };
+// displayed (T4, T15): seen() (a box, visible, no hidden ancestor, not clipped away by an
+// ancestor, a point of it hit-tested), or the reason why not
 const top = el => el ? el.getBoundingClientRect().top : null;
-return { cardShown: shown(card), cardTop: card ? card.getBoundingClientRect().top : null,
+const cardWhy = seen(card), detWhy = seen(det), tWhy = seen(t), pWhy = seen(p), footWhy = seen(foot);
+return { cardShown: !cardWhy, cardWhy, cardTop: card ? card.getBoundingClientRect().top : null,
          frameBottom: frame ? frame.getBoundingClientRect().bottom : null,
-         detailShown: disp(det), detailTop: top(det), detailWhat: det ? desc(det) : 'none',
-         titleShown: disp(t), titleTop: top(t), proseShown: disp(p), proseTop: top(p),
+         detailShown: !detWhy, detailWhy: detWhy, detailTop: top(det), detailWhat: det ? desc(det) : 'none',
+         titleShown: !tWhy, titleWhy: tWhy, titleTop: top(t), proseShown: !pWhy, proseWhy: pWhy, proseTop: top(p),
          titleIn: !!(card && t && card.contains(t)), proseIn: !!(card && p && card.contains(p)),
-         text: card && shown(card) ? card.innerText : '',
-         openPart: card ? [...card.querySelectorAll('button.open-part')].filter(shown).length : 0,
-         foot: foot && shown(foot) ? foot.innerText : null,
+         text: card && !cardWhy ? card.innerText : '',
+         openPart: card ? [...card.querySelectorAll('button.open-part')].filter(b => !seen(b)).length : 0,
+         foot: foot && !footWhy ? foot.innerText : null,
          footBack: !!(foot && foot.querySelector('a.back-to-map[data-moves-page]')) };
 """, "")
 
@@ -887,12 +989,13 @@ def tour_test(s, m, r):
         cprob = []
         fb = c["frameBottom"]
         if not c["cardShown"]:
-            cprob.append("#step-card is not displayed")
+            cprob.append(f"#step-card is not displayed ({c['cardWhy']})")
         if not (c["titleIn"] and c["proseIn"]):
             cprob.append("#tour-step-title / #tour-step-prose are not inside #step-card")
-        for what, ok_, y in (("#tour-step-title", c["titleShown"], c["titleTop"]), ("#tour-step-prose", c["proseShown"], c["proseTop"])):
+        for what, ok_, y, why in (("#tour-step-title", c["titleShown"], c["titleTop"], c["titleWhy"]),
+                                  ("#tour-step-prose", c["proseShown"], c["proseTop"], c["proseWhy"])):
             if not ok_:
-                cprob.append(f"{what} is not displayed")
+                cprob.append(f"{what} is not displayed ({why})")
             elif fb is None or y is None or y < fb - 1:
                 cprob.append(f"{what} top {y} is not at or below the map frame's bottom ({fb})")
         if shown != normalize(step.get("title", "")) or not prose_ok:
@@ -917,7 +1020,7 @@ def tour_test(s, m, r):
         elif node != top and s.page.locator(f'{sel} g.box.hot[data-node="{node}"], {sel} g.dgroup.hot[data-node="{node}"]').count() < 1:
             dprob.append(f"{node} is not .hot in {sel}")
         if not c["detailShown"]:
-            dprob.append(f"#tour-detail svg.detail is not displayed ({c['detailWhat']})")
+            dprob.append(f"#tour-detail svg.detail is not displayed ({c['detailWhat']}: {c['detailWhy']})")
         elif fb is None or c["detailTop"] is None or c["detailTop"] < fb - 1:
             dprob.append(f"#tour-detail svg.detail top {c['detailTop']} is not at or below the map frame's bottom ({fb})")
         if c["cardTop"] is None or c["frameBottom"] is None or c["cardTop"] < c["frameBottom"] - 1:
@@ -1138,7 +1241,7 @@ def smoke_test(s, m, r):
               const chip = document.querySelector('#chips button.chip[data-kind="' + args + '"]');
               const cap = document.querySelector('#kind-caption');
               return { mode: document.body.dataset.mode || null, pressed: chip ? chip.getAttribute('aria-pressed') : null,
-                       cap: shown(cap) ? (cap.dataset.kind || null) : null, y: window.scrollY,
+                       cap: !seen(cap) ? (cap.dataset.kind || null) : null, y: window.scrollY,
                        sectionTop: document.querySelector('#map-section').getBoundingClientRect().top,
                        max: document.documentElement.scrollHeight - window.innerHeight };
             """), kind)
@@ -1641,9 +1744,10 @@ SEQ_STATUS_JS = js(r"""
 const t = document.querySelector('#tour-step-title[data-step-index="' + args + '"]');
 const st = document.querySelector('#seq-status');
 const r = st ? st.getBoundingClientRect() : null;
-return { titleShown: shown(t), status: st && shown(st) ? st.innerText : '',
+const tWhy = seen(t), sWhy = seen(st);  // displayed for a reader (T15)
+return { titleShown: !tWhy, titleWhy: tWhy, status: st && !sWhy ? st.innerText : '', statusWhy: sWhy,
          statusTop: r ? Math.round(r.top) : null, statusBottom: r ? Math.round(r.bottom) : null, vh: innerHeight,
-         statusInView: !!r && shown(st) && r.top >= 0 && r.bottom <= innerHeight };
+         statusInView: !!r && !sWhy && r.top >= 0 && r.bottom <= innerHeight };
 """)
 
 
@@ -1728,9 +1832,10 @@ def sequence_test(s, m, r):
         want_status = f"Step {k} of {T}: {normalize(step.get('title', ''))}"
         sprob = []
         if not st["titleShown"]:
-            sprob.append(f"#tour-step-title[data-step-index={k}] is not displayed")
+            sprob.append(f"#tour-step-title[data-step-index={k}] is not displayed ({st['titleWhy']})")
         if normalize(st["status"]) != want_status:
-            sprob.append(f"#seq-status reads {normalize(st['status'])!r}, expected {want_status!r}")
+            sprob.append(f"#seq-status reads {normalize(st['status'])!r}, expected {want_status!r}"
+                         + (f" (#seq-status: {st['statusWhy']})" if st["statusWhy"] else ""))
         elif not st["statusInView"]:
             sprob.append(f"#seq-status is not within the viewport (top {st['statusTop']}, bottom {st['statusBottom']}, "
                          f"viewport height {st['vh']})")
@@ -1756,8 +1861,9 @@ if (!svg) return null;
 const eff = el => { let o = 1; for (let e = el; e && e !== svg.parentNode; e = e.parentElement) o *= parseFloat(getComputedStyle(e).opacity); return o; };
 const lines = [...svg.querySelectorAll('path.ln[data-kind]')].filter(p => getComputedStyle(p).display !== 'none').map(p => ({ kind: p.dataset.kind, op: eff(p) }));
 const cap = document.querySelector('#kind-caption'), frame = document.querySelector('#map');
-return { lines, capShown: shown(cap), capKind: cap ? (cap.dataset.kind || null) : null, capText: cap && shown(cap) ? cap.innerText : '',
-         capTop: cap && shown(cap) ? cap.getBoundingClientRect().top : null,
+const capWhy = seen(cap);  // displayed for a reader (T15)
+return { lines, capShown: !capWhy, capWhy, capKind: cap ? (cap.dataset.kind || null) : null, capText: cap && !capWhy ? cap.innerText : '',
+         capTop: cap && !capWhy ? cap.getBoundingClientRect().top : null,
          frameBottom: frame && shown(frame) ? frame.getBoundingClientRect().bottom : null };
 """)
 
@@ -1785,7 +1891,7 @@ def emphasize_test(s, m, r):
         want = plain_text(caption, m.titles)[:PROSE_PREFIX].strip()
         probs = []
         if not e["capShown"]:
-            probs.append("#kind-caption is not displayed")
+            probs.append(f"#kind-caption is not displayed ({e['capWhy']})")
         elif e["capKind"] != kind:
             probs.append(f"#kind-caption[data-kind={e['capKind']}]")
         elif want not in normalize(e["capText"]):
@@ -1869,7 +1975,8 @@ DIVIDER_JS = js(r"""
 const all = [...document.querySelectorAll('.ref-divider')], d = all[0];
 const card = document.querySelector('#part-card'), mx = document.querySelector('#matrix');
 const r = d ? d.getBoundingClientRect() : null;
-return { n: all.length, shown: shown(d), text: d && shown(d) ? d.innerText : '',
+const dWhy = seen(d);  // displayed for a reader (T15)
+return { n: all.length, shown: !dWhy, why: dWhy, text: d && !dWhy ? d.innerText : '',
          top: r ? r.top : null, bottom: r ? r.bottom : null,
          cardBottom: card && shown(card) ? card.getBoundingClientRect().bottom : null,
          matrixTop: mx && shown(mx) ? mx.getBoundingClientRect().top : null };
@@ -1877,15 +1984,16 @@ return { n: all.length, shown: shown(d), text: d && shown(d) ? d.innerText : '',
 
 FOOT_JS = js(r"""
 const f = document.querySelector(args);
-return f ? { shown: shown(f), text: f.innerText || '', back: !!f.querySelector('a.back-to-map[data-moves-page]'),
-             backShown: [...f.querySelectorAll('a.back-to-map[data-moves-page]')].some(shown) } : null;
+const fWhy = f ? seen(f) : 'not found';  // displayed for a reader (T15)
+return f ? { shown: !fWhy, why: fWhy, text: f.innerText || '', back: !!f.querySelector('a.back-to-map[data-moves-page]'),
+             backShown: [...f.querySelectorAll('a.back-to-map[data-moves-page]')].some(a => !seen(a)) } : null;
 """)
 
 
 def footer_ok(s, selector, want_start, what):
     f = s.page.evaluate(FOOT_JS, selector)
     if f is None or not f["shown"]:
-        s.fail(f"end_footer: {what}: {selector} is not displayed")
+        s.fail(f"end_footer: {what}: {selector} is not displayed" + (f" ({f['why']})" if f else ""))
         return False
     text = normalize(f["text"])
     if not text.startswith(want_start):
@@ -1953,13 +2061,14 @@ CARD_JS = js(r"""
 const card = document.querySelector('#part-card'), head = document.querySelector('#card-head');
 const title = document.querySelector('#card-title'), ov = document.querySelector('#overview');
 const close = document.querySelector('#card-close'), frame = document.querySelector('#map');
-return { card: card ? (card.dataset.card || null) : null, cardShown: shown(card),
+const cardWhy = seen(card), ovWhy = seen(ov);  // displayed for a reader (T15)
+return { card: card ? (card.dataset.card || null) : null, cardShown: !cardWhy, cardWhy, ovWhy,
          cardH: card ? Math.round(card.getBoundingClientRect().height) : 0,
          cardTop: card ? card.getBoundingClientRect().top : null,
          frameBottom: frame && shown(frame) ? frame.getBoundingClientRect().bottom : null,
          headH: head && shown(head) ? Math.round(head.getBoundingClientRect().height) : 0,
-         titleCard: title ? (title.dataset.card || null) : null, close: shown(close),
-         ovShown: shown(ov), ovText: ov && shown(ov) ? ov.innerText : '', cardText: card && shown(card) ? card.innerText : '' };
+         titleCard: title ? (title.dataset.card || null) : null, close: !seen(close),
+         ovShown: !ovWhy, ovText: ov && !ovWhy ? ov.innerText : '', cardText: card && !cardWhy ? card.innerText : '' };
 """, "")
 
 # The view right under the stuck card head after a card change (T6): the
@@ -2050,10 +2159,10 @@ def stuck_view_judge(v, y0):
     return probs
 
 
-def stuck_view_case(s, m, part, btn, near_foot, size):
+def stuck_view_case(s, m, part, btn, near_foot, size, after=None):
     """T6: open part, put its card top 300 px above the viewport (or, near_foot, scroll to its footer
     with every fold open), press #card-<btn> for real and check the view under the stuck head.
-    Returns None when the view is right, else the problem."""
+    Returns None when the view is right, else the problem. after() runs in the turned state (T19)."""
     P = s.page
     tag = f"{size[0]}x{size[1]}"
     if not s.open("#/") or not open_part(s, part, f"stuck {btn} {tag}"):
@@ -2077,10 +2186,13 @@ def stuck_view_case(s, m, part, btn, near_foot, size):
     v = P.evaluate(STUCK_VIEW_JS, {"card": "#part-card", "dys": list(STUCK_DYS)})
     if "error" in v:
         return v["error"]
-    return "; ".join(stuck_view_judge(v, y0)) or None
+    why = "; ".join(stuck_view_judge(v, y0)) or None
+    if after is not None:
+        after()
+    return why
 
 
-def step_stuck_case(s, m, btn, size):
+def step_stuck_case(s, m, btn, size, after=None):
     """V1 for the step card (when it has its own head with #step-prev / #step-next): on a middle step,
     put #step-card's top 300 px above the viewport, press #step-<btn> for real and check the view."""
     P = s.page
@@ -2112,21 +2224,153 @@ def step_stuck_case(s, m, btn, size):
     v = P.evaluate(STUCK_VIEW_JS, {"card": "#step-card", "dys": list(STUCK_DYS)})
     if "error" in v:
         return v["error"]
-    return "; ".join(stuck_view_judge(v, y0)) or None
+    why = "; ".join(stuck_view_judge(v, y0)) or None
+    if after is not None:
+        after()
+    return why
+
+
+# T19: the blank a reader crosses when scrolling back up after a stuck-head card change. At each
+# wheel step the view under the head is judged as in STUCK_VIEW_JS: blank when the point at the
+# card's centre, head bottom + 24 px or + 120 px, is a filler/spacer (its note included) or an empty
+# block of the card body. While it is blank, the spacer's note (.spacer-note) and its
+# a.back-to-map[data-moves-page] must be displayed (seen()) under the head and in the viewport.
+SPACER_STEP_JS = js(r"""
+const card = document.querySelector(args), head = card && card.querySelector(':scope > .card-head');
+if (!card || !head) return { error: 'no ' + args + ' with a .card-head' };
+const body = card.querySelector(':scope > .card-body');
+const cr = card.getBoundingClientRect(), hr = head.getBoundingClientRect();
+const x = (Math.max(0, cr.left) + Math.min(innerWidth, cr.right)) / 2;
+const filler = e => { const cls = typeof e.className === 'string' ? e.className : ((e.className && e.className.baseVal) || '');
+  return /(^|[\s_-])(fill|filler|spacer|card-fill)([\s_-]|$)/i.test(cls) || (e.parentElement === body && e.getAttribute('aria-hidden') === 'true'); };
+const blankAt = dy => {
+  const y = hr.bottom + dy;
+  if (y < 0 || y >= innerHeight || !body) return false;
+  const t = document.elementFromPoint(x, y);
+  if (!t || !body.contains(t)) return false;
+  if (t === body) return true;
+  for (let e = t; e && e !== body; e = e.parentElement) if (filler(e)) return true;
+  let blk = t; while (blk.parentElement && blk.parentElement !== body) blk = blk.parentElement;
+  return !(blk.innerText || '').trim() && !blk.querySelector('svg') && !t.closest('svg');
+};
+const sp = body ? body.querySelector(':scope > .card-spacer') : null;
+const spH = sp && shown(sp) ? Math.round(sp.getBoundingClientRect().height) : 0;
+const blank = blankAt(24) || blankAt(120);
+const out = { y: window.scrollY, cardTop: cr.top, headBottom: hr.bottom, blank, spacerH: spH, vh: innerHeight };
+if (blank) {
+  const note = body.querySelector('.spacer-note');
+  const link = (note && note.querySelector('a.back-to-map[data-moves-page]')) || (sp && sp.querySelector('a.back-to-map[data-moves-page]'));
+  const where = el => { const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, why: seen(el) }; };
+  out.note = note ? where(note) : null;
+  out.link = link ? where(link) : null;
+}
+return out;
+""")
+SPACER_STEP_PX = 120   # one wheel step up (smaller than the shortest blank, about 300 px)
+SPACER_MAX_STEPS = 80
+
+
+def spacer_view_problems(g):
+    """The problems of one blank view of the spacer walk (T19), or []."""
+    probs = []
+    hb = g["headBottom"]
+    for what, k, missing in (("the spacer note (.spacer-note)", "note", "no .spacer-note in the card body"),
+                             ("the note's a.back-to-map[data-moves-page]", "link",
+                              "no a.back-to-map[data-moves-page] in the note or the spacer")):
+        e = g.get(k)
+        if e is None:
+            probs.append(missing)
+        elif e["why"]:
+            probs.append(f"{what} is not displayed ({e['why']})")
+        elif e["top"] < hb - 1 or e["bottom"] > g["vh"]:
+            probs.append(f"{what} is not under the head in the viewport (top {round(e['top'])}, bottom "
+                         f"{round(e['bottom'])}, head bottom {round(hb)}, viewport {g['vh']})")
+    return probs
+
+
+def spacer_walk(s, card, what, press_link=False):
+    """T19: from the turned state, scroll up with the mouse wheel through the blank. At each step
+    with the blank under the head, the note and its link must be displayed under the head. With
+    press_link, the link is pressed at the first blank step (it may move the page) and the map
+    section must then be in view. Returns {blank_px, steps, problems, link}."""
+    P = s.page
+    res = {"blank_px": 0, "steps": 0, "problems": [], "link": None, "what": what}
+    seen_probs = {}  # problem -> the wheel steps that showed it
+    g = P.evaluate(SPACER_STEP_JS, card)
+    if "error" in g:
+        res["problems"].append(g["error"])
+        return res
+    res["blank_px"] = g["spacerH"]
+    vw, vh = s.viewport
+    P.mouse.move(vw / 2, vh * 0.75)
+    met = False
+    for i in range(SPACER_MAX_STEPS):
+        y_was = g["y"]
+        if y_was <= 0:
+            break
+        P.mouse.wheel(0, -SPACER_STEP_PX)
+        s.wait_scroll_stable(1500)
+        P.evaluate(RAF2_JS)
+        g = P.evaluate(SPACER_STEP_JS, card)
+        if "error" in g:
+            res["problems"].append(g["error"])
+            break
+        if g["blank"]:
+            met = True
+            res["steps"] += 1
+            probs = spacer_view_problems(g)
+            for p_ in probs:
+                seen_probs.setdefault(p_, []).append(f"{i + 1} (scrollY {round(g['y'])})")
+            if press_link:
+                res["link"] = spacer_link_press(s, card, g) if not probs else "not pressed: " + "; ".join(probs)
+                break
+        elif met or g["cardTop"] >= 0:
+            break
+        if abs(g["y"] - y_was) < 1:
+            res["problems"].append(f"wheel step {i + 1}: the page did not scroll (scrollY {round(g['y'])})")
+            break
+    for p_, steps in seen_probs.items():
+        res["problems"].append(f"{p_}, at wheel step" + ("s " if len(steps) > 1 else " ")
+                               + (", ".join(steps) if len(steps) <= 3 else f"{steps[0]} to {steps[-1]} ({len(steps)} steps)"))
+    if press_link and res["link"] is None and not met:
+        res["link"] = "noblank"
+    return res
+
+
+def spacer_link_press(s, card, g):
+    """Press the spacer note's "Back to the map" for real; None when the map section is then in view."""
+    P = s.page
+    sel = f"{card} > .card-body .card-spacer a.back-to-map[data-moves-page]"
+    ok, why = real_click(s, P.locator(sel), still=True)
+    if not ok:
+        return f"{sel} could not be pressed: {why}"
+    P.wait_for_timeout(PRESS_SETTLE_MS)
+    s.wait_scroll_stable()
+    P.evaluate(RAF2_JS)
+    t = P.evaluate("""() => { const sec = document.querySelector('#map-section'); return { top: sec ? sec.getBoundingClientRect().top : null,
+      y: window.scrollY, max: document.documentElement.scrollHeight - window.innerHeight }; }""")
+    if t["top"] is None:
+        return "no #map-section"
+    if abs(t["top"]) <= 2 or (t["top"] > 0 and t["y"] >= t["max"] - 1):
+        return None
+    return f"after pressing it #map-section's top is at {round(t['top'])} px (scrollY {round(t['y'])}), expected the viewport's top"
 
 
 def stuck_view_test(s, m, largest, r):
     """T6 at 744 and 1440: next and prev (the arrow cases, stuck_view) and Close twice (head stuck;
     near the footer with every fold open), which after_close requires."""
-    r.update(stuck_arrows=0, stuck_arrows_total=0, stuck_close=[])
+    r.update(stuck_arrows=0, stuck_arrows_total=0, stuck_close=[], walks=[])
     if not largest:
         s.fail("stuck_view: no part card to test")
         return
+    walks = r["walks"]
     for size in (PRIMARY, WIDE):
         s.set_viewport(size)
         for btn, near_foot in (("next", False), ("prev", False), ("close", False), ("close", True)):
             what = f"#card-{btn}" + (" near the footer, folds open" if near_foot else " with the head stuck")
-            why = stuck_view_case(s, m, largest, btn, near_foot, size)
+            walk = (lambda what=what: walks.append(spacer_walk(s, "#part-card", f"{what} on the card of {largest}"))) \
+                if size == PRIMARY else None
+            why = stuck_view_case(s, m, largest, btn, near_foot, size, walk)
             if btn != "close":
                 r["stuck_arrows_total"] += 1
                 r["stuck_arrows"] += why is None
@@ -2137,20 +2381,148 @@ def stuck_view_test(s, m, largest, r):
         # the step card, when it has its own head with Back and Next (V1: the same rule)
         if s.open("#/") and s.page.locator("#step-card > .card-head #step-next").count() and len(m.steps) >= 3:
             for btn in ("next", "prev"):
-                why = step_stuck_case(s, m, btn, size)
+                walk = (lambda btn=btn: walks.append(spacer_walk(s, "#step-card", f"#step-{btn} with the step card's head stuck"))) \
+                    if size == PRIMARY else None
+                why = step_stuck_case(s, m, btn, size, walk)
                 r["stuck_arrows_total"] += 1
                 r["stuck_arrows"] += why is None
                 if why:
                     s.fail(f"stuck_view {size[0]}x{size[1]}: #step-{btn} with the step card's head stuck: {why}")
         elif size == PRIMARY:
             s.note("stuck_view: the step card has no head with #step-next; only #part-card is checked")
+    # T19: the spacer note's "Back to the map", pressed at the first blank step after a turn
     s.set_viewport(PRIMARY)
+    stuck_view_case(s, m, largest, "next", False, PRIMARY,
+                    lambda: walks.append(spacer_walk(s, "#part-card", f"#card-next on the card of {largest} (link)", True)))
+    if s.open("#/") and s.page.locator("#step-card > .card-head #step-next").count() and len(m.steps) >= 3:
+        step_stuck_case(s, m, "next", PRIMARY,
+                        lambda: walks.append(spacer_walk(s, "#step-card", "#step-next (link)", True)))
+    s.set_viewport(PRIMARY)
+
+
+def spacer_note_result(s, r):
+    """'ok' or 'fail' for the card line's spacer_note (T19); PROBLEM and NOTE lines."""
+    walks = r.get("walks") or []
+    bad = False
+    blank = [w for w in walks if w["steps"]]
+    for w in walks:
+        for p_ in w["problems"]:
+            s.fail(f"spacer_note 744x1000: after {w['what']}, scrolling up: {p_}")
+            bad = True
+        if w["link"] == "noblank":
+            if blank:  # the same turn left a blank when it was walked
+                s.fail(f"spacer_note 744x1000: after {w['what']}: no blank under the head at the first wheel steps, "
+                       f"so the note's Back to the map could not be pressed")
+                bad = True
+        elif w["link"]:
+            s.fail(f"spacer_note 744x1000: after {w['what']}: the note's Back to the map: {w['link']}")
+            bad = True
+    s.note(f"spacer_blank_px={max([w['blank_px'] for w in walks] or [0])} (the spacer's height after each stuck turn at "
+           f"744x1000: " + ", ".join(f"{w['what']}: {w['blank_px']} px, {w['steps']} blank wheel steps" for w in walks) + ")")
+    if not walks:
+        s.fail("spacer_note: no stuck turn was walked")
+        return "fail"
+    if not blank:
+        s.note("spacer_note: no stuck turn left a blank under the head; nothing to cross")
+    return "fail" if bad else "ok"
+
+
+# T17: the texts of the card head, none cut. For every rendered element of #card-head with text of
+# its own (screen-reader-only texts aside): a block-level box must not overflow (scrollWidth <=
+# clientWidth + 1; an ellipsis is named), and each box of its text (Range.getClientRects) must lie
+# within what the element itself (if it clips) and its ancestors leave visible.
+HEAD_CUT_JS = js(r"""
+const head = document.querySelector(args);
+if (!head) return { error: 'no ' + args };
+const hr = head.getBoundingClientRect();
+const rendered = el => { const r = el.getBoundingClientRect(); if (!(r.width > 0 && r.height > 0)) return false;
+  for (let e = el; e && e.nodeType === 1; e = e.parentElement) { const cs = getComputedStyle(e);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) return false; } return true; };
+const srOnly = el => { for (let e = el; e && e !== head; e = e.parentElement) { if (e.classList && e.classList.contains('vh')) return true;
+  const r = e.getBoundingClientRect(); if (r.width <= 1 || r.height <= 1) return true; } return false; };
+const cut = [];
+[head, ...head.querySelectorAll('*')].forEach(el => {
+  const texts = [...el.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim());
+  if (!texts.length || !rendered(el) || srOnly(el)) return;
+  const cs = getComputedStyle(el), what = desc(el) + ' ' + JSON.stringify((el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 70));
+  if (cs.display !== 'inline' && el.scrollWidth > el.clientWidth + 1) {
+    cut.push(what + ': scrollWidth ' + el.scrollWidth + ' > clientWidth ' + el.clientWidth + (cs.textOverflow === 'ellipsis' ? ' (text-overflow: ellipsis)' : ''));
+    return;
+  }
+  const v = visibleRect(el).rect, er = el.getBoundingClientRect();
+  let L = v.left, R = v.right, T = v.top, B = v.bottom;
+  if (cs.overflowX !== 'visible') { L = Math.max(L, er.left + el.clientLeft); R = Math.min(R, er.left + el.clientLeft + el.clientWidth); }
+  if (cs.overflowY !== 'visible') { T = Math.max(T, er.top + el.clientTop); B = Math.min(B, er.top + el.clientTop + el.clientHeight); }
+  for (const t of texts) {
+    const rg = document.createRange(); rg.selectNodeContents(t);
+    const bad = [...rg.getClientRects()].find(q => q.width > 0 && (q.left < L - 2 || q.right > R + 2 || Math.min(B, q.bottom) - Math.max(T, q.top) < 0.6 * q.height));
+    if (bad) { cut.push(what + ': a text box at x ' + Math.round(bad.left) + '-' + Math.round(bad.right) + ', y ' + Math.round(bad.top) + '-' + Math.round(bad.bottom)
+      + ' px, the visible part ' + Math.round(L) + '-' + Math.round(R) + ', ' + Math.round(T) + '-' + Math.round(B) + ' px'); break; }
+  }
+});
+return { cut, headH: Math.round(hr.height) };
+""")
+HEAD_NAMES_SIZES = (PRIMARY, (400, 900))
+HEAD_MAX_744 = 100  # V8: the card head stays at most 100 px tall at 744x1000
+
+
+def head_names_test(s, m, r):
+    """T17: open every node (its map box, then its box or group in the part's detail, as the node walk
+    does) at 744x1000 and at 400x900; a node counts when no text of #card-head is cut at either
+    size and the head is at most 100 px tall at 744. r gets head_names, head_total."""
+    ok = {i: True for i in m.ids}
+    reached = {i: 0 for i in m.ids}
+    tallest = {}  # size -> (head height, node)
+    for size in HEAD_NAMES_SIZES:
+        tag = f"{size[0]}x{size[1]}"
+        s.set_viewport(size)
+        if not s.open("#/"):
+            break
+        for part in m.tops:
+            if not open_part(s, part, f"head_names {tag}"):
+                ok[part] = False
+                for d in m.descendants(part):
+                    ok[d] = False
+                continue
+            for node in [part] + m.descendants(part):
+                if node != part:
+                    if not s.wait_detail(part) and not open_part(s, part, f"head_names {tag}"):
+                        ok[node] = False
+                        continue
+                    if not click_in_detail(s, part, node, f"head_names {tag}"):
+                        ok[node] = False
+                        continue
+                if not s.wait_panel(node):
+                    s.fail(f"head_names {tag}: {node}: #part-card #detail-title names {s.panel_node()!r}")
+                    ok[node] = False
+                    continue
+                s.page.evaluate(RAF2_JS)
+                g = s.page.evaluate(HEAD_CUT_JS, "#card-head")
+                if "error" in g:
+                    s.fail(f"head_names {tag}: {g['error']}")
+                    ok[node] = False
+                    continue
+                reached[node] += 1
+                if g["headH"] > tallest.get(tag, (-1, None))[0]:
+                    tallest[tag] = (g["headH"], node)
+                probs = list(g["cut"])
+                if size == PRIMARY and g["headH"] > HEAD_MAX_744:
+                    probs.append(f"#card-head is {g['headH']} px tall, more than {HEAD_MAX_744}")
+                if probs:
+                    ok[node] = False
+                    s.fail(f"head_names {tag}: with {node} open, cut in #card-head: " + "; ".join(probs))
+    s.set_viewport(PRIMARY)
+    if tallest:
+        s.note("head_names: the tallest #card-head with a node open: "
+               + ", ".join(f"{h} px at {tag} ({node})" for tag, (h, node) in tallest.items()))
+    r["head_names"] = sum(1 for i in m.ids if ok[i] and reached[i] == len(HEAD_NAMES_SIZES))
+    r["head_total"] = len(m.ids)
 
 
 def card_test(s, m, r, folds):
     """Card checks. r gets default, after_close, nav, sticky, end_footer, folded, head_px."""
     r.update(default="FAIL:not-run", after_close="FAIL:not-run", nav=0, sticky=False, end_footer=False,
-             folded=False, head_px=None)
+             folded=False, head_px=None, head_names=0, head_total=len(m.ids), spacer_note="fail")
     tops = m.tops
     # folded comes from the node walk
     if folds is not None:
@@ -2195,7 +2567,8 @@ def card_test(s, m, r, folds):
     if dprob:
         s.fail(f"card default: on #/ the card is not the overview under the map with the model question, summary "
                f"and how to read the map ({howto_title!r}, {howto_intro!r}): {dprob} "
-               f"(card top {c['cardTop']}, map frame bottom {c['frameBottom']})")
+               f"(card top {c['cardTop']}, map frame bottom {c['frameBottom']}"
+               + "".join(f"; {w}: {c[k]}" for w, k in (("#part-card", "cardWhy"), ("#overview", "ovWhy")) if c[k]) + ")")
     heads = [c["headH"]]
     feet = [footer_ok(s, "#card-foot", "End of the overview.", "overview")]
     # nav: next x9, then prev x9, from the overview
@@ -2248,8 +2621,11 @@ def card_test(s, m, r, folds):
                     aprob.append(cc["card"] or "none")
                 if not cc["cardShown"]:
                     aprob.append("hidden")
+                    s.note(f"card after_close: #part-card: {cc['cardWhy']}")
                 if not cc["ovShown"] or not normalize(cc["ovText"]):
                     aprob.append("empty")
+                    if cc["ovWhy"]:
+                        s.note(f"card after_close: #overview: {cc['ovWhy']}")
                 if cc["close"]:
                     aprob.append("close-still-shown")
         else:
@@ -2261,6 +2637,7 @@ def card_test(s, m, r, folds):
     # the view under the stuck head after next, prev and Close (T6), at 744 and 1440
     largest = max(heights, key=heights.get) if heights else (tops[0] if tops else None)
     stuck_view_test(s, m, largest, r)
+    r["spacer_note"] = spacer_note_result(s, r)
     aprob += [name for name, ok in r["stuck_close"] if not ok]
     if not r["stuck_close"]:
         aprob.append("stuck-not-run")
@@ -2296,6 +2673,7 @@ def card_test(s, m, r, folds):
         feet.append(False)
     r["end_footer"] = len(feet) >= 1 + len(tops) + min(2, T) and all(feet)
     r["head_px"] = max(heads) if heads else None
+    head_names_test(s, m, r)
 
 
 def matrix_test(s, m, r):
@@ -2378,7 +2756,7 @@ def matrix_test(s, m, r):
     if d["n"] != 1:
         dprob.append(f"{d['n']} .ref-divider elements, expected 1")
     elif not d["shown"]:
-        dprob.append(".ref-divider is not displayed")
+        dprob.append(f".ref-divider is not displayed ({d['why']})")
     else:
         if normalize(d["text"]).lower() != "reference":
             dprob.append(f".ref-divider reads {normalize(d['text'])!r}, expected 'Reference'")
@@ -2412,9 +2790,9 @@ return { mode: document.body.dataset.mode || null, y: window.scrollY,
          head: top('#card-head'), section: top('#map-section'),
          card: (() => { const c = document.querySelector('#part-card'); return c ? (c.dataset.card || null) : null; })(),
          panel: (() => { const t = document.querySelector('#part-card #detail-title'); return t ? t.dataset.nodeId || null : null; })(),
-         step: (() => { const t = document.querySelector('#tour-step-title'); return t && shown(t) ? t.dataset.stepIndex || null : null; })(),
+         step: (() => { const t = document.querySelector('#tour-step-title'); return t && !seen(t) ? t.dataset.stepIndex || null : null; })(),
          mult: [...document.querySelectorAll('#mult figure')].filter(shown).length,
-         read: [...document.querySelectorAll('#read-page section[data-node-id]')].length, readShown: shown(document.querySelector('#read-page')) };
+         read: [...document.querySelectorAll('#read-page section[data-node-id]')].length, readShown: !seen(document.querySelector('#read-page')) };
 """, "")
 
 
@@ -2596,6 +2974,17 @@ return { n, bad, missing };
 PRESS_SETTLE_MS = 600   # after a press: this long, then 2 animation frames, then scrollY is read
 FINAL_WAIT_MS = 1500    # after the last press, before the last drift check
 
+# T16: every scroll event from the moment a press is made to the end of its settle, with the
+# window's scrollY at that event (a scroll that comes back within the settle is still a jump).
+SCROLL_LOG_START_JS = """() => {
+  if (!window.__btScroll) {
+    window.__btScroll = { on: false, log: [], t0: 0 };
+    window.addEventListener('scroll', () => { const g = window.__btScroll;
+      if (g.on) g.log.push([Math.round(performance.now() - g.t0), window.scrollY]); }, { passive: true, capture: true });
+  }
+  const g = window.__btScroll; g.log = []; g.t0 = performance.now(); g.on = true; return window.scrollY; }"""
+SCROLL_LOG_STOP_JS = """() => { const g = window.__btScroll; if (!g) return null; g.on = false; return { log: g.log, y: window.scrollY }; }"""
+
 
 def real_click(s, loc, key=None, still=False):
     """Activate loc like a reader, with no dispatch fallback: a mouse click at a point of it that
@@ -2727,21 +3116,33 @@ def press(s, rec, step, st):
             P.evaluate("(el) => el.focus({ preventScroll: true })", handle)
             if not P.evaluate("(el) => document.activeElement === el", handle):
                 return failed("cannot put the focus on it for the key")
+            P.evaluate(SCROLL_LOG_START_JS)
             P.keyboard.press(step.key)
         else:
             pt = P.evaluate(HIT_JS, handle)
             if pt is None:
                 return failed("no point of it receives a click (covered or out of view)")
+            P.evaluate(SCROLL_LOG_START_JS)
             P.mouse.click(pt[0], pt[1])
     except PlaywrightError as exc:
         return failed(f"cannot activate: {first_line(exc)}")
     P.wait_for_timeout(PRESS_SETTLE_MS)
     P.evaluate(RAF2_JS)
+    log = P.evaluate(SCROLL_LOG_STOP_JS) or {"log": []}
     after = P.evaluate(POS_JS, handle)
     rec.n += 1
     rec.last = name
+    # T16: any scroll event in the press's window whose scrollY differs from the one before the
+    # press is a jump of this press, even when the page comes back before the settle ends
+    away = [(t, y) for t, y in log["log"] if abs(y - before["y"]) > 1]
+    trail = ", ".join(f"{y:.0f}@{t}ms" for t, y in log["log"][:8]) + (" ..." if len(log["log"]) > 8 else "")
     if abs(after["y"] - before["y"]) > 1:
-        rec.jumps.append((name, f"scrollY {round(before['y'])} -> {round(after['y'])}"))
+        rec.jumps.append((name, f"scrollY {round(before['y'])} -> {round(after['y'])}"
+                                + (f"; scroll events {trail}" if log["log"] else "")))
+    elif away:
+        far = max(away, key=lambda e: abs(e[1] - before["y"]))
+        rec.jumps.append((name, f"scrollY {round(before['y'])} -> {round(far[1])} at {far[0]} ms and back to "
+                                f"{round(after['y'])} within the {PRESS_SETTLE_MS} ms settle; scroll events {trail}"))
     if after["alive"] and before["top"] is not None and abs(after["top"] - before["top"]) > 2:
         rec.moved.append(f"{name} ({round(before['top'])} -> {round(after['top'])})")
     rec.pending = (name, after["y"])
@@ -2859,7 +3260,8 @@ def jump_plan(s, m, st):
         return lambda: None if s.wait_card(want, 3000) else f"the card is {s.card_id()}, expected {want}"
 
     def help_shown():
-        return None if s.shown("#help") else "#help is not displayed"
+        why = s.page.evaluate(js("return seen(document.querySelector('#help'));", ""))
+        return None if why is None else f"#help is not displayed ({why})"
 
     tops = m.tops
     kinds = [k.get("id") if isinstance(k, dict) else k for k in (m.map.get("kinds") or [])]
@@ -2961,6 +3363,15 @@ def jump_plan(s, m, st):
             pre=lambda: step_stuck_reason(s) or enabled("#step-next")(), group="stuck")
         add("ArrowLeft on the step title with the step card's head stuck", "#tour-step-title", key="ArrowLeft",
             setup=to_step_top, pre=lambda: step_stuck_reason(s), group="stuck")
+    # the step card footer's "Next step" and "Previous step" (V9), when the viewer has them: pressed
+    # where they are, at the card's end (the test centres them, so the step card's head is stuck)
+    if T >= 3 and P.locator("#step-foot #step-foot-next").count():
+        def usable(sel):
+            return lambda: (mode_is("tour")() or (None if P.evaluate(
+                "(q) => { const b = document.querySelector(q); return !!b && !b.disabled && !b.hidden; }", sel)
+                else f"{sel} is hidden or disabled"))
+        add("step card footer Next step", "#step-foot-next", pre=usable("#step-foot-next"), group="tour")
+        add("step card footer Previous step", "#step-foot-prev", pre=usable("#step-foot-prev"), group="tour")
     add("view seq", VIEW_BUTTON.format("seq"), pre=mode_is("tour"), group="tour")
     for k in range(1, T + 1):
         add(f"sequence row {k}", f'{SEQ} .row[data-step-index="{k}"]', pre=mode_is("tour", "seq"), post=wait_step(k), group="tour")
@@ -3162,7 +3573,10 @@ SHEET_JS = r"""
       scrolls.push({ el: (e.id ? '#' + e.id : e.tagName.toLowerCase() + '.' + (e.className || '').toString().trim().split(/\s+/).join('.')), px: e.scrollWidth - e.clientWidth });
   }
   const d = document.documentElement;
-  return { width: Math.round(svg.getBoundingClientRect().width * 10) / 10, vbw: vb ? vb.width : null, room: room === null ? null : Math.round(room * 10) / 10,
+  // the drawn width: the viewBox width times the drawing's scale (a height cap letterboxes it)
+  const ctm = svg.getScreenCTM();
+  const drawn = vb && ctm ? Math.round(vb.width * Math.hypot(ctm.a, ctm.b) * 10) / 10 : null;
+  return { width: Math.round(svg.getBoundingClientRect().width * 10) / 10, drawn, vbw: vb ? vb.width : null, room: room === null ? null : Math.round(room * 10) / 10,
            scroll: Math.max(0, ...scrolls.map(x => x.px)), scrolls: scrolls.map(x => x.el + ':' + x.px).join(','),
            page: Math.max(d.scrollWidth, document.body ? document.body.scrollWidth : 0) - d.clientWidth };
 }
@@ -3227,7 +3641,88 @@ def fullsize_test(browser, url, screenshot_dir):
         problems += bad
     problems += [f"fullsize: {x}" for x in s.failures + s.console_problems]
     s.page.close()
+    result["desktop"], more = fullsize_desktop(browser, url, screenshot_dir)
+    problems += more
     return result, problems
+
+
+HINT_JS = js("const b = document.querySelector(args); const bar = b && b.closest('.figbar');"
+             " const h = bar && bar.querySelector('.scroll-hint'); return h ? seen(h) : 'no .scroll-hint in the bar of the button';")
+
+
+def fullsize_desktop(browser, url, screenshot_dir):
+    """T20 at 1440x900, for the map and the sequence chart: pressing Full size never draws the figure
+    narrower than it is drawn fitted, and draws it at least at its natural size (1 viewBox unit = 1
+    CSS px), as the help says ("enlarges the figure to its natural size when the page draws it
+    smaller ... A figure already drawn at its natural size or larger stays as it is"); the note next
+    to the button (.scroll-hint in the figure's bar) is displayed exactly when the frame then scrolls
+    sideways; the page does not; pressed again, the figure fits. Returns ('ok'|'fail', problems)."""
+    s = Session(browser, url, screenshot_dir, WIDE)
+    bad, notes = [], []
+    try:
+        fullsize_desktop_figures(s, bad, notes)
+    except PlaywrightError as exc:
+        bad.append(f"fullsize desktop: stopped: {first_line(exc)}")
+    bad += [f"fullsize desktop: {x}" for x in s.failures + s.console_problems]
+    s.page.close()
+    return ("fail" if bad or len(notes) != len(FULLSIZE) else "ok"), bad + [f"INFO fullsize desktop 1440x900: {n_}" for n_ in notes]
+
+
+def fullsize_desktop_figures(s, bad, notes):
+    """The figures of fullsize_desktop (problems to bad, measurements to notes)."""
+    for name, sel, btn_sel in FULLSIZE:
+        if not s.open("#/"):
+            bad.append(f"fullsize desktop {name}: the page did not open")
+            continue
+        s.page.evaluate(FONTS_READY_JS)
+        s.settle(300)
+        if name == "sequence" and not (s.set_mode("tour", "fullsize desktop") and s.set_view("seq", "fullsize desktop")):
+            bad.append(f"fullsize desktop {name}: the sequence view could not be shown")
+            continue
+        btn = s.page.locator(btn_sel)
+        if btn.count() != 1:
+            bad.append(f"fullsize desktop {name}: {btn.count()} buttons {btn_sel}, expected 1")
+            continue
+        fit = s.page.evaluate(SHEET_JS, sel)
+        if fit is None:
+            bad.append(f"fullsize desktop {name}: no {sel}")
+            continue
+        if not s.click(btn, f"fullsize desktop: {btn_sel}"):
+            continue
+        s.settle(300)
+        s.page.evaluate(RAF2_JS)
+        g = s.page.evaluate(SHEET_JS, sel)
+        hint = s.page.evaluate(HINT_JS, btn_sel)
+        pressed = btn.get_attribute("aria-pressed")
+        notes.append(f"{name}: fitted drawn {fit['drawn']} px, pressed drawn {g['drawn']} px (svg box {g['width']} px), "
+                     f"natural {g['vbw']} px, frame room {g['room']} px, frame scroll {g['scroll']} px, "
+                     f"hint {'displayed' if hint is None else 'not displayed'}")
+        probs = []
+        if pressed != "true":
+            probs.append(f"aria-pressed is {pressed!r} after a click, expected 'true'")
+        if g["drawn"] is None or fit["drawn"] is None:
+            probs.append("cannot measure the drawn width")
+        else:
+            if g["drawn"] < fit["drawn"] - 1:
+                probs.append(f"Full size draws it narrower than fitted ({g['drawn']} px < {fit['drawn']} px)")
+            if g["vbw"] is not None and g["drawn"] < g["vbw"] - 1:
+                probs.append(f"Full size draws it below its natural size ({g['drawn']} px < {g['vbw']} px)")
+        if g["scroll"] > 0 and hint is not None:
+            probs.append(f"the frame scrolls sideways by {g['scroll']} px but the note next to the button is not displayed ({hint})")
+        if g["scroll"] <= 0 and hint is None:
+            probs.append("the note next to the button is displayed but the frame does not scroll")
+        if g["page"] > 0:
+            probs.append(f"the page scrolls horizontally by {g['page']} px")
+        if s.click(btn, f"fullsize desktop: {btn_sel} (again)"):
+            s.settle(300)
+            again = s.page.evaluate(SHEET_JS, sel)
+            if btn.get_attribute("aria-pressed") != "false":
+                probs.append(f"after a second click aria-pressed is {btn.get_attribute('aria-pressed')!r}")
+            if again["scroll"] > 0 or abs((again["drawn"] or 0) - (fit["drawn"] or 0)) > 1:
+                probs.append(f"pressed again it is not fitted as before (drawn {again['drawn']} px, was {fit['drawn']} px; "
+                             f"frame scroll {again['scroll']} px)")
+        bad += [f"fullsize desktop {name} 1440x900: {p_}" for p_ in probs]
+        s.screenshot(f"fullsize-desktop-{name}.png")
 
 
 THEME_JS = js(r"""
@@ -3398,8 +3893,8 @@ def layout_test(browser, url, screenshot_dir, m):
         problems += [f"layout {w}: {x}" for x in s.console_problems]
         s.page.close()
     sizes, size_problems = fullsize_test(browser, url, screenshot_dir)
-    out.append("fullsize " + " ".join(f"{name}={state}" for name, state in sizes.items()))
-    if any(state != "ok" for state in sizes.values()) or len(sizes) != len(FULLSIZE):
+    out.append("fullsize " + " ".join(f"{name}={sizes.get(name, 'fail')}" for name in [n_ for n_, _, _ in FULLSIZE] + ["desktop"]))
+    if any(state != "ok" for state in sizes.values()) or len(sizes) != len(FULLSIZE) + 1:
         ok = False
     problems += size_problems
     themes, theme_problems = theme_test(browser, url, screenshot_dir)
@@ -3650,11 +4145,14 @@ def full_run(browser, url, screenshot_dir, m, only=None):
         g = R["card"]
         print(f"card default={g.get('default', 'FAIL:not-run')} after_close={g.get('after_close', 'FAIL:not-run')} "
               f"nav={g.get('nav', 0)}/9 sticky_head={b(g.get('sticky'))} end_footer={b(g.get('end_footer'))} "
-              f"folded={b(g.get('folded'))} stuck_view={g.get('stuck_arrows', 0)}/{g.get('stuck_arrows_total', 0)}")
+              f"folded={b(g.get('folded'))} stuck_view={g.get('stuck_arrows', 0)}/{g.get('stuck_arrows_total', 0)} "
+              f"head_names={g.get('head_names', 0)}/{g.get('head_total', len(m.ids))} spacer_note={g.get('spacer_note', 'fail')}")
         print(f"card_head_px={g.get('head_px')}")
         oks.append(g.get("default") == "overview" and g.get("after_close") == "overview" and g.get("nav") == 9
                    and all(bool(g.get(k)) for k in ("sticky", "end_footer", "folded"))
-                   and g.get("stuck_arrows_total", 0) > 0 and g.get("stuck_arrows") == g.get("stuck_arrows_total"))
+                   and g.get("stuck_arrows_total", 0) > 0 and g.get("stuck_arrows") == g.get("stuck_arrows_total")
+                   and g.get("head_total", 0) > 0 and g.get("head_names") == g.get("head_total")
+                   and g.get("spacer_note") == "ok")
     if "matrix" in sel:
         g = R["matrix"]
         print(f"matrix cells={g.get('cells', 0)}/{g.get('C', 0)} hscroll={g.get('hscroll')} sticky_head={b(g.get('sticky'))} "

@@ -1760,7 +1760,8 @@
   //   the window. The new content then starts right under the card's head,
   //   which is stuck at the top of the window. The spacer stays until the
   //   card turns again. A reader who scrolls back up passes through it, and
-  //   a note in it, under the head, says why it is blank. As the reader
+  //   a note in it, under the head, says why it is blank and links back to
+  //   the map ("Back to the map", one tap out of the blank). As the reader
   //   scrolls, the part of the spacer below the window is dropped (that
   //   changes nothing in view), and once the card's top is back in view
   //   the rest of it goes too (the card's content then follows its head
@@ -1772,6 +1773,7 @@
   // Deep links and "Back to the map", which move the page anyway, drop the
   // spacers and the minimum height first.
   let floorPx = 0;
+  const SPACER_PAD = 12;  // the spacer's bottom padding (viewer.css: .card-spacer)
   function naturalBottom() {
     const wrap = document.querySelector('.wrap');
     return wrap ? wrap.getBoundingClientRect().bottom + window.scrollY : 0;
@@ -1793,16 +1795,31 @@
     return Number.isFinite(v) ? v : 0;
   }
   function spacerOf(card) { return card ? card.querySelector(':scope > .card-body > .card-spacer') : null; }
+  // for each spacer that is set: where the content under it starts (gap: px
+  // under the stuck head's bottom) and where the spacer's top is in the page
+  // (top), kept up to date as the reader scrolls (see refitPlace)
+  const spacerAt = new WeakMap();
+  function notePlace(sp, under) {
+    const r = sp.getBoundingClientRect();
+    spacerAt.set(sp, { gap: Math.min(r.bottom, window.innerHeight) - under, top: r.top + window.scrollY });
+  }
   function setSpacer(sp, px, noteTop) {
     if (!sp) return;
     if (px >= 1) {
       sp.style.height = Math.round(px) + 'px';
-      const note = sp.querySelector('.spacer-note');
-      if (note && noteTop !== undefined) note.style.top = Math.round(noteTop) + 'px';
       sp.hidden = false;
+      const note = sp.querySelector('.spacer-note');
+      if (note) {
+        if (noteTop !== undefined) note.style.top = Math.round(noteTop) + 'px';
+        // a blank too short for its note has none (the note would lie over
+        // the content under it)
+        note.hidden = false;
+        note.hidden = note.offsetHeight > Math.round(px);
+      }
     } else {
       sp.style.height = '';
       sp.hidden = true;
+      spacerAt.delete(sp);
     }
   }
   // The card turned to new content: if its top is above the window, its
@@ -1816,6 +1833,7 @@
     const head = card.querySelector(':scope > .card-head');
     const under = stickTop(head) + (head ? head.offsetHeight : 0);
     setSpacer(sp, under - sp.parentElement.getBoundingClientRect().top, under + 8);
+    if (!sp.hidden) notePlace(sp, under);
   }
   function keepPlace(card, change, turn) {
     const y = window.scrollY;
@@ -1831,8 +1849,8 @@
   }
   // As the reader scrolls, drop what lies below the window: the part of a
   // spacer under the window's bottom, and the body's minimum height.
-  const SPACER_PAD = 12;  // the spacer's bottom padding (viewer.css: .card-spacer)
   let trimFrame = 0;
+  let fitFrame = 0;
   function trimPlace() {
     trimFrame = 0;
     const vh = window.innerHeight;
@@ -1840,10 +1858,13 @@
       const r = sp.getBoundingClientRect();
       if (!r.height) return;
       const head = sp.closest('.card').querySelector(':scope > .card-head');
+      const under = stickTop(head) + (head ? head.offsetHeight : 0);
       // the card's top is back in view (its head no longer stuck): the reader
       // has passed the blank, and the card's content follows its head again
-      if (r.top >= stickTop(head) + (head ? head.offsetHeight : 0)) setSpacer(sp, 0);
-      else if (r.bottom > vh) setSpacer(sp, Math.min(sp.offsetHeight, vh - r.top) - SPACER_PAD);
+      if (r.top >= under) { setSpacer(sp, 0); return; }
+      if (r.bottom > vh) setSpacer(sp, Math.min(sp.offsetHeight, vh - r.top) - SPACER_PAD);
+      // (a pending refit needs the place the reader had before the resize)
+      if (!fitFrame) spacerAt.set(sp, { gap: Math.min(r.bottom, vh) - under, top: r.top + window.scrollY });
     });
     if (floorPx) {
       const need = Math.ceil(window.scrollY + vh);
@@ -1852,6 +1873,39 @@
     }
   }
   window.addEventListener('scroll', () => { if (!trimFrame) trimFrame = requestAnimationFrame(trimPlace); }, { passive: true });
+  // A window that changes its size (a tablet turned, a window resized) may
+  // move what lies above a card. A spacer that is set is then set again:
+  // - when the width changed, the card's content starts right under the
+  //   stuck head again (or keeps the place the reader had scrolled to inside
+  //   it), so that the blank and its note do not stay under the head;
+  // - when only the height changed (a browser's bars, a window made taller),
+  //   the content keeps its place in the page: the spacer takes up what the
+  //   things above it gained or lost, if anything.
+  // When the card's top is in view, the spacer goes.
+  let fitWidth = window.innerWidth;
+  function refitPlace() {
+    fitFrame = 0;
+    const widthChanged = window.innerWidth !== fitWidth;
+    fitWidth = window.innerWidth;
+    const y = window.scrollY;
+    let changed = false;
+    document.querySelectorAll('.card-spacer:not([hidden])').forEach((sp) => {
+      const card = sp.closest('.card');
+      if (!card || card.hidden) return;  // set again when the card shows
+      const head = card.querySelector(':scope > .card-head');
+      const under = stickTop(head) + (head ? head.offsetHeight : 0);
+      const r = sp.getBoundingClientRect();
+      if (!changed) { holdFloor(); changed = true; }
+      if (r.top >= under) { setSpacer(sp, 0); return; }
+      const at = spacerAt.get(sp) || { gap: SPACER_PAD, top: r.top + y };
+      // the content starts at the spacer's bottom
+      if (widthChanged) setSpacer(sp, sp.offsetHeight - SPACER_PAD + (under + Math.min(at.gap, SPACER_PAD) - r.bottom), under + 8);
+      else if (Math.abs(r.top + y - at.top) >= 1) setSpacer(sp, sp.offsetHeight - SPACER_PAD - (r.top + y - at.top), under + 8);
+      if (!sp.hidden) notePlace(sp, under);
+    });
+    if (changed || floorPx) setFloor(y);
+  }
+  window.addEventListener('resize', () => { if (!fitFrame) fitFrame = requestAnimationFrame(refitPlace); });
 
   // ------------------------------------------------------------------
   // One map, three modes
@@ -2085,10 +2139,20 @@
     $('part-card').dataset.card = id;
     const t = $('card-title');
     t.dataset.card = id;
-    t.textContent = cardTitle(part);
-    // a box inside the part is open: the head names it after the part
+    // a box inside the part is open: the head names the part by its short
+    // name (its full title stays the heading's name for screen readers and
+    // its tooltip), then the box; nothing in the head is cut short
     const node = $('card-node');
     const lower = !over && cur !== part;
+    const short = lower ? shortOf(part) : '';
+    t.textContent = short || cardTitle(part);
+    if (short && short !== cardTitle(part)) {
+      t.setAttribute('aria-label', cardTitle(part));
+      t.setAttribute('title', cardTitle(part));
+    } else {
+      t.removeAttribute('aria-label');
+      t.removeAttribute('title');
+    }
     node.textContent = lower ? '\u203a ' + titleOf(cur) : '';
     node.hidden = !lower;
     $('card-eyebrow').hidden = over || lower;
@@ -2223,6 +2287,9 @@
     // the step card's head (it stays in view while the step is read)
     $('step-prev').addEventListener('click', () => tourGo(tourIndex - 1, true));
     $('step-next').addEventListener('click', () => tourGo(tourIndex + 1, true));
+    // and its end (each shown only where there is such a step)
+    $('step-foot-prev').addEventListener('click', () => tourGo(tourIndex - 1, true));
+    $('step-foot-next').addEventListener('click', () => tourGo(tourIndex + 1, true));
   }
 
   function renderStep(s, k, T) {
@@ -2269,6 +2336,15 @@
       if (off && document.activeElement === b) focusQuietly(heir);
       b.disabled = off;
     });
+    // the card's end shows "Previous step" and "Next step" only where there
+    // is such a step; one that goes hands its focus to the other
+    const footPrev = $('step-foot-prev');
+    const footNext = $('step-foot-next');
+    const hadFocus = document.activeElement;
+    footPrev.hidden = tourIndex === 0;
+    footNext.hidden = tourIndex === T - 1;
+    if (hadFocus === footPrev && footPrev.hidden) focusQuietly(footNext);
+    if (hadFocus === footNext && footNext.hidden) focusQuietly(footPrev);
     // another step (or the card shown again) starts under the window's top
     const turn = tourIndex !== stepShown;
     stepShown = tourIndex;
@@ -2505,12 +2581,15 @@
   }
   // "Full size": the figure at its natural size (1 viewBox unit = 1 CSS px)
   // inside its scrolling frame; pressed again, it fits the frame (default).
+  // It never makes a figure smaller: where the frame is wider than the
+  // natural size (the sequence chart on a wide window), the figure keeps
+  // the frame's width.
   function setFull(sheet, on) {
     const svg = sheet.querySelector(':scope > svg');
     const w = svg && svg.viewBox && svg.viewBox.baseVal ? svg.viewBox.baseVal.width : 0;
     const full = !!(on && w);
     sheet.classList.toggle('full', full);
-    if (svg) svg.style.width = full ? w + 'px' : '';
+    if (svg) svg.style.width = full ? 'max(' + w + 'px, 100%)' : '';
     updateCues();
     return full;
   }
