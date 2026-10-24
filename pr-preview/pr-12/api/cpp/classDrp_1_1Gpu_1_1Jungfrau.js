@@ -1,0 +1,27 @@
+var classDrp_1_1Gpu_1_1Jungfrau =
+[
+    [ "Jungfrau", "classDrp_1_1Gpu_1_1Jungfrau.html#a0750491ff85b01268d73d50db1355ae1", null ],
+    [ "~Jungfrau", "classDrp_1_1Gpu_1_1Jungfrau.html#a3221009fe88489a982f7ef885c6a952a", null ],
+    [ "beginrun", "classDrp_1_1Gpu_1_1Jungfrau.html#a1520fd775356e038ef62e095967f48ed", null ],
+    [ "configure", "classDrp_1_1Gpu_1_1Jungfrau.html#a1c4af4a69ce5371ae1ff802048504d3a", null ],
+    [ "event", "classDrp_1_1Gpu_1_1Jungfrau.html#a5689311d021193a685c920a3628e3788", null ],
+    [ "firstDataSubframe", "classDrp_1_1Gpu_1_1Jungfrau.html#a74d0f2c3ddcf09a59206b2b91c385197", null ],
+    [ "gains_d", "classDrp_1_1Gpu_1_1Jungfrau.html#a391c01bcc965149465e162488b9b8d38", null ],
+    [ "nModules", "classDrp_1_1Gpu_1_1Jungfrau.html#abd95976312f21c548dd773024dc3fd4e", null ],
+    [ "nPixels", "classDrp_1_1Gpu_1_1Jungfrau.html#ab3219bfc4fe4ded5e670bac01551dcd1", null ],
+    [ "pedestals_d", "classDrp_1_1Gpu_1_1Jungfrau.html#a72ef7785e45775bbc033f018ceabd2de", null ],
+    [ "rangeBits", "classDrp_1_1Gpu_1_1Jungfrau.html#a40b549ff69ab95739a3a2180608920b3", null ],
+    [ "rangeOffset", "classDrp_1_1Gpu_1_1Jungfrau.html#a45067429e3a132119466205722928eff", null ],
+    [ "recordEvent", "classDrp_1_1Gpu_1_1Jungfrau.html#adb3f4a90700b3ec96dc10bae3e6991da", null ],
+    [ "subframeCount", "classDrp_1_1Gpu_1_1Jungfrau.html#a3b57c0f4f5f8ac43b09f5309a227371b", null ],
+    [ "tdestOfModule", "classDrp_1_1Gpu_1_1Jungfrau.html#a902ae0e1560a79e34eff068e197ec194", null ],
+    [ "Cols", "classDrp_1_1Gpu_1_1Jungfrau.html#a4a7decebc4269a7d444b48b7f290f9ea", null ],
+    [ "FirstDataTdest", "classDrp_1_1Gpu_1_1Jungfrau.html#ab3cd62af783e167387bcd628aeee0ac2", null ],
+    [ "ModulePixels", "classDrp_1_1Gpu_1_1Jungfrau.html#a8509b996e3870f4f888d148228714f33", null ],
+    [ "NRanges", "classDrp_1_1Gpu_1_1Jungfrau.html#aa3e5313338818e643f73b895961f7745", null ],
+    [ "PacketNum", "classDrp_1_1Gpu_1_1Jungfrau.html#a341443ec838f3d715efeed83a74ea0e5", null ],
+    [ "PixelPerPacket", "classDrp_1_1Gpu_1_1Jungfrau.html#ade4ad4cdde9e042316faa412af65d95f", null ],
+    [ "RangeBits", "classDrp_1_1Gpu_1_1Jungfrau.html#a574e930023d4750786bd7b3073cfd104", null ],
+    [ "RangeOffset", "classDrp_1_1Gpu_1_1Jungfrau.html#a230e3d17fa57d4a8f8886df1f2d933fd", null ],
+    [ "Rows", "classDrp_1_1Gpu_1_1Jungfrau.html#a8dd928a7fabea59f295a419d2c6b4544", null ]
+];

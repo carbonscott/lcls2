@@ -1,0 +1,27 @@
+var classDrp_1_1Gpu_1_1EpixUHR3x2 =
+[
+    [ "EpixUHR3x2", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#ad24ffe900b28b11f5dfa70498481b9c7", null ],
+    [ "~EpixUHR3x2", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#abef7d13bd3a5a4726fe8e2a2ff0d14f4", null ],
+    [ "beginrun", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#ab266f506c23afa2ae978247c619cb313", null ],
+    [ "configure", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a4ddfb893cd9f39fcb1201ebcea64b564", null ],
+    [ "dataBits", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a85f1cbd36b6247de72de276be26c9d32", null ],
+    [ "dataOffset", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a12154ea865c1fa18b54fd1f23740f5c0", null ],
+    [ "event", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a3d6fd862a844279fee14cde1f7c1a5ac", null ],
+    [ "firstDataSubframe", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#aa562358f36b77c5773ef2ebe0834176f", null ],
+    [ "gains_d", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a167d2e994db831385ad6d94e9326f60c", null ],
+    [ "pedestals_d", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a8f438d25c407ecef2decbfc9c353f054", null ],
+    [ "rangeBits", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#af7a16babbf9457e60faa51c9c2ced891", null ],
+    [ "rangeOffset", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#aea788b56e19a2e6d28a854409d7c3ada", null ],
+    [ "rawShape", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a220805612e83a5dbd6631e5073d7dd0c", null ],
+    [ "rawSize", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a655674b99f21c2d847b94e8929f2858f", null ],
+    [ "recordEvent", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a7cbdcba5957d1772025c28294f842d7d", null ],
+    [ "subframeCount", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a1c674a3a213d7112a9316e456e741c8a", null ],
+    [ "AsicPixels", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#abe0aacb5be2c6d238fd04d558b21f862", null ],
+    [ "FirstDataTdest", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#aa99e8aee4a2e1a11e818333a6b9058bc", null ],
+    [ "NPixels", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#aa647281aa6d2bc85a8d87238ea6fbe26", null ],
+    [ "NRanges", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#ab20d200280c0bad0ae62724da5fdc065", null ],
+    [ "NumAsics", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#af63fe67c70fa50e876141007f2bb3644", null ],
+    [ "NumCols", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#a99df8a2c64fc0c2d3891215176e12280", null ],
+    [ "NumRows", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#acb1f561e233daac208b411a60f69c1ce", null ],
+    [ "NumSubFrames", "classDrp_1_1Gpu_1_1EpixUHR3x2.html#af8c1247b0e761d1e34cceed2211df561", null ]
+];
