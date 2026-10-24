@@ -1,0 +1,28 @@
+var classgeometry_1_1SegGeometryEpix10kaV1 =
+[
+    [ "cols", "classgeometry_1_1SegGeometryEpix10kaV1.html#a5ea5557443e542e2415d9d69d51542e3", null ],
+    [ "instance", "classgeometry_1_1SegGeometryEpix10kaV1.html#a32437063c598631f78db7239b4998fa7", null ],
+    [ "pixel_area_array", "classgeometry_1_1SegGeometryEpix10kaV1.html#a389b7e92df9521cbfa98a179c1479c73", null ],
+    [ "pixel_coord_array", "classgeometry_1_1SegGeometryEpix10kaV1.html#a41caeb45b3bbf704236ca9866828521e", null ],
+    [ "pixel_coord_max", "classgeometry_1_1SegGeometryEpix10kaV1.html#a0e4e47bf5da75e2578b9989e813397ab", null ],
+    [ "pixel_coord_min", "classgeometry_1_1SegGeometryEpix10kaV1.html#ae2b385bbfabe9fc9f112741d7d690bad", null ],
+    [ "pixel_mask_array", "classgeometry_1_1SegGeometryEpix10kaV1.html#a454296a481b9fd5f5981653609795654", null ],
+    [ "pixel_scale_size", "classgeometry_1_1SegGeometryEpix10kaV1.html#ac44a3cca7b4262136301fa050d76823f", null ],
+    [ "pixel_size_array", "classgeometry_1_1SegGeometryEpix10kaV1.html#a8dc8c2fafb6d84dcd3a282c67890c3fc", null ],
+    [ "print_seg_info", "classgeometry_1_1SegGeometryEpix10kaV1.html#a7ef743b033560355299f080b0297e61d", null ],
+    [ "rows", "classgeometry_1_1SegGeometryEpix10kaV1.html#a43be244fcf5ef785582562ba6a4a52d1", null ],
+    [ "shape", "classgeometry_1_1SegGeometryEpix10kaV1.html#a22d276f8b92e9493d742db40760a88e2", null ],
+    [ "size", "classgeometry_1_1SegGeometryEpix10kaV1.html#a9c3a9aa4df07e0d69ad2e76d45f43746", null ],
+    [ "COLS", "classgeometry_1_1SegGeometryEpix10kaV1.html#a61e2c166aef5a4d6c1a90e288bbfd5f0", null ],
+    [ "COLSHALF", "classgeometry_1_1SegGeometryEpix10kaV1.html#a879869af071d4e81e3a2aa859ac8a913", null ],
+    [ "NCORNERS", "classgeometry_1_1SegGeometryEpix10kaV1.html#a6de99158cf1e949e5e815ef511216d2e", null ],
+    [ "PIX_SCALE_SIZE", "classgeometry_1_1SegGeometryEpix10kaV1.html#a6d838bd49481274520d9b6d79905eed3", null ],
+    [ "PIX_SIZE_COLS", "classgeometry_1_1SegGeometryEpix10kaV1.html#a8c643bad285c6a4cafa86eb326513c36", null ],
+    [ "PIX_SIZE_DEPTH", "classgeometry_1_1SegGeometryEpix10kaV1.html#a9f7d67ad97795b5eefa216293c5002c1", null ],
+    [ "PIX_SIZE_ROWS", "classgeometry_1_1SegGeometryEpix10kaV1.html#aecf47c96089eb891e01991fb6ac354fe", null ],
+    [ "PIX_SIZE_WIDE", "classgeometry_1_1SegGeometryEpix10kaV1.html#a4edc659601b7448d2a01b0e8e9a64b78", null ],
+    [ "ROWS", "classgeometry_1_1SegGeometryEpix10kaV1.html#a5b1ad8db7c06f7baca42cc765afb5c94", null ],
+    [ "ROWSHALF", "classgeometry_1_1SegGeometryEpix10kaV1.html#a48f2a3c42244c75089b74986c6aaaba9", null ],
+    [ "SIZE", "classgeometry_1_1SegGeometryEpix10kaV1.html#ad1a739b35462cd3af2abb1ba49c177f6", null ],
+    [ "UM_TO_PIX", "classgeometry_1_1SegGeometryEpix10kaV1.html#a6d6c2b3e7fc3b1691720c10ad94c06af", null ]
+];

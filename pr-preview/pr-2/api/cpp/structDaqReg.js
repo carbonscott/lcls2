@@ -1,0 +1,25 @@
+var structDaqReg =
+[
+    [ "buildStr", "structDaqReg.html#a3906949ac5b9f09d58d85d7a25f61dab", null ],
+    [ "clients", "structDaqReg.html#a97e8d281f276cf8bcc68bb5506068602", null ],
+    [ "lanes", "structDaqReg.html#a5633feeab5f2a47012d879bb7608b072", null ],
+    [ "monEnable", "structDaqReg.html#a26776053063aff2a59894c7271721832", null ],
+    [ "monHistAddrHi", "structDaqReg.html#a9b4637fbb08ef5a9b3a7e930a9b8ed48", null ],
+    [ "monHistAddrLo", "structDaqReg.html#ad29db23df7100e4e9851cc29b689219d", null ],
+    [ "monReadoutCounter", "structDaqReg.html#a4e34388daf77b4a9dfee8426236d5e8d", null ],
+    [ "monReadoutInterval", "structDaqReg.html#a4852116d0a7342a903915ee0c3aaefc1", null ],
+    [ "monSampleCounter", "structDaqReg.html#adf2338d0f8788e9d73298b8273eba5bd", null ],
+    [ "monSampleInterval", "structDaqReg.html#aeed0d2ba2d432f62e34c0df7dddd9910", null ],
+    [ "monStatus", "structDaqReg.html#af244ab346bb99f8a718edcaa116fb759", null ],
+    [ "params", "structDaqReg.html#a55de4c569509bc14bea1356830b0dec4", null ],
+    [ "reset", "structDaqReg.html#aeacf1a0ab95f4e53d6e98cc796a30548", null ],
+    [ "rsvd_00000900", "structDaqReg.html#a253c52d76416c8ea7567613836f99f07", null ],
+    [ "rsvd_00800028", "structDaqReg.html#a9b9fcef5bd00c769dacfe91600bf2939", null ],
+    [ "rsvd_00800080", "structDaqReg.html#a5165a639f284a2fc3ee196cfcb3dc8b2", null ],
+    [ "rsvd_00c00000", "structDaqReg.html#a50ac9e5a391327a6d774540491994d5c", null ],
+    [ "rsvd_100", "structDaqReg.html#a050ae04d26a7517b9a627960b8a1f2f3", null ],
+    [ "rsvd_C", "structDaqReg.html#acc0d99b59f9b9eb4b421505c7fa8bdc1", null ],
+    [ "scratch", "structDaqReg.html#af0af8f1984f01d46a158eefe393d767a", null ],
+    [ "upTimeCnt", "structDaqReg.html#ada1adbddb4721ffdd9df4baffc3e3f17", null ],
+    [ "version", "structDaqReg.html#aa9237cb37d0c942dd214b67f348a542d", null ]
+];
