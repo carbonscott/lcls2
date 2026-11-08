@@ -26,7 +26,7 @@
       <div id="popup_type" class="popup" role="listbox" hidden></div>
     </span>
     <span class="stretch"></span>
-    <button id="but_edit" disabled title="Edit configuration dictionary: the config DB editor is not in web GUI v0.">Edit</button>
+    <button id="but_edit" data-parity="CGWMainConfiguration.but_edit" title="Edit configuration dictionary.">Edit</button>
   </div>
 </fieldset>
 
@@ -109,6 +109,8 @@
   <pre id="edi_err" class="log err" data-parity="QWLoggerStd.edi_err QWLoggerError.edi_err" title="Window for ERROR messages"></pre>
 </fieldset>
 </main>
+<div id="ext"></div>
 <script src="/static/app.js"></script>
+<script src="/static/ext/configeditor.js"></script>
 </body>
 </html>

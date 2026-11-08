@@ -1,0 +1,2 @@
+Mapping fragments: <owner>.json files merged into ../mapping.json by check_parity.
+Same format as mapping.json; a row id may appear in only one file.

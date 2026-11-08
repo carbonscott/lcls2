@@ -105,7 +105,7 @@ def test_full_cycle(page, server):
     page.click(P('CGWMainPartition.but_select'))
     expect_state(page, 'unallocated', 'rollcall')
     expect(page.locator('#select_window')).to_be_visible(timeout=T)
-    expect(page.locator(P('CGWPartitionTable.table.sel'))).to_have_count(6)
+    expect(page.locator(P('CGWMainPartition.w_select.sel'))).to_have_count(6)
     shot(page, '02-unallocated-select.png')
     page.click(P('QWPopupTableCheck.but_apply'))
     expect_state(page, 'allocated', 'alloc')
@@ -194,10 +194,10 @@ def test_partition_columns_apply(page, server):
     page.click(P('CGWMainPartition.but_select'))
     expect_state(page, 'unallocated', 'rollcall')
     row = lambda alias: page.locator('#select_table tr[data-alias="%s"]' % alias)  # noqa: E731
-    row('fakecam_0').locator(P('CGWPartitionTable.table.grp')).select_option('3')
-    row('fakecam_1').locator(P('CGWPartitionTable.table.monitor')).check()
-    row('meb0').locator(P('CGWPartitionTable.table.sel')).uncheck()
-    expect(row('teb0').locator(P('CGWPartitionTable.table.grp'))).to_have_count(0)  # grp only for drp/tpr
+    row('fakecam_0').locator(P('CGWMainPartition.w_select.grp')).select_option('3')
+    row('fakecam_1').locator(P('CGWMainPartition.w_select.monitor')).check()
+    row('meb0').locator(P('CGWMainPartition.w_select.sel')).uncheck()
+    expect(row('teb0').locator(P('CGWMainPartition.w_select.grp'))).to_have_count(0)  # grp only for drp/tpr
     page.click(P('QWPopupTableCheck.but_apply'))
     expect_state(page, 'allocated', 'alloc')
     plat = server.get('/api/platform')

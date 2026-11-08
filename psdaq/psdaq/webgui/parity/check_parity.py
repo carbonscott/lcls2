@@ -37,6 +37,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_MAPPING = os.path.join(HERE, 'mapping.json')
 
 
+def load_mapping(path):
+    """mapping.json plus every fragment in mapping.d/ next to it (sorted by name).
+    A row id may appear in only one of them, so separate owners never edit one file."""
+    with open(path) as f:
+        mapping = json.load(f)
+    frag_dir = os.path.join(os.path.dirname(os.path.abspath(path)), 'mapping.d')
+    if os.path.isdir(frag_dir):
+        for name in sorted(os.listdir(frag_dir)):
+            if not name.endswith('.json'):
+                continue
+            with open(os.path.join(frag_dir, name)) as f:
+                frag = json.load(f)
+            dup = sorted(set(frag) & set(mapping))
+            if dup:
+                raise SystemExit('check_parity: %s repeats ids already mapped: %s' % (name, ', '.join(dup)))
+            mapping.update(frag)
+    return mapping
+
+
 def nodeid_key(nodeid):
     """(classname, name) as pytest's junitxml writes them for a node id."""
     parts = nodeid.split('::')
@@ -196,8 +215,7 @@ def main(argv=None):
     ap.add_argument('--json', action='store_true', help='print the report as JSON')
     a = ap.parse_args(argv)
     rows, _ = enumerate_rows(a.src)
-    with open(a.mapping) as f:
-        mapping = json.load(f)
+    mapping = load_mapping(a.mapping)
     results = load_junit(a.junit) if a.junit else None
     rep = check(rows, mapping, results, a.allow_unproven_na)
     if a.json:
