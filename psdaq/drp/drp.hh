@@ -136,6 +136,8 @@ public:
                     uint32_t* errors,
                     uint32_t* dest);
     ssize_t freeDma(unsigned count, uint32_t* indices);
+    // Return buffers that were read but never handled, without adjusting counters
+    ssize_t retDma(unsigned count, uint32_t* indices) { return _retDma(count, indices); }
     unsigned allocate();
     void freePebble(unsigned);
     void flushPebble();
@@ -151,6 +153,10 @@ protected:
     void _initialize(const Parameters&);
 private:
     virtual ssize_t _freeDma(unsigned count, uint32_t* indices) = 0;
+    // The defaults act on fd() with the DMA driver; a software source (MemPoolSim) overrides them
+    virtual ssize_t _readDma(uint32_t count, int32_t* ret, uint32_t* index,
+                             uint32_t* flags, uint32_t* errors, uint32_t* dest);
+    virtual ssize_t _retDma(unsigned count, uint32_t* indices);
 protected:
     unsigned m_nDmaBuffers;             // Rounded up dmaCount
     unsigned m_nbuffers;

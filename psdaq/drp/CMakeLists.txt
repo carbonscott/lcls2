@@ -10,6 +10,7 @@ add_library(drpbase
     TTFex.cc
     XpmDetector.cc
     DrpBase.cc
+    MemPoolSim.cc
     FileWriter.cc
     Si570.cc
 )
