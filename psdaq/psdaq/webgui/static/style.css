@@ -47,3 +47,20 @@ pre.log { height: 12rem; overflow: auto; margin: .2rem 0; padding: .3rem; backgr
 pre.log.err { height: 6rem; background: #fffbe6; color: #b00; }
 .lvl-WARNING { color: #9a6700; } .lvl-ERROR, .lvl-CRITICAL { color: #b00; } .lvl-DEBUG { color: #889; }
 #state_buttons button, #transition_buttons button { padding: .15rem .45rem; font-size: .8rem; }
+/* CGWMainTabs tab bar (QTabBar RoundedNorth, blue tab text) */
+.tabbar { display: flex; gap: 2px; margin-bottom: -.5rem; padding-left: .4rem; }
+.tabbar [role="tab"] { border-radius: 6px 6px 0 0; border-bottom: 0; color: #1f4fd1; background: #e9edf3; padding: .2rem .9rem; }
+.tabbar [role="tab"][aria-selected="true"] { background: #fff; font-weight: 600; }
+.tabwin { display: flex; flex-direction: column; gap: .5rem; }
+#panel_expert { display: flex; flex-direction: column; gap: .5rem; }
+#panel_expert[hidden], #panel_user[hidden] { display: none; }
+/* CGWMainTabUser: 50x50 icon buttons */
+.userbar { justify-content: flex-start; padding: 0 1.5rem; }
+button.icon { width: 50px; height: 50px; font-size: 1.5rem; padding: 0; }
+#but_record_user { color: #c92a2a; }
+#but_record_user[aria-pressed="true"] { background: #e03131; color: #fff; border-color: #b02525; }
+#bar_progress_user { width: 100px; }
+/* CGWPartitionTable: collapsed detector (yellow ID cell), clickable ID, rows of hidden processes shown disabled */
+td.cell-id { cursor: pointer; }
+td.cell-id.collapser { background: #ffef7a; }
+tr.disabled td { color: #99a; }
