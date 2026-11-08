@@ -26,19 +26,41 @@ def _short(e, n=150):
     return e if len(e) <= n else e[:n - 3] + '...'
 
 
+# na reasons written by hand where the generated one would say less than the source does
+KEEP = {
+    'CGWMainTabs.gui_win':
+        'fallback window: QTextEdit("Default window for tab ...") at control_gui/CGWMainTabs.py:156 is the else of '
+        'tab_name == "Expert" / "User" (CGWMainTabs.py:142, :147), and gui_selector only gets names of the tabs added from '
+        'tab_names (CGWMainTabs.py:50, :115-116, :180); the module is also not imported '
+        '(control_gui/CGWMain.py:43 import commented out)',
+}
+
+
+def _guard_ev(row):
+    return next((e[6:] for e in row['evidence'] if e.startswith('guard ')), '')
+
+
 def reason(row):
+    """One-line na reason from the enumerator's evidence; it cites row['guard'] (the
+    `if __name__` line, the setVisible test, the commented import, the dispatch) when
+    the row has one, because check_parity refuses an na reason that does not."""
     ev = row['evidence']
     reach = row['reach']
+    guard = row.get('guard', '')
     if not row['reachable']:
         if reach == 'main-block':
             inst = next((e for e in ev if 'is instantiated only at' in e), None)
             if inst:
-                return 'test harness: %s' % inst
-            return 'test harness: under if __name__ == "__main__" at %s, never runs in the GUI' % row['loc']
+                return 'test harness: %s, under %s; never runs when control_gui imports the module' % (
+                    inst, _guard_ev(row) or 'if __name__ == "__main__"')
+            return 'test harness: under %s (row at %s); never runs when control_gui imports the module' % (
+                _guard_ev(row) or 'if __name__ == "__main__"', row['loc'])
         if reach == 'if-false':
-            return 'dead code: under `if False:` at %s' % row['loc']
+            return 'dead code: under %s (row at %s)' % (_guard_ev(row) or '`if False:`', row['loc'])
         if reach == 'module-unreachable':
-            return 'module %s is not imported from app/control_gui.py' % row['file']
+            g = _guard_ev(row)
+            return 'module %s is not imported from app/control_gui.py%s' % (
+                row['file'], (': ' + g) if g else '')
         if reach == 'def-unreachable':
             return '%s is never named by code reachable from app/control_gui.py' % row['class']
         if reach == 'method-not-live':
@@ -53,7 +75,10 @@ def reason(row):
     if row['hidden']:
         vis = next((e for e in ev if 'setVisible' in e), 'hidden')
         site = [e for e in ev if 'passes' in e or 'omits' in e]
-        return _short('hidden: %s%s' % (vis, ('; ' + '; '.join(site)) if site else ''), 220)
+        what = 'hidden'
+        if row['kind'] == 'mnemonic':
+            what = 'hidden button, so its %s never fires' % row['widget']
+        return _short('%s: %s%s' % (what, vis, ('; ' + '; '.join(site)) if site else ''), 260)
     if row['inert']:
         k = row['kind']
         if k == 'text':
@@ -76,6 +101,8 @@ def main(argv=None):
     ap.add_argument('--src', default=default_src())
     ap.add_argument('--mapping', default=DEFAULT_MAPPING)
     ap.add_argument('--write', action='store_true', help='write the file (default: print a summary)')
+    ap.add_argument('--refresh', action='store_true',
+                    help='rewrite existing generated na reasons (entries in KEEP and web mappings are kept)')
     a = ap.parse_args(argv)
     rows, _ = enumerate_rows(a.src)
     try:
@@ -86,9 +113,9 @@ def main(argv=None):
     ids = {r['id'] for r in rows}
     added = collections.Counter()
     for r in rows:
-        if r['id'] in mapping:
+        if r['id'] in mapping and not (a.refresh and set(mapping[r['id']]) == {'na'}):
             continue
-        why = reason(r)
+        why = KEEP.get(r['id']) or reason(r)
         if why:
             mapping[r['id']] = {'na': why.replace('\n', ' ')}
             added[r['reach'] or ('hidden' if r['hidden'] else 'inert')] += 1

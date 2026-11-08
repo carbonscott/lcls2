@@ -3,7 +3,8 @@
     daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--webgui] [--detach]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
-    daq_sim e2e    [-w WORKDIR] [--events N] [--break kill-drp] [--browser-python PATH] [--keep-up]
+    daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
+                   [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
 
 'up' starts, in this order and all on this node:
@@ -802,8 +803,9 @@ def _run_counts(work, plat):
     return out
 
 
-def _psana_counts(work, state, experiment, run):
-    """Read the run's xtc2 file back with psana2 (psdaq.sim.xtc2_check)."""
+def _psana_counts(work, state, experiment, run, seed=None):
+    """Read the run's xtc2 file back with psana2 (psdaq.sim.xtc2_check); every event's w3 must be
+    seed (default: the sim_seed 'up' stored)."""
     import glob
     pattern = work.path('data', INSTRUMENT, experiment, 'xtc', f'{experiment}-r{run:04d}-s*-c000.xtc2')
     files = sorted(glob.glob(pattern))
@@ -811,14 +813,16 @@ def _psana_counts(work, state, experiment, run):
         return {'xtc2 file': f'none matching {pattern}'}
     out = {'xtc2 file': f'{files[0]} ({os.path.getsize(files[0])} B)'}
     r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', files[0], '--seed',
-                        str(state['seed']), '--json'], capture_output=True, text=True, timeout=600)
+                        str(state['seed'] if seed is None else seed), '--json'],
+                       capture_output=True, text=True, timeout=600)
     try:
         res = json.loads(r.stdout.strip().splitlines()[-1])
     except (ValueError, IndexError):
         return dict(out, **{'psana2 checks': f'xtc2_check failed: {r.stderr.strip()[-300:]}'})
     out.update({'psana2 events': res['events'], 'psana2 with data': res['with_data'],
                 'psana2 checks': 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}',
-                'psana2 seq': f'{res["first_seq"]}..{res["last_seq"]}'})
+                'psana2 seq': f'{res["first_seq"]}..{res["last_seq"]}',
+                'psana2 seeds': {f'{int(k):#x}': v for k, v in res.get('seeds', {}).items()}})
     return out
 
 
@@ -879,8 +883,15 @@ def main(argv=None):
                          help='end-to-end test: a headless browser drives one run through the web GUI')
     e2e.add_argument('--events', type=int, default=1000,
                      help='L1Accepts the run must record (default %(default)d); the test waits for 10%% more')
-    e2e.add_argument('--break', dest='breakage', choices=('kill-drp',), default=None,
-                     help='kill-drp: SIGKILL the DRP once RUNNING (the test must then fail)')
+    e2e.add_argument('--break', dest='breakage', choices=('kill-drp', 'truncate-xtc2'), default=None,
+                     help='make the test fail on purpose: kill-drp = SIGKILL the DRP once RUNNING; '
+                          'truncate-xtc2 = cut the last 100 L1Accepts off the xtc2 file before psana2 reads it')
+    e2e.add_argument('--edit-seed', type=lambda s: int(s, 0), default=None,
+                     help='before Configure, set user.sim_seed of BEAM/fakecam_0 to this value in the web '
+                          'config editor; the DRP must read it at Configure and psana2 find it in every event')
+    e2e.add_argument('--expect-seed', type=lambda s: int(s, 0), default=None,
+                     help='sim_seed the checks expect (default: --edit-seed, else --seed); set it to another '
+                          'value than --edit-seed to see the test fail')
     e2e.add_argument('--browser-python', default=None,
                      help='python of the Playwright venv (default $DAQ_SIM_BROWSER_PYTHON, else '
                           '$AGENTIFY_WEBTEST/venv/bin/python)')
@@ -904,4 +915,7 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    # Run main() from the importable module, not from __main__: psdaq.webgui.e2e imports
+    # psdaq.sim.daq_sim, and its Fail must be the class main() catches (else a traceback).
+    from psdaq.sim import daq_sim
+    sys.exit(daq_sim.main())

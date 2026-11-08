@@ -1,4 +1,4 @@
-# DAQ control web GUI (v0)
+# DAQ control web GUI
 
 A browser front end for the DAQ control level, beside the PyQt `control_gui` (which is unchanged).
 Server: `server.py`, Python standard library only (`http.server` + Server-Sent Events), runs in the DAQ env.
@@ -51,3 +51,23 @@ WEBGUI_SERVER_ARGS='--emulate-fail enable' psdaq/psdaq/webgui/tests/run_webgui_t
 ```
 
 Web elements carry `data-parity="<PyQt class>.<attr>[.<sub>]"`; the tests find them by that attribute.
+
+## Parity with the PyQt control GUI
+
+`parity/enumerate_pyqt.py` lists the user-facing controls of `psdaq/psdaq/control_gui` from its source
+(Python `ast`), one row per affordance, with a stable id `<Class>.<attr>[.<sub>]`. `parity/check_parity.py`
+compares them with `parity/mapping.json` plus `parity/mapping.d/*.json`:
+
+- a row is **mapped** (M) only if its test is a headless-browser test (`[chromium]`), it passed in the
+  given junit file, and that testcase records the row id with `record_property('parity', id)`;
+- a row is **not applicable** (K) only if the enumerator flags it (test-harness code under
+  `if __name__ == "__main__":`, an unimported module, a method never called, a hidden or inert widget),
+  its reason cites the guard line, and the offscreen PyQt walk of the same source agrees
+  (`parity/qt_walk.json`, sha256 of the source; `--run-walk` runs a fresh walk, PyQt5 offscreen, about 16 s).
+
+```bash
+psdaq/psdaq/webgui/tests/run_webgui_tests.sh --junitxml=/tmp/webgui.xml     # browser + other tests
+python -m psdaq.webgui.parity.check_parity --junit /tmp/webgui.xml [--run-walk]  # exit 0 only if M + K = N
+```
+It prints `N controls found, M mapped ..., K marked not applicable`, every not-applicable row with its
+reason, and names every row that is unmapped, untagged, failing or stale.
