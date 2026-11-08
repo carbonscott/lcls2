@@ -1,0 +1,63 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T18:18:18+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/start_up.sh wt-c c-tun3
+2026-11-08T10:18:48.033-08:00 daq_sim: preflight rc=0: 10:18:48 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T10:18:58.359-08:00 daq_sim: web GUI up: http://127.0.0.1:31053/ (pid 2224886) control state reset
+2026-11-08T10:18:58.361-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  webgui       http://127.0.0.1:31053/  (pid 2224886; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-redo'
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31053:/tmp/cwang31-redo/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-redo/webgui.sock:127.0.0.1:31053 sdfmilan176'
+exedev@indigo-galaxy:redo$ sleep 3; curl -s -o /dev/null -w 'GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\n' http://127.0.0.1:31053/; curl -s http://127.0.0.1:31053/api/status | cut -c1-200; echo
+GET http://127.0.0.1:31053/ on this VM -> HTTP 200
+{"transition": "reset", "state": "reset", "config_alias": "BEAM", "recording": false, "platform": {}, "bypass_activedet": false, "experiment_name": "tstx00001", "run_number": 0, "last_run_number": 0, 
+
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python tunnel_drive.py http://127.0.0.1:31053/ rec/c-tun3-web --events 1100 --edit-seed 0x2a2a
+2026-11-08T18:19:08.093+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31053/
+2026-11-08T18:19:08.094+00:00 open -> page ready; state RESET; backend 'backend: daqcontrol'
+2026-11-08T18:19:09.946+00:00 config editor: Config Editor for BEAM fakecam_0; user.sim_seed = 4660
+2026-11-08T18:19:10.330+00:00 Apply -> dialog: 'Confirm or cancel Save changes in configuration DB OK Cancel'
+2026-11-08T18:19:10.598+00:00 OK -> editor status: 'saved BEAM/fakecam_0 in tst: new key 3'; user.sim_seed now 0x2a2a
+2026-11-08T18:19:10.786+00:00 click Select     -> page state UNALLOCATED  OK (2026-11-08T18:19:11.893+00:00)
+2026-11-08T18:19:12.072+00:00 click Apply      -> page state ALLOCATED    OK (2026-11-08T18:19:12.373+00:00)
+2026-11-08T18:19:12.509+00:00 recording on (aria-pressed true)
+2026-11-08T18:19:12.514+00:00 choose CONNECTED   -> page state CONNECTED    OK (2026-11-08T18:19:13.115+00:00)
+2026-11-08T18:19:13.117+00:00 choose CONFIGURED  -> page state CONFIGURED   OK (2026-11-08T18:19:14.870+00:00)
+2026-11-08T18:19:14.870+00:00 choose STARTING    -> page state STARTING     OK (2026-11-08T18:19:16.085+00:00)
+2026-11-08T18:19:16.089+00:00 choose PAUSED      -> page state PAUSED       OK (2026-11-08T18:19:16.223+00:00)
+2026-11-08T18:19:16.224+00:00 choose RUNNING     -> page state RUNNING      OK (2026-11-08T18:19:16.366+00:00)
+2026-11-08T18:19:18.325+00:00 RUNNING: page events 1224 (source pva) >= 1100
+2026-11-08T18:19:20.458+00:00 RUNNING +2 s: page events 3224
+2026-11-08T18:19:20.473+00:00 choose PAUSED      -> page state PAUSED       OK (2026-11-08T18:19:20.629+00:00)
+2026-11-08T18:19:24.064+00:00 after Disable: page events 4254, data-final 1, source pva
+2026-11-08T18:19:24.163+00:00 choose STARTING    -> page state STARTING     OK (2026-11-08T18:19:24.319+00:00)
+2026-11-08T18:19:24.319+00:00 choose CONFIGURED  -> page state CONFIGURED   OK (2026-11-08T18:19:24.450+00:00)
+2026-11-08T18:19:24.451+00:00 choose CONNECTED   -> page state CONNECTED    OK (2026-11-08T18:19:24.611+00:00)
+2026-11-08T18:19:24.611+00:00 choose ALLOCATED   -> page state ALLOCATED    OK (2026-11-08T18:19:24.750+00:00)
+2026-11-08T18:19:24.752+00:00 choose RESET       -> page state RESET        OK (2026-11-08T18:19:24.914+00:00)
+2026-11-08T18:19:24.955+00:00 after RESET: page events 4254, data-final 1; error window lines: 0 []
+PAGE_EVENTS_FINAL=4254  ALL_STATES_OK=True  video page@44b05ea3210d8505e0977aecb0ee602d.webm
+exedev@indigo-galaxy:redo$ N=$(python3 -c "import json;print(json.load(open('rec/c-tun3-web/result.json'))['events'])"); echo "page count after Disable: $N"
+page count after Disable: 4254
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/readback.sh wt-c c-tun3 $N 0x2a2a
+== on sdfmilan176, Slurm job 43817664 step 19, tree ddb577906
+  webgui     pid 2224886  alive
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+  webgui     http://127.0.0.1:31053/ state reset  events 4254 (source pva, final True)
+  simxpm     PART:5:NumL0Acc = Sun Nov  8 10:19:33 2026 4254.0
+  simxpm     PART:5:NumL0Inp = Sun Nov  8 10:19:33 2026 4254.0
+== python -m psdaq.sim.xtc2_check tstx00001-r0001-s000-c000.xtc2 --seed 0x2a2a --expect 4254
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/c-tun3/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 4254; with fakecam data 4254; w3 == seed 4254 (seeds seen {0x2a2a: 4254}); payload pattern ok 4254; w0/w1 pulseId rising and == timestamp clock 4254/4254
+  seq (w2) 1..4254 gap-free from 1: True; expected 4254 events
+  PASS
+XTC2_CHECK_EXIT=0
+tst-drp[2224665]: <I> Sim payload seed 10794 (0x00002a2a) from configdb BEAM/fakecam_0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/down.sh wt-c c-tun3
+2026-11-08T10:19:51.364-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31053]
+2026-11-08T10:19:51.367-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31053:'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*webgui.sock'"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ 

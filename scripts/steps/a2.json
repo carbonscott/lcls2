@@ -1,0 +1,70 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan176",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date -Is; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*"
+ },
+ {
+  "send": "cd wt-a2 && git log -1 --format='HEAD %H (%D)%n     %s' && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh > /dev/null 2>&1; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "time ./build_all.sh -d -j 32 > build.log 2>&1; echo BUILD_EXIT=$?",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh"
+ },
+ {
+  "send": "for i in 1 2 3; do python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_simxpm.py 2>&1 | tail -1; done; python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py 2>&1 | tail -1",
+  "timeout": 400
+ },
+ {
+  "send": "bash $R/redo/hwkw.sh",
+  "timeout": 120
+ },
+ {
+  "send": "WD=$R/redo/out/a2-t3; mkdir -p $R/redo/out; daq_sim up -w $WD > $WD.up.log 2>&1 &"
+ },
+ {
+  "send": "for i in $(seq 180); do grep -q 'daq_sim: UP\\.' $WD.up.log && break; sleep 1; done; grep -E 'PREFLIGHT|seeded|procmgr start|UP\\.' $WD.up.log | cut -c1-140; daq_sim status -w $WD",
+  "timeout": 240
+ },
+ {
+  "send": "daq_sim cycle -w $WD --events 1000; echo CYCLE_EXIT=$?",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "bash $R/redo/netcheck.sh $WD",
+  "expect": "cycle (PASS|FAIL)",
+  "timeout": 400
+ },
+ {
+  "send": "bash $R/redo/killcycle.sh $WD",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim down -w $WD; echo DOWN_EXIT=$?",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "ls -l $WD/data/tst/tstx00001/xtc/*.xtc2"
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

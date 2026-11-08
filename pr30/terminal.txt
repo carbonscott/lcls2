@@ -1,0 +1,145 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T17:52:06+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i
+cwang31@sdfmilan176:redo$ hostname; date -Is; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*
+sdfmilan176
+2026-11-08T09:52:09-08:00
+Slurm job 43817664 step 5
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan176:redo$ cd wt-b && git log -1 --format='HEAD %H (%D)%n     %s' && echo "local changes: $(git status --short | wc -l)"
+HEAD 279d5ea1b44c7b1303d7be0c5305909d2a55a468 (HEAD, pr/b-webgui-v2)
+     CI and CHANGELOG for the web GUI
+local changes: 0
+cwang31@sdfmilan176:wt-b$ source ./setup_env_daq.sh > /dev/null 2>&1; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ time ./build_all.sh -d -j 32 > build.log 2>&1; echo BUILD_EXIT=$?
+
+real	1m29.452s
+user	14m12.537s
+sys	2m31.147s
+BUILD_EXIT=0
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ source psdaq/psdaq/sim/sim_env.sh
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ git diff --quiet 25e6f4d -- psdaq/psdaq/control_gui && echo 'psdaq/psdaq/control_gui: unchanged vs base 25e6f4d'
+psdaq/psdaq/control_gui: unchanged vs base 25e6f4d
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ (cd psdaq/psdaq/webgui/tests && python -m pytest -q -p no:cacheprovider test_webgui_backend.py test_webgui_events_pva.py test_check_parity.py test_parity_enumerate_v1.py 2>&1 | tail -1)
+37 passed in 16.94s
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q > $R/redo/out/b-suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $R/redo/out/b-suite.log
+SUITE_EXIT=0
+62 passed, 1 skipped, 1 warning in 46.50s
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ daq_sim e2e -w $R/redo/out/b-e2e1 --events 1000  > $R/redo/out/b-e2e1.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/b-e2e1.log | cut -c1-400
+E2E_EXIT=0
+2026-11-08T09:55:06.739-08:00 e2e: host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-e2e1  events 1000  break None
+UNALLOCATED clicked 2026-11-08T09:55:41.284-08:00 reported 2026-11-08T09:55:42.283-08:00 (page shows it 2026-11-08T09:55:42.293-08:00)
+ALLOCATED clicked 2026-11-08T09:55:42.328-08:00 reported 2026-11-08T09:55:42.460-08:00 (page shows it 2026-11-08T09:55:42.462-08:00)
+RECORD clicked 2026-11-08T09:55:42.494-08:00 reported recording=True (page aria-pressed true)
+CONNECTED clicked 2026-11-08T09:55:43.009-08:00 reported 2026-11-08T09:55:43.456-08:00 (page shows it 2026-11-08T09:55:43.464-08:00)
+CONFIGURED clicked 2026-11-08T09:55:43.469-08:00 reported 2026-11-08T09:55:45.083-08:00 (page shows it 2026-11-08T09:55:45.091-08:00)
+STARTING clicked 2026-11-08T09:55:45.095-08:00 reported 2026-11-08T09:55:46.176-08:00 (page shows it 2026-11-08T09:55:46.182-08:00)
+PAUSED clicked 2026-11-08T09:55:46.186-08:00 reported 2026-11-08T09:55:46.189-08:00 (page shows it 2026-11-08T09:55:46.192-08:00)
+RUNNING clicked 2026-11-08T09:55:46.195-08:00 reported 2026-11-08T09:55:46.197-08:00 (page shows it 2026-11-08T09:55:46.199-08:00)
+PAUSED clicked 2026-11-08T09:55:48.163-08:00 reported 2026-11-08T09:55:48.167-08:00 (page shows it 2026-11-08T09:55:48.169-08:00)
+STARTING clicked 2026-11-08T09:55:50.961-08:00 reported 2026-11-08T09:55:50.965-08:00 (page shows it 2026-11-08T09:55:50.967-08:00)
+CONFIGURED clicked 2026-11-08T09:55:50.970-08:00 reported 2026-11-08T09:55:50.980-08:00 (page shows it 2026-11-08T09:55:50.982-08:00)
+CONNECTED clicked 2026-11-08T09:55:51.001-08:00 reported 2026-11-08T09:55:51.004-08:00 (page shows it 2026-11-08T09:55:51.005-08:00)
+ALLOCATED clicked 2026-11-08T09:55:51.009-08:00 reported 2026-11-08T09:55:51.137-08:00 (page shows it 2026-11-08T09:55:51.139-08:00)
+RESET clicked 2026-11-08T09:55:51.143-08:00 reported 2026-11-08T09:55:51.144-08:00 (page shows it 2026-11-08T09:55:51.145-08:00)
+E2E summary  host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-e2e1  events 1000  break None  run 1  took 56 s  down clean
+  UNALLOCATED  clicked 2026-11-08T09:55:41.284-08:00 reported 2026-11-08T09:55:42.283-08:00  OK
+  ALLOCATED    clicked 2026-11-08T09:55:42.328-08:00 reported 2026-11-08T09:55:42.460-08:00  OK
+  CONNECTED    clicked 2026-11-08T09:55:43.009-08:00 reported 2026-11-08T09:55:43.456-08:00  OK
+  CONFIGURED   clicked 2026-11-08T09:55:43.469-08:00 reported 2026-11-08T09:55:45.083-08:00  OK
+  STARTING     clicked 2026-11-08T09:55:45.095-08:00 reported 2026-11-08T09:55:46.176-08:00  OK
+  PAUSED       clicked 2026-11-08T09:55:46.186-08:00 reported 2026-11-08T09:55:46.189-08:00  OK
+  RUNNING      clicked 2026-11-08T09:55:46.195-08:00 reported 2026-11-08T09:55:46.197-08:00  OK
+  PAUSED       clicked 2026-11-08T09:55:48.163-08:00 reported 2026-11-08T09:55:48.167-08:00  OK
+  STARTING     clicked 2026-11-08T09:55:50.961-08:00 reported 2026-11-08T09:55:50.965-08:00  OK
+  CONFIGURED   clicked 2026-11-08T09:55:50.970-08:00 reported 2026-11-08T09:55:50.980-08:00  OK
+  CONNECTED    clicked 2026-11-08T09:55:51.001-08:00 reported 2026-11-08T09:55:51.004-08:00  OK
+  ALLOCATED    clicked 2026-11-08T09:55:51.009-08:00 reported 2026-11-08T09:55:51.137-08:00  OK
+  RESET        clicked 2026-11-08T09:55:51.143-08:00 reported 2026-11-08T09:55:51.144-08:00  OK
+  1 PASS  own NumL0Acc read 1565 >= 1100 while RUNNING, before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-08T09:55:48.167-08:00): data-final 1,1; data-ts 2026-11-08T09:55:49.245-08:00 > Disable; readings at 2026-11-08T09:55:49.698-08:00 and 2026-11-08T09:55:50.908-08:00: '1967' == '1967'; source pva
+  4 PASS  page events '1967' parse as ^\d+$
+  5 PASS  after RESET the page shows '1967' (data-final 1), after Disable it showed '1967'
+  6 PASS  page 1967 == TEB_WrtCt 1967 == psana2 events 1967 == with data 1967 >= 1000: True; page == own NumL0Acc after Disable 1967: True; psana2 checks PASS; run 1 (page 1)
+E2E PASS
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ daq_sim e2e -w $R/redo/out/b-e2e2 --events 1000  > $R/redo/out/b-e2e2.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/b-e2e2.log | cut -c1-400
+E2E_EXIT=0
+2026-11-08T09:56:05.360-08:00 e2e: host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-e2e2  events 1000  break None
+UNALLOCATED clicked 2026-11-08T09:56:39.931-08:00 reported 2026-11-08T09:56:40.934-08:00 (page shows it 2026-11-08T09:56:40.943-08:00)
+ALLOCATED clicked 2026-11-08T09:56:40.975-08:00 reported 2026-11-08T09:56:41.120-08:00 (page shows it 2026-11-08T09:56:41.122-08:00)
+RECORD clicked 2026-11-08T09:56:41.158-08:00 reported recording=True (page aria-pressed true)
+CONNECTED clicked 2026-11-08T09:56:41.673-08:00 reported 2026-11-08T09:56:42.104-08:00 (page shows it 2026-11-08T09:56:42.112-08:00)
+CONFIGURED clicked 2026-11-08T09:56:42.116-08:00 reported 2026-11-08T09:56:43.756-08:00 (page shows it 2026-11-08T09:56:43.765-08:00)
+STARTING clicked 2026-11-08T09:56:43.769-08:00 reported 2026-11-08T09:56:44.857-08:00 (page shows it 2026-11-08T09:56:44.863-08:00)
+PAUSED clicked 2026-11-08T09:56:44.867-08:00 reported 2026-11-08T09:56:44.871-08:00 (page shows it 2026-11-08T09:56:44.873-08:00)
+RUNNING clicked 2026-11-08T09:56:44.876-08:00 reported 2026-11-08T09:56:44.879-08:00 (page shows it 2026-11-08T09:56:44.881-08:00)
+PAUSED clicked 2026-11-08T09:56:46.923-08:00 reported 2026-11-08T09:56:47.025-08:00 (page shows it 2026-11-08T09:56:47.027-08:00)
+STARTING clicked 2026-11-08T09:56:50.327-08:00 reported 2026-11-08T09:56:50.332-08:00 (page shows it 2026-11-08T09:56:50.333-08:00)
+CONFIGURED clicked 2026-11-08T09:56:50.337-08:00 reported 2026-11-08T09:56:50.347-08:00 (page shows it 2026-11-08T09:56:50.349-08:00)
+CONNECTED clicked 2026-11-08T09:56:50.371-08:00 reported 2026-11-08T09:56:50.377-08:00 (page shows it 2026-11-08T09:56:50.379-08:00)
+ALLOCATED clicked 2026-11-08T09:56:50.385-08:00 reported 2026-11-08T09:56:50.511-08:00 (page shows it 2026-11-08T09:56:50.515-08:00)
+RESET clicked 2026-11-08T09:56:50.520-08:00 reported 2026-11-08T09:56:50.622-08:00 (page shows it 2026-11-08T09:56:50.625-08:00)
+E2E summary  host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-e2e2  events 1000  break None  run 1  took 56 s  down clean
+  UNALLOCATED  clicked 2026-11-08T09:56:39.931-08:00 reported 2026-11-08T09:56:40.934-08:00  OK
+  ALLOCATED    clicked 2026-11-08T09:56:40.975-08:00 reported 2026-11-08T09:56:41.120-08:00  OK
+  CONNECTED    clicked 2026-11-08T09:56:41.673-08:00 reported 2026-11-08T09:56:42.104-08:00  OK
+  CONFIGURED   clicked 2026-11-08T09:56:42.116-08:00 reported 2026-11-08T09:56:43.756-08:00  OK
+  STARTING     clicked 2026-11-08T09:56:43.769-08:00 reported 2026-11-08T09:56:44.857-08:00  OK
+  PAUSED       clicked 2026-11-08T09:56:44.867-08:00 reported 2026-11-08T09:56:44.871-08:00  OK
+  RUNNING      clicked 2026-11-08T09:56:44.876-08:00 reported 2026-11-08T09:56:44.879-08:00  OK
+  PAUSED       clicked 2026-11-08T09:56:46.923-08:00 reported 2026-11-08T09:56:47.025-08:00  OK
+  STARTING     clicked 2026-11-08T09:56:50.327-08:00 reported 2026-11-08T09:56:50.332-08:00  OK
+  CONFIGURED   clicked 2026-11-08T09:56:50.337-08:00 reported 2026-11-08T09:56:50.347-08:00  OK
+  CONNECTED    clicked 2026-11-08T09:56:50.371-08:00 reported 2026-11-08T09:56:50.377-08:00  OK
+  ALLOCATED    clicked 2026-11-08T09:56:50.385-08:00 reported 2026-11-08T09:56:50.511-08:00  OK
+  RESET        clicked 2026-11-08T09:56:50.520-08:00 reported 2026-11-08T09:56:50.622-08:00  OK
+  1 PASS  own NumL0Acc read 1665 >= 1100 while RUNNING, before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-08T09:56:47.025-08:00): data-final 1,1; data-ts 2026-11-08T09:56:48.929-08:00 > Disable; readings at 2026-11-08T09:56:49.064-08:00 and 2026-11-08T09:56:50.273-08:00: '2047' == '2047'; source pva
+  4 PASS  page events '2047' parse as ^\d+$
+  5 PASS  after RESET the page shows '2047' (data-final 1), after Disable it showed '2047'
+  6 PASS  page 2047 == TEB_WrtCt 2047 == psana2 events 2047 == with data 2047 >= 1000: True; page == own NumL0Acc after Disable 2047: True; psana2 checks PASS; run 1 (page 1)
+E2E PASS
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ daq_sim e2e -w $R/redo/out/b-kill --events 1000 --break kill-drp > $R/redo/out/b-kill.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/b-kill.log | cut -c1-400
+E2E_EXIT=1
+2026-11-08T09:57:03.981-08:00 e2e: host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-kill  events 1000  break kill-drp
+UNALLOCATED clicked 2026-11-08T09:57:38.530-08:00 reported 2026-11-08T09:57:39.532-08:00 (page shows it 2026-11-08T09:57:39.543-08:00)
+ALLOCATED clicked 2026-11-08T09:57:39.574-08:00 reported 2026-11-08T09:57:39.711-08:00 (page shows it 2026-11-08T09:57:39.712-08:00)
+RECORD clicked 2026-11-08T09:57:39.739-08:00 reported recording=True (page aria-pressed true)
+CONNECTED clicked 2026-11-08T09:57:40.254-08:00 reported 2026-11-08T09:57:40.691-08:00 (page shows it 2026-11-08T09:57:40.699-08:00)
+CONFIGURED clicked 2026-11-08T09:57:40.704-08:00 reported 2026-11-08T09:57:42.347-08:00 (page shows it 2026-11-08T09:57:42.356-08:00)
+STARTING clicked 2026-11-08T09:57:42.360-08:00 reported 2026-11-08T09:57:43.439-08:00 (page shows it 2026-11-08T09:57:43.445-08:00)
+PAUSED clicked 2026-11-08T09:57:43.449-08:00 reported 2026-11-08T09:57:43.453-08:00 (page shows it 2026-11-08T09:57:43.455-08:00)
+RUNNING clicked 2026-11-08T09:57:43.458-08:00 reported 2026-11-08T09:57:43.463-08:00 (page shows it 2026-11-08T09:57:43.464-08:00)
+2026-11-08T09:57:43.518-08:00 e2e: --break kill-drp: SIGKILL pid 2166064: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/wt-b/install/bin/drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf
+PAUSED clicked 2026-11-08T09:58:17.223-08:00 reported None (page shows it None)
+E2E summary  host sdfmilan176  Slurm job 43817664 step 5  git HEAD of cwd 279d5ea1b44c7b1303d7be0c5305909d2a55a468  workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/out/b-kill  events 1000  break kill-drp  run 1  took 156 s  down clean
+  UNALLOCATED  clicked 2026-11-08T09:57:38.530-08:00 reported 2026-11-08T09:57:39.532-08:00  OK
+  ALLOCATED    clicked 2026-11-08T09:57:39.574-08:00 reported 2026-11-08T09:57:39.711-08:00  OK
+  CONNECTED    clicked 2026-11-08T09:57:40.254-08:00 reported 2026-11-08T09:57:40.691-08:00  OK
+  CONFIGURED   clicked 2026-11-08T09:57:40.704-08:00 reported 2026-11-08T09:57:42.347-08:00  OK
+  STARTING     clicked 2026-11-08T09:57:42.360-08:00 reported 2026-11-08T09:57:43.439-08:00  OK
+  PAUSED       clicked 2026-11-08T09:57:43.449-08:00 reported 2026-11-08T09:57:43.453-08:00  OK
+  RUNNING      clicked 2026-11-08T09:57:43.458-08:00 reported 2026-11-08T09:57:43.463-08:00  OK
+  PAUSED       clicked 2026-11-08T09:58:17.223-08:00 reported None  FAIL
+  1 FAIL  own NumL0Acc read 1050 < 1100 while RUNNING, before the click down
+  2 FAIL  PAUSED: control getState -> 'running' after 60 s; page shows 'RUNNING'
+  3 FAIL  not reached
+  4 PASS  page events '1050' while RUNNING parse as ^\d+$
+  5 FAIL  not reached
+  6 FAIL  not reached
+E2E FAIL: assertion 1: own NumL0Acc read 1050 < 1100 while RUNNING, before the click down
+E2E FAIL: assertion 2: PAUSED: control getState -> 'running' after 60 s; page shows 'RUNNING'
+E2E FAIL: assertion 3: not reached
+E2E FAIL: assertion 5: not reached
+E2E FAIL: assertion 6: not reached
+E2E FAIL
+(daq_20250402_r9) cwang31@sdfmilan176:wt-b$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

@@ -1,0 +1,74 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan176",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date -Is; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*"
+ },
+ {
+  "send": "cd wt-c && git log -1 --format='HEAD %H (%D)%n     %s' && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh > /dev/null 2>&1; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "time ./build_all.sh -d -j 32 > build.log 2>&1; echo BUILD_EXIT=$?",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh"
+ },
+ {
+  "send": "git diff --quiet 25e6f4d -- psdaq/psdaq/control_gui && echo 'psdaq/psdaq/control_gui: unchanged vs base 25e6f4d'"
+ },
+ {
+  "send": "(cd psdaq/psdaq/webgui/tests && python -m pytest -q -p no:cacheprovider test_webgui_backend.py test_webgui_events_pva.py test_check_parity.py test_parity_enumerate_v1.py test_configdb_api.py test_webgui_hostorigin.py test_webgui_e2e_checks.py 2>&1 | tail -1)",
+  "timeout": 900
+ },
+ {
+  "send": "bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$R/redo/out/c.junit.xml > $R/redo/out/c-suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $R/redo/out/c-suite.log",
+  "expect": "SUITE_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_parity --junit $R/redo/out/c.junit.xml --run-walk > $R/redo/out/c-parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^RESULT|^Not applicable' $R/redo/out/c-parity.txt",
+  "expect": "PARITY_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "bash $R/redo/parity_minus.sh $R/redo/out/c.junit.xml $R/redo/out/c-minus",
+  "expect": "PARITY_MINUS_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "daq_sim e2e -w $R/redo/out/c-e2e1 --events 1000  > $R/redo/out/c-e2e1.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/c-e2e1.log | cut -c1-400",
+  "expect": "E2E_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim e2e -w $R/redo/out/c-edit --events 1000 --edit-seed 0x2a2a > $R/redo/out/c-edit.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:|CFGEDIT .*(saved|access|own read)|CONFIGURE .*(access|DRP log)' $R/redo/out/c-edit.log | cut -c1-400",
+  "expect": "E2E_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim e2e -w $R/redo/out/c-trunc --events 1000 --break truncate-xtc2 > $R/redo/out/c-trunc.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/c-trunc.log | cut -c1-400",
+  "expect": "E2E_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim e2e -w $R/redo/out/c-kill --events 1000 --break kill-drp > $R/redo/out/c-kill.log 2>&1; echo E2E_EXIT=$?; grep -E '^20.* e2e: host|clicked .* reported|^  [0-9] (PASS|FAIL)|^E2E|truncate-xtc2:|kill-drp:' $R/redo/out/c-kill.log | cut -c1-400",
+  "expect": "E2E_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

@@ -1,0 +1,16 @@
+{
+ "head": [
+  {
+   "send": "date -Is; hostname   # this machine: the exe.dev VM"
+  },
+  {
+   "send": "ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i",
+   "expect": "cwang31@sdfmilan176",
+   "timeout": 180
+  },
+  {
+   "send": "hostname; date -Is; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*"
+  }
+ ],
+ "srun": "ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i"
+}

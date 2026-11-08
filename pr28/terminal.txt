@@ -1,0 +1,70 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T17:23:19+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i
+cwang31@sdfmilan176:redo$ hostname; date -Is; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*
+sdfmilan176
+2026-11-08T09:23:20-08:00
+Slurm job 43817664 step 1
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan176:redo$ cd wt-a1 && git log -1 --format='HEAD %H (%D)%n     %s' && echo "local changes: $(git status --short | wc -l)"
+HEAD 789c7e6fcfd95e8f33d2c13e4ee49b6836437482 (HEAD, pr/a1-standins-v2)
+     CHANGELOG: psdaq.sim stand-ins
+local changes: 0
+cwang31@sdfmilan176:wt-a1$ source ./setup_env_daq.sh > /dev/null 2>&1; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ time ./build_all.sh -d -j 32 > build.log 2>&1; echo BUILD_EXIT=$?
+
+real	1m30.078s
+user	14m5.884s
+sys	2m30.598s
+BUILD_EXIT=0
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ source psdaq/psdaq/sim/sim_env.sh
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ for i in 1 2 3; do python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py 2>&1 | tail -1; done
+11 passed in 10.15s
+11 passed in 9.21s
+11 passed in 9.40s
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ bash psdaq/psdaq/sim/preflight.sh > preflight.log 2>&1; echo PREFLIGHT_EXIT=$?; grep -E '^[0-9:]{8} ===|rc=|PREFLIGHT|42.5' preflight.log
+PREFLIGHT_EXIT=0
+09:25:35 === preflight on sdfmilan176 (sdfmilan176.sdf.slac.stanford.edu) job=43817664 step=1 user=cwang31
+09:25:35 === OS: Rocky Linux 9.6 (Blue Onyx)  kernel 5.14.0-570.58.1.el9_6.x86_64
+09:25:35 === device check: ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1
+09:25:35 === isolation env
+09:25:35 === 1. HTTPS to pswww through the env (must FAIL)
+09:25:35 curl rc=7 (0 would mean pswww answered)
+09:25:35 python-requests rc=0 (1 would mean pswww answered)
+09:25:35 === 1b. without the proxy env, would the node route to pswww? (local lookup only, no packet sent)
+09:25:35 === 2. pvget (pvAccessCPP) of a production-looking PV (must time out)
+DAQ:NEH:XPM:0:PART:5:Master 09:25:40 pvget rc=1
+09:25:40 === 2b. p4p (pvxs) client get, as control.py uses (must time out)
+09:25:47 p4p rc=0
+09:25:47 === 3. caget of a production-looking PV (must time out)
+09:25:52 caget rc=1
+09:25:52 === 4. POSITIVE CONTROL: softIocPVA on loopback with the same env (must SUCCEED)
+SIMW3:PREFLIGHT:VAL <undefined>              42.5 
+SIMW3:PREFLIGHT:VAL            42.5
+p4p local get: 42.5
+09:25:57 local pvget rc=0 caget rc=0 p4p rc=0
+09:25:57 === summary: leak=0 positive_control_fail=0
+09:25:57 PREFLIGHT PASS
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ bash $R/redo/entry_points.sh
+CONFIGDB_URL=http://127.0.0.1:40263/ws/
+LGBK_URL=http://127.0.0.1:36233/
++ configdb_seed --url http://127.0.0.1:40263/ws/
+tst/BEAM/tmoteb_0 key=1 written
+tst/BEAM/fakecam_0 key=2 written
++ configdb ls tst/BEAM
+fakecam_0
+tmoteb_0
+control.py fetch: tmoteb_0 persistValue 0xdeadbeef soname libtmoTeb.so
+control.py fetch: fakecam_0 user.sim_seed 0x1234
+run DB stub: activeexperiment {'success': True, 'value': {'name': 'tstx00001', 'instrument': 'tst', 'station': 0}}
++ configdb_seed --url https://pswww.slac.stanford.edu/ws-auth/devconfigdb/ws/   (must refuse)
+configdb_seed: refusing non-local URL https://pswww.slac.stanford.edu/ws-auth/devconfigdb/ws/
+SEED_NONLOCAL_EXIT=1
+(daq_20250402_r9) cwang31@sdfmilan176:wt-a1$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

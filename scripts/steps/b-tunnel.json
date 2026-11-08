@@ -1,0 +1,45 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/start_up.sh wt-b b-tun3",
+  "expect": "daq_sim: UP\\.",
+  "timeout": 400
+ },
+ {
+  "send": "ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-redo'"
+ },
+ {
+  "send": "ssh -f -S none -L 31053:/tmp/cwang31-redo/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-redo/webgui.sock:127.0.0.1:31053 sdfmilan176'",
+  "timeout": 60
+ },
+ {
+  "send": "sleep 3; curl -s -o /dev/null -w 'GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\\n' http://127.0.0.1:31053/; curl -s http://127.0.0.1:31053/api/status | cut -c1-200; echo"
+ },
+ {
+  "send": "./pwvenv/bin/python tunnel_drive.py http://127.0.0.1:31053/ rec/b-tun3-web --events 1100 ",
+  "expect": "PAGE_EVENTS_FINAL|Error|Traceback",
+  "timeout": 900,
+  "fail": "Traceback|ALL_STATES_OK=False"
+ },
+ {
+  "send": "N=$(python3 -c \"import json;print(json.load(open('rec/b-tun3-web/result.json'))['events'])\"); echo \"page count after Disable: $N\""
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/readback.sh wt-b b-tun3 $N 0x1234",
+  "expect": "XTC2_CHECK_EXIT=\\d+",
+  "timeout": 400,
+  "fail": "XTC2_CHECK_EXIT=[1-9]|usage:"
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/down.sh wt-b b-tun3",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300,
+  "always": true
+ },
+ {
+  "send": "pkill -f '^ssh .*-L 31053:'; ssh sdfiana025 \"pkill -u \\$USER -f '^ssh -N .*webgui.sock'\"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'",
+  "always": true
+ }
+]

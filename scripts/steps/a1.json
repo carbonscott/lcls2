@@ -1,0 +1,44 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43817664 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan176",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date -Is; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr*"
+ },
+ {
+  "send": "cd wt-a1 && git log -1 --format='HEAD %H (%D)%n     %s' && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh > /dev/null 2>&1; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "time ./build_all.sh -d -j 32 > build.log 2>&1; echo BUILD_EXIT=$?",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh"
+ },
+ {
+  "send": "for i in 1 2 3; do python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py 2>&1 | tail -1; done",
+  "timeout": 300
+ },
+ {
+  "send": "bash psdaq/psdaq/sim/preflight.sh > preflight.log 2>&1; echo PREFLIGHT_EXIT=$?; grep -E '^[0-9:]{8} ===|rc=|PREFLIGHT|42.5' preflight.log",
+  "timeout": 200
+ },
+ {
+  "send": "bash $R/redo/entry_points.sh",
+  "timeout": 200
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]
