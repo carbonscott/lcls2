@@ -64,3 +64,42 @@ def require_loopback_url(url, what, schemes=('http', 'https')):
         raise NonLoopbackError('%s: URL %r has scheme %r, expected one of %s' % (what, url, parts.scheme, schemes))
     require_loopback_host(parts.hostname or '', '%s (%s)' % (what, url))
     return url
+
+
+def _addr_host(entry):
+    """Host part of an EPICS address-list entry: 'h', 'h:port', '[v6]', '[v6]:port', or a bare v6 literal."""
+    e = entry.strip()
+    if e.startswith('['):
+        return e[1:].split(']', 1)[0]
+    if e.count(':') == 1:
+        return e.split(':', 1)[0]
+    return e
+
+
+def require_loopback_pva_env(environ, what='PVA client'):
+    """Check the EPICS PV Access client environment before any PVA context exists.
+
+    Accepted only when EPICS_PVA_AUTO_ADDR_LIST is NO (no broadcast to the subnet), the
+    EPICS_PVA_ADDR_LIST is non-empty and every entry is a loopback address, and every
+    EPICS_PVA_NAME_SERVERS entry (if any) is loopback.  Returns the dict of EPICS_PVA_*
+    settings to hand to the client explicitly (p4p Context(conf=..., useenv=False)).
+    """
+    auto = (environ.get('EPICS_PVA_AUTO_ADDR_LIST') or '').strip()
+    if auto.upper() != 'NO':
+        raise NonLoopbackError('%s: EPICS_PVA_AUTO_ADDR_LIST=%r; refusing (must be NO, or PVA searches '
+                               'broadcast beyond this host)' % (what, auto))
+    addrs = (environ.get('EPICS_PVA_ADDR_LIST') or '').split()
+    if not addrs:
+        raise NonLoopbackError('%s: EPICS_PVA_ADDR_LIST is empty; refusing (must list loopback addresses only)'
+                               % what)
+    for key, entries in (('EPICS_PVA_ADDR_LIST', addrs),
+                         ('EPICS_PVA_NAME_SERVERS', (environ.get('EPICS_PVA_NAME_SERVERS') or '').split())):
+        for e in entries:
+            host = _addr_host(e)
+            if _is_loopback_literal(host) is not True:
+                raise NonLoopbackError('%s: %s entry %r is not a loopback IP literal; refusing' % (what, key, e))
+    conf = {'EPICS_PVA_AUTO_ADDR_LIST': 'NO', 'EPICS_PVA_ADDR_LIST': ' '.join(addrs)}
+    for key in ('EPICS_PVA_NAME_SERVERS', 'EPICS_PVA_BROADCAST_PORT', 'EPICS_PVA_SERVER_PORT'):
+        if environ.get(key):
+            conf[key] = environ[key].strip()
+    return conf
