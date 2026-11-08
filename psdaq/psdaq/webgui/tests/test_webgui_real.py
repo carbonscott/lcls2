@@ -24,6 +24,7 @@ pytest.importorskip('playwright')
 from playwright.sync_api import expect  # noqa: E402
 
 from test_webgui_ui import P, T, expect_state, shot, events_now  # noqa: E402
+from webgui_harness import STARTED, detect_backend  # noqa: E402
 
 URL = os.environ.get('WEBGUI_REAL_URL')
 _OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -45,6 +46,8 @@ def real():
         pytest.skip('WEBGUI_REAL_URL not set (needs a running web GUI on a real DAQ)')
     s = External(URL)
     meta = s.get('/api/meta')
+    b, why = detect_backend(meta)            # sim-daq if WEBGUI_SIM_DAQ names the daq_sim this web GUI is on
+    STARTED.append({'url': s.url, 'backend': b, 'why': why})
     assert meta['backend'] == 'daqcontrol', meta['backend']
     assert s.get('/api/status')['state'] == 'reset', 'control must start in reset'
     return s

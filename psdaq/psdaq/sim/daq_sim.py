@@ -1,6 +1,7 @@
 """daq_sim: bring up, check, drive and take down the hardware-free lcls2 DAQ on one node.
 
-    daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--webgui] [--detach]
+    daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--segments N]
+                   [--webgui] [--detach]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
@@ -15,7 +16,9 @@
   2. the config DB stand-in (configdb_server), seeded by configdb_seed,
   3. the run DB / eLog stand-in (lgbk_server),
   4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
-  5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://,
+  5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
+     (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
+     with its config in the config DB, all in the partition's readout group),
   6. with --webgui, the web GUI (daq_webgui) on 127.0.0.1:<block +3>: the real DaqControl
      backend against this platform's control, and the events counter read from simxpm's
      NumL0Acc PV over PV Access.
@@ -75,7 +78,7 @@ DETECTOR = 'fakecam'
 PVBASE = 'DAQ:SIM'
 XPM = 0
 EP = 'ep_domain=lo,ep_provider=tcp'     # libfabric tcp on loopback (Collection.cc getNicIp)
-PROCS = ('control', 'teb0', DETECTOR + '_0')
+PROCS = ('control', 'teb0', DETECTOR + '_0')     # with --segments N: + DETECTOR_1 .. DETECTOR_<N-1> (procs())
 STATES = ['reset', 'unallocated', 'allocated', 'connected', 'configured', 'starting',
           'paused', 'running']
 TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' starts
@@ -220,6 +223,11 @@ def procmgr_cmd(state, verb):
             '-o', state['loglink']]
 
 
+def procs(state):
+    """procmgr ids 'up' starts: PROCS plus the extra detector segments of --segments."""
+    return PROCS + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1)))
+
+
 def procmgr_status(state):
     """{id: (status, pid)} from 'procmgr status'."""
     r = subprocess.run(procmgr_cmd(state, 'status'), cwd=state['workdir'], capture_output=True,
@@ -227,7 +235,7 @@ def procmgr_status(state):
     out = {}
     for line in r.stdout.splitlines():
         f = line.split()
-        if len(f) >= 4 and f[1] in PROCS:
+        if len(f) >= 4 and f[1] in procs(state):
             out[f[1]] = (f[2], f[3])
     return out, r.stdout
 
@@ -246,16 +254,20 @@ procmgr_config = [
  {{ id:'{det}_0', flags:'spu',
    cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
        ' -k {ep},sim_length={length} -M {prom}' }},
-]
+{segments}]
+'''
+SEGMENT = ''' {{ id:'{det}_{segm}', flags:'spu',
+   cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep},sim_length={length} -M {prom}' }},
 '''
 
 
-def write_activedet(path, platform):
+def write_activedet(path, platform, segments=1):
     """What control writes after an alloc of this partition, so its first rollcall finds it."""
-    det = DETECTOR + '_0'
-    value = {'activedet': {'drp': {det: {'active': 1, 'det_info': {'readout': platform}}},
+    dets = [f'{DETECTOR}_{i}' for i in range(segments)]
+    value = {'activedet': {'drp': {d: {'active': 1, 'det_info': {'readout': platform}} for d in dets},
                            'teb': {'teb0': {'active': 1}}},
-             'history': {'drp': {det: {'det_info': {'readout': platform}}}}}
+             'history': {'drp': {d: {'det_info': {'readout': platform}} for d in dets}}}
     with open(path, 'w') as f:
         json.dump(value, f, indent=4, sort_keys=True)
 
@@ -272,6 +284,7 @@ def start_service(work, state, name, argv, env):
 
 def cmd_up(args):
     host = check_host(args.any_host)
+    segments = getattr(args, 'segments', 1)
     work = Work(args.workdir)
     os.makedirs(work.dir, exist_ok=True)
     old = work.load()
@@ -306,7 +319,8 @@ def cmd_up(args):
     state = {'workdir': work.dir, 'host': host, 'platform': args.platform, 'up_pid': os.getpid(),
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
-             'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length}
+             'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
+             'segments': segments}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -329,17 +343,18 @@ def cmd_up(args):
                            '--port', str(P['configdb']),
                            '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
         wait_listen(P['configdb'], 30, p, 'configdb_server')
-        r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
-                            '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
-                            '--det', DETECTOR, '--sim-seed', str(args.seed),
-                            '--sim-length', str(args.length)],
-                           env=env, capture_output=True, text=True, timeout=60)
-        with open(work.path('logs', 'seed.log'), 'w') as out:
-            out.write(r.stdout + r.stderr)
-        if r.returncode != 0:
-            raise Fail(f'configdb_seed failed: {r.stderr.strip()[-400:]}')
-        for line in r.stdout.splitlines():
-            say('config DB seeded:', line)
+        for segm in range(segments):
+            r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
+                                '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
+                                '--det', DETECTOR, '--segm', str(segm), '--sim-seed', str(args.seed),
+                                '--sim-length', str(args.length)],
+                               env=env, capture_output=True, text=True, timeout=60)
+            with open(work.path('logs', 'seed.log'), 'a' if segm else 'w') as out:
+                out.write(r.stdout + r.stderr)
+            if r.returncode != 0:
+                raise Fail(f'configdb_seed failed: {r.stderr.strip()[-400:]}')
+            for line in r.stdout.splitlines():
+                say('config DB seeded:', line)
 
         p = start_service(work, state, 'lgbk',
                           [py, '-m', 'psdaq.sim.lgbk_server', '--instrument', INSTRUMENT,
@@ -354,15 +369,16 @@ def cmd_up(args):
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
 
-        write_activedet(work.path('activedet.json'), args.platform)
+        write_activedet(work.path('activedet.json'), args.platform, segments)
+        common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
+                      data=work.path('data'), length=args.length, v=' -v' if args.verbose else '')
         with open(work.path(state['cnf']), 'w') as f:
             f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
-                               instr=INSTRUMENT, xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
+                               xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
                                slow=args.slow_update, configdb=cfg_url + 'configDB',
                                lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
-                               ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
-                               data=work.path('data'), length=args.length,
-                               v=' -v' if args.verbose else ''))
+                               segments=''.join(SEGMENT.format(segm=i, **common)
+                                                for i in range(1, segments)), **common))
         say('procmgr start', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             rc = subprocess.run(procmgr_cmd(state, 'start') + ['-v'], cwd=work.dir, stdout=out,
@@ -374,10 +390,10 @@ def cmd_up(args):
         status = _wait_running(state, 40)
         time.sleep(3)                   # A process that dies at startup does so quickly
         status, text = procmgr_status(state)
-        bad = [i for i in PROCS if status.get(i, ('?',))[0] != 'RUNNING']
+        bad = [i for i in procs(state) if status.get(i, ('?',))[0] != 'RUNNING']
         if bad:
             raise Fail(f'not RUNNING after start: {bad}\n{text}')
-        state['procs'] = {i: int(status[i][1]) for i in PROCS}
+        state['procs'] = {i: int(status[i][1]) for i in procs(state)}
         work.save(state)
         dstate = _control_state(args.platform)
         if dstate != 'reset':
@@ -464,7 +480,7 @@ def _wait_running(state, timeout):
     end = time.monotonic() + timeout
     while True:
         status, text = procmgr_status(state)
-        if all(status.get(i, ('?',))[0] == 'RUNNING' for i in PROCS) or time.monotonic() > end:
+        if all(status.get(i, ('?',))[0] == 'RUNNING' for i in procs(state)) or time.monotonic() > end:
             return status
         time.sleep(1)
 
@@ -640,7 +656,7 @@ def cmd_status(args):
         print(f'  {name:<10} pid {svc["pid"]:<8} {"alive" if alive else "DEAD"}')
     if state.get('procmgr_started'):
         status, _ = procmgr_status(state)
-        for i in PROCS:
+        for i in procs(state):
             st = status.get(i, ('?', '-'))
             ok &= st[0] == 'RUNNING'
             print(f'  {i:<10} pid {st[1]:<8} {st[0]}')
@@ -846,14 +862,19 @@ def _psana_counts(work, state, experiment, run, seed=None):
     files = sorted(glob.glob(pattern))
     if not files:
         return {'xtc2 file': f'none matching {pattern}'}
-    out = {'xtc2 file': f'{files[0]} ({os.path.getsize(files[0])} B)'}
-    r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', files[0], '--seed',
-                        str(state['seed'] if seed is None else seed), '--json'],
-                       capture_output=True, text=True, timeout=600)
-    try:
-        res = json.loads(r.stdout.strip().splitlines()[-1])
-    except (ValueError, IndexError):
-        return dict(out, **{'psana2 checks': f'xtc2_check failed: {r.stderr.strip()[-300:]}'})
+    # With --segments N each DRP writes its own -s<stream> file and control numbers the streams, so
+    # fakecam_0's file is the first one in which xtc2_check finds segment 0 (fakecam's det.raw.raw).
+    for path in files:
+        out = {'xtc2 file': f'{path} ({os.path.getsize(path)} B)'}
+        r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', path, '--seed',
+                            str(state['seed'] if seed is None else seed), '--json'],
+                           capture_output=True, text=True, timeout=600)
+        try:
+            res = json.loads(r.stdout.strip().splitlines()[-1])
+            break
+        except (ValueError, IndexError):
+            if path == files[-1]:
+                return dict(out, **{'psana2 checks': f'xtc2_check failed: {r.stderr.strip()[-300:]}'})
     out.update({'psana2 events': res['events'], 'psana2 with data': res['with_data'],
                 'psana2 checks': 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}',
                 'psana2 seq': f'{res["first_seq"]}..{res["last_seq"]}',
@@ -908,6 +929,8 @@ def main(argv=None):
     upopts.add_argument('--seed', type=lambda s: int(s, 0), default=0x1234,
                         help='sim_seed stored in the config DB (default %(default)#x)')
     upopts.add_argument('--length', type=int, default=64, help='payload words per event (default %(default)d)')
+    upopts.add_argument('--segments', type=int, default=1, choices=range(1, 5),
+                        help='fakecam DRPs, as segments 0..N-1 of one detector (default %(default)d)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')

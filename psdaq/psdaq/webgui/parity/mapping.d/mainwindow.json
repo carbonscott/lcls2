@@ -79,26 +79,6 @@
   "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
   "web": "[data-parity~=\"CGWMainPartition.w_show.sel\"]"
  },
- "CGWMainTabUser.but_play": {
-  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
-  "web": "[data-parity~=\"CGWMainTabUser.but_play\"]"
- },
- "CGWMainTabUser.but_record": {
-  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
-  "web": "[data-parity~=\"CGWMainTabUser.but_record\"]"
- },
- "CGWMainTabUser.but_stop": {
-  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
-  "web": "[data-parity~=\"CGWMainTabUser.but_stop\"]"
- },
- "CGWMainTabs.tab_bar.expert": {
-  "test": "test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]",
-  "web": "[data-parity~=\"CGWMainTabs.tab_bar.expert\"]"
- },
- "CGWMainTabs.tab_bar.user": {
-  "test": "test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]",
-  "web": "[data-parity~=\"CGWMainTabs.tab_bar.user\"]"
- },
  "CGWPanelList.fill_list_model@1": {
   "test": "test_webgui_parity_ui.py::test_collection_cells_shown_not_editable[chromium]",
   "web": "[data-parity~=\"CGWPanelList.fill_list_model@1\"]"

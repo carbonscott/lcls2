@@ -32,6 +32,13 @@ per-row verdict: 'agree' (the walk saw what the enumerator's flags say),
 'differ' (it saw the opposite) or 'not-exercised' (nothing to compare).
 check_parity accepts an na row only when its verdict is 'agree'.
 
+built(rows, walk) (pure python) is the walk's word on which rows the running GUI
+builds: a row is built only if its module was imported by the running GUI, its
+source line ran in the walk of the running GUI (`lines`; the standalone probe
+phase's `probe_lines` do not count) and, for a widget row, an instance bound to
+<Class>.<attr> existed.  check_parity refuses to count a mapped row the walk does
+not show built.
+
 Usage:
     python -m psdaq.webgui.parity.qt_walk --out walk.json        # DAQ env (PyQt5)
     python -m psdaq.webgui.parity.qt_walk --reconcile walk.json [--src DIR]
@@ -108,6 +115,32 @@ def _caps(label):
 
 def _module_of(rel):
     return 'psdaq.' + rel[:-3].replace('/', '.').replace('.__init__', '')
+
+
+def built(rows, walk):
+    """{row id: (built, observation)}: did the running GUI build this row, by the walk's observations?
+    Built = module imported by the running GUI, the row's source line ran in the walk of the running GUI
+    (not in the standalone probe phase) and, for a widget kind, an instance bound to <Class>.<attr> existed."""
+    W = walk.get('widgets', [])
+    mods = set(walk.get('mods_gui', []))
+    out = {}
+    for r in rows:
+        cls, rest = r['id'].split('.', 1)
+        attr = rest.split('.')[0]
+        mod = _module_of(r['file'])
+        imp = mod in mods
+        ran = _ran(walk, 'lines', r['file'], r['line'])
+        obs = ['module %s %s' % (mod, 'imported' if imp else 'NOT imported by the running GUI'),
+               'line %s %s' % (r['loc'], 'ran' if ran else 'NEVER ran in the running GUI')]
+        if not ran and _ran(walk, 'probe_lines', r['file'], r['line']):
+            obs[-1] += ' (ran only when built standalone in the probe phase)'
+        ok = imp and ran
+        if r['kind'] in WIDGET_KINDS:
+            n = len([x for x in W if '%s.%s' % (cls, attr) in x['refs']])
+            obs.append('%d widget(s) bound to %s.%s' % (n, cls, attr))
+            ok = ok and n > 0
+        out[r['id']] = (ok, '; '.join(obs))
+    return out
 
 
 def reconcile(rows, walk):

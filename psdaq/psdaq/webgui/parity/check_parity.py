@@ -16,8 +16,16 @@ Inputs
 A row counts as
   M  mapped: a "web"+"test" entry whose test is a headless-browser test
      (pytest-playwright id, e.g. [chromium]) that is in a junit file, passed
-     (no failure, error or skipped child), AND whose junit testcase carries the
-     row id in a `parity` property (the test calls record_property('parity', id));
+     (no failure, error or skipped child), whose junit testcase carries the
+     row id in a `parity` property (the test calls record_property('parity', id))
+     AND records `backend` = sim-daq and nothing else (the web GUI tests' conftest
+     records the backend of every server the test drove, detected from the
+     server itself: sim-daq, emulator, ...); a row whose passing test ran only
+     against the emulator (or recorded no backend) is not mapped.  Also, the
+     walk must show the running PyQt GUI builds the row (qt_walk.built: module
+     imported, source line ran outside the probe phase, widget instantiated):
+     a mapped row absent from the walk, or any mapped row when there is no
+     walk of the same source, fails the check;
   K  not applicable: an "na" entry whose one-line reason cites the row's guard
      line (enumerate_pyqt row['guard']: the `if __name__ == "__main__":` line,
      the setVisible test, the commented import, the dispatch) when it has one,
@@ -26,7 +34,8 @@ A row counts as
      being of the same control_gui source (sha256 digest).
      An na on a user-facing row is refused unless --allow-unproven-na.
 The check passes (exit 0) only if N > 0 and M + K = N and there are no stale
-entries (ids not in the enumeration) and no invalid entries.  Otherwise it
+entries (ids not in the enumeration), no invalid entries and no mapped row the
+walk does not show built.  Otherwise it
 prints what is unmapped, failing, unconfirmed, stale or invalid and exits 1.
 
 Usage:
@@ -50,6 +59,7 @@ from psdaq.webgui.parity import qt_walk
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_MAPPING = os.path.join(HERE, 'mapping.json')
 BROWSER_PARAMS = ('[chromium', '[firefox', '[webkit')
+REQUIRED_BACKEND = 'sim-daq'      # junit `backend` property a mapped row's passing test must record
 
 
 def load_mapping(path):
@@ -82,7 +92,9 @@ def nodeid_key(nodeid):
 
 
 def load_junit(paths):
-    """{(classname, name): {'status': 'passed' | 'failed' | 'error' | 'skipped', 'parity': set of row ids}}"""
+    """{(classname, name): [run, ...]}, one run per occurrence of the testcase in the junit files:
+    run = {'status': 'passed' | 'failed' | 'error' | 'skipped', 'parity': set of row ids,
+           'backend': set of the backends the test recorded (junit `backend` properties)}"""
     out = {}
     for p in paths:
         root = ET.parse(p).getroot()
@@ -93,28 +105,36 @@ def load_junit(paths):
                 if child.tag in ('failure', 'error', 'skipped'):
                     status = {'failure': 'failed'}.get(child.tag, child.tag)
                     break
-            props = {pr.get('value', '') for pr in tc.iter('property') if pr.get('name') == 'parity'}
-            prev = out.get(key)
-            if prev is None:
-                out[key] = {'status': status, 'parity': props}
-            else:
-                # a test that ran several times passes only if every run passed and tags only what every run tagged
-                out[key] = {'status': status if prev['status'] == 'passed' else prev['status'],
-                            'parity': prev['parity'] & props}
+            props = [(pr.get('name'), pr.get('value', '')) for pr in tc.iter('property')]
+            out.setdefault(key, []).append({'status': status,
+                                            'parity': {v for k, v in props if k == 'parity'},
+                                            'backend': {v for k, v in props if k == 'backend'}})
     return out
 
 
-def test_status(results, nodeid, rid=None):
-    """'passed' (and, given rid, tagged with it) | 'failed' | 'error' | 'skipped' | 'missing' | 'untagged'"""
+def backend_label(backends):
+    return '+'.join(sorted(backends)) or 'none recorded'
+
+
+def test_status(results, nodeid, rid=None, backend=None):
+    """'passed' (given rid: tagged with it; given backend: by a run that recorded only that backend) |
+    'failed' | 'error' | 'skipped' | 'missing' | 'untagged' | 'backend <recorded>, not <backend>'.
+    A test that ran several times passes only if every run passed; the backend and the tag must come
+    from the same run(s)."""
     cls, name = nodeid_key(nodeid)
-    hits = [v for (c, n), v in results.items()
-            if n == name and (c == cls or c.endswith('.' + cls) or cls.endswith('.' + c))]
-    if not hits:
+    runs = [run for (c, n), v in results.items()
+            if n == name and (c == cls or c.endswith('.' + cls) or cls.endswith('.' + c)) for run in v]
+    if not runs:
         return 'missing'
-    bad = sorted(set(h['status'] for h in hits) - {'passed'})
+    bad = sorted(set(h['status'] for h in runs) - {'passed'})
     if bad:
         return bad[0]
-    if rid is not None and not all(rid in h['parity'] for h in hits):
+    if backend is not None:
+        ok = [h for h in runs if h['backend'] == {backend}]
+        if not ok:
+            return 'backend %s, not %s' % (backend_label(set().union(*(h['backend'] for h in runs))), backend)
+        runs = ok
+    if rid is not None and not all(rid in h['parity'] for h in runs):
         return 'untagged'
     return 'passed'
 
@@ -140,8 +160,8 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
     """walk: raw qt_walk observations (dict) or None; src_digest: digest of the --src control_gui."""
     by = {r['id']: r for r in rows}
     rep = {'N': len(rows), 'mapped': [], 'na': [], 'unproven_na': [], 'unconfirmed_na': [], 'unmapped': [],
-           'failing': [], 'stale': [], 'invalid': [], 'allow': allow_unproven_na, 'walk_note': ''}
-    verdicts = {}
+           'failing': [], 'not_built': [], 'stale': [], 'invalid': [], 'allow': allow_unproven_na, 'walk_note': ''}
+    verdicts, builds = {}, None
     if walk is None:
         rep['walk_note'] = 'no walk: no na row can be confirmed'
     elif src_digest is not None and walk.get('src_digest') != src_digest:
@@ -150,6 +170,7 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
         walk = None
     else:
         verdicts = qt_walk.reconcile(rows, walk)
+        builds = qt_walk.built(rows, walk)
         rep['walk_note'] = 'walk source digest matches (%s)' % walk.get('src_digest')
     for rid in sorted(mapping):
         if rid not in by:
@@ -190,7 +211,13 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
             if not any(b in e['test'] for b in BROWSER_PARAMS):
                 rep['invalid'].append((rid, 'test %s is not a headless-browser (pytest-playwright) test' % e['test']))
                 continue
-            st = test_status(results, e['test'], rid) if results is not None else 'no junit given'
+            b = builds.get(rid, (False, 'not in the walk')) if builds is not None else (False, rep['walk_note'])
+            if not b[0]:
+                # the walk is the authority for 'built': a row the running GUI never builds cannot be mapped
+                rep['not_built'].append((r, e, b[1]))
+                continue
+            st = (test_status(results, e['test'], rid, REQUIRED_BACKEND) if results is not None
+                  else 'no junit given')
             if st == 'passed':
                 rep['mapped'].append((r, e))
             else:
@@ -201,7 +228,7 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
     rep['K'] = len(rep['na'])
     blocking = [] if allow_unproven_na else rep['unproven_na']
     rep['ok'] = (rep['N'] > 0 and rep['M'] + rep['K'] == rep['N'] and not rep['stale']
-                 and not rep['invalid'] and not blocking)
+                 and not rep['invalid'] and not blocking and not rep['not_built'] and not rep['failing'])
     return rep
 
 
@@ -244,7 +271,13 @@ def render(rep, header=''):
     for r in rep['unmapped']:
         L.append('  %s | %s | %s | %s' % (r['id'], r['loc'], r['kind'], r['label']))
     L.append('')
-    L.append('Mapped but test not passing or not tagged with the row (%d rows): id | test | status' % len(rep['failing']))
+    L.append('Mapped but not built by the running PyQt GUI, per the walk (%d rows, not counted): id | loc | walk'
+             % len(rep['not_built']))
+    for r, e, obs in rep['not_built']:
+        L.append('  %s | %s | %s' % (r['id'], r['loc'], obs))
+    L.append('')
+    L.append('Mapped but test not passing, not tagged with the row or not run against the simulated DAQ '
+             '(backend %s) (%d rows): id | test | status' % (REQUIRED_BACKEND, len(rep['failing'])))
     for r, e, st in rep['failing']:
         L.append('  %s | %s | %s' % (r['id'], e['test'], st))
     if rep['stale']:
@@ -262,14 +295,19 @@ def render(rep, header=''):
     if rep['N'] == 0:
         why.append('N = 0')
     if rep['M'] + rep['K'] != rep['N']:
-        why.append('M + K = %d != N = %d (%d unmapped, %d not passing, %d na unconfirmed, %d unproven na, %d invalid)' % (
-            rep['M'] + rep['K'], rep['N'], len(rep['unmapped']), len(rep['failing']), len(rep['unconfirmed_na']),
-            0 if rep['allow'] else len(rep['unproven_na']), len(rep['invalid'])))
+        why.append('M + K = %d != N = %d (%d unmapped, %d not built, %d not passing, %d na unconfirmed, '
+                   '%d unproven na, %d invalid)' % (
+                       rep['M'] + rep['K'], rep['N'], len(rep['unmapped']), len(rep['not_built']),
+                       len(rep['failing']), len(rep['unconfirmed_na']),
+                       0 if rep['allow'] else len(rep['unproven_na']), len(rep['invalid'])))
+    if rep['not_built']:
+        why.append('%d mapped rows not built by the running GUI' % len(rep['not_built']))
     if rep['stale']:
         why.append('%d stale entries' % len(rep['stale']))
     if rep['invalid']:
         why.append('%d invalid entries' % len(rep['invalid']))
-    names = [r['id'] for r in rep['unmapped']] + [r['id'] for r, _, _ in rep['failing']] + \
+    names = [r['id'] for r in rep['unmapped']] + [r['id'] for r, _, _ in rep['not_built']] + \
+        [r['id'] for r, _, _ in rep['failing']] + \
         [r['id'] for r, _, _ in rep['unconfirmed_na']] + rep['stale'] + [rid for rid, _ in rep['invalid']]
     if not rep['ok'] and names:
         why.append('rows: %s' % ', '.join(names[:30]) + (' ...' if len(names) > 30 else ''))
@@ -317,6 +355,7 @@ def main(argv=None):
         out['na'] = [{'id': r['id'], 'reason': reason, 'walk': v[1]} for r, reason, v in rep['na']]
         out['unmapped'] = [r['id'] for r in rep['unmapped']]
         out['failing'] = [{'id': r['id'], 'test': e['test'], 'status': st} for r, e, st in rep['failing']]
+        out['not_built'] = [{'id': r['id'], 'walk': obs} for r, e, obs in rep['not_built']]
         out['unconfirmed_na'] = [{'id': r['id'], 'walk': list(v)} for r, _, v in rep['unconfirmed_na']]
         out['unproven_na'] = [r['id'] for r, _ in rep['unproven_na']]
         json.dump(out, sys.stdout, indent=1)

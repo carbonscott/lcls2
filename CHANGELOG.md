@@ -16,6 +16,7 @@ See [docs/CHANGELOG_GUIDE.md](docs/CHANGELOG_GUIDE.md) for how to add entries.
 
 ### Changed
 
+- Changed the web GUI parity check so the offscreen PyQt walk decides which controls the running GUI builds (a mapped row it never builds fails), every web test records the backend it ran against, and a mapped row counts only if its passing test ran against the simulated DAQ; `daq_sim up --segments N` runs a fakecam detector with N segments. [#33](https://github.com/carbonscott/lcls2/pull/33)
 - Changed the TEB, MEB and DRP to detect a reused or overwritten RDMA buffer slot when it happens and report the source, slot and pulse IDs; `-k eb_slot_check=0` turns this off. @rclaus2 [#289](https://github.com/slac-lcls/lcls2/pull/289)
 - Changed control's BeginRun phase 1 timeout from 6 s to 12 s, since fetching calibration constants can take several seconds. @rclaus2 [#269](https://github.com/slac-lcls/lcls2/pull/269)
 - Changed the DAQ and psana tests to run on every push to a PR. @mavaylon1 [#267](https://github.com/slac-lcls/lcls2/pull/267)

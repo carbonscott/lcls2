@@ -2,8 +2,12 @@
 the web copy of control_gui CGWMainConfiguration (Type, Edit, save confirmation), CGWConfigSelect in
 QWDialog, CGWConfigEditor, CGWConfigEditorTree, CGWConfigEditorText and QWPopupEditText/QWEditText.
 
-The server runs in --emulate mode with --configdb-url pointing at the campaign's config DB stand-in
-(psdaq.sim.configdb_server) on 127.0.0.1, seeded by configeditor_harness.py.  Elements are found by
+With WEBGUI_SIM_DAQ naming a running `daq_sim up --segments 2` work dir, the server runs on that simulated
+DAQ (webgui_harness.daq_server: real DaqControl backend, the DAQ's own config DB stand-in, to which the
+session adds NOBEAM, treetest_0 and the serial-number entry; every config a test changes is written back
+after it).  Without it, the server runs in --emulate mode with --configdb-url pointing at a fresh config
+DB stand-in (psdaq.sim.configdb_server) on 127.0.0.1, seeded by configeditor_harness.py.  The tests read
+fakecam_0's starting values (sim_seed, sim_length) from the config DB instead of assuming them.  Elements are found by
 their data-parity row id; ROWS says which test proves which row (mapping.d/configeditor.json is
 checked against it by test_mapping_fragment_matches_rows).
 
@@ -18,10 +22,10 @@ import pytest
 pytest.importorskip('playwright')
 from playwright.sync_api import expect  # noqa: E402
 
-from webgui_harness import ServerProc, SHOTS  # noqa: E402
+from webgui_harness import ServerProc, SHOTS, UI_TIMEOUT, daq_server, sim_daq  # noqa: E402
 from configeditor_harness import ConfigDbProc, seeded_store, daq_script, SERNO  # noqa: E402
 
-T = 15000   # ms, per UI expectation
+T = UI_TIMEOUT   # ms, per UI expectation
 FRAGMENT = pathlib.Path(__file__).resolve().parents[1] / 'parity' / 'mapping.d' / 'configeditor.json'
 
 # test -> the parity rows it proves
@@ -62,6 +66,11 @@ def browser_type_launch_args(browser_type_launch_args):
 
 @pytest.fixture
 def cfgdb(tmp_path):
+    """The config DB stand-in the server uses: the simulated DAQ's (WEBGUI_SIM_DAQ), else a fresh seeded one."""
+    sim = sim_daq()
+    if sim is not None:
+        yield sim
+        return
     db = ConfigDbProc(seeded_store(tmp_path)).start()
     yield db
     db.stop()
@@ -69,9 +78,21 @@ def cfgdb(tmp_path):
 
 @pytest.fixture
 def web(cfgdb):
+    if sim_daq() is not None:
+        yield from daq_server()
+        return
     s = ServerProc(['--emulate', '--configdb-url', cfgdb.url]).start()
+    s.sim = None
     yield s
     s.stop()
+
+
+@pytest.fixture
+def fc0(web):
+    """fakecam_0's config as the test starts (sim_seed 0x1234 = 4660, sim_length: 1024 seeded here, the
+    daq_sim --length on the simulated DAQ)."""
+    c = db_config(web, 'BEAM', 'fakecam_0')
+    return {'seed': c['user']['sim_seed'], 'length': c['expert']['sim_length']}
 
 
 @pytest.fixture
@@ -168,7 +189,7 @@ def test_main_type_button_and_alias_popup(gui):
     expect(page.locator('#edi_txt')).to_contain_text('setConfig(NOBEAM)', timeout=T)
 
 
-def test_edit_opens_select_dialog(gui):
+def test_edit_opens_select_dialog(gui, web):
     page = gui
     page.click(P('CGWMainConfiguration.but_edit'))
     dlg = page.locator('#cfg_select')
@@ -189,8 +210,10 @@ def test_edit_opens_select_dialog(gui):
     expect(page.locator(P('CGWConfigSelect.on_but_dev@1'))).to_be_hidden()
     choose(page, 'CGWConfigSelect.but_type', 'CGWConfigSelect.on_but_type@1', 'BEAM')
     expect(dev).to_have_text('Select ▼')            # a new type resets the device (:138-140)
-    choose(page, 'CGWConfigSelect.but_dev', 'CGWConfigSelect.on_but_dev@1', 'fakecam_0',
-           ['fakecam_0', 'tmoteb_0', 'treetest_0'])
+    devices = ['fakecam_0', 'tmoteb_0', 'treetest_0']
+    if web.sim is not None:                              # every DRP segment daq_sim seeded
+        devices = sorted(set(devices) | {p for p in web.sim.procs() if p.startswith('fakecam_')})
+    choose(page, 'CGWConfigSelect.but_dev', 'CGWConfigSelect.on_but_dev@1', 'fakecam_0', devices)
     expect(dev).to_have_text('fakecam_0 ▼')
     expect(edit).to_be_enabled()
     shot(page, 'cfg-01-select-dialog.png')
@@ -222,7 +245,7 @@ def test_select_dialog_cancel(gui):
 
 # ---------------- CGWConfigEditorTree ----------------
 
-def test_tree_expand_collapse(gui):
+def test_tree_expand_collapse(gui, fc0):
     page = gui
     open_editor(page)
     u = '#cfg_ed_tree > ul > li.cfg-node[data-key="user"]'
@@ -235,13 +258,13 @@ def test_tree_expand_collapse(gui):
     expect(seed).to_be_visible()
     expect(leaf(page, 'user.sim_seed')).to_be_hidden()          # its own item is still collapsed
     page.click(s + ' > ' + P('CGWConfigEditorTree.expanded'))
-    expect(leaf(page, 'user.sim_seed')).to_have_text('4660')
+    expect(leaf(page, 'user.sim_seed')).to_have_text(str(fc0['seed']))
     page.click(u + ' > ' + P('CGWConfigEditorTree.collapsed'))
     expect(user).to_have_attribute('data-state', 'collapsed')
     expect(seed).to_be_hidden()
     # but_expn: expandAll / collapseAll and its label (CGWConfigEditor.py:424-431)
     expand_all(page)
-    expect(leaf(page, 'expert.sim_length')).to_have_text('1024')
+    expect(leaf(page, 'expert.sim_length')).to_have_text(str(fc0['length']))
     expect(page.locator('#cfg_ed_tree li.cfg-node[data-state="collapsed"]')).to_have_count(0)
     shot(page, 'cfg-03-tree-expanded.png')
     page.click(P('CGWConfigEditor.but_expn'))
@@ -253,32 +276,33 @@ def test_tree_expand_collapse(gui):
     expect(page.locator(P('CGWConfigEditor.but_expn'))).to_be_visible(timeout=T)
 
 
-def test_tree_scalar_edit_and_radix(gui, web):
+def test_tree_scalar_edit_and_radix(gui, web, fc0):
     page = gui
     open_editor(page)
     expand_all(page)
     v = leaf(page, 'user.sim_seed')
-    expect(v).to_have_text('4660')
+    s0 = fc0['seed']
+    expect(v).to_have_text(str(s0))
     cb = page.locator(P('CGWConfigEditorTree.tree_model_from_dict@4.check') + '[data-path="user.sim_seed"]')
-    for shown in ('0x1234', '0o11064', '0b1001000110100', '4660'):   # DEC -> HEX -> OCT -> BIN -> DEC
+    for shown in (hex(s0), oct(s0), bin(s0), str(s0)):              # DEC -> HEX -> OCT -> BIN -> DEC
         cb.click()
         expect(v).to_have_text(shown)
     help_ro = leaf(page, 'help:RO')                                    # :RO value: disabled, not editable
     expect(help_ro).to_have_attribute('aria-disabled', 'true')
     help_ro.click()
     expect(page.locator('#cfg_ed_tree input.cfg-inline')).to_have_count(0)
-    edit_inline(page, 'user.sim_seed', '4661')                         # click -> in-line editor (:382)
+    edit_inline(page, 'user.sim_seed', str(s0 + 1))                    # click -> in-line editor (:382)
     expect(v).to_have_class('cfg-val changed')
     v.click()                                                          # Escape cancels an in-line edit
     inp = page.locator('#cfg_ed_tree input.cfg-inline')
     inp.fill('999')
     inp.press('Escape')
-    expect(v).to_have_text('4661')
+    expect(v).to_have_text(str(s0 + 1))
     cb.click()                                                         # saved in HEX: still the number
-    expect(v).to_have_text('0x1235')
+    expect(v).to_have_text(hex(s0 + 1))
     shot(page, 'cfg-04-tree-edit.png')
     apply_and_confirm(page)
-    assert db_config(web, 'BEAM', 'fakecam_0')['user']['sim_seed'] == 4661
+    assert db_config(web, 'BEAM', 'fakecam_0')['user']['sim_seed'] == s0 + 1
 
 
 def test_tree_list_and_long_value_popup(gui, web):
@@ -335,7 +359,7 @@ def test_tree_enum_popup(gui, web):
 
 # ---------------- CGWConfigEditor ----------------
 
-def test_text_editor_and_type_switch(gui, web):
+def test_text_editor_and_type_switch(gui, web, fc0):
     page = gui
     open_editor(page)
     box, txt = page.locator(P('CGWConfigEditor.box_type')), page.locator(P('CGWConfigEditorText.edi_txt'))
@@ -345,8 +369,10 @@ def test_text_editor_and_type_switch(gui, web):
     expect(txt).to_be_visible(timeout=T)
     expect(page.locator('#cfg_ed_tree')).to_be_hidden()
     text = txt.input_value()
-    assert '"detName:RO": "fakecam_0"' in text and '"sim_seed": 4660' in text and text.startswith('{\n    "')
-    txt.fill(text.replace('"sim_seed": 4660', '"sim_seed": 4242'))
+    seed0 = '"sim_seed": %d' % fc0['seed']
+    assert fc0['seed'] != 4242
+    assert '"detName:RO": "fakecam_0"' in text and seed0 in text and text.startswith('{\n    "')
+    txt.fill(text.replace(seed0, '"sim_seed": 4242'))
     box.select_option('Tree')
     expect(page.locator('#cfg_ed_tree')).to_be_visible(timeout=T)
     expand_all(page)
@@ -365,11 +391,12 @@ def test_text_editor_and_type_switch(gui, web):
     assert db_config(web, 'BEAM', 'fakecam_0')['user']['sim_seed'] == 4242
 
 
-def test_apply_confirm_cancel_and_ok(gui, web):
+def test_apply_confirm_cancel_and_ok(gui, web, fc0):
     page = gui
     open_editor(page)
     expand_all(page)
-    edit_inline(page, 'expert.sim_length', '2048')
+    new = 2048 if fc0['length'] != 2048 else 4096
+    edit_inline(page, 'expert.sim_length', str(new))
     page.click(P('CGWConfigEditor.but_apply'))
     dlg = page.locator(P('CGWMainConfiguration.save_dictj_in_db@1'))
     expect(dlg).to_be_visible(timeout=T)
@@ -379,15 +406,15 @@ def test_apply_confirm_cancel_and_ok(gui, web):
     page.click('#cfg_cf_cancel')
     expect(dlg).to_be_hidden(timeout=T)
     expect(page.locator('#edi_txt')).to_contain_text('Saving of configuration in DB is cancelled...', timeout=T)
-    assert db_config(web, 'BEAM', 'fakecam_0')['expert']['sim_length'] == 1024
+    assert db_config(web, 'BEAM', 'fakecam_0')['expert']['sim_length'] == fc0['length']
     status = apply_and_confirm(page)
     assert 'saved BEAM/fakecam_0 in tst: new key' in status
-    assert db_config(web, 'BEAM', 'fakecam_0')['expert']['sim_length'] == 2048
+    assert db_config(web, 'BEAM', 'fakecam_0')['expert']['sim_length'] == new
     expect(page.locator('#edi_txt')).to_contain_text('configdb: saved BEAM/fakecam_0', timeout=T)
     expect(page.locator('#cfg_editor')).to_be_visible()                # the editor stays open after Apply
 
 
-def test_select_other_and_close(gui):
+def test_select_other_and_close(gui, fc0):
     page = gui
     open_editor(page)
     expand_all(page)
@@ -406,7 +433,7 @@ def test_select_other_and_close(gui):
     expect(page.locator('#cfg_editor')).to_be_hidden(timeout=T)
     open_editor(page)                                                  # the unapplied edit is gone
     expand_all(page)
-    expect(leaf(page, 'user.sim_seed')).to_have_text('4660')
+    expect(leaf(page, 'user.sim_seed')).to_have_text(str(fc0['seed']))
 
 
 def test_more_help_save_load(gui, tmp_path):
@@ -497,7 +524,7 @@ def test_long_value_popup_more_load_save(gui, tmp_path):
     expect(page.locator('#cfg_popup_text')).to_be_hidden(timeout=T)
 
 
-def test_serial_number_checkbox(gui):
+def test_serial_number_checkbox(gui, fc0):
     page = gui
     open_editor(page)
     cbx = page.locator(P('CGWConfigEditor.cbx_serno'))
@@ -520,18 +547,19 @@ def test_serial_number_checkbox(gui):
     cbx.uncheck()                                                      # back to the alias config (:259-263)
     expect(page.locator('#cfg_ed_status')).to_contain_text('alias DB', timeout=T)
     expand_all(page)
-    expect(leaf(page, 'expert.sim_length')).to_have_text('1024')
+    expect(leaf(page, 'expert.sim_length')).to_have_text(str(fc0['length']))
     expect(leaf(page, 'use_serial_db')).to_have_text('False')
 
 
 # ---------------- item 5: the edit is what the DAQ reads at Configure ----------------
 
-def test_edit_seed_read_back_by_daq_config_readers(gui, web, cfgdb):
+def test_edit_seed_read_back_by_daq_config_readers(gui, web, cfgdb, fc0):
     """Change fakecam_0 user.sim_seed 0x1234 -> 0x2a2a in the web editor, Apply, then read it back
     with control.py's and the DRP's config readers (configeditor_harness.readback)."""
     page = gui
     before = daq_script('readback', '--url', cfgdb.url)
-    assert before['control_py']['user.sim_seed'] == 0x1234 and before['drp']['user.sim_seed'] == 0x1234
+    assert before['control_py']['user.sim_seed'] == fc0['seed'] and before['drp']['user.sim_seed'] == fc0['seed']
+    assert fc0['seed'] != 0x2a2a
     open_editor(page)
     expand_all(page)
     edit_inline(page, 'user.sim_seed', '0x2a2a')
