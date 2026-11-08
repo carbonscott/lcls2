@@ -14,6 +14,7 @@
 #include <cstring>
 #include <algorithm>
 #include <chrono>
+#include <vector>
 
 using json = nlohmann::json;
 using logging = psalg::SysLog;
@@ -63,10 +64,84 @@ size_t MemPoolSim::fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
     return sizeof(Pds::TimingHeader) + length * sizeof(uint32_t);
 }
 
+uint32_t MemPoolSim::mix(uint32_t index)
+{
+    uint32_t h = index * 0x9e3779b1u;
+    h ^= h >> 16;
+    h *= 0x85ebca6bu;
+    h ^= h >> 13;
+    return h;
+}
+
+uint32_t MemPoolSim::pattern(uint32_t seed, uint32_t seq, uint32_t index, unsigned bits)
+{
+    uint32_t v = mix(index) + seq * 0x9e37u + seed;
+    return bits >= 32 ? v : v & ((1u << bits) - 1);
+}
+
+void MemPoolSim::Out::tail(uint32_t size, uint8_t tdest)
+{
+    const unsigned width = 2;                           // 8-byte lines
+    const unsigned lw    = EvtBatcherHeader::lineWidth(width);
+    pos += (size + lw - 1) & ~(lw - 1);
+    uint8_t* t = buffer + pos;
+    memcpy(t, &size, sizeof(size));
+    t[4] = tdest;  t[5] = 0x2;  t[6] = 0;  t[7] = width;    // tuser_first: SOF
+    pos += lw;
+}
+
+static void _dataHeader(uint8_t* data, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    uint64_t  pid = f.pulseIdAndControl & ((1ull << 56) - 1);
+    uint32_t* w   = reinterpret_cast<uint32_t*>(data);
+    w[0] = uint32_t(pid);  w[1] = uint32_t(pid >> 32);  w[2] = f.seq;  w[3] = seed;
+}
+
+// Pixels whose order is fixed per type: 'map' lists, for each 16-bit word of the readout in
+// order, the flat index of the image pixel it carries.  The per-event value is mix(index)
+// (precomputed) + seq * 0x9e37 + seed, masked, so an event costs one add per pixel.
+struct PixelMap
+{
+    std::vector<uint16_t> base;                         // mix(index) & mask, in readout order
+    uint16_t              mask;
+    template <typename F> PixelMap(size_t n, unsigned bits, F index) :
+        base(n), mask(uint16_t((1u << bits) - 1))
+    {
+        for (size_t j = 0; j < n; ++j)  base[j] = uint16_t(MemPoolSim::mix(index(j)) & mask);
+    }
+    void fill(uint16_t* out, uint32_t seed, uint32_t seq) const
+    {
+        uint16_t add = uint16_t(seq * 0x9e37u + seed);
+        for (size_t j = 0; j < base.size(); ++j)  out[j] = uint16_t(base[j] + add) & mask;
+    }
+};
+
+// epix100 (Epix100::_event): subframe 3 = 32 B header, 704 pixel rows + 2 environmental + 2
+// calibration rows of 768 uint16, 12 B trailer.  The two ASIC halves arrive interleaved:
+// readout row 2i is image row 352+i and row 2i+1 is image row 351-i (Epix100.cc unscrambles
+// them as LCLS1's Epix100aServer did).  The extra rows carry image indices past the end.
+static const unsigned Epix100Rows = 704, Epix100Cols = 768, Epix100Extra = 4;
+static const unsigned Epix100Bytes = 32 + (Epix100Rows + Epix100Extra) * Epix100Cols * 2 + 12;
+
+static void epix100Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap pixels((Epix100Rows + Epix100Extra) * Epix100Cols, 14, [](size_t j) {
+        unsigned r = j / Epix100Cols, c = j % Epix100Cols;
+        if (r >= Epix100Rows)  return uint32_t(j);
+        unsigned img = (r & 1) ? Epix100Rows / 2 - 1 - r / 2 : Epix100Rows / 2 + r / 2;
+        return uint32_t(img * Epix100Cols + c);
+    });
+    uint8_t* data = out.data();
+    memset(data, 0, 32);
+    _dataHeader(data, f, seed);
+    pixels.fill(reinterpret_cast<uint16_t*>(data + 32), seed, f.seq);
+    memset(data + Epix100Bytes - 12, 0, 12);
+    out.tail(Epix100Bytes, 3);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
-    // epix100 (Epix100::_event): subframe 3 = 32 B header, (704+2+2) rows x 768 uint16, 12 B trailer
-    { "epix100", 3, 32 + (704 + 2 + 2) * 768 * 2 + 12, 32, 14 },
+    { "epix100", ((Epix100Bytes + 7) & ~7u) + 8, epix100Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
@@ -92,36 +167,19 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     ebh->version        = 1;
     ebh->width          = width;
     ebh->sequence_count = evtCounter & 0xff;
-    size_t pos = lw;
-
-    auto tail = [&](uint32_t size, uint8_t tdest) {
-        pos += (size + lw - 1) & ~(lw - 1);
-        uint8_t* t = buffer + pos;
-        memcpy(t, &size, sizeof(size));
-        t[4] = tdest;  t[5] = 0x2;  t[6] = 0;  t[7] = width;    // tuser_first: SOF
-        pos += lw;
-    };
+    Out out{buffer, lw};
 
     // Subframe 0: the TimingHeader (getTimingHeader() returns its address)
-    size_t th = fill(buffer + pos, f, evtCounter, 0, 0, 0);
-    tail(th, 0);
-    if (!l1)  return pos;
+    size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
+    out.tail(th, 0);
+    if (!l1)  return out.pos;
 
     // Subframe 2: the detailed timing frame; a copy of the header stands in for it
-    memcpy(buffer + pos, buffer + lw, th);
-    tail(th, 2);
+    memcpy(out.data(), buffer + lw, th);
+    out.tail(th, 2);
 
-    // Data subframe: header words, then every pixel = (seed + seq) masked to the bit depth
-    uint8_t*  data = buffer + pos;
-    uint64_t  pid  = f.pulseIdAndControl & ((1ull << 56) - 1);
-    uint32_t* w    = reinterpret_cast<uint32_t*>(data);
-    memset(data, 0, b.dataBytes);
-    w[0] = uint32_t(pid);  w[1] = uint32_t(pid >> 32);  w[2] = f.seq;  w[3] = seed;
-    uint16_t  value = (seed + f.seq) & ((1u << b.bits) - 1);
-    uint16_t* pix   = reinterpret_cast<uint16_t*>(data + b.headerBytes);
-    std::fill_n(pix, (b.dataBytes - b.headerBytes) / sizeof(uint16_t), value);
-    tail(b.dataBytes, b.dataTdest);
-    return pos;
+    b.data(out, f, seed);
+    return out.pos;
 }
 
 MemPoolSim::MemPoolSim(const Parameters& para) :
@@ -161,14 +219,14 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         abort();
     }
     if (m_batcher) {
-        size_t need = 8 * 5 + 2 * sizeof(Pds::TimingHeader) + m_batcher->dataBytes + 8;
+        size_t need = 8 + 2 * (sizeof(Pds::TimingHeader) + 8) + m_batcher->dataBytes;
         if (m_dmaSize < need + sizeof(uint32_t)) {
             logging::critical("MemPoolSim: %s needs sim_dma_size >= %zu (have %u)",
                               para.detType.c_str(), need + sizeof(uint32_t), m_dmaSize);
             abort();
         }
-        logging::info("MemPoolSim: %s data framed as EventBatcher subframes (data tdest %u, %u B)",
-                      para.detType.c_str(), m_batcher->dataTdest, m_batcher->dataBytes);
+        logging::info("MemPoolSim: %s data framed as EventBatcher subframes (up to %u B of data)",
+                      para.detType.c_str(), m_batcher->dataBytes);
     }
     if (posix_memalign((void**)&m_memory, 4096, size_t(m_dmaCount) * m_dmaSize)) {
         logging::critical("MemPoolSim: failed to allocate %u x %u B of DMA buffers", m_dmaCount, m_dmaSize);

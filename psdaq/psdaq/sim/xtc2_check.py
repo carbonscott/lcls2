@@ -17,9 +17,12 @@ most a few ticks only to stay strictly increasing); with --expect, N == expect. 
 counts and exits 0 only if every check passes.
 
 For a BEB detector run with -d sim:// (psdaq/drp/MemPoolSim.cc, e.g. epix100) the payload is an
-image whose every pixel is (seed + seq) masked to the type's bit depth, seq = 1, 2, ... per
-L1Accept; the check is then: data present, the type's image shape, every pixel equal to
-(seed + n) & mask for the n-th event.
+image whose pixel i (flattened) is psdaq.sim.pattern.pattern(seed, seq, i, bits): a hash of the
+pixel's position plus seq and seed, masked to the type's bit depth, seq = 1, 2, ... per
+L1Accept.  The check is then, event by event: data present, the type's image shape, and every
+pixel exactly equal to pattern(seed, n, i, bits) for the n-th event, so a pixel the DRP put in
+the wrong place fails.  --self-test-offset K expects pixel i to hold index i+K instead: the
+check must then FAIL (it shows the check can fail).
 
 psana2's calibration DB lookup is switched off (skip_calib_load='all') and LCLS_CALIB_HTTP points
 at a dead loopback port unless already set, so reading the file contacts no service.
@@ -35,15 +38,17 @@ import sys
 IMAGE_TYPES = {'epix100': ((704, 768), 14)}
 
 
-def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=5):
+def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=5, offset=0):
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     import numpy as np
     from psana import DataSource
+    from psdaq.sim import pattern
 
     mask = (1 << bits) - 1
     r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
          'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
-         'first_seq': None, 'last_seq': None,
+         'first_seq': None, 'last_seq': None, 'check': f'per pixel, pattern(seed, seq, i, {bits})'
+         + (f', self-test offset {offset}' if offset else ''),
          'seq_gap_free': None, 'problems': []}
     ds = DataSource(files=[path], skip_calib_load='all')
     for run in ds.runs():
@@ -60,18 +65,22 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
                 continue
             r['with_data'] += 1
             r['shape'] = list(raw.shape)
-            v = int(raw.flat[0]) & mask
-            if seed is not None:
-                want = (seed + n) & mask
-            else:
-                want = v
-            if tuple(raw.shape) == shape and bool(((raw & mask) == want).all()):
+            if seed is None:            # the seed this event's pixel 0 implies
+                seed = (int(raw.flat[0]) - int(pattern.pattern(0, n, offset, 32))) & mask
+            if tuple(raw.shape) != shape:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: shape {tuple(raw.shape)}, not {shape}')
+                continue
+            want = pattern.image(seed, n, shape, bits, offset)
+            same = raw == want
+            if bool(same.all()):
                 r['pattern_ok'] += 1
                 r['seed_ok'] += 1
             elif len(r['problems']) < max_report:
-                bad = int(((raw & mask) != want).sum())
-                r['problems'].append(f'event {n}: shape {tuple(raw.shape)}, {bad} pixels != '
-                                     f'{want:#x} (pixel[0] {v:#x})')
+                bad = np.argwhere(~same)
+                i0 = tuple(int(x) for x in bad[0])
+                r['problems'].append(f'event {n}: {len(bad)} of {raw.size} pixels differ, first '
+                                     f'at {i0}: {int(raw[i0]):#x} != {int(want[i0]):#x}')
     n = r['events']
     r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
     r['seq_gap_free'] = r['pattern_ok'] == n
@@ -83,10 +92,10 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     return r
 
 
-def check(path, det_name='fakecam', seed=None, expect=None, max_report=5):
+def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0):
     if det_name.rsplit('_', 1)[0] in IMAGE_TYPES:
         shape, bits = IMAGE_TYPES[det_name.rsplit('_', 1)[0]]
-        return check_image(path, det_name, shape, bits, seed, expect, max_report)
+        return check_image(path, det_name, shape, bits, seed, expect, max_report, offset)
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     import numpy as np
     from psana import DataSource
@@ -161,8 +170,10 @@ def main():
     parser.add_argument('--seed', type=lambda s: int(s, 0), help='expected sim_seed (default: any, reported)')
     parser.add_argument('--expect', type=int, help='expected number of L1Accept events')
     parser.add_argument('--json', action='store_true', help='print the result as one JSON line')
+    parser.add_argument('--self-test-offset', type=int, default=0, metavar='K',
+                        help='BEB image types: expect pixel i to hold index i+K (must FAIL)')
     args = parser.parse_args()
-    r = check(args.file, args.det, args.seed, args.expect)
+    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset)
     if args.json:
         print(json.dumps(r))
     else:
