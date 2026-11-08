@@ -83,6 +83,7 @@ Options:
 | `--rate <Hz>` | L1Accept rate; default 1000. |
 | `--seed <n>` | sim_seed stored in the config DB; default 0x1234. |
 | `--length <words>` | Payload words per event; default 64. |
+| `--segments <n>` | Run n fakecam DRPs (fakecam_0 .. fakecam_<n-1>, segments of one detector, each seeded in the config DB); default 1. `cycle` and `e2e` check fakecam_0's file (the first `-s<n>` file holding segment 0). |
 | `-S <Hz>` | control's SlowUpdate rate; default 1. |
 | `-v` | Run teb and drp with -v. |
 | `--webgui` | Also start the web GUI on 127.0.0.1:31000+10p+3 (31053), see §3b. |
@@ -294,7 +295,12 @@ The run then needs no internet. Pass `--browser-python $W/venv/bin/python` (chro
 `$W/browsers`), or export `DAQ_SIM_BROWSER_PYTHON`. The same venv runs the web GUI's own tests:
 `psdaq/psdaq/webgui/tests/run_webgui_tests.sh` (emulator; `AGENTIFY_WEBTEST=$W`), and, against a
 DAQ up with `--webgui`, `WEBGUI_REAL_URL=http://127.0.0.1:31053/ psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k real`
-inside an `srun --overlap` step.
+inside an `srun --overlap` step.  The parity check counts a control only if its browser test ran against
+the simulated DAQ: bring it up with `daq_sim up -w $WD --segments 2` (two fakecam segments, so the
+partition table's collapse / expand can be driven), then, in an `srun --overlap` step with
+`setup_env_daq.sh` and `sim_env.sh` sourced, `WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh
+--junitxml=$WD/webgui-sim.xml` and `python -m psdaq.webgui.parity.check_parity --junit $WD/webgui-sim.xml --run-walk`
+(`psdaq/psdaq/webgui/README.md`).
 
 ## 4. Read the file back with psana2
 ```bash

@@ -11,6 +11,12 @@ the DAQ env's python (WEBGUI_PYTHON) for the parts that need psdaq:
         prints, as JSON, user.sim_seed as the two config readers the DAQ uses at Configure see it:
         control.py's get_config_with_params (control.py:2299-2300) and the DRP's
         get_config_json(connect_json, alias, detName, segment) (drp/XpmDetector.cc:104-110)
+    python configeditor_harness.py sim-prepare --url <daq_sim config DB> --out snapshot.json
+        on the simulated DAQ's config DB stand-in (daq_sim up): adds what the tests need and daq_sim does not
+        seed (tst/NOBEAM, tst/BEAM/treetest_0, det/BEAM/fakecam_sn1_0), only if missing, and writes every
+        config of every alias of tst and det to snapshot.json
+    python configeditor_harness.py sim-restore --url ... --snapshot snapshot.json
+        writes back (as a new version) every config that differs from the snapshot
 """
 
 import json
@@ -163,11 +169,68 @@ def readback(url, inst, alias, det, segm):
     }
 
 
+def _sim_dbs(url, create):
+    from psdaq.configdb.configdb import configdb
+    if not url.startswith('http://127.'):
+        raise SystemExit('refusing non-local URL %s' % url)
+    return (('tst', configdb(url, 'tst', create=False, root='configDB')),
+            ('det', configdb(url, 'det', create=create, root='configDB')))
+
+
+def _snapshot(dbs):
+    snap = {}
+    for inst, db in dbs:
+        for alias in db.get_aliases():
+            for dev in db.get_devices(alias):
+                snap['%s/%s/%s' % (inst, alias, dev)] = db.get_configuration(alias, dev)
+    return snap
+
+
+def sim_prepare(url, out):
+    from psdaq.sim.configdb_seed import _store, fakecam_cdict
+    dbs = _sim_dbs(url, create=True)
+    db, det = dbs[0][1], dbs[1][1]
+    added = []
+    if 'NOBEAM' not in db.get_aliases():
+        db.add_alias('NOBEAM')
+        added.append('tst/NOBEAM')
+    if 'treetest_0' not in db.get_devices('BEAM'):
+        _store(db, 'BEAM', treetest_cdict())
+        added.append('tst/BEAM/treetest_0')
+    if 'BEAM' not in det.get_aliases():
+        det.add_alias('BEAM')
+    if SERNO not in det.get_devices('BEAM'):
+        _store(det, 'BEAM', fakecam_cdict(SERNO[:-2], 0, sim_seed=0x5555, sim_length=2048))
+        added.append('det/BEAM/' + SERNO)
+    snap = _snapshot(dbs)
+    with open(out, 'w') as f:
+        json.dump(snap, f)
+    return {'added': added, 'configs': sorted(snap)}
+
+
+def sim_restore(url, snapshot):
+    with open(snapshot) as f:
+        snap = json.load(f)
+    dbs = _sim_dbs(url, create=False)
+    now = _snapshot(dbs)
+    restored = []
+    for key, cfg in sorted(snap.items()):
+        if json.dumps(now.get(key), sort_keys=True) == json.dumps(cfg, sort_keys=True):
+            continue
+        inst, alias, dev = key.split('/', 2)
+        dict(dbs)[inst].modify_device(alias, cfg)
+        restored.append(key)
+    extra = sorted(set(now) - set(snap))
+    return {'restored': restored, 'not_in_snapshot': extra}
+
+
 def main(argv):
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument('cmd', choices=('seed', 'readback'))
+    ap.add_argument('cmd', choices=('seed', 'readback', 'sim-prepare', 'sim-restore'))
     ap.add_argument('--url', required=True)
+    ap.add_argument('--out')
+    ap.add_argument('--snapshot')
     ap.add_argument('--inst', default='tst')
     ap.add_argument('--alias', default='BEAM')
     ap.add_argument('--det', default='fakecam')
@@ -175,6 +238,10 @@ def main(argv):
     a = ap.parse_args(argv)
     if a.cmd == 'seed':
         print(json.dumps(seed_all(a.url)))
+    elif a.cmd == 'sim-prepare':
+        print(json.dumps(sim_prepare(a.url, a.out)))
+    elif a.cmd == 'sim-restore':
+        print(json.dumps(sim_restore(a.url, a.snapshot)))
     else:
         print(json.dumps(readback(a.url, a.inst, a.alias, a.det, a.segm)))
     return 0

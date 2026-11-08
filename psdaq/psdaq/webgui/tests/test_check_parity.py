@@ -4,6 +4,8 @@ A small synthetic PyQt package gives 6 rows: 2 user-facing buttons and the Alt+A
 1 hidden button, 1 button in an unreachable module (its import commented out) and 1 in a main
 block.  Mapping, junit and walk files are written to tmp_path.  The last tests run the checker on
 the real control_gui with the real mapping and the saved offscreen walk (parity/qt_walk.json).
+A mapped row counts only if the walk shows the running GUI builds it and its passing test recorded
+backend=sim-daq (junit property), so the synthetic junit records a backend per testcase.
 """
 
 import json
@@ -70,10 +72,15 @@ CASES = (('tests.test_ui', 'test_a[chromium]', ('Main.but_a', 'Main.but_a.mnemon
          ('tests.test_ui.TestB', 'test_b[chromium]', ('Main.but_b',)))
 
 
-def junit(path, failing=(), untagged=()):
+def junit(path, failing=(), untagged=(), backend=None):
+    """backend: {test name: backend or None (no property)}; default sim-daq for every test."""
+    backend = backend or {}
     cases = []
     for cls, name, rids in CASES:
         props = ''.join('<property name="parity" value="%s"/>' % r for r in rids if r not in untagged)
+        b = backend.get(name, 'sim-daq')
+        if b is not None:
+            props += '<property name="backend" value="%s"/>' % b
         body = ('<properties>%s</properties>' % props if props else '') + \
             ('<failure message="boom">assert 0</failure>' if name in failing else '')
         cases.append('<testcase classname="%s" name="%s" time="0.1">%s</testcase>' % (cls, name, body))
@@ -83,17 +90,20 @@ def junit(path, failing=(), untagged=()):
     return str(path)
 
 
-def walk(path, src, but_x_visible=False, unused_imported=False, digest=None, unused_line_ran=False):
+def walk(path, src, but_x_visible=False, unused_imported=False, digest=None, unused_line_ran=False,
+         main_lines=((2, 12),), but_b_built=True):
     """Raw observations as qt_walk.run_walk writes them, for the synthetic package."""
     w = {'version': qt_walk.WALK_VERSION, 'src_digest': digest or qt_walk.source_digest(src), 'elapsed': 0.1,
          'python': 'synthetic',
          'mods_gui': ['psdaq.control_gui.Main', 'psdaq.control_gui.Logger'] + (
              ['psdaq.control_gui.Unused'] if unused_imported else []),
-         'lines': {'control_gui/Main.py': [[2, 12]], 'control_gui/Logger.py': [[2, 8]]},
+         'lines': {'control_gui/Main.py': [list(x) for x in main_lines], 'control_gui/Logger.py': [[2, 8]]},
          'widgets': [{'type': 'QPushButton', 'cls': 'QPushButton', 'refs': ['Main.but_a'], 'visible': True,
                       'window_visible': True, 'receivers': 1},
                      {'type': 'QPushButton', 'cls': 'QPushButton', 'refs': ['Logger.but_x'],
-                      'visible': but_x_visible, 'window_visible': True, 'receivers': 1}],
+                      'visible': but_x_visible, 'window_visible': True, 'receivers': 1}] + (
+             [{'type': 'QPushButton', 'cls': 'QPushButton', 'refs': ['Main.but_b'], 'visible': True,
+               'window_visible': True, 'receivers': 1}] if but_b_built else []),
          'calls': [], 'views': {}, 'clicks': {}, 'handlers': {}, 'probes': {}}
     if unused_line_ran:
         w['lines']['control_gui/Unused.py'] = [[5, 5]]
@@ -141,7 +151,7 @@ def test_one_mapping_removed_fails_and_names_it(pkg, tmp_path, capsys):
     code, out = run(capsys, pkg, m, tmp_path, [junit(tmp_path / 'j.xml')])
     assert code != 0
     assert 'Unmapped (1 rows)' in out and '  Main.but_b | control_gui/Main.py:9 | button | B' in out
-    assert 'RESULT: FAIL: M + K = 5 != N = 6 (1 unmapped, 0 not passing, 0 na unconfirmed' in out
+    assert 'RESULT: FAIL: M + K = 5 != N = 6 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed' in out
     assert 'rows: Main.but_b' in out
     m = dict(COMPLETE)
     del m['Unused.__main__@1']                   # an na row removed fails the same way
@@ -221,6 +231,47 @@ def test_na_needs_the_walk_to_agree(pkg, tmp_path, capsys):
     assert code != 0 and 'walk is of other source' in out
 
 
+def test_mapped_row_the_walk_does_not_show_built_fails(pkg, tmp_path, capsys):
+    """The walk is the authority for 'built': a mapped row whose line never ran in the running GUI (only in the
+    probe phase, or not at all) or whose widget was never instantiated is not counted and fails the check."""
+    j = junit(tmp_path / 'j.xml')
+    w = walk(tmp_path / 'w.json', pkg, main_lines=((2, 8), (10, 12)))      # Main.py:9 (but_b) never ran
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [j], walk_file=w)
+    assert code != 0, out
+    assert 'Mapped but not built by the running PyQt GUI, per the walk (1 rows, not counted)' in out
+    assert '  Main.but_b | control_gui/Main.py:9 | module psdaq.control_gui.Main imported; ' \
+           'line control_gui/Main.py:9 NEVER ran in the running GUI' in out
+    assert '2 mapped' in out and 'rows: Main.but_b' in out and '1 mapped rows not built by the running GUI' in out
+    w = walk(tmp_path / 'w2.json', pkg, but_b_built=False)                  # line ran, no widget bound to it
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [j], walk_file=w)
+    assert code != 0 and '0 widget(s) bound to Main.but_b' in out and 'rows: Main.but_b' in out
+    # no walk (or a walk of other source): no mapped row can be shown built
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [j], walk_file=str(tmp_path / 'absent.json'))
+    assert code != 0 and 'Mapped but not built by the running PyQt GUI, per the walk (3 rows' in out
+
+
+def test_mapped_row_tested_only_against_the_emulator_fails(pkg, tmp_path, capsys):
+    """Every mapped row's passing test must have recorded backend=sim-daq (and only that)."""
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [junit(tmp_path / 'j.xml', backend={'test_b[chromium]': 'emulator'})])
+    assert code != 0, out
+    assert '  Main.but_b | tests/test_ui.py::TestB::test_b[chromium] | backend emulator, not sim-daq' in out
+    assert '2 mapped' in out and 'rows: Main.but_b' in out
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [junit(tmp_path / 'j2.xml', backend={'test_a[chromium]': None})])
+    assert code != 0 and 'Main.but_a | tests/test_ui.py::test_a[chromium] | backend none recorded, not sim-daq' in out
+    # one run against the emulator and another against the simulated DAQ: the sim-DAQ run proves the row
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [junit(tmp_path / 'j3.xml', backend={'test_b[chromium]': 'emulator'}),
+                                                      junit(tmp_path / 'j4.xml')])
+    assert code == 0, out
+    # a test that drove both kinds of server in one run does not count
+    with open(junit(tmp_path / 'j5.xml')) as f:
+        x = f.read()
+    (tmp_path / 'j5.xml').write_text(x.replace('<property name="backend" value="sim-daq"/>',
+                                               '<property name="backend" value="sim-daq"/>'
+                                               '<property name="backend" value="emulator"/>', 1))
+    code, out = run(capsys, pkg, COMPLETE, tmp_path, [str(tmp_path / 'j5.xml')])
+    assert code != 0 and 'backend emulator+sim-daq, not sim-daq' in out
+
+
 def test_no_rows_fails(tmp_path, capsys):
     root = tmp_path / 'empty' / 'psdaq'
     (root / 'control_gui' / 'app').mkdir(parents=True)
@@ -237,8 +288,9 @@ REAL = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 HAVE_REAL = os.path.isdir(os.path.join(REAL, 'control_gui')) and os.path.isfile(cpar.DEFAULT_MAPPING)
 
 
-def real_junit(path, mapping, drop_tag=None):
-    """A junit in which every mapped browser test passed and tags the rows its mapping entry names."""
+def real_junit(path, mapping, drop_tag=None, backend='sim-daq', emulator_test=None):
+    """A junit in which every mapped browser test passed against `backend` and tags the rows its mapping
+    entry names; emulator_test: that one test recorded backend=emulator instead."""
     by_test = {}
     for rid, e in mapping.items():
         if 'test' in e and rid != drop_tag:
@@ -246,8 +298,10 @@ def real_junit(path, mapping, drop_tag=None):
     cases = []
     for t, rids in sorted(by_test.items()):
         cls, name = cpar.nodeid_key(t)
-        cases.append('<testcase classname="%s" name="%s"><properties>%s</properties></testcase>' % (
-            cls, name, ''.join('<property name="parity" value="%s"/>' % r for r in rids)))
+        b = 'emulator' if t == emulator_test else backend
+        cases.append('<testcase classname="%s" name="%s"><properties>%s<property name="backend" value="%s"/>'
+                     '</properties></testcase>' % (
+                         cls, name, ''.join('<property name="parity" value="%s"/>' % r for r in rids), b))
     with open(path, 'w') as f:
         f.write('<?xml version="1.0"?><testsuites><testsuite>%s</testsuite></testsuites>' % ''.join(cases))
     return str(path)
@@ -290,6 +344,45 @@ def test_real_check_passes_and_fails_when_one_mapping_is_removed(tmp_path, capsy
     code = cpar.main(['--src', REAL, '--junit', real_junit(tmp_path / 'untag.xml', mapping, drop_tag=web_row)])
     out = capsys.readouterr().out
     assert code != 0 and '%s | test_webgui_parity_ui.py::' % web_row in out and '| untagged' in out
+    # one mapped row's test switched to the emulator
+    t = mapping[web_row]['test']
+    code = cpar.main(['--src', REAL, '--junit', real_junit(tmp_path / 'emu.xml', mapping, emulator_test=t)])
+    out = capsys.readouterr().out
+    assert code != 0, out
+    assert '%s | %s | backend emulator, not sim-daq' % (web_row, t) in out and 'rows: %s' % web_row in out
+
+
+@pytest.mark.skipif(not HAVE_REAL, reason='no control_gui or mapping.json next to webgui')
+def test_real_rows_the_running_gui_never_builds_cannot_be_mapped(tmp_path, capsys):
+    """CGWMainTabs / CGWMainTabUser (control_gui/CGWMain.py:43 and :78 commented out): the saved walk shows the
+    running GUI never builds them, so mapping them to a web element fails the check even with a passing test."""
+    mapping = cpar.load_mapping(cpar.DEFAULT_MAPPING)
+    gone = ['CGWMainTabs.tab_bar.user', 'CGWMainTabs.tab_bar.expert', 'CGWMainTabUser.but_play',
+            'CGWMainTabUser.but_record', 'CGWMainTabUser.but_stop']
+    for rid in gone:
+        assert mapping[rid] == {'na': 'not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)'}
+    rows, _ = cpar.enumerate_rows(REAL)
+    built = qt_walk.built(rows, qt_walk.load_walk(qt_walk.DEFAULT_WALK))
+    assert [rid for rid in gone if built[rid][0]] == []
+    assert [rid for rid, e in mapping.items() if 'test' in e and not built[rid][0]] == []
+    m = dict(mapping)
+    for rid in gone:
+        m[rid] = {'web': P_(rid), 'test': 'test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]'}
+    mp = tmp_path / 'mapping-tabs.json'
+    mp.write_text(json.dumps(m))
+    code = cpar.main(['--src', REAL, '--mapping', str(mp), '--junit', real_junit(tmp_path / 'tabs.xml', m)])
+    out = capsys.readouterr().out
+    assert code != 0, out
+    assert 'Mapped but not built by the running PyQt GUI, per the walk (5 rows, not counted)' in out
+    assert '  CGWMainTabUser.but_play | control_gui/CGWMainTabUser.py:190 | module psdaq.control_gui.CGWMainTabUser ' \
+           'NOT imported by the running GUI; line control_gui/CGWMainTabUser.py:190 NEVER ran in the running GUI ' \
+           '(ran only when built standalone in the probe phase)' in out
+    for rid in gone:
+        assert rid in out.split('RESULT:')[1]
+
+
+def P_(rid):
+    return '[data-parity~="%s"]' % rid
 
 
 def test_mainwindow_fragment_matches_rows():

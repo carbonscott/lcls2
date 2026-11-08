@@ -4,13 +4,20 @@ cells, the CGWMainTabs tab bar and the CGWMainTabUser buttons, CustomQComboBox's
 and wheel on box_state, and the Qt mnemonics (&Apply, &Cancel) as Alt+<letter>.
 
 Elements are found by their data-parity row id.  parity_rows.ROWS says which test proves which row;
-conftest.py records them as junit `parity` properties, which check_parity requires.
-The server runs in --emulate mode (two segments fakecam_0 / fakecam_1 of detector fakecam); the
-config editor tests also run the config DB stand-in on 127.0.0.1 (configeditor_harness).
+conftest.py records them as junit `parity` properties, which check_parity requires, and the backend
+the test drove (`backend`), which check_parity requires to be the simulated DAQ.
+The parity tests' server (`server`, `cfg_server`: webgui_harness.daq_server) runs on the simulated DAQ
+when WEBGUI_SIM_DAQ names a running `daq_sim up --segments 2` (control, teb0 and two segments
+fakecam_0 / fakecam_1 of detector fakecam; its config DB stand-in, to which the session adds the config
+editor tests' entries), else in --emulate mode (the same two fakecam segments plus timing_0 and meb0;
+the config editor tests then run their own config DB stand-in on 127.0.0.1, configeditor_harness).
+The CGWMainTabs / CGWMainTabUser tests are not parity proofs (the running PyQt GUI never builds those
+widgets: control_gui/CGWMain.py:43 and :78 are commented out) and run on the emulator only.
 
 Run with tests/run_webgui_tests.sh -k parity_ui.
 """
 
+import os
 import re
 
 import pytest
@@ -18,10 +25,11 @@ import pytest
 pytest.importorskip('playwright')
 from playwright.sync_api import expect  # noqa: E402
 
-from webgui_harness import ServerProc, SHOTS  # noqa: E402
+from webgui_harness import ServerProc, SHOTS, UI_TIMEOUT, daq_server  # noqa: E402
 from configeditor_harness import ConfigDbProc, seeded_store  # noqa: E402
 
-T = 15000   # ms, per UI expectation
+T = UI_TIMEOUT   # ms, per UI expectation
+NOT_PERMITTED = re.compile(r"configure.*(not permitted in state 'reset'|from state reset)")   # emulator | control.py
 
 
 def P(pid):
@@ -35,6 +43,11 @@ def browser_type_launch_args(browser_type_launch_args):
 
 @pytest.fixture
 def server():
+    yield from daq_server()
+
+
+@pytest.fixture
+def emu_server():
     s = ServerProc(['--emulate']).start()
     yield s
     s.stop()
@@ -42,8 +55,12 @@ def server():
 
 @pytest.fixture
 def cfg_server(tmp_path):
+    if os.environ.get('WEBGUI_SIM_DAQ'):        # the simulated DAQ's own config DB stand-in
+        yield from daq_server()
+        return
     db = ConfigDbProc(seeded_store(tmp_path)).start()
     s = ServerProc(['--emulate', '--configdb-url', db.url]).start()
+    s.sim = None
     yield s
     s.stop()
     db.stop()
@@ -87,7 +104,7 @@ def select(page):
 
 def platform_by_alias(server):
     plat = server.get('/api/platform')
-    return {v['proc_info']['alias']: v for lvl in plat.values() for v in lvl.values()}
+    return {v['proc_info']['alias']: dict(v, level=lvl) for lvl, procs in plat.items() for v in procs.values()}
 
 
 def alt_key(page, ch):
@@ -122,28 +139,34 @@ def test_select_id_collapses_and_expands_detector(page, server):
     set_readout_group_number_for_detector_segments); Apply sends what fill_output_object gives."""
     errors = open_gui(page, server)
     select(page)
+    one = 'teb0' if server.sim else 'timing_0'                  # one segment (sim: a single process of its own)
+    g0 = platform_by_alias(server)['fakecam_0']['det_info']['readout']
+    grp = str((g0 + 1) % 8) if server.sim else '5'              # a group other than the one each segment has
     f0, f1 = row(page, 'select_table', 'fakecam_0'), row(page, 'select_table', 'fakecam_1')
     id0, id1 = f0.locator(P('CGWMainPartition.w_select.id')), f1.locator(P('CGWMainPartition.w_select.id'))
     expect(f1).to_be_hidden()                                   # collapsed at construction
     expect(f0).to_have_attribute('data-collapser', '1')
     expect(id0).to_have_attribute('title', re.compile('EXPAND'))
-    expect(row(page, 'select_table', 'timing_0')).to_be_visible()   # a one-segment detector is not collapsed
-    expect(row(page, 'select_table', 'timing_0')).not_to_have_attribute('data-collapser', '1')
+    expect(row(page, 'select_table', one)).to_be_visible()      # a one-segment detector is not collapsed
+    expect(row(page, 'select_table', one)).not_to_have_attribute('data-collapser', '1')
     shot(page, 'p01-select-collapsed.png')
     # the collapsed row's check boxes and group act on both segments
     f0.locator(P('CGWMainPartition.w_select.sel')).uncheck()
     f0.locator(P('CGWMainPartition.w_select.monitor')).check()
-    f0.locator(P('CGWMainPartition.w_select.grp')).select_option('5')
+    f0.locator(P('CGWMainPartition.w_select.grp')).select_option(grp)
     id0.click()                                                 # expand
     expect(f1).to_be_visible()
     expect(f0).not_to_have_attribute('data-collapser', '1')
     expect(id0).to_have_attribute('title', re.compile('COLLAPSE'))
     expect(f1.locator(P('CGWMainPartition.w_select.sel'))).not_to_be_checked()
     expect(f1.locator(P('CGWMainPartition.w_select.monitor'))).to_be_checked()
-    expect(f1.locator(P('CGWMainPartition.w_select.grp'))).to_have_value('5')
+    expect(f1.locator(P('CGWMainPartition.w_select.grp'))).to_have_value(grp)
     shot(page, 'p02-select-expanded.png')
     # mixed segments, collapsed from the other segment's ID: partial check box; Apply keeps each segment's own state
     f0.locator(P('CGWMainPartition.w_select.sel')).check()
+    if server.sim:      # control refuses an alloc with no active DRP in the platform's readout group (control.py:1307)
+        f0.locator(P('CGWMainPartition.w_select.grp')).select_option(str(g0))      # expanded: this segment only
+        expect(f1.locator(P('CGWMainPartition.w_select.grp'))).to_have_value(grp)
     id1.click()                                                 # collapse with fakecam_1 as the shown row
     expect(f0).to_be_hidden()
     expect(f1).to_have_attribute('data-collapser', '1')
@@ -153,8 +176,11 @@ def test_select_id_collapses_and_expands_detector(page, server):
     by = platform_by_alias(server)
     assert (by['fakecam_0']['active'], by['fakecam_1']['active']) == (1, 0)
     assert (by['fakecam_0']['monitor'], by['fakecam_1']['monitor']) == (1, 1)
-    assert by['fakecam_0']['det_info']['readout'] == by['fakecam_1']['det_info']['readout'] == 5
-    assert by['timing_0']['det_info']['readout'] == 0
+    if server.sim:
+        assert (by['fakecam_0']['det_info']['readout'], by['fakecam_1']['det_info']['readout']) == (g0, int(grp))
+    else:
+        assert by['fakecam_0']['det_info']['readout'] == by['fakecam_1']['det_info']['readout'] == int(grp)
+        assert by['timing_0']['det_info']['readout'] == 0
     assert errors == []
 
 
@@ -188,20 +214,28 @@ def test_partition_display_cells_shown_not_editable(page, server):
     open_gui(page, server)
     sent = posts(page)
     select(page)
+    by = platform_by_alias(server)
+
+    def lph_text(alias):       # CGWPartitionTable: '<level>/<pid>/<host>' of proc_info
+        v = by[alias]
+        return '%s/%s/%s' % (v['level'], v['proc_info']['pid'], v['proc_info']['host'])
+    if not server.sim:
+        assert lph_text('teb0') == 'teb/41004/localhost' and lph_text('fakecam_0') == 'drp/41002/localhost'
     lph = row(page, 'select_table', 'teb0').locator(P('CGWMainPartition.w_select.level_pid_host'))
-    expect(lph).to_have_text('teb/41004/localhost')
+    expect(lph).to_have_text(lph_text('teb0'))
     not_editable(lph)
     n0 = len(sent)
     lph.click()
     page.wait_for_timeout(300)
-    assert len(sent) == n0 and lph.inner_text() == 'teb/41004/localhost'
+    assert len(sent) == n0 and lph.inner_text() == lph_text('teb0')
     page.click(P('QWPopupTableCheck.but_apply'))
     expect_state(page, 'allocated')
     page.click(P('CGWMainPartition.but_show'))
     r = row(page, 'show_table', 'fakecam_0')
     expect(r).to_be_visible(timeout=T)
-    want = {'CGWMainPartition.w_show.sel': '✓', 'CGWMainPartition.w_show.grp': '0',
-            'CGWMainPartition.w_show.level_pid_host': 'drp/41002/localhost', 'CGWMainPartition.w_show.monitor': ''}
+    want = {'CGWMainPartition.w_show.sel': '✓',
+            'CGWMainPartition.w_show.grp': str(by['fakecam_0']['det_info']['readout']),
+            'CGWMainPartition.w_show.level_pid_host': lph_text('fakecam_0'), 'CGWMainPartition.w_show.monitor': ''}
     n0 = len(sent)
     for pid, text in want.items():
         c = r.locator(P(pid))
@@ -223,9 +257,12 @@ def test_collection_cells_shown_not_editable(page, server):
     page.click(P('QWPopupTableCheck.but_apply'))
     expect_state(page, 'allocated')
     cells = page.locator(P('CGWPanelList.fill_list_model@1'))
-    expect(cells).to_have_count(5, timeout=T)                    # active drp, teb, meb (TABTITLE_H)
+    want = sorted(a for a, v in platform_by_alias(server).items() if v['level'] in ('drp', 'teb', 'meb') and v['active'])
+    assert want == (['fakecam_0', 'fakecam_1', 'teb0'] if server.sim else
+                    ['fakecam_0', 'fakecam_1', 'meb0', 'teb0', 'timing_0']), want
+    expect(cells).to_have_count(len(want), timeout=T)            # active drp, teb, meb (TABTITLE_H)
     texts = sorted(c.inner_text() for c in cells.all())
-    assert texts == ['fakecam_0', 'fakecam_1', 'meb0', 'teb0', 'timing_0'], texts
+    assert texts == want, texts
     n0 = len(sent)
     for c in cells.all():
         not_editable(c)
@@ -241,7 +278,7 @@ def test_logger_text_shown_read_only(page, server):
     page.click('#expert_transitions summary')
     page.click('#transition_buttons button[data-transition="configure"]')   # refused: an ERROR line
     txt, err = page.locator(P('QWLoggerStd.edi_txt')), page.locator(P('QWLoggerError.edi_err'))
-    expect(err).to_contain_text("not permitted in state 'reset'", timeout=T)
+    expect(err).to_contain_text(NOT_PERMITTED, timeout=T)
     expect(txt).to_contain_text('ERROR', timeout=T)
     for loc in (txt, err):
         not_editable(loc)
@@ -393,9 +430,11 @@ def test_config_tree_key_and_index_cells_not_editable(page, cfg_server):
 
 # ---------------- CGWMainTabs / CGWMainTabUser ----------------
 
-def test_tab_bar_user_and_expert(page, server):
+def test_tab_bar_user_and_expert(page, emu_server):
     """CGWMainTabs: tab bar User | Expert; gui_selector shows CGWMainTabUser or CGWMainTabExpert.
-    Opens on Expert, as CGWMain.py:79 builds the Expert tab."""
+    Opens on Expert, as CGWMain.py:79 builds the Expert tab.  Not a parity proof: the running PyQt GUI
+    never builds CGWMainTabs (control_gui/CGWMain.py:43 and :78 commented out); emulator only."""
+    server = emu_server
     errors = open_gui(page, server)
     user, expert = page.locator(P('CGWMainTabs.tab_bar.user')), page.locator(P('CGWMainTabs.tab_bar.expert'))
     expect(expert).to_have_attribute('aria-selected', 'true')
@@ -417,9 +456,11 @@ def test_tab_bar_user_and_expert(page, server):
     assert errors == []
 
 
-def test_user_tab_play_stop_record(page, server):
+def test_user_tab_play_stop_record(page, emu_server):
     """CGWMainTabUser: Play -> running (pause icon while running) -> Play -> paused; Stop (shown only in
-    starting / paused / running) -> configured; Record toggles recording where CGWMainTabUser.py:107 allows."""
+    starting / paused / running) -> configured; Record toggles recording where CGWMainTabUser.py:107 allows.
+    Not a parity proof (never built by the running PyQt GUI, see test_tab_bar_user_and_expert); emulator only."""
+    server = emu_server
     errors = open_gui(page, server)
     sent = posts(page)
     select(page)

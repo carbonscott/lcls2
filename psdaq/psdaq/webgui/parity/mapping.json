@@ -32,6 +32,15 @@
  "CGWMainInfo.keyPressEvent.u": {
   "na": "test harness: under control_gui/CGWMainInfo.py:105 `if __name__ == \"__main__\":` (row at control_gui/CGWMainInfo.py:119); never runs when control_gui imports the module"
  },
+ "CGWMainTabUser.but_play": {
+  "na": "not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)"
+ },
+ "CGWMainTabUser.but_record": {
+  "na": "not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)"
+ },
+ "CGWMainTabUser.but_stop": {
+  "na": "not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)"
+ },
  "CGWMainTabUser.hbox_test@1": {
   "na": "test harness: under control_gui/CGWMainTabUser.py:297 `if __name__ == \"__main__\":` (row at control_gui/CGWMainTabUser.py:333); never runs when control_gui imports the module"
  },
@@ -43,6 +52,12 @@
  },
  "CGWMainTabs.keyPressEvent.v": {
   "na": "test harness: under control_gui/CGWMainTabs.py:251 `if __name__ == \"__main__\":` (row at control_gui/CGWMainTabs.py:257); never runs when control_gui imports the module"
+ },
+ "CGWMainTabs.tab_bar.expert": {
+  "na": "not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)"
+ },
+ "CGWMainTabs.tab_bar.user": {
+  "na": "not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)"
  },
  "CGWPanelList.clicked": {
   "na": "inert view signal: control_gui/QWList.py:58 disconnected in disconnect_signals"
