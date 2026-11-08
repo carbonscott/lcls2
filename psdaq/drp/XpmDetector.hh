@@ -12,6 +12,7 @@ namespace Drp {
 
 class Parameters;
 class MemPool;
+class MemPoolSim;
 
 class XpmDetector : public Detector
 {
@@ -24,8 +25,11 @@ protected:
     void connectionShutdown() override;
 private:
     void _init();
+    void _simConfigure(const std::string& config_alias);
 private:
-    PyObject*            m_xmodule;        // python module
+    PyObject*            m_xmodule;        // python module, or nullptr with a sim:// device
+    MemPoolSim*          m_sim;            // software timing source, or nullptr with hardware
+    nlohmann::json       m_connectMsg;     // kept to fetch the sim payload seed at Configure
 protected:
     unsigned             m_length;
 };

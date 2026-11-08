@@ -7,6 +7,7 @@ See [docs/CHANGELOG_GUIDE.md](docs/CHANGELOG_GUIDE.md) for how to add entries.
 
 ### Added
 
+- Added a hardware-free DAQ on one node: `simxpm`, a simulated XPM that serves the PVs control.py writes and sends ordered timing frames; a `sim://` DMA backend for the CPU DRP (`MemPoolSim`, `drp -d sim://host:port`) with a fakecam payload checkable per event; `daq_sim up/cycle/status/down` to run control (normal mode), the TEB and a simulated DRP under procmgr; `xtc2_check` for psana2 read-back; and `psdaq/psdaq/sim/RUNBOOK.md`. [#29](https://github.com/carbonscott/lcls2/pull/29)
 - Added `psdaq.sim` local stand-ins for running the DAQ with no hardware on one node: a config DB server with `mongoconfigdb` semantics backed by a JSON file, a seed for the `tmoteb` trigger and a `fakecam` sim detector, a run DB/eLog stub, and an isolation env (`sim_env.sh`) with a fail-closed `preflight.sh`. [#28](https://github.com/carbonscott/lcls2/pull/28)
 - Added ePixUHR calibration and a CALIB mode for taking darks to the GPU DRP, with the Reader/Reducer performance work that runs five GPU DRPs on one node at 33 kHz, and per-stage metrics. @rclaus2 [#269](https://github.com/slac-lcls/lcls2/pull/269)
 

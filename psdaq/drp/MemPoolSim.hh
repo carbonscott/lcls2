@@ -1,0 +1,98 @@
+#pragma once
+
+#include "drp.hh"
+
+#include <atomic>
+#include <condition_variable>
+#include <deque>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
+
+namespace Drp {
+
+// A software stand-in for the PGP card's DMA engine and the TDet firmware behind it, so that a
+// CPU DRP runs with no hardware.  Selected with '-d sim://<host>:<port>' (or 'sim://<zmq
+// endpoint>'), it receives timing frames from simxpm (psdaq/psdaq/sim/simxpm.py) and turns each
+// one into the DMA buffers PgpReader expects: a TimingHeader per lane, followed for L1Accepts
+// by 'sim_length' words of payload, as the TDetSemi firmware block would.
+//
+// Protocol (ZMQ DEALER here, ROUTER in simxpm; each message is [type, payload]):
+//   -> HELLO  {alias,host,pid,lanes,dmaCount}   <- WELCOME {xpm,link,pvbase}
+//   -> CREDIT u32 n                              frames this DRP can still take
+//   -> CONNECT {group} / DISCONNECT / BYE        readout group membership
+//   <- FRAMES n x Frame                          in timing order
+// simxpm sends a frame only when every connected member of its readout groups has credit, so
+// nothing is dropped and all DRPs of a group see the same pulses in the same order.
+//
+// Payload, per lane, in 32-bit words (L = sim_length):
+//   w0 = pulseId & 0xffffffff, w1 = pulseId >> 32, w2 = seq (L1Accepts since the last
+//   GroupL0Reset), w3 = seed, w[k] = seed + w0 + k + (lane << 16) for k = 4..L-1.
+// The seed comes from the configuration database at Configure (see XpmDetector).
+class MemPoolSim : public MemPool
+{
+public:
+    // One timing frame as sent by simxpm, little-endian
+    struct Frame
+    {
+        uint64_t pulseIdAndControl;     // as in Pds::TimingHeader
+        uint32_t nanoseconds;
+        uint32_t seconds;               // since the EPICS epoch
+        uint32_t env;                   // readout group mask in bits 0-15
+        uint32_t seq;                   // L1Accept sequence number, 0 for transitions
+    } __attribute__((packed));
+    static_assert(sizeof(Frame) == 24, "simxpm frame size");
+public:
+    static bool isSimDevice(const std::string& device);
+    // Lay out one DMA buffer for frame 'f'; returns its size in bytes
+    static size_t fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
+                       unsigned lane, unsigned length, uint32_t seed);
+public:
+    MemPoolSim(const Parameters& para);
+    virtual ~MemPoolSim();
+    virtual int fd() const override { return m_efd; }
+    virtual int setMaskBytes(uint8_t laneMask, unsigned virtChan) override;
+public:                                 // For XpmDetector
+    unsigned paddr();                   // (xpm << 16) | link, once simxpm has answered
+    void connect(unsigned readoutGroup, unsigned length);
+    void disconnect();
+    void seed(uint32_t value) { m_seed.store(value, std::memory_order_release); }
+private:
+    virtual ssize_t _freeDma(unsigned count, uint32_t* indices) override;
+    virtual ssize_t _readDma(uint32_t count, int32_t* ret, uint32_t* index,
+                             uint32_t* flags, uint32_t* errors, uint32_t* dest) override;
+    virtual ssize_t _retDma(unsigned count, uint32_t* indices) override;
+    void _return(unsigned count, const uint32_t* indices);
+    void _receiver();
+    void _frames(const uint8_t* data, size_t size);
+    int  _send(void* socket, const std::string& type, const void* data, size_t size);
+private:
+    struct Ready { int32_t size; uint32_t index; uint32_t dest; };
+    std::string             m_endpoint;
+    std::string             m_alias;
+    unsigned                m_nLanes;
+    uint8_t                 m_laneMask;
+    unsigned                m_virtChan;
+    int                     m_efd;              // eventfd, readable while DMAs are ready
+    uint8_t*                m_memory;
+    std::mutex              m_simLock;          // Guards m_free and m_ready
+    std::vector<uint32_t>   m_free;
+    std::deque<Ready>       m_ready;
+    std::thread             m_thread;
+    std::atomic<bool>       m_terminate;
+    std::atomic<bool>       m_connected;
+    std::atomic<bool>       m_changed;          // Send CONNECT or DISCONNECT
+    std::atomic<unsigned>   m_group;
+    std::atomic<unsigned>   m_length;
+    std::atomic<uint32_t>   m_seed;
+    std::mutex              m_regLock;
+    std::condition_variable m_regCv;
+    bool                    m_registered;
+    unsigned                m_paddr;
+    uint32_t                m_evtCounter;       // Receiver thread only
+    unsigned                m_credit;           // Granted, not yet used; receiver thread only
+    uint64_t                m_nOverruns;
+};
+
+}

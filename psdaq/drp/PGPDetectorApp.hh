@@ -31,7 +31,7 @@ private:
     void drainDrpMessageQueues();
     int resetDrpPython();
     Parameters& m_para;
-    MemPoolCpu m_pool;
+    std::unique_ptr<MemPool> m_pool;   // MemPoolCpu, or MemPoolSim for -d sim://...
     Detector* m_det;
     std::unique_ptr<PGPDrp> m_drp;
     bool m_unconfigure;
