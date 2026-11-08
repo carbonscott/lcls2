@@ -1,6 +1,7 @@
 """`daq_sim e2e`: the end-to-end test of the hardware-free DAQ, driven through the web GUI.
 
-    daq_sim e2e [-w WORKDIR] [--events 1000] [--break kill-drp] [--browser-python PATH] [--keep-up]
+    daq_sim e2e [-w WORKDIR] [--events 1000] [--edit-seed N [--expect-seed M]]
+                [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
 
 It brings the DAQ up with the web GUI (`daq_sim up --webgui --detach`, which runs the
 fail-closed preflight first), or uses the one already up in WORKDIR, and starts a headless
@@ -8,8 +9,9 @@ chromium (psdaq/webgui/e2e_browser.py, run by the Playwright venv's python).  Th
 clicks and reports what the page shows; every check and the exit code are here, in the DAQ
 env's python, from this process's own reads:
 
-  1. its own PV Access read of simxpm's NumL0Acc reaches events * 1.1 while RUNNING, before
-     it lets the driver click down from RUNNING;
+  1. its own PV Access read of simxpm's NumL0Acc reaches events * 1.1 while RUNNING, and the
+     counter is still advancing then (over the next 2 s it rises by at least half of --rate per
+     second), before it lets the driver click down from RUNNING;
   2. its own DaqControl.getState returns every state the driver clicked (one at a time, up
      reset -> unallocated -> ... -> running, and down running -> ... -> allocated -> reset),
      the page shows each, and control's status stream carries no error (nor its log a
@@ -20,12 +22,26 @@ env's python, from this process's own reads:
   5. after the click down to RESET the page still shows that number (data-final="1");
   6. page == TEB_WrtCt (Prometheus, read in CONFIGURED after Disable) == psana2 events ==
      psana2 events with the detector's data >= events, and page == its own NumL0Acc read
-     after Disable; the run number on the page is control's run number.
+     after Disable; the run number on the page is control's run number; psana2's per-event
+     checks pass with the expected sim_seed (w3 == seed in every event);
+  7. the DRP's own config read at Configure: in the window from the click to CONFIGURED to
+     control reporting it, the config DB stand-in's access log has the DRP's
+     get_configuration/<hutch>/<alias>/<det>_0, the page made no /api/configdb request, and the
+     DRP's log gained `Sim payload seed <seed> ... from configdb <alias>/<det>_0` with the
+     expected seed.  With --edit-seed N, before Configure (in ALLOCATED) the driver opens the
+     web config editor from the main window, sets user.sim_seed = N on <alias>/<det>_0, saves
+     (confirm OK) and closes it; then the access log must hold that save (modify_device) and
+     this process's own read of the stand-in must give N.  The expected seed is --expect-seed,
+     else N, else the seed `up` stored; a run that edits one value and expects another fails.
 
-It prints each transition as `<STATE> clicked <iso ms> reported <iso ms>`, a final table and
-`E2E PASS` (exit 0) or the failed assertions and `E2E FAIL` (exit 1).  `--break kill-drp`
-SIGKILLs the DRP once RUNNING, to show that the test fails.  At the end it runs
-`daq_sim down` unless --keep-up.
+It prints each transition as `<STATE> clicked <iso ms> reported <iso ms>`, the evidence lines
+of 7 (`CFGEDIT ...`, `CONFIGURE ...`), a final table and `E2E PASS` (exit 0) or the failed
+assertions and `E2E FAIL` (exit 1).  Deliberate breaks, to show that the test fails:
+`--break kill-drp` SIGKILLs the DRP once RUNNING (the counter stalls: 1; Disable never
+completes: 2); `--break truncate-xtc2` cuts the last 100 L1Accepts (and the transitions after
+them) off the run's xtc2 file after RESET, before psana2 reads it, while the DAQ itself ran
+cleanly (only the count comparison of 6 can see it).  At the end it runs `daq_sim down`
+unless --keep-up.
 """
 
 import argparse
@@ -50,6 +66,11 @@ UP = ['UNALLOCATED', 'ALLOCATED', 'CONNECTED', 'CONFIGURED', 'STARTING', 'PAUSED
 DOWN = ['PAUSED', 'STARTING', 'CONFIGURED', 'CONNECTED', 'ALLOCATED', 'RESET']   # box: no RESET from unallocated
 DRIVER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'e2e_browser.py')
 _OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+NASSERT = 7
+BREAKS = ('kill-drp', 'truncate-xtc2')
+RATE_WINDOW = 2.0           # s: assertion 1's "still advancing" window, after reaching events * 1.1
+TRUNCATE_DROP = 100         # --break truncate-xtc2: L1Accepts cut off the end of the file
+SEED_RE = re.compile(r'Sim payload seed (\d+) \((0x[0-9a-fA-F]+)\) from (.*)$')
 
 
 def now():
@@ -221,6 +242,108 @@ def control_log(work):
     return logs[-1] if logs else None
 
 
+def drp_log(work):
+    logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{ds.DETECTOR}_0.log')), key=os.path.getmtime)
+    return logs[-1] if logs else None
+
+
+def access_log(work):
+    """The config DB stand-in's request log: one JSON line per request (configdb_server --access-log)."""
+    return work.path('logs', 'configdb-access.jsonl')
+
+
+def fsize(path):
+    try:
+        return os.path.getsize(path) if path else 0
+    except OSError:
+        return 0
+
+
+def lines_after(path, offset):
+    """The complete lines appended to path after byte offset."""
+    if not path:
+        return []
+    try:
+        with open(path, 'rb') as f:
+            f.seek(offset)
+            data = f.read()
+    except OSError:
+        return []
+    return data[:data.rfind(b'\n') + 1].decode(errors='replace').splitlines()
+
+
+def access_records(path, offset):
+    out = []
+    for line in lines_after(path, offset):
+        try:
+            out.append(json.loads(line))
+        except ValueError:
+            pass
+    return out
+
+
+def access_line(r):
+    return f'{r.get("t")} {r.get("method")} {r.get("path")} status {r.get("status")} success {r.get("success")}'
+
+
+def store_seed(state, device):
+    """This process's own read of the config DB stand-in: user.sim_seed of <alias>/<device>."""
+    url = (f'http://127.0.0.1:{state["ports"]["configdb"]}/ws/configDB/get_configuration/'
+           f'{ds.INSTRUMENT}/{ds.CONFIG_ALIAS}/{device}/')
+    rep = json.loads(_OPENER.open(url, timeout=10).read())
+    value = rep.get('value') or {}
+    return (value.get('user') or {}).get('sim_seed'), url
+
+
+def xtc2_dgrams(path):
+    """[(offset, size, TransitionId service)] of every datagram in an xtc2 file (XtcData Dgram:
+    TimeStamp 8 B, env 4 B (service = env >> 24 & 0xf), then an Xtc whose extent counts itself)."""
+    import struct
+    out, size = [], os.path.getsize(path)
+    with open(path, 'rb') as f:
+        off = 0
+        while off + 24 <= size:
+            f.seek(off)
+            hdr = f.read(24)
+            env, extent = struct.unpack_from('<I', hdr, 8)[0], struct.unpack_from('<I', hdr, 20)[0]
+            n = 12 + extent
+            if extent < 12 or off + n > size:
+                break
+            out.append((off, n, (env >> 24) & 0xf))
+            off += n
+    return out
+
+
+def truncate_xtc2(work, experiment, run, drop=TRUNCATE_DROP):
+    """--break truncate-xtc2: cut the last `drop` L1Accepts, and every datagram after them, off the
+    run's xtc2 file at a datagram boundary (a copy of the whole file is kept as *.untruncated)."""
+    import shutil
+    pattern = work.path('data', ds.INSTRUMENT, experiment, 'xtc', f'{experiment}-r{run:04d}-s*-c000.xtc2')
+    files = sorted(glob.glob(pattern))
+    if not files:
+        return f'no file matching {pattern}'
+    path = files[0]
+    dg = xtc2_dgrams(path)
+    l1 = [i for i, d in enumerate(dg) if d[2] == 12]           # TransitionId::L1Accept = 12
+    if len(l1) <= drop:
+        return f'{path}: only {len(l1)} L1Accepts, not cut'
+    first_cut = l1[len(l1) - drop]
+    cut = dg[first_cut][0]
+    size = os.path.getsize(path)
+    names = {0: 'ClearReadout', 1: 'Reset', 2: 'Configure', 3: 'Unconfigure', 4: 'BeginRun', 5: 'EndRun',
+             6: 'BeginStep', 7: 'EndStep', 8: 'Enable', 9: 'Disable', 10: 'SlowUpdate', 12: 'L1Accept'}
+    after = [names.get(d[2], str(d[2])) for d in dg[first_cut:] if d[2] != 12]
+    shutil.copyfile(path, path + '.untruncated')
+    mode = os.stat(path).st_mode & 0o7777       # the DRP writes its files read-only: replace, keep the mode
+    with open(path, 'rb') as f, open(path + '.cut', 'wb') as out:
+        out.write(f.read(cut))
+    os.chmod(path + '.cut', mode)
+    os.replace(path + '.cut', path)
+    return (f'{path}: {size} B, {len(dg)} datagrams, {len(l1)} L1Accepts -> cut at {cut} B: dropped the last '
+            f'{drop} L1Accepts and {len(after)} other datagrams after the first of them ({", ".join(after)}); '
+            f'kept {len(l1) - drop} L1Accepts; the whole file is in {os.path.basename(path)}.untruncated')
+
+
 def find_drp(state):
     """PID of the detector DRP process (procmgr reports it, or the procServ that holds it)."""
     det = ds.DETECTOR + '_0'
@@ -253,6 +376,11 @@ class Run:
         self.info = {}
         self.msgs = []
         self.stop = threading.Event()
+        self.det = ds.DETECTOR + '_0'
+        # The sim_seed every check expects: --expect-seed, else the edited value, else up's seed
+        self.seed = args.expect_seed if args.expect_seed is not None else \
+            args.edit_seed if args.edit_seed is not None else state['seed']
+        self.cfg = {}               # the config edit (--edit-seed) and the Configure window: assertion 7
 
     def check(self, n, ok, text):
         if n in self.res and not self.res[n][0]:
@@ -290,6 +418,126 @@ class Run:
                 return got, now(), time.time()
             time.sleep(0.1)
         return got, None, None
+
+    # --- assertion 7: the config edit and the DRP's read of it at Configure ---
+
+    def edit_config(self, drv):
+        """--edit-seed: the user's edit in the web config editor, then our own reads of what it saved."""
+        a, alog, c = self.args, access_log(self.work), self.cfg
+        value = f'{a.edit_seed:#x}'
+        off, t0 = fsize(alog), time.time()
+        rep = drv.do('cfg_edit', alias=ds.CONFIG_ALIAS, device=self.det, path='user.sim_seed', value=value)
+        t1 = time.time()
+        recs = access_records(alog, off)
+        c['saves'] = [r for r in recs if '/modify_device/' in r.get('path', '')]
+        c['edit_ok'], c['edit_status'], c['edit_window'] = rep.get('ok'), rep.get('status'), (t0, t1)
+        for t, what in rep.get('steps', []):
+            print(f'CFGEDIT {t} page: {what}', flush=True)
+        if not rep.get('ok'):
+            print(f'CFGEDIT driver error: {rep.get("err")}', flush=True)
+        print(f'CFGEDIT confirm dialog {rep.get("confirm")!r}; editor status {rep.get("status")!r} '
+              f'(data-ok {rep.get("status_ok")})', flush=True)
+        print(f'CFGEDIT config DB access log, save window {iso(t0)} .. {iso(t1)}: {len(recs)} request(s), '
+              f'{len(c["saves"])} modify_device', flush=True)
+        for r in recs:
+            print(f'CFGEDIT   access: {access_line(r)}', flush=True)
+        try:
+            c['own_seed'], url = store_seed(self.state, self.det)
+        except Exception as e:
+            c['own_seed'], url = f'error: {e}', '?'
+        own = c['own_seed']
+        print(f'CFGEDIT own read {url}: user.sim_seed = {own!r}{f" ({own:#x})" if isinstance(own, int) else ""}',
+              flush=True)
+
+    def configure_mark(self, drv):
+        """Just before the click to CONFIGURED: where the config DB access log and the DRP log end."""
+        log = drp_log(self.work)
+        return {'t0': time.time(), 'alog': fsize(access_log(self.work)), 'drp_log': log, 'drp': fsize(log)}
+
+    def configure_window(self, drv, mark):
+        """After control reported configured: what the window from the click to it holds."""
+        c, alog = self.cfg, access_log(self.work)
+        t1 = time.time()
+        recs = access_records(alog, mark['alog'])
+        log = mark['drp_log'] or drp_log(self.work)
+        end, seeds = time.monotonic() + 5, []
+        while True:                     # procServ may write the DRP's line a moment later
+            new = lines_after(log, mark['drp'])
+            seeds = [ln for ln in new if 'Sim payload seed' in ln]
+            if seeds or time.monotonic() > end:
+                break
+            time.sleep(0.2)
+        try:
+            reqs = drv.do('requests', quiet=True).get('requests') or []
+        except Exception as e:
+            reqs = [[0, 'error', str(e)]]
+        page = [r for r in reqs if mark['t0'] <= r[0] <= t1 and '/api/configdb' in r[2]]
+        reads = [r for r in recs if f'/get_configuration/{ds.INSTRUMENT}/{ds.CONFIG_ALIAS}/{self.det}/' in r.get('path', '')]
+        pid, _ = find_drp(self.state)
+        c.update(window=(mark['t0'], t1), reads=reads, seed_lines=seeds, page_cfg_reqs=page,
+                 drp_log=log, drp_pid=pid, n_access=len(recs))
+        print(f'CONFIGURE window {iso(mark["t0"])} (before the click) .. {iso(t1)} (control reported configured)',
+              flush=True)
+        for r in recs:
+            print(f'CONFIGURE   config DB access: {access_line(r)}', flush=True)
+        for ln in seeds:
+            print(f'CONFIGURE   DRP log ({log}): {ln.strip()}', flush=True)
+        print(f'CONFIGURE   DRP pid {pid}; page /api/configdb requests in the window: {len(page)} {page}', flush=True)
+
+    def check_config(self):
+        """Assertion 7, from the reads above."""
+        c, a = self.cfg, self.args
+        if 'window' not in c:
+            return self.check(7, False, 'not reached (no Configure)')
+        parsed = [SEED_RE.search(ln) for ln in c['seed_lines']]
+        logged = [(int(m.group(1)), m.group(3).strip()) for m in parsed if m]
+        src = f'configdb {ds.CONFIG_ALIAS}/{self.det}'
+        pids = {re.search(r'\[(\d+)\]', ln).group(1) for ln in c['seed_lines'] if re.search(r'\[(\d+)\]', ln)}
+        ok = (len(c['reads']) >= 1 and all(r.get('success') for r in c['reads']) and len(logged) == 1
+              and logged[0] == (self.seed, src) and not c['page_cfg_reqs']
+              and (c.get('drp_pid') is None or pids == {str(c['drp_pid'])}))
+        text = (f'Configure: {len(c["reads"])} get_configuration/{ds.INSTRUMENT}/{ds.CONFIG_ALIAS}/{self.det} '
+                f'in the window (page: {len(c["page_cfg_reqs"])} /api/configdb); DRP pid {c.get("drp_pid")} '
+                f'(log pids {sorted(pids)}) logged {[f"{s} ({s:#x}) from {f}" for s, f in logged]}; '
+                f'expected {self.seed} ({self.seed:#x}) from {src}')
+        if a.edit_seed is not None:
+            saves = c.get('saves', [])
+            good = c.get('edit_ok') and len(saves) == 1 and saves[0].get('success') and \
+                'new key' in (c.get('edit_status') or '') and c.get('own_seed') == a.edit_seed
+            ok = ok and bool(good)
+            text = (f'edit: web editor status {c.get("edit_status")!r}, {len(saves)} modify_device in the save '
+                    f'window, own read user.sim_seed {c.get("own_seed")!r} (edited to {a.edit_seed:#x}); ') + text
+        return self.check(7, ok, text)
+
+    def gate(self, need):
+        """Assertion 1: our own NumL0Acc reads reach need while RUNNING and keep advancing for
+        RATE_WINDOW s after that (at least half of --rate per second).  A DRP that died stalls the
+        counter (simxpm's credit-based deadtime) about one DRP buffer pool (~1000) after the kill, so
+        the second part fails even when the stall lands above need."""
+        rate = max(self.state['rate'], 1.)
+        end = time.monotonic() + need / rate * 3 + 30
+        count = None
+        while time.monotonic() < end:
+            count = self.pv_count()
+            if count is not None and count >= need:
+                break
+            time.sleep(0.5)
+        self.info['count_running'] = count
+        say(f'own read {self.pv} = {count} at {now()}')
+        reached = count is not None and count >= need
+        text = f'own NumL0Acc read {count} {">=" if reached else "<"} {need} while RUNNING'
+        if reached:                     # still taking data? (a dead DRP stalls the counter: credit deadtime)
+            t1 = time.monotonic()
+            time.sleep(RATE_WINDOW)
+            c2 = self.pv_count()
+            dt = time.monotonic() - t1
+            adv = None if c2 is None else c2 - count
+            want = 0.5 * rate * dt
+            self.info['count_running_2'] = c2
+            text += (f', then {c2} after {dt:.2f} s: +{adv} {">=" if (adv or 0) >= want else "<"} {want:.0f} '
+                     f'(half of --rate {rate:g} Hz)')
+            reached = adv is not None and adv >= want
+        return self.check(1, reached, text + ', before the click down')
 
     def wait_dom(self, drv, pred, timeout, period=0.5):
         end = time.monotonic() + timeout
@@ -357,19 +605,31 @@ class Run:
                  ('ALLOCATED', lambda: drv.do('click', target='apply'))]
         steps += [(s, (lambda s=s: drv.do('state', value=s))) for s in UP[2:]]
         for label, action in steps:
-            if not self.go(drv, dc, label, action):
+            mark = self.configure_mark(drv) if label == 'CONFIGURED' else None
+            ok = self.go(drv, dc, label, action)
+            if mark is not None:
+                self.configure_window(drv, mark)
+            if not ok:
                 return False
+            if label == 'ALLOCATED' and a.edit_seed is not None:   # the config edit, before Configure
+                self.edit_config(drv)
             if label == 'ALLOCATED':                      # record ON, as a user would before Configure
-                rep = drv.do('click', target='record')
-                end, rec = time.monotonic() + 15, None
-                while time.monotonic() < end:     # our own read-back of control's recording flag
-                    rec = dc.getStatus()[3]
-                    if rec is True:
-                        break
-                    time.sleep(0.1)
-                t, d = self.wait_dom(drv, lambda d: d.get('recording') == 'true', 15)
-                print(f'RECORD clicked {rep.get("t1")} reported recording={rec} (page aria-pressed '
-                      f'{d.get("recording")})', flush=True)
+                t, d = drv.read()
+                rec = dc.getStatus()[3]
+                if rec is True and d.get('recording') == 'true':   # e.g. a DAQ that ran 'daq_sim cycle': the
+                    print('RECORD already on (control recording=True, page aria-pressed true): not clicked',
+                          flush=True)                              # button toggles, so a click would turn it off
+                else:
+                    rep = drv.do('click', target='record')
+                    end, rec = time.monotonic() + 15, None
+                    while time.monotonic() < end:     # our own read-back of control's recording flag
+                        rec = dc.getStatus()[3]
+                        if rec is True:
+                            break
+                        time.sleep(0.1)
+                    t, d = self.wait_dom(drv, lambda d: d.get('recording') == 'true', 15)
+                    print(f'RECORD clicked {rep.get("t1")} reported recording={rec} (page aria-pressed '
+                          f'{d.get("recording")})', flush=True)
                 if rec is not True or d.get('recording') != 'true':
                     return self.check(2, False, f'record ON: control recording={rec!r}, page {d.get("recording")!r}')
 
@@ -385,18 +645,7 @@ class Run:
             if pid:
                 os.kill(pid, signal.SIGKILL)
             self.info['killed'] = f'{pid} {cmd[:80]}'
-        end = time.monotonic() + need / max(self.state['rate'], 1.) * 3 + 30
-        count = None
-        while time.monotonic() < end:
-            count = self.pv_count()
-            if count is not None and count >= need:
-                break
-            time.sleep(0.5)
-        self.info['count_running'] = count
-        say(f'own read {self.pv} = {count} at {now()}')
-        self.check(1, count is not None and count >= need,
-                   f'own NumL0Acc read {count} {">=" if (count or 0) >= need else "<"} {need} while RUNNING, '
-                   f'before the click down')
+        self.gate(need)
         t, d = drv.read()
         self.check(4, re.fullmatch(r'\d+', d.get('evt') or '') is not None,
                    f'page events {d.get("evt")!r} while RUNNING parse as ^\\d+$')
@@ -465,20 +714,29 @@ class Run:
             if str(run) != str(info.get('run_dom')) or exp != info.get('exp_dom'):
                 self.check(6, False, f'page run {info.get("run_dom")} exp {info.get("exp_dom")} != control run {run} '
                                      f'exp {exp}')
-            ps = ds._psana_counts(self.work, self.state, exp, run)
+            if a.breakage == 'truncate-xtc2':
+                info['truncated'] = truncate_xtc2(self.work, exp, run)
+                say(f'--break truncate-xtc2: {info["truncated"]}')
+            ps = ds._psana_counts(self.work, self.state, exp, run, seed=self.seed)
             info.update(ps)
             gui = int(info['gui']) if re.fullmatch(r'\d+', info.get('gui') or '') else None
             teb = info.get('prom', {}).get('TEB_WrtCt')
-            vals = [gui, teb, ps.get('psana2 events'), ps.get('psana2 with data')]
+            named = [('TEB_WrtCt', teb), ('psana2 events', ps.get('psana2 events')),
+                     ('psana2 with data', ps.get('psana2 with data'))]
+            vals = [gui] + [v for _, v in named]
             direct = info.get('count_after_disable')
-            ok = None not in vals and len(set(vals)) == 1 and gui >= a.events and gui == direct and \
-                ps.get('psana2 checks') == 'PASS'
+            equal = None not in vals and len(set(vals)) == 1
+            ok = equal and gui >= a.events and gui == direct and ps.get('psana2 checks') == 'PASS'
+            diff = [f'{k} {v} != page {gui}' for k, v in named + [('own NumL0Acc after Disable', direct)] if v != gui]
             self.check(6, ok, f'page {gui} == TEB_WrtCt {teb} == psana2 events {ps.get("psana2 events")} == '
                               f'with data {ps.get("psana2 with data")} >= {a.events}: '
-                              f'{None not in vals and len(set(vals)) == 1 and (gui or 0) >= a.events}; '
+                              f'{equal and (gui or 0) >= a.events}; '
                               f'page == own NumL0Acc after Disable {direct}: {gui == direct}; '
-                              f'psana2 checks {ps.get("psana2 checks")}; run {run} (page {info.get("run_dom")})')
-        for n in range(1, 7):
+                              f'psana2 checks (--seed {self.seed:#x}) {ps.get("psana2 checks")}; '
+                              f'run {run} (page {info.get("run_dom")})'
+                              f'{"; MISMATCH: " + ", ".join(diff) if diff else ""}')
+        self.check_config()
+        for n in range(1, NASSERT + 1):
             if n not in self.res:
                 self.res[n] = (False, 'not reached')
 
@@ -495,7 +753,8 @@ def table(r, header):
         ('web GUI #edi_evt (page)', f'{info.get("gui")}  data-final {info.get("gui_final")}  data-ts '
                                     f'{iso(ts) if ts else None}  source {info.get("gui_source")}'),
         ('web GUI after RESET', info.get('gui_after_reset')),
-        ('own NumL0Acc read, RUNNING', info.get('count_running')),
+        ('own NumL0Acc read, RUNNING', f'{info.get("count_running")}, {RATE_WINDOW:g} s later '
+                                       f'{info.get("count_running_2")}'),
         ('own NumL0Acc read, after Disable', info.get('count_after_disable')),
         ('own NumL0Acc read, CONFIGURED', info.get('count_configured')),
         ('TEB_WrtCt (Prometheus, CONFIGURED)', (info.get('prom') or {}).get('TEB_WrtCt')),
@@ -504,18 +763,29 @@ def table(r, header):
         ('psana2 events with data', info.get('psana2 with data')),
         ('psana2 checks', info.get('psana2 checks')),
         ('psana2 seq', info.get('psana2 seq')),
+        ('psana2 w3 seeds seen', info.get('psana2 seeds')),
         ('xtc2 file', info.get('xtc2 file')),
         ('run (page / control)', f'{info.get("run_dom")} / {info.get("run_control")}  experiment '
                                  f'{info.get("exp_dom")} / {info.get("experiment")}'),
         ('control log', info.get('control_log')),
     ]
+    c = r.cfg
+    if r.args.edit_seed is not None:
+        rows.append(('config edit (web editor)', f'user.sim_seed -> {r.args.edit_seed:#x}: {c.get("edit_status")!r}; '
+                                                 f'{len(c.get("saves", []))} modify_device; own read '
+                                                 f'{c.get("own_seed")!r}'))
+    rows.append(('DRP config read at Configure', f'{len(c.get("reads", []))} get_configuration of {r.det}; '
+                                                 f'{[ln.split("<I> ")[-1].strip() for ln in c.get("seed_lines", [])]}'))
+    rows.append(('expected sim_seed', f'{r.seed} ({r.seed:#x})'))
     if 'killed' in info:
         rows.append(('--break kill-drp killed', info['killed']))
+    if 'truncated' in info:
+        rows.append(('--break truncate-xtc2', info['truncated']))
     print('counts:', flush=True)
     for k, v in rows:
         print(f'  {k:<36} {v}', flush=True)
     print('assertions:', flush=True)
-    for n in range(1, 7):
+    for n in range(1, NASSERT + 1):
         ok, text = r.res[n]
         print(f'  {n} {"PASS" if ok else "FAIL"}  {text}', flush=True)
 
@@ -533,7 +803,8 @@ def cmd_e2e(args):
                          text=True).stdout.strip()
     header = (f'host {host}  Slurm job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}  '
               f'git HEAD of cwd {sha or "(none)"}  workdir {work.dir}  events {args.events}  '
-              f'break {args.breakage}')
+              f'break {args.breakage}  edit-seed {None if args.edit_seed is None else hex(args.edit_seed)}  '
+              f'expect-seed {None if args.expect_seed is None else hex(args.expect_seed)}')
     say(header)
     say(f'devices: {dev}')
     py, bpath, line = check_browser(args)
@@ -556,13 +827,17 @@ def cmd_e2e(args):
         r.finish()
     except Exception as e:
         r.check(6, False, f'count checks stopped: {type(e).__name__}: {e}')
-        for n in range(1, 7):
+        try:
+            r.check_config()
+        except Exception as e:
+            r.check(7, False, f'config checks stopped: {type(e).__name__}: {e}')
+        for n in range(1, NASSERT + 1):
             r.res.setdefault(n, (False, 'not reached'))
     down = None
     if not args.keep_up:
         say('daq_sim down')
         down = ds.teardown(work)
-    ok = all(r.res[n][0] for n in range(1, 7))
+    ok = all(r.res[n][0] for n in range(1, NASSERT + 1))
     table(r, header + f'  run {r.info.get("run_control")}  took {time.time() - t0:.0f} s  '
                       f'down {"clean" if down else ("NOT clean" if down is False else "skipped (--keep-up)")}')
     if down is False:
@@ -571,7 +846,7 @@ def cmd_e2e(args):
     if ok:
         print('E2E PASS', flush=True)
     else:
-        failed = [n for n in range(1, 7) if not r.res[n][0]]
+        failed = [n for n in range(1, NASSERT + 1) if not r.res[n][0]]
         for n in failed:
             print(f'E2E FAIL: assertion {n}: {r.res[n][1]}', flush=True)
         print('E2E FAIL', flush=True)

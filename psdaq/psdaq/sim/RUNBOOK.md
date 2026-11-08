@@ -55,7 +55,11 @@ Always pass `--ntasks=1`, `--cpus-per-task` and `--mem` on every `srun`:
 - Without `--ntasks=1` the step runs once per CPU.
 - Under `--exclusive` a job-level memory cap does not bind, so give `--mem` on the step.
 
-Set the cache variables if uv or pip hangs on /sdf/data.
+Set the cache variables if uv or pip hangs on /sdf/data. The build ends with `BUILD_EXIT=0`; uv's
+`warning: Failed to hardlink files; falling back to full copy` (the cache and the checkout are on
+different filesystems) is harmless. The `srun` stays in the foreground for the whole build: in a
+shell that cuts commands off (an agent's remote shell, often 120 s), run it under `nohup ... &`
+with its output in a file and poll the file.
 
 ## 2. Bring the DAQ up (step A, stays in the foreground)
 ```bash
@@ -115,7 +119,9 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=4 --mem=8G \
    - 1 s after Disable it records simxpm's `NumL0Acc` and the TEB's `TEB_WrtCt` from Prometheus.
 5. It reads the run's xtc2 file with psana2.
 
-It prints the transitions with their timestamps, then a count table. Expected end:
+It prints the transitions with their timestamps, then a count table. Expected end (the rows that
+matter; the table also lists simxpm NumL0Inp, TEB_EvtCt, TEB_TrCt, the DRP counters, the xtc2 file
+and the psana2 seq; at 1 kHz N is about 1900-2100):
 ```
   simxpm NumL0Acc        <N>
   TEB_WrtCt              <N>
@@ -173,14 +179,30 @@ stops the web GUI first.
 srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim e2e -w $ROOT/e2e_run --events 1000; echo E2E_EXIT=\$?"
 ```
-This is a step of its own; it brings the DAQ up in `-w` and takes it down again. To test a DAQ
-that is already up from §2 with `--webgui`, run the same line with `srun --overlap` and that
-DAQ's `-w $WD` (it is then left up only if you add `--keep-up`).
+This is a step of its own; it brings a DAQ up in `-w` (on platform 5's ports, so first take any
+DAQ from §2 down with §5, or give it another `-p`; else it stops at once with
+`daq_sim e2e: ports already in use: [31050, ...]`) and takes it down again. To test the DAQ that
+is already up from §2 instead, run the same line with `srun --overlap` and that DAQ's `-w $WD`
+(e2e starts the web GUI there if `up` was run without `--webgui`, inside its own step, so that web
+GUI stops when e2e ends and `up` logs `WARNING: webgui (pid ...) has exited`; the DAQ is left up
+only if you add `--keep-up`, otherwise e2e takes it down). After a `cycle` recording is already
+on; e2e then does not click the record button (it toggles), it prints `RECORD already on`.
 
 It needs the browser venv below (`--browser-python`, default `$DAQ_SIM_BROWSER_PYTHON`, else
 `$AGENTIFY_WEBTEST/venv/bin/python`, else `/sdf/scratch/users/<u>/<you>/agentify-webtest/venv/bin/python`;
 chromium from `--browsers-path`, default `$PLAYWRIGHT_BROWSERS_PATH`, else `<venv>/../browsers`), and
 says so and exits 1 before starting anything if it is missing.
+
+Options (besides `up`'s `-p`, `--rate`, `--seed`, `--length`, `-S`, `-v`):
+
+| option | effect |
+|---|---|
+| `--events N` | L1Accepts the run must record; default 1000. The test waits for N × 1.1. |
+| `--edit-seed V` | Before Configure, edit `user.sim_seed` of BEAM/fakecam_0 to V in the web config editor (see 3). |
+| `--expect-seed V` | The sim_seed the checks expect; default `--edit-seed`, else `--seed` (0x1234). |
+| `--break kill-drp` | SIGKILL the DRP once RUNNING (the test must fail: 1 and 2). |
+| `--break truncate-xtc2` | After RESET, before psana2 reads it, cut the last 100 L1Accepts off the run's xtc2 file (the test must fail: 6 only). |
+| `--keep-up`, `--timeout S`, `--shots DIR` | Leave the DAQ up; per-transition timeout (60 s); screenshot dir. |
 
 What it does, unattended (about 1 minute):
 1. checks the browser venv; prints the host, Slurm job, `git rev-parse HEAD` of the current
@@ -189,37 +211,75 @@ What it does, unattended (about 1 minute):
    (then it requires that up's `logs/preflight.log` to end in `PREFLIGHT PASS`) and must find
    control in `reset`;
 3. a headless chromium (`e2e_browser.py`, run by the venv's python) clicks, as a user would:
-   Select, Apply, recording on, CONNECTED, CONFIGURED, STARTING, PAUSED, RUNNING; then, after the
-   checks, PAUSED, STARTING, CONFIGURED, CONNECTED, ALLOCATED, RESET. The driver only clicks
-   and prints what the page shows (`DRV {...}` and `DOM ...` lines);
-4. the checks, all in the `daq_sim` process with its own reads: (1) its own PV read of
-   NumL0Acc reaches `--events` × 1.1 before it clicks down from RUNNING; (2) its own
-   `DaqControl.getState` returns every clicked state, printed as
-   `<STATE> clicked <iso ms> reported <iso ms>`, with no error on control's status stream and no
-   KeyError in the control log; (3) after Disable `#edi_evt` has `data-final="1"`, a `data-ts`
-   later than the Disable, and two equal readings; (4) the number is `^\d+$`; (5) the page still
-   shows it after RESET; (6) page == `TEB_WrtCt` (Prometheus, in CONFIGURED) == psana2 events ==
-   psana2 events with fakecam data ≥ `--events`, page == its own NumL0Acc read after Disable, and
-   the run number on the page is control's;
-5. `daq_sim down` (unless `--keep-up`), then the table.
+   Select, Apply, (with `--edit-seed V`: **Edit** → type BEAM → device fakecam_0 → Edit →
+   Expand → click `sim_seed`, type V, Enter → **Apply** → **OK** in "Save changes in
+   configuration DB" → Close), recording on, CONNECTED, CONFIGURED, STARTING, PAUSED, RUNNING;
+   then, after the checks, PAUSED, STARTING, CONFIGURED, CONNECTED, ALLOCATED, RESET. The driver
+   only clicks and prints what the page shows (`DRV {...}`, `DOM ...` and `CFGEDIT ... page:` lines);
+4. the checks, all in the `daq_sim` process with its own reads:
+   1. its own PV read of NumL0Acc reaches `--events` × 1.1 while RUNNING, and over the next
+      2 s it rises by at least half of `--rate` per second (the DAQ is still taking data);
+   2. its own `DaqControl.getState` returns every clicked state, printed as
+      `<STATE> clicked <iso ms> reported <iso ms>`, with no error on control's status stream and
+      no KeyError in the control log;
+   3. after Disable `#edi_evt` has `data-final="1"`, a `data-ts` later than the Disable, and two
+      equal readings;
+   4. the number is `^\d+$`;
+   5. the page still shows it after RESET;
+   6. page == `TEB_WrtCt` (Prometheus, in CONFIGURED) == psana2 events == psana2 events with
+      fakecam data ≥ `--events`, page == its own NumL0Acc read after Disable, the run number on
+      the page is control's, and psana2's per-event checks pass with the expected seed
+      (`xtc2_check --seed`, so w3 == seed in every event); a count that differs is named
+      (`MISMATCH: psana2 events 3434 != page 3534`);
+   7. the DRP's own config read at Configure. Between the click to CONFIGURED and control
+      reporting it (printed as `CONFIGURE ...` lines):
+      - the config DB stand-in's `logs/configdb-access.jsonl` gains the DRP's
+        `get_configuration/tst/BEAM/fakecam_0/`;
+      - the page makes no `/api/configdb` request (the browser's own resource timing);
+      - the DRP's log (`pmlogs/.../*:fakecam_0.log`, its pid) gains exactly one
+        `Sim payload seed <seed> (0x...) from configdb BEAM/fakecam_0`, with the expected seed.
 
-Expected end (N about 1900-2200 at 1 kHz):
+      With `--edit-seed V` also (printed as `CFGEDIT ...` lines): the editor reports
+      `saved BEAM/fakecam_0 in tst: new key <k>`, the access log shows that save
+      (`modify_device/tst/BEAM/`), and `daq_sim`'s own GET of the stand-in returns
+      `user.sim_seed` = V;
+5. with `--break truncate-xtc2`, the cut (the whole file is kept as `*.xtc2.untruncated`);
+   `daq_sim down` (unless `--keep-up`), then the table.
+
+Expected end (at 1 kHz N is about 3400-4600, 3464-4532 in 8 runs: the test waits for 1100, then 2 s more, then the
+clicks down take about 1 s):
 ```
 assertions:
-  1 PASS  own NumL0Acc read <n> >= 1100 while RUNNING, before the click down
+  1 PASS  own NumL0Acc read <n> >= 1100 while RUNNING, then <n+2000> after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
   2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
   3 PASS  after Disable (reported <t>): data-final 1,1; data-ts <t'> > Disable; readings at ...: 'N' == 'N'; source pva
   4 PASS  page events 'N' parse as ^\d+$
   5 PASS  after RESET the page shows 'N' (data-final 1), after Disable it showed 'N'
-  6 PASS  page N == TEB_WrtCt N == psana2 events N == with data N >= 1000: True; page == own NumL0Acc after Disable N: True; psana2 checks PASS; run 1 (page 1)
+  6 PASS  page N == TEB_WrtCt N == psana2 events N == with data N >= 1000: True; page == own NumL0Acc after Disable N: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid <pid> (log pids ['<pid>']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
 E2E PASS
 E2E_EXIT=0
 ```
-On any failed check it prints `E2E FAIL: assertion <k>: <why>` per failure, then `E2E FAIL`, and exits 1.
-To see it fail, `--break kill-drp` SIGKILLs the DRP once RUNNING: the count stalls (about
-1080 < 1100: assertion 1) and Disable never completes (assertion 2: `PAUSED: control getState
--> 'running' after 60 s`); it takes about 2.5 minutes. Screenshots go to `$WD/e2e-shots/`, the
-driver's stderr to `$WD/logs/e2e-driver.log`.
+With `--edit-seed 0x2a2a`, 6 says `psana2 checks (--seed 0x2a2a) PASS` and 7 starts
+`edit: web editor status 'saved BEAM/fakecam_0 in tst: new key 3', 1 modify_device in the save
+window, own read user.sim_seed 10794 (edited to 0x2a2a);` and ends `logged ['10794 (0x2a2a) from
+configdb BEAM/fakecam_0']; expected 10794 (0x2a2a) ...`.
+
+On any failed check it prints `E2E FAIL: assertion <k>: <why>` per failure, then `E2E FAIL`, and
+exits 1. To see it fail:
+- `--edit-seed 0x2a2a --expect-seed 0x1234` (edit one value, expect another): 6 fails
+  (`psana2 checks (--seed 0x1234) FAIL ['event 1: w3 0x2a2a != seed 0x1234', ...]`) and 7 fails
+  (`logged ['10794 (0x2a2a) ...']; expected 4660 (0x1234)`); 1-5 pass.
+- `--break kill-drp` SIGKILLs the DRP once RUNNING: the count stalls about one DRP buffer pool
+  (~1020, credit deadtime) after the kill, about 1080 (assertion 1: `1082 < 1100`; a stall that
+  lands above `--events` × 1.1 fails the 2-s "still rising" part instead), and Disable never
+  completes (assertion 2: `PAUSED: control getState -> 'running' after 60 s`; 3, 5, 6: `not
+  reached`); it takes about 2.5 minutes.
+- `--break truncate-xtc2`: the DAQ runs cleanly and 1-5 and 7 pass; 6 fails on the count alone
+  (`MISMATCH: psana2 events N-100 != page N, psana2 with data N-100 != page N`; psana2's own
+  checks still pass, since the cut is at a datagram boundary).
+
+Screenshots go to `$WD/e2e-shots/`, the driver's stderr to `$WD/logs/e2e-driver.log`.
 
 ### The browser venv (once, on sdfiana025: it needs the internet; compute nodes have none)
 ```bash
@@ -290,7 +350,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   - drp: `Simulated PGP device 'sim://127.0.0.1:31052'`
   - drp: `MemPoolSim: simxpm registered fakecam_0 as XPM 0 link 0`
   - drp: `EbLfClient: libfabric 2.1.0, provider 'tcp' ..., domain 'lo'`
-  - drp, at Configure: `Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0`
+  - drp, at Configure: `Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0` (after an
+    edit in the web config editor, its value: `daq_sim e2e --edit-seed 0x2a2a` gives
+    `Sim payload seed 10794 (0x00002a2a) ...`)
   - drp: `Opening file '.../xtc/tstx00001-r0001-s000-c000.xtc2'`
   - teb: `EbLfServer: libfabric 2.1.0, provider 'tcp'`
 - Harmless lines:
@@ -299,6 +361,8 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 - SlowUpdates exist only in state running, by control.py's design. At `-S 1` the xtc2 holds about one per second of running.
 - `$WD/data/tst/tstx00001/xtc/` holds the xtc2 files, with `smalldata/` beside them.
 - `$WD/e2e-shots/` holds the e2e's screenshots (reset, running, paused after Disable, reset).
+- `daq_sim e2e -w $WD` with `--break truncate-xtc2` leaves the whole file beside the cut one as
+  `...-c000.xtc2.untruncated`.
 
 ## 7. Known limits
 - **Network listeners.** Every connection is between 127.0.0.1 peers (checked with `ss -tnp` during a run). But some processes listen on all interfaces:
@@ -314,3 +378,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
   each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector
   at 1 kHz, platform 5.
+- **Web GUI requests.** It answers 403 to any request whose Host header is not loopback, and to a
+  POST whose Origin is another host:port (`webgui/tests/test_webgui_hostorigin.py`). It does not
+  refuse `Origin: null`; a browser page with that origin still cannot send it a command, because
+  the server takes only `Content-Type: application/json` (other types: 415) and answers no CORS
+  preflight (OPTIONS: 501). It has no authentication: any process on the node that can reach
+  127.0.0.1 can drive the DAQ through it.
