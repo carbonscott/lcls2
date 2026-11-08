@@ -188,17 +188,17 @@ class Handler(BaseHTTPRequestHandler):
             logger.exception('request %s failed', self.path)
             status, resp = 500, {'success': False, 'msg': '%s: %s' % (type(ex).__name__, ex)}
         data = json.dumps(resp).encode()
-        self.send_response(status)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Content-Length', str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
         rec = {'t': _now(), 'method': self.command, 'path': self.path, 'user': self._user(),
                'body': body, 'status': status, 'response': resp}
         logger.info('%s %s -> %d %s', self.command, self.path, status, resp.get('success'))
         if self.server.log_path is not None:
             with self.server.log_lock, open(self.server.log_path, 'a') as f:
                 f.write(json.dumps(rec) + '\n')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     do_GET = _handle
     do_POST = _handle
