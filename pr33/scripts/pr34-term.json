@@ -1,0 +1,114 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p2/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan048",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $R/wt-pr34 && git rev-parse HEAD && git log --format='%h %s' 2d9593bc5..HEAD && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "# What it changes, by directory: web GUI and sim code only; no hardware path, no compiled code"
+ },
+ {
+  "send": "git diff --stat 2d9593bc5 HEAD | tail -1; git diff --name-only 2d9593bc5 HEAD | sed 's,/[^/]*$,,' | sort | uniq -c"
+ },
+ {
+  "send": "# install/ was built before the commit (which changes only Python), so this checkout's psdaq goes first on PYTHONPATH"
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import psdaq.sim.daq_sim as m; print(\"DAQ env\", m.sys.version.split()[0], m.__file__)'"
+ },
+ {
+  "send": "# 1. The simulated DAQ with two fakecam segments, and the whole web GUI suite against it"
+ },
+ {
+  "send": "WD=$P/sim2; daq_sim up -w $WD --segments 2 --detach > $WD.up.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $WD.up.log | cut -c1-138; daq_sim status -w $WD | grep -E '^  (control|teb0|fakecam_[01]) '",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log",
+  "expect": "SUITE_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "python3 $P/junit_backends.py $P/sim.junit.xml"
+ },
+ {
+  "send": "# 2. The parity check, with a fresh offscreen PyQt walk"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Not applicable|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138",
+  "expect": "PARITY_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "grep -E '^  CGWMainTab(s\\.tab_bar|User\\.but_(play|record|stop)) ' $P/parity.txt"
+ },
+ {
+  "send": "# One walk saved to a file, used by every check below (same walk)"
+ },
+ {
+  "send": "mkdir -p $P/walk; python -m psdaq.webgui.parity.qt_walk --out $P/walk/walk.json > $P/walk/walk.log 2>&1; echo WALK_EXIT=$?; python -m psdaq.webgui.parity.qt_walk --reconcile $P/walk/walk.json | head -1",
+  "expect": "WALK_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 3. Negative: one mapping removed from a scratch copy of mapping.d"
+ },
+ {
+  "send": "bash $P/minus_mapping.sh $P/sim.junit.xml $P/walk/walk.json $P/minus",
+  "expect": "PARITY_MINUS_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 4. Negative: one test switched to the emulator, in a scratch copy; its test file rerun against the sim DAQ"
+ },
+ {
+  "send": "bash $P/emu_switch.sh $WD $P/sim.junit.xml $P/walk/walk.json $P/emu",
+  "expect": "PARITY_EMU_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# 5. Before and after. Before: base 2d9593bc5's own suite and check, on the same walk"
+ },
+ {
+  "send": "(cd $R/wt-cov && source ./setup_env_daq.sh >/dev/null 2>&1 && git rev-parse HEAD && bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/base.junit.xml > $P/base-suite.log 2>&1; echo BASE_SUITE_EXIT=$?; tail -1 $P/base-suite.log)",
+  "expect": "BASE_SUITE_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "(cd $R/wt-cov && source ./setup_env_daq.sh >/dev/null 2>&1 && python -m psdaq.webgui.parity.check_parity --junit $P/base.junit.xml --walk $P/walk/walk.json > $P/base-parity.txt 2>&1; echo BASE_PARITY_EXIT=$?; grep -E 'controls found|^walk|^RESULT' $P/base-parity.txt | cut -c1-138; python $P/rows5.py $P/base.junit.xml $P/walk/walk.json)",
+  "expect": "BASE_PARITY_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# After: this PR's check on the same walk, with its own mapping, then with the base's mapping"
+ },
+ {
+  "send": "python $P/rows5.py $P/sim.junit.xml $P/walk/walk.json",
+  "timeout": 300
+ },
+ {
+  "send": "bash $P/basemap.sh $P/sim.junit.xml $P/walk/walk.json $P/basemap",
+  "expect": "PARITY_BASEMAP_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

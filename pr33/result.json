@@ -1,0 +1,21 @@
+{
+ "events_after_disable": "1737",
+ "events_after_reset": "1737",
+ "ok": true,
+ "video": "page@8b132caa1b6992281812e9c365c8196f.webm",
+ "video_s": 56.84,
+ "wall_s": 56.1,
+ "actions": 16,
+ "min_highlight_to_act_s": 1.201,
+ "min_gap_s": 2.702,
+ "shots": [
+  "01-open.png",
+  "02-segments-expanded.png",
+  "03-segments-collapsed.png",
+  "04-allocated-record-on.png",
+  "05-running.png",
+  "06-disabled.png",
+  "07-reset.png"
+ ],
+ "error_window_lines": []
+}

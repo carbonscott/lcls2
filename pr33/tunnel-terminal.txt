@@ -1,0 +1,79 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T22:52:43+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/p2/up_web.sh web3
++ srun --jobid=43839059 --overlap ... in wt-pr34 (1c521c64f183174dd3f5bbb6199ef5da642001a5): daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/web3 --webgui --segments 2 --rate 200 --detach
+on sdfmilan048, Slurm job 43839059 step 47
+2026-11-08T14:53:12.335-08:00 daq_sim: preflight rc=0: 14:53:12 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T14:53:23.561-08:00 daq_sim: web GUI up: http://127.0.0.1:31053/ (pid 711197) control state reset
+2026-11-08T14:53:23.563-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  webgui       http://127.0.0.1:31053/  (pid 711197; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+UP_EXIT=0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p2'
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31053:/tmp/cwang31-p2/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p2/webgui.sock:127.0.0.1:31053 sdfmilan048'
+exedev@indigo-galaxy:redo$ sleep 3; curl -s -o /dev/null -w 'GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\n' http://127.0.0.1:31053/; curl -s http://127.0.0.1:31053/api/status | cut -c1-200; echo
+GET http://127.0.0.1:31053/ on this VM -> HTTP 200
+{"transition": "reset", "state": "reset", "config_alias": "BEAM", "recording": false, "platform": {}, "bypass_activedet": false, "experiment_name": "tstx00001", "run_number": 0, "last_run_number": 0, 
+
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python paced_drive.py http://127.0.0.1:31053/ rec/pr34-web --events 1100
+2026-11-08T22:53:32.449+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31053/; highlight >= 1.2 s, gap >= 2.7 s
+2026-11-08T22:53:33.313+00:00 open -> page ready; state RESET; backend 'backend: daqcontrol'
+2026-11-08T22:53:36.198+00:00 #1  Click Select: open the partition selection           hold 1.20 s  gap     - s  -> page state UNALLOCATED, select table shown OK
+2026-11-08T22:53:38.900+00:00 #2  Click the ID of fakecam_0: expand its 2 segments     hold 1.42 s  gap  2.70 s  -> fakecam_1 row shown: True OK
+2026-11-08T22:53:41.604+00:00 #3  Click the ID of fakecam_0 again: collapse the segments hold 2.16 s  gap  2.70 s  -> fakecam_1 row shown: False OK
+2026-11-08T22:53:44.307+00:00 #4  Click Apply: allocate the partition                  hold 2.20 s  gap  2.70 s  -> page state ALLOCATED OK
+2026-11-08T22:53:47.010+00:00 #5  Click Record: turn recording on                      hold 2.29 s  gap  2.70 s  -> record aria-pressed true OK
+2026-11-08T22:53:49.712+00:00 #6  Choose CONNECTED in the state box                    hold 2.19 s  gap  2.70 s  -> page state CONNECTED OK
+2026-11-08T22:53:52.417+00:00 #7  Choose CONFIGURED in the state box                   hold 2.10 s  gap  2.71 s  -> page state CONFIGURED OK
+2026-11-08T22:53:55.370+00:00 #8  Choose STARTING in the state box                     hold 1.20 s  gap  2.95 s  -> page state STARTING OK
+2026-11-08T22:53:58.073+00:00 #9  Choose PAUSED in the state box                       hold 1.48 s  gap  2.70 s  -> page state PAUSED OK
+2026-11-08T22:54:00.776+00:00 #10 Choose RUNNING in the state box                      hold 2.33 s  gap  2.70 s  -> page state RUNNING OK
+2026-11-08T22:54:07.550+00:00 RUNNING: page events 1141 (source pva) >= 1100
+2026-11-08T22:54:09.459+00:00 #11 Choose PAUSED in the state box: Disable              hold 1.20 s  gap  8.68 s  -> page state PAUSED OK
+2026-11-08T22:54:13.125+00:00 after Disable: page events 1737, data-final 1, source pva
+2026-11-08T22:54:14.412+00:00 #12 Choose STARTING in the state box                     hold 1.20 s  gap  4.95 s  -> page state STARTING OK
+2026-11-08T22:54:17.113+00:00 #13 Choose CONFIGURED in the state box                   hold 2.30 s  gap  2.70 s  -> page state CONFIGURED OK
+2026-11-08T22:54:19.815+00:00 #14 Choose CONNECTED in the state box                    hold 2.32 s  gap  2.70 s  -> page state CONNECTED OK
+2026-11-08T22:54:22.517+00:00 #15 Choose ALLOCATED in the state box                    hold 2.31 s  gap  2.70 s  -> page state ALLOCATED OK
+2026-11-08T22:54:25.221+00:00 #16 Choose RESET in the state box                        hold 2.31 s  gap  2.70 s  -> page state RESET OK
+2026-11-08T22:54:27.626+00:00 after RESET: page events 1737, data-final 1; error window lines: 0 []
+video page@8b132caa1b6992281812e9c365c8196f.webm: 56.8 s; browser context open 56.1 s (real speed: the video spans the whole context)
+PAGE_EVENTS_FINAL=1737  ALL_STATES_OK=True
+ACTIONS=16  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.702 s
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python pace_check.py rec/pr34-web/actions.jsonl
+rec/pr34-web/actions.jsonl: 16 actions
+  min(act_time - highlight_start) = 1.201 s  (at: Click Select: open the partition selection)
+  min gap between consecutive act_times = 2.702 s  (before: Choose ALLOCATED in the state box)
+ACTIONS=16  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.702 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)
+exedev@indigo-galaxy:redo$ N=$(python3 -c "import json;print(json.load(open('rec/pr34-web/result.json'))['events_after_reset'])"); echo "page count after Disable and RESET: $N"
+page count after Disable and RESET: 1737
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/p2/readback_web.sh web3 $N
+== on sdfmilan048, Slurm job 43839059 step 48, tree 1c521c64f
+  webgui     pid 711197   alive
+  control    pid 711006   RUNNING
+  teb0       pid 711007   RUNNING
+  fakecam_0  pid 711008   RUNNING
+  fakecam_1  pid 711009   RUNNING
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+  webgui     http://127.0.0.1:31053/ state reset  events 1737 (source pva, final True)
+  simxpm     PART:5:NumL0Acc = Sun Nov  8 14:54:37 2026 1737.0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --seed 0x1234 --expect 1737
+  L1Accept events 1737; with fakecam data 1737; w3 == seed 1737 (seeds seen {0x1234: 1737}); payload pattern ok 1737; w0/w1 pulseId rising and == timestamp clock 1737/1737
+  seq (w2) 1..1737 gap-free from 1: True; expected 1737 events
+  PASS
+   XTC2_CHECK_EXIT=0
+== xtc2_check tstx00001-r0001-s001-c000.xtc2 --seed 0x1234 --expect 1737
+   exit 1: no segment 0 in this file (psana's fakecam det.raw.raw() reads segment 0 only)
+== seg_check.py, both files, every segment in them (det.raw._segments)
+tstx00001-r0001-s000-c000.xtc2: run 1, L1Accept events 1737 (expected 1737); segment 0: data in 1737, seeds {'0x1234': 1737}, payload pattern ok 1737, seq (w2) 1..1737 gap-free True
+tstx00001-r0001-s001-c000.xtc2: run 1, L1Accept events 1737 (expected 1737); segment 1: data in 1737, seeds {'0x1234': 1737}, payload pattern ok 1737, seq (w2) 1..1737 gap-free True
+SEG_CHECK PASS
+exedev@indigo-galaxy:redo$ ssh sdfiana025 $R/redo/p2/down_web.sh web3
+2026-11-08T14:55:01.627-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31053]
+2026-11-08T14:55:01.629-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+down seen: step ends
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31053:/tmp/cwang31-p2'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*cwang31-p2/webgui.sock'"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ 

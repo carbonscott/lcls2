@@ -1,0 +1,215 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T22:57:58+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p2/node_rc.sh -i
+cwang31@sdfmilan048:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan048
+2026-11-08 14:58:01 PST
+Slurm job 43839059 step 51
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan048:agentify-lcls2$ # Case 1, base 2d9593bc5 (agentify): there is no coverage module
+cwang31@sdfmilan048:agentify-lcls2$ cd $R/wt-cov && git rev-parse HEAD && git log -1 --format='%s' && echo "local changes: $(git status --short | wc -l)"
+2d9593bc59bf6abde81e3cc7c462a496628df179
+Merge PR #31: config DB editor and full PyQt parity; e2e config read-back and truncate break
+local changes: 0
+cwang31@sdfmilan048:wt-cov$ (source ./setup_env_daq.sh >/dev/null 2>&1; python -m psdaq.sim.coverage; echo COVERAGE_EXIT=$?; daq_sim coverage 2>&1 | tail -1 | cut -c1-120; echo "DAQ_SIM_COVERAGE_EXIT=${PIPESTATUS[0]}")
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python: No module named psdaq.sim.coverage
+COVERAGE_EXIT=1
+daq_sim: error: argument command: invalid choice: 'coverage' (choose from 'up', 'down', 'status', 'cycle', 'e2e')
+DAQ_SIM_COVERAGE_EXIT=2
+cwang31@sdfmilan048:wt-cov$ # Case 2, head: the unit tests
+cwang31@sdfmilan048:wt-cov$ cd $R/wt-pr32 && git rev-parse HEAD && git log --format='%h %s' 2d9593bc5..HEAD && echo "local changes: $(git status --short | wc -l)"
+c09b85d2feecd4844ba95ae90064db18e9c9227b
+c09b85d2f CHANGELOG: daq_sim coverage
+10d1ecfd5 sim: daq_sim coverage, a row-per-source coverage check, and a matrix skeleton
+local changes: 0
+cwang31@sdfmilan048:wt-pr32$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py 2>&1 | tail -1
+15 passed in 9.57s
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # Case 3: a fresh work dir and an empty evidence dir; up, one recorded cycle, down
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ export DAQ_SIM_EVIDENCE=$P/r3/ev WD=$P/r3/cyc; mkdir -p $DAQ_SIM_EVIDENCE; echo "records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); $WD exists: $(test -e $WD && echo yes || echo no)"
+records in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev: 0; /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc exists: no
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ daq_sim up -w $WD --detach > $P/r3/up.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/r3/up.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T14:59:00.040-08:00 daq_sim: preflight rc=0: 14:59:00 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T14:59:08.628-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ daq_sim cycle -w $WD --events 1000 > $P/r3/cycle.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState running|NumL0Acc = |^  equal|cycle (PASS|FAIL)|evidence' $P/r3/cycle.log | cut -c1-138
+CYCLE_EXIT=0
+2026-11-08T14:59:16.338-08:00 setState running      -> running      OK
+2026-11-08T14:59:18.308-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1883 (wanted >= 1000)
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T14:59:24.150-08:00 evidence 20261108T145924-cycle-c09b85d2f-725778: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T14:59:24.150-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ daq_sim down -w $WD > $P/r3/down.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/r3/down.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T14:59:31.846-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ ls $DAQ_SIM_EVIDENCE; python3 -c "import json,glob; d=json.load(open(glob.glob('$DAQ_SIM_EVIDENCE/*.json')[0])); print('record: sha', d['sha'], 'host', d['host'], 'job', d['job_id'], 'files', len(d['files'])); print('rows', ' '.join(d['rows']))"
+20261108T145924-cycle-c09b85d2f-725778.json
+record: sha c09b85d2feecd4844ba95ae90064db18e9c9227b host sdfmilan048 job 43839059 files 9
+rows det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # Case 4: daq_sim coverage with that evidence; all of its output, one page at a time
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ daq_sim coverage > $P/r3/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/r3/cov.txt
+COVERAGE_EXIT=1
+97
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ sed -n '1,37p' $P/r3/cov.txt | cut -c1-138
+daq_sim coverage at c09b85d2feecd4844ba95ae90064db18e9c9227b (HEAD of /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-p
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+status: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-pr32/psdaq/psdaq/sim/coverage_status.json
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev (1 records)
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+det:drp:cspad                  UNPROVEN  no status entry
+det:drp:hsd                    UNPROVEN  no status entry
+det:drp:epixquad               UNPROVEN  no status entry
+det:drp:epixquad1kfps          UNPROVEN  no status entry
+det:drp:epixhr2x2              UNPROVEN  no status entry
+det:drp:epixhremu              UNPROVEN  no status entry
+det:drp:epixm320               UNPROVEN  no status entry
+det:drp:epixUHR                UNPROVEN  no status entry
+det:drp:epix100                UNPROVEN  no status entry
+det:drp:jungfrau               UNPROVEN  no status entry
+det:drp:jungfrauemu            UNPROVEN  no status entry
+det:drp:opal                   UNPROVEN  no status entry
+det:drp:tt                     UNPROVEN  no status entry
+det:drp:tb                     UNPROVEN  no status entry
+det:drp:ts                     UNPROVEN  no status entry
+det:drp:wave8                  UNPROVEN  no status entry
+det:drp:wave8he                UNPROVEN  no status entry
+det:drp:hrencoder              UNPROVEN  no status entry
+det:drp:piranha4               UNPROVEN  no status entry
+det:drp:epixuhr3x2             UNPROVEN  no status entry
+det:drp_gpu:fakecam            UNPROVEN  no status entry
+det:drp_gpu:epixuhremu         UNPROVEN  no status entry
+det:drp_gpu:epixuhrsim         UNPROVEN  no status entry
+det:drp_gpu:epixuhr3x2         UNPROVEN  no status entry
+det:drp_gpu:jungfrau           UNPROVEN  no status entry
+prog:ami-client                UNPROVEN  no status entry
+prog:ami-global                UNPROVEN  no status entry
+prog:ami-manager               UNPROVEN  no status entry
+prog:ami-node                  UNPROVEN  no status entry
+prog:ami-worker                UNPROVEN  no status entry
+prog:bldcas                    UNPROVEN  no status entry
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ sed -n '38,74p' $P/r3/cov.txt | cut -c1-138
+prog:cLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpca
+prog:control                   RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:control_gui               UNPROVEN  no status entry
+prog:daqstat                   UNPROVEN  no status entry
+prog:deadca                    UNPROVEN  no status entry
+prog:drp                       RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:drp_bld                   UNPROVEN  no status entry
+prog:drp_gpu                   UNPROVEN  no status entry
+prog:drp_pva                   UNPROVEN  no status entry
+prog:drp_udpencoder            UNPROVEN  no status entry
+prog:dtica                     UNPROVEN  no status entry
+prog:epics_exporter            UNPROVEN  no status entry
+prog:epicsArch                 UNPROVEN  no status entry
+prog:groupca                   UNPROVEN  no status entry
+prog:hpsBldCopy                UNPROVEN  no status entry
+prog:hpsBldServer              UNPROVEN  no status entry
+prog:hpsdbuscas                UNPROVEN  no status entry
+prog:hsd134PVs                 UNPROVEN  no status entry
+prog:hsd64PVs                  UNPROVEN  no status entry
+prog:hsdca                     UNPROVEN  no status entry
+prog:hsdcas                    UNPROVEN  no status entry
+prog:hsdpva                    UNPROVEN  no status entry
+prog:hsdpvs                    UNPROVEN  no status entry
+prog:lclsBldServer             UNPROVEN  no status entry
+prog:monReqServer              UNPROVEN  no status entry
+prog:partca                    UNPROVEN  no status entry
+prog:procstat                  UNPROVEN  no status entry
+prog:pvant                     UNPROVEN  no status entry
+prog:pvatable                  UNPROVEN  no status entry
+prog:pykcuxpm                  UNPROVEN  no status entry
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:qLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpda
+prog:qRead                     N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no
+prog:shmemClient               UNPROVEN  no status entry
+prog:sim_udpencoder            UNPROVEN  no status entry
+prog:teb                       RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:tmo_acr_opal_feedback     UNPROVEN  no status entry
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ sed -n '75,$p' $P/r3/cov.txt | cut -c1-138
+prog:tpr_trigger               UNPROVEN  no status entry
+prog:tprca                     UNPROVEN  no status entry
+prog:tprcas                    UNPROVEN  no status entry
+prog:tprioc                    UNPROVEN  no status entry
+prog:tprtrig                   UNPROVEN  no status entry
+prog:wave8pvs                  UNPROVEN  no status entry
+prog:xpmpva                    UNPROVEN  no status entry
+prog:xpmpvas                   UNPROVEN  no status entry
+prog:xpmPVs                    UNPROVEN  no status entry
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+  unproven: det:drp:cspad det:drp:hsd det:drp:epixquad det:drp:epixquad1kfps det:drp:epixhr2x2 det:drp:epixhremu
+  unproven: det:drp:epixm320 det:drp:epixUHR det:drp:epix100 det:drp:jungfrau det:drp:jungfrauemu det:drp:opal
+  unproven: det:drp:tt det:drp:tb det:drp:ts det:drp:wave8 det:drp:wave8he det:drp:hrencoder
+  unproven: det:drp:piranha4 det:drp:epixuhr3x2 det:drp_gpu:fakecam det:drp_gpu:epixuhremu det:drp_gpu:epixuhrsim det:drp_gpu:epixuhr3x2
+  unproven: det:drp_gpu:jungfrau prog:ami-client prog:ami-global prog:ami-manager prog:ami-node prog:ami-worker
+  unproven: prog:bldcas prog:control_gui prog:daqstat prog:deadca prog:drp_bld prog:drp_gpu
+  unproven: prog:drp_pva prog:drp_udpencoder prog:dtica prog:epics_exporter prog:epicsArch prog:groupca
+  unproven: prog:hpsBldCopy prog:hpsBldServer prog:hpsdbuscas prog:hsd134PVs prog:hsd64PVs prog:hsdca
+  unproven: prog:hsdcas prog:hsdpva prog:hsdpvs prog:lclsBldServer prog:monReqServer prog:partca
+  unproven: prog:procstat prog:pvant prog:pvatable prog:pykcuxpm prog:shmemClient prog:sim_udpencoder
+  unproven: prog:tmo_acr_opal_feedback prog:tpr_trigger prog:tprca prog:tprcas prog:tprioc prog:tprtrig
+  unproven: prog:wave8pvs prog:xpmpva prog:xpmpvas prog:xpmPVs
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov.txt | grep -v '^  unproven:'
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev (1 records)
+det:drp:fakecam                RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:control                   RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:drp                       RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); evidence 20261108T145924-cycle-c09b85d2f-725778
+prog:teb                       RUN       evidence 20261108T145924-cycle-c09b85d2f-725778
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # 70 rows UNPROVEN is expected at this PR: later PRs add the runs that prove them, so the check still ends FAIL
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # The same check from daq_sim matrix, and without the DAQ env (the node's system python3, as RUNBOOK 3d says)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ daq_sim matrix > $P/r3/matrix.txt; echo MATRIX_EXIT=$?; grep -E '^[0-9]+ rows|^(PASS|FAIL)' $P/r3/matrix.txt
+MATRIX_EXIT=1
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ (env -i PATH=/usr/bin:/bin HOME=$HOME DAQ_SIM_EVIDENCE=$DAQ_SIM_EVIDENCE PYTHONPATH=psdaq /usr/bin/python3 -m psdaq.sim.coverage | grep -E '^[0-9]+ rows|^(PASS|FAIL)'; echo "SYSTEM_PYTHON_EXIT=${PIPESTATUS[0]} ($(/usr/bin/python3 --version))")
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+SYSTEM_PYTHON_EXIT=1 (Python 3.9.21)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # Case 5: a copy of that evidence dir, its record rewritten as if made at another commit (base 2d9593bc5)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ bash $P/resha.sh $DAQ_SIM_EVIDENCE $P/r3/ev-other 2d9593bc59bf6abde81e3cc7c462a496628df179
+20261108T145924-cycle-c09b85d2f-725778.json: sha c09b85d2feecd4844ba95ae90064db18e9c9227b -> 2d9593bc59bf6abde81e3cc7c462a496628df179 (rows det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb; files still present: 9/9)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ DAQ_SIM_EVIDENCE=$P/r3/ev-other daq_sim coverage > $P/r3/cov-other.txt; echo COVERAGE_EXIT=$?; grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov-other.txt | grep -v '^  unproven:'
+COVERAGE_EXIT=1
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev-other (1 records)
+det:drp:fakecam                RUN       NO VALID EVIDENCE at HEAD c09b85d2f; rejected 20261108T145924-cycle-c09b85d2f-725778: recorded at 2d9593bc5, not at HEAD c09b85d2f
+prog:control                   RUN       NO VALID EVIDENCE at HEAD c09b85d2f; rejected 20261108T145924-cycle-c09b85d2f-725778: recorded at 2d9593bc5, not at HEAD c09b85d2f
+prog:drp                       RUN       NO VALID EVIDENCE at HEAD c09b85d2f; rejected 20261108T145924-cycle-c09b85d2f-725778: recorded at 2d9593bc5, not at HEAD c09b85d2f
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); NO VALID EVIDENCE at HEAD c09b85d2f; rejected 20261108T145924-cycle-c09b85d2f-725778: recorded at 2d9593bc5, not at HEAD c09b85d2f
+prog:teb                       RUN       NO VALID EVIDENCE at HEAD c09b85d2f; rejected 20261108T145924-cycle-c09b85d2f-725778: recorded at 2d9593bc5, not at HEAD c09b85d2f
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 5 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+  det:drp:fakecam: RUN row without valid evidence at HEAD c09b85d2f
+  prog:control: RUN row without valid evidence at HEAD c09b85d2f
+  prog:drp: RUN row without valid evidence at HEAD c09b85d2f
+  prog:pyxpm: STAND-IN row without valid evidence at HEAD c09b85d2f
+  prog:teb: RUN row without valid evidence at HEAD c09b85d2f
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ # Case 6: an empty evidence dir
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ mkdir -p $P/r3/ev-empty; echo "records in $P/r3/ev-empty: $(ls -A $P/r3/ev-empty | wc -l)"; DAQ_SIM_EVIDENCE=$P/r3/ev-empty daq_sim coverage > $P/r3/cov-empty.txt; echo COVERAGE_EXIT=$?; grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov-empty.txt | grep -v '^  unproven:'
+records in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev-empty: 0
+COVERAGE_EXIT=1
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/ev-empty (0 records)
+det:drp:fakecam                RUN       NO VALID EVIDENCE at HEAD c09b85d2f
+prog:control                   RUN       NO VALID EVIDENCE at HEAD c09b85d2f
+prog:drp                       RUN       NO VALID EVIDENCE at HEAD c09b85d2f
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); NO VALID EVIDENCE at HEAD c09b85d2f
+prog:teb                       RUN       NO VALID EVIDENCE at HEAD c09b85d2f
+78 rows, 4 run, 1 stand-in, 3 N/A, 70 unproven
+FAIL: 0 error(s), 5 RUN/STAND-IN row(s) without valid evidence, 70 unproven row(s)
+  det:drp:fakecam: RUN row without valid evidence at HEAD c09b85d2f
+  prog:control: RUN row without valid evidence at HEAD c09b85d2f
+  prog:drp: RUN row without valid evidence at HEAD c09b85d2f
+  prog:pyxpm: STAND-IN row without valid evidence at HEAD c09b85d2f
+  prog:teb: RUN row without valid evidence at HEAD c09b85d2f
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr32$ date '+%F %T %Z'; exit
+2026-11-08 14:59:56 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

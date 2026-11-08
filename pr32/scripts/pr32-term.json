@@ -1,0 +1,109 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p2/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan048",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "# Case 1, base 2d9593bc5 (agentify): there is no coverage module"
+ },
+ {
+  "send": "cd $R/wt-cov && git rev-parse HEAD && git log -1 --format='%s' && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "(source ./setup_env_daq.sh >/dev/null 2>&1; python -m psdaq.sim.coverage; echo COVERAGE_EXIT=$?; daq_sim coverage 2>&1 | tail -1 | cut -c1-120; echo \"DAQ_SIM_COVERAGE_EXIT=${PIPESTATUS[0]}\")"
+ },
+ {
+  "send": "# Case 2, head: the unit tests"
+ },
+ {
+  "send": "cd $R/wt-pr32 && git rev-parse HEAD && git log --format='%h %s' 2d9593bc5..HEAD && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py 2>&1 | tail -1",
+  "timeout": 600
+ },
+ {
+  "send": "# Case 3: a fresh work dir and an empty evidence dir; up, one recorded cycle, down"
+ },
+ {
+  "send": "export DAQ_SIM_EVIDENCE=$P/r3/ev WD=$P/r3/cyc; mkdir -p $DAQ_SIM_EVIDENCE; echo \"records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); $WD exists: $(test -e $WD && echo yes || echo no)\""
+ },
+ {
+  "send": "daq_sim up -w $WD --detach > $P/r3/up.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/r3/up.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $WD --events 1000 > $P/r3/cycle.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState running|NumL0Acc = |^  equal|cycle (PASS|FAIL)|evidence' $P/r3/cycle.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim down -w $WD > $P/r3/down.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/r3/down.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "ls $DAQ_SIM_EVIDENCE; python3 -c \"import json,glob; d=json.load(open(glob.glob('$DAQ_SIM_EVIDENCE/*.json')[0])); print('record: sha', d['sha'], 'host', d['host'], 'job', d['job_id'], 'files', len(d['files'])); print('rows', ' '.join(d['rows']))\""
+ },
+ {
+  "send": "# Case 4: daq_sim coverage with that evidence; all of its output, one page at a time"
+ },
+ {
+  "send": "daq_sim coverage > $P/r3/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/r3/cov.txt"
+ },
+ {
+  "send": "sed -n '1,37p' $P/r3/cov.txt | cut -c1-138"
+ },
+ {
+  "send": "sed -n '38,74p' $P/r3/cov.txt | cut -c1-138"
+ },
+ {
+  "send": "sed -n '75,$p' $P/r3/cov.txt | cut -c1-138"
+ },
+ {
+  "send": "grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov.txt | grep -v '^  unproven:'"
+ },
+ {
+  "send": "# 70 rows UNPROVEN is expected at this PR: later PRs add the runs that prove them, so the check still ends FAIL"
+ },
+ {
+  "send": "# The same check from daq_sim matrix, and without the DAQ env (the node's system python3, as RUNBOOK 3d says)"
+ },
+ {
+  "send": "daq_sim matrix > $P/r3/matrix.txt; echo MATRIX_EXIT=$?; grep -E '^[0-9]+ rows|^(PASS|FAIL)' $P/r3/matrix.txt"
+ },
+ {
+  "send": "(env -i PATH=/usr/bin:/bin HOME=$HOME DAQ_SIM_EVIDENCE=$DAQ_SIM_EVIDENCE PYTHONPATH=psdaq /usr/bin/python3 -m psdaq.sim.coverage | grep -E '^[0-9]+ rows|^(PASS|FAIL)'; echo \"SYSTEM_PYTHON_EXIT=${PIPESTATUS[0]} ($(/usr/bin/python3 --version))\")"
+ },
+ {
+  "send": "# Case 5: a copy of that evidence dir, its record rewritten as if made at another commit (base 2d9593bc5)"
+ },
+ {
+  "send": "bash $P/resha.sh $DAQ_SIM_EVIDENCE $P/r3/ev-other 2d9593bc59bf6abde81e3cc7c462a496628df179"
+ },
+ {
+  "send": "DAQ_SIM_EVIDENCE=$P/r3/ev-other daq_sim coverage > $P/r3/cov-other.txt; echo COVERAGE_EXIT=$?; grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov-other.txt | grep -v '^  unproven:'"
+ },
+ {
+  "send": "# Case 6: an empty evidence dir"
+ },
+ {
+  "send": "mkdir -p $P/r3/ev-empty; echo \"records in $P/r3/ev-empty: $(ls -A $P/r3/ev-empty | wc -l)\"; DAQ_SIM_EVIDENCE=$P/r3/ev-empty daq_sim coverage > $P/r3/cov-empty.txt; echo COVERAGE_EXIT=$?; grep -E '^(det:drp:fakecam|prog:(control|drp|teb|pyxpm)) |^evidence|^[0-9]+ rows|^(PASS|FAIL)|^  (det|prog):[A-Za-z_:]+: ' $P/r3/cov-empty.txt | grep -v '^  unproven:'"
+ },
+ {
+  "send": "date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

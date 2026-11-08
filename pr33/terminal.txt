@@ -1,0 +1,156 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-08T22:33:50+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p2/node_rc.sh -i
+cwang31@sdfmilan048:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan048
+2026-11-08 14:33:53 PST
+Slurm job 43839059 step 37
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan048:agentify-lcls2$ cd $R/wt-pr34 && git rev-parse HEAD && git log --format='%h %s' 2d9593bc5..HEAD && echo "local changes: $(git status --short | wc -l)"
+1c521c64f183174dd3f5bbb6199ef5da642001a5
+1c521c64f CHANGELOG: the parity PR is #33
+f296f2d4d CHANGELOG: parity against the simulated DAQ
+90959ca8f webgui parity: the walk decides built, every mapped row tested on the simulated DAQ
+local changes: 0
+cwang31@sdfmilan048:wt-pr34$ # What it changes, by directory: web GUI and sim code only; no hardware path, no compiled code
+cwang31@sdfmilan048:wt-pr34$ git diff --stat 2d9593bc5 HEAD | tail -1; git diff --name-only 2d9593bc5 HEAD | sed 's,/[^/]*$,,' | sort | uniq -c
+ 17 files changed, 799 insertions(+), 187 deletions(-)
+      1 CHANGELOG.md
+      2 psdaq/psdaq/sim
+      1 psdaq/psdaq/webgui
+      3 psdaq/psdaq/webgui/parity
+      1 psdaq/psdaq/webgui/parity/mapping.d
+      9 psdaq/psdaq/webgui/tests
+cwang31@sdfmilan048:wt-pr34$ # install/ was built before the commit (which changes only Python), so this checkout's psdaq goes first on PYTHONPATH
+cwang31@sdfmilan048:wt-pr34$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import psdaq.sim.daq_sim as m; print("DAQ env", m.sys.version.split()[0], m.__file__)'
+DAQ env 3.9.21 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-pr34/psdaq/psdaq/sim/daq_sim.py
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # 1. The simulated DAQ with two fakecam segments, and the whole web GUI suite against it
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ WD=$P/sim2; daq_sim up -w $WD --segments 2 --detach > $WD.up.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $WD.up.log | cut -c1-138; daq_sim status -w $WD | grep -E '^  (control|teb0|fakecam_[01]) '
+UP_EXIT=0
+2026-11-08T14:34:32.183-08:00 daq_sim: preflight rc=0: 14:34:32 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T14:34:41.723-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  control    pid 663180   RUNNING
+  teb0       pid 663181   RUNNING
+  fakecam_0  pid 663182   RUNNING
+  fakecam_1  pid 663183   RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log
+
+real	5m5.489s
+user	1m13.674s
+sys	0m11.444s
+SUITE_EXIT=0
+203 passed, 1 skipped, 205 warnings in 298.29s (0:04:58)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ python3 $P/junit_backends.py $P/sim.junit.xml
+sim.junit.xml: [chromium] testcases by (status, backend): {('passed', 'emulator'): 8, ('passed', 'sim-daq'): 28, ('skipped', 'none'): 1}
+  parity rows tagged by passing-or-not [chromium] tests, by backend: {'sim-daq': 65, 'emulator': 0, 'none': 0}
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # 2. The parity check, with a fresh offscreen PyQt walk
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Not applicable|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138
+PARITY_EXIT=0
+157 controls found, 65 mapped to a web element with a passing headless-browser test, 92 marked not applicable
+N = 157, M = 65, K = 92, M + K = 157
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+Not applicable (92 rows; main-block 72, module-unreachable 6, method-not-live 4, fallback-branch 1, hidden 7, inert 2): id | loc | enumera
+Unmapped (0 rows): id | loc | kind | label
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+RESULT: PASS (M + K = N = 157)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ grep -E '^  CGWMainTab(s\.tab_bar|User\.but_(play|record|stop)) ' $P/parity.txt
+  CGWMainTabUser.but_play | control_gui/CGWMainTabUser.py:190 | unreachable:module-unreachable | not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out) | walk agree: line control_gui/CGWMainTabUser.py:190 never ran; module psdaq.control_gui.CGWMainTabUser not imported
+  CGWMainTabUser.but_record | control_gui/CGWMainTabUser.py:191 | unreachable:module-unreachable | not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out) | walk agree: line control_gui/CGWMainTabUser.py:191 never ran; module psdaq.control_gui.CGWMainTabUser not imported
+  CGWMainTabUser.but_stop | control_gui/CGWMainTabUser.py:192 | unreachable:module-unreachable | not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out) | walk agree: line control_gui/CGWMainTabUser.py:192 never ran; module psdaq.control_gui.CGWMainTabUser not imported
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # One walk saved to a file, used by every check below (same walk)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ mkdir -p $P/walk; python -m psdaq.webgui.parity.qt_walk --out $P/walk/walk.json > $P/walk/walk.log 2>&1; echo WALK_EXIT=$?; python -m psdaq.webgui.parity.qt_walk --reconcile $P/walk/walk.json | head -1
+WALK_EXIT=0
+walk /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/walk/walk.json (12.9), source digest matches
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-pr34/psdaq/psdaq/webgui/parity/qt_walk.py", line 827, in <module>
+    sys.exit(main())
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-pr34/psdaq/psdaq/webgui/parity/qt_walk.py", line 820, in main
+    print('%s | %s | %s | %s | %s' % (r['id'], r['kind'], fl, v, obs))
+BrokenPipeError: [Errno 32] Broken pipe
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # 3. Negative: one mapping removed from a scratch copy of mapping.d
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ bash $P/minus_mapping.sh $P/sim.junit.xml $P/walk/walk.json $P/minus
+removed CGWMainControl.box_state from the copy mapping.d/mainwindow.json: {'test': 'test_webgui_ui.py::test_full_cycle[chromium]', 'web': '[data-parity~="CGWMainControl.box_state"]'}
+PARITY_MINUS_EXIT=1
+157 controls found, 64 mapped to a web element with a passing headless-browser test, 92 marked not applicable
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+Unmapped (1 rows): id | loc | kind | label
+  CGWMainControl.box_state | control_gui/CGWMainControl.py:65 | combo | items: self.states = ['Select'] + [s.upper() for s in ControlDef.states]
+RESULT: FAIL: M + K = 156 != N = 157 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: CGWMainControl.box_state
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # 4. Negative: one test switched to the emulator, in a scratch copy; its test file rerun against the sim DAQ
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ bash $P/emu_switch.sh $WD $P/sim.junit.xml $P/walk/walk.json $P/emu
+scratch copy /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/emu/psdaq/psdaq/webgui/tests (the checkout is not changed):
+@@ -309,7 +309,8 @@
+     expect(bar).to_be_hidden(timeout=T)
+ 
+ 
+-def test_refresh_buttons(page, server):
++def test_refresh_buttons(page, emu_server):
++    server = emu_server    # NEGATIVE CHECK: the emulator
+rerun of test_webgui_ui.py on the copy: PYTEST_EXIT=0, 11 passed, 12 warnings in 51.09s
+  test_webgui_ui::test_refresh_buttons[chromium]  passed  [('parity', 'CGWMainControl.but_transition'), ('parity', 'CGWMainControl.but_ctrls'), ('backend', 'emulator')]
+junit_swap: 11 testcase(s) of sim.junit.xml replaced by their run in ui.junit.xml; 0 not in the base -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/emu/swapped.junit.xml
+PARITY_EMU_EXIT=1
+157 controls found, 63 mapped to a web element with a passing headless-browser test, 92 marked not applicable
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (2 rows): id | test | status
+  CGWMainControl.but_transition | test_webgui_ui.py::test_refresh_buttons[chromium] | backend emulator, not sim-daq
+  CGWMainControl.but_ctrls | test_webgui_ui.py::test_refresh_buttons[chromium] | backend emulator, not sim-daq
+RESULT: FAIL: M + K = 155 != N = 157 (0 unmapped, 0 not built, 2 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: CGWMainControl.but_transition, CGWMainControl.but_ctrls
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T14:41:58.108-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # 5. Before and after. Before: base 2d9593bc5's own suite and check, on the same walk
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ (cd $R/wt-cov && source ./setup_env_daq.sh >/dev/null 2>&1 && git rev-parse HEAD && bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/base.junit.xml > $P/base-suite.log 2>&1; echo BASE_SUITE_EXIT=$?; tail -1 $P/base-suite.log)
+2d9593bc59bf6abde81e3cc7c462a496628df179
+BASE_SUITE_EXIT=0
+200 passed, 1 skipped, 202 warnings in 169.10s (0:02:49)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ (cd $R/wt-cov && source ./setup_env_daq.sh >/dev/null 2>&1 && python -m psdaq.webgui.parity.check_parity --junit $P/base.junit.xml --walk $P/walk/walk.json > $P/base-parity.txt 2>&1; echo BASE_PARITY_EXIT=$?; grep -E 'controls found|^walk|^RESULT' $P/base-parity.txt | cut -c1-138; python $P/rows5.py $P/base.junit.xml $P/walk/walk.json)
+BASE_PARITY_EXIT=0
+157 controls found, 70 mapped to a web element with a passing headless-browser test, 87 marked not applicable
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+RESULT: PASS (M + K = N = 157)
+check_parity wt-cov/install/lib/python3.9/site-packages/psdaq/webgui/parity/check_parity.py, mapping wt-cov/install/lib/python3.9/site-packages/psdaq/webgui/parity/mapping.json
+  N = 157, M = 70, K = 87, ok True
+  CGWMainTabs.tab_bar.user    MAPPED (counted in M) by test_tab_bar_user_and_expert[chromium]
+  CGWMainTabs.tab_bar.expert  MAPPED (counted in M) by test_tab_bar_user_and_expert[chromium]
+  CGWMainTabUser.but_play     MAPPED (counted in M) by test_user_tab_play_stop_record[chromium]
+  CGWMainTabUser.but_record   MAPPED (counted in M) by test_user_tab_play_stop_record[chromium]
+  CGWMainTabUser.but_stop     MAPPED (counted in M) by test_user_tab_play_stop_record[chromium]
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ # After: this PR's check on the same walk, with its own mapping, then with the base's mapping
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ python $P/rows5.py $P/sim.junit.xml $P/walk/walk.json
+check_parity wt-pr34/psdaq/psdaq/webgui/parity/check_parity.py, mapping wt-pr34/psdaq/psdaq/webgui/parity/mapping.json
+  N = 157, M = 65, K = 92, ok True
+  CGWMainTabs.tab_bar.user    not applicable (K): not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)
+  CGWMainTabs.tab_bar.expert  not applicable (K): not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)
+  CGWMainTabUser.but_play     not applicable (K): not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)
+  CGWMainTabUser.but_record   not applicable (K): not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)
+  CGWMainTabUser.but_stop     not applicable (K): not built by the running GUI (control_gui/CGWMain.py:43/:78 commented out)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ bash $P/basemap.sh $P/sim.junit.xml $P/walk/walk.json $P/basemap
+mapping: copy of 2d9593bc5:psdaq/psdaq/webgui/parity (mapping.json + mapping.d/)
+PARITY_BASEMAP_EXIT=1
+157 controls found, 65 mapped to a web element with a passing headless-browser test, 87 marked not applicable
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+  CGWMainTabUser.hbox_test@1 | control_gui/CGWMainTabUser.py:333 | unreachable:main-block | test harness: under control_gui/CGWMainTabUser.py:297 `if __name__ == "__main__":` (row at control_gui/CGWMainTabUser.py:333); never runs 
+  CGWMainTabs.keyPressEvent.escape | control_gui/CGWMainTabs.py:254 | unreachable:main-block | test harness: under control_gui/CGWMainTabs.py:251 `if __name__ == "__main__":` (row at control_gui/CGWMainTabs.py:254); never runs whe
+  CGWMainTabs.keyPressEvent.v | control_gui/CGWMainTabs.py:257 | unreachable:main-block | test harness: under control_gui/CGWMainTabs.py:251 `if __name__ == "__main__":` (row at control_gui/CGWMainTabs.py:257); never runs when con
+  CGWMainTabs.gui_win | control_gui/CGWMainTabs.py:156 | unreachable:module-unreachable | fallback window: QTextEdit("Default window for tab ...") at control_gui/CGWMainTabs.py:156 is the else of tab_name == "Expert" / "User" (CGW
+Mapped but not built by the running PyQt GUI, per the walk (5 rows, not counted): id | loc | walk
+  CGWMainTabUser.but_play | control_gui/CGWMainTabUser.py:190 | module psdaq.control_gui.CGWMainTabUser NOT imported by the running GUI; line control_gui/CGWMainTabUser.py:190 NEVER ran in the running GUI (ran only when built stan
+  CGWMainTabUser.but_record | control_gui/CGWMainTabUser.py:191 | module psdaq.control_gui.CGWMainTabUser NOT imported by the running GUI; line control_gui/CGWMainTabUser.py:191 NEVER ran in the running GUI (ran only when built st
+  CGWMainTabUser.but_stop | control_gui/CGWMainTabUser.py:192 | module psdaq.control_gui.CGWMainTabUser NOT imported by the running GUI; line control_gui/CGWMainTabUser.py:192 NEVER ran in the running GUI (ran only when built stan
+  CGWMainTabs.tab_bar.expert | control_gui/CGWMainTabs.py:116 | module psdaq.control_gui.CGWMainTabs NOT imported by the running GUI; line control_gui/CGWMainTabs.py:116 NEVER ran in the running GUI (ran only when built standalone
+  CGWMainTabs.tab_bar.user | control_gui/CGWMainTabs.py:116 | module psdaq.control_gui.CGWMainTabs NOT imported by the running GUI; line control_gui/CGWMainTabs.py:116 NEVER ran in the running GUI (ran only when built standalone i
+RESULT: FAIL: M + K = 152 != N = 157 (0 unmapped, 5 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); 5 mapped rows not built by the running GUI; rows: CGWMainTabUser.but_play, CGWMainTabUser.but_record, CGWMa
+(daq_20250402_r9) cwang31@sdfmilan048:wt-pr34$ date '+%F %T %Z'; exit
+2026-11-08 14:45:38 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

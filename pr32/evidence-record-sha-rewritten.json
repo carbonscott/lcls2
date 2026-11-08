@@ -1,0 +1,49 @@
+{
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 825360,
+  "TEB_EvtCt": 1974,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1974,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1974,
+  "psana2 seeds": {
+   "0x1234": 1974
+  },
+  "psana2 seq": "1..1974",
+  "psana2 with data": 1974,
+  "simxpm NumL0Acc": 1974,
+  "simxpm NumL0Inp": 1974,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (825408 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-08T14:59:24-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/pmlogs/2026/11/08_14:59:03_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/pmlogs/2026/11/08_14:59:03_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p2/r3/cyc/pmlogs/2026/11/08_14:59:03_sdfmilan048:fakecam_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:fakecam",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "2d9593bc59bf6abde81e3cc7c462a496628df179",
+ "started": "2026-11-08T14:59:10.331-08:00"
+}

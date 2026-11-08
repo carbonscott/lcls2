@@ -1,0 +1,4 @@
+rec/pr34-web/actions.jsonl: 16 actions
+  min(act_time - highlight_start) = 1.201 s  (at: Click Select: open the partition selection)
+  min gap between consecutive act_times = 2.702 s  (before: Choose ALLOCATED in the state box)
+ACTIONS=16  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.702 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)

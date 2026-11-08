@@ -1,0 +1,48 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/p2/up_web.sh web3",
+  "expect": "UP_EXIT=\\d+|rror|exists",
+  "timeout": 400,
+  "fail": "UP_EXIT=[1-9]|rror|exists"
+ },
+ {
+  "send": "ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p2'"
+ },
+ {
+  "send": "ssh -f -S none -L 31053:/tmp/cwang31-p2/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p2/webgui.sock:127.0.0.1:31053 sdfmilan048'",
+  "timeout": 60
+ },
+ {
+  "send": "sleep 3; curl -s -o /dev/null -w 'GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\\n' http://127.0.0.1:31053/; curl -s http://127.0.0.1:31053/api/status | cut -c1-200; echo"
+ },
+ {
+  "send": "./pwvenv/bin/python paced_drive.py http://127.0.0.1:31053/ rec/pr34-web --events 1100",
+  "expect": "ACTIONS=|Error|Traceback",
+  "timeout": 900,
+  "fail": "Traceback|ALL_STATES_OK=False"
+ },
+ {
+  "send": "./pwvenv/bin/python pace_check.py rec/pr34-web/actions.jsonl"
+ },
+ {
+  "send": "N=$(python3 -c \"import json;print(json.load(open('rec/pr34-web/result.json'))['events_after_reset'])\"); echo \"page count after Disable and RESET: $N\""
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/p2/readback_web.sh web3 $N",
+  "expect": "PASS|FAIL|usage",
+  "timeout": 400
+ },
+ {
+  "send": "ssh sdfiana025 $R/redo/p2/down_web.sh web3",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300,
+  "always": true
+ },
+ {
+  "send": "pkill -f '^ssh .*-L 31053:/tmp/cwang31-p2'; ssh sdfiana025 \"pkill -u \\$USER -f '^ssh -N .*cwang31-p2/webgui.sock'\"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'",
+  "always": true
+ }
+]
