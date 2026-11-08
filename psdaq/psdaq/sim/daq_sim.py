@@ -1,8 +1,9 @@
 """daq_sim: bring up, check, drive and take down the hardware-free lcls2 DAQ on one node.
 
-    daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--detach]
+    daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--webgui] [--detach]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
+    daq_sim e2e    [-w WORKDIR] [--events N] [--break kill-drp] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
 
 'up' starts, in this order and all on this node:
@@ -11,7 +12,10 @@
   2. the config DB stand-in (configdb_server), seeded by configdb_seed,
   3. the run DB / eLog stand-in (lgbk_server),
   4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
-  5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://.
+  5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://,
+  6. with --webgui, the web GUI (daq_webgui) on 127.0.0.1:<block +3>: the real DaqControl
+     backend against this platform's control, and the events counter read from simxpm's
+     NumL0Acc PV over PV Access.
 It prints every endpoint and stays in the foreground until Ctrl-C or SIGTERM, then takes
 everything down: a Slurm step kills its processes when the step's main process exits, so the
 foreground process is what keeps the DAQ alive.  '--detach' returns once everything is up
@@ -22,9 +26,12 @@ caRepeater that libca spawns); then it checks that the ports are free.
 'cycle' drives one run with the same client the GUIs use (psdaq.control.DaqControl), one
 state at a time, reads every state back, waits for --events L1Accepts and goes back to the
 state it started from.  It exits nonzero on any failure.
+'e2e' is the end-to-end test: the same run driven through the web GUI by a headless browser
+(psdaq.webgui.e2e); it brings the DAQ up with --webgui unless it is up already, checks
+every state and count itself, prints E2E PASS or E2E FAIL and the exit code says which.
 
 Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
-  +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 reserved (web GUI)
+  +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
 EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
@@ -265,6 +272,8 @@ def cmd_up(args):
                    f'run daq_sim down -w {work.dir}')
     P = ports(args.platform)
     want = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(args.platform)
+    if getattr(args, 'webgui', False):
+        want.append(P['webgui'])
     busy = [p for p in want if port_busy(p)]
     if busy:
         raise Fail(f'ports already in use: {busy}')
@@ -363,6 +372,8 @@ def cmd_up(args):
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
+        if getattr(args, 'webgui', False):
+            start_webgui(work, state, env)
     except BaseException as e:
         say(f'up FAILED: {e}')
         teardown(work, quiet=False)
@@ -403,6 +414,42 @@ def cmd_up(args):
     return 0 if teardown(work) else 1
 
 
+def webgui_url(state):
+    return f'http://127.0.0.1:{state["ports"]["webgui"]}/'
+
+
+def count_pv(platform, label='NumL0Acc'):
+    """simxpm's partition counter, named as pyxpm names it: <pvbase>:XPM:<xpm>:PART:<group>:<label>."""
+    return f'{PVBASE}:XPM:{XPM}:PART:{platform}:{label}'
+
+
+def start_webgui(work, state, env):
+    """The web GUI on 127.0.0.1:<block +3>: real DaqControl backend, events = simxpm NumL0Acc (PVA)."""
+    P = state['ports']
+    argv = [sys.executable, '-m', 'psdaq.webgui.server', '--bind', '127.0.0.1', '--port', str(P['webgui']),
+            '-p', str(state['platform']), '-H', '127.0.0.1',
+            '--configdb-url', f'http://127.0.0.1:{P["configdb"]}/ws/', '--configdb-root', 'configDB',
+            '--events-source', 'pva', '--events-pv', count_pv(state['platform'])]
+    say('web GUI:', ' '.join(argv[1:]))
+    p = start_service(work, state, 'webgui', argv, env)
+    wait_listen(P['webgui'], 60, p, 'daq_webgui')
+    import urllib.request
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    end = time.monotonic() + 30
+    while True:                         # The page and the API answer, and the server reached control
+        try:
+            st = json.loads(opener.open(webgui_url(state) + 'api/status', timeout=5).read())
+            if st.get('state'):
+                break
+        except (OSError, ValueError):
+            pass
+        if time.monotonic() > end or p.poll() is not None:
+            raise Fail('daq_webgui does not answer /api/status (logs/webgui.log)')
+        time.sleep(0.5)
+    say(f'web GUI up: {webgui_url(state)} (pid {p.pid}) control state {st.get("state")}')
+    return p
+
+
 def _wait_running(state, timeout):
     end = time.monotonic() + timeout
     while True:
@@ -437,8 +484,10 @@ def _endpoints(state):
         'procmgr': f'{state["workdir"]}/{state["cnf"]}  pids {state.get("procs")}  logs {state["workdir"]}/pmlogs',
         'data': f'{state["workdir"]}/data  (xtc2 written when recording)',
         'prometheus': f'{state["workdir"]}/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)',
-        'webgui': f'reserved port {P["webgui"]}',
-        'drive': f'daq_sim cycle -w {state["workdir"]} --events 1000',
+        'webgui': (f'{webgui_url(state)}  (pid {state["services"]["webgui"]["pid"]}; from your machine: '
+                   f'ssh -L {P["webgui"]}:127.0.0.1:{P["webgui"]} <node>, via the login host)'
+                   if 'webgui' in state['services'] else f'port {P["webgui"]} (not started: up --webgui)'),
+        'drive': f'daq_sim cycle -w {state["workdir"]} --events 1000   or   daq_sim e2e -w {state["workdir"]}',
         'stop': f'Ctrl-C the up process, or daq_sim down -w {state["workdir"]}',
     }
 
@@ -474,6 +523,9 @@ def teardown(work, quiet=False):
     state['down'] = 'in progress'
     if 'workdir' in state:
         work.save(state)
+    svc = state['services'].get('webgui')   # First: it holds DaqControl sockets to control
+    if svc:
+        _kill(svc['pid'], 'webgui', quiet)
     if state.get('procmgr_started'):
         say('procmgr stop', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
@@ -494,6 +546,8 @@ def teardown(work, quiet=False):
     if state.get('platform') is not None:
         P = state['ports']
         check = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(state['platform'])
+        if 'webgui' in state['services']:
+            check.append(P['webgui'])
         busy = [p for p in check if port_busy(p)]
         if busy:
             ok = False
@@ -590,6 +644,17 @@ def cmd_status(args):
     except Exception as e:
         ok = False
         print(f'  control    error: {e}')
+    if 'webgui' in state['services']:
+        import urllib.request
+        try:
+            opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+            st = json.loads(opener.open(webgui_url(state) + 'api/status', timeout=5).read())
+            ev = json.loads(opener.open(webgui_url(state) + 'api/events', timeout=5).read())
+            print(f'  webgui     {webgui_url(state)} state {st.get("state")}  events {ev.get("events")} '
+                  f'(source {ev.get("source")}, final {ev.get("final")})')
+        except (OSError, ValueError) as e:
+            ok = False
+            print(f'  webgui     {webgui_url(state)} error: {e}')
     g = state['platform']
     for pv in ('NumL0Acc', 'NumL0Inp'):
         print(f'  simxpm     PART:{g}:{pv} = {pv_get(f"{PVBASE}:XPM:{XPM}:PART:{g}:{pv}")}')
@@ -789,27 +854,49 @@ def main(argv=None):
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument('-w', '--workdir', default=os.environ.get('DAQ_SIM_WORKDIR_DEFAULT', 'daq_sim_work'),
                         help='work dir for state, logs, data (default ./%(default)s)')
-    up = sub.add_parser('up', parents=[common], help='start everything (foreground)')
-    up.add_argument('-p', '--platform', type=int, default=5, choices=range(8))
-    up.add_argument('--rate', type=float, default=1000., help='L1Accept rate, Hz (default %(default)g)')
-    up.add_argument('--seed', type=lambda s: int(s, 0), default=0x1234,
-                    help='sim_seed stored in the config DB (default %(default)#x)')
-    up.add_argument('--length', type=int, default=64, help='payload words per event (default %(default)d)')
-    up.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
-                    help='control -S slow update rate, Hz (default %(default)d)')
+    upopts = argparse.ArgumentParser(add_help=False)
+    upopts.add_argument('-p', '--platform', type=int, default=5, choices=range(8))
+    upopts.add_argument('--rate', type=float, default=1000., help='L1Accept rate, Hz (default %(default)g)')
+    upopts.add_argument('--seed', type=lambda s: int(s, 0), default=0x1234,
+                        help='sim_seed stored in the config DB (default %(default)#x)')
+    upopts.add_argument('--length', type=int, default=64, help='payload words per event (default %(default)d)')
+    upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
+                        help='control -S slow update rate, Hz (default %(default)d)')
+    upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
+    upopts.add_argument('--any-host', action='store_true', help='allow an interactive node')
+    upopts.add_argument('-v', '--verbose', action='store_true', help='teb and drp with -v')
+    up = sub.add_parser('up', parents=[common, upopts], help='start everything (foreground)')
+    up.add_argument('--webgui', action='store_true',
+                    help='also start the web GUI on 127.0.0.1:<port block +3> (real DaqControl backend)')
     up.add_argument('--detach', action='store_true', help='return once up instead of staying in the foreground')
-    up.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
-    up.add_argument('--any-host', action='store_true', help='allow an interactive node')
-    up.add_argument('-v', '--verbose', action='store_true', help='teb and drp with -v')
     sub.add_parser('down', parents=[common], help='stop what up started; check ports')
     sub.add_parser('status', parents=[common], help='show processes, control state, counts')
     cy = sub.add_parser('cycle', parents=[common], help='drive one run up to running and back')
     cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
     cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
     cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+    e2e = sub.add_parser('e2e', parents=[common, upopts],
+                         help='end-to-end test: a headless browser drives one run through the web GUI')
+    e2e.add_argument('--events', type=int, default=1000,
+                     help='L1Accepts the run must record (default %(default)d); the test waits for 10%% more')
+    e2e.add_argument('--break', dest='breakage', choices=('kill-drp',), default=None,
+                     help='kill-drp: SIGKILL the DRP once RUNNING (the test must then fail)')
+    e2e.add_argument('--browser-python', default=None,
+                     help='python of the Playwright venv (default $DAQ_SIM_BROWSER_PYTHON, else '
+                          '$AGENTIFY_WEBTEST/venv/bin/python)')
+    e2e.add_argument('--browsers-path', default=None,
+                     help='PLAYWRIGHT_BROWSERS_PATH (default: $PLAYWRIGHT_BROWSERS_PATH, else <venv>/../browsers)')
+    e2e.add_argument('--keep-up', action='store_true',
+                     help='do not take the DAQ down at the end (if e2e brought it up, it then stays in the '
+                          'foreground, like up)')
+    e2e.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+    e2e.add_argument('--shots', default=None, help='screenshot dir (default <workdir>/e2e-shots)')
     args = parser.parse_args(argv)
     ensure_env(argv)
     try:
+        if args.command == 'e2e':
+            from psdaq.webgui.e2e import cmd_e2e
+            return cmd_e2e(args)
         return {'up': cmd_up, 'down': cmd_down, 'status': cmd_status, 'cycle': cmd_cycle}[args.command](args)
     except Fail as e:
         print(f'daq_sim {args.command}: {e}', file=sys.stderr, flush=True)

@@ -5,13 +5,15 @@ simulated timing source (`simxpm`, which stands in for the XPM), one simulated d
 (`drp -D fakecam -d sim://`), the TEB and the DRP's file writer. procmgr and control.py
 (normal mode) run it, as they do in a hutch. The config DB and the run DB (eLog) are
 campaign-local stand-ins on 127.0.0.1. Then it reads the xtc2 file back with psana2 and
-takes everything down.
+takes everything down. The same run can be driven through the web control GUI
+(`psdaq/psdaq/webgui`), by hand in a browser (§3b) or unattended by a headless browser with
+one command, `daq_sim e2e` (§3c).
 
 Everything in `psdaq/psdaq/sim/`:
 
 | file | role |
 |---|---|
-| `daq_sim.py` (console script `daq_sim`) | `up` / `status` / `cycle` / `down`: the one command |
+| `daq_sim.py` (console script `daq_sim`) | `up` / `status` / `cycle` / `e2e` / `down`: the one command |
 | `sim_env.sh` | Isolation env. EPICS CA and PVA stay on loopback, on ports 15064/15065/15075/15076. HTTP(S) goes to a dead proxy at `http://127.0.0.1:9`. Production credentials are emptied. `FI_PROVIDER=tcp`. `daq_sim` sources it itself. |
 | `preflight.sh` | Fail-closed check that `daq_sim up` runs first. It must print `PREFLIGHT PASS`. |
 | `configdb_server.py`, `configdb_seed.py` | Config DB stand-in, seeded with `tst/BEAM/tmoteb_0` (persistValue 0xdeadbeef) and `tst/BEAM/fakecam_0` (`user.sim_seed`). |
@@ -19,6 +21,8 @@ Everything in `psdaq/psdaq/sim/`:
 | `simxpm.py` | Software XPM: the pyxpm PVs over PVA, timing frames to `sim://` DRPs, and the `control -X` PULL receiver. |
 | `xtc2_check.py` | psana2 read-back with a per-event payload check. |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
+| `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
+| `../webgui/e2e.py`, `../webgui/e2e_browser.py` | `daq_sim e2e`: the checks (DAQ env), and the headless-browser driver (Playwright venv). |
 
 ## 0. Rules
 - **Where processes run.**
@@ -77,6 +81,7 @@ Options:
 | `--length <words>` | Payload words per event; default 64. |
 | `-S <Hz>` | control's SlowUpdate rate; default 1. |
 | `-v` | Run teb and drp with -v. |
+| `--webgui` | Also start the web GUI on 127.0.0.1:31000+10p+3 (31053), see §3b. |
 
 If anything fails, `up` prints the reason, takes down what it started, and exits 1.
 
@@ -87,7 +92,7 @@ Ports for platform p; p = 5 gives the values in brackets:
 | 31000+10p (31050) | config DB stand-in |
 | +1 (31051) | run DB stand-in |
 | +2 (31052) | simxpm frames |
-| +3 (31053) | reserved for the web GUI |
+| +3 (31053) | web GUI (`up --webgui`), 127.0.0.1 only |
 | 29985-30045 | control ZMQ |
 | 29502- | procServ |
 | 30050 | `control -X` → simxpm PULL |
@@ -132,6 +137,105 @@ CYCLE_EXIT=0
 
 To drive by hand, use `daqstate -p 5 -P tst -C localhost --state <state>` (`--record 1` before beginrun). **daqstate exits 0 even when a transition fails**, because control answers setstate before it runs the transition. Always read the state back (`daqstate -p 5 -P tst -C localhost`) and check `$WD/pmlogs/*/*/*control.log`.
 
+## 3b. The web GUI (by hand)
+Bring the DAQ up with the web GUI: add `--webgui` to the `daq_sim up` line of §2. `up` then
+starts `daq_webgui` after control answers `reset`, and prints
+```
+daq_sim: web GUI up: http://127.0.0.1:31053/ (pid <pid>) control state reset
+...
+  webgui       http://127.0.0.1:31053/  (pid <pid>; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+```
+What it runs (logs in `$WD/logs/webgui.log`):
+- the real `psdaq.control.DaqControl` backend against this platform's control (`-p 5 -H 127.0.0.1`);
+- aliases from the config DB stand-in (`--configdb-url http://127.0.0.1:31050/ws/`);
+- the **events** number = simxpm's accepted-L1 counter `DAQ:SIM:XPM:0:PART:5:NumL0Acc`, read over
+  PV Access (`--events-source pva`; the PV is `<pvbase>:XPM:<xpm>:PART:<platform>:NumL0Acc`, as
+  pyxpm names it). The server refuses to start (exit 2) unless `EPICS_PVA_AUTO_ADDR_LIST=NO` and
+  `EPICS_PVA_ADDR_LIST` holds loopback addresses only; `sim_env.sh` sets both. Drops =
+  NumL0Inp - NumL0Acc. After a run is disabled, the number becomes final (`data-final="1"` on
+  `#edi_evt`) and stays on the page through EndRun, Unconfigure and Reset, until the next
+  Configure/BeginRun.
+
+It listens on 127.0.0.1 of the node only. To open it from your own machine, tunnel to the node
+that holds the job (S3DF lets you ssh to a compute node only while you have a job on it; this
+tunnel was not tested in this campaign):
+```bash
+ssh -L 31053:127.0.0.1:31053 -J <you>@s3dflogin.slac.stanford.edu <you>@<node>     # e.g. <node>=sdfmilan119
+# then browse http://127.0.0.1:31053/
+```
+In the page: **Select** (rollcall) → tick processes → **Apply** (allocated) → **recording** on →
+target state CONNECTED, CONFIGURED, ... RUNNING (one at a time), and back down to ALLOCATED and
+RESET (the target-state box is disabled in UNALLOCATED, as in the PyQt GUI). `daq_sim down`
+stops the web GUI first.
+
+## 3c. One command: the end-to-end test (`daq_sim e2e`)
+```bash
+srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim e2e -w $ROOT/e2e_run --events 1000; echo E2E_EXIT=\$?"
+```
+This is a step of its own; it brings the DAQ up in `-w` and takes it down again. To test a DAQ
+that is already up from §2 with `--webgui`, run the same line with `srun --overlap` and that
+DAQ's `-w $WD` (it is then left up only if you add `--keep-up`).
+
+It needs the browser venv below (`--browser-python`, default `$DAQ_SIM_BROWSER_PYTHON`, else
+`$AGENTIFY_WEBTEST/venv/bin/python`, else `/sdf/scratch/users/<u>/<you>/agentify-webtest/venv/bin/python`;
+chromium from `--browsers-path`, default `$PLAYWRIGHT_BROWSERS_PATH`, else `<venv>/../browsers`), and
+says so and exits 1 before starting anything if it is missing.
+
+What it does, unattended (about 1 minute):
+1. checks the browser venv; prints the host, Slurm job, `git rev-parse HEAD` of the current
+   directory and `ls /dev/datadev* /dev/pcie_adc* /dev/tpr*`;
+2. `daq_sim up --webgui --detach` in `-w` (preflight first), or uses the DAQ already up there
+   (then it requires that up's `logs/preflight.log` to end in `PREFLIGHT PASS`) and must find
+   control in `reset`;
+3. a headless chromium (`e2e_browser.py`, run by the venv's python) clicks, as a user would:
+   Select, Apply, recording on, CONNECTED, CONFIGURED, STARTING, PAUSED, RUNNING; then, after the
+   checks, PAUSED, STARTING, CONFIGURED, CONNECTED, ALLOCATED, RESET. The driver only clicks
+   and prints what the page shows (`DRV {...}` and `DOM ...` lines);
+4. the checks, all in the `daq_sim` process with its own reads: (1) its own PV read of
+   NumL0Acc reaches `--events` × 1.1 before it clicks down from RUNNING; (2) its own
+   `DaqControl.getState` returns every clicked state, printed as
+   `<STATE> clicked <iso ms> reported <iso ms>`, with no error on control's status stream and no
+   KeyError in the control log; (3) after Disable `#edi_evt` has `data-final="1"`, a `data-ts`
+   later than the Disable, and two equal readings; (4) the number is `^\d+$`; (5) the page still
+   shows it after RESET; (6) page == `TEB_WrtCt` (Prometheus, in CONFIGURED) == psana2 events ==
+   psana2 events with fakecam data ≥ `--events`, page == its own NumL0Acc read after Disable, and
+   the run number on the page is control's;
+5. `daq_sim down` (unless `--keep-up`), then the table.
+
+Expected end (N about 1900-2200 at 1 kHz):
+```
+assertions:
+  1 PASS  own NumL0Acc read <n> >= 1100 while RUNNING, before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported <t>): data-final 1,1; data-ts <t'> > Disable; readings at ...: 'N' == 'N'; source pva
+  4 PASS  page events 'N' parse as ^\d+$
+  5 PASS  after RESET the page shows 'N' (data-final 1), after Disable it showed 'N'
+  6 PASS  page N == TEB_WrtCt N == psana2 events N == with data N >= 1000: True; page == own NumL0Acc after Disable N: True; psana2 checks PASS; run 1 (page 1)
+E2E PASS
+E2E_EXIT=0
+```
+On any failed check it prints `E2E FAIL: assertion <k>: <why>` per failure, then `E2E FAIL`, and exits 1.
+To see it fail, `--break kill-drp` SIGKILLs the DRP once RUNNING: the count stalls (about
+1080 < 1100: assertion 1) and Disable never completes (assertion 2: `PAUSED: control getState
+-> 'running' after 60 s`); it takes about 2.5 minutes. Screenshots go to `$WD/e2e-shots/`, the
+driver's stderr to `$WD/logs/e2e-driver.log`.
+
+### The browser venv (once, on sdfiana025: it needs the internet; compute nodes have none)
+```bash
+export XDG_CACHE_HOME=/sdf/scratch/users/${USER:0:1}/$USER/.cache UV_CACHE_DIR=/sdf/scratch/users/${USER:0:1}/$USER/.uv-cache
+W=/sdf/scratch/users/${USER:0:1}/$USER/agentify-webtest          # any shared directory
+export PLAYWRIGHT_BROWSERS_PATH=$W/browsers
+uv venv --python 3.12 $W/venv
+uv pip install --python $W/venv/bin/python playwright pytest-playwright
+$W/venv/bin/playwright install chromium                          # into $W/browsers, about 600 MB
+```
+The run then needs no internet. Pass `--browser-python $W/venv/bin/python` (chromium is found in
+`$W/browsers`), or export `DAQ_SIM_BROWSER_PYTHON`. The same venv runs the web GUI's own tests:
+`psdaq/psdaq/webgui/tests/run_webgui_tests.sh` (emulator; `AGENTIFY_WEBTEST=$W`), and, against a
+DAQ up with `--webgui`, `WEBGUI_REAL_URL=http://127.0.0.1:31053/ psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k real`
+inside an `srun --overlap` step.
+
 ## 4. Read the file back with psana2
 ```bash
 F=$WD/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2      # run 1; see the fileReport line of cycle
@@ -163,9 +267,10 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=2 --mem=4G \
 tail -2 $ROOT/daq_sim_up.log          # "... daq_sim down already took everything down; exiting"
 ```
 `down` stops only what `up` started, in this order:
-1. `procmgr stop` for control, teb0 and fakecam_0.
-2. The PIDs that `up` recorded: simxpm, the run DB and the config DB.
-3. Any process of yours whose environment carries `DAQ_SIM_WORKDIR=$WD`, such as the caRepeater that libca spawns.
+1. The web GUI, if `up --webgui` started it.
+2. `procmgr stop` for control, teb0 and fakecam_0.
+3. The PIDs that `up` recorded: simxpm, the run DB and the config DB.
+4. Any process of yours whose environment carries `DAQ_SIM_WORKDIR=$WD`, such as the caRepeater that libca spawns.
 
 Then it checks that the ports are free and prints `down: clean`; it exits 1 otherwise. Step A then exits on its own. Ctrl-C or SIGTERM to the `up` process does the same teardown.
 
@@ -179,6 +284,8 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   - `simxpm.log` (every transition frame, `L0 enable/disable ... NumL0Acc [...]`)
   - `procmgr.log`
   - `cycle.jsonl`
+  - `webgui.log` (`up --webgui`: every command the page sent, control's status messages)
+  - `e2e-driver.log` (`daq_sim e2e`: the browser driver's stderr)
 - `$WD/pmlogs/<yyyy>/<mm>/<dd_HH:MM:SS>_<host>:<id>.log`: the control, teb0 and fakecam_0 logs. Expected lines:
   - drp: `Simulated PGP device 'sim://127.0.0.1:31052'`
   - drp: `MemPoolSim: simxpm registered fakecam_0 as XPM 0 link 0`
@@ -191,6 +298,7 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   - control: `<W> ami NOT supported in absence of MEB`.
 - SlowUpdates exist only in state running, by control.py's design. At `-S 1` the xtc2 holds about one per second of running.
 - `$WD/data/tst/tstx00001/xtc/` holds the xtc2 files, with `smalldata/` beside them.
+- `$WD/e2e-shots/` holds the e2e's screenshots (reset, running, paused after Disable, reset).
 
 ## 7. Known limits
 - **Network listeners.** Every connection is between 127.0.0.1 peers (checked with `ss -tnp` during a run). But some processes listen on all interfaces:
@@ -202,4 +310,7 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   Isolation relies on every peer being on this node and on the non-default EPICS ports.
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
 - **Partition size.** There is one detector DRP and one lane. Rates above about 1 kHz are untested.
-- **Web GUI.** The web GUI is not part of this runbook yet; port +3 is reserved for it.
+- **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
+  comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
+  each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector
+  at 1 kHz, platform 5.

@@ -6,6 +6,7 @@ JSON POST for commands. Binds 127.0.0.1 only.
 
     python -m psdaq.webgui.server -p 6 -H 127.0.0.1          # real DAQ (DaqControl)
     python -m psdaq.webgui.server --emulate                  # emulator, no DAQ
+    python -m psdaq.webgui.server -p 5 --events-source pva --events-pvbase DAQ:SIM   # + XPM NumL0Acc
     daq_webgui --emulate --port 0                            # console script; port 0 = pick a free port
 
 Then open http://127.0.0.1:<port>/ (from another machine: ssh -L <port>:127.0.0.1:<port> <node>).
@@ -29,7 +30,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 
 from psdaq.control.ControlDef import ControlDef
-from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_loopback_host
+from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_loopback_host, \
+    require_loopback_pva_env
 
 # Extension modules add API routes without editing this file. Each one defines
 # register(app, get_routes, post_routes): get_routes maps a path to
@@ -149,9 +151,10 @@ class Hub:
 
     def set_events(self, ev):
         with self.lock:
-            old = {k: self.events.get(k) for k in ('events', 'drops', 'ok', 'error')}
+            keys = ('events', 'drops', 'ok', 'error', 'final')
+            old = {k: self.events.get(k) for k in keys}
             self.events = ev
-            changed = old != {k: ev.get(k) for k in ('events', 'drops', 'ok', 'error')}
+            changed = old != {k: ev.get(k) for k in keys}
         if changed:
             self.broadcast('events', ev)
 
@@ -163,6 +166,9 @@ class App:
         self.events_source = events_source
         self.ext_get, self.ext_post = load_extensions(self)
         self.hub = Hub()
+        bind = getattr(events_source, 'bind', None)
+        if bind is not None:
+            bind(self.hub)          # sources that need control's state (PvaCountEvents' latch)
         self.aliases = []
         self.aliases_source = None
         self._stop = threading.Event()
@@ -199,7 +205,8 @@ class App:
             except Exception as ex:
                 ev = {'events': None, 'drops': None, 'ok': False, 'error': str(ex)}
             ev['source'] = self.events_source.name
-            ev['ts'] = time.time()
+            if ev.get('ts') is None:
+                ev['ts'] = time.time()
             self.hub.set_events(ev)
             self._stop.wait(self.args.events_period)
 
@@ -438,8 +445,17 @@ def build_parser():
     p.add_argument('--emulate-rate', type=float, default=500.0, help='emulator: L1Accept rate in running [Hz]')
     p.add_argument('--emulate-slow', type=float, default=0.6,
                    help='emulator: duration of configure/beginrun with progress messages [s]')
-    p.add_argument('--events-source', choices=('auto', 'none', 'emulator', 'prometheus'), default='auto',
-                   help='events counter source (auto = emulator with --emulate, else none)')
+    p.add_argument('--events-source', choices=('auto', 'none', 'emulator', 'prometheus', 'pva'), default='auto',
+                   help='events counter source (auto = emulator with --emulate, else none; pva = the XPM '
+                        'partition counter NumL0Acc over PV Access, needs a loopback-only EPICS_PVA env)')
+    p.add_argument('--events-pv', default=None,
+                   help='pva: counter PV (default <pvbase>:XPM:<xpm>:PART:<group>:NumL0Acc)')
+    p.add_argument('--events-pvbase', default=None, help='pva: XPM PV base, as control -B (e.g. DAQ:SIM)')
+    p.add_argument('--events-xpm', default='0', help='pva: XPM number, as control -x (default 0)')
+    p.add_argument('--events-group', type=int, default=None, help='pva: readout group (default: the platform)')
+    p.add_argument('--events-drops-pv', default=None,
+                   help='pva: input-trigger PV; drops = it - events (default: NumL0Inp beside the counter PV; '
+                        '"none" to disable)')
     p.add_argument('--events-url', default=None, help='prometheus: loopback metrics URL')
     p.add_argument('--events-metric', default=None, help='prometheus: metric name to sum')
     p.add_argument('--events-drops-metric', default=None, help='prometheus: metric name for drops')
@@ -473,6 +489,10 @@ def configure(args):
             raise SystemExit('daq_webgui: --events-source prometheus needs --events-url and --events-metric')
         events_source = ev.PrometheusTextEvents(args.events_url, args.events_metric,
                                                 ev.parse_labels(args.events_labels), args.events_drops_metric)
+    elif src == 'pva':
+        conf = require_loopback_pva_env(os.environ, '--events-source pva')   # NonLoopbackError -> exit 2
+        pv, drops_pv = pva_pvs(args)
+        events_source = ev.PvaCountEvents(pv, conf, drops_pv)
     elif src == 'emulator':
         if not args.emulate:
             raise SystemExit('daq_webgui: --events-source emulator needs --emulate')
@@ -482,6 +502,21 @@ def configure(args):
     return backend, events_source, src
 
 
+def pva_pvs(args):
+    """(counter PV, drops PV or None) for --events-source pva."""
+    from psdaq.webgui.events import xpm_count_pv
+    group = args.platform if args.events_group is None else args.events_group
+    pv = args.events_pv
+    if not pv:
+        if not args.events_pvbase:
+            raise SystemExit('daq_webgui: --events-source pva needs --events-pv or --events-pvbase')
+        pv = xpm_count_pv(args.events_pvbase, args.events_xpm, group)
+    drops = args.events_drops_pv
+    if drops is None and pv.endswith(':NumL0Acc'):
+        drops = pv[:-len('NumL0Acc')] + 'NumL0Inp'
+    return pv, (None if drops in (None, '', 'none') else drops)
+
+
 def config_report(args, backend, src):
     eps = {'listen': 'http://%s:%d/' % (args.bind, args.port), 'backend': backend.name}
     eps.update(backend.endpoints())
@@ -489,6 +524,9 @@ def config_report(args, backend, src):
         eps['configdb'] = args.configdb_url
     if src == 'prometheus':
         eps['events'] = args.events_url
+    if src == 'pva':
+        eps['events_pv'], eps['events_drops_pv'] = pva_pvs(args)
+        eps['events_pva_conf'] = require_loopback_pva_env(os.environ, '--events-source pva')
     eps['events_source'] = src
     hosts = []
     for k, v in eps.items():
