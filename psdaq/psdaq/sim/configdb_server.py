@@ -343,16 +343,18 @@ class Handler(BaseHTTPRequestHandler):
 
     def _reply(self, status, resp):
         data = json.dumps(resp, default=_plain).encode()
-        self.send_response(status)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Content-Length', str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
+        # Log before replying: a client that has its answer can then always
+        # read the record of its own request.
         if self.server.access_log is not None:
             rec = {'t': _now(), 'method': self.command, 'path': self.path,
                    'status': status, 'success': resp.get('success')}
             with self.server.log_lock, open(self.server.access_log, 'a') as f:
                 f.write(json.dumps(rec) + '\n')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def do_GET(self):
         try:
