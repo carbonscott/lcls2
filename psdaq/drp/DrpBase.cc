@@ -187,9 +187,19 @@ unsigned MemPool::allocateDma()
     return allocs;
 }
 
+ssize_t MemPool::_readDma(uint32_t count, int32_t* ret, uint32_t* index, uint32_t* flags, uint32_t* errors, uint32_t* dest)
+{
+    return dmaReadBulkIndex(fd(), count, ret, index, flags, errors, dest);
+}
+
+ssize_t MemPool::_retDma(unsigned count, uint32_t* indices)
+{
+    return dmaRetIndexes(fd(), count, indices);
+}
+
 ssize_t MemPool::readDma(uint32_t count, int32_t* ret, uint32_t* index, uint32_t* flags, uint32_t* errors, uint32_t* dest)
 {
-    auto rc = dmaReadBulkIndex(fd(), count, ret, index, flags, errors, dest);
+    auto rc = _readDma(count, ret, index, flags, errors, dest);
     if (rc < 0) [[unlikely]] {
         if (m_nDmaReadErr++ == 0)  logging::error("dmaReadBulkIndex error %d: %m", rc);
         else                       logging::debug("dmaReadBulkIndex error %d: %m", rc);
@@ -542,7 +552,7 @@ void PgpReader::flush()
     // Also return DMA buffers queued for reading, without adjusting counters
     int32_t ret;
     while ( (ret = read()) > 0 ) {
-        dmaRetIndexes(m_pool.fd(), ret, dmaIndex.data());
+        m_pool.retDma(ret, dmaIndex.data());
     }
 
     // Free any in-use pebble buffers

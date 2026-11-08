@@ -68,7 +68,8 @@ jobs:
                  psdaq/psdaq/tests/test_json2xtc.py \
                  psdaq/psdaq/tests/test_daqstat.py \
                  psdaq/psdaq/tests/test_sim_configdb.py \
-                 psdaq/psdaq/tests/test_sim_lgbk.py
+                 psdaq/psdaq/tests/test_sim_lgbk.py \
+                 psdaq/psdaq/tests/test_simxpm.py
 
       - name: Run test_rogue.py
         # Kept out of the main pytest step on purpose: the test's own

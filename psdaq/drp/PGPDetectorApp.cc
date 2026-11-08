@@ -26,6 +26,7 @@
 #include "Wave8HE.hh"
 #include "Piranha4.hh"
 #include "PGPDetectorApp.hh"
+#include "MemPoolSim.hh"
 #include "psalg/utils/SysLog.hh"
 #include "RunInfoDef.hh"
 #include "psdaq/service/IpcUtils.hh"
@@ -301,7 +302,9 @@ private:
 PGPDetectorApp::PGPDetectorApp(Parameters& para) :
     CollectionApp(para.collectionHost, para.partition, "drp", para.alias, para.device),
     m_para       (para),
-    m_pool       (para),
+    m_pool       (MemPoolSim::isSimDevice(para.device)
+                  ? std::unique_ptr<MemPool>(std::make_unique<MemPoolSim>(para))
+                  : std::unique_ptr<MemPool>(std::make_unique<MemPoolCpu>(para))),
     m_det        (nullptr),
     m_unconfigure(false)
 {
@@ -350,13 +353,13 @@ void PGPDetectorApp::initialize()
     f.register_type<Piranha4>        ("piranha4");
     f.register_type<EpixUHR3x2>      ("epixuhr3x2");
 
-    m_det = f.create(&m_para, &m_pool);
+    m_det = f.create(&m_para, m_pool.get());
     if (m_det == nullptr) {
         logging::critical("Error !! Could not create Detector object for %s", m_para.detType.c_str());
         throw "Could not create Detector object for " + m_para.detType;
     }
 
-    m_drp = std::make_unique<PGPDrp>(m_para, m_pool, *m_det, context(),
+    m_drp = std::make_unique<PGPDrp>(m_para, *m_pool, *m_det, context(),
                                      m_inpMqId, m_resMqId, m_inpShmId, m_resShmId, m_shmemSize);
 
     auto kwargs_it = m_para.kwargs.find("drp");
