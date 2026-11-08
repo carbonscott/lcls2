@@ -16,6 +16,7 @@ DRP, local stand-ins for the config DB and the run DB, and isolation checks.
 | `simxpm.py` (`simxpm`) | Simulated XPM: serves the pyxpm PVs control.py writes (p4p, loopback), the `control -X` ZMQ PULL receiver, and an ordered, credit-flow-controlled timing frame stream (ZMQ ROUTER) to each simulated DRP. |
 | `daq_sim.py` (`daq_sim`) | The one command: `up` starts the stand-ins, simxpm and, through procmgr, control (normal mode), the TEB and `drp -D fakecam -d sim://`; `cycle` drives one run to Running and back and checks the counts; `status`; `down`. |
 | `xtc2_check.py` | psana2 read-back of a run's xtc2 file with a per-event payload check. |
+| `coverage.py`, `coverage_status.json` | `daq_sim coverage`: enumerates every detector type a DRP factory registers and every program a procmgr config under `psdaq/psdaq/cnf` starts, and checks that each is RUN, STAND-IN or N/A, with evidence recorded at HEAD. `daq_sim matrix` runs it (RUNBOOK §3d). |
 
 The DRP side is `psdaq/drp/MemPoolSim.{hh,cc}`: started with `-d sim://<host>:<port>`, the DRP takes its DMA buffers from simxpm's frame stream instead of a PGP card. The fakecam payload of each L1Accept carries the pulse ID, simxpm's L1 sequence number and `sim_seed` read from the config DB at Configure, so a reader can check every event.
 
@@ -42,4 +43,4 @@ Then point the DAQ at them: `control -d http://127.0.0.1:<port>/ws/configDB --ur
 - pvAccess may bind its UDP search port on the node's NIC despite `EPICS_PVAS_INTF_ADDR_LIST`. The non-default ports keep production clients and servers from meeting it.
 - ZMQ (control.py) and Prometheus exporters listen on all interfaces. Every peer must be started on the same node with local addresses.
 
-Tests: `pytest psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py`.
+Tests: `pytest psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py psdaq/psdaq/tests/test_sim_coverage.py`.
