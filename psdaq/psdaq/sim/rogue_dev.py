@@ -487,3 +487,16 @@ def install(dev, det_type=None, seeds=None, fault=None):
 
 def state():
     return _SIM
+
+
+def uninstall():
+    """Undo install(): rogue's own transports and hooks come back and the state starts fresh.
+    For tests; a DRP installs once per process and never uninstalls."""
+    global _SIM
+    if _SIM._orig:
+        axi = rogue.hardware.axi
+        (axi.AxiMemMap, axi.AxiStreamDma, pr.Device._start,
+         pr.interfaces.ZmqServer.__init__) = _SIM._orig
+    if _SIM._logf:
+        _SIM._logf.close()
+    _SIM = _Sim()
