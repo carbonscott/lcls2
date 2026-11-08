@@ -69,7 +69,11 @@ jobs:
                  psdaq/psdaq/tests/test_daqstat.py \
                  psdaq/psdaq/tests/test_sim_configdb.py \
                  psdaq/psdaq/tests/test_sim_lgbk.py \
-                 psdaq/psdaq/tests/test_simxpm.py
+                 psdaq/psdaq/tests/test_simxpm.py \
+                 psdaq/psdaq/webgui/tests/test_webgui_backend.py \
+                 psdaq/psdaq/webgui/tests/test_webgui_events_pva.py \
+                 psdaq/psdaq/webgui/tests/test_check_parity.py \
+                 psdaq/psdaq/webgui/tests/test_parity_enumerate_v1.py
 
       - name: Run test_rogue.py
         # Kept out of the main pytest step on purpose: the test's own
