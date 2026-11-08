@@ -40,6 +40,14 @@ Unit: one row per user affordance
               QListWidget of QWPopupSelectItem) are covered by the call-site
               rows and not listed again.
   key         a `e.key() == Qt.Key_X` branch of a keyPressEvent override.
+  event-filter  an input-event handler (keyPressEvent, wheelEvent, mouse*,
+              contextMenuEvent) that the in-scope class of a widget overrides,
+              one row per handler per widget, sub = handler name (e.g.
+              CGWMainControl.box_state.keyPressEvent: CustomQComboBox ignores
+              Key_Up / Key_Down); label says what it ignores.
+  mnemonic    the Qt mnemonic of a button / check box text ('&Apply' -> Alt+A),
+              sub = 'mnemonic'.  event-filter and mnemonic rows inherit the
+              widget's reachable / hidden / inert flags.
 Not counted: labels, layouts, splitters, progress bars, window decorations,
 widgets Qt creates internally.
 
@@ -72,6 +80,11 @@ Every module under psdaq/control_gui is scanned, including code under
               view whose signals are disconnected, a cell whose setters are all
               False.
   evidence    file:line facts behind reach/hidden/inert.
+  guard       file:line of the statement that keeps the row from the user, which
+              an na reason must cite: the `if __name__ == "__main__":` (or `if
+              False:`) line, the commented-out import of an unreachable module,
+              the setVisible line of a hidden widget, the dropped call of a
+              method that never runs, the dispatch of a fallback; '' if none.
 
 Usage:
     python -m psdaq.webgui.parity.enumerate_pyqt [--src DIR] [--format tsv|json|summary]
@@ -125,6 +138,10 @@ TRIVIAL_CALLS = {'debug', 'info', 'warning', 'error', 'critical', 'exception', '
                  'values', 'items', 'range', 'enumerate', 'zip', 'all', 'any', 'min', 'max',
                  'sorted', 'list', 'tuple', 'dict', 'set', 'rowCount', 'columnCount',
                  'isRowHidden', 'horizontalHeaderItem', 'is_column_for_title'}
+
+# input-event handlers whose override on an in-scope widget class changes what the user can do
+INPUT_HANDLERS = ('keyPressEvent', 'keyReleaseEvent', 'wheelEvent', 'mousePressEvent',
+                  'mouseReleaseEvent', 'mouseDoubleClickEvent', 'contextMenuEvent')
 
 ENTRY_MODULE = 'psdaq.control_gui.app.control_gui'
 ENTRY_FUNCTION = 'control_gui'
@@ -183,6 +200,19 @@ def _fmt(values):
 # ---------------------------------------------------------------------------
 # dead regions and modules
 
+def _mnemonic(label):
+    """The Qt mnemonic letter of a widget text ('&Apply' -> 'a'; '&&' is a literal &), else None."""
+    i = 0
+    while label and i < len(label) - 1:
+        if label[i] == '&':
+            if label[i + 1] == '&':
+                i += 2
+                continue
+            return label[i + 1].lower() if label[i + 1].isalnum() else None
+        i += 1
+    return None
+
+
 def _is_name_main(test):
     """'==' for `__name__ == '__main__'`, '!=' for the negation, else None."""
     if (isinstance(test, ast.Compare) and len(test.ops) == 1
@@ -226,27 +256,38 @@ class _Live(ast.NodeTransformer):
         return node
 
 
-def _mark_dead(node, reason=None):
-    """Set node._dead = 'main-block' / 'if-false' / None on every node."""
+def _mark_dead(node, reason=None, guard=None):
+    """Set node._dead = 'main-block' / 'if-false' / None on every node, and
+    node._guard = the `if __name__ == '__main__':` / `if False:` statement that
+    makes it dead (the line an na reason cites)."""
     node._dead = reason
+    node._guard = guard
     for field, value in ast.iter_fields(node):
         children = value if isinstance(value, list) else [value]
         for c in children:
             if not isinstance(c, ast.AST):
                 continue
-            r = reason
+            r, g = reason, guard
             if r is None and isinstance(node, ast.If):
                 m = _is_name_main(node.test)
                 in_body = c in node.body
                 in_else = c in node.orelse
                 if m == '==' and in_body:
-                    r = 'main-block'
+                    r, g = 'main-block', node
                 elif m == '!=' and in_else:
-                    r = 'main-block'
+                    r, g = 'main-block', node
                 elif (isinstance(node.test, ast.Constant) and not node.test.value
                       and in_body):
-                    r = 'if-false'
-            _mark_dead(c, r)
+                    r, g = 'if-false', node
+            _mark_dead(c, r, g)
+
+
+def _guard_text(mod, node):
+    """'control_gui/X.py:N `if __name__ == "__main__":`' for the guard of a dead node."""
+    g = getattr(node, '_guard', None)
+    if g is None:
+        return None
+    return '%s `if %s:`' % (_loc(mod, g), ast.unparse(g.test).replace("'", '"'))
 
 
 def _walk_no_defs(node):
@@ -1309,6 +1350,10 @@ class Enumerator(object):
             'tooltip': tooltip or '', 'reachable': bool(reachable), 'reach': why,
             'hidden': bool(hidden), 'inert': bool(inert), 'evidence': list(evidence),
             'trigger': trigger, '_mod': mod, '_node': node, '_attr': None})
+        if not reachable and why in ('main-block', 'if-false'):
+            gt = _guard_text(mod, node)
+            if gt:
+                self.rows[-1]['evidence'].append('guard ' + gt)
         return self.rows[-1]
 
     def owner_and_method(self, mod, node):
@@ -1577,6 +1622,57 @@ class Enumerator(object):
             if attr is None and _enclosing(call, (ast.For, ast.While, ast.comprehension)) is not None:
                 row['evidence'].append('built in a loop over a run-time sequence')
             row['_attr'] = attr
+            self._derived_rows(mod, call, ctype, owner, nm, row, label)
+
+    def _derived_rows(self, mod, call, ctype, owner, nm, row, label):
+        """Rows a widget gives besides its own: a Qt mnemonic ('&Apply' -> Alt+A) and
+        each input-event handler its in-scope class overrides (e.g. CustomQComboBox
+        ignoring Key_Up/Key_Down and the wheel).  They share the widget's id as prefix
+        and inherit its reachable / hidden / inert flags (see _finish)."""
+        key = _mnemonic(label) if row['kind'] in ('button', 'checkbox') else None
+        if key:
+            r = self.add(mod, call, 'mnemonic', 'Alt+%s' % key.upper(), owner, nm, sub='mnemonic',
+                         label='Alt+%s (%s)' % (key.upper(), label), tooltip=row['tooltip'],
+                         evidence=['%s label %r: Qt mnemonic Alt+%s' % (_loc(mod, call), label, key.upper())])
+            r['_parent'] = row
+        if ctype[0] != 'cls':
+            return
+        eff = self.effective(ctype[1])
+        for h in INPUT_HANDLERS:
+            fn = eff.get(h)
+            if fn is None:
+                continue
+            hmod = self.classes[fn._key]._mod
+            desc = self._handler_desc(fn)
+            r = self.add(mod, call, 'event-filter', '%s.%s' % (fn._key[1], h), owner, nm, sub=h,
+                         label='%s (%s)' % (desc, _loc(hmod, fn)), tooltip=row['tooltip'],
+                         evidence=['%s %s.%s overrides QWidget.%s: %s' % (_loc(hmod, fn), fn._key[1], h, h, desc)])
+            r['_parent'] = row
+
+    def _handler_desc(self, fn):
+        """What an input-event override does: which keys it ignores, or that it ignores all."""
+        keys = []
+        for n in ast.walk(fn):
+            if not isinstance(n, ast.If):
+                continue
+            t = n.test
+            if not (isinstance(t, ast.Compare) and len(t.ops) == 1 and isinstance(t.left, ast.Call)
+                    and isinstance(t.left.func, ast.Attribute) and t.left.func.attr == 'key'):
+                continue
+            comp = t.comparators[0]
+            elts = comp.elts if isinstance(t.ops[0], ast.In) and isinstance(comp, (ast.Tuple, ast.List)) \
+                else [comp] if isinstance(t.ops[0], ast.Eq) else []
+            ign = any(isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute) and c.func.attr == 'ignore'
+                      for b in n.body for c in ast.walk(b))
+            if ign:
+                keys += [e.attr for e in elts if isinstance(e, ast.Attribute) and e.attr.startswith('Key_')]
+        if keys:
+            return 'ignores %s' % ', '.join(keys)
+        top = [c for st in fn.body for c in ast.walk(st)
+               if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)]
+        if any(c.func.attr == 'ignore' for c in top) and not any(c.func.attr == fn.name for c in top):
+            return 'ignores every %s (the event goes to the parent)' % fn.name.replace('Event', '')
+        return 'custom %s' % fn.name
 
     def _calls_on(self, scope, var, method):
         out = []
@@ -2218,6 +2314,8 @@ class Enumerator(object):
         vreach = (True, '') if reach_sites else self.node_reach(sites[0][0], sites[0][1])
         site_ev = [] if reach_sites else ['%s is instantiated only at %s (%s)' % (
             vkey[1], ', '.join(sorted(set(_loc(m, c) for m, c, _, _ in sites))), vreach[1])]
+        if not reach_sites:
+            site_ev += sorted(set('guard ' + g for g in (_guard_text(m, c) for m, c, _, _ in sites) if g))
         eff = self.effective(vkey)
         records = {}
         for fn in sorted(set(eff.values()), key=lambda f: (f._key, f.lineno), reverse=False):
@@ -2289,6 +2387,17 @@ class Enumerator(object):
     def _finish(self):
         self._liveness_pass()
         for r in self.rows:
+            p = r.get('_parent')
+            if p is not None:
+                r['reachable'], r['reach'] = p['reachable'], p['reach']
+                r['hidden'], r['inert'] = p['hidden'], p['inert']
+                if not p['reachable'] or p['hidden'] or p['inert']:
+                    r['evidence'] += ['as %s: %s' % (p['id'], e) for e in p['evidence']]
+                r['trigger'] = p['trigger']
+        commented = self._commented_imports()
+        for r in self.rows:
+            self._set_guard(r, commented)
+        for r in self.rows:
             for k in [k for k in r if k.startswith('_')]:
                 del r[k]
             seen, ev_ = set(), []
@@ -2303,6 +2412,60 @@ class Enumerator(object):
             ids[r['id']] += 1
             if ids[r['id']] > 1:
                 r['id'] = '%s~%d' % (r['id'], ids[r['id']])
+
+    def _commented_imports(self):
+        """base name -> ['control_gui/X.py:N <line>'] for commented-out imports of a
+        control_gui module in a module the entry point reaches (CGWMain.py:43)."""
+        out = collections.defaultdict(list)
+        rx = re.compile(r'^\s*#+\s*(from\s+psdaq\.control_gui\.(\w+)\s+import|import\s+psdaq\.control_gui\.(\w+))')
+        for m in self.gui_modules:
+            if not self.module_reachable(m):
+                continue
+            with open(m.path) as f:
+                for i, line in enumerate(f, 1):
+                    mm = rx.match(line)
+                    if mm:
+                        out[mm.group(2) or mm.group(3)].append('%s:%d %s' % (m.rel, i, line.strip()))
+        return out
+
+    def _set_guard(self, r, commented):
+        """r['guard']: file:line of the statement that keeps the row from the user (the
+        `if __name__` line, the setVisible/show_buttons test, the commented import, the
+        dispatch of a fallback), '' if there is none; added to the evidence as 'guard ...'."""
+        g = ''
+        for e in r['evidence']:
+            if e.startswith('guard '):
+                g = e[6:].split(' ', 1)[0]
+                break
+        if not g and r['reach'] == 'module-unreachable':
+            mod = r['_mod']
+            hits = commented.get(mod.base, [])
+            via = ''
+            if not hits:
+                # imported only by unreachable modules whose own import is commented out
+                for m in self.gui_modules:
+                    if m is mod or self.module_reachable(m):
+                        continue
+                    if any(t[0] == 'mod' and t[1] == mod.name or (t[0] == 'sym' and t[1] == mod.name)
+                           for t in m.full_aliases.values()) and commented.get(m.base):
+                        hits = commented[m.base]
+                        via = ' (%s is imported only by %s)' % (mod.rel, m.rel)
+                        break
+            if hits:
+                g = hits[0].split(' ', 1)[0]
+                r['evidence'].append('guard %s import commented out: %s%s' % (g, hits[0].split(' ', 1)[1], via))
+        if not g and r['hidden']:
+            mm = re.search(r'(control_gui/\S+:\d+) \w+\.setVisible\(', ' | '.join(r['evidence']))
+            g = mm.group(1) if mm else ''
+        if not g and r['reach'] == 'method-not-live':
+            e = next((e for e in r['evidence'] if e.startswith('dropped call ')), None)
+            if e:
+                g = e.split(' at ', 1)[1].split(':', 2)
+                g = '%s:%s' % (g[0], g[1]) if len(g) >= 2 else ''
+        if not g and r['reach'] == 'fallback-branch':
+            mm = re.search(r'\((control_gui/[^,)]+:\d+)', ' '.join(r['evidence']))
+            g = mm.group(1) if mm else ''
+        r['guard'] = g
 
     def _liveness_pass(self):
         for row in self.rows:
@@ -2528,7 +2691,7 @@ def _merge(ctx, state, branches):
 # ---------------------------------------------------------------------------
 
 COLUMNS = ['id', 'loc', 'class', 'kind', 'widget', 'label', 'tooltip', 'reachable', 'reach',
-           'hidden', 'inert', 'trigger', 'evidence']
+           'hidden', 'inert', 'trigger', 'guard', 'evidence']
 
 
 def summary(rows, en):

@@ -14,6 +14,8 @@ export XDG_CACHE_HOME=${XDG_CACHE_HOME:-/sdf/scratch/users/c/cwang31/.cache-agen
 export HTTP_PROXY=http://127.0.0.1:9 HTTPS_PROXY=http://127.0.0.1:9 http_proxy=http://127.0.0.1:9 https_proxy=http://127.0.0.1:9
 export NO_PROXY=localhost,127.0.0.1 no_proxy=localhost,127.0.0.1
 export PYTHONDONTWRITEBYTECODE=1
+# the non-browser tests (parity checker, enumerator, backend) import psdaq from this checkout
+export PYTHONPATH=$REPO/psdaq${PYTHONPATH:+:$PYTHONPATH}
 if [ -z "${WEBGUI_PYTHON:-}" ] && [ -f "$REPO/setup_env_daq.sh" ]; then
     WEBGUI_PYTHON=$(bash -c "source '$REPO/setup_env_daq.sh' >/dev/null 2>&1; command -v python")
 fi

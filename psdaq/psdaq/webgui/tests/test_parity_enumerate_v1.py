@@ -290,3 +290,97 @@ def test_real_control_gui():
     assert not by['CGWMainTabs.tab_bar.user']['reachable']
     files = {m.rel for m in e.gui_modules}
     assert 'control_gui/ex_SLConfigEditor.py' in files and 'control_gui/CGWMainTabs.py' in files
+
+
+# ---------------- input-event overrides, mnemonics and guard lines ----------------
+
+FILTERS = {
+    "control_gui/Combo.py": """
+        from PyQt5.QtCore import Qt
+        from PyQt5.QtWidgets import QComboBox
+        class Combo(QComboBox):
+            def keyPressEvent(self, event):
+                if event.key() in (Qt.Key_Up, Qt.Key_Down):
+                    event.ignore()
+                else:
+                    super().keyPressEvent(event)
+            def wheelEvent(self, event):
+                event.ignore()
+        if __name__ == "__main__":
+            c = Combo()
+        """,
+    "control_gui/Main.py": """
+        from PyQt5.QtWidgets import QWidget, QPushButton
+        from psdaq.control_gui.Combo import Combo
+        #from psdaq.control_gui.Gone import Gone
+        def proc_main():
+            Main()
+        class Main(QWidget):
+            def __init__(self):
+                self.box = Combo()
+                self.box.currentIndexChanged[int].connect(self.on_box)
+                self.but_ok = QPushButton('&Apply')
+                self.but_ok.clicked.connect(self.on_box)
+                self.but_amp = QPushButton('Save && quit')
+                self.but_amp.clicked.connect(self.on_box)
+            def on_box(self, i=0):
+                pass
+            if __name__ == "__main__":
+                def keyPressEvent(self, e):
+                    if e.key() == Qt.Key_Escape:
+                        self.close()
+        """,
+    "control_gui/Gone.py": """
+        from PyQt5.QtWidgets import QWidget, QPushButton
+        class Gone(QWidget):
+            def __init__(self):
+                self.but_g = QPushButton('&Go')
+        """,
+}
+
+
+def test_event_filters_mnemonics_and_guards(tmp_path):
+    files = dict(ENTRY)
+    files.update(FILTERS)
+    rows, _ = en.enumerate_rows(write_pkg(tmp_path / 'f' / 'psdaq', files))
+    by = {r['id']: r for r in rows}
+    k, w = by['Main.box.keyPressEvent'], by['Main.box.wheelEvent']
+    assert k['kind'] == w['kind'] == 'event-filter' and k['reachable'] and w['reachable']
+    assert k['label'].startswith('ignores Key_Up, Key_Down (control_gui/Combo.py:')
+    assert w['label'].startswith('ignores every wheel')
+    assert k['loc'] == by['Main.box']['loc']                      # where the widget is built
+    m = by['Main.but_ok.mnemonic']
+    assert m['kind'] == 'mnemonic' and m['widget'] == 'Alt+A' and m['reachable']
+    assert 'Main.but_amp.mnemonic' not in by                       # '&&' is a literal ampersand
+    # the main-block instance of Combo and its handlers: not reachable, guard = the if __name__ line
+    main_combo = [r for r in rows if r['id'].startswith('Combo.') and r['kind'] == 'combo'][0]
+    assert main_combo['reach'] == 'main-block' and main_combo['guard'] == 'control_gui/Combo.py:12'
+    assert by[main_combo['id'] + '.wheelEvent']['reach'] == 'main-block'
+    esc = by['Main.keyPressEvent.escape']
+    assert esc['reach'] == 'main-block' and esc['guard'] == 'control_gui/Main.py:17'
+    assert any(e.startswith('guard control_gui/Main.py:17 `if __name__ == "__main__":`') for e in esc['evidence'])
+    # a module whose import is commented out: guard = that comment line; its mnemonic row inherits the flags
+    g, gm = by['Gone.but_g'], by['Gone.but_g.mnemonic']
+    assert g['reach'] == gm['reach'] == 'module-unreachable'
+    assert g['guard'] == gm['guard'] == 'control_gui/Main.py:4'
+    ids0 = {r['id'] for r in rows}
+    files['control_gui/Main.py'] = '# moved\n\n' + textwrap.dedent(FILTERS['control_gui/Main.py'])
+    assert {r['id'] for r in en.enumerate_rows(write_pkg(tmp_path / 'g' / 'psdaq', files))[0]} == ids0
+
+
+@pytest.mark.skipif(not os.path.isdir(os.path.join(REAL, 'control_gui')),
+                    reason='psdaq/control_gui not next to webgui')
+def test_real_control_gui_v1_additions():
+    rows, _ = en.enumerate_rows(REAL)
+    by = {r['id']: r for r in rows}
+    assert by['CGWMainControl.box_state.keyPressEvent']['label'].startswith('ignores Key_Up, Key_Down')
+    assert by['CGWMainControl.box_state.wheelEvent']['reachable']
+    for rid in ('QWPopupTableCheck.but_apply.mnemonic', 'QWPopupEditText.but_apply.mnemonic',
+                'QWPopupEditText.but_cancel.mnemonic'):
+        assert by[rid]['reachable'] and not by[rid]['hidden'], rid
+    assert by['QWLoggerStd.but_save.mnemonic']['hidden']
+    assert by['QWLoggerStd.but_save.mnemonic']['guard'] == 'control_gui/QWLoggerStd.py:289'
+    assert by['CGWMain.keyPressEvent.escape']['guard'] == 'control_gui/CGWMain.py:406'
+    assert by['CGWMainTabs.tab_bar.user']['guard'] == 'control_gui/CGWMain.py:43'
+    assert by['CGWMainTabUser.but_play']['guard'] == 'control_gui/CGWMain.py:43'
+    assert all(r['guard'] for r in rows if r['reach'] in ('main-block', 'module-unreachable', 'fallback-branch'))

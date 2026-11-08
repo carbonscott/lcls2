@@ -15,7 +15,9 @@
 </header>
 
 <main>
-<!-- CGWMain vertical splitter order (CGWMain.py:82-86): Configuration, Expert tab (Partition, Control), Info, Logger -->
+<!-- CGWMain vertical splitter order (CGWMain.py:82-86): Configuration, tabs (CGWMainTabs: User | Expert), Info, Logger.
+     CGWMain.py:79 builds the Expert tab (CGWMainTabExpert: Partition, Control) directly; CGWMainTabs (CGWMain.py:43, :78,
+     commented out) adds a User tab (CGWMainTabUser: play, stop, record).  The web GUI has both tabs and opens on Expert. -->
 
 <fieldset id="panel_configuration" class="group">
   <legend>Configuration</legend>
@@ -30,6 +32,26 @@
   </div>
 </fieldset>
 
+<nav id="tab_bar" class="tabbar" role="tablist" title="Main tab window">
+  <button type="button" role="tab" id="tab_user" data-parity="CGWMainTabs.tab_bar.user" aria-selected="false">User</button>
+  <button type="button" role="tab" id="tab_expert" data-parity="CGWMainTabs.tab_bar.expert" aria-selected="true">Expert</button>
+</nav>
+<div id="gui_win" class="tabwin">
+
+<fieldset id="panel_user" class="group" role="tabpanel" aria-labelledby="tab_user" hidden>
+  <legend>Control</legend>
+  <div class="row userbar">
+    <button type="button" id="but_play" class="icon" data-parity="CGWMainTabUser.but_play" title="Start/Pause running">&#9654;</button>
+    <div id="bar_progress_user" class="progress" hidden><div class="fill"></div><span class="plabel"></span></div>
+    <span class="stretch"></span>
+    <button type="button" id="but_stop" class="icon" data-parity="CGWMainTabUser.but_stop" title="Stop running" hidden>&#9632;</button>
+    <span class="stretch"></span>
+    <button type="button" id="but_record_user" class="icon" data-parity="CGWMainTabUser.but_record" aria-pressed="false" title="ON/OFF recording">&#9679;</button>
+  </div>
+  <div class="row small"><span id="user_state" class="muted"></span></div>
+</fieldset>
+
+<div id="panel_expert" role="tabpanel" aria-labelledby="tab_expert">
 <fieldset id="panel_partition" class="group">
   <legend>Partition</legend>
   <div class="row">
@@ -49,7 +71,7 @@
       <tbody></tbody>
     </table>
     <div class="row center">
-      <button id="but_apply" data-parity="QWPopupTableCheck.but_apply">Apply</button>
+      <button id="but_apply" data-parity="QWPopupTableCheck.but_apply QWPopupTableCheck.but_apply.mnemonic" data-accesskey="a" aria-keyshortcuts="Alt+A" title="Apply (Alt+A)"><u>A</u>pply</button>
     </div>
   </div>
 
@@ -71,7 +93,7 @@
     <span id="lab_state" class="lab">Target State</span>
     <span id="lab_trans" class="lab right">Last Transition</span>
 
-    <select id="box_state" data-parity="CGWMainControl.box_state" title="Select desirable state."></select>
+    <select id="box_state" data-parity="CGWMainControl.box_state CGWMainControl.box_state.keyPressEvent CGWMainControl.box_state.wheelEvent" title="Select desirable state."></select>
     <div id="bar_progress" data-parity="CGWMainControl.bar_progress" class="progress" hidden>
       <div class="fill"></div><span class="plabel"></span>
     </div>
@@ -90,6 +112,8 @@
   </details>
   <div class="row small"><span id="run_info"></span><span class="stretch"></span><span id="cmd_status"></span></div>
 </fieldset>
+</div><!-- panel_expert -->
+</div><!-- gui_win -->
 
 <fieldset id="panel_info" class="group">
   <legend>Info</legend>

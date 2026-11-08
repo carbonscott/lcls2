@@ -1,0 +1,150 @@
+{
+ "CGWMainConfiguration.but_type": {
+  "web": "[data-parity~=\"CGWMainConfiguration.but_type\"]",
+  "test": "test_configeditor_ui.py::test_main_type_button_and_alias_popup[chromium]"
+ },
+ "CGWMainConfiguration.on_but_type@1": {
+  "web": "[data-parity~=\"CGWMainConfiguration.on_but_type@1\"]",
+  "test": "test_configeditor_ui.py::test_main_type_button_and_alias_popup[chromium]"
+ },
+ "CGWMainConfiguration.but_edit": {
+  "web": "[data-parity~=\"CGWMainConfiguration.but_edit\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "CGWConfigSelect.but_type": {
+  "web": "[data-parity~=\"CGWConfigSelect.but_type\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "CGWConfigSelect.on_but_type@1": {
+  "web": "[data-parity~=\"CGWConfigSelect.on_but_type@1\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "CGWConfigSelect.but_dev": {
+  "web": "[data-parity~=\"CGWConfigSelect.but_dev\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "CGWConfigSelect.on_but_dev@1": {
+  "web": "[data-parity~=\"CGWConfigSelect.on_but_dev@1\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "QWDialog.but_apply": {
+  "web": "[data-parity~=\"QWDialog.but_apply\"]",
+  "test": "test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]"
+ },
+ "QWDialog.but_cancel": {
+  "web": "[data-parity~=\"QWDialog.but_cancel\"]",
+  "test": "test_configeditor_ui.py::test_select_dialog_cancel[chromium]"
+ },
+ "CGWConfigEditorTree.expanded": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.expanded\"]",
+  "test": "test_configeditor_ui.py::test_tree_expand_collapse[chromium]"
+ },
+ "CGWConfigEditorTree.collapsed": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.collapsed\"]",
+  "test": "test_configeditor_ui.py::test_tree_expand_collapse[chromium]"
+ },
+ "CGWConfigEditor.but_expn": {
+  "web": "[data-parity~=\"CGWConfigEditor.but_expn\"]",
+  "test": "test_configeditor_ui.py::test_tree_expand_collapse[chromium]"
+ },
+ "CGWConfigEditorTree.tree_model_from_dict@4.edit": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.tree_model_from_dict@4.edit\"]",
+  "test": "test_configeditor_ui.py::test_tree_scalar_edit_and_radix[chromium]"
+ },
+ "CGWConfigEditorTree.tree_model_from_dict@4.check": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.tree_model_from_dict@4.check\"]",
+  "test": "test_configeditor_ui.py::test_tree_scalar_edit_and_radix[chromium]"
+ },
+ "CGWConfigEditorTree.clicked": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.clicked\"]",
+  "test": "test_configeditor_ui.py::test_tree_scalar_edit_and_radix[chromium]"
+ },
+ "CGWConfigEditorTree.tree_model_from_dict@3.edit": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.tree_model_from_dict@3.edit\"]",
+  "test": "test_configeditor_ui.py::test_tree_list_and_long_value_popup[chromium]"
+ },
+ "QWEditText.edi_text": {
+  "web": "[data-parity~=\"QWEditText.edi_text\"]",
+  "test": "test_configeditor_ui.py::test_tree_list_and_long_value_popup[chromium]"
+ },
+ "QWPopupEditText.but_cancel": {
+  "web": "[data-parity~=\"QWPopupEditText.but_cancel\"]",
+  "test": "test_configeditor_ui.py::test_tree_list_and_long_value_popup[chromium]"
+ },
+ "QWPopupEditText.but_apply": {
+  "web": "[data-parity~=\"QWPopupEditText.but_apply\"]",
+  "test": "test_configeditor_ui.py::test_tree_list_and_long_value_popup[chromium]"
+ },
+ "CGWConfigEditorTree.start_special_editor@1": {
+  "web": "[data-parity~=\"CGWConfigEditorTree.start_special_editor@1\"]",
+  "test": "test_configeditor_ui.py::test_tree_enum_popup[chromium]"
+ },
+ "CGWConfigEditor.box_type": {
+  "web": "[data-parity~=\"CGWConfigEditor.box_type\"]",
+  "test": "test_configeditor_ui.py::test_text_editor_and_type_switch[chromium]"
+ },
+ "CGWConfigEditorText.edi_txt": {
+  "web": "[data-parity~=\"CGWConfigEditorText.edi_txt\"]",
+  "test": "test_configeditor_ui.py::test_text_editor_and_type_switch[chromium]"
+ },
+ "CGWConfigEditor.but_apply": {
+  "web": "[data-parity~=\"CGWConfigEditor.but_apply\"]",
+  "test": "test_configeditor_ui.py::test_apply_confirm_cancel_and_ok[chromium]"
+ },
+ "CGWMainConfiguration.save_dictj_in_db@1": {
+  "web": "[data-parity~=\"CGWMainConfiguration.save_dictj_in_db@1\"]",
+  "test": "test_configeditor_ui.py::test_apply_confirm_cancel_and_ok[chromium]"
+ },
+ "CGWConfigEditor.but_select": {
+  "web": "[data-parity~=\"CGWConfigEditor.but_select\"]",
+  "test": "test_configeditor_ui.py::test_select_other_and_close[chromium]"
+ },
+ "CGWConfigEditor.but_close": {
+  "web": "[data-parity~=\"CGWConfigEditor.but_close\"]",
+  "test": "test_configeditor_ui.py::test_select_other_and_close[chromium]"
+ },
+ "CGWConfigEditor.box_more.help": {
+  "web": "[data-parity~=\"CGWConfigEditor.box_more.help\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "CGWConfigEditor.help_box": {
+  "web": "[data-parity~=\"CGWConfigEditor.help_box\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "CGWConfigEditor.box_more.save": {
+  "web": "[data-parity~=\"CGWConfigEditor.box_more.save\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "CGWConfigEditor.select_ofname@1": {
+  "web": "[data-parity~=\"CGWConfigEditor.select_ofname@1\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "CGWConfigEditor.box_more.load": {
+  "web": "[data-parity~=\"CGWConfigEditor.box_more.load\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "CGWConfigEditor.select_ifname@1": {
+  "web": "[data-parity~=\"CGWConfigEditor.select_ifname@1\"]",
+  "test": "test_configeditor_ui.py::test_more_help_save_load[chromium]"
+ },
+ "QWEditText.box_more.load": {
+  "web": "[data-parity~=\"QWEditText.box_more.load\"]",
+  "test": "test_configeditor_ui.py::test_long_value_popup_more_load_save[chromium]"
+ },
+ "QWEditText.box_more.save": {
+  "web": "[data-parity~=\"QWEditText.box_more.save\"]",
+  "test": "test_configeditor_ui.py::test_long_value_popup_more_load_save[chromium]"
+ },
+ "QWEditText.select_ifname@1": {
+  "web": "[data-parity~=\"QWEditText.select_ifname@1\"]",
+  "test": "test_configeditor_ui.py::test_long_value_popup_more_load_save[chromium]"
+ },
+ "QWEditText.select_ofname@1": {
+  "web": "[data-parity~=\"QWEditText.select_ofname@1\"]",
+  "test": "test_configeditor_ui.py::test_long_value_popup_more_load_save[chromium]"
+ },
+ "CGWConfigEditor.cbx_serno": {
+  "web": "[data-parity~=\"CGWConfigEditor.cbx_serno\"]",
+  "test": "test_configeditor_ui.py::test_serial_number_checkbox[chromium]"
+ }
+}
