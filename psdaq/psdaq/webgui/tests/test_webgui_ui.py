@@ -189,11 +189,17 @@ def test_config_type_popup(page, server):
 
 
 def test_partition_columns_apply(page, server):
-    """sel / grp / Monitor cells of the select table reach selectPlatform."""
+    """sel / grp / Monitor cells of the select table reach selectPlatform (per segment, after expanding the
+    detector the table shows collapsed; the collapsed row is test_webgui_parity_ui's)."""
     open_gui(page, server)
     page.click(P('CGWMainPartition.but_select'))
     expect_state(page, 'unallocated', 'rollcall')
     row = lambda alias: page.locator('#select_table tr[data-alias="%s"]' % alias)  # noqa: E731
+    expect(row('fakecam_1')).to_be_hidden()
+    row('fakecam_0').locator(P('CGWMainPartition.w_select.id')).click()          # expand fakecam's segments
+    expect(row('fakecam_1')).to_be_visible()
+    grp = row('fakecam_0').locator(P('CGWPartitionTable.set_readout_group_number@1'))
+    assert grp.evaluate('(e) => [...e.options].map((o) => o.text)') == [str(i) for i in range(8)]  # LIST_OF_VALUES
     row('fakecam_0').locator(P('CGWMainPartition.w_select.grp')).select_option('3')
     row('fakecam_1').locator(P('CGWMainPartition.w_select.monitor')).check()
     row('meb0').locator(P('CGWMainPartition.w_select.sel')).uncheck()
@@ -203,7 +209,8 @@ def test_partition_columns_apply(page, server):
     plat = server.get('/api/platform')
     by_alias = {v['proc_info']['alias']: v for lvl in plat.values() for v in lvl.values()}
     assert by_alias['fakecam_0']['det_info']['readout'] == 3
-    assert by_alias['fakecam_1']['monitor'] == 1
+    assert by_alias['fakecam_1']['det_info']['readout'] == 0
+    assert by_alias['fakecam_1']['monitor'] == 1 and by_alias['fakecam_0']['monitor'] == 0
     assert by_alias['meb0']['active'] == 0
     expect(page.locator(P('QWLoggerStd.edi_txt'))).to_contain_text('drp/fakecam_1 set to MONITOR ONLY.', timeout=T)
     # collection shows only active processes per level
@@ -246,11 +253,16 @@ def test_progress_bar(page, slow_server):
 
 
 def test_refresh_buttons(page, server):
-    """but_transition / but_ctrls only refresh the display (CGWMainControl.py:177-185)."""
+    """but_transition / but_ctrls only refresh the display (CGWMainControl.py:177-185): each click reads the
+    status again (GET /api/status) and sends no command."""
     open_gui(page, server)
-    page.click(P('CGWMainControl.but_transition'))
-    page.click(P('CGWMainControl.but_ctrls'))
+    sent = []
+    page.on('request', lambda r: sent.append((r.method, r.url.rsplit('/', 1)[-1])))
+    for pid in ('CGWMainControl.but_transition', 'CGWMainControl.but_ctrls'):
+        with page.expect_request(lambda r: r.method == 'GET' and r.url.endswith('/api/status'), timeout=T):
+            page.click(P(pid))
     expect_state(page, 'reset', 'reset')
+    assert [m for m, _ in sent if m == 'POST'] == []
     assert server.get('/api/status')['state'] == 'reset'
 
 

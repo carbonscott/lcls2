@@ -1,0 +1,134 @@
+{
+ "CGWConfigEditorTree.tree_model_from_dict@1": {
+  "test": "test_webgui_parity_ui.py::test_config_tree_key_and_index_cells_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWConfigEditorTree.tree_model_from_dict@1\"]"
+ },
+ "CGWConfigEditorTree.tree_model_from_dict@2": {
+  "test": "test_webgui_parity_ui.py::test_config_tree_key_and_index_cells_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWConfigEditorTree.tree_model_from_dict@2\"]"
+ },
+ "CGWMainControl.box_state": {
+  "test": "test_webgui_ui.py::test_full_cycle[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.box_state\"]"
+ },
+ "CGWMainControl.box_state.keyPressEvent": {
+  "test": "test_webgui_parity_ui.py::test_box_state_ignores_arrow_keys_and_wheel[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.box_state.keyPressEvent\"]"
+ },
+ "CGWMainControl.box_state.wheelEvent": {
+  "test": "test_webgui_parity_ui.py::test_box_state_ignores_arrow_keys_and_wheel[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.box_state.wheelEvent\"]"
+ },
+ "CGWMainControl.but_ctrls": {
+  "test": "test_webgui_ui.py::test_refresh_buttons[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.but_ctrls\"]"
+ },
+ "CGWMainControl.but_record": {
+  "test": "test_webgui_ui.py::test_record_toggle[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.but_record\"]"
+ },
+ "CGWMainControl.but_transition": {
+  "test": "test_webgui_ui.py::test_refresh_buttons[chromium]",
+  "web": "[data-parity~=\"CGWMainControl.but_transition\"]"
+ },
+ "CGWMainPartition.but_select": {
+  "test": "test_webgui_ui.py::test_full_cycle[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.but_select\"]"
+ },
+ "CGWMainPartition.but_show": {
+  "test": "test_webgui_ui.py::test_collection_and_show_window[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.but_show\"]"
+ },
+ "CGWMainPartition.w_select.grp": {
+  "test": "test_webgui_ui.py::test_partition_columns_apply[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_select.grp\"]"
+ },
+ "CGWMainPartition.w_select.id": {
+  "test": "test_webgui_parity_ui.py::test_select_id_collapses_and_expands_detector[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_select.id\"]"
+ },
+ "CGWMainPartition.w_select.level_pid_host": {
+  "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_select.level_pid_host\"]"
+ },
+ "CGWMainPartition.w_select.monitor": {
+  "test": "test_webgui_ui.py::test_partition_columns_apply[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_select.monitor\"]"
+ },
+ "CGWMainPartition.w_select.sel": {
+  "test": "test_webgui_ui.py::test_partition_columns_apply[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_select.sel\"]"
+ },
+ "CGWMainPartition.w_show.grp": {
+  "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_show.grp\"]"
+ },
+ "CGWMainPartition.w_show.id": {
+  "test": "test_webgui_parity_ui.py::test_show_id_collapses_and_expands_detector[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_show.id\"]"
+ },
+ "CGWMainPartition.w_show.level_pid_host": {
+  "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_show.level_pid_host\"]"
+ },
+ "CGWMainPartition.w_show.monitor": {
+  "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_show.monitor\"]"
+ },
+ "CGWMainPartition.w_show.sel": {
+  "test": "test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWMainPartition.w_show.sel\"]"
+ },
+ "CGWMainTabUser.but_play": {
+  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
+  "web": "[data-parity~=\"CGWMainTabUser.but_play\"]"
+ },
+ "CGWMainTabUser.but_record": {
+  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
+  "web": "[data-parity~=\"CGWMainTabUser.but_record\"]"
+ },
+ "CGWMainTabUser.but_stop": {
+  "test": "test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]",
+  "web": "[data-parity~=\"CGWMainTabUser.but_stop\"]"
+ },
+ "CGWMainTabs.tab_bar.expert": {
+  "test": "test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]",
+  "web": "[data-parity~=\"CGWMainTabs.tab_bar.expert\"]"
+ },
+ "CGWMainTabs.tab_bar.user": {
+  "test": "test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]",
+  "web": "[data-parity~=\"CGWMainTabs.tab_bar.user\"]"
+ },
+ "CGWPanelList.fill_list_model@1": {
+  "test": "test_webgui_parity_ui.py::test_collection_cells_shown_not_editable[chromium]",
+  "web": "[data-parity~=\"CGWPanelList.fill_list_model@1\"]"
+ },
+ "CGWPartitionTable.set_readout_group_number@1": {
+  "test": "test_webgui_ui.py::test_partition_columns_apply[chromium]",
+  "web": "[data-parity~=\"CGWPartitionTable.set_readout_group_number@1\"]"
+ },
+ "QWLoggerError.edi_err": {
+  "test": "test_webgui_parity_ui.py::test_logger_text_shown_read_only[chromium]",
+  "web": "[data-parity~=\"QWLoggerError.edi_err\"]"
+ },
+ "QWLoggerStd.edi_txt": {
+  "test": "test_webgui_parity_ui.py::test_logger_text_shown_read_only[chromium]",
+  "web": "[data-parity~=\"QWLoggerStd.edi_txt\"]"
+ },
+ "QWPopupEditText.but_apply.mnemonic": {
+  "test": "test_webgui_parity_ui.py::test_popup_edit_text_mnemonics[chromium]",
+  "web": "[data-parity~=\"QWPopupEditText.but_apply\"][data-accesskey=\"a\"]"
+ },
+ "QWPopupEditText.but_cancel.mnemonic": {
+  "test": "test_webgui_parity_ui.py::test_popup_edit_text_mnemonics[chromium]",
+  "web": "[data-parity~=\"QWPopupEditText.but_cancel\"][data-accesskey=\"c\"]"
+ },
+ "QWPopupTableCheck.but_apply": {
+  "test": "test_webgui_ui.py::test_full_cycle[chromium]",
+  "web": "[data-parity~=\"QWPopupTableCheck.but_apply\"]"
+ },
+ "QWPopupTableCheck.but_apply.mnemonic": {
+  "test": "test_webgui_parity_ui.py::test_alt_a_applies_select_window[chromium]",
+  "web": "[data-parity~=\"QWPopupTableCheck.but_apply.mnemonic\"]"
+ }
+}
