@@ -16,6 +16,11 @@ from the same time it puts in the timing header: pid = sec*14e6/13 + ns*14/13000
 most a few ticks only to stay strictly increasing); with --expect, N == expect.  Prints the
 counts and exits 0 only if every check passes.
 
+For a BEB detector run with -d sim:// (psdaq/drp/MemPoolSim.cc, e.g. epix100) the payload is an
+image whose every pixel is (seed + seq) masked to the type's bit depth, seq = 1, 2, ... per
+L1Accept; the check is then: data present, the type's image shape, every pixel equal to
+(seed + n) & mask for the n-th event.
+
 psana2's calibration DB lookup is switched off (skip_calib_load='all') and LCLS_CALIB_HTTP points
 at a dead loopback port unless already set, so reading the file contacts no service.
 """
@@ -26,7 +31,62 @@ import os
 import sys
 
 
+# BEB types: (raw image shape, pixel bit depth), as MemPoolSim's batcher table writes them
+IMAGE_TYPES = {'epix100': ((704, 768), 14)}
+
+
+def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=5):
+    os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
+    import numpy as np
+    from psana import DataSource
+
+    mask = (1 << bits) - 1
+    r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
+         'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
+         'first_seq': None, 'last_seq': None,
+         'seq_gap_free': None, 'problems': []}
+    ds = DataSource(files=[path], skip_calib_load='all')
+    for run in ds.runs():
+        r['run'] = run.runnum
+        r['experiment'] = run.expt
+        det = run.Detector(det_name)
+        for evt in run.events():
+            r['events'] += 1
+            n = r['events']
+            raw = det.raw.raw(evt)
+            if raw is None:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: no {det_name} data')
+                continue
+            r['with_data'] += 1
+            r['shape'] = list(raw.shape)
+            v = int(raw.flat[0]) & mask
+            if seed is not None:
+                want = (seed + n) & mask
+            else:
+                want = v
+            if tuple(raw.shape) == shape and bool(((raw & mask) == want).all()):
+                r['pattern_ok'] += 1
+                r['seed_ok'] += 1
+            elif len(r['problems']) < max_report:
+                bad = int(((raw & mask) != want).sum())
+                r['problems'].append(f'event {n}: shape {tuple(raw.shape)}, {bad} pixels != '
+                                     f'{want:#x} (pixel[0] {v:#x})')
+    n = r['events']
+    r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
+    r['seq_gap_free'] = r['pattern_ok'] == n
+    r['seeds'] = {seed if seed is not None else -1: r['seed_ok']}
+    r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
+                     and (expect is None or n == expect))
+    if expect is not None and n != expect:
+        r['problems'].append(f'{n} events, expected {expect}')
+    return r
+
+
 def check(path, det_name='fakecam', seed=None, expect=None, max_report=5):
+    if det_name.rsplit('_', 1)[0] in IMAGE_TYPES:
+        shape, bits = IMAGE_TYPES[det_name.rsplit('_', 1)[0]]
+        return check_image(path, det_name, shape, bits, seed, expect, max_report)
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     import numpy as np
     from psana import DataSource

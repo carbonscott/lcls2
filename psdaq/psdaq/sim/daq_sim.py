@@ -79,6 +79,23 @@ PVBASE = 'DAQ:SIM'
 XPM = 0
 EP = 'ep_domain=lo,ep_provider=tcp'     # libfabric tcp on loopback (Collection.cc getNicIp)
 PROCS = ('control', 'teb0', DETECTOR + '_0')     # with --segments N: + DETECTOR_1 .. DETECTOR_<N-1> (procs())
+# drp -k settings per simulated detector type (up --det).  BEB types (psdaq.sim.rogue_dev) get
+# EventBatcher-framed buffers sized for their frame (psdaq/drp/MemPoolSim.cc) and their config
+# from the type's own store; 'det_yaml' is the firmware YAML a production config is made from.
+SIM_TYPES = {
+    'fakecam': {'kwargs': 'sim_length={length}'},
+    'epix100': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}',
+                'det_yaml': '{SUBMODULEDIR}/epix-100a-gen2/software/yml/ePix100a_asics_0123.yml'},
+}
+
+
+def use_det(det):
+    """Select the simulated detector type for this invocation (up stores it in the state)."""
+    global DETECTOR, PROCS
+    if det not in SIM_TYPES:
+        raise Fail(f'unknown simulated detector {det!r}; one of {sorted(SIM_TYPES)}')
+    DETECTOR = det
+    PROCS = ('control', 'teb0', DETECTOR + '_0')
 STATES = ['reset', 'unallocated', 'allocated', 'connected', 'configured', 'starting',
           'paused', 'running']
 TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' starts
@@ -253,12 +270,12 @@ procmgr_config = [
    cmd:'teb{v} -P {instr} -C localhost -k {ep} -M {prom}' }},
  {{ id:'{det}_0', flags:'spu',
    cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
-       ' -k {ep},sim_length={length} -M {prom}' }},
+       ' -k {ep},{simk} -M {prom}' }},
 {segments}]
 '''
 SEGMENT = ''' {{ id:'{det}_{segm}', flags:'spu',
    cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
-       ' -k {ep},sim_length={length} -M {prom}' }},
+       ' -k {ep},{simk} -M {prom}' }},
 '''
 
 
@@ -320,7 +337,7 @@ def cmd_up(args):
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
-             'segments': segments}
+             'segments': segments, 'det': DETECTOR}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -343,11 +360,15 @@ def cmd_up(args):
                            '--port', str(P['configdb']),
                            '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
         wait_listen(P['configdb'], 30, p, 'configdb_server')
+        sim_type = SIM_TYPES[DETECTOR]
+        det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
+        if sim_type.get('det_yaml'):
+            det_args += ['--det-yaml', sim_type['det_yaml'].format(**os.environ)]
         for segm in range(segments):
             r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
                                 '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
                                 '--det', DETECTOR, '--segm', str(segm), '--sim-seed', str(args.seed),
-                                '--sim-length', str(args.length)],
+                                '--sim-length', str(args.length)] + det_args,
                                env=env, capture_output=True, text=True, timeout=60)
             with open(work.path('logs', 'seed.log'), 'a' if segm else 'w') as out:
                 out.write(r.stdout + r.stderr)
@@ -371,7 +392,8 @@ def cmd_up(args):
 
         write_activedet(work.path('activedet.json'), args.platform, segments)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
-                      data=work.path('data'), length=args.length, v=' -v' if args.verbose else '')
+                      data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
+                      simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed))
         with open(work.path(state['cnf']), 'w') as f:
             f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
                                xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
@@ -863,11 +885,11 @@ def _psana_counts(work, state, experiment, run, seed=None):
     if not files:
         return {'xtc2 file': f'none matching {pattern}'}
     # With --segments N each DRP writes its own -s<stream> file and control numbers the streams, so
-    # fakecam_0's file is the first one in which xtc2_check finds segment 0 (fakecam's det.raw.raw).
+    # <det>_0's file is the first one in which xtc2_check finds segment 0 (the type's det.raw.raw).
     for path in files:
         out = {'xtc2 file': f'{path} ({os.path.getsize(path)} B)'}
-        r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', path, '--seed',
-                            str(state['seed'] if seed is None else seed), '--json'],
+        r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', path, '--det', DETECTOR,
+                            '--seed', str(state['seed'] if seed is None else seed), '--json'],
                            capture_output=True, text=True, timeout=600)
         try:
             res = json.loads(r.stdout.strip().splitlines()[-1])
@@ -930,7 +952,9 @@ def main(argv=None):
                         help='sim_seed stored in the config DB (default %(default)#x)')
     upopts.add_argument('--length', type=int, default=64, help='payload words per event (default %(default)d)')
     upopts.add_argument('--segments', type=int, default=1, choices=range(1, 5),
-                        help='fakecam DRPs, as segments 0..N-1 of one detector (default %(default)d)')
+                        help='DRPs of the --det type, as segments 0..N-1 of one detector (default %(default)d)')
+    upopts.add_argument('--det', default='fakecam', choices=sorted(SIM_TYPES),
+                        help='simulated detector type for the DRP (default %(default)s)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
@@ -981,6 +1005,8 @@ def main(argv=None):
         return cmd_matrix(args)
     ensure_env(argv)
     try:
+        old = Work(args.workdir).load() or {}
+        use_det(getattr(args, 'det', None) or old.get('det') or 'fakecam')
         if args.command == 'e2e':
             from psdaq.webgui.e2e import cmd_e2e
             return cmd_e2e(args)

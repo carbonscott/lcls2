@@ -30,6 +30,13 @@ namespace Drp {
 //   w0 = pulseId & 0xffffffff, w1 = pulseId >> 32, w2 = seq (L1Accepts since the last
 //   GroupL0Reset), w3 = seed, w[k] = seed + w0 + k + (lane << 16) for k = 4..L-1.
 // The seed comes from the configuration database at Configure (see XpmDetector).
+//
+// Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
+// DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
+// as subframe 0 and, for L1Accepts, the type's subframes.  The layout is chosen by detType
+// from a table in MemPoolSim.cc ('batcher' below); a BEB type not in it cannot run sim://.
+// Its data subframe is a header {w0 = pulseId lo, w1 = pulseId hi, w2 = seq, w3 = seed}
+// followed by pixels all equal to (seed + seq) masked to the type's bit depth.
 class MemPoolSim : public MemPool
 {
 public:
@@ -43,11 +50,23 @@ public:
         uint32_t seq;                   // L1Accept sequence number, 0 for transitions
     } __attribute__((packed));
     static_assert(sizeof(Frame) == 24, "simxpm frame size");
+    // EventBatcher layout of one BEB type's L1Accept DMA buffer
+    struct Batcher
+    {
+        const char* detType;
+        unsigned    dataTdest;          // subframe holding the detector data
+        unsigned    dataBytes;          // its size, as the type's _event() expects
+        unsigned    headerBytes;        // leading bytes of it that are not pixels
+        unsigned    bits;               // pixel bit depth
+    };
+    static const Batcher* batcher(const std::string& detType);
 public:
     static bool isSimDevice(const std::string& device);
     // Lay out one DMA buffer for frame 'f'; returns its size in bytes
     static size_t fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
                        unsigned lane, unsigned length, uint32_t seed);
+    static size_t fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f,
+                              uint32_t evtCounter, bool l1, uint32_t seed);
 public:
     MemPoolSim(const Parameters& para);
     virtual ~MemPoolSim();
@@ -71,6 +90,7 @@ private:
     struct Ready { int32_t size; uint32_t index; uint32_t dest; };
     std::string             m_endpoint;
     std::string             m_alias;
+    const Batcher*          m_batcher;          // EventBatcher framing, or nullptr for TDet
     unsigned                m_nLanes;
     uint8_t                 m_laneMask;
     unsigned                m_virtChan;

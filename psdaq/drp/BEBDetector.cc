@@ -1,5 +1,6 @@
 #include "BEBDetector.hh"
 #include "PythonConfigScanner.hh"
+#include "MemPoolSim.hh"
 #include "XpmInfo.hh"
 #include "psdaq/service/EbDgram.hh"
 #include "xtcdata/xtc/VarDef.hh"
@@ -103,7 +104,8 @@ BEBDetector::BEBDetector(Parameters* para, MemPool* pool) :
     m_connect_json(""),
     m_module      (0),
     m_configScanner (0),
-    m_debatch     (false)
+    m_debatch     (false),
+    m_sim         (MemPoolSim::isSimDevice(para->device) ? pool->getAs<MemPoolSim>() : nullptr)
 {
     virtChan = 1;
 }
@@ -120,6 +122,17 @@ void BEBDetector::_init(const char* arg)
     sprintf(module_name,"psdaq.configdb.%s_config",m_para->detType.c_str());
 
     char func_name[64];
+
+    // With a simulated device, replace rogue's hardware transports before the config module
+    // builds its firmware roots, so the type's own config code runs against it (psdaq.sim.rogue_dev)
+    if (m_sim) {
+        PyObject* sim = _check(PyImport_ImportModule("psdaq.sim.rogue_dev"));
+        Py_DECREF(_check(PyObject_CallMethod(sim, "install", "ss", m_para->device.c_str(),
+                                             m_para->detType.c_str())));
+        Py_DECREF(sim);
+        logging::info("BEBDetector: %s config runs against simulated device %s",
+                      m_para->detType.c_str(), m_para->device.c_str());
+    }
 
     // returns new reference
     m_module = _check(PyImport_ImportModule(module_name));
@@ -183,6 +196,14 @@ json BEBDetector::connectionInfo(const json& msg)
       m_paddr = PyLong_AsLong(PyDict_GetItemString(mbytes, "paddr"));
       printf("*** BebDetector: paddr is %08x = %u\n", m_paddr, m_paddr);
 
+      if (m_sim) {                      // The timing link is simxpm's, not the emulated RxId
+          _connectionInfo(mbytes);
+          Py_DECREF(mbytes);
+          m_paddr = m_sim->paddr();
+          logging::info("BebDetector: simulated device, link id 0x%x from simxpm", m_paddr);
+          return xpmInfo(m_paddr);
+      }
+
       // there is currently a failure mode where the register reads
       // back as zero or 0xffffffff (incorrectly). This is not the best
       // longterm fix, but throw here to highlight the problem. the
@@ -212,6 +233,7 @@ void BEBDetector::connectionShutdown()
     if (pFunc) {
         Py_DECREF(_check(PyObject_CallFunction(pFunc,"")));
     }
+    if (m_sim)  m_sim->disconnect();
 }
 
 void BEBDetector::connect(const json& connect_json, const std::string& collectionId)
@@ -219,6 +241,14 @@ void BEBDetector::connect(const json& connect_json, const std::string& collectio
     logging::info("BEBDetector connect");
     m_connect_json = connect_json.dump();
     m_readoutGroup = connect_json["body"]["drp"][collectionId]["det_info"]["readout"];
+
+    if (m_sim) {
+        auto it = m_para->kwargs.find("sim_seed");
+        uint32_t seed = it == m_para->kwargs.end() ? 0 : std::stoul(it->second, nullptr, 0);
+        m_sim->seed(seed);
+        m_sim->connect(m_readoutGroup, 0);
+        logging::info("BEBDetector: sim payload seed 0x%x", seed);
+    }
 }
 
 unsigned BEBDetector::configure(const std::string& config_alias,

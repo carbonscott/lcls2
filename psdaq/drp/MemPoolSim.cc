@@ -1,4 +1,5 @@
 #include "MemPoolSim.hh"
+#include "EventBatcher.hh"
 
 #include "psdaq/service/EbDgram.hh"
 #include "xtcdata/xtc/TransitionId.hh"
@@ -11,6 +12,7 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 #include <chrono>
 
 using json = nlohmann::json;
@@ -61,9 +63,71 @@ size_t MemPoolSim::fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
     return sizeof(Pds::TimingHeader) + length * sizeof(uint32_t);
 }
 
+// One row per BEB detector type that can run with -d sim://
+static const MemPoolSim::Batcher Batchers[] = {
+    // epix100 (Epix100::_event): subframe 3 = 32 B header, (704+2+2) rows x 768 uint16, 12 B trailer
+    { "epix100", 3, 32 + (704 + 2 + 2) * 768 * 2 + 12, 32, 14 },
+};
+
+const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
+{
+    for (const auto& b : Batchers)
+        if (detType == b.detType)  return &b;
+    return nullptr;
+}
+
+// Lay out a buffer as the AxiStreamBatcherEventBuilder does (EventBatcher.hh): a header line,
+// then each subframe's data padded to the line width followed by a one-line tail
+// {size, tdest, tuser_first, tuser_last, width}.  BEBDetector walks the tails backwards from
+// the end, so the subframe with the highest tdest comes last.
+size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f,
+                               uint32_t evtCounter, bool l1, uint32_t seed)
+{
+    const unsigned width = 2;                           // 8-byte lines
+    const unsigned lw    = EvtBatcherHeader::lineWidth(width);
+    static_assert(sizeof(EvtBatcherSubFrameTail) == 8, "batcher tail fits one 8-byte line");
+
+    memset(buffer, 0, lw);
+    auto ebh = reinterpret_cast<EvtBatcherHeader*>(buffer);
+    ebh->version        = 1;
+    ebh->width          = width;
+    ebh->sequence_count = evtCounter & 0xff;
+    size_t pos = lw;
+
+    auto tail = [&](uint32_t size, uint8_t tdest) {
+        pos += (size + lw - 1) & ~(lw - 1);
+        uint8_t* t = buffer + pos;
+        memcpy(t, &size, sizeof(size));
+        t[4] = tdest;  t[5] = 0x2;  t[6] = 0;  t[7] = width;    // tuser_first: SOF
+        pos += lw;
+    };
+
+    // Subframe 0: the TimingHeader (getTimingHeader() returns its address)
+    size_t th = fill(buffer + pos, f, evtCounter, 0, 0, 0);
+    tail(th, 0);
+    if (!l1)  return pos;
+
+    // Subframe 2: the detailed timing frame; a copy of the header stands in for it
+    memcpy(buffer + pos, buffer + lw, th);
+    tail(th, 2);
+
+    // Data subframe: header words, then every pixel = (seed + seq) masked to the bit depth
+    uint8_t*  data = buffer + pos;
+    uint64_t  pid  = f.pulseIdAndControl & ((1ull << 56) - 1);
+    uint32_t* w    = reinterpret_cast<uint32_t*>(data);
+    memset(data, 0, b.dataBytes);
+    w[0] = uint32_t(pid);  w[1] = uint32_t(pid >> 32);  w[2] = f.seq;  w[3] = seed;
+    uint16_t  value = (seed + f.seq) & ((1u << b.bits) - 1);
+    uint16_t* pix   = reinterpret_cast<uint16_t*>(data + b.headerBytes);
+    std::fill_n(pix, (b.dataBytes - b.headerBytes) / sizeof(uint16_t), value);
+    tail(b.dataBytes, b.dataTdest);
+    return pos;
+}
+
 MemPoolSim::MemPoolSim(const Parameters& para) :
     MemPool     (para),
     m_alias     (para.alias),
+    m_batcher   (batcher(para.detType)),
     m_nLanes    (__builtin_popcount(para.laneMask)),
     m_laneMask  (para.laneMask),
     m_virtChan  (0),
@@ -95,6 +159,16 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         logging::critical("MemPoolSim: bad geometry: lanes 0x%x, sim_dma_count %u, sim_dma_size %u",
                           para.laneMask, m_dmaCount, m_dmaSize);
         abort();
+    }
+    if (m_batcher) {
+        size_t need = 8 * 5 + 2 * sizeof(Pds::TimingHeader) + m_batcher->dataBytes + 8;
+        if (m_dmaSize < need + sizeof(uint32_t)) {
+            logging::critical("MemPoolSim: %s needs sim_dma_size >= %zu (have %u)",
+                              para.detType.c_str(), need + sizeof(uint32_t), m_dmaSize);
+            abort();
+        }
+        logging::info("MemPoolSim: %s data framed as EventBatcher subframes (data tdest %u, %u B)",
+                      para.detType.c_str(), m_batcher->dataTdest, m_batcher->dataBytes);
     }
     if (posix_memalign((void**)&m_memory, 4096, size_t(m_dmaCount) * m_dmaSize)) {
         logging::critical("MemPoolSim: failed to allocate %u x %u B of DMA buffers", m_dmaCount, m_dmaSize);
@@ -254,7 +328,10 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
             if (!(m_laneMask & (1 << lane)))  continue;
             uint32_t idx = m_free.back();
             m_free.pop_back();
-            auto sz = fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, len, seed);
+            auto sz = m_batcher
+                    ? fillBatcher((uint8_t*)dmaBuffers[idx], *m_batcher, f, m_evtCounter,
+                                  tid == TransitionId::L1Accept, seed)
+                    : fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, len, seed);
             m_ready.push_back({int32_t(sz), idx, (lane << 8) | m_virtChan});
             ++nReady;
         }
