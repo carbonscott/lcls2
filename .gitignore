@@ -28,3 +28,6 @@ subprojects/cuszp/
 subprojects/lc/
 subprojects/pfpl/
 subprojects/sleek/
+
+# daq_sim coverage evidence records (psdaq/psdaq/sim/coverage.py)
+.daq_sim/
