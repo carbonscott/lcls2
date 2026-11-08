@@ -125,9 +125,12 @@ int main(int argc, char* argv[])
         if (kwargs.first == "pythonScript")      continue;  // PGPDetectorApp
         if (kwargs.first == "sim_length")        continue;  // XpmDetector
         if (kwargs.first == "sw_sim_length")     continue;  // AreaDetector
-        if (kwargs.first == "sim_seed")          continue;  // XpmDetector with -d sim://
-        if (kwargs.first == "sim_dma_count")     continue;  // MemPoolSim
-        if (kwargs.first == "sim_dma_size")      continue;  // MemPoolSim
+        // Only with a simulated device (-d sim://...): a hardware DRP still rejects these
+        if (para.device.rfind("sim://", 0) == 0) {
+            if (kwargs.first == "sim_seed")      continue;  // XpmDetector
+            if (kwargs.first == "sim_dma_count") continue;  // MemPoolSim
+            if (kwargs.first == "sim_dma_size")  continue;  // MemPoolSim
+        }
         if (kwargs.first == "timebase")          continue;  // XpmDetector
         if (kwargs.first == "xpmpv")             continue;  // BEBDetector
         if (kwargs.first == "feb_lane")          continue;  // BEBDetector
