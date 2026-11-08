@@ -23,12 +23,31 @@ import signal
 import socket
 import sys
 import threading
+import importlib
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 
 from psdaq.control.ControlDef import ControlDef
 from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_loopback_host
+
+# Extension modules add API routes without editing this file. Each one defines
+# register(app, get_routes, post_routes): get_routes maps a path to
+# fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
+EXT_MODULES = ('psdaq.webgui.configdb_api',)
+
+
+def load_extensions(app, names=EXT_MODULES):
+    get_routes, post_routes = {}, {}
+    for name in names:
+        try:
+            mod = importlib.import_module(name)
+        except ImportError as ex:
+            if getattr(ex, 'name', None) == name:
+                continue            # extension not present in this tree
+            raise
+        mod.register(app, get_routes, post_routes)
+    return get_routes, post_routes
 
 logger = logging.getLogger('daq_webgui')
 
@@ -142,6 +161,7 @@ class App:
         self.args = args
         self.backend = backend
         self.events_source = events_source
+        self.ext_get, self.ext_post = load_extensions(self)
         self.hub = Hub()
         self.aliases = []
         self.aliases_source = None
@@ -315,6 +335,14 @@ def make_handler(app):
                 return self._send(200, {'records': recs})
             if p == '/api/stream':
                 return self._stream()
+            fn = app.ext_get.get(p)
+            if fn is not None:
+                try:
+                    code, rep = fn(parse_qs(u.query))
+                except Exception as ex:
+                    logger.exception('extension GET failed')
+                    code, rep = 500, {'ok': False, 'err_info': 'server error: %s' % ex}
+                return self._send(code, rep)
             return self._send(404, {'error': 'not found'})
 
         def _stream(self):
@@ -368,6 +396,7 @@ def make_handler(app):
             routes = {'/api/state': app.cmd_state, '/api/transition': app.cmd_transition,
                       '/api/record': app.cmd_record, '/api/config': app.cmd_config,
                       '/api/platform': app.cmd_platform}
+            routes.update(app.ext_post)
             fn = routes.get(urlsplit(self.path).path)
             if fn is None:
                 return self._send(404, {'error': 'not found'})

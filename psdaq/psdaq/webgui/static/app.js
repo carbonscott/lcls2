@@ -94,13 +94,14 @@ function fillSelectTable(plat) {    // QWPopupTableCheck / CGWPartitionTable wit
     let grp = '';
     if (r.hasGrp) {
       const opts = groups.includes(r.readout) ? groups : [r.readout, ...groups];
-      grp = '<select class="cell-grp" data-parity="CGWPartitionTable.table.grp" title="readout group">' +
+      grp = '<select class="cell-grp" data-parity="CGWMainPartition.w_select.grp CGWPartitionTable.set_readout_group_number@1" title="readout group">' +
         opts.map((g) => '<option' + (g === r.readout ? ' selected' : '') + '>' + esc(g) + '</option>').join('') + '</select>';
     }
     tr.innerHTML =
-      '<td><input type="checkbox" class="cell-sel" data-parity="CGWPartitionTable.table.sel"' + (r.active ? ' checked' : '') + '></td>' +
-      '<td>' + grp + '</td><td>' + esc(r.name) + '</td><td>' + esc(r.alias) + '</td>' +
-      '<td><input type="checkbox" class="cell-mon" data-parity="CGWPartitionTable.table.monitor"' + (r.monitor ? ' checked' : '') + '></td>';
+      '<td><input type="checkbox" class="cell-sel" data-parity="CGWMainPartition.w_select.sel"' + (r.active ? ' checked' : '') + '></td>' +
+      '<td>' + grp + '</td><td data-parity="CGWMainPartition.w_select.level_pid_host">' + esc(r.name) +
+      '</td><td data-parity="CGWMainPartition.w_select.id">' + esc(r.alias) + '</td>' +
+      '<td><input type="checkbox" class="cell-mon" data-parity="CGWMainPartition.w_select.monitor"' + (r.monitor ? ' checked' : '') + '></td>';
     tb.appendChild(tr);
   }
 }
@@ -111,8 +112,11 @@ function fillShowTable(plat) {      // CGWMainPartition.on_but_show: active rows
   for (const r of platformRows(plat).filter((x) => x.active)) {
     const tr = document.createElement('tr');
     tr.dataset.alias = r.alias;
-    tr.innerHTML = '<td>' + (r.active ? '&#10003;' : '') + '</td><td>' + esc(r.readout) + '</td><td>' + esc(r.name) +
-      '</td><td>' + esc(r.alias) + '</td><td>' + (r.monitor ? '&#10003;' : '') + '</td>';
+    tr.innerHTML = '<td data-parity="CGWMainPartition.w_show.sel">' + (r.active ? '&#10003;' : '') +
+      '</td><td data-parity="CGWMainPartition.w_show.grp">' + esc(r.readout) +
+      '</td><td data-parity="CGWMainPartition.w_show.level_pid_host">' + esc(r.name) +
+      '</td><td data-parity="CGWMainPartition.w_show.id">' + esc(r.alias) +
+      '</td><td data-parity="CGWMainPartition.w_show.monitor">' + (r.monitor ? '&#10003;' : '') + '</td>';
     tb.appendChild(tr);
   }
 }
@@ -205,7 +209,12 @@ function render() {
 
 function renderEvents() {
   const ev = S.events || {};
-  $('edi_evt').textContent = (ev.events === null || ev.events === undefined) ? 'N/A' : String(ev.events);
+  const e = $('edi_evt');
+  e.textContent = (ev.events === null || ev.events === undefined) ? 'N/A' : String(ev.events);
+  // For tests and tools: where the number came from, when, and whether it is final for the run.
+  e.dataset.source = ev.source || '';
+  e.dataset.ts = (ev.ts === null || ev.ts === undefined) ? '' : String(ev.ts);
+  e.dataset.final = ev.final ? '1' : '0';
   $('edi_evd').textContent = (ev.drops === null || ev.drops === undefined) ? 'N/A' : String(ev.drops);
   $('events_source').textContent = 'events source: ' + (ev.source || '?') + (ev.ok === false && ev.error ? ' (' + ev.error + ')' : '');
 }
