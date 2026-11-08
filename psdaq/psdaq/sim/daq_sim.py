@@ -7,6 +7,8 @@
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
                    [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
+    daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
+    daq_sim matrix   [the coverage options]
 
 'up' starts, in this order and all on this node:
   1. the isolation env (sim_env.sh, sourced by re-executing through bash) and the fail-closed
@@ -29,7 +31,12 @@ process of this user whose environment carries this work dir's DAQ_SIM_WORKDIR t
 caRepeater that libca spawns); then it checks that the ports are free.
 'cycle' drives one run with the same client the GUIs use (psdaq.control.DaqControl), one
 state at a time, reads every state back, waits for --events L1Accepts and goes back to the
-state it started from.  It exits nonzero on any failure.
+state it started from.  It exits nonzero on any failure.  A passing recorded cycle writes an
+evidence record (psdaq.sim.coverage.record_evidence) for the rows it proves: the programs
+of the generated .cnf, its drp's -D type and the stand-ins 'up' started.
+'coverage' checks that every row (detector type, program a procmgr config starts) is RUN,
+STAND-IN or N/A, each RUN/STAND-IN row with evidence recorded at HEAD (psdaq.sim.coverage).
+'matrix' runs the whole hardware-free matrix; for now it only runs the coverage check.
 'e2e' is the end-to-end test: the same run driven through the web GUI by a headless browser
 (psdaq.webgui.e2e); it brings the DAQ up with --webgui unless it is up already, checks
 every state and count itself, prints E2E PASS or E2E FAIL and the exit code says which.
@@ -55,6 +62,8 @@ import subprocess
 import sys
 import threading
 import time
+
+from psdaq.sim import coverage
 
 SIMDIR = os.path.dirname(os.path.abspath(__file__))
 SIM_ENV = os.path.join(SIMDIR, 'sim_env.sh')
@@ -690,6 +699,7 @@ def cmd_cycle(args):
     request (getState) only after it, so getState is the wait; failures arrive as 'error'
     messages on the status stream, which a thread collects (daqstate ignores both)."""
     from psdaq.control.DaqControl import DaqControl
+    started = now()
     work = Work(args.workdir)
     state = work.load()
     if state is None or state.get('down'):
@@ -799,8 +809,33 @@ def cmd_cycle(args):
     errors = [m for m in msgs if m[1] == 'error']
     if errors:
         print(f'{now()} {len(errors)} error message(s) on the status stream', flush=True)
+    if ok and not errors and args.record and run:
+        _record_cycle_evidence(work, state, status[6], run, counts, started)
     print(f'{now()} cycle {"PASS" if ok and not errors else "FAIL"}', flush=True)
     return 0 if ok and not errors else 1
+
+
+def _record_cycle_evidence(work, state, experiment, run, counts, started):
+    """Evidence for 'daq_sim coverage' from a passing recorded cycle: the rows of the programs
+    the generated .cnf started (and its drp's -D type), plus the rows whose stand-in (in
+    coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  A failure to
+    write it is reported and leaves the cycle's verdict alone; coverage then finds no evidence."""
+    import glob
+    try:
+        rows = coverage.config_rows(work.path(state['cnf']))
+        rows += coverage.stand_in_rows(state.get('services', {}))
+        files = sorted(glob.glob(work.path('data', INSTRUMENT, experiment, 'xtc',
+                                           f'{experiment}-r{run:04d}-s*-c*.xtc2')))
+        files += [work.path(state['cnf']), work.path('logs', 'cycle.jsonl')]
+        files += [s['log'] for s in state.get('services', {}).values()]
+        for proc in PROCS:              # the newest procmgr log of each process
+            logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
+            files += sorted(logs, key=os.path.getmtime)[-1:]
+        path = coverage.record_evidence(rows, 'cycle', files, run_id=f'{experiment}/r{run:04d}',
+                                        counts=counts, started=started)
+        print(f'{now()} evidence {os.path.basename(path)[:-5]}: {" ".join(sorted(rows))}', flush=True)
+    except Exception as e:
+        print(f'{now()} evidence NOT recorded: {type(e).__name__}: {e}', flush=True)
 
 
 def _run_counts(work, plat):
@@ -868,6 +903,15 @@ def zmq_rcvtimeo():
     return zmq.RCVTIMEO
 
 
+# --- matrix --------------------------------------------------------------------------------
+
+def cmd_matrix(args):
+    """The whole hardware-free matrix, unattended; its exit code is the verdict.  For now it
+    only runs the coverage check: the runs that write evidence for each row come later."""
+    say('matrix: no runs yet, coverage check only')
+    return coverage.run(args)
+
+
 # --- main ----------------------------------------------------------------------------------
 
 def main(argv=None):
@@ -925,7 +969,16 @@ def main(argv=None):
                           'foreground, like up)')
     e2e.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
     e2e.add_argument('--shots', default=None, help='screenshot dir (default <workdir>/e2e-shots)')
+    cov = sub.add_parser('coverage', help='is every detector type and program proven at HEAD? '
+                         '(psdaq.sim.coverage)')
+    coverage.add_arguments(cov)
+    mx = sub.add_parser('matrix', help='the whole hardware-free matrix (for now: the coverage check)')
+    coverage.add_arguments(mx)
     args = parser.parse_args(argv)
+    if args.command == 'coverage':      # reads the checkout only: no DAQ env needed
+        return coverage.run(args)
+    if args.command == 'matrix':
+        return cmd_matrix(args)
     ensure_env(argv)
     try:
         if args.command == 'e2e':

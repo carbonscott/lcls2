@@ -1,0 +1,36 @@
+{
+  "det:drp:fakecam": {
+    "status": "RUN",
+    "note": "daq_sim cycle: drp -D fakecam -d sim:// records a run that psana2 reads back"
+  },
+  "prog:control": {
+    "status": "RUN",
+    "note": "daq_sim cycle: control.py in normal mode, started by procmgr"
+  },
+  "prog:drp": {
+    "status": "RUN",
+    "note": "daq_sim cycle"
+  },
+  "prog:teb": {
+    "status": "RUN",
+    "note": "daq_sim cycle"
+  },
+  "prog:pyxpm": {
+    "status": "STAND-IN",
+    "stand_in": "simxpm",
+    "interface": "pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port",
+    "note": "daq_sim cycle; simxpm also sends the timing frames to sim:// DRPs"
+  },
+  "prog:cLoopTest": {
+    "status": "N/A",
+    "reason": "pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpcam*; no role in a DAQ run"
+  },
+  "prog:qLoopTest": {
+    "status": "N/A",
+    "reason": "pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpdaq*; no role in a DAQ run"
+  },
+  "prog:qRead": {
+    "status": "N/A",
+    "reason": "pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no role in a DAQ run"
+  }
+}

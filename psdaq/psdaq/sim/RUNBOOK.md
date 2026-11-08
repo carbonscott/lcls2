@@ -20,6 +20,7 @@ Everything in `psdaq/psdaq/sim/`:
 | `lgbk_server.py` | Run DB / eLog stand-in. Experiment `tstx00001`; runs are numbered from 1. |
 | `simxpm.py` | Software XPM: the pyxpm PVs over PVA, timing frames to `sim://` DRPs, and the `control -X` PULL receiver. |
 | `xtc2_check.py` | psana2 read-back with a per-event payload check. |
+| `coverage.py`, `coverage_status.json` | `daq_sim coverage` and `daq_sim matrix` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
 | `../webgui/e2e.py`, `../webgui/e2e_browser.py` | `daq_sim e2e`: the checks (DAQ env), and the headless-browser driver (Playwright venv). |
@@ -130,9 +131,11 @@ and the psana2 seq; at 1 kHz N is about 1900-2100):
   psana2 with data       <N>
   psana2 checks          PASS
   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+... evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
 ... cycle PASS
 CYCLE_EXIT=0
 ```
+The `evidence` line is the record that `daq_sim coverage` reads (§3d).
 `cycle` exits 1 on any of these:
 - a state that does not read back,
 - an `error` message on control's status stream,
@@ -301,6 +304,68 @@ partition table's collapse / expand can be driven), then, in an `srun --overlap`
 `setup_env_daq.sh` and `sim_env.sh` sourced, `WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh
 --junitxml=$WD/webgui-sim.xml` and `python -m psdaq.webgui.parity.check_parity --junit $WD/webgui-sim.xml --run-walk`
 (`psdaq/psdaq/webgui/README.md`).
+
+## 3d. Coverage: `daq_sim coverage` and `daq_sim matrix`
+```bash
+cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim coverage; echo COVERAGE_EXIT=$?
+```
+It only reads the checkout, so it runs anywhere, also on sdfiana025. Without the DAQ env, any
+Python 3.9 or later works: `PYTHONPATH=psdaq python -m psdaq.sim.coverage` from the checkout.
+
+**Rows.** They are enumerated from the source at HEAD, never from a list:
+- `det:drp:<type>` and `det:drp_gpu:<type>`: one per `register_type("<type>")` call in
+  `psdaq/drp/PGPDetectorApp.cc` and `psdaq/drpGpu/PGPDetectorApp.cc`.
+- `prog:<program>`: one per distinct program that a config in `psdaq/psdaq/cnf` (`*.cnf`, `*.py`)
+  starts.
+  - The configs are executed the way procmgr executes them, so variables such as `drp_cmd0` are resolved.
+  - An AST pass also finds the `cmd` entries in branches that are not taken.
+  - Wrappers (`VAR=value`, `taskset`, `numactl`, `procServ`, ...) are skipped.
+  - A program is named by the file it runs, without `.py`: `/reg/.../procstat.py` is `procstat`,
+    and `launch_py .../partca.py` is `partca`.
+
+**Status.** `psdaq/psdaq/sim/coverage_status.json` is keyed by row id. Each entry is one of:
+- `RUN`: the row ran in a hardware-free run.
+- `STAND-IN`: a simulated program ran in its place. The entry names it (`stand_in`) and the
+  interface it serves (`interface`), as simxpm serves pyxpm's PVs.
+- `N/A`: a hardware diagnostic or firmware tool with no role in a run. The entry gives a one-line `reason`.
+
+A row with no entry is UNPROVEN. An entry for a row that the enumeration does not find is an error.
+
+**Evidence.** Each passing run writes one JSON record with
+`psdaq.sim.coverage.record_evidence(rows, kind, files, ...)`:
+- **Fields:** `{sha, rows, kind, run_id, job_id, host, files, started, ended, counts}`, plus `dirty`
+  when tracked files differ from HEAD.
+- **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
+- **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
+  `daq_sim.cnf` (control, teb, drp), the drp's `-D fakecam`, and `prog:pyxpm`, because the status
+  file names simxpm as its stand-in. It prints
+  `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`.
+- **Files:** the record lists the run's xtc2 file and logs from the work dir. If you delete the
+  work dir, the record no longer counts.
+
+**Verdict.** The tool prints every row on its own line with its status and either its evidence id
+or its reason. Then it prints `N rows, R run, S stand-in, K N/A, U unproven`. It ends with one of:
+- **PASS (exit 0):** no row is UNPROVEN, and every RUN and STAND-IN row has a record whose `sha` is
+  `git rev-parse HEAD` and whose files all exist.
+- **FAIL (exit 1):** the failing rows follow.
+
+A record made at another commit is rejected, and the row's line says
+`rejected <id>: recorded at <sha>, not at HEAD <sha>`. So after every new commit, the runs must be
+repeated.
+
+Options:
+
+| option | effect |
+|---|---|
+| `--repo DIR` | Checkout to check. Default: the checkout that holds the module, else the one that holds the current directory. |
+| `--status FILE` | Another status file. |
+| `--evidence DIR` | Another evidence dir. |
+| `-v` | Show where each row comes from (`file:line`, or the configs that start it). |
+| `--json` | Print the result as JSON. |
+
+`daq_sim matrix` (same options) is the one command for the whole hardware-free matrix. For now it
+only runs the coverage check and returns its exit code; later changes add the runs that write the
+evidence. Until every row has a run, both commands end in FAIL.
 
 ## 4. Read the file back with psana2
 ```bash
