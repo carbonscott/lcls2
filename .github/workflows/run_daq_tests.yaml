@@ -73,7 +73,10 @@ jobs:
                  psdaq/psdaq/webgui/tests/test_webgui_backend.py \
                  psdaq/psdaq/webgui/tests/test_webgui_events_pva.py \
                  psdaq/psdaq/webgui/tests/test_check_parity.py \
-                 psdaq/psdaq/webgui/tests/test_parity_enumerate_v1.py
+                 psdaq/psdaq/webgui/tests/test_parity_enumerate_v1.py \
+                 psdaq/psdaq/webgui/tests/test_configdb_api.py \
+                 psdaq/psdaq/webgui/tests/test_webgui_hostorigin.py \
+                 psdaq/psdaq/webgui/tests/test_webgui_e2e_checks.py
 
       - name: Run test_rogue.py
         # Kept out of the main pytest step on purpose: the test's own
