@@ -7,6 +7,7 @@ See [docs/CHANGELOG_GUIDE.md](docs/CHANGELOG_GUIDE.md) for how to add entries.
 
 ### Added
 
+- Added `psdaq.sim` local stand-ins for running the DAQ with no hardware on one node: a config DB server with `mongoconfigdb` semantics backed by a JSON file, a seed for the `tmoteb` trigger and a `fakecam` sim detector, a run DB/eLog stub, and an isolation env (`sim_env.sh`) with a fail-closed `preflight.sh`. [#28](https://github.com/carbonscott/lcls2/pull/28)
 - Added ePixUHR calibration and a CALIB mode for taking darks to the GPU DRP, with the Reader/Reducer performance work that runs five GPU DRPs on one node at 33 kHz, and per-stage metrics. @rclaus2 [#269](https://github.com/slac-lcls/lcls2/pull/269)
 
 ### Changed
