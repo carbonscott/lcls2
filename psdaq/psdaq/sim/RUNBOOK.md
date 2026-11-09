@@ -661,6 +661,7 @@ procServ resets `LD_LIBRARY_PATH`, so `--cuda-lib` (or `$DAQ_SIM_CUDA_LIB`) beco
 | fakecam | `xpmdet_config` (as `drp -D fakecam`) | the TDetSemi words of `MemPoolSim::fill`, `sim_length` words = 2 x that many uint16 pixels | `fakecam_noOp_0_0_0.calib`: each pixel's low 14 bits (`Gpu::AreaDetector`, pedestals 0, gains 1) vs the words of seed, seq n and the event's pulseId |
 | epixuhremu | `epixuhremu_configTiming` (link down: `ConfigLclsTimingV2()`), then `xpmdet_config` | TDetSemi words, 96768 = one 336 x 576 uint16 panel, as the emulator firmware (a TDet block) sends | `epixuhremu_noOp_0_0_0.calib` (336, 576): bits 1-11 of each pixel (gain in bit 0; no calibSerNo: pedestals 0, gains 1) vs the words |
 | epixuhrsim | its `SimDetector` (no config script): 16 random frames and calibration constants on the GPU; simxpm's frames time them | frame n % 16 after the TimingHeader | `epixuhrsim_noOp_0_0_0.calib` vs frame (n - 1) % 16 calibrated with the constants it writes at BeginRun (`sim_ref` kwarg, `--ref`) |
+| jungfrau | `Drp::Jungfrau`, as `drp -D jungfrau` (§3j): `jungfrau_config.py` against `rogue_dev`, `sls::Detector` against simsls | the module's frame n, its 128 UDP packets as `MemPoolSim` batches them (§3j), 1055848 B (`dmaBufSize` 0x120000) | `jungfrau_noOp_0_0_0.calib` (512, 1024): each pixel's low 14 bits (range in bits 14-15, pedestals 0, gains 1) vs `pattern(seed, n, i, 16)` |
 
 The pulseId of each fakecam/epixuhremu event is the one, of the few ticks simxpm may add to its
 timestamp's, whose first words match; it must rise.
@@ -674,6 +675,18 @@ for fakecam, `**** python error`). A register that `xpmdet_connectionInfo` write
 a fault on `TDetSemi.Enable_0` fails Allocate. rogue's verify error names the 32-bit block, which
 `Enable_0` shares with `Length_0`. epixuhrsim has no registers.
 
+**jungfrau** (`daq_sim up --drp drp_gpu --det jungfrau`) runs as `drp -D jungfrau` does (§3j),
+with the same simsls, config DB entry and fault (`PSDAQ_SIM_SLS_FAULT`). Two drp_gpu defects
+stopped it, and both are fixed:
+- `Gpu::Jungfrau::configure` declared a second Names at `EventNamesIndex`, so psana could not
+  read the file (`NamesIter.cc: Found duplicate namesId`).
+- Every drp_gpu died at the Reset after a run: `PGPDrp::unconfigure` ran a second time and
+  dereferenced the reader it had already reset.
+
+drp_gpu accepts jungfrau's `segNums` and `slsHosts` kwargs only with a `sim://` device. A
+hardware drp_gpu rejects them, as before, so `drp_gpu -D jungfrau` cannot be given the
+`slsHosts` that `Drp::Jungfrau` requires. That defect is not fixed here.
+
 **Not running yet:**
 - **epixuhr3x2:** `Gpu::EpixUHR3x2` configures through `Drp::EpixUHR3x2`, whose constructor
   builds its rogue root itself (`_init_data_path_or_emu()`) instead of through
@@ -681,9 +694,6 @@ a fault on `TDetSemi.Enable_0` fails Allocate. rogue's verify error names the 32
   file: `rogue.GeneralError: AxiStreamDma::openShared: General Error: Failed to open device
   file: sim://127.0.0.1:31099` (drp_gpu started by hand on that device). Past that it needs
   what `drp -D epixuhr3x2` needs (§3e).
-- **jungfrau:** `Gpu::Jungfrau` configures through `Drp::Jungfrau`, which drives the modules
-  through `sls::Detector`: `<C> Must specify a hostname/ip of the jungfrau control interface for
-  each segment! Check cnf.`, and there is no stand-in for the slsDetector server (§3e).
 
 ## 3i. The digitizer, the ePixQuad 1 kfps and the ePixUHR: hsd, epixquad1kfps, epixUHR
 

@@ -83,6 +83,10 @@
     "status": "RUN",
     "note": "daq_sim up --drp drp_gpu --det epixuhrsim + cycle: its SimDetector makes the frames and constants, simxpm times them; every pixel checked against the frames it wrote (sim_ref)"
   },
+  "det:drp_gpu:jungfrau": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu --det jungfrau + cycle: Gpu::Jungfrau configures through Drp::Jungfrau (jungfrau_config.py against rogue_dev, sls::Detector against simsls); the module's 128 UDP packets per frame calibrated on the GPU, every pixel checked"
+  },
   "prog:control": {
     "status": "RUN",
     "note": "daq_sim cycle: control.py in normal mode, started by procmgr"
