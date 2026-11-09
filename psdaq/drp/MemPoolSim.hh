@@ -30,6 +30,17 @@ namespace Drp {
 //   w0 = pulseId & 0xffffffff, w1 = pulseId >> 32, w2 = seq (L1Accepts since the last
 //   GroupL0Reset), w3 = seed, w[k] = seed + w0 + k + (lane << 16) for k = 4..L-1.
 // The seed comes from the configuration database at Configure (see XpmDetector).
+//
+// Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
+// DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
+// as subframe 0 and, for L1Accepts, the type's subframes.  The layout is chosen by detType
+// from a table in MemPoolSim.cc ('batcher' below); a BEB type not in it cannot run sim://.
+// Each data subframe starts with {w0 = pulseId lo, w1 = pulseId hi, w2 = seq, w3 = seed}
+// where the type has room for it.  Pixel i of the image the type's DRP builds (psana's raw
+// array, flattened) is pattern(seed, seq, i, bits): it depends on where the pixel is, so a DRP
+// that reorders or offsets pixels wrongly fails psdaq/psdaq/sim/xtc2_check.py (pattern.py is
+// the same function in Python).  The framer writes each pixel where the detector's firmware
+// would, e.g. epix100's interleaved ASIC rows, so the DRP's own reordering is what is checked.
 class MemPoolSim : public MemPool
 {
 public:
@@ -43,11 +54,35 @@ public:
         uint32_t seq;                   // L1Accept sequence number, 0 for transitions
     } __attribute__((packed));
     static_assert(sizeof(Frame) == 24, "simxpm frame size");
+    // Writes the subframes of one EventBatcher buffer
+    struct Out
+    {
+        uint8_t* buffer;
+        size_t   pos;                   // where the next subframe's data starts
+        uint8_t* data() { return buffer + pos; }
+        void     tail(uint32_t size, uint8_t tdest);    // close the subframe of 'size' bytes
+        void     timingCopy(uint8_t tdest);             // a subframe holding the TimingHeader
+    };
+    // EventBatcher layout of one BEB type's L1Accept DMA buffer
+    struct Batcher
+    {
+        const char* detType;
+        unsigned    dataBytes;          // most bytes its L1Accept subframes take after the
+                                        //   TimingHeader's, tails included
+        // Write the type's L1Accept subframes after the TimingHeader's (tdest 0)
+        void      (*data)(Out& out, const Frame& f, uint32_t seed);
+    };
+    static const Batcher* batcher(const std::string& detType);
+    // The simulated value of pixel 'index' in event 'seq' (see above)
+    static uint32_t pattern(uint32_t seed, uint32_t seq, uint32_t index, unsigned bits);
+    static uint32_t mix(uint32_t index);        // the position-dependent part of pattern()
 public:
     static bool isSimDevice(const std::string& device);
     // Lay out one DMA buffer for frame 'f'; returns its size in bytes
     static size_t fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
                        unsigned lane, unsigned length, uint32_t seed);
+    static size_t fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f,
+                              uint32_t evtCounter, bool l1, uint32_t seed);
 public:
     MemPoolSim(const Parameters& para);
     virtual ~MemPoolSim();
@@ -71,6 +106,7 @@ private:
     struct Ready { int32_t size; uint32_t index; uint32_t dest; };
     std::string             m_endpoint;
     std::string             m_alias;
+    const Batcher*          m_batcher;          // EventBatcher framing, or nullptr for TDet
     unsigned                m_nLanes;
     uint8_t                 m_laneMask;
     unsigned                m_virtChan;

@@ -8,6 +8,7 @@ import io
 import json
 import os
 import re
+import struct
 import subprocess
 import sys
 
@@ -34,15 +35,35 @@ def all_rows():
     return rows
 
 
-def write_daq_sim_cnf(path):
+def write_daq_sim_cnf(path, det='fakecam'):
     """The .cnf daq_sim up writes, with placeholder values."""
     from psdaq.sim import daq_sim
     with open(path, 'w') as f:
         f.write(daq_sim.CNF.format(
             when='now', platform=5, alias='BEAM', instr='tst', xpm=0, pvbase='DAQ:SIM', trigger='tmoteb',
             slow=1, configdb='http://127.0.0.1:1/ws/configDB', lgbk='http://127.0.0.1:2/',
-            activedet='/dev/null', ep=daq_sim.EP, prom='/tmp', det='fakecam', frames=3, data='/tmp',
-            length=64, v=''))
+            activedet='/dev/null', ep=daq_sim.EP, prom='/tmp', det=det, frames=3, data='/tmp',
+            length=64, v='', segments='',
+            simk=daq_sim.SIM_TYPES[det]['kwargs'].format(length=64, seed=0x1234)))
+    return path
+
+
+def write_xtc2(path, events=2):
+    """A minimal xtc2 file: a Configure and `events` L1Accepts, each an empty Parent Xtc."""
+    with open(path, 'wb') as f:
+        for service in [2] + [12] * events:
+            f.write(struct.pack('<QIIHHI', 0, service << 24, 0, 0, 0, 12))
+    return path
+
+
+def record(rows, files, evidence, run_id='tstx00001/r0001', dirty=False):
+    """An evidence record at HEAD, as a run from a clean checkout writes it (the tests also run
+    in a tree with modified files, so 'dirty' is set here, not read from the tree)."""
+    path = coverage.record_evidence(rows, 'test', [str(f) for f in files], run_id=run_id,
+                                    repo=REPO, evidence=str(evidence))
+    rec = json.load(open(path))
+    rec['dirty'] = dirty
+    json.dump(rec, open(path, 'w'))
     return path
 
 
@@ -58,7 +79,7 @@ def full_coverage(tmp_path):
     evidence = tmp_path / 'evidence'
     proof = tmp_path / 'run.log'
     proof.write_text('a run\n')
-    coverage.record_evidence(list(rows), 'test', [str(proof)], repo=REPO, evidence=str(evidence))
+    record(list(rows), [proof], evidence)
     return rows, status, evidence, proof
 
 
@@ -97,6 +118,42 @@ def test_program_rows_match_the_configs():
     assert 'hpsBldCopy' in names and 'drp_gpu' in names
 
 
+# The program rows at 2d9593bc5 and since (psdaq/psdaq/cnf unchanged), as an independent
+# enumerator counted them in the first survey (.goal iteration 1, enum_programs.py: 52 started
+# by the exec pass + 2 only in branches not taken; its 'python x.py' and 'procstat.py' entries
+# named by the alias rule).  A cnf change must update this list; a dropped row fails here.
+PINNED_PROGRAMS = frozenset('''
+    ami-client ami-global ami-manager ami-node ami-worker bldcas cLoopTest control control_gui
+    daqstat deadca drp drp_bld drp_gpu drp_pva drp_udpencoder dtica epicsArch epics_exporter
+    groupca hpsBldCopy hpsBldServer hpsdbuscas hsd134PVs hsd64PVs hsdca hsdcas hsdpva hsdpvs
+    lclsBldServer monReqServer partca procstat pvant pvatable pykcuxpm pyxpm qLoopTest qRead
+    shmemClient sim_udpencoder teb tmo_acr_opal_feedback tprca tprcas tprioc tprtrig
+    tpr_trigger wave8pvs xpmpva xpmpvas xpmPVs'''.split())
+
+
+def program_row_diff(names):
+    return {'dropped': sorted(PINNED_PROGRAMS - names), 'added': sorted(names - PINNED_PROGRAMS)}
+
+
+def test_program_rows_are_the_pinned_independent_count():
+    names = {r[len('prog:'):] for r in coverage.program_rows(REPO)[0]}
+    print(f'pinned {len(PINNED_PROGRAMS)}, coverage {len(names)}: {program_row_diff(names)}')
+    assert len(PINNED_PROGRAMS) == 52
+    assert program_row_diff(names) == {'dropped': [], 'added': []}
+
+
+def test_a_dropped_program_row_fails_the_pin(monkeypatch):
+    """Without the launch_py wrapper rule, deadca and dtica (started only through launch_py in
+    lab3-cam.cnf) would drop out of the enumeration; the pin names them."""
+    wrappers = dict(coverage.WRAPPERS)
+    del wrappers['launch_py']
+    monkeypatch.setattr(coverage, 'WRAPPERS', wrappers)
+    names = {r[len('prog:'):] for r in coverage.program_rows(REPO)[0]}
+    diff = program_row_diff(names)
+    print(diff)
+    assert diff == {'dropped': ['deadca', 'dtica'], 'added': ['launch_py']}
+
+
 def test_resolve_wrappers():
     r = coverage.resolve
     assert r('taskset -c 4-63 drp -P tst -D ts')[0] == 'drp'
@@ -110,39 +167,51 @@ def test_resolve_wrappers():
     assert coverage.detector_types(r('drp -l 0x1 -D ebeam,gmd -u x')[1]) == ['ebeam', 'gmd']
 
 
-def test_config_rows_of_the_daq_sim_cnf(tmp_path):
-    """The rows daq_sim cycle records come from the .cnf daq_sim up writes."""
-    cnf = write_daq_sim_cnf(str(tmp_path / 'daq_sim.cnf'))
-    assert sorted(coverage.config_rows(cnf)) == ['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb']
+@pytest.mark.parametrize('det', ['fakecam', 'epix100'])
+def test_config_rows_of_the_daq_sim_cnf(tmp_path, det):
+    """The rows daq_sim cycle records come from the .cnf daq_sim up writes (up --det <type>)."""
+    cnf = write_daq_sim_cnf(str(tmp_path / 'daq_sim.cnf'), det)
+    assert sorted(coverage.config_rows(cnf)) == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:teb']
     assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm']
 
 
-def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch):
-    """daq_sim cycle's evidence hook, on a work dir laid out as 'up' and a run leave it
-    (no DAQ runs here); then the check accepts it for the seeded RUN/STAND-IN rows."""
+@pytest.mark.parametrize('det', ['fakecam', 'epix100'])
+def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, det):
+    """daq_sim cycle's evidence hook, on a work dir laid out as 'up --det <type>' and a run
+    leave it (no DAQ runs here); then the check accepts it for those rows.  The tree may have
+    modified files while tests run, so the record is made as from a clean checkout."""
     from psdaq.sim import daq_sim
     monkeypatch.setenv('DAQ_SIM_EVIDENCE', str(tmp_path / 'evidence'))
+    monkeypatch.setattr(coverage, 'dirty', lambda repo: False)
+    monkeypatch.setattr(daq_sim, 'DETECTOR', daq_sim.DETECTOR)
+    monkeypatch.setattr(daq_sim, 'PROCS', daq_sim.PROCS)
+    daq_sim.use_det(det)
     work = daq_sim.Work(str(tmp_path / 'wd'))
     os.makedirs(work.dir)
-    write_daq_sim_cnf(work.path('daq_sim.cnf'))
+    write_daq_sim_cnf(work.path('daq_sim.cnf'), det)
     xtc = work.path('data', 'tst', 'tstx00001', 'xtc', 'tstx00001-r0001-s000-c000.xtc2')
     files = [xtc, work.path('logs', 'cycle.jsonl')] + \
         [work.path('logs', n + '.log') for n in ('configdb', 'lgbk', 'simxpm')] + \
         [work.path('pmlogs', '2026', '11', f'08_12:00:00_node:{p}.log') for p in daq_sim.PROCS]
     for f in files:
         os.makedirs(os.path.dirname(f), exist_ok=True)
-        open(f, 'w').close()
-    state = {'cnf': 'daq_sim.cnf',
+        open(f, 'w').write('log\n')
+    write_xtc2(xtc)
+    assert f'08_12:00:00_node:{det}_0.log' in ' '.join(files)
+    state = {'cnf': 'daq_sim.cnf', 'det': det,
              'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in ('configdb', 'lgbk', 'simxpm')}}
     daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start')
     names = os.listdir(tmp_path / 'evidence')
     assert len(names) == 1
-    record = json.load(open(tmp_path / 'evidence' / names[0]))
-    assert record['sha'] == HEAD and record['kind'] == 'cycle' and record['run_id'] == 'tstx00001/r0001'
-    assert record['rows'] == ['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
-    assert sorted(record['files']) == sorted(files + [work.path('daq_sim.cnf')])
-    code, out = run_check(os.path.join(REPO, coverage.STATUS_FILE), tmp_path / 'evidence')
-    for row in record['rows']:
+    rec = json.load(open(tmp_path / 'evidence' / names[0]))
+    assert rec['sha'] == HEAD and rec['kind'] == 'cycle' and rec['run_id'] == 'tstx00001/r0001'
+    assert rec['dirty'] is False
+    assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
+    assert sorted(rec['files']) == sorted(files + [work.path('daq_sim.cnf')])
+    entries = {r: {'status': 'RUN'} for r in rec['rows']}
+    entries['prog:pyxpm'] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))['prog:pyxpm']
+    code, out = run_check(write_status(tmp_path / 'status.json', entries), tmp_path / 'evidence')
+    for row in rec['rows']:
         line = [l for l in out.splitlines() if l.startswith(row + ' ')][0]
         print(line)
         assert f'evidence {names[0][:-5]}' in line
@@ -162,19 +231,18 @@ def test_full_coverage_passes(tmp_path):
 
 def test_evidence_at_another_sha_is_rejected_naming_the_row(tmp_path):
     rows, status, evidence, proof = full_coverage(tmp_path)
-    path = coverage.record_evidence(['det:drp:fakecam'], 'test', [str(proof)], repo=REPO,
-                                    evidence=str(evidence))
+    path = record(['det:drp:fakecam'], [proof], evidence)
     for name in os.listdir(evidence):                 # keep only the fakecam record, at a wrong SHA
         if os.path.join(evidence, name) != path:
             os.remove(os.path.join(evidence, name))
-    record = json.load(open(path))
-    record['sha'] = 'f' * 40 if HEAD != 'f' * 40 else '0' * 40
-    json.dump(record, open(path, 'w'))
+    rec = json.load(open(path))
+    rec['sha'] = 'f' * 40 if HEAD != 'f' * 40 else '0' * 40
+    json.dump(rec, open(path, 'w'))
     code, out = run_check(status, evidence)
     line = [l for l in out.splitlines() if l.startswith('det:drp:fakecam ')][0]
     print(line)
     assert code == 1
-    assert 'NO VALID EVIDENCE' in line and f'recorded at {record["sha"][:9]}, not at HEAD {HEAD[:9]}' in line
+    assert 'NO VALID EVIDENCE' in line and f'recorded at {rec["sha"][:9]}, not at HEAD {HEAD[:9]}' in line
     assert '  det:drp:fakecam: RUN row without valid evidence' in out
 
 
@@ -183,7 +251,7 @@ def test_removing_one_rows_evidence_fails_naming_it(tmp_path):
     for name in os.listdir(evidence):
         os.remove(os.path.join(evidence, name))
     rest = [r for r in rows if r != 'det:drp:fakecam']
-    coverage.record_evidence(rest, 'test', [str(proof)], repo=REPO, evidence=str(evidence))
+    record(rest, [proof], evidence)
     code, out = run_check(status, evidence)
     fails = [l for l in out.splitlines() if l.startswith('  ') and 'without valid evidence' in l]
     print('\n'.join(fails))
@@ -195,7 +263,76 @@ def test_missing_evidence_file_is_rejected(tmp_path):
     rows, status, evidence, proof = full_coverage(tmp_path)
     proof.unlink()
     code, out = run_check(status, evidence)
-    assert code == 1 and 'files missing' in out
+    assert code == 1 and '1 of 1 files missing' in out
+
+
+def one_row_check(tmp_path, files, **kw):
+    """(exit code, the det:drp:fakecam line, output) with only that row RUN and one record."""
+    status = write_status(tmp_path / 'status.json', {'det:drp:fakecam': {'status': 'RUN'}})
+    evidence = tmp_path / 'evidence'
+    record(['det:drp:fakecam'], files, evidence, **kw)
+    code, out = run_check(status, evidence)
+    line = [l for l in out.splitlines() if l.startswith('det:drp:fakecam ')][0]
+    print(line)
+    return code, line, out
+
+
+def test_record_from_a_dirty_tree_is_rejected(tmp_path):
+    proof = tmp_path / 'run.log'
+    proof.write_text('a run\n')
+    code, line, out = one_row_check(tmp_path, [proof], dirty=True)
+    assert code == 1
+    assert 'NO VALID EVIDENCE' in line and 'recorded with tracked files modified' in line
+    assert '  det:drp:fakecam: RUN row without valid evidence' in out
+
+
+def test_record_without_a_run_id_is_rejected(tmp_path):
+    proof = tmp_path / 'run.log'
+    proof.write_text('a run\n')
+    code, line, _ = one_row_check(tmp_path, [proof], run_id=None)
+    assert code == 1 and 'names no run (run_id)' in line
+
+
+def test_empty_evidence_file_is_rejected(tmp_path):
+    proof, empty = tmp_path / 'run.log', tmp_path / 'empty.log'
+    proof.write_text('a run\n')
+    empty.write_text('')
+    code, line, _ = one_row_check(tmp_path, [proof, empty])
+    assert code == 1 and f'1 of 2 files empty, e.g. {empty}: empty' in line
+
+
+@pytest.mark.parametrize('content,problem', [
+    (b'not an xtc2 file, but long enough for a header', 'first datagram is transition'),
+    (struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 12) + struct.pack('<QIIHHI', 0, 12 << 24, 0, 0, 0, 40),
+     'datagram 1 at byte 24: extent 40 does not fit the file (48 B)'),
+    (struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 12)[:20], 'header cut off'),
+])
+def test_xtc2_evidence_must_be_xtc2(tmp_path, content, problem):
+    xtc = tmp_path / 'r0001.xtc2'
+    xtc.write_bytes(content)
+    code, line, _ = one_row_check(tmp_path, [xtc])
+    assert code == 1 and 'not an xtc2 file' in line and problem in line
+
+
+def test_a_valid_xtc2_file_counts(tmp_path):
+    xtc = write_xtc2(str(tmp_path / 'r0001.xtc2'), events=3)
+    assert coverage.xtc2_problem(xtc) is None
+    code, line, _ = one_row_check(tmp_path, [xtc])
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+def test_counts_are_rows_with_valid_evidence_not_claims(tmp_path):
+    """R counts proven rows; the status file's claims are printed on their own line."""
+    rows, status, evidence, proof = full_coverage(tmp_path)
+    for name in os.listdir(evidence):
+        os.remove(os.path.join(evidence, name))
+    record(list(rows)[:10], [proof], evidence)
+    code, out = run_check(status, evidence)
+    print([l for l in out.splitlines() if 'rows,' in l or 'claims' in l])
+    assert code == 1
+    assert f'{len(rows)} rows, 10 run, 0 stand-in, 0 N/A, 0 unproven, {len(rows) - 10} claimed ' \
+           'without valid evidence' in out
+    assert f'status file claims (not counted above unless proven): {len(rows)} RUN, 0 STAND-IN, 0 N/A' in out
 
 
 def test_unknown_row_in_status_file_fails(tmp_path):

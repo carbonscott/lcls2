@@ -275,6 +275,21 @@ executable('pgpread_epixM320mon',
   link_with: [],
 )
 
+executable('drp_sim_frame',
+  'simFrame.cc',
+  include_directories: [drp_inc_dir],
+  dependencies: [
+    xtcdata_dep,
+    python_dep,
+    psalg_utils_dep,
+    zmq_dep,
+    threads_dep,
+  ],
+  install: true,
+  install_rpath: libdir_install_rpath,
+  link_with: [drpbase_lib],
+)
+
 executable('AxiBatcherParserTest',
   [
     'AxiBatcherParserTest.cc',
