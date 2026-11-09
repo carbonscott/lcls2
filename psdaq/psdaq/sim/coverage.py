@@ -1118,11 +1118,12 @@ def _opt(args, flag):
     return args[args.index(flag) + 1] if flag in args and args.index(flag) + 1 < len(args) else None
 
 
-def hps_registry(logs, name):
-    """(group, port) a bldcas of the record (its log's command line) serves for BLD service `name`
-    (<prefix>:<service>): -A plus the service's place among its services, --port (11001 by default); None if none."""
+def hps_registries(logs, name):
+    """[(group, port)] the bldcas logs of the record (their command lines) serve for BLD service `name`
+    (<prefix>:<service>): -A plus the service's place among its services, --port (11001 by default)."""
     import ipaddress
     prefix, _, service = name.rpartition(':')
+    out = []
     for (prog, args), _text in logs:
         if prog != 'bldcas':
             continue
@@ -1139,10 +1140,10 @@ def hps_registry(logs, name):
                 k += 1
         if opts['-P'] == prefix and service in rest:
             try:
-                return str(ipaddress.ip_address(opts['-A']) + rest.index(service)), int(opts['--port'])
+                out.append((str(ipaddress.ip_address(opts['-A']) + rest.index(service)), int(opts['--port'])))
             except ValueError:
-                return None
-    return None
+                pass
+    return out
 
 
 def hps_problem(prog, e, logs, lo, hi, w=None):
@@ -1155,11 +1156,13 @@ def hps_problem(prog, e, logs, lo, hi, w=None):
         return f'lists no log of {prog}'
     args = mine[0][0]
     out = _opt(args, '-n' if prog == 'hpsBldServer' else '-O')
-    want = hps_registry(logs, out) if out else None
-    if want is None:
+    wants = hps_registries(logs, out) if out else []
+    if not wants:
         return f'lists no bldcas log that serves {prog}\'s output service {out}'
-    if (e.get('group'), e.get('port')) != want:
-        return f'received on {e.get("group")}:{e.get("port")}, but bldcas serves {out} on {want[0]}:{want[1]}'
+    want = (e.get('group'), e.get('port'))
+    if want not in wants:
+        return (f'received on {want[0]}:{want[1]}, but the bldcas logs of the record serve {out} on '
+                f'{", ".join(f"{g}:{p}" for g, p in wants)}')
     pk = [p for p in e.get('packets') or [] if isinstance(p, list) and len(p) == 4 and isinstance(p[3], list)]
     if len(pk) < HPS_MIN_PACKETS:
         return f'received {len(pk)} packet(s) of {prog} on {want[0]}:{want[1]} ({HPS_MIN_PACKETS} or more needed)'

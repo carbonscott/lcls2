@@ -1535,14 +1535,15 @@ def hps_packets(t0, t1, mask=HPS_MASK):
     return svc, cpa
 
 
-def hps_run(tmp_path, row='prog:hpsBldServer', cas=HPS_CAS_CMD, pids=None, mutate=None):
+def hps_run(tmp_path, row='prog:hpsBldServer', cas=HPS_CAS_CMD, pids=None, mutate=None, other_cas=None):
     """(exit code, line) of a record for prog:hpsBldServer and prog:hpsBldCopy: the run's xtc2 file, the logs of bldcas,
     hpsBldServer and hpsBldCopy (procServ's line with each one's pid) and a gui_witness whose 'hps' entries hold the
     packets received on each one's group during the run with their source ports' pids, and hpsBldServer's PVs."""
     d = tmp_path / 'wd'
     pids = dict(HPS_PIDS, **(pids or {}))
     xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
-    logs = ([write_log(d / 'cas.log', cas, 'addr [effe2200]')] if cas else []) + [
+    logs = ([write_log(d / 'cas0.log', other_cas, 'addr [effe2001]')] if other_cas else []) + \
+        ([write_log(d / 'cas.log', cas, 'addr [effe2200]')] if cas else []) + [
         write_log(d / f'{p}.log', HPS_CMDS[p], f'@@@ The PID of new child "{p}" is: {pids[p]}\r',
                   'Using interface lo (127.0.0.1)') for p in HPS_CMDS]
     svc, cpa = hps_packets(L1_FIRST + 1, L1_FIRST + 5)
@@ -1575,6 +1576,13 @@ def test_the_hps_chain_is_run_when_its_packets_hold_the_run_s_timing(tmp_path, r
     assert 'evidence ' in line and 'NO VALID' not in line
 
 
+def test_the_hps_chain_is_run_beside_another_bldcas_serving_the_same_service(tmp_path):
+    """up --pvservers --hps: bldcas (R3b) also serves DAQ:SIM:HPSEX, on 239.254.32.1:11001; hpsBldServer's packets
+    are on the group the HPS chain's own bldcas serves, which is also in the record."""
+    code, line = hps_run(tmp_path, other_cas='bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
 def _hps_ev(e, k, j=0, d=0, ts=0):
     e['packets'][k][3][j][0] += d
     e['packets'][k][3][j][1] += ts
@@ -1584,7 +1592,8 @@ def _hps_ev(e, k, j=0, d=0, ts=0):
 HPS_FORGERIES = {
     'no-registry': (dict(cas=None), 'lists no bldcas log that serves hpsBldServer\'s output service DAQ:SIM:HPSEX'),
     'other-group': (dict(cas=HPS_CAS_CMD.replace('239.254.34.0', '239.254.35.0')),
-                    'received on 239.254.34.0:31452, but bldcas serves DAQ:SIM:HPSEX on 239.254.35.0:31452'),
+                    'received on 239.254.34.0:31452, but the bldcas logs of the record serve DAQ:SIM:HPSEX on '
+                    '239.254.35.0:31452'),
     'other-port': (dict(cas=HPS_CAS_CMD.replace('--port 31452', '--port 31453')), 'on 239.254.34.0:31453'),
     'few-packets': (dict(mutate=lambda w, e: e.update(packets=e['packets'][:9], count=9)), 'received 9 packet(s)'),
     'other-pid': (dict(pids={'hpsBldServer': 4499}), 'not the pid its log of hpsBldServer gives (4499)'),
@@ -1617,7 +1626,7 @@ HPS_COPY_FORGERIES = {
     'copy-no-server': (dict(row='prog:hpsBldCopy', mutate=lambda w, e: w['programs'].pop('hpsBldServer')),
                        'has no hpsBldServer entry'),
     'copy-other-group': (dict(row='prog:hpsBldCopy', mutate=lambda w, e: e.update(group='239.254.34.0')),
-                         'but bldcas serves DAQ:SIM:HPSCPA on 239.254.34.1:31452'),
+                         'but the bldcas logs of the record serve DAQ:SIM:HPSCPA on 239.254.34.1:31452'),
 }
 
 
