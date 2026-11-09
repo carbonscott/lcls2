@@ -372,8 +372,9 @@ def test_the_camera_uart_answers_from_the_seed_file(tmp_path, monkeypatch):
             frame = tx._reqFrame(len(ba), True)
             frame.write(ba, 0)
             tx._sendFrame(frame)
+        want = b'OPAL-1000m\r\x06' + b'\x06'               # the two replies, one character per word
         t0 = time.monotonic()
-        while len(rx.got) < 4 * 12 and time.monotonic() - t0 < 2:
+        while len(rx.got) < 4 * len(want) and time.monotonic() - t0 < 5:
             time.sleep(0.01)
-        assert bytes(rx.got[0::4]) == b'OPAL-1000m\r\x06\x06'    # one character per word
+        assert bytes(rx.got[0::4]) == want
         assert [w['cmd'] for w in sim.writes if w['store'] == 'uart'] == ['@ID?', '@MO1']
