@@ -17,7 +17,9 @@ Open `http://127.0.0.1:8650/` on the same node, or tunnel: `ssh -L 8650:127.0.0.
 
 The server binds loopback only (no override). Every endpoint it may contact must be loopback or it
 exits 2 before opening anything: the control host (`-H`, ZMQ ports from `ControlDef`), `--configdb-url`
-(default: none; the alias list then falls back to NOBEAM/BEAM), `--events-url`.
+(default: none; the alias list then falls back to NOBEAM/BEAM), `--events-url`, and the host of every process
+in `--procstat-cnf` (read with ProcMgr in a dry run; a process with no host is localhost).  `/gui/procstat` then
+opens every procServ port at 127.0.0.1 (::1 for a process at ::1), also where ProcMgr would use the machine's name.
 `--print-config` prints every endpoint as JSON.
 
 Events counter: `--events-source none|emulator|prometheus`; for prometheus give
@@ -92,3 +94,47 @@ python -m psdaq.webgui.parity.check_parity --junit /tmp/webgui-sim.xml [--run-wa
 ```
 It prints `N controls found, M mapped ..., K marked not applicable`, every not-applicable row with its
 reason, and names every row that is unmapped, untagged, failing or stale.
+
+## Parity with the other PyQt GUIs
+
+`parity/qapps.py` lists, from the syntax tree (not grep), every psdaq file outside `control_gui` that constructs
+a `QApplication` (a file whose text has `QApplication(` only inside a string, like the enumerator test's fixture,
+is reported as not listed).  `parity/check_gui_parity.py` checks each one with the control GUI's method
+(`check_parity.check`): rows from the source (`parity/gui_rows.py`: every call that builds a counted Qt or pvedit
+widget in the GUI's own files) and from the offscreen walk of the running program (`qt_walk --gui`: the program's
+own `main()` with a spec's arguments against the simulated DAQ, every counted widget class replaced by a recording
+subclass), M = rows whose headless-browser test passed tagged with the row and with backend `sim-daq`, K = rows
+the source flags (main block, a def nothing calls, a slot whose object the ui never creates, a display nothing
+writes) and the walk agrees with.  A file is either a GUI program with a spec `parity/guis/<name>.json` (web path,
+walk arguments, mapping) or not a GUI program (`"na"` with a rule the check verifies: `walk-tool`, `library-demo`
+with a run-time import probe); a file with no spec fails.
+
+| PyQt program | web page | data source in the tests | server arguments |
+|---|---|---|---|
+| `procmgr/procstat` | `/gui/procstat` | the daq_sim .cnf, its procServ ports and logs | `--procstat-cnf F [--procstat-platform P --procstat-interval S --procstat-logdir D]` |
+| `cas/groupca.py` | `/gui/groupca` | simxpm `PART:<group>` and XPM PVs (PV Access, loopback only) | `--pvgui 'groupca:<pvbase> <xpm> <groups>'` |
+| `cas/pvant.py` | `/gui/pvant` | simxpm PVs | `--pvgui 'pvant:--bases B... --fields F...'` |
+
+The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
+`data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
+LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime).
+
+Each page is served at `/gui/<name>` (`/gui/procstat`, `/gui/groupca`, `/gui/pvant`) by any `daq_webgui` started
+with that page's arguments from the table, beside the control GUI at `/`.  On a node with the DAQ up (`$WD`, platform
+5), for example:
+
+```bash
+daq_webgui -p 5 -H 127.0.0.1 --port 31063 --configdb-url http://127.0.0.1:31050/ws/ --procstat-cnf $WD/daq_sim.cnf \
+    --procstat-logdir $WD/pmlogs --pvgui 'groupca:DAQ:SIM 0 5' \
+    --pvgui 'pvant:--bases DAQ:SIM:XPM:0:PART:5 DAQ:SIM:XPM:0:PART:0 --fields NumL0Acc NumL0Inp L0AccRate'
+# then http://127.0.0.1:31063/gui/procstat, /gui/groupca, /gui/pvant (from your machine: ssh -L, via the login host)
+```
+
+The check runs the offscreen walks now, every time, as `check_parity --run-walk` does: `--run-walks` writes them to
+`--walks DIR` (default a temporary dir) and checks with them, so no walk is kept in the tree and none can be stale.
+
+```bash
+WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k 'test_gui_ or check_gui' --junitxml=/tmp/gui.xml
+python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --junit /tmp/gui.xml [--details]
+# DAQ env (PyQt5): one line per file `file | web path or N/A reason | N/M/K | PASS|FAIL`; exit 0 only if all pass
+```

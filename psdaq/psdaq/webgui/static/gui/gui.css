@@ -1,0 +1,25 @@
+/* shared style of the web copies of the PyQt GUIs (procstat, groupca, ...) */
+:root { --bg: #f4f4f4; --fg: #111; --line: #bbb; --panel: #fff; --accent: #2a62b8; }
+body { background: var(--bg); color: var(--fg); font: 13px/1.35 system-ui, sans-serif; margin: 0; padding: 8px; }
+h1 { font-size: 15px; margin: 0 0 6px; }
+fieldset { border: 1px solid var(--line); margin: 0 0 8px; padding: 6px 8px; background: var(--panel); }
+legend { font-weight: 600; }
+table.grid { border-collapse: collapse; }
+table.grid th, table.grid td { border: 1px solid var(--line); padding: 2px 6px; text-align: left; }
+table.grid th { background: #e6e6e6; cursor: pointer; user-select: none; }
+table.grid tr.current td { outline: 2px solid var(--accent); outline-offset: -2px; }
+button { font: inherit; padding: 3px 10px; }
+button.checkable[aria-pressed="true"] { background: #c8d8f0; border: 1px solid var(--accent); }
+.statusbar { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 3px; min-height: 1.3em; color: #444; }
+dialog { border: 1px solid #888; min-width: 320px; max-width: 70vw; }
+dialog h2 { font-size: 14px; margin: 0 0 6px; }
+pre.viewer { background: #111; color: #ddd; padding: 6px; max-height: 300px; overflow: auto; white-space: pre-wrap; }
+.closed { color: #a00; font-weight: 600; }
+.pv { min-width: 7em; display: inline-block; font-family: ui-monospace, monospace; }
+.row { display: flex; gap: 6px; align-items: center; margin: 2px 0; flex-wrap: wrap; }
+.lbl { min-width: 100px; display: inline-block; }
+.tabs [role=tab] { border: 1px solid var(--line); border-bottom: none; background: #e6e6e6; padding: 3px 10px; }
+.tabs [role=tab][aria-selected="true"] { background: var(--panel); font-weight: 600; }
+.tabpanel { border: 1px solid var(--line); background: var(--panel); padding: 6px; }
+.err { background: #f44 !important; }
+input.pv-edit { width: 7em; }
