@@ -250,6 +250,8 @@ class _SiteScan(ast.NodeVisitor):
             name = ('local', tgt.id)
         elif isinstance(tgt, ast.Subscript):
             v = tgt.value
+            while isinstance(v, ast.Subscript):     # self.codesText['master'][i] = QLabel(...) (xpmpva)
+                v = v.value
             if isinstance(v, ast.Attribute) and isinstance(v.value, ast.Name) and v.value.id == 'self':
                 name = ('self', v.attr)
             elif isinstance(v, ast.Name):
@@ -636,10 +638,11 @@ def make_rows(srcinfo, walk):
                      'guard': None, 'site': x['site'], 'instance': x['seq'], 'pv': None, 'pg': x['pg'],
                      'evidence': ['pyqtgraph %s %s of the plot built at %s (walk instance #%d)' % (
                          group, name, loc, x['seq'])]})
-    for x in walk_only:
+    for x in walk_only:                         # an instance the walk saw at a line with no site (a class in a variable:
         rows.append({'id': 'walk-only:%s:%s' % (x['site'][0], x['site'][1]) + ('[%s]' % _qual(x) if _qual(x) else ''),
                      'kind': _instance_kind(x, written) or 'value', 'label': x['cls'], 'file': x['site'][0],
                      'line': x['site'][1], 'loc': '%s:%s' % tuple(x['site'][:2]), 'widget': x['cls'],
+                     'instance': x['seq'], 'pv': x.get('pv'),   # xpmpva's h[1](pvname, label)): a built row
                      'reachable': True, 'reach': '', 'hidden': False, 'inert': False, 'guard': None, 'site': x['site'],
                      'evidence': ['walk saw a %s built at %s:%s, a line the source scan has no site for' % (
                          x['cls'], x['site'][0], x['site'][1])]})

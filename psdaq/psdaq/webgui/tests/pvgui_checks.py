@@ -295,6 +295,6 @@ def check_tabs(page, PAGE, tab_ids, walk):
         expect(page.locator(sel(t))).to_have_attribute('aria-selected', 'true')
         title = re.search(r'\.tab\[(.*)\](#\d+)?$', t).group(1)     # #n: one of several QTabWidgets (hsdpva)
         assert page.locator(sel(t)).inner_text() == title
-        stem = t.rsplit('.tab[', 1)[0]
-        inst = next(x for k, x in walk.items() if k.startswith(stem + '.tab['))
-        assert title in inst['tabs'], (t, inst['tabs'])
+        stem = t.rsplit('.tab[', 1)[0]                              # one of the QTabWidgets of that line has it
+        tabs = [x['tabs'] for k, x in walk.items() if k.startswith(stem + '.tab[')]
+        assert any(title in tt for tt in tabs), (t, tabs)

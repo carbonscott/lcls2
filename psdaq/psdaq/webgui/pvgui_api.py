@@ -17,6 +17,7 @@ Routes
   POST /api/pvgui/put  {gui, id, value}      the write of widget <id>: pvcheck 1/0, pvint int(text),
                                              pvcombo/seqsel index (only if it differs, as PvEditCmb),
                                              mask/maskbit the mask, pvbutton 1 then 0 (PvPushButton),
+                                             groupmask the mask of the choice (xpmpva PvGroupMask),
                                              button/check the page module's action
 Values of structured PVs (NTTable, the hsd MON* structures) are their todict() with arrays as lists; a 'text'
 node's text is computed here by pvgui.text_of, the Python of the PyQt widget's update().
@@ -86,7 +87,10 @@ class PvGuiApi:
         for spec in self.specs:
             name, _, args = spec.partition(':')
             mod = importlib.import_module('psdaq.webgui.pvgui.' + name)
-            page = mod.build(args.split())
+            if getattr(mod, 'GET_AT_BUILD', False):    # xpmpva reads each XPM's FwBuild while it builds (pv.get())
+                page = mod.build(args.split(), fwbuild=lambda pv: _plain(self.ctx.get(pv, timeout=5.0)))
+            else:
+                page = mod.build(args.split())
             self.pages[name], self.mods[name], self.argv[name] = page, mod, args.split()
             for nid, n in page.nodes.items():
                 if n['type'] == 'check' and n.get('pv_on'):
@@ -235,6 +239,13 @@ class PvGuiApi:
                         return 200, {'ok': True, 'skipped': 'equal'}
             elif t in ('mask', 'maskbit'):
                 v = int(value)
+            elif t == 'groupmask':                                 # xpmpva PvGroupMask.setValue (equal: no put)
+                i = int(value)
+                v = 0xff if i > 8 else (1 << (i - 1) if i > 0 else 0)
+                with self.lock:
+                    cur = self.values.get(pv)
+                if cur == v:
+                    return 200, {'ok': True, 'skipped': 'equal'}
             elif t == 'pvedit':                                    # tprca PvEditInt / PvEditDbl.setPv
                 try:
                     v = {'int': int, 'float': float}[node['conv']](str(value).strip())
@@ -244,7 +255,12 @@ class PvGuiApi:
                 return 400, {'ok': False, 'err_info': 'widget %s (%s) does not write' % (body.get('id'), t)}
         except (TypeError, ValueError) as ex:
             return 400, {'ok': False, 'err_info': str(ex)}
-        self._put(pv, v)
+        except Exception as ex:                    # a PV nobody serves (xpmpva ModuleInit): the PyQt put raises too
+            return 200, {'ok': False, 'err_info': 'put %s: %s' % (node.get('pv'), type(ex).__name__)}
+        try:
+            self._put(pv, v)
+        except Exception as ex:
+            return 200, {'ok': False, 'err_info': 'put %s: %s' % (pv, type(ex).__name__)}
         return 200, {'ok': True, 'puts': [[pv, v]]}
 
 

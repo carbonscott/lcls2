@@ -45,7 +45,7 @@ def test_no_walk_is_kept_in_the_tree():
 
 @pytest.mark.parametrize('name', ['procstat', 'groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable',
                                   'hsdpva', 'dtica', 'daqstat', 'datadev_monitor', 'detector_protection_monitor',
-                                  'seqplot', 'seq_epixhr', 'hsdPs', 'configdb_GUI'])
+                                  'seqplot', 'seq_epixhr', 'hsdPs', 'configdb_GUI', 'xpmpva'])
 def test_walk_is_of_this_source_and_every_row_has_one_entry(walks, name):
     spec = _spec(name)
     with open(C.walk_path(spec, walks)) as f:
@@ -302,4 +302,19 @@ def test_configdb_walk_selects_applies_confirms_and_closes(walks):
     trees = [x for x in walk['instances'] if x['base'] == 'QTreeWidget']
     assert [t['columns'] for t in trees] == [['hutch / alias'], ['detector'], ['fakecam_0', 'type', 'value']], trees
     assert trees[1]['selected'] == ['fakecam_0', 'fakecam_1'] and trees[2]['selected'] == ['sim_seed']
+
+
+def test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site():
+    sites = gui_rows.source_sites(SRC, 'cas/xpmpva.py')['sites']
+    codes = [(s['line'], s['binding'], s['self_attr']) for s in sites if s['binding'] == 'codesText']
+    assert [c[1:] for c in codes] == [('codesText', True)] * 3, codes      # self.codesText['master'][i] = QLabel(...)
+
+
+def test_an_instance_at_a_line_with_no_site_is_a_built_row():
+    info = {'sites': [], 'slots': [], 'writes': {}, 'connects': {}}
+    x = dict(_inst(7, 'QPushButton', 50, 50, text='3'), pv='X:TxLinkReset3')     # FrontPanelAMC's h[1](pv, label)
+    walk = {'instances': [x], 'lines': {'x.py': [[50, 50]]}}
+    rows = gui_rows.make_rows(info, walk)
+    assert [(r['id'], r['kind']) for r in rows] == [('walk-only:x.py:50[X:TxLinkReset3]', 'button')], rows
+    assert gui_rows.built(rows, walk)[rows[0]['id']][0]
 

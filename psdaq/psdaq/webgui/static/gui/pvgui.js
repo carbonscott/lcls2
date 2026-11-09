@@ -71,14 +71,15 @@ function render(n) {
       return e;
     }
     case 'pvcheck': {
-      const cb = el('input', { type: 'checkbox', 'data-parity': n.id, 'data-pv': n.pv, id: 'w-' + n.id });
+      const cb = el('input', { type: 'checkbox', 'data-parity': n.id, 'data-pv': n.pv, id: 'w-' + n.id,
+                               disabled: n.disabled ? '' : null });
       cb.addEventListener('click', () => { sent(n.pv, cb.checked ? 1 : 0); put(n.id, cb.checked); });   // PvCheckBox.pvClicked
       W[n.id] = { node: n, el: cb, update: (v) => { const q = v[n.pv]; if (blocked(n.pv, q)) return;
         if (q !== null && q !== undefined) cb.checked = q != 0; } };
       return el('label', {}, cb, n.label ? ' ' + n.label : '');
     }
     case 'pvint': {
-      const i = el('input', { class: 'pv-edit', 'data-parity': n.id, 'data-pv': n.pv, value: '-' });
+      const i = el('input', { class: 'pv-edit', 'data-parity': n.id, 'data-pv': n.pv, value: '-', disabled: n.disabled ? '' : null });
       const fin = () => { if (!n.noop) put(n.id, i.value); };      // editingFinished (PvInt: setPv does nothing)
       i.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { fin(); i.dataset.sent = '1'; } });
       i.addEventListener('blur', () => { if (i.dataset.sent !== '1' && i.dataset.dirty === '1') fin(); i.dataset.sent = ''; i.dataset.dirty = ''; });
@@ -98,6 +99,16 @@ function render(n) {
       W[n.id] = { node: n, el: s, update: (v) => { const q = v[n.pv]; if (blocked(n.pv, q)) return;
         if (q !== null && q !== undefined && q >= 0 && q < n.choices.length && +s.value !== q) s.value = q;
         if (n.validate_pair) s.classList.toggle('err', v[n.pv] === 0 && v[n.validate_pair] === 0); } };
+      return s;
+    }
+    case 'groupmask': {                       // xpmpva PvGroupMask: None / group 0..7 / All
+      const s = el('select', { 'data-parity': n.id, 'data-pv': n.pv });
+      n.choices.forEach((c, k) => s.append(el('option', { value: k, text: c })));
+      s.addEventListener('change', () => put(n.id, +s.value));
+      W[n.id] = { node: n, el: s, update: (v) => { const q = v[n.pv]; if (q === null || q === undefined) return;
+        let idx = 0;                                                  // PvGroupMask.update
+        if ((q & (q - 1)) !== 0) idx = 9; else for (let i = 0; i < 8; i++) if (q & (1 << i)) idx = i + 1;
+        if (+s.value !== idx) s.value = idx; } };
       return s;
     }
     case 'mask': {
