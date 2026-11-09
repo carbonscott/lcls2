@@ -405,6 +405,11 @@ def epixhr2x2_connect(base):
 
     return d
 
+# called on alloc: BEBDetector::connectionInfo calls <det>_connectionInfo (d6b1e7552 merged
+# <det>_connect into it; this type kept only epixhr2x2_connect)
+def epixhr2x2_connectionInfo(base, alloc_json_str):
+    return epixhr2x2_connect(base)
+
 #
 #  Translate the 'user' components of the cfg dictionary into 'expert' settings
 #  The cfg dictionary may be partial (scanning), so the ocfg dictionary is
