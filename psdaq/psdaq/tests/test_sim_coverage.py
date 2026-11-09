@@ -873,6 +873,16 @@ def test_an_ami_gui_is_served_by_its_window_process(tmp_path):
                           'served the check (4001)') in line_of(out, 'prog:ami-client')
 
 
+def test_log_pid_reads_procservs_line_as_it_writes_it():
+    """procServ ends its lines with \\r\\n; the last pid line counts (a restart writes another)."""
+    text = ('# CMDLINE: /w/bin/ami-manager -p 31150\n@@@ Restarting child "x:ami-manager.log"\r\n'
+            '@@@ The PID of new child "x:ami-manager.log" is: 2681935\r\n@@@ @@@ @@@ @@@ @@@\r\n')
+    assert coverage.log_pid(text) == 2681935
+    assert coverage.log_pid(text + '@@@ The PID of new child "x:ami-manager.log" is: 2681999\r\n') == 2681999
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\n# PID: 77\n') == 77
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\nchild pid 77\n') is None
+
+
 def test_an_ami_row_is_not_proven_by_a_log_naming_the_run(tmp_path):
     """An AMI program's log that names the BeginRun time is not its check (R1)."""
     def naming(w, files):

@@ -738,7 +738,7 @@ def names_relative(text, path, data_dir):
 WITNESSES = ('ami_check', 'gui_witness')
 AMI_PROGRAMS = ('ami-client', 'ami-global', 'ami-manager', 'ami-node', 'ami-worker')
 EPICS_EPOCH = 631152000                 # 1990-01-01 in Unix seconds: timing timestamps count from it
-CHILD_PID = re.compile(r'^(?:@@@ The PID of new child .* is:|# PID:)[ \t]*(\d+)[ \t]*$', re.M)
+CHILD_PID = re.compile(r'^(?:@@@ The PID of new child .* is:|# PID:)[ \t]*(\d+)[ \t\r]*$', re.M)    # procServ ends lines \r\n
 
 
 def witness(text):
