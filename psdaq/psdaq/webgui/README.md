@@ -117,8 +117,22 @@ The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/
 `data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
 LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime).
 
+Each page is served at `/gui/<name>` (`/gui/procstat`, `/gui/groupca`, `/gui/pvant`) by any `daq_webgui` started
+with that page's arguments from the table, beside the control GUI at `/`.  On a node with the DAQ up (`$WD`, platform
+5), for example:
+
 ```bash
-python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD          # DAQ env (PyQt5), saves parity/guis/*.walk.json
-WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k test_gui_ --junitxml=/tmp/gui.xml
-python -m psdaq.webgui.parity.check_gui_parity --junit /tmp/gui.xml [--details]   # one line per file; exit 0 only if all pass
+daq_webgui -p 5 -H 127.0.0.1 --port 31063 --configdb-url http://127.0.0.1:31050/ws/ --procstat-cnf $WD/daq_sim.cnf \
+    --procstat-logdir $WD/pmlogs --pvgui 'groupca:DAQ:SIM 0 5' \
+    --pvgui 'pvant:--bases DAQ:SIM:XPM:0:PART:5 DAQ:SIM:XPM:0:PART:0 --fields NumL0Acc NumL0Inp L0AccRate'
+# then http://127.0.0.1:31063/gui/procstat, /gui/groupca, /gui/pvant (from your machine: ssh -L, via the login host)
+```
+
+The check runs the offscreen walks now, every time, as `check_parity --run-walk` does: `--run-walks` writes them to
+`--walks DIR` (default a temporary dir) and checks with them, so no walk is kept in the tree and none can be stale.
+
+```bash
+WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k 'test_gui_ or check_gui' --junitxml=/tmp/gui.xml
+python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --junit /tmp/gui.xml [--details]
+# DAQ env (PyQt5): one line per file `file | web path or N/A reason | N/M/K | PASS|FAIL`; exit 0 only if all pass
 ```
