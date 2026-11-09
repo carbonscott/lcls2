@@ -159,7 +159,7 @@ private:
 class UdpEncoder : public XpmDetector
 {
 public:
-    UdpEncoder(UdpParameters& para, MemPoolCpu& pool);
+    UdpEncoder(UdpParameters& para, MemPool& pool);
     unsigned connect(const nlohmann::json& msg, const std::string& id, std::string& errorMsg);
     unsigned disconnect();
   //    std::string sconfigure(const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd);
@@ -183,7 +183,7 @@ private:
 class UdpDrp : public DrpBase
 {
 public:
-    UdpDrp(UdpParameters&, MemPoolCpu&, UdpEncoder&, ZmqContext&);
+    UdpDrp(UdpParameters&, MemPool&, UdpEncoder&, ZmqContext&);
     virtual ~UdpDrp() {}
     std::string connect(const nlohmann::json& msg, size_t id);
     std::string configure(const nlohmann::json& msg);
@@ -234,7 +234,7 @@ private:
     void _error(const std::string& which, const nlohmann::json& msg, const std::string& errorMsg);
 private:
     UdpParameters&              m_para;
-    MemPoolCpu                  m_pool;
+    std::unique_ptr<MemPool>    m_pool;    // MemPoolCpu, or MemPoolSim for -d sim://...
     std::unique_ptr<UdpEncoder> m_det;
     std::unique_ptr<UdpDrp>     m_drp;
     bool                        m_unconfigure;

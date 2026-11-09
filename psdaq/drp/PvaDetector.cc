@@ -1,4 +1,5 @@
 #include "PvaDetector.hh"
+#include "MemPoolSim.hh"
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -523,7 +524,7 @@ EbDgram* Pgp::next(uint32_t& evtIndex)
 
 // ---
 
-PvDetector::PvDetector(PvParameters& para, MemPoolCpu& pool) :
+PvDetector::PvDetector(PvParameters& para, MemPool& pool) :
     XpmDetector(&para, &pool)
 {
     virtChan = 0;
@@ -816,7 +817,7 @@ void PvDetector::disable()
 
 // ---
 
-PvDrp::PvDrp(PvParameters& para, MemPoolCpu& pool, PvDetector& det, ZmqContext& context) :
+PvDrp::PvDrp(PvParameters& para, MemPool& pool, PvDetector& det, ZmqContext& context) :
     DrpBase    (para, pool, det, context),
     m_para     (para),
     m_det      (det),
@@ -1177,13 +1178,15 @@ void PvDrp::_sendToTeb(const EbDgram& dgram, uint32_t index)
 PvApp::PvApp(PvParameters& para) :
     CollectionApp(para.collectionHost, para.partition, "drp", para.alias, para.device),
     m_para       (para),
-    m_pool       (para),
+    m_pool       (MemPoolSim::isSimDevice(para.device)
+                  ? std::unique_ptr<MemPool>(std::make_unique<MemPoolSim>(para))
+                  : std::unique_ptr<MemPool>(std::make_unique<MemPoolCpu>(para))),
     m_unconfigure(false)
 {
     Py_Initialize();                    // for use by configuration
 
-    m_det = std::make_unique<PvDetector>(m_para, m_pool);
-    m_drp = std::make_unique<PvDrp>(para, m_pool, *m_det, context());
+    m_det = std::make_unique<PvDetector>(m_para, *m_pool);
+    m_drp = std::make_unique<PvDrp>(para, *m_pool, *m_det, context());
 
     logging::info("Ready for transitions");
 }

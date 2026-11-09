@@ -30,7 +30,7 @@ private:
 class EaDetector : public XpmDetector
 {
 public:
-    EaDetector(Parameters&, const std::string& pvCfgFile, MemPoolCpu&);
+    EaDetector(Parameters&, const std::string& pvCfgFile, MemPool&);
     virtual ~EaDetector();
     unsigned connect(const nlohmann::json&, const std::string& collectionId, std::string& msg);
     unsigned disconnect();
@@ -53,7 +53,7 @@ private:
 class EaDrp : public DrpBase
 {
 public:
-    EaDrp(Parameters&, MemPoolCpu&, Detector&, ZmqContext&);
+    EaDrp(Parameters&, MemPool&, Detector&, ZmqContext&);
     virtual ~EaDrp() {}
     std::string configure(const nlohmann::json& msg);
     unsigned unconfigure();
@@ -91,7 +91,7 @@ private:
     void _error(const std::string& which, const nlohmann::json& msg, const std::string& errorMsg);
 private:
     Parameters&                 m_para;
-    MemPoolCpu                  m_pool;
+    std::unique_ptr<MemPool>    m_pool;    // MemPoolCpu, or MemPoolSim for -d sim://...
     std::unique_ptr<EaDetector> m_det;
     std::unique_ptr<EaDrp>      m_drp;
     bool                        m_unconfigure;

@@ -111,7 +111,7 @@ private:
 class PvDetector : public XpmDetector
 {
 public:
-    PvDetector(PvParameters&, MemPoolCpu&);
+    PvDetector(PvParameters&, MemPool&);
     ~PvDetector();
     unsigned connect(const nlohmann::json&, const std::string& collectionId, std::string& msg);
     unsigned disconnect();
@@ -142,7 +142,7 @@ private:
 class PvDrp : public DrpBase
 {
 public:
-    PvDrp(PvParameters&, MemPoolCpu&, PvDetector&, ZmqContext&);
+    PvDrp(PvParameters&, MemPool&, PvDetector&, ZmqContext&);
     virtual ~PvDrp() {}
     std::string configure(const nlohmann::json& msg);
     unsigned unconfigure();
@@ -196,7 +196,7 @@ private:
     void _error(const std::string& which, const nlohmann::json& msg, const std::string& errorMsg);
 private:
     PvParameters&               m_para;
-    MemPoolCpu                  m_pool;
+    std::unique_ptr<MemPool>    m_pool;    // MemPoolCpu, or MemPoolSim for -d sim://...
     std::unique_ptr<PvDetector> m_det;
     std::unique_ptr<PvDrp>      m_drp;
     bool                        m_unconfigure;
