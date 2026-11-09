@@ -127,7 +127,14 @@ SIM_TYPES = {
     # offscreen, as for epixquad1kfps.
     # 2 nested EventBatchers of 146 rows of 384 uint16 per event (224,400 B)
     'epixhr2x2': {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
-                  'env': {'QT_QPA_PLATFORM': 'offscreen'}, 'inherit': ('PSDAQ_SIM_PYTHONPATH',)},
+                  'env': {'QT_QPA_PLATFORM': 'offscreen'}, 'inherit': ('PSDAQ_SIM_PYTHONPATH',),
+                  'runbook': '§3k'},
+    # the timetool: tt_config builds lcls2_timetool's root, whose bundled surf does not work with
+    # this rogue; PSDAQ_SIM_PYTHONPATH in the environment of 'up' (inherited by the drp through
+    # procmgr) names a working one (sim_path, RUNBOOK §3e and §3l).  'up' reports it and never
+    # sets it ('inherit').
+    'tt':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}',
+                  'inherit': ('PSDAQ_SIM_PYTHONPATH',), 'runbook': '§3l'},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -483,7 +490,8 @@ def cmd_up(args):
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
     for k, v in state['det_env'].items():   # what the type's drp inherits; unset is reported
-        say(f'{DETECTOR}: {k}={v!r}' if v else f'{DETECTOR}: {k} is not set (RUNBOOK §3k)')
+        say(f'{DETECTOR}: {k}={v!r}' if v else
+            f'{DETECTOR}: {k} is not set (RUNBOOK {sim_type.get("runbook", "§3e")})')
 
     try:
         if not args.skip_preflight:

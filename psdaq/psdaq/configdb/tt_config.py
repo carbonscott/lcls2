@@ -121,7 +121,12 @@ def config_expert(cl,cfg):
                        'TrigCtrl'          :'TrigCtrl[%d]'%chan,
                        'PllConfig0'        :'PllConfig[0]',
                        'PllConfig1'        :'PllConfig[1]',
-                       'PllConfig2'        :'PllConfig[2]'}
+                       'PllConfig2'        :'PllConfig[2]',
+                       'ROI0'              :'ROI[0]',
+                       'ROI1'              :'ROI[1]',
+                       'SAD0'              :'SAD[0]',
+                       'SAD1'              :'SAD[1]',
+                       'SAD2'              :'SAD[2]'}
 
     uart = getattr(getattr(cl,'ClinkFeb[%d]'%lane).ClinkTop,'Ch[%d]'%chan).UartPiranha4
 
@@ -152,7 +157,7 @@ def config_expert(cl,cfg):
                 rogue_node.set(configdb_node)
 
             if 'Uart' in path:
-                if 'ROI[0]' in path or 'SAD[0]' in path or 'SAD[1]' in path:
+                if 'ROI0' in path or 'SAD0' in path or 'SAD1' in path:
                     # These don't cause the send of a serial command
                     pass
                 else:

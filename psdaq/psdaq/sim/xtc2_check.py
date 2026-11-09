@@ -413,9 +413,38 @@ def _hsd_event(det, evt, seed, n, offset=0, state=None):
     return True, problems
 
 
+TT_PIXELS = 2048
+
+
+def _tt_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one tt event (MemPoolSim.cc ttData, TimeTool.cc): tt_raw_2_0_0
+    has one field, image, the camera's region of interest as uint8 (TimeTool::_event records
+    subframe 2 when its length is the config's ROI); every pixel vs pattern(seed, seq, i, 8),
+    through image() and through the segment _info() returns."""
+    import numpy as np
+    from psdaq.sim import pattern
+    image = det.raw.image(evt)
+    if image is None:
+        return False, []
+    want = pattern.image(seed, n, (TT_PIXELS,), 8, offset)
+    if image.dtype != np.uint8 or image.shape != want.shape:
+        return True, [f'image {image.dtype} {image.shape}, not uint8 {want.shape}']
+    problems = []
+    if not (image == want).all():
+        bad = np.flatnonzero(image != want)
+        problems.append(f'{len(bad)} of {image.size} pixels differ, first at {int(bad[0])}: '
+                        f'{int(image[bad[0]]):#x} != {int(want[bad[0]]):#x}')
+    seg = det.raw._info(evt)
+    if seg is None or not np.array_equal(np.asarray(seg.image), image):
+        problems.append('_info(evt).image differs from image(evt)')
+    return True, problems
+
+
 EVENT_TYPES = {
     'hsd': (_hsd_event, f'the raw waveform ({HSD_RAW} samples, waveforms()) and the 2 fex peaks '
                         '(peaks(): starts and samples) of hsd_raw_3_0_0 vs pattern'),
+    'tt': (_tt_event, f'every pixel of the {TT_PIXELS}-pixel uint8 region of interest '
+                      '(tt_raw_2_0_0 image(), and _info().image) vs pattern(seed, seq, i, 8)'),
     'hrencoder': (_hrencoder_event, 'value() (the position), error_cnt, missedTrig_cnt and '
                                     'latches (hrencoder_raw_0_1_0) vs pattern'),
     'ts': (_ts_event, 'every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, '

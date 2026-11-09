@@ -370,3 +370,17 @@ def test_epixhr2x2_frame_layout():
         assert (s[145] == pattern.pattern(SEED, seq, np.arange(past + 384, past + 768), 16)).all()
         rows.append(s[1:145])
     assert (np.concatenate(rows) == pattern.image(SEED, seq, (288, 384), 16)).all()
+
+
+def test_tt_frame_layout():
+    """TimeTool::_event reads subframe 2 as the camera's region of interest, one uint8 per
+    pixel, and records it only if its length is the config's ROI1 - ROI0 + 1 (2048 with
+    tt_config_store's ROI 1..2048); tdest 1 (the firmware's FEX results) is not produced."""
+    seq = 7
+    data, order = subframes(frame('tt', seq))
+    assert order == [0, 2]
+    assert data[0] == timing_header(seq)
+    roi = np.frombuffer(data[2], dtype=np.uint8)
+    assert roi.shape == (2048,)
+    assert (roi == pattern.image(SEED, seq, (2048,), 8)).all()
+    assert len(set(roi.tolist())) > 200                     # the pixels differ from each other

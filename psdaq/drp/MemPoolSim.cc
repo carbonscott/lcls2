@@ -319,6 +319,26 @@ static void piranha4Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     out.tail(2 * Piranha4Pixels, 2);
 }
 
+// tt (TimeTool::_event): subframe 2 is the camera's line of the timetool's region of interest,
+// one uint8 per pixel (tt_config_store's ClinkCh.DataMode 1, 8 bit), which the DRP records as
+// 'image' only if its length is the config's UartPiranha4.ROI1 - ROI0 + 1, 2048 (ROI 1..2048 in
+// tt_config_store) here; pixel i is pattern(seed, seq, i, 8).  The FEX results that the timetool
+// firmware sends in tdest 1 are left out: TimeTool::_event does not read them.
+static const unsigned TtPixels = 2048;
+
+static void ttData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint8_t> base = [] {
+        std::vector<uint8_t> v(TtPixels);
+        for (unsigned i = 0; i < TtPixels; ++i)  v[i] = uint8_t(MemPoolSim::mix(i));
+        return v;
+    }();
+    uint8_t  add = uint8_t(f.seq * 0x9e37u + seed);
+    uint8_t* d   = out.data();
+    for (unsigned i = 0; i < TtPixels; ++i)  d[i] = uint8_t(base[i] + add);
+    out.tail(TtPixels, 2);
+}
+
 // tb (TimingBEB::_event, TimingDef::createDataETM): the timing system's event timing message
 // in the last subframe (tdest 2, the lane's data channel), read with the TimingHeader of
 // subframe 0: {u64 pulseId (not recorded), u16 rate markers (fixed 0-9, AC 10-15), u8 AC
@@ -657,6 +677,7 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "epixm320", _padded(32) + 4 * _padded(2 * EpixMHdr + 2 * EpixMAsic), epixm320Data },
     { "opal",     _padded(32) + _padded(2 * OpalRows * OpalCols), opalData },
     { "piranha4", _padded(32) + _padded(2 * Piranha4Pixels), piranha4Data },
+    { "tt",       _padded(TtPixels), ttData },
     { "tb",       _padded(TbEtmBytes), tbData },
     { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
     { "epixquad1kfps", 2 * _padded(32) + _padded(EquadBytes), epixquadData },  // the same EpixQuad DRP
