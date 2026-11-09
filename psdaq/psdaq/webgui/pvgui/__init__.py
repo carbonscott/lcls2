@@ -11,8 +11,9 @@ Node types the renderer knows
   box {dir: 'v'|'h', children}     group {title, children}      grid {rows: [[node|null, ...]]}
   label {text}                     tabs {id, tabs: [{title, child}], current}
   stack {select: <node id>, children}        (QStackedWidget switched by a combo's index)
-  pvcheck {pv, label}              PvCheckBox: checked = value != 0; click puts 1 / 0
-  pvint {pv}                       PvEditInt: shows int(value); Enter / leaving the field puts int(text)
+  pvcheck {pv, label, disabled}    PvCheckBox: checked = value != 0; click puts 1 / 0 (disabled: a display)
+  groupmask {pv, choices}          xpmpva PvGroupMask: index None / 0..7 / All from the mask; a choice puts the mask
+  pvint {pv, disabled}             PvEditInt: shows int(value); Enter / leaving the field puts int(text)
   pvcombo {pv, choices}            PvEditCmb: index = value; a choice puts its index
   pvdbl {pv}                       PvDbl: read only, '{:.4f}'
   mask {pv, bits: [{id, label}]}   PvMaskTab / PvDstTab: one checkbox per bit, a click puts the mask (nomon: the
@@ -70,7 +71,8 @@ class Page:
         for k in ('pv',):
             if node.get(k):
                 self.read_pvs.add(node[k])
-                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel', 'pvbutton', 'pvedit', 'exclbox') and \
+                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel', 'pvbutton', 'pvedit', 'exclbox',
+                                    'groupmask') and \
                         not node.get('disabled'):
                     self.write_pvs.add(node[k])
         if node.get('pv_once'):
@@ -263,6 +265,8 @@ def text_of(node, q):
     if q is None:
         return None
     f = node['fmt']
+    if f in ('linkid', 'paddr', 'pvlabel', 'arr') and isinstance(q, dict) and 'value' in q and 'timeStamp' in q:
+        q = q['value']                               # an NTScalar read as its structure (webgui_harness.pva)
     if f == 'pvlabel':
         return _fmt_pvlabel(q, **node.get('args', {}))
     if f == 'arr':                                   # element i in the format of the program's array update():
@@ -313,6 +317,12 @@ def text_of(node, q):
         if not isinstance(q, list) or node['index'] >= len(q):
             return None
         return '{0:.4f}'.format(q[node['index']])
+    if f == 'linkid':                                # xpmpva PvLinkId.update: xpm_utils.xpmLinkId(int(value))[part]
+        from psdaq.webgui.pvgui.xpmpva import xpm_link_id
+        return xpm_link_id(q)[node['part']]
+    if f == 'paddr':                                 # xpmpva PvPAddr.update
+        from psdaq.webgui.pvgui.xpmpva import paddr_text
+        return paddr_text(q)
     if f == 'pyfmt':                                 # tprca.PvEditDbl.update: fmt.format(q), ' '-joined for an array
         try:
             return node['spec'].format(q)

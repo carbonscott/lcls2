@@ -7,8 +7,10 @@
 - at run time (audit hook on socket.connect / bind / getaddrinfo / urllib.Request) the server only
   touches 127.0.0.1, while serving the page, the SSE stream, commands and a Prometheus events poll;
 - /gui/procstat (telnetlib stubbed, so no procServ is contacted): a --procstat-cnf with a process on a host
-  that is not loopback is refused at startup (exit 2) before any connection; the poll opens procServ only at
-  127.0.0.1, also for the processes ProcMgr would reach at the machine's name; its ProcMgr refuses any other host.
+  that is not loopback is refused at startup (exit 2) before any connection, and so is one that sets
+  procmgr_macro['HOST'] (where ProcMgr opens its 'localhost' processes) to a name that is neither loopback nor this
+  machine's; the poll opens procServ only at 127.0.0.1, also for the processes ProcMgr would reach at the machine's
+  name; its ProcMgr refuses any other host, a HOST macro naming another machine included.
 No browser needed; runs in the DAQ env's or the test venv's pytest.
 """
 
@@ -16,6 +18,7 @@ import http.server
 import json
 import os
 import pathlib
+import platform
 import re
 import socket
 import subprocess
@@ -263,6 +266,55 @@ def test_procstat_poll_opens_only_127_0_0_1(tmp_path, conda_prefix):
     assert bad == [], bad
 
 
+CNF_HOST_MACRO = """platform = '5'
+procmgr_macro['HOST'] = %r
+procmgr_config = [
+ { id:'nohost', flags:'s', cmd:'sleep 60' },
+ { host:'localhost', id:'named_localhost', flags:'s', cmd:'sleep 60' },
+]
+"""
+REMOTE_MACRO_HOST = 'daq-remote-host.invalid'
+
+
+def test_procstat_cnf_setting_a_remote_host_macro_is_refused(tmp_path, conda_prefix):
+    """No process names a remote host, but the .cnf points ProcMgr's HOST macro (what a 'localhost' process is
+    opened at and shown as) at another machine: refused at startup, before any connection."""
+    cnf, wrapper, log = _stub_files(tmp_path, CNF_HOST_MACRO % REMOTE_MACRO_HOST)
+    r = subprocess.run([SERVER_PYTHON, str(wrapper), str(log), '--emulate', '--port', '0', '--procstat-cnf', str(cnf)],
+                       env=server_env(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+    print(r.stderr)
+    assert r.returncode == 2, (r.returncode, r.stdout, r.stderr)
+    assert "procmgr_macro['HOST'] is %r, neither loopback nor this machine's name" % REMOTE_MACRO_HOST in r.stderr, \
+        r.stderr
+    assert 'names host' not in r.stderr, r.stderr          # the processes themselves name no remote host
+    assert 'listening' not in r.stdout, r.stdout
+    recs = _records(log)
+    print('telnet.open / socket.connect records:', recs)
+    assert recs == [], recs
+
+
+def test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served(tmp_path, conda_prefix):
+    """The HOST macro set to this machine's name (what ProcMgr sets it to anyway): accepted; the poll opens
+    procServ at 127.0.0.1 only."""
+    cnf, wrapper, log = _stub_files(tmp_path, CNF_HOST_MACRO % platform.node())
+    s = ServerProc(['--emulate', '--procstat-cnf', str(cnf), '--procstat-interval', '0.3'])
+    s.cmd = [SERVER_PYTHON, str(wrapper), str(log)] + s.cmd[3:]    # same args, telnetlib stubbed
+    s.start()
+    try:
+        t0 = time.time()
+        st = s.get('/api/procstat/status')
+        while st['seq'] < 2 and time.time() - t0 < 20:
+            time.sleep(0.2)
+            st = s.get('/api/procstat/status')
+    finally:
+        rc = s.stop()
+    assert rc == 0, '\n'.join(s.lines[-20:])
+    assert {r['showId']: r['status'] for r in st['rows']} == {'nohost': 'NOCONNECT', 'named_localhost': 'NOCONNECT'}, st
+    opens = [r for r in _records(log) if r[0] == 'telnet.open']
+    print('telnet.open (host, port):', sorted({(r[1], r[2]) for r in opens}), 'in', len(opens), 'opens')
+    assert opens and {r[1] for r in opens} == {'127.0.0.1'}, opens
+
+
 GUARD = r"""
 import json, sys, telnetlib
 opens = []
@@ -288,3 +340,16 @@ def test_procstat_poll_procmgr_refuses_a_remote_host(tmp_path, conda_prefix):
     print(out)
     assert out['opens'] == ['127.0.0.1'], out                       # 'here' only; 192.0.2.1 never reached telnetlib
     assert out['rows'] == [['here', 'localhost', 'NOCONNECT'], ['remote', '192.0.2.1', 'NOCONNECT']], out
+
+
+def test_procstat_poll_procmgr_refuses_a_remote_host_macro(tmp_path, conda_prefix):
+    """Past the startup check too: a HOST macro naming another machine is never opened, nor mapped to 127.0.0.1
+    (its processes show NO CONNECT, as on a host nothing answers)."""
+    cnf, _, _ = _stub_files(tmp_path, CNF_HOST_MACRO % REMOTE_MACRO_HOST)
+    r = subprocess.run([SERVER_PYTHON, '-c', GUARD, str(cnf)], env=server_env(), stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, text=True, timeout=60)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip().splitlines()[-1])
+    print(out)
+    assert out['opens'] == [], out                                  # neither the remote name nor 127.0.0.1
+    assert [(i, st) for i, h, st in out['rows']] == [('named_localhost', 'NOCONNECT'), ('nohost', 'NOCONNECT')], out

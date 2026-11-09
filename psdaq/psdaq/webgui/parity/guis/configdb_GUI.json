@@ -1,0 +1,176 @@
+{
+ "file": "configdb/configdb_GUI.py",
+ "title": "configdb_GUI (change one parameter across many detectors), against the config DB stand-in",
+ "web": "/gui/configdb_GUI",
+ "backend": "sim-device:configdb_server",
+ "walk": {
+  "argv": [
+   "--url",
+   "http://127.0.0.1:47321/ws-auth/",
+   "--hutch",
+   "tst",
+   "--password",
+   "sim"
+  ],
+  "devices": [
+   {
+    "module": "configdb_server",
+    "args": [
+     "--store",
+     "{walkdir}/configdb.json",
+     "--port",
+     "47321",
+     "--seed-gui",
+     "--delay-modify",
+     "3"
+    ]
+   }
+  ],
+  "env": {
+   "HOME": "{walkdir}/home"
+  },
+  "dialog": "accept",
+  "pump": 3,
+  "timeout": 120,
+  "drive": [
+   "tree-select:0:tst/BEAM",
+   "pump:2",
+   "tree-select-many:1:fakecam_0,fakecam_1",
+   "pump:2",
+   "tree-select:2:user */sim_seed",
+   "pump:2",
+   "text:0:10794",
+   "check:Read-only:off",
+   "pump:0.5",
+   "click:Apply",
+   "pump:0.5",
+   "close",
+   "pump:1"
+  ],
+  "variants": [
+   {
+    "argv": [
+     "--url",
+     "http://127.0.0.1:47321/ws-auth/",
+     "--hutch",
+     "tst"
+    ],
+    "drive": [
+     "pump:1",
+     "check:Read-only:off",
+     "pump:0.5"
+    ]
+   },
+   {
+    "argv": [
+     "--url",
+     "http://127.0.0.1:47321/ws-auth/",
+     "--hutch",
+     "tst"
+    ],
+    "drive": [
+     "tree-select:0:tst/BEAM",
+     "pump:2",
+     "tree-select-many:1:fakecam_2",
+     "pump:2",
+     "tree-select:2:user */mode",
+     "pump:2"
+    ]
+   }
+  ]
+ },
+ "mapping": {
+  "ConfigdbGUI._build_ui.target_label": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.target_label\"]",
+   "test": "test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]"
+  },
+  "ConfigdbGUI._build_ui.write_box": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.write_box\"]",
+   "test": "test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]"
+  },
+  "ConfigdbGUI._build_ui.pbar": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.pbar\"]",
+   "test": "test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]"
+  },
+  "ConfigdbGUI._build_ui.hutch_tree.col[hutch / alias]": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.hutch_tree.col[hutch / alias]\"]",
+   "test": "test_gui_configdb_GUI.py::test_alias_selection_lists_the_detectors[chromium]"
+  },
+  "ConfigdbGUI._build_ui.hutch_tree.select": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.hutch_tree.select\"]",
+   "test": "test_gui_configdb_GUI.py::test_alias_selection_lists_the_detectors[chromium]"
+  },
+  "ConfigdbGUI._build_ui.device_list.col[detector]": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.device_list.col[detector]\"]",
+   "test": "test_gui_configdb_GUI.py::test_alias_selection_lists_the_detectors[chromium]"
+  },
+  "ConfigdbGUI._build_ui.device_list.select": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.device_list.select\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.param_tree.col[fakecam_0]": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.param_tree.col[fakecam_0]\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.param_tree.col[type]": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.param_tree.col[type]\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.param_tree.col[value]": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.param_tree.col[value]\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.param_tree.select": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.param_tree.select\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.path_label": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.path_label\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.value_edit": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.value_edit\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.hint_label": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.hint_label\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.log": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.log\"]",
+   "test": "test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]"
+  },
+  "ConfigdbGUI._build_ui.value_combo": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.value_combo\"]",
+   "test": "test_gui_configdb_GUI.py::test_enum_parameter_is_a_combo[chromium]"
+  },
+  "ConfigdbGUI._warn.box": {
+   "web": "[data-parity=\"ConfigdbGUI._warn.box\"]",
+   "test": "test_gui_configdb_GUI.py::test_writing_without_a_password_warns[chromium]"
+  },
+  "ConfigdbGUI._build_ui.apply_button": {
+   "web": "[data-parity=\"ConfigdbGUI._build_ui.apply_button\"]",
+   "test": "test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]"
+  },
+  "ConfirmDialog.table.col[detector]": {
+   "web": "[data-parity=\"ConfirmDialog.table.col[detector]\"]",
+   "test": "test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]"
+  },
+  "ConfirmDialog.table.col[current]": {
+   "web": "[data-parity=\"ConfirmDialog.table.col[current]\"]",
+   "test": "test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]"
+  },
+  "ConfirmDialog.table.col[new]": {
+   "web": "[data-parity=\"ConfirmDialog.table.col[new]\"]",
+   "test": "test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]"
+  },
+  "ConfirmDialog.note[fakecam_1: user.sim_seed already 10794]": {
+   "web": "[data-parity=\"ConfirmDialog.note[fakecam_1: user.sim_seed already 10794]\"]",
+   "test": "test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]"
+  },
+  "ConfigdbGUI.closeEvent.box": {
+   "web": "[data-parity=\"ConfigdbGUI.closeEvent.box\"]",
+   "test": "test_gui_configdb_GUI.py::test_close_while_writing_asks[chromium]"
+  }
+ }
+}

@@ -16,7 +16,20 @@ It binds to 127.0.0.1 only and prints the URL to pass to the DAQ, e.g.
     control -d http://127.0.0.1:<port>/ws/configDB ...
     control_gui --uris http://127.0.0.1:<port>/ws/ ...
 Use a plain http:// URL: configdb.py only adds authentication when the URL
-contains 'ws-auth' or 'ws-kerb'.
+contains 'ws-auth' or 'ws-kerb'.  It serves any path prefix, so the same
+store also answers http://127.0.0.1:<port>/ws-auth/ (the URL of a client that
+writes with a user and password, as configdb_GUI.py does; no credential is
+checked).
+
+    --seed-gui        once listening, seed tst/BEAM for configdb_GUI.py: the
+                      trigger tmoteb_0 and three fakecams, fakecam_0 (sim_seed
+                      0x1234), fakecam_1 (sim_seed 0x2a2a) and fakecam_2 (with an
+                      enum, user.mode), through psdaq.sim.configdb_seed (the
+                      same client the DAQ uses)
+    --delay-modify S  answer each modify_device S seconds late (a slow
+                      database: a write still running when a client quits)
+
+It prints 'configdb_server: ready, <url>' once it serves (and is seeded).
 """
 
 import argparse
@@ -357,6 +370,9 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
+        if getattr(self.server, 'delay_modify', 0) and '/modify_device/' in self.path:
+            import time
+            time.sleep(self.server.delay_modify)
         try:
             status, resp = dispatch(self.server.store, self.path, self._body())
         except Exception as ex:             # keep serving; report the bug
@@ -370,6 +386,22 @@ class Handler(BaseHTTPRequestHandler):
         logger.debug('%s - %s', self.address_string(), fmt % args)
 
 
+def _seed_gui(srv, url):
+    """--seed-gui: tst/BEAM with tmoteb_0, fakecam_0 (sim_seed 0x1234) and fakecam_1 (sim_seed 0x2a2a)."""
+    from psdaq.sim import configdb_seed
+    logging.getLogger().setLevel(logging.WARNING)       # the client's INFO lines ('... already exists') stay quiet
+    out = {}
+    out.update(configdb_seed.seed(url, segm=0, sim_seed=0x1234))
+    out.update(configdb_seed.seed(url, segm=1, sim_seed=0x2a2a))
+    from psdaq.configdb.configdb import configdb
+    top = configdb_seed.fakecam_cdict('fakecam', 2, 0x2b2b)        # fakecam_2: also an enum, user.mode
+    top.define_enum('modeEnum', {'Normal': 0, 'Burst': 1, 'Off': 2})
+    top.set('user.mode', 1, 'modeEnum')
+    out['fakecam_2'] = configdb_seed._store(configdb(url, 'tst', create=True, root='configDB'), 'BEAM', top)
+    print('configdb_server: seeded %s' % sorted(out), flush=True)
+    print('configdb_server: ready, %s' % url, flush=True)
+
+
 def make_server(store_path=None, host='127.0.0.1', port=0, access_log=None):
     """Create (but do not start) a server; port 0 picks a free port."""
     srv = ThreadingHTTPServer((host, port), Handler)
@@ -377,6 +409,7 @@ def make_server(store_path=None, host='127.0.0.1', port=0, access_log=None):
     srv.store = JsonConfigStore(store_path)
     srv.access_log = access_log
     srv.log_lock = threading.Lock()
+    srv.delay_modify = 0.0
     return srv
 
 
@@ -392,12 +425,17 @@ def main():
     parser.add_argument('--port', type=int, default=0, help='port (default 0: pick a free one)')
     parser.add_argument('--url-file', help='write the base URL to this file once listening')
     parser.add_argument('--access-log', help='append one JSON line per request to this file')
+    parser.add_argument('--seed-gui', action='store_true',
+                        help='seed tst/BEAM with tmoteb_0, fakecam_0 and fakecam_1 (for configdb_GUI.py)')
+    parser.add_argument('--delay-modify', type=float, default=0.0,
+                        help='answer each modify_device this many seconds late (default 0)')
     parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
                         format='%(asctime)s %(levelname)s %(message)s')
 
     srv = make_server(args.store, args.host, args.port, args.access_log)
+    srv.delay_modify = args.delay_modify
     url = server_url(srv)
     if args.url_file:
         with open(args.url_file, 'w') as f:
@@ -406,6 +444,10 @@ def main():
     print('  control -d %sconfigDB    control_gui --uris %s' % (url, url), flush=True)
 
     signal.signal(signal.SIGTERM, lambda *a: threading.Thread(target=srv.shutdown).start())
+    if args.seed_gui:
+        threading.Thread(target=_seed_gui, args=(srv, url), daemon=True).start()
+    else:
+        print('configdb_server: ready, %s' % url, flush=True)
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

@@ -12,15 +12,208 @@
   ],
   "cwd": "{psdaq}/seq",
   "pump": 3,
-  "timeout": 120,
+  "timeout": 400,
   "drive": [
-   "pump:1"
+   "pump:1",
+   "pg-options:720x180"
   ]
  },
  "mapping": {
   "PatternWaveform.add.q0[epixhr]": {
    "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr]\"]",
    "test": "test_gui_seq_epixhr.py::test_plot_shows_the_pyqt_curves[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.label\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.linkCombo\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.autoPercentSpin\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.autoRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.manualRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.minText\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.maxText\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.invertCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.mouseCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].xaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].xaxis.autoPanCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_xaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.label\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.linkCombo\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.autoPercentSpin\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.autoRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.manualRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.minText\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.maxText\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.invertCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.mouseCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].yaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].yaxis.autoPanCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_yaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.logXCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.logXCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_logXCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.logYCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.logYCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_logYCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.fftCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.fftCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_fftCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.derivativeCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.derivativeCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_derivativeCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.phasemapCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.phasemapCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_phasemapCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.downsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.downsampleCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_downsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.autoDownsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.autoDownsampleCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_autoDownsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.downsampleSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.downsampleSpin\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_downsampleSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.subsampleRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.subsampleRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_subsampleRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.meanRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.meanRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_meanRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.peakRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.peakRadio\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_peakRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.clipToViewCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.clipToViewCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_clipToViewCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.maxTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.maxTracesCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_maxTracesCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.maxTracesSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.maxTracesSpin\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_maxTracesSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.averageGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.averageGroup\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_averageGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.avgParamList": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.avgParamList\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_avgParamList[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.alphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.alphaSlider\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_alphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.alphaGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.alphaGroup\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_alphaGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.autoAlphaCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.autoAlphaCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_autoAlphaCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.xGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.xGridCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_xGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.yGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.yGridCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_yGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.gridAlphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.gridAlphaSlider\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_gridAlphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.label\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_label[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.pointsGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.pointsGroup\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_pointsGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.autoPointsCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.autoPointsCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_autoPointsCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[epixhr].ctrl.forgetTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr].ctrl.forgetTracesCheck\"]",
+   "test": "test_gui_seq_epixhr.py::test_menu_0_ctrl_forgetTracesCheck[chromium]"
   }
  }
 }

@@ -26,7 +26,8 @@ EDITS = BY['fieldedit']
 APPLY = BY['button']
 # In the walk of the PyQt hsdpva the first base's PvPLink update raises (cas/hsdpva.py:162, 'ntint' object has no
 # attribute 'value'), so that display keeps '-'; the web copy shows PvPLink's text ('Unknown' for PLINK 0) for every base.
-STATIC = ('MONTRIG', 'MONRAWDET', 'MONFEXDET', 'MONFLOW', 'MONENV', 'MONADC', 'MONJESD', 'FWBUILD', 'PADDR', 'PLINK')
+# MONTRIG is not among them: simhsd counts its triggers (hsdPs's phase scan) once a second, as MONTIMING
+STATIC = ('MONRAWDET', 'MONFEXDET', 'MONFLOW', 'MONENV', 'MONADC', 'MONJESD', 'FWBUILD', 'PADDR', 'PLINK')
 PARITY_ROWS = {
     'test_displays_show_the_structure_fields': TEXTS,
     'test_apply_puts_each_box_whole': EDITS + APPLY,
