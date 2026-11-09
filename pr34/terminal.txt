@@ -1,0 +1,358 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T01:10:26+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p34b/node_rc.sh -i
+cwang31@sdfmilan048:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan048
+2026-11-08 17:10:29 PST
+Slurm job 43839059 step 161
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan048:agentify-lcls2$ cd $R/wt-beb && git rev-parse HEAD && git log --format='%h %s' dfd6149d8..HEAD && echo "local changes: $(git status --short | wc -l)"
+ec06569d9b82bfc11d0e05a5da57304b93ee61f2
+ec06569d9 docs: BEB types in the runbook and the changelog; epix100, wave8, wave8he RUN
+5da8a24de sim: wave8he configures through its own config code
+28b512e20 sim: wave8 configures through its own config code, IOC PVs in process
+2bfb26277 tests: rogue_dev seeds, faults and refusals; the BEB framer's layout
+61f1bc80f sim: BEB pixels depend on their position; psana check compares each pixel
+7a8f7a33c coverage: only a clean run at HEAD with real files counts
+7b309bb13 sim: epix100 configures through its own config code against an emulated device
+local changes: 0
+cwang31@sdfmilan048:wt-beb$ git diff --stat dfd6149d8 HEAD | tail -1; echo "files this PR changes under psdaq/psdaq/configdb (the types' config code): $(git diff --name-only dfd6149d8 HEAD -- psdaq/psdaq/configdb | wc -l)"
+ 23 files changed, 2768 insertions(+), 72 deletions(-)
+files this PR changes under psdaq/psdaq/configdb (the types' config code): 0
+cwang31@sdfmilan048:wt-beb$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # The build is this HEAD's: ninja has nothing to do, and the installed psdaq/sim and psdaq/configdb are the checkout's
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ ninja -n -C builddir | tail -1; for d in sim configdb; do diff -rq -x __pycache__ psdaq/psdaq/$d install/lib/python3.9/site-packages/psdaq/$d && echo "installed psdaq/$d == checkout"; done
+ninja: no work to do.
+installed psdaq/sim == checkout
+installed psdaq/configdb == checkout
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (a) unit tests: coverage, rogue_dev, the BEB framer, config DB seeding, simxpm
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py psdaq/psdaq/tests/test_sim_rogue_dev.py psdaq/psdaq/tests/test_sim_framer.py psdaq/psdaq/tests/test_sim_configdb_seed_store.py psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py 2>&1 | grep -E ' (passed|failed|error)'
+65 passed in 45.98s
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (b) each BEB type: daq_sim up --det <type> --detach, cycle --events 1000, down. New work dirs, and a new, empty evidence dir
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ export P=$Q/take1 DAQ_SIM_EVIDENCE=$Q/take1/ev; mkdir -p $DAQ_SIM_EVIDENCE; echo "records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)"
+records in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/ev: 0; work dirs in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1: 0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # epix100
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ T=epix100; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.|^  configdb ' $P/up-$T.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T17:12:07.621-08:00 daq_sim: preflight rc=0: 17:12:07 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T17:12:21.082-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epix100_0 sim_seed=0x1234)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138
+CYCLE_EXIT=0
+counts:
+  simxpm NumL0Acc        2031
+  simxpm NumL0Inp        2031
+  TEB_EvtCt              2031
+  TEB_TrCt               7
+  TEB_WrtCt              2031
+  DRP_Damage             0
+  DRP_RecordSize         2196594226
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-epix100/data/tst/tstx00001/xtc
+  psana2 events          2031
+  psana2 with data       2031
+  psana2 checks          PASS
+  psana2 seq             1..2031
+  psana2 seeds           {'0x1234': 2031}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T17:12:39.701-08:00 evidence 20261108T171239-cycle-ec06569d9-1053305: det:drp:epix100 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T17:12:39.701-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ grep -h -E 'config runs against|FpgaVersion|check clock rate|Loading camera|sim payload seed' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1053112]: <I> BEBDetector: epix100 config runs against simulated device sim://127.0.0.1:31052
+KCU FpgaVersion 0x3040000
+CAM FpgaVersion 0xea020009
+check clock rate: 185.714286
+tst-drp[1053112]: <I> BEBDetector: sim payload seed 0x1234
+*** Loading camera configuration from /tmp/epix100_cfg.yaml
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T17:12:49.063-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (c) the per-pixel check on that epix100 file: as written (PASS), then told to expect every pixel one place off (must FAIL)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ F=$P/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2; for a in '' '--self-test-offset 1'; do echo "== xtc2_check --det epix100 --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det epix100 --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check --det epix100 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2031; with epix100 data 2031; w3 == seed 2031 (seeds seen {0x1234: 2031}); payload pattern ok 2031; w0/w1 pulseId rising
+  seq (w2) 1..2031 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check --det epix100 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2031; with epix100 data 2031; w3 == seed 0 (seeds seen {0x1234: 0}); payload pattern ok 0; w0/w1 pulseId rising and == t
+  seq (w2) 1..2031 gap-free from 1: False
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 540640 of 540672 pixels differ, first at (0, 0): 0x2947 != 0xac5
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # wave8
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ T=wave8; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.|^  configdb ' $P/up-$T.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T17:13:31.523-08:00 daq_sim: preflight rc=0: 17:13:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T17:13:46.239-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, wave8_0 sim_seed=0x1234)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138
+CYCLE_EXIT=0
+counts:
+  simxpm NumL0Acc        2087
+  simxpm NumL0Inp        2087
+  TEB_EvtCt              2087
+  TEB_TrCt               7
+  TEB_WrtCt              2087
+  DRP_Damage             0
+  DRP_RecordSize         9341072
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8/data/tst/tstx00001/xtc/t
+  psana2 events          2087
+  psana2 with data       2087
+  psana2 checks          PASS
+  psana2 seq             1..2087
+  psana2 seeds           {'0x1234': 2087}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T17:14:05.328-08:00 evidence 20261108T171405-cycle-ec06569d9-1055712: det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T17:14:05.328-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1055652]: <I> BEBDetector: wave8 config runs against simulated device sim://127.0.0.1:31052
+wave8_connect returning {'paddr': 1}
+tst-drp[1055652]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8:00', 0: 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T17:14:14.941-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # wave8he
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ T=wave8he; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.|^  configdb ' $P/up-$T.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T17:14:40.319-08:00 daq_sim: preflight rc=0: 17:14:40 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T17:14:55.054-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, wave8he_0 sim_seed=0x1234)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138
+CYCLE_EXIT=0
+counts:
+  simxpm NumL0Acc        2000
+  simxpm NumL0Inp        2000
+  TEB_EvtCt              2000
+  TEB_TrCt               7
+  TEB_WrtCt              2000
+  DRP_Damage             0
+  DRP_RecordSize         9055352
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he/data/tst/tstx00001/xtc
+  psana2 events          2000
+  psana2 with data       2000
+  psana2 checks          PASS
+  psana2 seq             1..2000
+  psana2 seeds           {'0x1234': 2000}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T17:15:15.865-08:00 evidence 20261108T171515-cycle-ec06569d9-1058267: det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T17:15:15.865-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1057858]: <I> BEBDetector: wave8he config runs against simulated device sim://127.0.0.1:31052
+wave8he_connect returning {'paddr': 1}
+tst-drp[1057858]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8HE:00', 'lane': 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T17:15:25.454-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # fakecam, unchanged by this PR, so that all four det rows have evidence from this shell
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ T=fakecam; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/up-$T.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T17:15:50.884-08:00 daq_sim: preflight rc=0: 17:15:50 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T17:16:00.210-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'NumL0Acc  |TEB_WrtCt|psana2 (events|with data|checks)|evidence |cycle (PASS|FAIL)' $P/cycle-$T.log | cut -c1-138
+CYCLE_EXIT=0
+2026-11-08T17:16:11.418-08:00 counts after Disable: {'simxpm NumL0Acc': 2085, 'simxpm NumL0Inp': 2085, 'TEB_EvtCt': 2085, 'TEB_TrCt': 7, '
+  simxpm NumL0Acc        2085
+  TEB_WrtCt              2085
+  psana2 events          2085
+  psana2 with data       2085
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T17:16:16.402-08:00 evidence 20261108T171616-cycle-ec06569d9-1060507: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T17:16:16.402-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T17:16:24.295-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (d) a fault: epix100's DaqTriggerDelay register reads back wrong (PSDAQ_SIM_ROGUE_FAULT), so Configure must fail and name it
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ PSDAQ_SIM_ROGUE_FAULT=ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay daq_sim up -w $P/wd-fault --det epix100 --detach > $P/up-fault.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/up-fault.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T17:16:50.677-08:00 daq_sim: preflight rc=0: 17:16:50 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T17:17:03.489-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim cycle -w $P/wd-fault --events 1000 > $P/cycle-fault.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\[error\]|cycle (PASS|FAIL)' $P/cycle-fault.log | cut -c1-138
+CYCLE_EXIT=1
+2026-11-08T17:17:06.615-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T17:17:06.746-08:00 setState allocated    -> allocated    OK
+2026-11-08T17:17:07.224-08:00 setState connected    -> connected    OK
+2026-11-08T17:18:07.285-08:00 setState configured   -> error        FAIL
+2026-11-08T17:18:07.292-08:00 [error] epix100_0 did not respond to configure
+2026-11-08T17:18:07.292-08:00 [error] 1 client did not respond to configure
+2026-11-08T17:18:07.293-08:00 [error] configure failed to change state
+2026-11-08T17:18:37.328-08:00 [error] epix100_0 did not respond to disconnect
+2026-11-08T17:18:37.328-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T17:18:37.328-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T17:18:37.328-08:00 [error] disconnect failed to change state
+2026-11-08T17:18:37.328-08:00 setState allocated    -> connected    FAIL
+2026-11-08T17:18:37.834-08:00 cycle FAIL
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*' $P/wd-fault/pmlogs/*/*/*:epix100_0.log | sort | uniq -c | cut -c1-138
+      1 rogue_dev: FAULT ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x1000010 reads
+      3 Verify error for block ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay with address 0x01000010. Byte: 0. Got: 0xff, Exp: 
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim down -w $P/wd-fault > $P/down-fault.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault.log | cut -c1-138; ls $DAQ_SIM_EVIDENCE
+DOWN_EXIT=0
+2026-11-08T17:18:47.413-08:00 daq_sim: down: clean
+20261108T171239-cycle-ec06569d9-1053305.json  20261108T171515-cycle-ec06569d9-1058267.json
+20261108T171405-cycle-ec06569d9-1055712.json  20261108T171616-cycle-ec06569d9-1060507.json
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (e) daq_sim coverage with this shell's 4 records: the det rows, then the summary
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim coverage > $P/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/cov.txt; sed -n '/^row /,/^det:drp_gpu:jungfrau /p' $P/cov.txt | cut -c1-138
+COVERAGE_EXIT=1
+98
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261108T171616-cycle-ec06569d9-1060507
+det:drp:cspad                  UNPROVEN  no status entry
+det:drp:hsd                    UNPROVEN  no status entry
+det:drp:epixquad               UNPROVEN  no status entry
+det:drp:epixquad1kfps          UNPROVEN  no status entry
+det:drp:epixhr2x2              UNPROVEN  no status entry
+det:drp:epixhremu              UNPROVEN  no status entry
+det:drp:epixm320               UNPROVEN  no status entry
+det:drp:epixUHR                UNPROVEN  no status entry
+det:drp:epix100                RUN       evidence 20261108T171239-cycle-ec06569d9-1053305
+det:drp:jungfrau               UNPROVEN  no status entry
+det:drp:jungfrauemu            UNPROVEN  no status entry
+det:drp:opal                   UNPROVEN  no status entry
+det:drp:tt                     UNPROVEN  no status entry
+det:drp:tb                     UNPROVEN  no status entry
+det:drp:ts                     UNPROVEN  no status entry
+det:drp:wave8                  RUN       evidence 20261108T171405-cycle-ec06569d9-1055712
+det:drp:wave8he                RUN       evidence 20261108T171515-cycle-ec06569d9-1058267
+det:drp:hrencoder              UNPROVEN  no status entry
+det:drp:piranha4               UNPROVEN  no status entry
+det:drp:epixuhr3x2             UNPROVEN  no status entry
+det:drp_gpu:fakecam            UNPROVEN  no status entry
+det:drp_gpu:epixuhremu         UNPROVEN  no status entry
+det:drp_gpu:epixuhrsim         UNPROVEN  no status entry
+det:drp_gpu:epixuhr3x2         UNPROVEN  no status entry
+det:drp_gpu:jungfrau           UNPROVEN  no status entry
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ grep -E '^evidence:|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138; echo "UNPROVEN rows: $(grep -c ' UNPROVEN ' $P/cov.txt)"
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/ev (4 records)
+prog:control                   RUN       evidence 20261108T171616-cycle-ec06569d9-1060507 (+3 more)
+prog:drp                       RUN       evidence 20261108T171616-cycle-ec06569d9-1060507 (+3 more)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:teb                       RUN       evidence 20261108T171616-cycle-ec06569d9-1060507 (+3 more)
+78 rows, 7 run, 1 stand-in, 3 N/A, 67 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 7 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 67 unproven row(s)
+UNPROVEN rows: 67
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # 67 rows UNPROVEN is expected at this PR (no run for them yet), so the check ends FAIL, exit 1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (f) the hardware path, no sim:// device: the same commands from base wt-cov (2d9593bc5) and from this head, then diffed
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ git -C $R/wt-cov log -1 --format='base %H %s' | cut -c1-138; echo "base local changes: $(git -C $R/wt-cov status --short | wc -l); psdaq/drp + configdb files that differ 2d9593bc5..dfd6149d8: $(git diff --name-only 2d9593bc5 dfd6149d8 -- psdaq/drp psdaq/psdaq/configdb | wc -l)"
+base 2d9593bc59bf6abde81e3cc7c462a496628df179 Merge PR #31: config DB editor and full PyQt parity; e2e config read-back and truncate break
+base local changes: 0; psdaq/drp + configdb files that differ 2d9593bc5..dfd6149d8: 0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ for w in wt-cov wt-beb; do bash $Q/hwpath.sh $w epix100 wave8 wave8he epixquad > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done
+diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-beb.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-beb.log | head -2
+== wt-cov head=2d9593bc5 dirty=0 drp=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-cov/install/bin/drp PYTHONPATH=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-cov/install/lib/python3.9/site-packages
+== wt-beb head=ec06569d9 dirty=0 drp=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/bin/drp PYTHONPATH=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/lib/python3.9/site-packages
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-beb.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-beb.log | head -2
+HWPATH_DIFF_EXIT=0
+  49 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/hw-wt-cov.log
+  49 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/hw-wt-beb.log
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ sed -n '2,25p' $P/hw-wt-beb.log | cut -c1-138
+-- epix100 python: epix100_init('epix100', '/dev/datadev_0', 1, None, '186M', 0)
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/lcls2-epix-hr-pcie/firmware/submodules/axi-pcie-core/python/axip
+    return rogue.hardware.axi.AxiMemMap(driverPath)
+rogue.GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/epix100_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+rc=1
+-- epix100 drp -D epix100 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8 python: wave8_init('SIM:HW:00', '/dev/datadev_0', 1, None, '186M', 0)
+    with open(file_datadev, 'r', encoding='utf-8') as file:
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/datadev_0'
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/wave8_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+--- lanemask 1  lane 0  timebase 186M ---
+rc=1
+-- wave8 drp -D wave8 -d /dev/datadev_0 -k epics_prefix=SIM:HW:00
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ sed -n '26,$p' $P/hw-wt-beb.log | cut -c1-138
+-- wave8he python: wave8he_init('SIM:HW:00', '/dev/datadev_0', 1, None, '186M', 0)
+    with open(file_datadev, 'r', encoding='utf-8') as file:
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/datadev_0'
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/wave8he_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+--- lanemask 1  lane 0  timebase 186M ---
+rc=1
+-- wave8he drp -D wave8he -d /dev/datadev_0 -k epics_prefix=SIM:HW:00
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad python: epixquad_init('epixquad', '/dev/datadev_0', 1, None, '186M', 0)
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad/firmware/submodules/axi-pcie-core/python/axipcie/_AxiP
+    return rogue.hardware.axi.AxiMemMap(driverPath)
+rogue.GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/epixquad_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+rc=1
+-- epixquad drp -D epixquad -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ # (g) the check rejects a record: a copy of the evidence dir with the wave8 record's dirty set true, and one with epix100's xtc2 file empty
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-dirty det:drp:wave8 dirty
+20261108T171405-cycle-ec06569d9-1055712.json: dirty False -> True  (rows det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb)
+4 records copied to ev-dirty; 1 record(s) for det:drp:wave8 changed (dirty)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim coverage --evidence $P/ev-dirty > $P/cov-dirty.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|epix100|wave8|wave8he) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-dirty.txt
+COVERAGE_EXIT=1
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/ev-dirty (4 records)
+det:drp:fakecam                RUN       evidence 20261108T171616-cycle-ec06569d9-1060507
+det:drp:epix100                RUN       evidence 20261108T171239-cycle-ec06569d9-1053305
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD ec06569d9; rejected 20261108T171405-cycle-ec06569d9-1055712: recorded with tracked files modified, so not by the commit's own code
+det:drp:wave8he                RUN       evidence 20261108T171515-cycle-ec06569d9-1058267
+78 rows, 6 run, 1 stand-in, 3 N/A, 67 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 67 unproven row(s)
+  det:drp:wave8: RUN row without valid evidence at HEAD ec06569d9
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-empty det:drp:epix100 empty
+20261108T171239-cycle-ec06569d9-1053305.json: files[0] wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (2196594274 B)
+    -> ev-empty-files/tstx00001-r0001-s000-c000.xtc2 (0 B)
+4 records copied to ev-empty; 1 record(s) for det:drp:epix100 changed (empty)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ daq_sim coverage --evidence $P/ev-empty > $P/cov-empty.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|epix100|wave8|wave8he) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-empty.txt
+COVERAGE_EXIT=1
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/ev-empty (4 records)
+det:drp:fakecam                RUN       evidence 20261108T171616-cycle-ec06569d9-1060507
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD ec06569d9; rejected 20261108T171239-cycle-ec06569d9-1053305: 1 of 9 files empty, e.g. /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/ev-empty-files/tstx00001-r0001-s000-c000.xtc2: empty
+det:drp:wave8                  RUN       evidence 20261108T171405-cycle-ec06569d9-1055712
+det:drp:wave8he                RUN       evidence 20261108T171515-cycle-ec06569d9-1058267
+78 rows, 6 run, 1 stand-in, 3 N/A, 67 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 67 unproven row(s)
+  det:drp:epix100: RUN row without valid evidence at HEAD ec06569d9
+(daq_20250402_r9) cwang31@sdfmilan048:wt-beb$ echo "checkout local changes: $(git status --short | wc -l)"; date '+%F %T %Z'; exit
+checkout local changes: 0
+2026-11-08 17:20:06 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

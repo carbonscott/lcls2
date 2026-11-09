@@ -1,0 +1,128 @@
+# ID:      wave8he_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D wave8he -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x2000,sim_dma_count=1024,sim_seed=0x1234,epics_prefix=SIM:W8HE:00 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he-fault/prom -u wave8he_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/08_17:24:52_sdfmilan048:wave8he_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/bin/drp)
+@@@ The PID of new child "2026/11/08_17:24:52_sdfmilan048:wave8he_0.log" is: 1082509
+@@@ @@@ @@@ @@@ @@@
+tst-drp[1082509]: <I> logging configured
+tst-drp[1082509]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[1082509]: <I> MemPoolSim: wave8he data framed as EventBatcher subframes (up to 4312 B of data)
+tst-drp[1082509]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[1082509]: <I> dmaCount 1024,  dmaSize 8192
+tst-drp[1082509]: <I> Allocated 1.1 GB pebble for 128 transitions of 8388608 B and 1024 L1Accepts of 8192 B
+tst-drp[1082509]: <I> nL1Buffers 1024,  pebble buffer size 8192 B
+tst-drp[1082509]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[1082509]: <I> MemPoolSim: simxpm registered wave8he_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+rogue_dev: FAULT PV SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay reads back 0
+tst-drp[1082509]: <I> BEBDetector: wave8he config runs against simulated device sim://127.0.0.1:31052
+--- lanemask 1  lane 0  timebase 186M ---
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+ctxt_put [['SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable', 'SIM:W8HE:00:Top:DataPathCtrl:EnableStream']] [[0, 0]]
+returned [1, 1]
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+tst-drp[1082509]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[1082509]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he-fault/data/tst
+tst-drp[1082509]: <I> Output dir: ready
+tst-drp[1082509]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[1082509]: <I> BufferedFileWriterMT is starting with process ID 1082788
+tst-drp[1082509]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[1082509]: <I> Ready for transitions
+tst-drp[1082509]: <I> received key = rollcall @ Sun Nov  8 17:25:00 2026
+tst-drp[1082509]: <I> received key = rollcall @ Sun Nov  8 17:25:00 2026
+tst-drp[1082509]: <I> received key = alloc @ Sun Nov  8 17:25:00 2026
+tst-drp[1082509]: <I> Using requested interface lo, address 127.0.0.1
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+ctxt_put [SIM:W8HE:00:Top:TriggerEventManager:XpmMessageAligner:TxId] [4194316436]
+returned [1]
+ctxt_put [SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable] [0]
+returned [1]
+wave8he_connect returning {'paddr': 1}
+*** BebDetector: paddr is 00000001 = 1
+tst-drp[1082509]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[1082509]: <I> received key = connect @ Sun Nov  8 17:25:03 2026
+tst-drp[1082509]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[1082509]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[1082509]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[1082509]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[1082509]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[1082509]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[1082509]: <I> Outbound link with TEB ID  0 at 127.0.0.1:33133 connected
+tst-drp[1082509]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[1082509]: <I> BEBDetector connect
+tst-drp[1082509]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[1082509]: <I> BEBDetector: sim payload seed 0x1234
+tst-drp[1082509]: <I> received key = configure @ Sun Nov  8 17:25:04 2026
+tst-drp[1082509]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[1082509]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 16 64 entry batches of 40 B
+tst-drp[1082509]: <I> Outbound link with TEB ID  0, 0x55d4cc15c000 : 0x55d4cc166000 (0000a000), configured in    0 ms
+tst-drp[1082509]: <I> Allocated 0.0 GB region for 1024 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[1082509]: <I> Inbound  link with TEB ID  0, 0x55d4cc167000 : 0x55d4cc171000 (0000a000), configured in    0 ms
+base [{'timebase': '186M', 'prefix': 'SIM:W8HE:00', 'lane': 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+rogue_dev: the simulated IOC serves no PV SIM:W8HE:00:Top:TriggerEventManager:EvrV2CoreTriggers:EvrV2TriggerReg[0]:Delay (reads None)
+Failed to retrieve controls trigger delay: IOC controls delay.
+Raise controls trigger delay >= 0.0 nanoseconds
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/lib/python3.9/site-packages/psdaq/configdb/wave8he_config.py", line 228, in wave8he_config
+    user_to_expert(epics_prefix, cfg, full=True)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/lib/python3.9/site-packages/psdaq/configdb/wave8he_config.py", line 168, in user_to_expert
+    configure_trigger_delay(prefix, group, timebase)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/lib/python3.9/site-packages/psdaq/configdb/wave8_common.py", line 188, in configure_trigger_delay
+    raise ValueError('TriggerDelay(ns) too small')
+ValueError: TriggerDelay(ns) too small
+tst-drp[1082509]: <C> **** python error
+@@@ Current time: Sun Nov  8 17:25:04 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1082509. The process was killed by signal 6

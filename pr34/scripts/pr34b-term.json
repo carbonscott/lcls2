@@ -1,0 +1,208 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile $R/redo/p34b/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan048",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $R/wt-beb && git rev-parse HEAD && git log --format='%h %s' dfd6149d8..HEAD && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "git diff --stat dfd6149d8 HEAD | tail -1; echo \"files this PR changes under psdaq/psdaq/configdb (the types' config code): $(git diff --name-only dfd6149d8 HEAD -- psdaq/psdaq/configdb | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "# The build is this HEAD's: ninja has nothing to do, and the installed psdaq/sim and psdaq/configdb are the checkout's"
+ },
+ {
+  "send": "ninja -n -C builddir | tail -1; for d in sim configdb; do diff -rq -x __pycache__ psdaq/psdaq/$d install/lib/python3.9/site-packages/psdaq/$d && echo \"installed psdaq/$d == checkout\"; done"
+ },
+ {
+  "send": "# (a) unit tests: coverage, rogue_dev, the BEB framer, config DB seeding, simxpm"
+ },
+ {
+  "send": "python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py psdaq/psdaq/tests/test_sim_rogue_dev.py psdaq/psdaq/tests/test_sim_framer.py psdaq/psdaq/tests/test_sim_configdb_seed_store.py psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py 2>&1 | grep -E ' (passed|failed|error)'",
+  "timeout": 600
+ },
+ {
+  "send": "# (b) each BEB type: daq_sim up --det <type> --detach, cycle --events 1000, down. New work dirs, and a new, empty evidence dir"
+ },
+ {
+  "send": "export P=$Q/take1 DAQ_SIM_EVIDENCE=$Q/take1/ev; mkdir -p $DAQ_SIM_EVIDENCE; echo \"records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)\""
+ },
+ {
+  "send": "# epix100"
+ },
+ {
+  "send": "T=epix100; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.|^  configdb ' $P/up-$T.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|FpgaVersion|check clock rate|Loading camera|sim payload seed' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (c) the per-pixel check on that epix100 file: as written (PASS), then told to expect every pixel one place off (must FAIL)"
+ },
+ {
+  "send": "F=$P/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2; for a in '' '--self-test-offset 1'; do echo \"== xtc2_check --det epix100 --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det epix100 --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 500
+ },
+ {
+  "send": "# wave8"
+ },
+ {
+  "send": "T=wave8; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.|^  configdb ' $P/up-$T.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# wave8he"
+ },
+ {
+  "send": "T=wave8he; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.|^  configdb ' $P/up-$T.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; sed -n '/^counts:/,$p' $P/cycle-$T.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-$T/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# fakecam, unchanged by this PR, so that all four det rows have evidence from this shell"
+ },
+ {
+  "send": "T=fakecam; daq_sim up -w $P/wd-$T --det $T --detach > $P/up-$T.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/up-$T.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-$T --events 1000 > $P/cycle-$T.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'NumL0Acc  |TEB_WrtCt|psana2 (events|with data|checks)|evidence |cycle (PASS|FAIL)' $P/cycle-$T.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim down -w $P/wd-$T > $P/down-$T.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-$T.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (d) a fault: epix100's DaqTriggerDelay register reads back wrong (PSDAQ_SIM_ROGUE_FAULT), so Configure must fail and name it"
+ },
+ {
+  "send": "PSDAQ_SIM_ROGUE_FAULT=ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay daq_sim up -w $P/wd-fault --det epix100 --detach > $P/up-fault.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/up-fault.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-fault --events 1000 > $P/cycle-fault.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\\[error\\]|cycle (PASS|FAIL)' $P/cycle-fault.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 500
+ },
+ {
+  "send": "grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*' $P/wd-fault/pmlogs/*/*/*:epix100_0.log | sort | uniq -c | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-fault > $P/down-fault.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault.log | cut -c1-138; ls $DAQ_SIM_EVIDENCE",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (e) daq_sim coverage with this shell's 4 records: the det rows, then the summary"
+ },
+ {
+  "send": "daq_sim coverage > $P/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/cov.txt; sed -n '/^row /,/^det:drp_gpu:jungfrau /p' $P/cov.txt | cut -c1-138",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "grep -E '^evidence:|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138; echo \"UNPROVEN rows: $(grep -c ' UNPROVEN ' $P/cov.txt)\""
+ },
+ {
+  "send": "# 67 rows UNPROVEN is expected at this PR (no run for them yet), so the check ends FAIL, exit 1"
+ },
+ {
+  "send": "# (f) the hardware path, no sim:// device: the same commands from base wt-cov (2d9593bc5) and from this head, then diffed"
+ },
+ {
+  "send": "git -C $R/wt-cov log -1 --format='base %H %s' | cut -c1-138; echo \"base local changes: $(git -C $R/wt-cov status --short | wc -l); psdaq/drp + configdb files that differ 2d9593bc5..dfd6149d8: $(git diff --name-only 2d9593bc5 dfd6149d8 -- psdaq/drp psdaq/psdaq/configdb | wc -l)\""
+ },
+ {
+  "send": "for w in wt-cov wt-beb; do bash $Q/hwpath.sh $w epix100 wave8 wave8he epixquad > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done",
+  "timeout": 600
+ },
+ {
+  "send": "diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-beb.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-beb.log | head -2"
+ },
+ {
+  "send": "sed -n '2,25p' $P/hw-wt-beb.log | cut -c1-138"
+ },
+ {
+  "send": "sed -n '26,$p' $P/hw-wt-beb.log | cut -c1-138"
+ },
+ {
+  "send": "# (g) the check rejects a record: a copy of the evidence dir with the wave8 record's dirty set true, and one with epix100's xtc2 file empty"
+ },
+ {
+  "send": "python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-dirty det:drp:wave8 dirty"
+ },
+ {
+  "send": "daq_sim coverage --evidence $P/ev-dirty > $P/cov-dirty.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|epix100|wave8|wave8he) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-dirty.txt",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-empty det:drp:epix100 empty"
+ },
+ {
+  "send": "daq_sim coverage --evidence $P/ev-empty > $P/cov-empty.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|epix100|wave8|wave8he) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-empty.txt",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

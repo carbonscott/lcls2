@@ -1,0 +1,89 @@
+host=sdfmilan048 job=43839059 step=162 head=ec06569d9b82bfc11d0e05a5da57304b93ee61f2 local changes=0 date=2026-11-08T17:21:36-08:00
+== xtc2_check wave8 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2087; with wave8 data 2087; w3 == seed 2087 (seeds seen {0x1234: 2087}); payload pattern ok 2087; w0/w1 pulseId rising and == timestamp clock 0/0
+  seq (w2) 1..2087 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check wave8 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2087; with wave8 data 2087; w3 == seed 0 (seeds seen {0x1234: 0}); payload pattern ok 0; w0/w1 pulseId rising and == timestamp clock 0/0
+  seq (w2) 1..2087 gap-free from 1: False
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 5: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  FAIL
+rc=1
+== xtc2_check wave8he --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 2000; with wave8he data 2000; w3 == seed 2000 (seeds seen {0x1234: 2000}); payload pattern ok 2000; w0/w1 pulseId rising and == timestamp clock 0/0
+  seq (w2) 1..2000 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check wave8he --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p34b/take1/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 2000; with wave8he data 2000; w3 == seed 0 (seeds seen {0x1234: 0}); payload pattern ok 0; w0/w1 pulseId rising and == timestamp clock 0/0
+  seq (w2) 1..2000 gap-free from 1: False
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 5: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  FAIL
+rc=1
+== fault run wave8: PSDAQ_SIM_ROGUE_FAULT='pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0'
+UP_EXIT=0
+CYCLE_EXIT=1
+2026-11-08T17:22:40.802-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T17:22:42.943-08:00 setState allocated    -> allocated    OK
+2026-11-08T17:22:43.386-08:00 setState connected    -> connected    OK
+2026-11-08T17:23:43.448-08:00 setState configured   -> error        FAIL
+2026-11-08T17:23:43.458-08:00 [error] wave8_0 did not respond to configure
+2026-11-08T17:23:43.458-08:00 [error] 1 client did not respond to configure
+2026-11-08T17:23:43.458-08:00 [error] configure failed to change state
+2026-11-08T17:24:13.495-08:00 [error] wave8_0 did not respond to disconnect
+2026-11-08T17:24:13.495-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T17:24:13.495-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T17:24:13.496-08:00 [error] disconnect failed to change state
+2026-11-08T17:24:13.496-08:00 setState allocated    -> connected    FAIL
+2026-11-08T17:24:14.002-08:00 cycle FAIL
+-- the DRP log:
+      1     raise ValueError('TriggerDelay(ns) too small')
+      1 rogue_dev: FAULT PV SIM:W8:00:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay reads back 0
+      1 ValueError: TriggerDelay(ns) too small
+DOWN_EXIT=0
+2026-11-08T17:24:20.566-08:00 daq_sim: down: clean
+== fault run wave8he: PSDAQ_SIM_ROGUE_FAULT='pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0'
+UP_EXIT=0
+CYCLE_EXIT=1
+2026-11-08T17:25:00.840-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T17:25:02.985-08:00 setState allocated    -> allocated    OK
+2026-11-08T17:25:04.690-08:00 setState connected    -> connected    OK
+2026-11-08T17:26:04.751-08:00 setState configured   -> error        FAIL
+2026-11-08T17:26:04.762-08:00 [error] wave8he_0 did not respond to configure
+2026-11-08T17:26:04.762-08:00 [error] 1 client did not respond to configure
+2026-11-08T17:26:04.762-08:00 [error] configure failed to change state
+2026-11-08T17:26:34.798-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T17:26:34.798-08:00 [error] wave8he_0 did not respond to disconnect
+2026-11-08T17:26:34.798-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T17:26:34.798-08:00 [error] disconnect failed to change state
+2026-11-08T17:26:34.799-08:00 setState allocated    -> connected    FAIL
+2026-11-08T17:26:35.304-08:00 cycle FAIL
+-- the DRP log:
+      1     raise ValueError('TriggerDelay(ns) too small')
+      1 rogue_dev: FAULT PV SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay reads back 0
+      1 ValueError: TriggerDelay(ns) too small
+DOWN_EXIT=0
+2026-11-08T17:26:42.432-08:00 daq_sim: down: clean
+evidence records (fault runs must add none): 4
+FAULTS_DONE 2026-11-08T17:26:42-08:00

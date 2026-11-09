@@ -1,0 +1,49 @@
+== wt-beb head=ec06569d9 dirty=0 drp=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/bin/drp PYTHONPATH=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-beb/install/lib/python3.9/site-packages
+-- epix100 python: epix100_init('epix100', '/dev/datadev_0', 1, None, '186M', 0)
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/lcls2-epix-hr-pcie/firmware/submodules/axi-pcie-core/python/axipcie/_AxiPcieDma.py", line 16, in createAxiPcieMemMap
+    return rogue.hardware.axi.AxiMemMap(driverPath)
+rogue.GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/epix100_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+rc=1
+-- epix100 drp -D epix100 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8 python: wave8_init('SIM:HW:00', '/dev/datadev_0', 1, None, '186M', 0)
+    with open(file_datadev, 'r', encoding='utf-8') as file:
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/datadev_0'
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/wave8_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+--- lanemask 1  lane 0  timebase 186M ---
+rc=1
+-- wave8 drp -D wave8 -d /dev/datadev_0 -k epics_prefix=SIM:HW:00
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8he python: wave8he_init('SIM:HW:00', '/dev/datadev_0', 1, None, '186M', 0)
+    with open(file_datadev, 'r', encoding='utf-8') as file:
+FileNotFoundError: [Errno 2] No such file or directory: '/proc/datadev_0'
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/wave8he_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+--- lanemask 1  lane 0  timebase 186M ---
+rc=1
+-- wave8he drp -D wave8he -d /dev/datadev_0 -k epics_prefix=SIM:HW:00
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad python: epixquad_init('epixquad', '/dev/datadev_0', 1, None, '186M', 0)
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad/firmware/submodules/axi-pcie-core/python/axipcie/_AxiPcieDma.py", line 16, in createAxiPcieMemMap
+    return rogue.hardware.axi.AxiMemMap(driverPath)
+rogue.GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+module <wt>/install/lib/python3.9/site-packages/psdaq/configdb/epixquad_config.py ; AxiMemMap is rogue.hardware.axi.AxiMemMap
+rc=1
+-- epixquad drp -D epixquad -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
