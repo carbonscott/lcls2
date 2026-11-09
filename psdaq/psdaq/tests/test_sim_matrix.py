@@ -343,3 +343,49 @@ def test_only_coverage_writes_the_summary(tmp_path):
     s = json.load(open(tmp_path / 'w' / 'matrix-summary.json'))
     assert s['exit'] == 1 and s['coverage']['pass'] is False and s['assertions'][0]['name'] == 'coverage'
     assert not s['whole']['pass'] and 'features/a' in s['whole']['missing']
+
+
+# --- over two hosts ---------------------------------------------------------------------------
+
+def test_matrix_over_two_hosts_shares_the_types(tmp_path, monkeypatch, capsys):
+    """--hosts A,B --locks LA,LB: every other type runs on B (a 'matrix --only types' in a step there, under LB),
+    the rest here under LA; B's results join this run's with their node."""
+    from psdaq.sim import twonode
+    monkeypatch.setattr(matrix.socket, 'gethostname', lambda: 'nodeA.example')
+    monkeypatch.setattr(matrix, 'run_types', lambda repo, status=None: ([(t, None) for t in ('t1', 't2', 't3')], []))
+    monkeypatch.setattr(daq_sim, 'SIM_TYPES', dict(daq_sim.SIM_TYPES, t1={}, t2={}, t3={}))
+    monkeypatch.setattr(daq_sim, 'ensure_env', lambda argv: None)
+    here = []
+
+    def run_type(a, t, wd, env, kill=False):
+        here.append((t, a.lock))
+        return dict(result(f'types/{t}/up', True), name=f'types/{t}', type=t, node='nodeA', job='42')
+    monkeypatch.setattr(matrix, 'run_type', run_type)
+    remote = {}
+
+    class Proc:
+        def wait(self, timeout=None):
+            return 0
+
+    def remote_types(a, host, lock, types, wd, env):
+        remote.update(host=host, lock=lock, types=types)
+        summ = os.path.join(str(tmp_path), 'b.json')
+        json.dump({'types': {t: dict(result(f'types/{t}/up', True), name=f'types/{t}', type=t, node='nodeB', job='42',
+                                     carried=False) for t in types}}, open(summ, 'w'))
+        p = Proc()
+        p.echo = type('T', (), {'join': lambda self, t=None: None})()
+        return p, summ
+    monkeypatch.setattr(matrix, 'remote_types', remote_types)
+    a = args(workdir=str(tmp_path / 'm'), hosts='nodeA,nodeB', locks='/tmp/la.lock,/tmp/lb.lock', only=['types'])
+    rc = matrix.cmd_matrix(a)
+    out = capsys.readouterr().out
+    assert rc == 0 and here == [('t1', '/tmp/la.lock'), ('t3', '/tmp/la.lock')]
+    assert remote == {'host': 'nodeB', 'lock': '/tmp/lb.lock', 'types': ['t2']}
+    s = json.load(open(str(tmp_path / 'm' / 'matrix-summary.json')))
+    assert list(s['types']) == ['t1', 't2', 't3'] and s['types']['t2']['node'] == 'nodeB'
+    assert 'TYPE t2           node nodeB' in out
+    with pytest.raises(daq_sim.Fail, match='--locks names 1 lock'):
+        matrix.cmd_matrix(args(workdir=str(tmp_path / 'm'), hosts='nodeA,nodeB', locks='/tmp/la.lock', only=['types']))
+    with pytest.raises(daq_sim.Fail, match='run the matrix on --hosts\'s first host nodeB'):
+        matrix.cmd_matrix(args(workdir=str(tmp_path / 'm'), hosts='nodeB,nodeA', locks='/l1,/l2', only=['types']))
+    assert twonode.short('nodeA.example') == 'nodeA'

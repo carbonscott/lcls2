@@ -2,8 +2,8 @@
 
     daq_sim matrix [-w WORKDIR] [-p PLATFORM] [--only types|programs|features|coverage]...
                    [--types T,T,..] [--features x,x,..] [--events N] [--lock FILE]
-                   [--ami-src DIR] [--hosts A,B] [--summary FILE] [--repo DIR] [--status FILE]
-                   [--evidence DIR] [-v]
+                   [--ami-src DIR] [--hosts A,B [--locks LOCK_A,LOCK_B]] [--gpu-host G]
+                   [--summary FILE] [--repo DIR] [--status FILE] [--evidence DIR] [-v]
     daq_sim matrix -w WORKDIR --break register|kill-drp|corrupt [--types T] [--fault PATH]
 
 Sections, in this order (--only picks some, repeated or comma-separated):
@@ -52,6 +52,16 @@ verdict covers all of them, and the exit code what ran this time.
 --lock FILE (default $DAQ_SIM_MATRIX_LOCK) takes an exclusive flock(2) on FILE around each DAQ,
 from 'up' to 'down' of one type or one feature, and releases it in between, for a node where
 DAQs take turns (flock(1) takes the same lock); it waits up to --lock-timeout s.
+
+Over two hosts of this Slurm job (run on the first): --hosts A,B --locks LOCK_A,LOCK_B.  The types
+are shared out between the hosts (every other one to B): B's run as one more 'daq_sim matrix --only
+types' in a step of the job on B (srun --overlap), in <WORKDIR>/hosts/<B>, with LOCK_A's place taken
+by LOCK_B (each a file on its own host), while A runs its own; their results join this run's, each
+type's line naming its node.  The programs run and features a, b, c and e run on A under LOCK_A;
+feature d (daq_sim feature d --hosts A,B) holds LOCK_A and then LOCK_B (taken by flock(1) in a step
+on B) from its 'up' to its 'down'.  Coverage then reads the evidence of all of them (both hosts
+write to the same evidence dir, which they must share).  --gpu-host G names a GPU host for the
+GPU DRP's types (det:drp_gpu rows); daq_sim up at this HEAD runs none, so the summary says so.
 
 Deliberate breaks show that the matrix fails, naming the failed assertion.  Each runs one type
 (default below, or --types) in <WORKDIR>/break-<kind> (its own summary; no feature, no
@@ -127,7 +137,12 @@ def add_arguments(p):
     p.add_argument('--ami-src', default=None, help='programs: AMI source tree for up --ami (default: up\'s, '
                    '$DAQ_SIM_AMI_SRC, else ami-* on PATH)')
     p.add_argument('--hosts', default=None, metavar='HOST_A,HOST_B',
-                   help='features: feature d\'s two hosts (two hosts of this Slurm job; else d is NOT AVAILABLE)')
+                   help='feature d\'s two hosts (two hosts of this Slurm job; else d is NOT AVAILABLE); with '
+                        '--locks, the types are shared out between them (module doc)')
+    p.add_argument('--locks', default=None, metavar='LOCK_A,LOCK_B',
+                   help='with --hosts: each host\'s lock file (a file on that host), LOCK_A in --lock\'s place')
+    p.add_argument('--gpu-host', default=None, metavar='HOST',
+                   help='a GPU host for the det:drp_gpu types (module doc)')
     p.add_argument('--lock', default=os.environ.get('DAQ_SIM_MATRIX_LOCK'),
                    help='flock(2) this file around each DAQ (default $DAQ_SIM_MATRIX_LOCK, else none)')
     p.add_argument('--lock-timeout', type=int, default=3600, help='s to wait for --lock (default %(default)d)')
@@ -212,6 +227,67 @@ class Lock:
             self.f.close()
             say(f'lock {self.path} released')
         return False
+
+
+class RemoteLock:
+    """flock(1) on path on another host of this Slurm job, held by a step there from __enter__ to __exit__
+    (its stdin closing ends it); waits at most timeout s."""
+    def __init__(self, host, path, timeout):
+        self.host, self.path, self.timeout, self.p = host, path, timeout, None
+
+    def __enter__(self):
+        from psdaq.sim import twonode
+        if not (self.host and self.path):
+            return self
+        argv = twonode.srun_argv(self.host, ['flock', '-w', str(self.timeout), self.path, 'sh', '-c',
+                                             'echo locked; read x'], cpus=1, mem='1G')
+        say(f'lock {self.path} on {self.host}: taking it (at most {self.timeout} s)')
+        t0 = time.monotonic()
+        self.p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                  text=True, env=twonode.srun_env())
+        line = self.p.stdout.readline()
+        if line.strip() != 'locked':
+            self.p.kill()
+            raise ds.Fail(f'lock {self.path} on {self.host}: not taken ({line.strip() or "no answer"}, '
+                          f'exit {self.p.wait()})')
+        say(f'lock {self.path} on {self.host} held (waited {time.monotonic() - t0:.0f} s)')
+        return self
+
+    def __exit__(self, *exc):
+        if self.p:
+            self.p.stdin.close()
+            try:
+                self.p.wait(60)
+            except subprocess.TimeoutExpired:
+                self.p.kill()
+            say(f'lock {self.path} on {self.host} released')
+        return False
+
+
+def remote_types(args, host, lock, types, wd, env):
+    """Start 'daq_sim matrix --only types' for types on host, in a step of this job there; (Popen, summary
+    path).  Its output is echoed with a prefix by a thread."""
+    from psdaq.sim import twonode
+    summ = os.path.join(wd, 'matrix-summary.json')
+    argv = [sys.executable, '-m', 'psdaq.sim.daq_sim', 'matrix', '-w', wd, '-p', str(args.platform), '--only',
+            'types', '--types', ','.join(types), '--events', str(args.events), '--summary', summ,
+            '--lock-timeout', str(args.lock_timeout)] + (['--lock', lock] if lock else []) + \
+        [o for k in ('repo', 'status', 'evidence') if getattr(args, k, None) for o in (f'--{k}', getattr(args, k))]
+    os.makedirs(wd, exist_ok=True)
+    if os.path.exists(summ):
+        os.unlink(summ)
+    say(f'types on {host}: {" ".join(types)} (a step of job {os.environ.get("SLURM_JOB_ID")} there, {wd})')
+    p = subprocess.Popen(twonode.srun_argv(host, argv, cpus=16, mem='32G'), stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, text=True, bufsize=1, errors='replace',
+                         env=twonode.srun_env(env), stdin=subprocess.DEVNULL)
+
+    def echo():
+        for line in p.stdout:
+            print(f'  [{host}] {line.rstrip()}', flush=True)
+    t = threading.Thread(target=echo, daemon=True)
+    t.start()
+    p.echo = t
+    return p, summ
 
 
 def fresh(wd):
@@ -438,8 +514,11 @@ def run_feature(args, x, wd, env):
         (['--hosts', args.hosts] if x == 'd' and getattr(args, 'hosts', None) else [])
     fresh(wd)
     out = []
+    remote = (None, None)
+    if x == 'd' and getattr(args, 'locks', None) and getattr(args, 'hosts', None):
+        remote = (args.hosts.split(',')[1], args.locks.split(',')[1])      # d holds B's lock too
     try:
-        with Lock(args.lock, args.lock_timeout):
+        with Lock(args.lock, args.lock_timeout), RemoteLock(remote[0], remote[1], args.lock_timeout):
             rc, out = run(daq_sim('feature', x, '-w', wd, '-p', str(args.platform), *extra),
                           f'  feature {x}| ', 3600, env)
             rc_d, out_d = run(daq_sim('down', '-w', wd), f'  feature {x} down| ', 300, env)
@@ -613,6 +692,17 @@ def cmd_matrix(args, argv=()):
           f'host {socket.gethostname()} job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")} '
           f'workdir {wd}' + (f' --break {args.breakage}' if args.breakage else ''), flush=True)
 
+    hosts = [h for h in (getattr(args, 'hosts', None) or '').split(',') if h]
+    locks = [x for x in (getattr(args, 'locks', None) or '').split(',') if x]
+    if locks and len(locks) != len(hosts):
+        raise ds.Fail(f'--locks names {len(locks)} lock(s) for {len(hosts)} host(s) of --hosts')
+    if locks:
+        args.lock = locks[0]                    # this host's
+    shard = len(hosts) == 2 and bool(locks) and not args.breakage
+    if shard:
+        from psdaq.sim import twonode
+        if twonode.short(socket.gethostname()) != twonode.short(hosts[0]):
+            raise ds.Fail(f'run the matrix on --hosts\'s first host {hosts[0]}')
     env = dict(os.environ)
     for k in (ENV_FAULT, ENV_CORRUPT):          # only a deliberate break sets these
         if env.pop(k, None) is not None:
@@ -647,10 +737,36 @@ def cmd_matrix(args, argv=()):
                 results['extra'].append({'name': f'types/{r}/runnable', 'ok': False,
                                          'detail': 'RUN in the status file, but daq_sim up --det cannot run it'})
         say(f'types: {" ".join(types)}')
-        for t in types:
+        mine, theirs, rp = types, [], None
+        if shard and len(types) > 1:            # every other type on the second host, in a step there
+            mine, theirs = types[0::2], types[1::2]
+            rp, rsumm = remote_types(args, hosts[1], locks[1], theirs,
+                                     os.path.join(wd, 'hosts', twonode.short(hosts[1])), env)
+        for t in mine:
             say(f'---- type {t} ({types.index(t) + 1} of {len(types)})')
             results['types'][t] = run_type(args, t, os.path.join(wd, 'types', t), env,
                                            kill=args.breakage == 'kill-drp')
+        if rp is not None:
+            say(f'waiting for the types on {hosts[1]}')
+            try:
+                rc_r = rp.wait(len(theirs) * 1800 + 600)
+            except subprocess.TimeoutExpired:
+                rp.kill()
+                rc_r = rp.wait()
+            rp.echo.join(10)
+            got = (last_record_json(rsumm) or {}).get('types') or {}
+            for t in theirs:
+                if t in got and not got[t].get('carried'):
+                    results['types'][t] = {k: v for k, v in got[t].items() if k != 'carried'}
+                else:
+                    results['types'][t] = {'name': f'types/{t}', 'type': t, 'node': twonode.short(hosts[1]),
+                                           'job': os.environ.get('SLURM_JOB_ID'), 'started': ds.now(), 'ended': ds.now(),
+                                           'assertions': [{'name': f'types/{t}/up', 'ok': False,
+                                                           'detail': f'the types run on {hosts[1]} (exit {rc_r}) '
+                                                                     f'gave no result for {t}'}], 'pass': False}
+            say(f'types on {hosts[1]}: exit {rc_r}, {sum(1 for t in theirs if results["types"][t].get("pass"))} '
+                f'of {len(theirs)} passed')
+        results['types'] = {t: results['types'][t] for t in types if t in results['types']}
     if 'programs' in sections:
         say('---- programs')
         results['programs'] = run_programs(args, os.path.join(wd, 'programs'), env)
@@ -665,10 +781,17 @@ def cmd_matrix(args, argv=()):
     if 'coverage' in sections:
         say('---- coverage')
         results['coverage'] = run_coverage(args)
+    if getattr(args, 'gpu_host', None):         # the GPU DRP's types: none runs at this HEAD
+        gpu = [r for r in cannot if r.startswith('det:drp_gpu:')]
+        say(f'gpu host {args.gpu_host}: ' + (f'{" ".join(gpu)} RUN in the status file, but daq_sim up here has no '
+                                             f'GPU DRP (types/<row>/runnable fails)' if gpu else
+                                             'no det:drp_gpu row is RUN in the status file at this HEAD, so nothing '
+                                             'runs there (the GPU DRP\'s types are UNPROVEN here)'))
 
     summary = merge(summary_path, sha, args.breakage, results)
     whole = None if args.breakage else whole_verdict(summary, all_names, cannot)
-    run_info = {'started': started, 'ended': ds.now(), 'host': socket.gethostname(),
+    run_info = {'started': started, 'ended': ds.now(), 'host': socket.gethostname(), 'hosts': hosts or None,
+                'gpu_host': getattr(args, 'gpu_host', None),
                 'job': os.environ.get('SLURM_JOB_ID'), 'step': os.environ.get('SLURM_STEP_ID'),
                 'argv': list(argv), 'sections': sections, 'types': list(results['types']),
                 'programs': results['programs'] is not None,
