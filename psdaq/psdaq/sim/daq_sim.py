@@ -1381,6 +1381,8 @@ class GuiWitness:
 
     def __init__(self, work, state):
         from psdaq.sim import gui_witness
+        import urllib.request                   # what the threads below use, imported in this thread: an
+        from p4p.client.thread import Context   # import in a thread racing one here can deadlock
         self.gw, self.work, self.state = gui_witness, work, state
         self.params = gui_params(state['platform'], work.path('prom'), work.path(state['cnf']))
         env = dict(os.environ, **{TAG: work.dir})
