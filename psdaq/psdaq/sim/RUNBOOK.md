@@ -481,6 +481,31 @@ wave8 and wave8he `pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:Tri
 entry points in the DRP's order against `rogue_dev` and a private config DB. It prints the first
 failure with its traceback, which is how a type's seeds are found.
 
+**Firmware packages from elsewhere: `PSDAQ_SIM_PYTHONPATH`.** Two types cannot import or build
+their firmware roots from what `$SUBMODULEDIR` puts on the path: `lcls2-timetool` bundles a surf
+older than rogue 6 (`AxiMicronN25Q` passes `size=` to pyrogue's `Device`; `AxiVersion.parseUpTime`
+calls `get(read)` positionally), and `epixhr2x2_config.py` imports `lcls2_epix_hr_pcie` and
+`epix_hr_single_10k` with no `psdaq.utils.enable_*` module. Under `sim://` (in `rogue_dev.install`
+and `configdb_seed`), every top-level package in the directories `PSDAQ_SIM_PYTHONPATH` names
+(colon-separated, `$VARS` expanded) imports from there first (`psdaq/psdaq/sim/sim_path.py`);
+unset, nothing changes. With it, `rogue_drive` returns from every entry point of both types:
+
+```
+# tt: a rogue-6 surf from another package of the same release
+export PSDAQ_SIM_PYTHONPATH='$SUBMODULEDIR/lcls2-pgp-pcie-apps/firmware/submodules/surf/python'
+python -B -m psdaq.sim.rogue_drive --type tt
+# epixhr2x2: its two packages and their libraries
+H='$SUBMODULEDIR/lcls2-epix-hr-pcie/firmware'; E='$SUBMODULEDIR/epix-hr-single-10k'
+export PSDAQ_SIM_PYTHONPATH="$H/python:$H/submodules/surf/python:$H/submodules/axi-pcie-core/python:$H/submodules/lcls2-pgp-fw-lib/python:$H/submodules/lcls-timing-core/python:$H/submodules/l2si-core/python:$E/firmware/python:$E/software/scripts:$E/firmware/submodules/epix-hr-core/python"
+QT_QPA_PLATFORM=offscreen python -B -m psdaq.sim.rogue_drive --type epixhr2x2
+```
+
+Neither has a DRP run yet: `MemPoolSim` has no framer for either (`TimeTool::_event` takes
+subframe 2, `EpixHR2x2::_event` its ASIC frames), and `daq_sim` does not pass the variable for
+them. On hardware the same surf error stops `tt_init`, and before this change both types also
+lacked the `<type>_connectionInfo` that `BEBDetector::connectionInfo` calls (d6b1e7552 merged
+`<det>_connect` into it; these two kept `tt_connect` and `epixhr2x2_connect`).
+
 **Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
 - **epixquad1kfps:** `ePixQuad.Top.start` (its epix-quad-1kfps package) reads the camera's ADC
   calibration from its SPI PROM (`CypressS25Fl`: `resetFlash`, `readCmd`, `waitForFlashReady`), a
@@ -488,11 +513,6 @@ failure with its traceback, which is how a type's seeds are found.
   so `epixquad1kfps_init` never returns (`seeds/` has none for it). Before that it needs the
   card's image name and `FpgaVersion` >= 0x04020000 on `Top.AxiPcieCore`; its config DB entry
   is `epixquad_config_store`'s (`configdb_seed.BORROWED_STORES`).
-- **tt:** `tt_init` dies building `lcls2_timetool.TimeToolKcu1500Root`: that package's surf
-  `AxiMicronN25Q` passes `size=` to pyrogue's `Device`, which this rogue (6.1.3) rejects
-  (`TypeError: __init__() got an unexpected keyword argument 'size'`), before any register access,
-  so on hardware too. `tt_config.py` also has no `tt_connectionInfo` (it has `tt_connect(cl)`),
-  which `BEBDetector::connectionInfo` calls.
 - **hsd:** its DRP class (`Digitizer`) is not a BEBDetector: `hsd_init` builds
   `l2si_drp.DrpPgpIlvRoot` on the device itself, with no `rogue_dev` under `sim://`, and the rest
   of its configuration goes through the hsdioc's PVA PVs (`<prefix>:CONFIG`, `:READY`, `:PADDR_U`,
@@ -505,14 +525,6 @@ failure with its traceback, which is how a type's seeds are found.
   tables and pixel bitmaps from `/cds/home/p/psrel/EpixUHR/{pll,pixelBitMaps_prod}/`, facility
   paths absent here (the PLL CSVs are also in `$SUBMODULEDIR/epix-uhr-gtreadout-dev`, the
   `pixelBitMaps_prod` maps nowhere), so `configdb_seed` cannot build its default config.
-- **epixhr2x2:** `drp -D epixhr2x2 -d sim://` aborts at start: `epixhr2x2_config.py` imports
-  `lcls2_epix_hr_pcie` and `epix_hr_single_10k` without the `psdaq.utils.enable_*` modules that
-  put them on the path (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`). With those
-  imports added (not committed), `epix_hr_single_10k` imports `setupLibPaths`, which is in its
-  `software/scripts`, not on the path; with that added too, `DevRoot` starts but the ePixHr10kT
-  board's registers are answered by no simulated transport (rogue_dev cannot place its seeds).
-  It also has no `epixhr2x2_connectionInfo`, which `BEBDetector::connectionInfo` requires (it has
-  `epixhr2x2_connect(base)` instead); no run gets that far yet.
 - **epixUHR:** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables from
   `/cds/home/p/psrel/EpixUHR/pll/`, a facility path (the same CSVs are in
   `$SUBMODULEDIR/epix-uhr-gtreadout-dev/software/config/pll/`), so `configdb_seed` cannot build its
