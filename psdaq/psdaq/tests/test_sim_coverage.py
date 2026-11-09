@@ -4,6 +4,7 @@ They run on the checkout that holds this file: the rows are enumerated from its 
 the evidence must carry its HEAD.  Status files and evidence go to tmp dirs.
 """
 
+import hashlib
 import io
 import json
 import os
@@ -56,7 +57,94 @@ def write_xtc2(path, events=2):
     return path
 
 
-def record(rows, files, evidence, run_id='tstx00001/r0001', dirty=False):
+# --- a run's files, laid out as the DAQ writes them -----------------------------------------
+
+RUN_ID = 'tstx00001/r0001'
+BEGINRUN = (1163038486, 825677369)      # sec, nsec of the BeginRun
+BEGINRUN_TIME = '1163038486.825677369'  # as the TEB and simxpm log it
+RUNINFO_SRC = 0x001                     # NamesId(0, 1)
+
+
+def xtc(typeid, src, payload):
+    return struct.pack('<IHHI', src, 0, typeid, 12 + len(payload)) + payload
+
+
+def dgram(service, payload, stamp=0):
+    return struct.pack('<QI', stamp, service << 24) + xtc(0, 0, payload)
+
+
+def names(src, dettype, detname, alg, items):
+    """A Names Xtc (xtcdata ShapesData.hh): NameInfo, then one Name per (name, type, rank)."""
+    info = coverage.NAMEINFO.pack(sum(1 for i in items if i[2]), dettype.encode(), detname.encode(),
+                                  b'detid', alg.encode(), 0x000001, 0)
+    return xtc(4, src, info + b''.join(coverage.NAME.pack(b'', 0, n.encode(), t, r) for n, t, r in items))
+
+
+def shapes_data(src, shapes, data):
+    return xtc(1, src, (xtc(2, 0, b''.join(struct.pack('<5I', *s) for s in shapes)) if shapes else b'')
+               + xtc(3, 0, data))
+
+
+def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
+    """An xtc2 file as a DRP writes a run: a Configure with the runinfo Names and one Names per
+    detector (detType, detName); a BeginRun at BEGINRUN with the runinfo (experiment, run
+    number); `events` L1Accepts, each with a ShapesData of every detector in with_data (default:
+    all); an EndRun."""
+    path = str(path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    expt, run = run_id.split('/r')
+    srcs, cfg = {}, [names(RUNINFO_SRC, 'runinfo', 'runinfo', 'runinfo', [('expt', 10, 1), ('runnum', 2, 0)])]
+    for i, (dettype, detname) in enumerate(dets):
+        srcs[detname] = 0x100 + i       # NamesId(1, i)
+        cfg.append(names(srcs[detname], dettype, detname, 'raw', [('value', 2, 0)]))
+    e = expt.encode() + b'\0'
+    e += b'\0' * (-len(e) % 4)
+    l1 = dgram(12, b''.join(shapes_data(srcs[d], [], struct.pack('<I', 7))
+                            for d in (srcs if with_data is None else with_data)))
+    with open(path, 'wb') as f:
+        f.write(dgram(2, b''.join(cfg)))
+        f.write(dgram(4, shapes_data(RUNINFO_SRC, [(len(e), 0, 0, 0, 0)], e + struct.pack('<I', int(run))),
+                      stamp=BEGINRUN[0] << 32 | BEGINRUN[1]))
+        f.write(l1 * events)
+        f.write(dgram(5, b''))
+    return path
+
+
+def write_log(path, cmd, *lines):
+    """A process's log as procmgr starts it: a header with its '# CMDLINE:', then its output."""
+    path = str(path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as f:
+        f.write(f'# ID:      x\n# PLATFORM:5\n# CMDLINE: {cmd}\n' + ''.join(l + '\n' for l in lines))
+    return path
+
+
+def run_files(d, rows, stand_ins=None):
+    """The files of one run that proves `rows`: one xtc2 file with a detector of every det row's
+    type; per drp executable a log that runs it with -D <those types> and names the xtc2 file;
+    per program row a log that runs it (or its stand-in, {row: program}) and names the BeginRun
+    time, as the TEB and simxpm log it."""
+    types = {}
+    for r in rows:
+        if r.startswith('det:'):
+            exe, t = r.split(':')[1:]
+            types.setdefault(exe, []).append(t)
+    xtc2 = write_run(os.path.join(d, 'tstx00001-r0001-s000-c000.xtc2'),
+                     [(t, t) for t in sorted(set(sum(types.values(), [])))])
+    files = [xtc2]
+    for exe, ts in types.items():
+        files.append(write_log(os.path.join(d, f'{exe}_0.log'), f'{exe} -P tst -D {",".join(ts)} -u {exe}_0',
+                               f"Opening file '{xtc2}'"))
+    for r in rows:
+        if r.startswith('prog:'):
+            name = (stand_ins or {}).get(r, r[len('prog:'):])
+            cmd = f'python -m psdaq.sim.{name} -P DAQ:SIM' if name == 'simxpm' else f'{name} -p 5'
+            files.append(write_log(os.path.join(d, f'{name}.log'), cmd,
+                                   f'EbAppBase  saw        BeginRun @ {BEGINRUN_TIME} (047325138ca92b)'))
+    return files
+
+
+def record(rows, files, evidence, run_id=RUN_ID, dirty=False):
     """An evidence record at HEAD, as a run from a clean checkout writes it (the tests also run
     in a tree with modified files, so 'dirty' is set here, not read from the tree)."""
     path = coverage.record_evidence(rows, 'test', [str(f) for f in files], run_id=run_id,
@@ -73,14 +161,14 @@ def write_status(path, entries):
 
 
 def full_coverage(tmp_path):
-    """A status file with every row RUN, and one evidence record at HEAD covering them all."""
+    """A status file with every row RUN, and one evidence record at HEAD covering them all,
+    whose files are those of a run that proves them."""
     rows = all_rows()
     status = write_status(tmp_path / 'status.json', {r: {'status': 'RUN'} for r in rows})
     evidence = tmp_path / 'evidence'
-    proof = tmp_path / 'run.log'
-    proof.write_text('a run\n')
-    record(list(rows), [proof], evidence)
-    return rows, status, evidence, proof
+    files = run_files(str(tmp_path / 'run'), list(rows))
+    record(list(rows), files, evidence)
+    return rows, status, evidence, files
 
 
 # --- enumeration -------------------------------------------------------------------------
@@ -176,10 +264,11 @@ def test_config_rows_of_the_daq_sim_cnf(tmp_path, det):
 
 
 @pytest.mark.parametrize('det', ['fakecam', 'epix100'])
-def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, det):
+def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsys, det):
     """daq_sim cycle's evidence hook, on a work dir laid out as 'up --det <type>' and a run
-    leave it (no DAQ runs here); then the check accepts it for those rows.  The tree may have
-    modified files while tests run, so the record is made as from a clean checkout."""
+    leave it (no DAQ runs here: the files are written as the DAQ writes them); then the check
+    accepts it for those rows, and the hook says coverage rejects none of them.  The tree may
+    have modified files while tests run, so the record is made as from a clean checkout."""
     from psdaq.sim import daq_sim
     monkeypatch.setenv('DAQ_SIM_EVIDENCE', str(tmp_path / 'evidence'))
     monkeypatch.setattr(coverage, 'dirty', lambda repo: False)
@@ -187,20 +276,33 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, det):
     monkeypatch.setattr(daq_sim, 'PROCS', daq_sim.PROCS)
     daq_sim.use_det(det)
     work = daq_sim.Work(str(tmp_path / 'wd'))
-    os.makedirs(work.dir)
+    os.makedirs(os.path.join(work.dir, 'logs'))
     write_daq_sim_cnf(work.path('daq_sim.cnf'), det)
-    xtc = work.path('data', 'tst', 'tstx00001', 'xtc', 'tstx00001-r0001-s000-c000.xtc2')
-    files = [xtc, work.path('logs', 'cycle.jsonl')] + \
-        [work.path('logs', n + '.log') for n in ('configdb', 'lgbk', 'simxpm')] + \
-        [work.path('pmlogs', '2026', '11', f'08_12:00:00_node:{p}.log') for p in daq_sim.PROCS]
-    for f in files:
-        os.makedirs(os.path.dirname(f), exist_ok=True)
-        open(f, 'w').write('log\n')
-    write_xtc2(xtc)
+    xtc = write_run(work.path('data', 'tst', 'tstx00001', 'xtc', 'tstx00001-r0001-s000-c000.xtc2'), [(det, det)])
+    services = {'configdb': 'configdb_server', 'lgbk': 'lgbk_server', 'simxpm': 'simxpm'}
+    for name, module in services.items():           # as start_service heads them, then output
+        with open(work.path('logs', name + '.log'), 'w') as f:
+            f.write(daq_sim.log_header([sys.executable, '-m', f'psdaq.sim.{module}', '--port', '1']))
+            f.write(f'simxpm INFO BeginRun rog 0x20 pulseId 0x1 time {BEGINRUN_TIME} to 1 link(s)\n'
+                    if name == 'simxpm' else 'serving\n')
+    with open(work.path('logs', 'cycle.jsonl'), 'w') as f:
+        f.write('{}\n')
+    cmds = {'control': ('control -v -C BEAM -P tst -u control -p 5',
+                        f"recv_json(): {{'body': {{'absolute_path': '{xtc}'}}}}"),
+            'teb0': ('teb -P tst -C localhost -u teb0 -p 5',
+                     f'EbAppBase  saw        BeginRun @ {BEGINRUN_TIME} (047325138ca92b)'),
+            f'{det}_0': (f'drp -P tst -C localhost -D {det} -d sim://127.0.0.1:3 -u {det}_0 -p 5',
+                         f"Opening file '{xtc}'")}
+    files = [xtc, work.path('logs', 'cycle.jsonl')] + [work.path('logs', n + '.log') for n in services]
+    for p in daq_sim.PROCS:
+        files.append(write_log(work.path('pmlogs', '2026', '11', f'08_12:00:00_node:{p}.log'), *cmds[p]))
     assert f'08_12:00:00_node:{det}_0.log' in ' '.join(files)
     state = {'cnf': 'daq_sim.cnf', 'det': det,
-             'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in ('configdb', 'lgbk', 'simxpm')}}
+             'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in services}}
     daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start')
+    printed = capsys.readouterr().out
+    print(printed)
+    assert 'evidence NOT recorded' not in printed and 'coverage would reject' not in printed
     names = os.listdir(tmp_path / 'evidence')
     assert len(names) == 1
     rec = json.load(open(tmp_path / 'evidence' / names[0]))
@@ -208,14 +310,26 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, det):
     assert rec['dirty'] is False
     assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
     assert sorted(rec['files']) == sorted(files + [work.path('daq_sim.cnf')])
+    assert sorted(rec['content']) == sorted(rec['files'])
+    assert rec['content'][xtc] == {'bytes': os.path.getsize(xtc),
+                                   'sha256': hashlib.sha256(open(xtc, 'rb').read()).hexdigest()}
     entries = {r: {'status': 'RUN'} for r in rec['rows']}
     entries['prog:pyxpm'] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))['prog:pyxpm']
     code, out = run_check(write_status(tmp_path / 'status.json', entries), tmp_path / 'evidence')
     for row in rec['rows']:
-        line = [l for l in out.splitlines() if l.startswith(row + ' ')][0]
+        line = line_of(out, row)
         print(line)
         assert f'evidence {names[0][:-5]}' in line
     assert 'FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence,' in out
+
+
+def test_service_logs_are_headed_with_their_command(tmp_path):
+    """start_service's header names the program, as coverage resolves it."""
+    from psdaq.sim import daq_sim
+    header = daq_sim.log_header(['/x/bin/python3', '-m', 'psdaq.sim.simxpm', '-P', 'DAQ:SIM'])
+    assert header == '# CMDLINE: /x/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM\n'
+    assert coverage.log_program('2026 starting\n' + header + 'more\n')[0] == 'simxpm'
+    assert coverage.log_program('no header\n') == (None, [])
 
 
 # --- status and evidence -----------------------------------------------------------------
@@ -230,8 +344,8 @@ def test_full_coverage_passes(tmp_path):
 
 
 def test_evidence_at_another_sha_is_rejected_naming_the_row(tmp_path):
-    rows, status, evidence, proof = full_coverage(tmp_path)
-    path = record(['det:drp:fakecam'], [proof], evidence)
+    rows, status, evidence, files = full_coverage(tmp_path)
+    path = record(['det:drp:fakecam'], files, evidence)
     for name in os.listdir(evidence):                 # keep only the fakecam record, at a wrong SHA
         if os.path.join(evidence, name) != path:
             os.remove(os.path.join(evidence, name))
@@ -239,7 +353,7 @@ def test_evidence_at_another_sha_is_rejected_naming_the_row(tmp_path):
     rec['sha'] = 'f' * 40 if HEAD != 'f' * 40 else '0' * 40
     json.dump(rec, open(path, 'w'))
     code, out = run_check(status, evidence)
-    line = [l for l in out.splitlines() if l.startswith('det:drp:fakecam ')][0]
+    line = line_of(out, 'det:drp:fakecam')
     print(line)
     assert code == 1
     assert 'NO VALID EVIDENCE' in line and f'recorded at {rec["sha"][:9]}, not at HEAD {HEAD[:9]}' in line
@@ -247,11 +361,11 @@ def test_evidence_at_another_sha_is_rejected_naming_the_row(tmp_path):
 
 
 def test_removing_one_rows_evidence_fails_naming_it(tmp_path):
-    rows, status, evidence, proof = full_coverage(tmp_path)
+    rows, status, evidence, files = full_coverage(tmp_path)
     for name in os.listdir(evidence):
         os.remove(os.path.join(evidence, name))
     rest = [r for r in rows if r != 'det:drp:fakecam']
-    record(rest, [proof], evidence)
+    record(rest, files, evidence)
     code, out = run_check(status, evidence)
     fails = [l for l in out.splitlines() if l.startswith('  ') and 'without valid evidence' in l]
     print('\n'.join(fails))
@@ -260,19 +374,19 @@ def test_removing_one_rows_evidence_fails_naming_it(tmp_path):
 
 
 def test_missing_evidence_file_is_rejected(tmp_path):
-    rows, status, evidence, proof = full_coverage(tmp_path)
-    proof.unlink()
+    rows, status, evidence, files = full_coverage(tmp_path)
+    os.remove(files[-1])
     code, out = run_check(status, evidence)
-    assert code == 1 and '1 of 1 files missing' in out
+    assert code == 1 and f'1 of {len(files)} files missing, e.g. {files[-1]}: missing' in out
 
 
-def one_row_check(tmp_path, files, **kw):
-    """(exit code, the det:drp:fakecam line, output) with only that row RUN and one record."""
-    status = write_status(tmp_path / 'status.json', {'det:drp:fakecam': {'status': 'RUN'}})
+def one_row_check(tmp_path, files, row='det:drp:fakecam', **kw):
+    """(exit code, the row's line, output) with only that row RUN and one record."""
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
     evidence = tmp_path / 'evidence'
-    record(['det:drp:fakecam'], files, evidence, **kw)
+    record([row], files, evidence, **kw)
     code, out = run_check(status, evidence)
-    line = [l for l in out.splitlines() if l.startswith('det:drp:fakecam ')][0]
+    line = line_of(out, row)
     print(line)
     return code, line, out
 
@@ -306,33 +420,289 @@ def test_empty_evidence_file_is_rejected(tmp_path):
     (struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 12) + struct.pack('<QIIHHI', 0, 12 << 24, 0, 0, 0, 40),
      'datagram 1 at byte 24: extent 40 does not fit the file (48 B)'),
     (struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 12)[:20], 'header cut off'),
+    (struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 24) + struct.pack('<IHHI', 0, 0, 4, 40),
+     'datagram 0 at byte 0: Xtc at byte 24 has extent 40, beyond its parent'),
 ])
 def test_xtc2_evidence_must_be_xtc2(tmp_path, content, problem):
     xtc = tmp_path / 'r0001.xtc2'
     xtc.write_bytes(content)
     code, line, _ = one_row_check(tmp_path, [xtc])
-    assert code == 1 and 'not an xtc2 file' in line and problem in line
+    assert code == 1 and '1 of 1 files not xtc2, e.g.' in line and 'not an xtc2 file' in line
+    assert problem in line
 
 
-def test_a_valid_xtc2_file_counts(tmp_path):
-    xtc = write_xtc2(str(tmp_path / 'r0001.xtc2'), events=3)
-    assert coverage.xtc2_problem(xtc) is None
-    code, line, _ = one_row_check(tmp_path, [xtc])
+def test_a_valid_run_proves_its_row(tmp_path):
+    files = run_files(str(tmp_path / 'run'), ['det:drp:fakecam'])
+    problem, content = coverage.xtc2_content(files[0])
+    assert problem is None
+    assert content['types'] == {'runinfo', 'fakecam'} and content['run'] == RUN_ID
+    assert content['beginrun'] == BEGINRUN_TIME and content['l1accepts'] == 1000
+    assert content['l1_with'] == {'fakecam': 1000}
+    code, line, _ = one_row_check(tmp_path, files)
     assert 'evidence ' in line and 'NO VALID' not in line
 
 
 def test_counts_are_rows_with_valid_evidence_not_claims(tmp_path):
     """R counts proven rows; the status file's claims are printed on their own line."""
-    rows, status, evidence, proof = full_coverage(tmp_path)
+    rows, status, evidence, files = full_coverage(tmp_path)
     for name in os.listdir(evidence):
         os.remove(os.path.join(evidence, name))
-    record(list(rows)[:10], [proof], evidence)
+    record(list(rows)[:10], files, evidence)
     code, out = run_check(status, evidence)
     print([l for l in out.splitlines() if 'rows,' in l or 'claims' in l])
     assert code == 1
     assert f'{len(rows)} rows, 10 run, 0 stand-in, 0 N/A, 0 unproven, {len(rows) - 10} claimed ' \
            'without valid evidence' in out
     assert f'status file claims (not counted above unless proven): {len(rows)} RUN, 0 STAND-IN, 0 N/A' in out
+
+
+# --- forged evidence: what the content of a record's files must show ----------------------
+
+CYCLE_ROWS = ['prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
+STAND_INS = {'prog:pyxpm': 'simxpm'}
+
+
+def line_of(out, row):
+    return [l for l in out.splitlines() if l.startswith(row + ' ')][0]
+
+
+def cycle_runs(tmp_path, dets=('epix100', 'wave8', 'wave8he')):
+    """A status file and one valid evidence record per 'daq_sim up --det <det>' + cycle run, each
+    in its own dir: {det: (record path, its files)}."""
+    os.makedirs(tmp_path, exist_ok=True)
+    entries = {f'det:drp:{d}': {'status': 'RUN'} for d in dets}
+    entries.update({r: {'status': 'RUN'} for r in CYCLE_ROWS})
+    entries['prog:pyxpm'] = {'status': 'STAND-IN', 'stand_in': 'simxpm', 'interface': 'its PVs'}
+    status = write_status(tmp_path / 'status.json', entries)
+    runs = {}
+    for d in dets:
+        rows = [f'det:drp:{d}'] + CYCLE_ROWS
+        files = run_files(str(tmp_path / f'wd-{d}'), rows, STAND_INS)
+        runs[d] = (record(rows, files, tmp_path / 'evidence'), files)
+    return status, tmp_path / 'evidence', runs
+
+
+def test_valid_cycle_records_are_accepted(tmp_path):
+    status, evidence, runs = cycle_runs(tmp_path)
+    code, out = run_check(status, evidence)
+    for row in [f'det:drp:{d}' for d in runs] + CYCLE_ROWS:
+        print(line_of(out, row))
+        assert 'evidence ' in line_of(out, row) and 'NO VALID' not in line_of(out, row)
+    assert 'FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence,' in out
+    assert 'stand-in simxpm (its PVs); evidence ' in line_of(out, 'prog:pyxpm')
+
+
+def rehash(rec):
+    """What a forger who knows the format also does: hash the files the record now lists."""
+    rec['content'] = {f: {'bytes': os.path.getsize(f), 'sha256': coverage.content_hash(f, os.path.getsize(f))}
+                      for f in rec['files'] if os.path.isfile(f)}
+
+
+def swap_xtc2(data):
+    """A mutation: the record lists a file holding `data` in place of its xtc2 file."""
+    def mutate(rec, runs, d):
+        xtc = [f for f in rec['files'] if f.endswith('.xtc2')][0]
+        p = os.path.join(d, 'forged-' + os.path.basename(xtc))
+        with open(p, 'wb') as f:
+            f.write(data if isinstance(data, bytes) else data(xtc))
+        rec['files'] = [p if f.endswith('.xtc2') else f for f in rec['files']]
+    return mutate
+
+
+def head_bytes(n):
+    return lambda path: open(path, 'rb').read(n)
+
+
+CONFIGURE_ONLY = struct.pack('<QIIHHI', 0, 2 << 24, 0, 0, 0, 12)     # 24 B, as the skeptic made it
+# The cases a skeptic ran against the evidence check (work/iter4-skeptic/mutcov.py), each
+# as it edited the record (no hash updated) and again with the record's hashes recomputed:
+# name: (row, mutation, why as edited, why when rehashed)
+SKEPTIC = {
+    'dirty-true': ('det:drp:wave8', lambda r, R, d: r.update(dirty=True),
+                   'recorded with tracked files modified', None),
+    'dirty-absent': ('det:drp:wave8he', lambda r, R, d: r.pop('dirty'),
+                     'does not say the tree was clean', None),
+    'runid-null': ('det:drp:epix100', lambda r, R, d: r.update(run_id=None), 'names no run (run_id)', None),
+    'runid-blank': ('det:drp:wave8', lambda r, R, d: r.update(run_id='  '), 'names no run (run_id)', None),
+    'other-sha': ('det:drp:epix100', lambda r, R, d: r.update(sha='f' * 40 if HEAD != 'f' * 40 else '0' * 40),
+                  'not at HEAD', None),
+    'xtc2-empty': ('det:drp:wave8', swap_xtc2(b''), 'files empty, e.g.', None),
+    'xtc2-random': ('det:drp:wave8he', swap_xtc2(bytes(range(6, 256)) * 16), 'files unhashed, e.g.',
+                    'files not xtc2, e.g.'),
+    'xtc2-truncated': ('det:drp:wave8', swap_xtc2(head_bytes(20000)), 'files unhashed, e.g.',
+                       'files not xtc2, e.g.'),
+    'log-missing': ('det:drp:wave8he', lambda r, R, d: r['files'].__setitem__(1, r['files'][1] + '.gone'),
+                    'files missing, e.g.', None),
+    'probe-xtc2-tiny-configure': ('det:drp:epix100', swap_xtc2(CONFIGURE_ONLY), 'files unhashed, e.g.',
+                                  'no listed xtc2 file has a detector of type epix100 in its Configure '
+                                  '(they have: no detector)'),
+    'probe-xtc2-of-other-det': ('det:drp:wave8he', lambda r, R, d: r.update(files=[
+        [f for f in R['wave8'][1] if f.endswith('.xtc2')][0] if f.endswith('.xtc2') else f for f in r['files']]),
+        'files unhashed, e.g.',
+        'no listed xtc2 file has a detector of type wave8he in its Configure (they have: wave8)'),
+    'probe-no-xtc2-listed': ('det:drp:wave8', lambda r, R, d: r.update(
+        files=[f for f in r['files'] if not f.endswith('.xtc2')]), 'lists no xtc2 file', None),
+}
+
+
+@pytest.mark.parametrize('rehashed', [False, True], ids=['as-edited', 'rehashed'])
+@pytest.mark.parametrize('case', sorted(SKEPTIC))
+def test_skeptic_forgeries_are_rejected_naming_why(tmp_path, case, rehashed):
+    """Each forged record drops its row, and the row's line says why; the other rows stay."""
+    row, mutate, why, why_rehashed = SKEPTIC[case]
+    status, evidence, runs = cycle_runs(tmp_path)
+    path = runs[row.split(':')[2]][0]
+    rec = json.load(open(path))
+    mutate(rec, runs, str(tmp_path))
+    if rehashed:
+        rehash(rec)
+    json.dump(rec, open(path, 'w'))
+    code, out = run_check(status, evidence)
+    line = line_of(out, row)
+    print(line)
+    assert code == 1 and 'NO VALID EVIDENCE' in line
+    assert (why_rehashed if rehashed and why_rehashed else why) in line
+    assert 'files not, e.g.' not in line
+    assert f'  {row}: RUN row without valid evidence' in out
+    for other in [f'det:drp:{d}' for d in runs if f'det:drp:{d}' != row] + CYCLE_ROWS:
+        assert 'NO VALID' not in line_of(out, other), line_of(out, other)
+
+
+def one_cycle_check(tmp_path, det='wave8he', mutate=None, rows=None, run_id=RUN_ID):
+    """(exit code, output) for one cycle run's record: mutate(files) may change its files
+    before the record is written (so it hashes them as they are)."""
+    status, evidence, runs = cycle_runs(tmp_path, [det])
+    path, files = runs[det]
+    os.remove(path)
+    if mutate:
+        files = mutate(files) or files
+    record(rows or [f'det:drp:{det}'] + CYCLE_ROWS, files, evidence, run_id=run_id)
+    code, out = run_check(status, evidence)
+    print('\n'.join(l for l in out.splitlines() if 'NO VALID' in l))
+    return code, out
+
+
+@pytest.mark.parametrize('events,with_data,why', [
+    (3, None, '3 of its 3 L1Accepts hold wave8he data, fewer than 1000'),
+    (999, None, '999 of its 999 L1Accepts hold wave8he data, fewer than 1000'),
+    (1000, [], '0 of its 1000 L1Accepts hold wave8he data, fewer than 1000'),
+])
+def test_a_det_row_needs_1000_l1accepts_with_its_data(tmp_path, events, with_data, why):
+    def mutate(files):
+        write_run(files[0], [('wave8he', 'wave8he')], events=events, with_data=with_data)
+    code, out = one_cycle_check(tmp_path, mutate=mutate)
+    assert code == 1 and why in line_of(out, 'det:drp:wave8he')
+    assert 'NO VALID' not in line_of(out, 'prog:teb')      # the run is still the record's run
+
+
+def test_a_det_row_needs_its_type_in_the_configure(tmp_path):
+    """The xtc2 file of another type (wave8 for wave8he), hashed by the record."""
+    def mutate(files):
+        write_run(files[0], [('wave8', 'wave8')])
+    code, out = one_cycle_check(tmp_path, mutate=mutate)
+    assert code == 1
+    assert ('no listed xtc2 file has a detector of type wave8he in its Configure (they have: wave8)'
+            in line_of(out, 'det:drp:wave8he'))
+
+
+def test_the_record_run_id_must_be_the_files_run(tmp_path):
+    def mutate(files):
+        write_run(files[0], [('wave8he', 'wave8he')], run_id='tstx00001/r0002')
+    code, out = one_cycle_check(tmp_path, mutate=mutate)
+    assert code == 1
+    assert 'its BeginRun is run tstx00001/r0002, the record says tstx00001/r0001' in line_of(out, 'det:drp:wave8he')
+    assert ('lists no xtc2 file of run tstx00001/r0001 (by its BeginRun runinfo) to tie the log of teb to'
+            in line_of(out, 'prog:teb'))
+
+
+def test_a_det_row_needs_a_log_of_its_drp_and_type(tmp_path):
+    def mutate(files):                                   # the drp log asks for another type
+        write_log(files[1], 'drp -P tst -D wave8 -u wave8_0', f"Opening file '{files[0]}'")
+    code, out = one_cycle_check(tmp_path, mutate=mutate)
+    assert code == 1
+    assert 'no listed log runs drp -D wave8he and names the run of' in line_of(out, 'det:drp:wave8he')
+
+
+def test_a_drp_gpu_row_is_not_proven_by_a_drp_run(tmp_path):
+    gpu = [r for r in all_rows() if r.startswith('det:drp_gpu:')][0]
+    typ = gpu.split(':')[2]
+    status = write_status(tmp_path / 'status.json', {gpu: {'status': 'RUN'}})
+    files = run_files(str(tmp_path / 'run'), [f'det:drp:{typ}'])
+    record([gpu], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, gpu))
+    assert code == 1 and f'no listed log runs drp_gpu -D {typ} and names the run of' in line_of(out, gpu)
+
+
+def test_a_program_row_needs_its_log_naming_the_run(tmp_path):
+    def no_teb(files):
+        return [f for f in files if not f.endswith('teb.log')]
+    code, out = one_cycle_check(tmp_path / 'a', mutate=no_teb)
+    assert code == 1 and 'lists no log of teb (a log whose "# CMDLINE:" runs teb)' in line_of(out, 'prog:teb')
+
+    def other_run(files):                               # a teb log of another run
+        write_log([f for f in files if f.endswith('teb.log')][0], 'teb -p 5',
+                  'EbAppBase  saw        BeginRun @ 1163000000.000000001 (0473)')
+    code, out = one_cycle_check(tmp_path / 'b', mutate=other_run)
+    assert code == 1
+    assert (f'its log of teb names neither the run\'s xtc2 file {tmp_path / "b" / "wd-wave8he"}'
+            in line_of(out, 'prog:teb'))
+    assert f'nor its BeginRun time {BEGINRUN_TIME}' in line_of(out, 'prog:teb')
+    assert 'NO VALID' not in line_of(out, 'prog:control')
+
+
+def test_a_stand_in_row_needs_the_stand_in_log(tmp_path):
+    """prog:pyxpm is STAND-IN simxpm: a log that runs pyxpm itself does not prove it."""
+    def pyxpm(files):
+        write_log([f for f in files if f.endswith('simxpm.log')][0], 'pyxpm -P DAQ:SIM',
+                  f'BeginRun time {BEGINRUN_TIME}')
+    code, out = one_cycle_check(tmp_path, mutate=pyxpm)
+    assert code == 1 and 'lists no log of simxpm' in line_of(out, 'prog:pyxpm')
+
+
+def test_files_must_hold_the_bytes_the_record_hashed(tmp_path):
+    status, evidence, runs = cycle_runs(tmp_path, ['wave8he'])
+    path, files = runs['wave8he']
+    xtc, teb = files[0], [f for f in files if f.endswith('teb.log')][0]
+
+    def line():
+        return line_of(run_check(status, evidence)[1], 'det:drp:wave8he')
+    with open(teb, 'a') as f:                           # a log may grow after its record
+        f.write('later output\n')
+    assert 'NO VALID' not in line()
+    data = bytearray(open(xtc, 'rb').read())
+    data[-28] ^= 0xff                                   # same size, one byte of the last event's data
+    open(xtc, 'wb').write(data)
+    assert f'files changed, e.g. {xtc}: its first {len(data)} B are not the bytes the record hashed' in line()
+    open(xtc, 'ab').write(b'\0' * 24)                   # an xtc2 file may not grow
+    assert f'{xtc}: {len(data) + 24} B now, the record hashed {len(data)} B' in line()
+
+
+def test_what_a_log_gains_after_its_record_does_not_count(tmp_path):
+    """Run tokens appended to a log after the record was written do not tie it to the run."""
+    def no_tokens(files):
+        write_log([f for f in files if f.endswith('teb.log')][0], 'teb -p 5', 'nothing yet')
+    status, evidence, runs = cycle_runs(tmp_path, ['wave8he'])
+    path, files = runs['wave8he']
+    os.remove(path)
+    no_tokens(files)
+    record(['det:drp:wave8he'] + CYCLE_ROWS, files, evidence)
+    with open([f for f in files if f.endswith('teb.log')][0], 'a') as f:
+        f.write(f'EbAppBase  saw        BeginRun @ {BEGINRUN_TIME} (047325138ca92b)\n')
+    code, out = run_check(status, evidence)
+    assert code == 1 and 'its log of teb names neither' in line_of(out, 'prog:teb')
+
+
+def test_a_record_without_content_hashes_is_rejected(tmp_path):
+    """Records written before content binding hold no hashes; they prove nothing."""
+    status, evidence, runs = cycle_runs(tmp_path, ['wave8he'])
+    path = runs['wave8he'][0]
+    rec = json.load(open(path))
+    rec.pop('content')
+    json.dump(rec, open(path, 'w'))
+    code, out = run_check(status, evidence)
+    assert code == 1
+    assert 'holds no content hashes of its files (content)' in line_of(out, 'det:drp:wave8he')
 
 
 def test_unknown_row_in_status_file_fails(tmp_path):
@@ -373,13 +743,13 @@ def test_rows_without_status_are_unproven(tmp_path):
 @pytest.mark.parametrize('argv', [['-m', 'psdaq.sim.coverage'], ['-m', 'psdaq.sim.daq_sim', 'coverage'],
                                   ['-m', 'psdaq.sim.daq_sim', 'matrix']])
 def test_commands_return_the_verdict(tmp_path, argv):
-    rows, status, evidence, proof = full_coverage(tmp_path)
+    rows, status, evidence, files = full_coverage(tmp_path)
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([os.path.join(REPO, 'psdaq')] + sys.path))
     env.pop('SIM_ENV_SOURCED', None)
     cmd = [sys.executable] + argv + ['--repo', REPO, '--status', str(status), '--evidence', str(evidence)]
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
     assert r.stdout.rstrip().endswith('PASS')
-    proof.unlink()
+    os.remove(files[0])
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 1 and 'FAIL' in r.stdout
