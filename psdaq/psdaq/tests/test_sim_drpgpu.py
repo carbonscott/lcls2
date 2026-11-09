@@ -45,7 +45,7 @@ def test_gpu_calibrations_are_the_types_own():
     assert xtc2_check.GPU_TYPES['epixuhrsim'][1] is None      # checked from its own file
     shape, bits, jf = xtc2_check.GPU_FRAME_TYPES['jungfrau']  # its module's frames (simsls)
     assert (shape, bits) == ((512, 1024), 16)
-    assert jf(u).dtype == np.float32 and list(jf(u)) == [0, 1, 2, 0xfff, 0x1000, 0x3fff]
+    assert jf(u, SEED).dtype == np.float32 and list(jf(u, SEED)) == [0, 1, 2, 0xfff, 0x1000, 0x3fff]
 
 
 def test_jungfrau_drp_gpu_kwargs_point_at_simsls():
@@ -58,6 +58,35 @@ def test_jungfrau_drp_gpu_kwargs_point_at_simsls():
     frame = 8 + 40 + 40 + (8 + 128 * (48 + 8192 + 8)) + 8         # MemPoolSim's jungfrau buffer
     assert frame + 4 <= int(kw['sim_dma_size'], 0) and int(kw['sim_dma_size'], 0) + 32 <= int(kw['dmaBufSize'])
     assert t['sls'] and t['sets'] == daq_sim.SIM_TYPES['jungfrau']['sets']
+
+
+def test_epixuhr3x2_drp_gpu_settings():
+    """drp_gpu -D epixuhr3x2 gets a DMA buffer that holds MemPoolSim's panel buffer (as for
+    drp) plus the 32 B DMA frame and what Gpu::EpixUHR3x2 requires of it, drp's readout-system
+    files and init wait, and its calibration DB is the loopback stand-in 'up' starts."""
+    P = daq_sim.ports(5)
+    t = daq_sim.GPU_SIM_TYPES['epixuhr3x2']
+    kw = dict(x.split('=', 1) for x in t['kwargs'].format(length=0, seed=0, work='', **P).split(','))
+    frame = 8 + 40 + 40 + (2 * 336 * 576 + 8)             # header, timing, timing copy, panel
+    need = 2 * 336 * 576 + 32 + (1 + 5) * 64               # EpixUHR3x2.cu minDmaSize
+    assert frame + 4 <= int(kw['sim_dma_size'], 0) and int(kw['sim_dma_size'], 0) + 32 <= int(kw['dmaBufSize'])
+    assert need <= int(kw['dmaBufSize']) and kw['reducer'] == 'NoOpReducer'
+    for k in ('config_files', 'ready_s'):
+        assert t[k] == daq_sim.SIM_TYPES['epixuhr3x2'][k]
+    assert P['calibws'] not in (P[k] for k in P if k != 'calibws') and t['ports'] == ('calibws',)
+    assert {k: v.format(**P) for k, v in t['env'].items()} == {'LCLS_CALIB_HTTP': 'http://127.0.0.1:%d' % P['calibws']}
+    argv = [a.format(seed=0x1234, work='/w', **P) for a in t['services']['calibws']]
+    assert argv == ['-m', 'psdaq.sim.calibws_server', '--port', str(P['calibws']), '--seed', str(0x1234),
+                    '--det-type', 'epixuhr3x2', '--log', '/w/logs/calibws.jsonl']
+
+
+def test_psana_reads_every_gpu_type():
+    """psana has a class for what each drp_gpu type records with the NoOpReducer
+    (psana/psana/detector/drpgpu.py), in the panel's shape where the type has one."""
+    drpgpu = pytest.importorskip('psana.detector.drpgpu')
+    for det in daq_sim.GPU_SIM_TYPES:
+        assert hasattr(drpgpu, f'{det}_noOp_0_0_0'), det
+    assert drpgpu.epixuhr3x2_noOp_0_0_0.shape == xtc2_check.GPU_FRAME_TYPES['epixuhr3x2'][0]
 
 
 def test_sim_ref_file_reads_back(tmp_path):
@@ -94,7 +123,7 @@ def test_daq_sim_types_per_drp(monkeypatch):
     assert daq_sim.DRP == 'drp'
 
 
-@pytest.mark.parametrize('det', ['fakecam', 'epixuhremu', 'epixuhrsim'])
+@pytest.mark.parametrize('det', ['fakecam', 'epixuhremu', 'epixuhrsim', 'epixuhr3x2'])
 def test_config_rows_of_a_drp_gpu_cnf(tmp_path, det):
     """A drp_gpu .cnf proves drp_gpu's rows and no drp row; a drp .cnf of the same type no
     drp_gpu row.  The CUDA runtime's directory reaches drp_gpu as its procmgr 'env'."""

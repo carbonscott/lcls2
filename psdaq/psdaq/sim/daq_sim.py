@@ -24,7 +24,8 @@
   3. the run DB / eLog stand-in (lgbk_server),
   4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver), and the
      stand-ins of the --det type's own device, if it has any (hsd: simhsdioc, the hsd's PVs and
-     IOC; jungfrau: simsls, the stand-in for the module's slsDetector servers, psdaq.sim.simsls),
+     IOC; jungfrau: simsls, the stand-in for the module's slsDetector servers, psdaq.sim.simsls;
+     drp_gpu's epixuhr3x2: calibws_server, the calibration DB its GPU code reads at BeginRun),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
      with its config in the config DB, all in the partition's readout group; with --det TYPE
@@ -76,6 +77,7 @@ Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
   +4 simsls control (TCP) and trigger input (UDP), +5 simsls stop (TCP), +6 the jungfrau
      module's data destination (UDP; the config's user.port), with --det jungfrau
+  +7 the calibration constants stand-in (calibws_server), with --drp drp_gpu --det epixuhr3x2
 UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>).
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
@@ -220,6 +222,20 @@ GPU_SIM_TYPES = {
                              'dmaBufSize=1179648,dmaBufCount=64,segNums=0,'
                              'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
                    'sls': True, 'sets': SIM_TYPES['jungfrau']['sets']},
+    # Gpu::EpixUHR3x2 configures through Drp::EpixUHR3x2, so the readout system, its config DB
+    # entry and files and the wait for its init are drp's (SIM_TYPES); MemPoolSim sends the same
+    # 336 x 576 panel (tdest 3).  At BeginRun it fetches the panel's pedestals and gains from the
+    # calibration DB (psdaq.configdb.epixuhr_calib, psalg.calibdb): here calibws_server, a
+    # stand-in on loopback that LCLS_CALIB_HTTP points the DRP at
+    'epixuhr3x2': {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x60000,sim_dma_count=64,'
+                             'dmaBufSize=458752,dmaBufCount=64,sim_seed={seed:#x}',
+                   'config_files': SIM_TYPES['epixuhr3x2']['config_files'],
+                   'ready_s': SIM_TYPES['epixuhr3x2']['ready_s'],
+                   'env': {'LCLS_CALIB_HTTP': 'http://127.0.0.1:{calibws}'},
+                   'services': {'calibws': ['-m', 'psdaq.sim.calibws_server', '--port', '{calibws}',
+                                            '--seed', '{seed}', '--det-type', 'epixuhr3x2',
+                                            '--log', '{work}/logs/calibws.jsonl']},
+                   'ports': ('calibws',)},
 }
 
 
@@ -241,7 +257,7 @@ TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' 
 def ports(platform):
     base = 31000 + 10 * platform
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
-            'sls': base + 4, 'sls_stop': base + 5, 'sls_data': base + 6,
+            'sls': base + 4, 'sls_stop': base + 5, 'sls_data': base + 6, 'calibws': base + 7,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
             'bld': 31220 + platform,
@@ -897,6 +913,7 @@ def cmd_up(args):
         raise Fail(f'UDP port {P["udp"]} already in use')
     if bld and udp_busy(P['bld']):
         raise Fail(f'UDP port {P["bld"]} already in use')
+    want += [P[k] for k in sim_type.get('ports', ())]     # the type's stand-ins' TCP ports
     busy = [p for p in want if port_busy(p)]
     if sim_type.get('sls'):
         busy += [f'{p}/udp' for p in (P['sls'], P['sls_data']) if udp_busy(p)]
@@ -977,8 +994,9 @@ def cmd_up(args):
                            '--access-log', work.path('logs', 'configdb-access.jsonl')] +
                           (['--host', bind] if two else []), env)
         wait_listen(P['configdb'], 30, p, 'configdb_server', host=bind)
-        env.update(sim_type.get('env', {}))     # what the type's own code needs to run here
-        os.environ.update(sim_type.get('env', {}))  # procmgr and the DRP inherit it
+        type_env = {k: v.format(**P) for k, v in sim_type.get('env', {}).items()}
+        env.update(type_env)            # what the type's own code needs to run here
+        os.environ.update(type_env)     # procmgr and the DRP inherit it
         if sim_type.get('config_files'):    # files the type's store reads, at a path env names
             mod, sub, var = sim_type['config_files']
             r = subprocess.run([py, '-m', mod, work.path(sub)], env=env, capture_output=True,
@@ -1048,6 +1066,7 @@ def cmd_up(args):
                 say(f'{name} pid {p.pid}: PVA {srv}/{bcast} on 127.0.0.1, stands in for {", ".join(S["programs"])}')
 
         for name, argv in sim_type.get('services', {}).items():     # the type's device stand-ins
+            argv = [a.format(seed=args.seed, work=work.dir, **P) for a in argv]
             p = start_service(work, state, name, [py] + argv, env)
             state.setdefault('type_services', []).append(name)
             work.save(state)
@@ -1532,6 +1551,8 @@ def teardown(work, quiet=False):
         if 'simsls' in state['services']:
             check += sls_ports(P)
             _free_sls_shm(state['platform'], quiet)
+        if 'calibws' in state['services']:
+            check.append(P['calibws'])
         busy = [p for p in check if port_busy(p)]
         if busy:
             ok = False

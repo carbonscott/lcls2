@@ -34,6 +34,10 @@ of the few ticks simxpm may add to its timestamp's, whose words match; it must r
 jungfrau's payload is the frame its module (psdaq.sim.simsls) sent, as for drp: event n holds
 frame n, pixel i = pattern(seed, n, i, 16), which Gpu::Jungfrau calibrates as (the low 14 bits -
 pedestal of the range in bits 14-15) x gain, with pedestals 0 and gains 1 (GPU_FRAME_TYPES).
+epixuhr3x2's payload is MemPoolSim's panel, as for drp: event n, pixel i = pattern(seed, n, i,
+12), which Gpu::EpixUHR3x2 calibrates as (the 11-bit value in bits 1-11 - the pedestal of the
+gain bit's mode) x 1/gain, 0 for a pixel bad in pixel_status, with the constants it fetched at
+BeginRun from calibws_server (psdaq.sim.calibws_server.constants(seed)).
 epixuhrsim makes its own frames on the GPU (SimDetector): --ref names the file it wrote at
 BeginRun (its 16 raw frames and calibration constants), and the n-th event must hold frame
 (n - 1) % 16 calibrated with them, every pixel; --self-test-offset K expects frame n - 1 + K.
@@ -43,6 +47,7 @@ at a dead loopback port unless already set, so reading the file contacts no serv
 """
 
 import argparse
+import functools
 import json
 import os
 import sys
@@ -67,11 +72,44 @@ GPU_TYPES = {
     # Gpu::EpixUHRsim: its own frames (--ref), gain in bit 0 and an 11-bit value in bits 1-11
     'epixuhrsim': ((336, 576), None),
 }
-# GPU DRP types whose payload is the frame a module stand-in sent (not TDet words): {type:
-# (image shape, bits of pattern(seed, n, i, bits), calibration of a uint16 pixel)}
+
+
+@functools.lru_cache(maxsize=4)
+def _epixuhr3x2_constants(seed, npix):
+    """(pedestals, 1/gain) float32 [2][npix] for gain bits 0 and 1, from what calibws_server
+    serves for the seed: psana gain modes 0 and 1 (EpixUHRgainModes); 1/gain is 0 where
+    pixel_status is bad in any of gain modes 0-4 (psdaq.configdb.epixuhr_calib, as psana's
+    default mask does)."""
+    import numpy as np
+    from psdaq.sim.calibws_server import constants
+    c = constants(seed)
+    ped = c['pedestals'][[0, 1], 0].reshape(2, npix)
+    gain = c['pixel_gain'][[0, 1], 0].reshape(2, npix)
+    fac = np.divide(1, gain, out=np.zeros_like(gain), where=gain != 0)
+    status = c['pixel_status'][:5, 0].reshape(5, npix)
+    fac[:, np.bitwise_or.reduce(status, axis=0) != 0] = 0
+    return ped, fac
+
+
+def _epixuhr3x2_calib(u, seed):
+    """Gpu::EpixUHR3x2's calibration of the flattened panel u (uint16): the gain bit (bit 0)
+    selects the constants' plane, the value is bits 1-11: (value - pedestal) x 1/gain."""
+    import numpy as np
+    ped, fac = _epixuhr3x2_constants(seed, u.size)
+    g = (u & 1).astype(np.intp)
+    i = np.arange(u.size)
+    return (((u >> 1) & 0x7ff).astype(np.float32) - ped[g, i]) * fac[g, i]
+
+
+# GPU DRP types whose payload is a frame of its own, not TDet words (a module stand-in's, or the
+# MemPoolSim panel): {type: (image shape, bits of pattern(seed, n, i, bits), calibration of the
+# flattened uint16 pixels given the seed)}
 GPU_FRAME_TYPES = {
     # Gpu::Jungfrau: the range in bits 14-15, the value in bits 0-13 (Jungfrau.hh)
-    'jungfrau': ((512, 1024), 16, lambda u: (u & 0x3fff).astype('float32')),
+    'jungfrau': ((512, 1024), 16, lambda u, seed: (u & 0x3fff).astype('float32')),
+    # Gpu::EpixUHR3x2: the gain bit 0, the value in bits 1-11 (EpixUHR3x2.hh), and the constants
+    # of the calibration DB stand-in
+    'epixuhr3x2': ((336, 576), 12, _epixuhr3x2_calib),
 }
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
@@ -758,7 +796,8 @@ def check_gpu(path, det_name, kind, seed=None, expect=None, max_report=5, offset
 
 def check_gpu_frames(path, det_name, kind, seed=None, expect=None, max_report=5, offset=0):
     """The per-event check of a GPU DRP type in GPU_FRAME_TYPES: event n's pixels are frame n
-    of its module stand-in, calibrated as the type's GPU code does; seed is required."""
+    of its payload (a module stand-in's or MemPoolSim's), calibrated as the type's GPU code
+    does; seed is required."""
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     import numpy as np
     from psana import DataSource
@@ -769,7 +808,7 @@ def check_gpu_frames(path, det_name, kind, seed=None, expect=None, max_report=5,
          'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
          'first_seq': None, 'last_seq': None, 'seq_gap_free': None, 'problems': [],
          'check': (f'every pixel of {det_name}.noOp.calib (drp_gpu: calibrated on the GPU, '
-                   f'NoOpReducer) vs frame n of the module stand-in, pattern(seed, n, i, {bits}), '
+                   f'NoOpReducer) vs frame n, pattern(seed, n, i, {bits}), '
                    f'calibrated' + (f', self-test offset {offset}' if offset else ''))}
     ds = DataSource(files=[path], skip_calib_load='all')
     for run in ds.runs():
@@ -786,7 +825,7 @@ def check_gpu_frames(path, det_name, kind, seed=None, expect=None, max_report=5,
                 continue
             r['with_data'] += 1
             r['shape'] = list(got.shape)
-            want = calib(pattern.image(seed, n, shape, bits, offset).astype(np.uint16))
+            want = calib(pattern.image(seed, n, shape, bits, offset).astype(np.uint16).reshape(-1), seed)
             problems = [f'shape {got.shape}, not {shape}'] if got.shape != shape else []
             flat = np.ascontiguousarray(got).reshape(-1)
             bad = int((flat != want.reshape(-1)).sum()) if flat.size == want.size else flat.size
