@@ -59,8 +59,46 @@ def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024):
     return top
 
 
+class _StoreCapture(object):
+    """Stands in for the psdaq.configdb.configdb module while a type's
+    <type>_config_store.write_to_daq_config_db builds its config: its configdb
+    contacts nothing and keeps the config the store would write."""
+    top = None
+
+    class configdb(object):
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def add_alias(self, *args, **kwargs):
+            pass
+
+        def add_device_config(self, *args, **kwargs):
+            pass
+
+        def modify_device(self, alias, top, *args, **kwargs):
+            _StoreCapture.top = top
+
+
+def _store_cdict(mod, det_type, name, segm):
+    """The config a store without <type>_cdict() writes, from its own write_to_daq_config_db
+    run against _StoreCapture (its URL is never used)."""
+    real = mod.cdb
+    mod.cdb = _StoreCapture
+    _StoreCapture.top = None
+    try:
+        mod.write_to_daq_config_db(argparse.Namespace(
+            inst='tst', alias='BEAM', name=name, segm=segm, id='sim-%s' % det_type, yaml=None,
+            prod=False, user='sim', password='sim'))
+    finally:
+        mod.cdb = real
+    if _StoreCapture.top is None:
+        raise RuntimeError('%s_config_store wrote no config' % det_type)
+    return _StoreCapture.top
+
+
 def type_cdict(det_type, name, segm=0, yaml=None):
-    """The type's own config: <type>_config_store.<type>_cdict(), or with a rogue YAML file
+    """The type's own config: <type>_config_store.<type>_cdict(), the config its
+    write_to_daq_config_db writes (when it has no <type>_cdict), or with a rogue YAML file
     yaml_config_store_example.<type>_cdict(yaml)."""
     # The type's config module sets up sys.path for its firmware packages (psdaq.utils.enable_*)
     importlib.import_module('psdaq.configdb.%s_config' % det_type)
@@ -70,7 +108,10 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         top = getattr(mod, '%s_cdict' % det_type)(pyrogue.yamlToData(fName=yaml))
     else:
         mod = importlib.import_module('psdaq.configdb.%s_config_store' % det_type)
-        top = getattr(mod, '%s_cdict' % det_type)()
+        if hasattr(mod, '%s_cdict' % det_type):
+            top = getattr(mod, '%s_cdict' % det_type)()
+        else:
+            top = _store_cdict(mod, det_type, name, segm)
     top.setInfo(det_type, name, segm, 'sim-%s' % det_type, 'Seeded by psdaq.sim.configdb_seed')
     return top
 

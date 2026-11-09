@@ -127,8 +127,11 @@ void BEBDetector::_init(const char* arg)
     // builds its firmware roots, so the type's own config code runs against it (psdaq.sim.rogue_dev)
     if (m_sim) {
         PyObject* sim = _check(PyImport_ImportModule("psdaq.sim.rogue_dev"));
-        Py_DECREF(_check(PyObject_CallMethod(sim, "install", "ss", m_para->device.c_str(),
-                                             m_para->detType.c_str())));
+        auto prefix = m_para->kwargs.find("epics_prefix");     // types configured over their IOC
+        Py_DECREF(_check(PyObject_CallMethod(sim, "install", "ssOOs", m_para->device.c_str(),
+                                             m_para->detType.c_str(), Py_None, Py_None,
+                                             prefix == m_para->kwargs.end() ? ""
+                                                                            : prefix->second.c_str())));
         Py_DECREF(sim);
         logging::info("BEBDetector: %s config runs against simulated device %s",
                       m_para->detType.c_str(), m_para->device.c_str());

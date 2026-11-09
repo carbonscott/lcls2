@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     f.seq               = strtoul(argv[2], nullptr, 0);
     uint32_t seed       = argc > 3 ? strtoul(argv[3], nullptr, 0) : 0x1234;
 
-    std::vector<uint8_t> buffer(8 + 2 * (32 + 8) + b->dataBytes);
+    std::vector<uint8_t> buffer(8 + (32 + 8) + b->dataBytes);
     size_t size = Drp::MemPoolSim::fillBatcher(buffer.data(), *b, f, f.seq, true, seed);
     if (size > buffer.size()) {
         fprintf(stderr, "%s: %s frame of %zu B overran its %zu B buffer\n", argv[0], argv[1],

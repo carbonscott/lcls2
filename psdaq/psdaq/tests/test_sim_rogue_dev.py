@@ -136,3 +136,77 @@ def test_uninstall_restores_rogue():
     assert rogue.hardware.axi.AxiMemMap is not real
     rogue_dev.uninstall()
     assert rogue.hardware.axi.AxiMemMap is real
+
+
+# --- the IOC's PVs and the driver's /proc text (wave8, wave8he, PgpMonitor) ---------------
+
+def test_simulated_ioc_pvs(capsys):
+    epics = pytest.importorskip('epics')
+    real = epics.PV
+    seeds = {'pv:{prefix}:Top:RxId': 1, 'pv:{prefix}:Top:Gain': 2.5}
+    sim = rogue_dev.install(DEV, seeds=seeds, fault='', epics_prefix='SIM:W8:00')
+    assert epics.PV is rogue_dev.SimPV
+    assert epics.PV('SIM:W8:00:Top:RxId').get() == 1
+    assert epics.PV('SIM:W8:00:Top:Gain').get() == 2.5            # JSON type kept
+    assert epics.PV('SIM:W8:00:Top:RxId').put(7) == 1
+    assert epics.PV('SIM:W8:00:Top:RxId').get() == 7
+    assert epics.PV('SIM:W8:00:Top:Missing').get() is None         # as pyepics with no IOC
+    assert epics.PV('SIM:W8:00:Top:Missing').put(1) is None
+    assert sim.missing_pvs == ['SIM:W8:00:Top:Missing']
+    assert 'serves no PV SIM:W8:00:Top:Missing' in capsys.readouterr().err
+    assert {'store': 'pv', 'pv': 'SIM:W8:00:Top:RxId', 'value': 7, 'old': 1} in sim.writes
+    assert sim.seeds == {}                                         # PVs are not register seeds
+    rogue_dev.uninstall()
+    assert epics.PV is real
+
+
+def test_pv_fault_reads_back_wrong(capsys):
+    epics = pytest.importorskip('epics')
+    seeds = {'pv:{prefix}:Top:TriggerDelay': 42}
+    rogue_dev.install(DEV, seeds=seeds, fault='pv:{prefix}:Top:TriggerDelay=0', epics_prefix='P')
+    assert epics.PV('P:Top:TriggerDelay').get() == 0
+    epics.PV('P:Top:TriggerDelay').put(42)
+    assert epics.PV('P:Top:TriggerDelay').get() == 0
+    assert 'FAULT PV P:Top:TriggerDelay reads back 0' in capsys.readouterr().err
+
+
+def test_pv_fault_not_served_and_missing_prefix_fail_loudly():
+    pytest.importorskip('epics')
+    with pytest.raises(rogue_dev.SimDeviceError, match="fault PV 'P:Top:Nope' is not served"):
+        rogue_dev.install(DEV, seeds={'pv:{prefix}:Top:A': 1}, fault='pv:{prefix}:Top:Nope=1',
+                          epics_prefix='P')
+    rogue_dev.uninstall()
+    with pytest.raises(rogue_dev.SimDeviceError, match='need the drp.s -k epics_prefix'):
+        rogue_dev.install(DEV, det_type='wave8', seeds={'pv:{prefix}:Top:A': 1}, fault='')
+
+
+PROC_CHECK = """
+from psdaq.sim import rogue_dev
+rogue_dev.install('%s', seeds={}, fault='', proc='Build String : XilinxKcu1500Pgp4_6Gbps: x')
+with open(rogue_dev.proc_path('%s')) as f:
+    assert 'Pgp4' in f.read()
+import psdaq.utils.enable_lcls2_pgp_pcie_apps     # sys.path for axipcie, as wave8_common does
+from psdaq.cas.pgpmonitor import detect_version
+print(detect_version('%s'))
+with open(rogue_dev.__file__) as f:               # other files are untouched
+    assert 'def install' in f.read()
+""" % (DEV, DEV, DEV)
+
+
+def test_proc_text_of_the_simulated_driver():
+    """PgpMonitor's detect_version reads the simulated driver text.  In a subprocess: pytest-qt
+    loads a Qt binding that pyrogue.pydm (imported by pgpmonitor) cannot use."""
+    import subprocess
+    import sys
+    r = subprocess.run([sys.executable, '-c', PROC_CHECK], capture_output=True, text=True,
+                       timeout=120)
+    assert r.returncode == 0, r.stderr[-2000:]
+    assert "('XilinxKcu1500', 4)" in r.stdout
+
+
+def test_the_wave8_seed_file_loads():
+    seeds, path, proc = rogue_dev.load_seeds('wave8', extra=True)
+    assert path.endswith('seeds/wave8.json') and 'Pgp4' in proc
+    pvs = [k for k in seeds if k.startswith('pv:')]
+    assert len(pvs) > 100 and 'pv:{prefix}:Top:TriggerEventManager:XpmMessageAligner:RxId' in pvs
+    assert 'pv:{prefix}:Top:TriggerEventManager:EvrV2CoreTriggers:EvrV2TriggerReg[0]:Delay' not in pvs

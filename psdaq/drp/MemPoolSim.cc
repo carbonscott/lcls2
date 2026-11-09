@@ -90,6 +90,15 @@ void MemPoolSim::Out::tail(uint32_t size, uint8_t tdest)
     pos += lw;
 }
 
+void MemPoolSim::Out::timingCopy(uint8_t tdest)
+{
+    // The TimingHeader is the first subframe, right after the header line
+    memcpy(data(), buffer + EvtBatcherHeader::lineWidth(2), sizeof(Pds::TimingHeader));
+    tail(sizeof(Pds::TimingHeader), tdest);
+}
+
+static constexpr unsigned _padded(unsigned size) { return ((size + 7) & ~7u) + 8; }   // + tail
+
 static void _dataHeader(uint8_t* data, const MemPoolSim::Frame& f, uint32_t seed)
 {
     uint64_t  pid = f.pulseIdAndControl & ((1ull << 56) - 1);
@@ -131,6 +140,7 @@ static void epix100Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32
         unsigned img = (r & 1) ? Epix100Rows / 2 - 1 - r / 2 : Epix100Rows / 2 + r / 2;
         return uint32_t(img * Epix100Cols + c);
     });
+    out.timingCopy(2);                  // the detailed timing frame; a copy stands in for it
     uint8_t* data = out.data();
     memset(data, 0, 32);
     _dataHeader(data, f, seed);
@@ -139,9 +149,48 @@ static void epix100Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32
     out.tail(Epix100Bytes, 3);
 }
 
+// wave8 (Wave8::_event reads subframes 2..11): 8 raw waveforms (tdest 2..9) of Wave8Samples
+// uint16 samples, then the integrals stream (tdest 10, W8::IntegralStream, 56 B) and the
+// processed stream (tdest 11, W8::ProcStream, 32 B).  Sample k of channel ch is index
+// ch * Wave8Samples + k; the integrals and baselines continue the indices after them.
+static const unsigned Wave8Samples = 256;
+
+static void wave8Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap samples(8 * Wave8Samples, 16, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(1);                  // auxiliary timing header
+    std::vector<uint16_t> raw(8 * Wave8Samples);
+    samples.fill(raw.data(), seed, f.seq);
+    for (unsigned ch = 0; ch < 8; ++ch) {
+        memcpy(out.data(), raw.data() + ch * Wave8Samples, Wave8Samples * sizeof(uint16_t));
+        out.tail(Wave8Samples * sizeof(uint16_t), 2 + ch);
+    }
+    const uint32_t n = 8 * Wave8Samples;
+    uint8_t* d = out.data();                                    // W8::IntegralStream
+    memset(d, 0, 56);
+    uint16_t itrig = uint16_t(f.seq);
+    memcpy(d + 4, &itrig, 2);
+    for (unsigned i = 0; i < 8; ++i) {
+        uint32_t integral = MemPoolSim::pattern(seed, f.seq, n + i, 24);     // 24-bit signed
+        uint16_t base     = uint16_t(MemPoolSim::pattern(seed, f.seq, n + 8 + i, 16));
+        memcpy(d + 8 + 4 * i, &integral, 4);
+        memcpy(d + 40 + 2 * i, &base, 2);
+    }
+    out.tail(56, 10);
+    d = out.data();                                             // W8::ProcStream
+    uint32_t proc[2] = { 0, f.seq };
+    double   v[3] = { double(MemPoolSim::pattern(seed, f.seq, n + 16, 20)),
+                      double(MemPoolSim::pattern(seed, f.seq, n + 17, 20)) / 1024.,
+                      double(MemPoolSim::pattern(seed, f.seq, n + 18, 20)) / 1024. };
+    memcpy(d, proc, sizeof(proc));
+    memcpy(d + 8, v, sizeof(v));
+    out.tail(32, 11);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
-    { "epix100", ((Epix100Bytes + 7) & ~7u) + 8, epix100Data },
+    { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
+    { "wave8",   _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(56) + _padded(32), wave8Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
@@ -173,10 +222,6 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
     out.tail(th, 0);
     if (!l1)  return out.pos;
-
-    // Subframe 2: the detailed timing frame; a copy of the header stands in for it
-    memcpy(out.data(), buffer + lw, th);
-    out.tail(th, 2);
 
     b.data(out, f, seed);
     return out.pos;
@@ -219,7 +264,7 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         abort();
     }
     if (m_batcher) {
-        size_t need = 8 + 2 * (sizeof(Pds::TimingHeader) + 8) + m_batcher->dataBytes;
+        size_t need = 8 + (sizeof(Pds::TimingHeader) + 8) + m_batcher->dataBytes;
         if (m_dmaSize < need + sizeof(uint32_t)) {
             logging::critical("MemPoolSim: %s needs sim_dma_size >= %zu (have %u)",
                               para.detType.c_str(), need + sizeof(uint32_t), m_dmaSize);

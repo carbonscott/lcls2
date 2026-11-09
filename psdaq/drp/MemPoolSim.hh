@@ -61,13 +61,15 @@ public:
         size_t   pos;                   // where the next subframe's data starts
         uint8_t* data() { return buffer + pos; }
         void     tail(uint32_t size, uint8_t tdest);    // close the subframe of 'size' bytes
+        void     timingCopy(uint8_t tdest);             // a subframe holding the TimingHeader
     };
     // EventBatcher layout of one BEB type's L1Accept DMA buffer
     struct Batcher
     {
         const char* detType;
-        unsigned    dataBytes;          // most bytes its data subframes take, tails included
-        // Write the type's data subframes (after the timing subframes 0 and 2)
+        unsigned    dataBytes;          // most bytes its L1Accept subframes take after the
+                                        //   TimingHeader's, tails included
+        // Write the type's L1Accept subframes after the TimingHeader's (tdest 0)
         void      (*data)(Out& out, const Frame& f, uint32_t seed);
     };
     static const Batcher* batcher(const std::string& detType);

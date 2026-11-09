@@ -112,3 +112,31 @@ def test_pattern_matches_the_cxx_mix():
 def test_unknown_type_is_refused():
     r = subprocess.run([EXE, 'nosuchtype', '1'], capture_output=True, text=True, timeout=60)
     assert r.returncode == 1 and "no simulated EventBatcher layout for detType 'nosuchtype'" in r.stderr
+
+
+def test_wave8_frame_layout():
+    """Wave8::_event reads subframes 2..9 as raw_0..7, 10 as W8::IntegralStream, 11 as
+    W8::ProcStream."""
+    seq, N = 9, 256
+    data, order = subframes(frame('wave8', seq))
+    assert order == [0, 1] + list(range(2, 12))
+    assert data[0] == timing_header(seq) and data[1] == data[0]
+    for ch in range(8):
+        raw = np.frombuffer(data[2 + ch], dtype=np.uint16)
+        assert raw.shape == (N,)
+        assert (raw == pattern.pattern(SEED, seq, np.arange(ch * N, (ch + 1) * N), 16)).all()
+    integ = data[10]
+    assert len(integ) == 56
+    assert struct.unpack_from('<BBHHH', integ, 0) == (0, 0, 0, seq, 0)
+    ints = struct.unpack_from('<8I', integ, 8)
+    bases = struct.unpack_from('<8H', integ, 40)
+    for i in range(8):
+        assert ints[i] == int(pattern.pattern(SEED, seq, 8 * N + i, 24))
+        assert bases[i] == int(pattern.pattern(SEED, seq, 8 * N + 8 + i, 16))
+    proc = data[11]
+    assert len(proc) == 32
+    quad, ptrig, inten, x, y = struct.unpack('<IIddd', proc)
+    assert (quad, ptrig) == (0, seq)
+    assert inten == float(pattern.pattern(SEED, seq, 8 * N + 16, 20))
+    assert x == int(pattern.pattern(SEED, seq, 8 * N + 17, 20)) / 1024.
+    assert y == int(pattern.pattern(SEED, seq, 8 * N + 18, 20)) / 1024.

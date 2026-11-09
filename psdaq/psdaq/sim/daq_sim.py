@@ -86,6 +86,9 @@ SIM_TYPES = {
     'fakecam': {'kwargs': 'sim_length={length}'},
     'epix100': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}',
                 'det_yaml': '{SUBMODULEDIR}/epix-100a-gen2/software/yml/ePix100a_asics_0123.yml'},
+    # wave8 is configured through its front-end's IOC; rogue_dev serves its PVs in process
+    'wave8':   {'kwargs': 'sim_dma_size=0x2000,sim_dma_count=1024,sim_seed={seed:#x},'
+                          'epics_prefix=SIM:W8:00'},
 }
 
 

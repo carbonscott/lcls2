@@ -27,17 +27,35 @@ read back what was last written (0 if never written), except:
           rogue's write-verify, or the config script's own check, fails
           and names it.
 
+Two more parts of the device that some config scripts reach without rogue:
+
+  /proc   the driver's /proc/<device> text (PgpMonitor.detect_version reads
+          its 'Build String' for the board type and PGP version): the seed
+          file's "_proc" lines are what open('/proc/<sim device name>') reads.
+  PVs     a type configured through its front-end's rogue IOC over Channel
+          Access (wave8, wave8he: psdaq/configdb/wave8_common.py, pyepics
+          epics.PV) gets epics.PV replaced by SimPV, in process, on a table of
+          the IOC's PVs: seed keys "pv:<name>", where {prefix} in <name> is the
+          drp's -k epics_prefix.  A PV in the table reads back what was last
+          put; one not in it reads None and its put does nothing, as pyepics
+          does for a PV no IOC serves, and is listed in missing_pvs.  No CA
+          traffic leaves the process.  A fault 'pv:<name>[=<value>]' makes that
+          PV read back <value> (default 0).
+
 Every register write is recorded (WRITES, and one JSON line per write to
 $PSDAQ_SIM_ROGUE_LOG if set) with the register paths it covers.
 
 Nothing here runs unless the device string starts with 'sim://'.
 """
 
+import builtins
+import io
 import json
 import logging
 import os
 import queue
 import struct
+import sys
 import threading
 
 import rogue
@@ -53,6 +71,12 @@ ENV_LOG = 'PSDAQ_SIM_ROGUE_LOG'
 SEED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'seeds')
 
 log = logging.getLogger('psdaq.sim.rogue_dev')
+
+
+def _say(msg):
+    """Report what a config script must not miss (a fault, a PV the IOC lacks) whatever
+    logging level the script sets (wave8_init sets the root logger to ERROR)."""
+    print('rogue_dev: ' + msg, file=sys.stderr, flush=True)
 
 
 def is_sim(dev):
@@ -283,9 +307,40 @@ class SimStreamDma(ris.Master, ris.Slave):
         self._q.put(None)
 
 
+PV_PREFIX = 'pv:'
+
+
+class SimPV(object):
+    """Stands in for epics.PV(pvname) of the simulated device's IOC."""
+
+    def __init__(self, pvname, *args, **kwargs):
+        self.pvname = pvname
+
+    @property
+    def connected(self):
+        return self.pvname in _SIM.pvs
+
+    def wait_for_connection(self, timeout=None):
+        return self.connected
+
+    def get(self, *args, **kwargs):
+        return _SIM.pv_get(self.pvname)
+
+    @property
+    def value(self):
+        return self.get()
+
+    def put(self, value, *args, **kwargs):
+        return _SIM.pv_put(self.pvname, value)
+
+
 class _Sim(object):
     def __init__(self):
         self.dev = None
+        self.pvs = {}           # PV name -> value (the simulated IOC)
+        self.pv_fault = None    # (name, value)
+        self.missing_pvs = []   # names asked for that the IOC does not serve, in order
+        self.proc = None        # the driver's /proc/<device> text
         self.stores = []
         self.seeds = {}         # path -> value, not yet applied
         self.applied = {}       # path -> (store, addr, value)
@@ -407,6 +462,7 @@ class _Sim(object):
             store.add_fault(addr, var.bitOffset, var.bitSize, value, path)
             self.fault_applied = (path, store.name, addr, value)
             log.warning('FAULT %s @%s+0x%x reads back 0x%x', path, store.name, addr, value)
+            _say('FAULT %s @%s+0x%x reads back 0x%x' % (path, store.name, addr, value))
 
     def pending(self):
         out = sorted(self.seeds)
@@ -414,29 +470,77 @@ class _Sim(object):
             out.append(self.fault[0])
         return out
 
+    # ---- the IOC's PVs ----------------------------------------------------
+    def pv_get(self, name):
+        if self.pv_fault and name == self.pv_fault[0]:
+            return self.pv_fault[1]
+        if name not in self.pvs:
+            if name not in self.missing_pvs:
+                self.missing_pvs.append(name)
+                _say('the simulated IOC serves no PV %s (reads None)' % name)
+            return None
+        return self.pvs[name]
+
+    def pv_put(self, name, value):
+        if name not in self.pvs:
+            if name not in self.missing_pvs:
+                self.missing_pvs.append(name)
+                _say('the simulated IOC serves no PV %s (put ignored)' % name)
+            return None
+        old, self.pvs[name] = self.pvs[name], value
+        rec = {'store': 'pv', 'pv': name, 'value': value, 'old': old}
+        self.writes.append(rec)
+        if self._logf:
+            self._logf.write(json.dumps(rec, default=str) + '\n')
+            self._logf.flush()
+        return 1
+
 
 _SIM = _Sim()
 
 
-def load_seeds(det_type=None, path=None):
+def _seed_value(k, v):
+    if k.startswith(PV_PREFIX) and not isinstance(v, str):
+        return v                    # PV values keep their JSON type (float, list...)
+    return _int(v)
+
+
+def load_seeds(det_type=None, path=None, extra=False):
+    """{path: value} from the type's seed file (keys starting with '_' are comments);
+    with extra=True also its "_proc" text (or None)."""
     path = path or os.environ.get(ENV_SEEDS) or (
         os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
     if not path:
-        return {}, None
+        return ({}, None, None) if extra else ({}, None)
     with open(path) as f:
         d = json.load(f)
-    return {k: _int(v) for k, v in d.items() if not k.startswith('_')}, path
+    seeds = {k: _seed_value(k, v) for k, v in d.items() if not k.startswith('_')}
+    proc = d.get('_proc')
+    proc = '\n'.join(proc) + '\n' if isinstance(proc, list) else proc
+    return (seeds, path, proc) if extra else (seeds, path)
 
 
 def parse_fault(s):
     if not s:
         return None
     path, _, value = s.partition('=')
-    return path.strip(), (_int(value.strip()) if value.strip() else None)
+    value = value.strip()
+    if path.strip().startswith(PV_PREFIX) and value:
+        try:
+            return path.strip(), _int(value)
+        except ValueError:
+            return path.strip(), float(value)
+    return path.strip(), (_int(value) if value else None)
 
 
-def install(dev, det_type=None, seeds=None, fault=None):
-    """Replace rogue's hardware transports with simulated ones for device dev.
+def proc_path(dev):
+    """The /proc file a datadev driver has for device dev (PgpMonitor.detect_version)."""
+    return '/proc/' + dev.split('/')[-1]
+
+
+def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=None):
+    """Replace rogue's hardware transports with simulated ones for device dev, and, when the
+    seeds name PVs or /proc text, the device's IOC (epics.PV) and its /proc file.
 
     Must run before the config module builds its firmware roots.  Returns the
     simulation state.  Raises if dev is not a 'sim://' device.
@@ -449,9 +553,11 @@ def install(dev, det_type=None, seeds=None, fault=None):
         return _SIM
     _SIM.dev = dev
     if seeds is None:
-        seeds, spath = load_seeds(det_type)
+        seeds, spath, sproc = load_seeds(det_type, extra=True)
+        proc = proc if proc is not None else sproc
         log.info('rogue_dev: %d seeds from %s', len(seeds), spath)
-    _SIM.seeds = dict(seeds)
+    pvs = {k[len(PV_PREFIX):]: v for k, v in seeds.items() if k.startswith(PV_PREFIX)}
+    _SIM.seeds = {k: v for k, v in seeds.items() if not k.startswith(PV_PREFIX)}
     _SIM.fault = parse_fault(fault if fault is not None else os.environ.get(ENV_FAULT))
     if os.environ.get(ENV_LOG):
         _SIM._logf = open(os.environ[ENV_LOG], 'a')
@@ -461,6 +567,35 @@ def install(dev, det_type=None, seeds=None, fault=None):
                   pr.interfaces.ZmqServer.__init__)
     axi.AxiMemMap = _SIM.mem_map
     axi.AxiStreamDma = _SIM.stream_dma
+
+    if pvs or (_SIM.fault and _SIM.fault[0].startswith(PV_PREFIX)):
+        if any('{prefix}' in n for n in pvs) and not epics_prefix:
+            raise SimDeviceError('rogue_dev: the %s PVs need the drp\'s -k epics_prefix' % det_type)
+        _SIM.pvs = {n.replace('{prefix}', epics_prefix or ''): v for n, v in pvs.items()}
+        if _SIM.fault and _SIM.fault[0].startswith(PV_PREFIX):
+            name = _SIM.fault[0][len(PV_PREFIX):].replace('{prefix}', epics_prefix or '')
+            if name not in _SIM.pvs:
+                raise SimDeviceError('rogue_dev: fault PV %r is not served by the simulated '
+                                     'IOC' % name)
+            _SIM.pv_fault = (name, 0 if _SIM.fault[1] is None else _SIM.fault[1])
+            _SIM.fault_applied = (_SIM.fault[0], 'pv', name, _SIM.pv_fault[1])
+            _say('FAULT PV %s reads back %r' % (name, _SIM.pv_fault[1]))
+        import epics
+        _SIM._orig_pv = epics.PV
+        epics.PV = SimPV
+        log.info('rogue_dev: epics.PV -> SimPV, %d PVs (prefix %s)', len(_SIM.pvs), epics_prefix)
+
+    if proc is not None:
+        _SIM.proc = proc
+        real_open, ppath = builtins.open, proc_path(dev)
+        _SIM._orig_open = real_open
+
+        def _open(file, mode='r', *args, **kwargs):
+            if file == ppath and 'r' in mode and 'b' not in mode:
+                return io.StringIO(_SIM.proc)
+            return real_open(file, mode, *args, **kwargs)
+        builtins.open = _open
+        log.info('rogue_dev: %s reads the simulated driver text', ppath)
 
     # Seeds go in once a root has built its blocks, before its devices'
     # _start() hooks and its initial read (pyrogue Root.start calls
@@ -497,6 +632,11 @@ def uninstall():
         axi = rogue.hardware.axi
         (axi.AxiMemMap, axi.AxiStreamDma, pr.Device._start,
          pr.interfaces.ZmqServer.__init__) = _SIM._orig
+    if getattr(_SIM, '_orig_pv', None):
+        import epics
+        epics.PV = _SIM._orig_pv
+    if getattr(_SIM, '_orig_open', None):
+        builtins.open = _SIM._orig_open
     if _SIM._logf:
         _SIM._logf.close()
     _SIM = _Sim()
