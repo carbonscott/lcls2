@@ -2,6 +2,7 @@
 
 #include "BldDetector.hh"
 #include "BldNames.hh"
+#include "MemPoolSim.hh"
 
 #include <bitset>
 #include <chrono>
@@ -677,7 +678,7 @@ uint64_t Bld::next()
 class BldDetector : public XpmDetector
 {
 public:
-    BldDetector(Parameters& para, MemPoolCpu& pool) : XpmDetector(&para, &pool) { virtChan = 0; }
+    BldDetector(Parameters& para, MemPool& pool) : XpmDetector(&para, &pool) { virtChan = 0; }
     void event(Dgram& dgram, const void* bufEnd, PGPEvent* event, uint64_t l1count) override {}
     //    void addToCube(unsigned rawDefIndex, unsigned valueIndex, unsigned subIndex, double* dst, DescData& rawData);
     unsigned rawNamesIndex() { return BldNamesIndex; }
@@ -1087,7 +1088,7 @@ void Pgp::_sendToTeb(EbDgram& dgram, uint32_t index)
 }
 
 
-BldDrp::BldDrp(Parameters& para, MemPoolCpu& pool, Detector& det, ZmqContext& context) :
+BldDrp::BldDrp(Parameters& para, MemPool& pool, Detector& det, ZmqContext& context) :
     DrpBase(para, pool, det, context),
     m_pgp  (para, *this, &det)
 {
@@ -1139,13 +1140,15 @@ unsigned BldDrp::unconfigure()
 BldApp::BldApp(Parameters& para) :
     CollectionApp(para.collectionHost, para.partition, "drp", para.alias, para.device),
     m_para       (para),
-    m_pool       (para),
+    m_pool       (MemPoolSim::isSimDevice(para.device)
+                  ? std::unique_ptr<MemPool>(std::make_unique<MemPoolSim>(para))
+                  : std::unique_ptr<MemPool>(std::make_unique<MemPoolCpu>(para))),
     m_unconfigure(false)
 {
     Py_Initialize();                    // for use by configuration
 
-    m_det = std::make_unique<BldDetector>(m_para, m_pool);
-    m_drp = std::make_unique<BldDrp>(m_para, m_pool, *m_det, context());
+    m_det = std::make_unique<BldDetector>(m_para, *m_pool);
+    m_drp = std::make_unique<BldDrp>(m_para, *m_pool, *m_det, context());
 
     logging::warning("Ready for transitions");
 }

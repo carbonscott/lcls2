@@ -172,7 +172,7 @@ private:
 class BldDrp : public DrpBase
 {
 public:
-    BldDrp(Parameters&, MemPoolCpu&, Detector&, ZmqContext&);
+    BldDrp(Parameters&, MemPool&, Detector&, ZmqContext&);
     virtual ~BldDrp() {}
     std::string configure(const nlohmann::json& msg);
     unsigned unconfigure();
@@ -202,7 +202,7 @@ private:
     void _error(const std::string& which, const nlohmann::json& msg, const std::string& errorMsg);
 
     Parameters&               m_para;
-    MemPoolCpu                m_pool;
+    std::unique_ptr<MemPool>  m_pool;      // MemPoolCpu, or MemPoolSim for -d sim://...
     std::unique_ptr<Detector> m_det;
     std::unique_ptr<BldDrp>   m_drp;
     bool                      m_unconfigure;
