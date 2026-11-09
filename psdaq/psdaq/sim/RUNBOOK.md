@@ -841,7 +841,8 @@ daq_sim feature a -w $WD       # readout groups at different rates
 daq_sim feature b -w $WD       # a 3-step scan through generic_timing_scan.py
 daq_sim feature e -w $WD       # drp_pva, drp_bld, drp_udpencoder, epicsArch with a PGP DRP
 daq_sim feature c -w $WD       # the MEB serving AMI; AMI's GUI shows the camera ($DAQ_SIM_AMI_SRC or --ami-src)
-daq_sim feature d --hosts nodeA,nodeB     # two nodes: NOT AVAILABLE unless both are hosts of this job
+daq_sim feature d --hosts nodeA,nodeB     # two nodes of this job, run on nodeA (§3j); NOT AVAILABLE otherwise
+daq_sim feature d --hosts nodeA,nodeB --break kill-remote-drp   # the DRP on nodeB killed while Running: FAIL
 daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail (no DAQ)
 ```
 
@@ -851,7 +852,7 @@ daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail 
 | b | `--det tb --also epix100 --rate 100` | `python -m psdaq.cas.generic_timing_scan -p <p> -C localhost --detname epix100_0 --scantype timing --events <N> --record 1 --config BEAM --linear 700000 730000 10000`, from connected | psana2 reads 3 steps in tb's stream, `step_value` 700000, 710000, 720000 and a `step_docstring` naming each; each DRP has `--events` (200) L1Accepts in every step, all with data; each DRP's DAQ count == psana2's; every event passes its per-event check; `epix100_update` applied 700000, 710000, 720000 in order (its DRP's log) |
 | e | `--pva --epics --udp --bld --rate 100` | one cycle | sysdrp_check reads drp_pva's, drp_udpencoder's, epicsArch's and drp_bld's data event by event; each system DRP's DAQ count == psana2's events in its stream; drp_bld's L1Accepts less its `bld_miss_count` == psana2's events with BLD data |
 | c | `--ami --rate 100` (`--ami-src` passed on; §3h) | one cycle with `--ami-shot <WD>/ami-shot.png` | fakecam_0's DAQ count == psana2's events in its stream == events with its data, each passing the per-event check; the MEB served events (`MEB_EvtCt` > 0 and at least the events AMI kept); every event AMI computed from the MEB matches psana2's event with the same timestamp (`ami_check`: seq and pixel, at least 100 events, AMI's pixel sum == psana2's over them); a second `ami-client` showed the camera image while Running (the screenshot path is in the report) |
-| d | `--det hrencoder --also epix100:<p>`, over `--hosts A,B` | none yet | NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (`SLURM_JOB_NODELIST`, expanded by `scontrol show hostnames`); with two, it prints the plan (§3j) and fails: `up --hosts` runs a plan only |
+| d | `--hosts A,B --segments 2 --rate 100` (§3j): control, the TEB, simxpm and fakecam_0 on A, fakecam_1 on B | one cycle of `--events` (1000) L1Accepts | the cycle passed; each DRP's DAQ count (the L1Accepts simxpm sent its link) == psana2's events in its own stream (fakecam_1's: the stream whose Configure has segment 1, read through that segment) == events with its data, each passing the per-event check; while Running, `ss -tnp` on each host (on B in a step of the job there) shows established TCP connections to the other host owned by DAQ processes (`drp`, `teb`, `control`, `python3`). The report also gives each host's address, interface and processes, the step that ran procmgrd on B, and both hosts' EPICS lists. NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (squeue's node list of `SLURM_JOB_ID`, expanded by `scontrol show hostnames`). `--break kill-remote-drp` (a live run, no `--check-only`) SIGKILLs fakecam_1 on B once Running (`cycle --kill-drp fakecam_1`, through a step on B) and must FAIL |
 
 The step values are recorded by the timing DRP, as at the hutches: `TimingBEB::scanEnabled()`
 (tb) and `TimingSystem::scanEnabled()` (ts) are true, `Epix100::scanEnabled()` is false, so a scan
@@ -899,24 +900,51 @@ expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1
 `--check-only` without a break re-runs the checks on the recorded files (for c, `ami_check`
 again on the fetched result).
 
-## 3j. Two nodes (a plan): `daq_sim up --hosts A,B --dry-run`
+## 3j. Two nodes: `daq_sim up --hosts A,B`
 
-`daq_sim up --hosts nodeA,nodeB --dry-run [--also TYPE:GROUP ...]` prints, and starts nothing:
-the `.cnf` of one partition with control, the TEB, the `--det` DRP, simxpm and the stand-ins on
-node A and the `--also` DRPs on node B (procmgr's `host:` field), every endpoint on one of the
-two nodes (simxpm's frames, PVA and control `-X` socket, the config and run DB stand-ins,
-control's ZMQ ports, libfabric over the nodes' NIC, `ep_domain=<nic>`), the EPICS environment
-for both nodes (`EPICS_PVA_ADDR_LIST` and `EPICS_CA_ADDR_LIST` = the two nodes, auto address
-lists off), and what is still needed to run it. `test_sim_features.py::test_two_node_plan`
-checks the plan. It has not run on two nodes. To run it:
+`daq_sim up --hosts nodeA,nodeB [--segments N] [--also TYPE[:GROUP] ...]`, run in a Slurm step on
+nodeA, brings up one partition over two hosts of the same Slurm job (`psdaq.sim.twonode`). Both
+hosts must be in the job's allocation (squeue's node list of `SLURM_JOB_ID`), and neither may look
+like a hutch or DAQ host. The hosts come from the command line and their addresses from the
+resolver; no host name or address is written in the code.
 
-- procmgr starts node B's processes through procServ there: procServ and procmgrd must be
-  reachable from node A (ssh between the nodes, or procServ started in a Slurm step on node B
-  of the job that holds it);
-- configdb_server and lgbk_server must bind the node's address instead of 127.0.0.1, and simxpm
-  its `--bind`, `--frames` and `--pull` (with `--allow-remote`);
-- preflight.sh must accept those two-node address lists (it now requires loopback only);
-- the DRP on node B writes its file under the work dir, on a file system both nodes share.
+- **Where things run.** nodeA runs control, the TEB, simxpm, the config DB and run DB stand-ins
+  and `<det>_0`. nodeB runs `<det>_1` .. `<det>_<N-1>` (`--segments`, at least 2 when there is no
+  `--also`) and the `--also` DRPs. The `.cnf` gives nodeB's entries procmgr's `host:` field, as a
+  config over several DAQ hosts does (`<workdir>/daq_sim.cnf`).
+- **How nodeB's processes start.** procmgr starts a remote host's processes through the procmgrd
+  of the platform there (`procServ --allow ... 29000+100p /bin/tcsh -f`, as `procmgrd.init`
+  starts it on a DAQ host). `up` starts it in a Slurm step of the same job on nodeB
+  (`srun --jobid=$SLURM_JOB_ID --overlap -w nodeB python -m psdaq.sim.twonode hostd ...`). hostd
+  writes `<workdir>/hosts/nodeB.json` (its address, interface, job and step), links procmgr's
+  short log path on nodeB, starts procmgrd and waits. procmgr then starts, checks and stops
+  nodeB's processes through procServ, as on a DAQ host.
+- **Addresses and ports.** Every EPICS address list names nodeA's address only, since the PV
+  servers (simxpm and control's) run there; nodeB's processes serve on nodeB's own address
+  (`env:` in the `.cnf`). The auto address lists are off and the ports are sim_env.sh's
+  (PVA 15075/15076, CA 15064/15065). procmgr sends the lists to nodeB (`PROCMGR_EXPORT`), each
+  a single address, since it sends them as `setenv` lines to tcsh. simxpm's frames
+  (`--frames`, `--bind`, with `--allow-remote`) and the config DB stand-in (`--host`) listen on
+  nodeA's address. The run DB stand-in and control's `-X` socket stay on loopback, since only
+  nodeA uses them. libfabric runs over tcp on each host's interface that holds its address
+  (`ep_domain=<nic>`). `NO_PROXY` names both hosts. The DRPs on nodeB read simxpm's frames and
+  the config DB on nodeA's address, and write their files under the work dir, which both hosts
+  must share (S3DF: `/sdf/data`).
+- **Down.** `daq_sim down` (or a failed `up`) runs procmgr stop. It then touches
+  `<workdir>/hosts/nodeB.stop`, and hostd kills every process left in its step (its cgroup).
+  hostd records what it killed and what was left, and the step ends. A step that does not end
+  within 60 s is cancelled (`scancel <job>.<step>`), and `down` is then not clean. `down`
+  prints `hostd on nodeB: step J.S ended; killed 2 process(es) of the step (... procServ, ...
+  tcsh), left 0`.
+- **Not yet.** `--meb`, `--ami`, `--pva`, `--epics`, `--udp`, `--bld`, `--gui`, `--pvservers`,
+  `--tpr`, `--webgui` and `--fixed-rate` are refused with `--hosts`. preflight.sh runs on nodeA
+  with sim_env.sh's loopback lists; it does not check the two-host lists.
+
+`daq_sim feature d --hosts nodeA,nodeB` (§3i) runs it with `--segments 2` and checks it.
+`daq_sim up --hosts A,B --dry-run` still prints the earlier plan (`multi_host_plan`: both
+addresses in the lists, the `--also` DRPs on B). What `up --hosts` runs is the `.cnf` and
+environment above. `test_sim_features.py` checks the host checks, the `.cnf` and the address
+lists without a DAQ.
 
 ## 3k. The whole matrix, one command: `daq_sim matrix`
 
@@ -938,7 +966,7 @@ It brings up one DAQ at a time, each in its own work dir under `-w`, and always 
 |---|---|---|
 | `types` | for each detector type: `daq_sim up --det <T> --detach`, one recorded `daq_sim cycle --events 1000`, `daq_sim down`, in `types/<T>` | `types/<T>/up`; `.../transitions` (every state read back as requested, no error message, back to the start state); `.../drp-alive` (the DRP `up` started is still alive after the run); `.../counts` (simxpm's L1Accepts == `TEB_WrtCt` == psana2's events == psana2's events with `<T>`'s data, all >= 1000); `.../per-event` (`xtc2_check` compared every event's data, through the type's own psana interface, with what the simulated device was set to send); `.../evidence` (the cycle wrote a record for `det:drp:<T>` that coverage accepts); `.../down` (`down: clean`) |
 | `programs` | `daq_sim up --ami --pva --epics --udp --gui --pvservers --tpr --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter, daqstat on simslurm, and the PV-server stand-ins simhsd, simtpr and simdti with hsdpva, pvatable, tprca and dtica on them, xpmpva and deadca on simxpm, bldcas and hpsdbuscas, tprtrig and tpr_trigger on simulated TPR cards: §3h), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
-| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` (c with `--ami-src`, d with `--hosts`) | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature `psdaq.sim.feature` cannot run here is `NOT AVAILABLE`, a failed assertion, and starts nothing: d (two nodes) unless `--hosts` names two hosts of this Slurm job, and with two it fails (`up --hosts` runs a plan only, §3j) |
+| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` (c with `--ami-src`, d with `--hosts`) | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature `psdaq.sim.feature` cannot run here is `NOT AVAILABLE`, a failed assertion, and starts nothing: d (two nodes, §3j) unless `--hosts` names two hosts of this Slurm job |
 | `coverage` | `daq_sim coverage` (§3d), after the runs above wrote their evidence | `coverage` (PASS: every row RUN, STAND-IN or N/A with valid evidence at HEAD) |
 
 The types are every `det:drp` row that `coverage_status.json` marks RUN, in the order
@@ -962,13 +990,33 @@ coverage's counts, every assertion and the runs.
 | `-w DIR` | Work dir of the whole matrix (each type's and feature's DAQ in a subdirectory, replaced by its next run). |
 | `--only types\|programs\|features\|coverage` | Run only these sections (repeatable, or comma-separated). |
 | `--ami-src DIR` | The AMI source tree of the programs run and of feature c (default: `daq_sim up`'s, `$DAQ_SIM_AMI_SRC`, else `ami-*` on PATH). |
-| `--hosts A,B` | Feature d's two nodes; without two hosts of this Slurm job's allocation, d is `NOT AVAILABLE`. |
+| `--hosts A,B` | Feature d's two nodes; without two hosts of this Slurm job's allocation, d is `NOT AVAILABLE`. With `--locks`, the matrix runs over both (below). |
+| `--locks LOCK_A,LOCK_B` | With `--hosts`: each host's lock file, a file on that host. LOCK_A takes `--lock`'s place on A; B's type runs take LOCK_B; feature d holds LOCK_A, then LOCK_B (`flock(1)` in a step on B), from its `up` to its `down`. |
+| `--gpu-host G` | A GPU host for the `det:drp_gpu` types. `daq_sim up` at this HEAD runs none, so the matrix only says so. |
 | `--types T,T` | Only these detector types (any of `up --det`). |
 | `--features x,x` | Only these features. |
 | `--events N` | L1Accepts of each type's cycle; default 1000. |
 | `--lock FILE` | Take an exclusive `flock(2)` on FILE around each DAQ, from `up` to `down` of one type or one feature, and release it in between; for a node where several people's DAQs take turns (`flock(1)` takes the same lock). Default `$DAQ_SIM_MATRIX_LOCK`, else none. `--lock-timeout S` (default 3600). |
 | `--repo`, `--status`, `--evidence`, `-v` | As for `daq_sim coverage`. |
 | `-p P` | Platform; default 5. |
+
+**Over two hosts.** `daq_sim matrix -w $WD/matrix --hosts nodeA,nodeB --locks LOCK_A,LOCK_B`,
+run in a step on nodeA, shares the types between the hosts. Every other type goes to nodeB, where
+one more `daq_sim matrix --only types --types ...` runs in a step of the job (`srun --overlap -w
+nodeB`), in `<WD>/matrix/hosts/nodeB`, under LOCK_B. nodeA runs its own types meanwhile, under
+LOCK_A. Their results join this run's, and each type line names its node. The programs run and
+features a, b, c and e run on nodeA. Feature d runs over both hosts and holds both locks. Coverage
+then reads the evidence of all of them; both hosts write to the same evidence dir
+(`$DAQ_SIM_EVIDENCE` or `--evidence`), which they must share. The three deliberate breaks stay
+separate commands (below).
+
+```bash
+# one srun step on nodeA (JOB, ROOT and WD as in §1 and §2); the lock files are each host's own
+srun --jobid=$JOB --overlap -w nodeA --ntasks=1 --cpus-per-task=16 --mem=32G bash -c "
+  cd $ROOT/lcls2 && source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh &&
+  daq_sim matrix -w $WD/matrix --hosts nodeA,nodeB --locks /tmp/daq-a.lock,/tmp/daq-b.lock \
+    --ami-src <AMI source tree>; echo MATRIX_EXIT=\$?"
+```
 
 **Restart.** A section, a type or a feature can be re-run alone, e.g. after fixing one type:
 `daq_sim matrix -w $WD/matrix --types epix100`, then `--only coverage`. The exit code is the
@@ -1075,8 +1123,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
 - **Partition size.** One node. Up to three PGP DRPs of different types (`--also`, §3i) or four
   segments of one type, one lane each. Rates above about 1 kHz are untested; simxpm ticks at
-  most at 2 kHz, so fixed-rate markers faster than 1.02 kHz keep `--rate`. Two nodes: a plan
-  only (§3j).
+  most at 2 kHz, so fixed-rate markers faster than 1.02 kHz keep `--rate`. Two nodes (§3j):
+  control, the TEB and PGP DRPs only (no MEB, AMI, system DRPs or GUIs yet), one host's address in
+  the EPICS lists.
 - **BEB types.** `rogue_dev` serves the registers a config script touches, plus what the seeds
   preset. It runs no firmware logic: a register the firmware would change on its own (a counter,
   a status bit) keeps its seed. A BEB type's frame has the subframes its DRP reads, with the
