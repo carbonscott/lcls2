@@ -234,7 +234,7 @@ def scan_steps(path, det_name):
             n = k = 0
             for evt in step.events():
                 n += 1
-                k += det.raw.raw(evt) is not None
+                k += det.raw._segments(evt) is not None     # any type's data (tb: ts_raw)
             out.append((sv(step) if has else None, sd(step) if has else None, n, k))
     return out
 
