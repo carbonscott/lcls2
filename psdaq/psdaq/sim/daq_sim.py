@@ -699,6 +699,8 @@ def cmd_up(args):
             raise Fail(f'not RUNNING after start: {bad}\n{text}')
         state['procs'] = {i: int(status[i][1]) for i in procs(state)}
         work.save(state)
+        if gui:
+            _wait_control_gui(work, 120)
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
@@ -787,6 +789,23 @@ def _wait_running(state, timeout):
         if all(status.get(i, ('?',))[0] == 'RUNNING' for i in procs(state)) or time.monotonic() > end:
             return status
         time.sleep(1)
+
+
+def _wait_control_gui(work, timeout):
+    """Wait until control_gui has built its window and polls control (its log's first
+    'CGWMain.on_zmq_poll'), so the cycle's transitions start after: a control_gui that builds its
+    window once the partition is selected dies at -l DEBUG (QWPopupTableCheck.update_partition_table
+    logs logger.debug('list2d\\n', list2d), whose formatting raises TypeError in QWLoggerStd's
+    filter)."""
+    import glob
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:control_gui.log')), key=os.path.getmtime)
+        if logs and 'CGWMain.on_zmq_poll' in open(logs[-1], errors='replace').read():
+            say(f'control_gui polls control ({logs[-1]})')
+            return
+        time.sleep(1)
+    raise Fail(f'control_gui did not start polling control in {timeout} s (its procmgr log)')
 
 
 def _wait_pv(name, timeout, proc=None):

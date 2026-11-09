@@ -721,6 +721,11 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   witness (§3d), which ties the check to the AMI processes by the sockets they held on AMI's
   ports, read from `/proc` while the result was fetched (another user's process would not be
   seen).
+- **control_gui at DEBUG.** A control_gui that builds its window after the partition is selected
+  exits at its default log level, DEBUG: `QWPopupTableCheck.update_partition_table` calls
+  `logger.debug('list2d\n', list2d)`, whose formatting raises `TypeError` in `QWLoggerStd`'s
+  filter. `up --gui` therefore waits until control_gui polls control (its log's first
+  `CGWMain.on_zmq_poll`) before it returns, so the cycle selects the partition after.
 - **GUI witnesses.** The witness of groupca and pvant is a second instance of each GUI,
   run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
   `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. xpmpva is
