@@ -113,7 +113,7 @@ SERVERS = {
                'live': [('{pvbase}:HSD:1_DA:A:MONTIMING', 'timframecnt'), ('{pvbase}:HSD:1_DA:B:MONTIMING', 'trigcntsum')],
                'programs': ['hsdpvs', 'hsd134PVs']},
     'simtpr': {'args': ['-P', '{pvbase}:TPR'], 'prefix': '{pvbase}:TPR',
-               'live': [('{pvbase}:TPR:EVTCNT', None)], 'programs': ['tprcas']},
+               'live': [('{pvbase}:TPR:EVTCNT', None)], 'programs': ['tprcas', 'tprioc']},
     'simdti': {'args': ['-P', '{pvbase}:DTI'], 'prefix': '{pvbase}:DTI',
                'live': [('{pvbase}:DTI:3:TimFrRate', None)], 'programs': ['dticas']},
 }
@@ -329,6 +329,8 @@ def interface(program, args):
         return sorted(pfx + k for k in table)
     if program == 'hsd134PVs':          # its -P is the digitizer's, the parent of the two chips' prefixes
         return hsd134pvs_names(os.path.commonprefix(prefixes).rstrip(':'))
+    if program == 'tprioc':
+        return tprioc_names(prefixes[0])
     if program == 'bldcas':
         return bldcas_names(args)
     if program == 'hpsdbuscas':
@@ -371,6 +373,32 @@ def hsd134pvs_names(prefix, repo=None):
         for pat, names in HSD134_PATTERNS:
             for m in re.finditer(pat, text):
                 out.update(f'{prefix}:{n}' for n in names(m))
+    return sorted(out)
+
+
+def tprioc_names(prefix, repo=None):
+    """The PV names tprioc (psdaq/psdaq/app/tprca.cc, meson.build: executable('tprioc', 'tprca.cc')) makes for
+    `tprioc -n <prefix>`: TprControl's to_name(name, "...") under the prefix, and ChannelControl's under
+    <prefix>:CH<i> for each of TprBase::NCHANNELS channels (psdaq/psdaq/tpr/Module.hh), read from the checkout
+    with comments blanked."""
+    import re
+    from psdaq.sim import coverage
+    repo = repo or coverage.find_repo()
+    src = os.path.join(repo, 'psdaq', 'psdaq')
+    with open(os.path.join(src, 'app', 'meson.build')) as f:
+        files = re.findall(r"'([\w.]+\.cc)'", re.search(r"executable\(\s*'tprioc'\s*,(.*?)include_directories",
+                                                       f.read(), re.S).group(1))
+    with open(os.path.join(src, 'tpr', 'Module.hh')) as f:
+        nchan = int(re.search(r'NCHANNELS\s*=\s*(\d+)', f.read()).group(1))
+    out = set()
+    for fn in files:
+        with open(os.path.join(src, 'app', fn)) as f:
+            text = coverage.strip_cpp_comments(f.read())
+        chan = re.search(r'class\s+ChannelControl\b(.*?)class\s+TprControl\b', text, re.S).group(1)
+        top = text[text.index('class TprControl'):]
+        ext = r'to_name\(\s*name\s*,\s*"(\w+)"\s*\)'
+        out.update(f'{prefix}:{x}' for x in re.findall(ext, top))
+        out.update(f'{prefix}:CH{i}:{x}' for x in re.findall(ext, chan) for i in range(nchan))
     return sorted(out)
 
 

@@ -228,5 +228,11 @@
     "stand_in": "simhsd",
     "interface": "hsd134PVs's PVs over PVA: the 44 names its C++ sources (meson.build hsd134PVs_sources: hsd134PVs.cc, PV134Stats.cc, PVCtrlsBase.cc, PV134Ctrls.cc) connect to under -P <digitizer> for its 2 chips A and B (FWBUILD, FWVERSION, PADDR, PLINK, KEEPROWS it puts; CONFIG, READY, RESET, PGPCONFIG it monitors; MONTIMING ... FEXOOR, PADDR_U it posts), all of which simhsd serves (hsdpvs's ChipServer per chip) and whose monitoring it posts once a second (MONTIMING, MONPGP, MONRAWBUF, MONFEXBUF) as hsd134PVs posts the digitizer's",
     "note": "daq_sim up --pvservers + cycle (R3): simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B on PVA ports of its own (as hsd134PVs -P DAQ:SIM:HSD:1_DA); logs/gui_witness.json 'servers' entry simhsd: hsd134PVs's names read from its sources (gui_witness.hsd134pvs_names) vs served, MONTIMING counters read within the run's L1Accepts"
+  },
+  "prog:tprioc": {
+    "status": "STAND-IN",
+    "stand_in": "simtpr",
+    "interface": "tprioc's PVs over PVA: the 237 names its C++ source (psdaq/psdaq/app/tprca.cc, meson.build executable('tprioc', 'tprca.cc')) makes under -n <prefix> (TprControl's ACCSEL ... EVTCNT, RXERRSCL, VSNERR, FRAMEVSN, TXCLKRATE; ChannelControl's MODE ... RATE for CH0..CH13, TprBase::NCHANNELS 14), all of which simtpr serves (tprcas's table and the 10 names tprioc adds to it), posting once a second what tprioc posts from the TPR (LINKSTATE, FRAMERATE, RXCLKRATE, TXCLKRATE, EVTCNT, each channel's RATE)",
+    "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own (as tprioc -n DAQ:SIM:TPR, xcs.cnf: tprioc -r a -n DAQ:XCS:TPR); logs/gui_witness.json 'servers' entry simtpr: tprioc's names read from its source (gui_witness.tprioc_names) vs served, EVTCNT read within the run's L1Accepts"
   }
 }

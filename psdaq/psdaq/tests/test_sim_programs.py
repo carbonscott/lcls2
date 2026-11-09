@@ -435,6 +435,21 @@ def test_hsd134pvs_interface_comes_from_its_cpp_sources():
     assert set(names) <= set(served)        # simhsd (hsdpvs's ChipServer per chip) serves every one
 
 
+def test_tprioc_interface_comes_from_its_cpp_source():
+    """tprioc's names (tprca.cc): TprControl's under the prefix, ChannelControl's under CH0..CH13 (NCHANNELS 14); simtpr
+    serves every one: tprcas's table and the 10 names tprioc adds to it."""
+    from psdaq.sim import gui_witness, simtpr
+    names = gui_witness.tprioc_names('X:TPR', repo=REPO)
+    assert {'X:TPR:EVTCNT', 'X:TPR:ACCSEL', 'X:TPR:TXCLKRATE', 'X:TPR:CH0:MODE', 'X:TPR:CH13:RATE', 'X:TPR:CH13:POL'} <= set(names)
+    assert 'X:TPR:CH14:MODE' not in names and len([n for n in names if n.startswith('X:TPR:CH0:')]) == 16
+    assert len(names) == 13 + 14 * 16
+    assert gui_witness.interface('tprioc', ['-P', 'X:TPR']) == names
+    tprcas = set(gui_witness.interface('tprcas', ['-P', 'X:TPR']))
+    assert len(set(names) - tprcas) == 10 and set(names) - tprcas == {'X:TPR' + k for k in simtpr.tprioc_extra()}
+    served = {'X:TPR' + k for k in dict(simtpr.tprcas_pvdb(), **simtpr.tprioc_extra())}
+    assert set(names) <= served and tprcas <= served
+
+
 def test_program_servers_interfaces_come_from_their_own_source():
     """bldcas's names from the table its main() builds (2 per service), hpsdbuscas's from its PVAServer."""
     from psdaq.sim import gui_witness
@@ -502,11 +517,13 @@ def test_server_entry_reads_the_interface_and_live_pvs():
     params = {'pvbase': 'X'}
     args = ['-P', 'X:TPR']
     names = gui_witness.interface('tprcas', args)
-    e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02, prepared=(args, {'tprcas': names}, Ctx()))
+    defined = {'tprcas': names, 'tprioc': gui_witness.interface('tprioc', args)}
+    e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02, prepared=(args, defined, Ctx()))
     assert e['pass'] and e['interfaces']['tprcas'] == {'defined': len(names), 'served': len(names), 'missing': []}
+    assert e['interfaces']['tprioc'] == {'defined': 237, 'served': 237, 'missing': []}
     assert e['prefix'] == 'X:TPR' and e['live'] == ['X:TPR:EVTCNT']
     e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02,
-                                 prepared=(args, {'tprcas': names}, Ctx(missing=['X:TPR:CH3:RATE'])))
+                                 prepared=(args, defined, Ctx(missing=['X:TPR:CH3:RATE'])))
     assert not e['pass'] and e['interfaces']['tprcas']['missing'] == ['X:TPR:CH3:RATE']
 
 
