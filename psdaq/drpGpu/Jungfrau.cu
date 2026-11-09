@@ -118,6 +118,11 @@ unsigned Jungfrau::configure(const std::string& config_alias, Xtc& xtc, const vo
     return rc;
   }
 
+  // Drp::Jungfrau::_configure (m_det, above) has already declared each module's Names, at
+  // EventNamesIndex + module.  A second Names at EventNamesIndex made the file unreadable
+  // (psana: 'NamesIter.cc: Found duplicate namesId'), and nothing filled it: the event data
+  // is the reducer's, under its own Names.  So, as in Gpu::AreaDetector, none here.
+#if 0
   Alg alg("raw", 0, 0, 0);
   NamesId namesId(nodeId, EventNamesIndex);
   Names& names = *new(xtc, bufEnd) Names(bufEnd,
@@ -126,6 +131,7 @@ unsigned Jungfrau::configure(const std::string& config_alias, Xtc& xtc, const vo
   RawDef dataDef;
   names.add(xtc, bufEnd, dataDef);
   m_namesLookup[namesId] = NameIndex(names);
+#endif
 
   logging::info("Gpu::Jungfrau configure: xtc size %u", xtc.sizeofPayload());
 
