@@ -1379,9 +1379,9 @@ def _run_counts(work, plat):
     if out['simxpm NumL0Acc'] is not None:
         out[f'simxpm NumL0Acc group {plat}'] = out['simxpm NumL0Acc']
     v = pv_get(f'{PVBASE}:XPM:{XPM}:SIM:LinkL1Acc')
-    try:
-        out['simxpm links'] = json.loads(str(v))
-    except ValueError:
+    try:                                # a p4p string scalar: its value is in .raw
+        out['simxpm links'] = json.loads(v.raw['value'] if hasattr(v, 'raw') else str(v))
+    except (ValueError, TypeError, KeyError):
         out['simxpm links'] = f'unreadable: {v}'
 
     for port in prometheus_targets(work.path('prom')):
@@ -1485,7 +1485,8 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
     each readout group's L1Accept count (simxpm NumL0Acc): groups at different rates differ."""
     from psdaq.sim import xtc2_check
     import glob
-    links = counts.get('simxpm links') or {}
+    links = counts.get('simxpm links')
+    links = links if isinstance(links, dict) else {}
     files = sorted(glob.glob(os.path.join(xtcdir or work.path('data', INSTRUMENT, experiment, 'xtc'),
                                           f'{experiment}-r{run:04d}-s*-c000.xtc2')))
     out, problems = {}, []
