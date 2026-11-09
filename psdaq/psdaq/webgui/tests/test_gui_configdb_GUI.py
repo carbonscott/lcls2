@@ -86,10 +86,11 @@ def check_source(dev):
 
 @pytest.fixture
 def cdb(tmp_path, request):
-    """A seeded stand-in (fresh store) and a server on it; marker args: (gui args, modify delay)."""
+    """A seeded stand-in (fresh store) and a server on it, with the test function's CDB attribute (gui args, modify
+    delay) or (ARGS, 0); an attribute, not an indirect parametrize, keeps the test id (the spec's mapping) plain."""
     if H.sim_daq() is None:
         pytest.skip('needs the simulated DAQ node (WEBGUI_SIM_DAQ)')
-    args, delay = getattr(request, 'param', (ARGS, 0))
+    args, delay = getattr(request.function, 'CDB', (ARGS, 0))
     dev = H.DeviceSim('configdb_server', ['--store', str(tmp_path / 'configdb.json'), '--port', str(PORT), '--seed-gui',
                                           '--delay-modify', str(delay)])
     s = None
@@ -195,7 +196,6 @@ def test_enum_parameter_is_a_combo(page, cdb):
     expect(page.locator(C.sel(G + 'apply_button'))).to_be_disabled()
 
 
-@pytest.mark.parametrize('cdb', [(ARGS_NOPW, 0)], indirect=True)
 def test_writing_without_a_password_warns(page, cdb):
     _, calls = walk()
     want = next(c['args'][0] for c in calls if c['opener'] == 'QMessageBox.exec_' and c['site'][2] == '_warn')
@@ -207,6 +207,9 @@ def test_writing_without_a_password_warns(page, cdb):
     page.locator('#warnOk').click()
     expect(box).to_be_hidden()
     expect(page.locator(C.sel(G + 'write_box'))).to_be_checked()                  # still read-only
+
+
+test_writing_without_a_password_warns.CDB = (ARGS_NOPW, 0)
 
 
 def _edit_and_apply(page):
@@ -246,7 +249,6 @@ def test_apply_confirms_writes_and_rereads(page, cdb):
     page.screenshot(path=str(H.SHOTS / 'configdb_GUI-written.png'))
 
 
-@pytest.mark.parametrize('cdb', [(ARGS, 3)], indirect=True)
 def test_close_while_writing_asks(page, cdb):
     _, calls = walk()
     want = next(c['args'][0] for c in calls if c['opener'] == 'QMessageBox.exec_' and c['site'][2] == 'closeEvent')
@@ -261,3 +263,6 @@ def test_close_while_writing_asks(page, cdb):
     page.locator('#closeOk').click()
     expect(page.locator('#closedNote')).to_be_visible(timeout=T)
     expect(page.locator('#win')).to_be_hidden()
+
+
+test_close_while_writing_asks.CDB = (ARGS, 3)                                    # the write takes 3 s
