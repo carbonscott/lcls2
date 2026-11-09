@@ -1049,7 +1049,7 @@ def cmd_cycle(args):
             break
         if target == 'unallocated':
             select_all(dc)
-        if target == 'configured' and ami:
+        if target == 'starting' and ami:    # AMI learns its sources from the run (BeginRun)
             ok &= ami.add()
     count = None
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
@@ -1197,7 +1197,7 @@ def _psana_counts(work, state, experiment, run, seed=None):
 
 
 class AmiRun:
-    """The AMI side of a cycle (up --ami): at Configure the check's graph goes to AMI's manager,
+    """The AMI side of a cycle (up --ami): at BeginRun the check's graph goes to AMI's manager,
     after Disable its result is fetched, and once the run's file is closed psdaq.sim.ami_check
     compares it with psana2, event by event."""
 
