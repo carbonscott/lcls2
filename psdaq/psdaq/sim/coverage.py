@@ -17,11 +17,22 @@ A row with no entry is UNPROVEN.  An entry for a row the enumeration does not fi
 
 Every RUN and STAND-IN row needs an evidence record: a JSON file in the evidence dir
 ($DAQ_SIM_EVIDENCE, else <repo>/.daq_sim/evidence), written by record_evidence() when a run
-passes.  A record is valid only if its sha is this checkout's HEAD, it was made with no
+passes.  A record counts only if its sha is this checkout's HEAD, it was made with no
 tracked file modified (only the commit's own code counts), it names the run (run_id), and
-every file it lists exists and is non-empty; an .xtc2 file must also be a whole chain of
-xtc2 datagrams that starts with a Configure (xtc2_problem).  Any other record is rejected,
-and the row's line says why.
+every file it lists exists, is non-empty and still holds the bytes the record hashed when it
+was written (sha256 of the first 'bytes' bytes: a log may have grown since, an .xtc2 file
+not); an .xtc2 file must also be a whole chain of xtc2 datagrams that starts with a
+Configure (xtc2_content).  Then the record proves a row only if its files' content says so,
+as the coverage tool reads them (xtc2_content, read_log):
+  det:<drp>:<type>   a listed .xtc2 file whose Configure has a <type> detector (its detType
+                     or detName), with >= 1000 L1Accepts that hold that detector's data, and
+                     whose BeginRun runinfo is the record's run_id; and a listed log whose
+                     '# CMDLINE:' runs <drp> with -D <type> and names that run
+  prog:<program>     a listed log whose '# CMDLINE:' runs <program> (for a STAND-IN row, its
+                     stand_in) and names the run
+A log names the run if it holds the path of a listed .xtc2 file of the run or that file's
+BeginRun time (sec.nsec, as the TEB and simxpm log it).  Any other record is rejected for
+the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
 claimed without valid evidence', where R and S count only rows with valid evidence at HEAD,
@@ -33,6 +44,7 @@ import argparse
 import ast
 import contextlib
 import datetime
+import hashlib
 import io
 import json
 import os
@@ -56,12 +68,29 @@ STATUSES = ('RUN', 'STAND-IN', 'N/A')
 REQUIRED = {'RUN': (), 'STAND-IN': ('interface', 'stand_in'), 'N/A': ('reason',)}
 OPTIONAL = ('note',)
 RECORD_KEYS = ('sha', 'rows', 'kind', 'files')       # an evidence record must have these
-# xtc2 datagram header (xtcdata/xtc/Dgram.hh, Xtc.hh): TimeStamp (8 B), env (4 B), then the
-# root Xtc: src (4 B), damage (2 B), contains (2 B, TypeId), extent (4 B, counts the Xtc header)
+MIN_L1ACCEPTS = 1000                    # L1Accepts with the row's detector data a det row needs
+# xtc2 datagram header (xtcdata/xtc/Dgram.hh, Xtc.hh): TimeStamp (8 B: nanoseconds, seconds),
+# env (4 B), then the root Xtc: src (4 B), damage (2 B), contains (2 B, TypeId), extent (4 B,
+# counts the Xtc header)
 DGRAM = struct.Struct('<QI IHHI')
 TRANSITION_SIZE = 12                    # TimeStamp + env: the bytes before the root Xtc
-XTC_SIZE = 12
-CONFIGURE, L1ACCEPT, UNUSED_11 = 2, 12, 11       # xtcdata/xtc/TransitionId.hh
+XTC = struct.Struct('<IHHI')
+XTC_SIZE = XTC.size
+CONFIGURE, BEGINRUN, L1ACCEPT, UNUSED_11 = 2, 4, 12, 11      # xtcdata/xtc/TransitionId.hh
+PARENT, SHAPESDATA, SHAPES, DATA, NAMES = range(5)           # xtcdata/xtc/TypeId.hh
+SRC_VALUE = 0x0fffffff                  # Src.hh: the NamesId, without the level bits
+# xtcdata/xtc/ShapesData.hh: a Names Xtc holds a NameInfo (numArrays, detType, detName, detId,
+# Alg (name, version), segment) and then one Name (Alg, name, type, rank) per item; a Shapes Xtc
+# one uint32[MaxRank] per array item, in item order
+NAMEINFO = struct.Struct('<I256s256s256s256sII')
+NAME = struct.Struct('<256sI256sII')
+SHAPE = struct.Struct('<5I')
+CHARSTR = 10
+# Name::DataType -> (element size, struct code for a scalar) (xtcdata/xtc/src/ShapesData.cc)
+ELEMENT = [(1, 'B'), (2, 'H'), (4, 'I'), (8, 'Q'), (1, 'b'), (2, 'h'), (4, 'i'), (8, 'q'),
+           (4, 'f'), (8, 'd'), (1, None), (4, 'i'), (4, 'i'), (2, 'e')]
+READ_WHOLE = 1 << 20                    # a datagram up to this size is read in one call
+HASH_CHUNK = 1 << 23
 
 
 class CoverageError(Exception):
@@ -423,22 +452,47 @@ def evidence_dir(path=None, repo=None):
     return path or os.environ.get('DAQ_SIM_EVIDENCE') or os.path.join(repo or find_repo(), EVIDENCE_SUBDIR)
 
 
+def content_hash(path, size):
+    """sha256 (hex) of the first `size` bytes of a file."""
+    h, left = hashlib.sha256(), size
+    with open(path, 'rb') as f:
+        while left > 0:
+            block = f.read(min(HASH_CHUNK, left))
+            if not block:
+                break
+            h.update(block)
+            left -= len(block)
+    return h.hexdigest()
+
+
 def record_evidence(rows, kind, files, run_id=None, counts=None, started=None, ended=None,
-                    job_id=None, host=None, repo=None, evidence=None):
+                    job_id=None, host=None, repo=None, evidence=None, cache=None):
     """Write one evidence record, for a run that passed its own checks, saying it proved
     `rows` at this checkout's HEAD; return its path.  `files` are the run's outputs (xtc2
-    file, logs) and must exist when coverage reads the record."""
+    files, logs); the record keeps each one's size and sha256 as they are now ('content'), so
+    coverage can tell they are still the files the run left, and reads its rows' proof in them.
+    `cache` (a dict) keeps the hashes for a record_verdicts call on the same files."""
     repo = repo or find_repo()
     rows = [rows] if isinstance(rows, str) else list(rows)
+    files = [os.path.abspath(f) for f in files]
+    content = {}
+    for f in files:
+        if os.path.isfile(f):
+            size = os.path.getsize(f)
+            content[f] = {'bytes': size, 'sha256': _cached(cache, ('sha256', f, size),
+                                                           lambda f=f, size=size: content_hash(f, size))}
     sha = head(repo)
     record = {'sha': sha, 'dirty': dirty(repo), 'rows': sorted(set(rows)), 'kind': kind,
               'run_id': run_id, 'job_id': job_id or os.environ.get('SLURM_JOB_ID'),
-              'host': host or socket.gethostname(), 'files': [os.path.abspath(f) for f in files],
+              'host': host or socket.gethostname(), 'files': files, 'content': content,
               'started': started, 'ended': ended or now(), 'counts': counts or {}}
     d = evidence_dir(evidence, repo)
     os.makedirs(d, exist_ok=True)
     rid = f'{time.strftime("%Y%m%dT%H%M%S")}-{re.sub(r"[^A-Za-z0-9_.-]", "_", kind)}-{sha[:9]}-{os.getpid()}'
-    path = os.path.join(d, rid + '.json')
+    path, k = os.path.join(d, rid + '.json'), 1
+    while os.path.exists(path):         # another record of this process in the same second
+        k += 1
+        path = os.path.join(d, f'{rid}-{k}.json')
     with open(path + '.tmp', 'w') as f:
         json.dump(record, f, indent=1, sort_keys=True)
     os.replace(path + '.tmp', path)
@@ -466,49 +520,219 @@ def load_evidence(d):
     return out
 
 
-def xtc2_problem(path):
-    """Why `path` is not an xtc2 file, or None: it must be a chain of whole datagrams, the
-    first a Configure, each a known transition whose root Xtc is a Parent, the last ending
-    exactly at the end of the file (as psana2's reader walks it)."""
+# --- reading an xtc2 file -----------------------------------------------------------------
+
+def _cstr(b):
+    return b.split(b'\0', 1)[0].decode('ascii', 'replace')
+
+
+def _xtcs(read, start, end, where, depth=0):
+    """(offset, NamesId/src, type id, extent) of each Xtc in a Parent's payload [start, end),
+    through nested Parents; read(offset, size) gives the bytes.  Raises ValueError if an Xtc
+    does not fit in its parent."""
+    off = start
+    while off < end:
+        hdr = read(off, XTC_SIZE)
+        if len(hdr) < XTC_SIZE or off + XTC_SIZE > end:
+            raise ValueError(f'{where}: Xtc header at byte {off} cut off')
+        src, _, contains, extent = XTC.unpack(hdr)
+        if extent < XTC_SIZE or off + extent > end:
+            raise ValueError(f'{where}: Xtc at byte {off} has extent {extent}, beyond its parent')
+        if contains & 0xfff == PARENT and depth < 8:
+            yield from _xtcs(read, off + XTC_SIZE, off + extent, where, depth + 1)
+        else:
+            yield off, src & SRC_VALUE, contains & 0xfff, extent
+        off += extent
+
+
+def _names(buf, where):
+    """(detType, detName, segment, alg), [(item, type, rank)] of a Names Xtc (its bytes)."""
+    if len(buf) < XTC_SIZE + NAMEINFO.size:
+        raise ValueError(f'{where}: Names Xtc of {len(buf)} B is shorter than a NameInfo')
+    _, dettype, detname, _, alg, _, segment = NAMEINFO.unpack_from(buf, XTC_SIZE)
+    body = buf[XTC_SIZE + NAMEINFO.size:]
+    body = body[:len(body) // NAME.size * NAME.size]
+    items = [(_cstr(name), typ, rank) for _, _, name, typ, rank in NAME.iter_unpack(body)]
+    return (_cstr(dettype), _cstr(detname), segment, _cstr(alg)), items
+
+
+def _values(read, off, extent, items, where):
+    """{item: value} for the scalar and string items of the ShapesData Xtc at off (arrays of
+    numbers are skipped), laid out as xtcdata's DescData lays them out."""
+    shapes = data = None
+    for o, _, typ, ext in _xtcs(read, off + XTC_SIZE, off + extent, where):
+        if typ == SHAPES:
+            shapes = read(o + XTC_SIZE, ext - XTC_SIZE)
+        elif typ == DATA:
+            data = read(o + XTC_SIZE, ext - XTC_SIZE)
+    if data is None:
+        raise ValueError(f'{where}: ShapesData at byte {off} holds no Data')
+    out, pos, k = {}, 0, 0
+    for name, typ, rank in items:
+        if typ >= len(ELEMENT):
+            raise ValueError(f'{where}: item {name} has unknown type {typ}')
+        size, code = ELEMENT[typ]
+        if rank:
+            if shapes is None or len(shapes) < SHAPE.size * (k + 1):
+                raise ValueError(f'{where}: no shape for item {name}')
+            for dim in SHAPE.unpack_from(shapes, SHAPE.size * k)[:rank]:
+                size *= dim
+            k += 1
+        raw = data[pos:pos + size]
+        if len(raw) < size:
+            raise ValueError(f'{where}: Data ends before item {name}')
+        if typ == CHARSTR:
+            out[name] = _cstr(raw)
+        elif not rank:
+            out[name] = struct.unpack('<' + code, raw)[0]
+        pos += size
+    return out
+
+
+def xtc2_content(path):
+    """Read an xtc2 file as psana2's reader walks it; returns (problem, content).
+
+    problem says why it is not an xtc2 file, or is None: it must be a chain of whole datagrams,
+    the first a Configure, each a known transition whose root Xtc is a Parent, the last ending
+    exactly at the end of the file, and the Xtcs of the Configure, the BeginRun and every
+    L1Accept must fit in their parents.  content (as far as the walk got):
+      types      the detType and detName of every Names in the Configure
+      run        '<experiment>/r<run number, 4 digits>' from the first BeginRun's runinfo
+                 (as DrpBase::runInfoData writes it), or None
+      beginrun   that BeginRun's time, 'sec.nsec' with 9 digits of ns, or None
+      l1accepts  the number of L1Accepts
+      l1_with    {detType or detName: L1Accepts holding a ShapesData of that detector}"""
     size = os.path.getsize(path)
+    c = {'types': set(), 'run': None, 'beginrun': None, 'l1accepts': 0, 'l1_with': {}}
+    dets, items = {}, {}                 # NamesId -> (detType, detName, segment, alg), its items
     off = n = 0
     with open(path, 'rb') as f:
-        while off < size:
-            f.seek(off)
-            hdr = f.read(DGRAM.size)
-            if len(hdr) < DGRAM.size:
-                return f'datagram {n} at byte {off}: header cut off at the end of the file'
-            _, env, _, _, contains, extent = DGRAM.unpack(hdr)
-            service = (env >> 24) & 0xf
-            if n == 0 and service != CONFIGURE:
-                return f'first datagram is transition {service}, not a Configure'
-            if service > L1ACCEPT or service == UNUSED_11:
-                return f'datagram {n} at byte {off}: no transition has id {service}'
-            if contains & 0xfff != 0:
-                return f'datagram {n} at byte {off}: root Xtc is TypeId {contains & 0xfff}, not Parent'
-            if extent < XTC_SIZE or off + TRANSITION_SIZE + extent > size:
-                return f'datagram {n} at byte {off}: extent {extent} does not fit the file ({size} B)'
-            off += TRANSITION_SIZE + extent
-            n += 1
-    return None if n else 'no datagrams'
+        def read_file(p, k):
+            f.seek(p)
+            return f.read(k)
+        try:
+            while off < size:
+                hdr = read_file(off, DGRAM.size)
+                if len(hdr) < DGRAM.size:
+                    return f'datagram {n} at byte {off}: header cut off at the end of the file', c
+                stamp, env, _, _, contains, extent = DGRAM.unpack(hdr)
+                service = (env >> 24) & 0xf
+                if n == 0 and service != CONFIGURE:
+                    return f'first datagram is transition {service}, not a Configure', c
+                if service > L1ACCEPT or service == UNUSED_11:
+                    return f'datagram {n} at byte {off}: no transition has id {service}', c
+                if contains & 0xfff != PARENT:
+                    return f'datagram {n} at byte {off}: root Xtc is TypeId {contains & 0xfff}, not Parent', c
+                if extent < XTC_SIZE or off + TRANSITION_SIZE + extent > size:
+                    return f'datagram {n} at byte {off}: extent {extent} does not fit the file ({size} B)', c
+                where = f'datagram {n} at byte {off}'
+                start, end = off + DGRAM.size, off + TRANSITION_SIZE + extent
+                if service in (CONFIGURE, BEGINRUN, L1ACCEPT):
+                    if service != L1ACCEPT or end - start <= READ_WHOLE:
+                        buf = read_file(start, end - start)
+                        read = lambda p, k, buf=buf, base=start: buf[p - base:p - base + k]
+                    else:
+                        read = read_file
+                    xtcs = _xtcs(read, start, end, where)
+                    if service == CONFIGURE:
+                        for o, src, typ, ext in xtcs:
+                            if typ == NAMES:
+                                dets[src], items[src] = _names(read(o, ext), where)
+                                c['types'].update(dets[src][:2])
+                    elif service == BEGINRUN and c['beginrun'] is None:
+                        c['beginrun'] = f'{stamp >> 32}.{stamp & 0xffffffff:09d}'
+                        for o, src, typ, ext in xtcs:
+                            detname, alg = dets.get(src, ('', '', 0, ''))[1::2]
+                            if typ == SHAPESDATA and detname == alg == 'runinfo':
+                                v = _values(read, o, ext, items[src], where)
+                                if isinstance(v.get('expt'), str) and isinstance(v.get('runnum'), int):
+                                    c['run'] = f'{v["expt"]}/r{v["runnum"]:04d}'
+                    else:
+                        c['l1accepts'] += 1
+                        held = set()
+                        for o, src, typ, ext in xtcs:
+                            if typ == SHAPESDATA and src in dets:
+                                held.update(dets[src][:2])
+                        for t in held:
+                            c['l1_with'][t] = c['l1_with'].get(t, 0) + 1
+                off = end
+                n += 1
+        except ValueError as e:
+            return str(e), c
+    return (None if n else 'no datagrams'), c
 
 
-def file_problem(path):
-    """Why one evidence file does not count, or None."""
+def xtc2_problem(path):
+    """Why `path` is not an xtc2 file, or None (see xtc2_content)."""
+    return xtc2_content(path)[0]
+
+
+# --- what a record proves -----------------------------------------------------------------
+
+CMDLINE = re.compile(r'^# CMDLINE:[ \t]*(.*?)[ \t]*$', re.M)
+
+
+def log_program(text):
+    """(program, its arguments) of a log's first '# CMDLINE:' line (procmgr writes one at the
+    top of each process's log, daq_sim one for each service it starts), or (None, [])."""
+    m = CMDLINE.search(text)
+    return resolve(m.group(1)) if m else (None, [])
+
+
+def names_file(text, path):
+    """True if text holds path, or another spelling of it that resolves to the same file (a
+    work dir given once through a symlinked dir and once not)."""
+    if path in text:
+        return True
+    real = os.path.realpath(path)
+    return any(os.path.realpath(m.group(0)) == real for m in
+               re.finditer(r'[^\s\'"]*' + re.escape(os.path.basename(path)), text))
+
+
+def _cached(cache, key, make):
+    if cache is None:
+        return make()
+    if key not in cache:
+        cache[key] = make()
+    return cache[key]
+
+
+def read_log(path, size, cache=None):
+    """The first `size` bytes of a log, as text: the bytes its record hashed (what was
+    appended after the record was written does not count)."""
+    def make():
+        with open(path, 'rb') as f:
+            return f.read(size).decode('utf-8', 'replace')
+    return _cached(cache, ('log', path, size), make)
+
+
+def file_problem(path, entry=None, cache=None):
+    """(kind, why) if one evidence file does not count, else None.  `entry` is the record's
+    {'bytes', 'sha256'} for it: the file must still hold those bytes at its start (an xtc2
+    file exactly those)."""
     path = str(path)
     if not os.path.isfile(path):
-        return 'missing'
-    if os.path.getsize(path) == 0:
-        return 'empty'
+        return 'missing', 'missing'
+    size = os.path.getsize(path)
+    if size == 0:
+        return 'empty', 'empty'
+    if not (isinstance(entry, dict) and isinstance(entry.get('bytes'), int)
+            and isinstance(entry.get('sha256'), str)):
+        return 'unhashed', 'the record holds no content hash of it'
+    want = entry['bytes']
+    if size < want or (path.endswith('.xtc2') and size != want):
+        return 'changed', f'{size} B now, the record hashed {want} B'
     if path.endswith('.xtc2'):
-        p = xtc2_problem(path)
+        p = _cached(cache, ('xtc2', path), lambda: xtc2_content(path))[0]
         if p:
-            return f'not an xtc2 file ({p})'
+            return 'not xtc2', f'not an xtc2 file ({p})'
+    if _cached(cache, ('sha256', path, want), lambda: content_hash(path, want)) != entry['sha256']:
+        return 'changed', f'its first {want} B are not the bytes the record hashed (sha256 differs)'
     return None
 
 
-def record_problem(rec, sha):
-    """Why a record does not prove its rows at `sha`, or None if it does."""
+def record_problem(rec, sha, cache=None):
+    """Why a record proves nothing at `sha`, or None if its rows still need row_problem."""
     if rec['sha'] != sha:
         return f'recorded at {str(rec["sha"])[:9]}, not at HEAD {sha[:9]}'
     if rec.get('dirty') is not False:
@@ -517,13 +741,83 @@ def record_problem(rec, sha):
     if not str(rec.get('run_id') or '').strip():
         return 'names no run (run_id)'
     files = rec['files']
-    if not isinstance(files, list) or not files:
+    if not isinstance(files, list) or not files or not all(isinstance(f, str) for f in files):
         return 'lists no files'
-    bad = [(f, p) for f, p in ((f, file_problem(f)) for f in files) if p]
+    content = rec.get('content')
+    if not isinstance(content, dict):
+        return 'holds no content hashes of its files (content), so they cannot be tied to the run'
+    bad = [(f, p) for f, p in ((f, file_problem(f, content.get(f), cache)) for f in files) if p]
     if bad:
-        kinds = sorted({p.split(' ')[0] for f, p in bad})
-        return f'{len(bad)} of {len(files)} files {"/".join(kinds)}, e.g. {bad[0][0]}: {bad[0][1]}'
+        kinds = '/'.join(sorted({kind for _, (kind, _) in bad}))
+        return f'{len(bad)} of {len(files)} files {kinds}, e.g. {bad[0][0]}: {bad[0][1][1]}'
     return None
+
+
+def row_problem(rid, entry, rec, cache=None):
+    """Why a record that passes record_problem does not prove row `rid` (status `entry`), or
+    None: the content of its files must show the row ran in the record's run (module doc)."""
+    run_id = str(rec['run_id'])
+    runs = {f: _cached(cache, ('xtc2', f), lambda f=f: xtc2_content(f))[1]
+            for f in rec['files'] if f.endswith('.xtc2')}
+    logs = [(log_program(text), text) for text in
+            (read_log(f, rec['content'][f]['bytes'], cache) for f in rec['files']
+             if not f.endswith('.xtc2'))]
+
+    def names_run(text, paths):
+        return any(names_file(text, p) or (runs[p]['beginrun'] and runs[p]['beginrun'] in text)
+                   for p in paths)
+
+    if rid.startswith('det:'):
+        exe, typ = rid.split(':', 2)[1:]
+        if not runs:
+            return 'lists no xtc2 file'
+        has = [f for f, c in runs.items() if typ in c['types']]
+        if not has:
+            seen = sorted(set().union(*(c['types'] for c in runs.values())) - {'runinfo', 'chunkinfo'})
+            return (f'no listed xtc2 file has a detector of type {typ} in its Configure '
+                    f'(they have: {", ".join(seen) or "no detector"})')
+        why = []
+        for f in has:
+            c, n = runs[f], runs[f]['l1_with'].get(typ, 0)
+            if c['run'] != run_id:
+                why.append(f'{f}: its BeginRun is run {c["run"]}, the record says {run_id}' if c['run']
+                           else f'{f}: no BeginRun with the run\'s runinfo')
+            elif n < MIN_L1ACCEPTS:
+                why.append(f'{f}: {n} of its {c["l1accepts"]} L1Accepts hold {typ} data, '
+                           f'fewer than {MIN_L1ACCEPTS}')
+            elif not any(prog == exe and typ in detector_types(args) and names_run(text, [f])
+                         for (prog, args), text in logs):
+                why.append(f'no listed log runs {exe} -D {typ} and names the run of {f} '
+                           f'(its path or BeginRun time {c["beginrun"]})')
+            else:
+                return None
+        return why[0]
+    prog = entry['stand_in'] if entry.get('status') == 'STAND-IN' else rid.split(':', 1)[1]
+    mine = [f for f, c in runs.items() if c['run'] == run_id]
+    if not mine:
+        return (f'lists no xtc2 file of run {run_id} (by its BeginRun runinfo) to tie the log '
+                f'of {prog} to')
+    ran = [text for (name, _), text in logs if name == prog]
+    if not ran:
+        return f'lists no log of {prog} (a log whose "# CMDLINE:" runs {prog})'
+    if not any(names_run(text, mine) for text in ran):
+        return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} nor its '
+                f'BeginRun time {runs[mine[0]]["beginrun"]}')
+    return None
+
+
+def record_verdicts(path, repo=None, status_path=None, cache=None):
+    """{row: why the record at `path` does not prove it, or None}, as check() decides at HEAD;
+    for a runner to report right after it writes a record."""
+    repo = repo or find_repo()
+    with open(path) as f:
+        rec = json.load(f)
+    with open(status_path or os.path.join(repo, STATUS_FILE)) as f:
+        status = json.load(f)
+    cache = {} if cache is None else cache
+    p = record_problem(rec, head(repo), cache)
+    return {rid: p or row_problem(rid, status.get(rid) or {'status': 'RUN'}, rec, cache)
+            for rid in rec['rows']}
 
 
 # --- the check ----------------------------------------------------------------------------
@@ -545,7 +839,7 @@ def check(repo, status_path=None, evidence_path=None):
         if unknown and rec['sha'] == sha:
             problems.append(f'evidence {rid}: names rows the enumeration does not find: {" ".join(unknown)}')
 
-    out = []
+    out, whole, cache = [], {}, {}     # whole: record id -> record_problem; cache: files read
     for rid, where in rows.items():
         entry = status.get(rid)
         row = {'row': rid, 'where': where, 'status': entry['status'] if entry else 'UNPROVEN',
@@ -557,7 +851,9 @@ def check(repo, status_path=None, evidence_path=None):
             row['ok'], row['text'] = True, entry['reason']
         else:
             for eid, rec in mine:
-                p = record_problem(rec, sha)
+                if eid not in whole:
+                    whole[eid] = record_problem(rec, sha, cache)
+                p = whole[eid] or row_problem(rid, entry, rec, cache)
                 if p:
                     row['rejected'].append((eid, p))
                 else:

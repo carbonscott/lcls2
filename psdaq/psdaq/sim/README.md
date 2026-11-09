@@ -18,7 +18,7 @@ DRP, local stand-ins for the config DB and the run DB, and isolation checks.
 | `xtc2_check.py` | psana2 read-back of a run's xtc2 file with a per-event payload check. |
 | `ami_check.py` | `daq_sim up --ami`: gives AMI a graph that keeps each event's timestamp, seq and one fakecam pixel, fetches it from AMI's manager and checks it against psana2 event by event. |
 | `sysdrp_check.py` | psana2 read-back of every stream of a run with drp_pva (`--pva`), epicsArch (`--epics`) or drp_udpencoder (`--udp`), each event checked against what its simulated source sent. |
-| `coverage.py`, `coverage_status.json` | `daq_sim coverage`: enumerates every detector type a DRP factory registers and every program a procmgr config under `psdaq/psdaq/cnf` starts, and checks that each is RUN, STAND-IN or N/A, with evidence recorded at HEAD. `daq_sim matrix` runs it (RUNBOOK §3d). |
+| `coverage.py`, `coverage_status.json` | `daq_sim coverage`: enumerates every detector type a DRP factory registers and every program a procmgr config under `psdaq/psdaq/cnf` starts, and checks that each is RUN, STAND-IN or N/A, with evidence recorded at HEAD whose files show the row ran: the xtc2 file of the record's run has the type's detector in its Configure and its data in at least 1000 L1Accepts, and the program's log names the run. `daq_sim matrix` runs it (RUNBOOK §3d). |
 
 The DRP side is `psdaq/drp/MemPoolSim.{hh,cc}`: started with `-d sim://<host>:<port>`, the DRP takes its DMA buffers from simxpm's frame stream instead of a PGP card. The fakecam payload of each L1Accept carries the pulse ID, simxpm's L1 sequence number and `sim_seed` read from the config DB at Configure, so a reader can check every event.
 
