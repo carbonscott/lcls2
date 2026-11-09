@@ -59,6 +59,10 @@
     "status": "RUN",
     "note": "daq_sim up --det epixUHR + cycle: epixUHR_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 4 ASICs checked through epixuhr raw()'s descrambler"
   },
+  "det:drp:epixuhr3x2": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixuhr3x2 + cycle: epixuhr3x2_config.py against rogue_dev (the C1100 card, its AXI-Lite proxy and CMS mailbox, the front-end board over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 336 x 576 panel checked through epixuhr3x2 raw()"
+  },
   "det:drp:hsd": {
     "status": "RUN",
     "note": "daq_sim up --det hsd + cycle: hsd_config.py against rogue_dev (l2si_drp DrpPgpIlvRoot) and, over PVA, simhsdioc (hsdpvs's PVs and what hsd134PVs does with them); every raw sample and fex peak checked through hsd_raw_3_0_0"
