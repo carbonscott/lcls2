@@ -543,8 +543,57 @@ A record proves a row only if all of these hold, and the row's line names the fi
     the size and with the words lclsBldServer sends for its `-b` type, the pid in them the one
     its procmgr log gives (`its packets carry pid ..., but its log of lclsBldServer gives pid
     ...`).
+  - the HPS BLD chain (R9: a stand-in for the HPS crate): lab3-bld.cnf starts `bldcas -P DAQ:LAB2
+    <services>` (the BLD registry: each service's `:ADDR` and `:PORT`), `hpsBldServer -i eno2 -n
+    DAQ:LAB2:HPSEX -p 0x1e0 -a 10.0.3.105` and `hpsBldCopy -i eno2 -I DAQ:LAB2:HPSEX -O
+    DAQ:LAB2:<cp> -o 0`. `up --hps` runs the three under procmgr as `bldcas -P DAQ:SIM -A
+    239.254.34.0 --port 31402+10<p> HPSEX HPSCPA`, `hpsBldServer -i lo -n DAQ:SIM:HPSEX -p 0x1e0
+    -a 127.0.0.1 -r 31400+10<p> -d 31401+10<p>` and `hpsBldCopy -i lo -I DAQ:SIM:HPSEX -O
+    DAQ:SIM:HPSCPA -o 0`: on the loopback interface, groups off the production network, and
+    options this branch adds, each with the old value as its default (bldcas `--port`, 11001;
+    hpsBldServer `-r`, the crate's register port, 8193, and `-d`, its diagnostic-bus port,
+    8198). bldcas and hpsBldServer's own PVA server share a search port of their own (31404+10<p>;
+    pvxs answers a search on a shared port from every server), which every client of the chain
+    searches. hpsBldServer's crate is `psdaq.sim.simhps`, a service `up` starts: pyrogue's own
+    RSSI server (`UdpRssiPack(server=True)`, `rogue.protocols.udp.Server` on every interface of
+    the node, as R9 allows; the program addresses it by 127.0.0.1) with an SRPv3 responder on
+    tDest 0 over a `rogue_dev` register store (seeds `seeds/hps.json` by register path, each
+    write logged by path to `logs/simhps-writes.jsonl`; the paths come from HpsRoot's own tree,
+    built in the stand-in on the same store), and a diagnostic bus on 127.0.0.1: once the
+    program has sent its 4 bytes and while `BldControl.Enable` is 1 with a `channelMask` (what
+    PVCtrls.update writes), it sends one BLD packet per pulse of fixed rate 4, 4 events 91
+    pulses apart, each at the pulse ID simxpm gives its time. Running it at all needed
+    production fixes, each for hardware too (base `b6f370d9f` against this branch, no simulated
+    device, `work/tail3/basehead*.log`): pyhpsbld imported `psdaq.pyxpm.surf` and
+    `psdaq.pyxpm.LclsTimingCore`, copies the tree dropped in d2d58210a and 04ac138c5, so at base
+    `hpsBldServer` aborts at `hps_init`'s import in any env (`ModuleNotFoundError: No module
+    named 'psdaq.pyxpm.surf'`); it now imports them from the cameralink-gateway submodules as
+    pyxpm has since 04ac138c5; `hps_init` passed `serverPort`, which pyrogue 6's `Root` no longer
+    takes; and that LclsTimingCore names the top 2 bits of the old 19-bit `DestSel` `DestType`,
+    so `destSel()` writes the same register bits through either. hpsBldCopy dropped every packet
+    of hpsBldServer (`id changed 0x8000 -> 0x0`): c41b8a44b made `HpsEventIterator` leave the
+    packets' ID 0; it is the channel mask again (PAYLOAD's type ID, as hpsBldCopy compares).
+    Not fixed, as they are: each event's payload after its `valid` word is its severity word,
+    not its channel data (`HpsEvent::sevr` sits between `channels` and the data since
+    c41b8a44b, and `publish` copies from `&ev.channels`), and `Pds::Bld::Server` writes the
+    pulse ID before the time stamp, the other way round from drp_bld's LCLS-II layout
+    (`BldDetector.hh`: `TimestampPos 0`, `PulseIdPos 8`), so hpsBldCopy's Client takes the time
+    stamp for the pulse ID. While the run is Running the cycle (`gui_witness.hps_receive`)
+    joins each program's output group on 127.0.0.1 (it refuses 239.255.0.0/16), keeps every
+    packet with its source and the pids holding that source's socket (`udp_owner`,
+    `/proc/net/udp`), and gets every PV name hpsBldServer's source defines under its `-n`
+    (`hpsbld_names`: PVCtrls.run on a provider that keeps names); the `programs` entries
+    (`"kind": "hps"`) hold them. Coverage (`coverage.hps_problem`) needs 10 or more packets on
+    the group and port a bldcas of the record serves for the program's output service (its
+    `-n`, or hpsBldCopy's `-O`), each from a socket held by the pid its procmgr log gives,
+    every event's `valid` word the FIELDMASK hpsBldServer served; for hpsBldServer each
+    packet's first event timed within the run's L1Accepts at the pulse ID simxpm gives that
+    time, its ID the mask, its events within 4095 pulses and after the packet before, and
+    its four PVs served with PAYLOAD's type ID the mask; for hpsBldCopy most of its events
+    carrying the time of an hpsBldServer event (plus the pulse delta, as its Client gives it),
+    within the run. As everywhere (COV-LIMIT), a witness rewritten and re-hashed would pass.
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R3b, R4,
-  R5, R8, the BLD server) and checks the row's line says why.
+  R5, R8, the BLD server, the HPS chain) and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
@@ -764,6 +813,7 @@ its evidence record lists their logs.
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
 | `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `simtpr -P DAQ:SIM:TPR` and `simdti -P DAQ:SIM:DTI`, each on PVA ports of its own (31300 + 10 p + 0..5: simxpm stays the only server on the node's search port); under procmgr the tree's own PV servers `bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX` and `hpsdbuscas -P DAQ:SIM:HPSCPA` (lab3-bld.cnf), on ports 31300 + 10 p + 6..9 (it serves the address, it sends nothing); with `--gui` also the GUIs on them (R4): `hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `tprca DAQ:SIM:TPR` and `python -m psdaq.cas.dtica DAQ:SIM:DTI` (no `dtica` command; lab3-cam.cnf runs `launch_py <bins>/dtica.py`), offscreen, each with `EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_BROADCAST_PORT=<its stand-in's search port>`, and `pvatable --bases DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B --fields MONTIMING.trigcntsum ... MONRAWBUF.freeevt` (test-hsd.cnf) on simhsd the same way and `xpmpva DAQ:SIM:XPM:0` on simxpm | the stand-ins of `hsdpvs`, `hsd134PVs`, `tprcas`, `tprioc` and `dticas` (R3); bldcas and hpsdbuscas themselves (R3b) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the tables `tprcas.main()` and `dticas.main()` build) and reads its monitoring counters (`MONTIMING`, `EVTCNT`, `3:TimFrRate`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs`, `prog:hsd134PVs` and `prog:tprioc` (their names read from their C++ sources) and `prog:tprcas` from (no config starts `dticas`, so it has no row). From bldcas and hpsdbuscas it gets every name their source defines and puts one PV to a new value and back, reading it back (R3b). It walks hsdpva, pvatable, tprca, dtica and xpmpva offscreen once more, each searching only its stand-in (xpmpva: simxpm's own ports), and keeps each PV-bound widget's texts (one read per widget): their `programs` entries name the stand-in (R4) |
 | `--tpr` | `tprtrig`: `tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <p>` (srcf-rix.cnf, flags `sp`); `enc_trig`: `tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <p> -u enc_trig` (rix.py's `mono_enc_trig`, a `tpr` level process of the partition); `lclsbldsvc`: `lclsBldServer -i lo -r 4 -b ebeam -a 239.254.33.0 -p <31240 + p>` (lab3-bld.cnf:52 with the `-b` its source requires, on loopback, off the production network), each with `PSDAQ_SIM_TPR=<workdir>/tpr/<id>`; and the service `tprframes` (`python -m psdaq.sim.tprframes <workdir>/tpr/lclsbldsvc/tpra`) | a simulated TPR card each: `tpr::Client` maps `<workdir>/tpr/<id>/tpra`, a file, instead of `/dev/tpra` (§3d, R8); tprframes delivers the timing frames of lclsBldServer's card at the fixed rate its channel selects | while the run is Running, `psdaq.sim.gui_witness` reads each card's channel and trigger registers once a second and receives lclsBldServer's packets on 239.254.33.0 (loopback); coverage checks the registers against what each program's command line programs, and lclsBldServer's packets against its command line and the run |
+| `--hps` | `hpsbldcas`: `bldcas -P DAQ:SIM -A 239.254.34.0 --port <31402 + 10 p> HPSEX HPSCPA`; `hpsbldsvc`: `hpsBldServer -i lo -n DAQ:SIM:HPSEX -p 0x1e0 -a 127.0.0.1 -r <31400 + 10 p> -d <31401 + 10 p>`; `hpsbldcpa`: `hpsBldCopy -i lo -I DAQ:SIM:HPSEX -O DAQ:SIM:HPSCPA -o 0` (lab3-bld.cnf, on loopback, off the production network); and the service `simhps` | hpsBldServer's crate, `psdaq.sim.simhps` (§3d, R9): an RSSI/SRPv3 register server and a diagnostic bus timed by simxpm's pulses | while the run is Running, `psdaq.sim.gui_witness` receives both programs' packets on 239.254.34.0 and .1 (loopback) with the pids that sent them and reads hpsBldServer's PVs; coverage checks them against the programs' command lines and the run |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; `daqstat -i 1 <WD>/slurm/daqstat.py` (mfx.py: `daqstat -i 5`), offscreen, with `<WD>/slurm/bin` (simslurm's shims for squeue, sacct, scontrol, sinfo, sbatch, scancel) first on its PATH and `HOME=<WD>/slurm/home`; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime`; and the service `simslurm`, a Slurm job for each process of `daq_sim.cnf` (`<WD>/slurm/daqstat.py`, daqmgr's config of them; state in `<WD>/slurm/state.json`) | control's status messages; simxpm's PVs; simslurm's jobs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing. daqstat's walk has its Slurm commands answered by simslurm and records each refresh of its table, while the cycle reads squeue from simslurm itself every 0.5 s (R5, §3d) |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
