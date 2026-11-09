@@ -168,6 +168,13 @@ GPU_SIM_TYPES = {
     'epixuhrsim': {'kwargs': 'reducer=NoOpReducer,sim_dma_count=64,dmaBufSize=458752,'
                              'dmaBufCount=64,sim_ref={work}/epixuhrsim-ref.bin',
                    'ref': 'epixuhrsim-ref.bin'},
+    # Gpu::Jungfrau configures through Drp::Jungfrau, so its module is simsls as for drp (and
+    # the same config DB entry); its frame, the module's 128 UDP packets as MemPoolSim batches
+    # them (1055848 B), and the 32 B DMA frame fit dmaBufSize 0x120000
+    'jungfrau':   {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x110000,sim_dma_count=64,'
+                             'dmaBufSize=1179648,dmaBufCount=64,segNums=0,'
+                             'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
+                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets']},
 }
 
 

@@ -43,6 +43,21 @@ def test_gpu_calibrations_are_the_types_own():
     assert list(cam) == [0, 1, 2, 0xfff, 0x1000, 0x3fff]
     assert xtc2_check.GPU_TYPES['epixuhremu'][0] == (336, 576)
     assert xtc2_check.GPU_TYPES['epixuhrsim'][1] is None      # checked from its own file
+    shape, bits, jf = xtc2_check.GPU_FRAME_TYPES['jungfrau']  # its module's frames (simsls)
+    assert (shape, bits) == ((512, 1024), 16)
+    assert jf(u).dtype == np.float32 and list(jf(u)) == [0, 1, 2, 0xfff, 0x1000, 0x3fff]
+
+
+def test_jungfrau_drp_gpu_kwargs_point_at_simsls():
+    """drp_gpu -D jungfrau gets the drp's module kwargs (Drp::Jungfrau) and a DMA buffer that
+    holds the module's frame as MemPoolSim batches it plus the 32 B DMA frame."""
+    P = daq_sim.ports(5)
+    t = daq_sim.GPU_SIM_TYPES['jungfrau']
+    kw = dict(x.split('=', 1) for x in t['kwargs'].format(length=0, seed=0, work='', **P).split(','))
+    assert kw['slsHosts'] == '127.0.0.1:%d' % P['sls'] and kw['sim_udp_port'] == str(P['sls_data'])
+    frame = 8 + 40 + 40 + (8 + 128 * (48 + 8192 + 8)) + 8         # MemPoolSim's jungfrau buffer
+    assert frame + 4 <= int(kw['sim_dma_size'], 0) and int(kw['sim_dma_size'], 0) + 32 <= int(kw['dmaBufSize'])
+    assert t['sls'] and t['sets'] == daq_sim.SIM_TYPES['jungfrau']['sets']
 
 
 def test_sim_ref_file_reads_back(tmp_path):

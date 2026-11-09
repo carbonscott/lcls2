@@ -31,6 +31,9 @@ the TDet words above, read as the type's uint16 pixels; the check computes, for 
 the words (pulseId, seq n, seed, the w[k] pattern) and the calibration the type's own GPU code
 applies to each pixel (GPU_TYPES), and compares every pixel.  The event's pulseId is the one,
 of the few ticks simxpm may add to its timestamp's, whose words match; it must rise.
+jungfrau's payload is the frame its module (psdaq.sim.simsls) sent, as for drp: event n holds
+frame n, pixel i = pattern(seed, n, i, 16), which Gpu::Jungfrau calibrates as (the low 14 bits -
+pedestal of the range in bits 14-15) x gain, with pedestals 0 and gains 1 (GPU_FRAME_TYPES).
 epixuhrsim makes its own frames on the GPU (SimDetector): --ref names the file it wrote at
 BeginRun (its 16 raw frames and calibration constants), and the n-th event must hold frame
 (n - 1) % 16 calibrated with them, every pixel; --self-test-offset K expects frame n - 1 + K.
@@ -59,6 +62,12 @@ GPU_TYPES = {
     'epixuhremu': ((336, 576), lambda u: ((u >> 1) & 0x7ff).astype('float32')),
     # Gpu::EpixUHRsim: its own frames (--ref), gain in bit 0 and an 11-bit value in bits 1-11
     'epixuhrsim': ((336, 576), None),
+}
+# GPU DRP types whose payload is the frame a module stand-in sent (not TDet words): {type:
+# (image shape, bits of pattern(seed, n, i, bits), calibration of a uint16 pixel)}
+GPU_FRAME_TYPES = {
+    # Gpu::Jungfrau: the range in bits 14-15, the value in bits 0-13 (Jungfrau.hh)
+    'jungfrau': ((512, 1024), 16, lambda u: (u & 0x3fff).astype('float32')),
 }
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
@@ -525,6 +534,8 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
           ref=None):
     kind = det_name.rsplit('_', 1)[0]
     if drp == 'drp_gpu':
+        if kind in GPU_FRAME_TYPES:
+            return check_gpu_frames(path, det_name, kind, seed, expect, max_report, offset)
         if kind not in GPU_TYPES:
             raise SystemExit(f'xtc2_check: no GPU DRP check for {kind!r}; one of {sorted(GPU_TYPES)}')
         if GPU_TYPES[kind][1] is None:
@@ -665,6 +676,59 @@ def check_gpu(path, det_name, kind, seed=None, expect=None, max_report=5, offset
     r['seq_gap_free'] = r['pattern_ok'] == n
     r['seeds'] = {seed: r['seed_ok']}
     r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n and r['pulseid_ok'] == n
+                     and (expect is None or n == expect))
+    if expect is not None and n != expect:
+        r['problems'].append(f'{n} events, expected {expect}')
+    return r
+
+
+def check_gpu_frames(path, det_name, kind, seed=None, expect=None, max_report=5, offset=0):
+    """The per-event check of a GPU DRP type in GPU_FRAME_TYPES: event n's pixels are frame n
+    of its module stand-in, calibrated as the type's GPU code does; seed is required."""
+    os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
+    import numpy as np
+    from psana import DataSource
+    from psdaq.sim import pattern
+    shape, bits, calib = GPU_FRAME_TYPES[kind]
+    seed = 0x1234 if seed is None else seed
+    r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
+         'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
+         'first_seq': None, 'last_seq': None, 'seq_gap_free': None, 'problems': [],
+         'check': (f'every pixel of {det_name}.noOp.calib (drp_gpu: calibrated on the GPU, '
+                   f'NoOpReducer) vs frame n of the module stand-in, pattern(seed, n, i, {bits}), '
+                   f'calibrated' + (f', self-test offset {offset}' if offset else ''))}
+    ds = DataSource(files=[path], skip_calib_load='all')
+    for run in ds.runs():
+        r['run'] = run.runnum
+        r['experiment'] = run.expt
+        det = run.Detector(det_name)
+        for evt in run.events():
+            r['events'] += 1
+            n = r['events']
+            got = det.noOp.calib(evt)
+            if got is None:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: no {det_name} data')
+                continue
+            r['with_data'] += 1
+            r['shape'] = list(got.shape)
+            want = calib(pattern.image(seed, n, shape, bits, offset).astype(np.uint16))
+            problems = [f'shape {got.shape}, not {shape}'] if got.shape != shape else []
+            flat = np.ascontiguousarray(got).reshape(-1)
+            bad = int((flat != want.reshape(-1)).sum()) if flat.size == want.size else flat.size
+            if bad:
+                problems.append(f'{bad} of {want.size} pixels differ from frame {n}')
+            if problems:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: ' + '; '.join(problems))
+            else:
+                r['pattern_ok'] += 1
+                r['seed_ok'] += 1
+    n = r['events']
+    r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
+    r['seq_gap_free'] = r['pattern_ok'] == n
+    r['seeds'] = {seed: r['seed_ok']}
+    r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
                      and (expect is None or n == expect))
     if expect is not None and n != expect:
         r['problems'].append(f'{n} events, expected {expect}')
