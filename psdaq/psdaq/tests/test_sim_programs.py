@@ -33,7 +33,7 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:drp_udpencoder', 'prog:sim_udpencoder']
+            'prog:control_gui', 'prog:groupca', 'prog:drp_udpencoder', 'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
     assert [r for r in want if r not in enumerated] == []
@@ -58,7 +58,7 @@ def test_extra_entries_stay_on_loopback(tmp_path):
 def test_procs_and_activedet(tmp_path):
     state = {'segments': 1, 'meb': True, 'ami': True, 'pva': True, 'epics': True, 'gui': True, 'udp': True}
     procs = daq_sim.procs(state)
-    for p in ('meb0', 'shmc0', 'ami-manager', 'ami-worker_0', 'pvcam_0', 'epics_0', 'control_gui', 'encoder_0', 'simenc'):
+    for p in ('meb0', 'shmc0', 'ami-manager', 'ami-worker_0', 'pvcam_0', 'epics_0', 'control_gui', 'groupca', 'encoder_0', 'simenc'):
         assert p in procs
     path = str(tmp_path / 'activedet.json')
     daq_sim.write_activedet(path, 5, 1, True, ('pvcam_0', 'epics_0'))

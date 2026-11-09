@@ -376,12 +376,15 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
  {{ id:'simenc', flags:'s',
    cmd:'sim_udpencoder -T sim://127.0.0.1:{frames} -p {platform} -a 127.0.0.1 -d {udpport} -v' }},
 '''
-# --gui: the PyQt control GUI as the configs start it (asc.cnf: control_gui -H localhost -p <p>),
-# offscreen, on the config DB stand-in; at its default log level (DEBUG) it logs every status
-# message control publishes, the run's fileReport (the xtc2 path) included.
-GUI_PROCS = ('control_gui',)
+# --gui: PyQt GUIs as the configs start them, offscreen: control_gui (asc.cnf: control_gui -H
+# localhost -p <p>) on the config DB stand-in, which at its default log level (DEBUG) logs every
+# status message control publishes, the run's fileReport (the xtc2 path) included; and groupca
+# (asc.cnf: groupca DAQ:ASC 0 0) on simxpm's PVs.
+GUI_PROCS = ('control_gui', 'groupca')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
+ {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'groupca {pvbase} {xpm} {platform}' }},
 '''
 EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its config file format)
 *sim_count
@@ -413,7 +416,8 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     if udp:
         out += UDP.format(udpport=P['udp'], platform=platform, **common)
     if gui:
-        out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/')
+        out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
+                          pvbase=PVBASE, xpm=XPM, platform=platform)
     if ami_bin:
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
@@ -1330,7 +1334,7 @@ def main(argv=None):
                         help='also run drp_udpencoder (encoder_0) on the encoder frames sim_udpencoder sends on '
                              'loopback UDP, paced by simxpm (sim_udpencoder -T sim://)')
     upopts.add_argument('--gui', action='store_true',
-                        help='also run the PyQt control GUI (control_gui), offscreen, as the configs start it')
+                        help='also run the PyQt GUIs control_gui and groupca, offscreen, as the configs start them')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
