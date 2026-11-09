@@ -564,7 +564,9 @@ A record proves a row only if all of these hold, and the row's line names the fi
     PVCtrls.update writes), it sends one BLD packet per pulse of fixed rate 4, 4 events 91
     pulses apart, each at the pulse ID simxpm gives its time. Running it at all needed
     production fixes, each for hardware too (base `b6f370d9f` against this branch, no simulated
-    device, `work/tail3/basehead*.log`): pyhpsbld imported `psdaq.pyxpm.surf` and
+    device: lab3-bld.cnf's command with `-i lo`, in a network namespace with no route, fails to
+    connect to 10.0.3.105:8198 at both; on loopback, `-a 127.0.0.1`, both connect to port 8198,
+    then base aborts and this branch sends RSSI to port 8193): pyhpsbld imported `psdaq.pyxpm.surf` and
     `psdaq.pyxpm.LclsTimingCore`, copies the tree dropped in d2d58210a and 04ac138c5, so at base
     `hpsBldServer` aborts at `hps_init`'s import in any env (`ModuleNotFoundError: No module
     named 'psdaq.pyxpm.surf'`); it now imports them from the cameralink-gateway submodules as
@@ -612,8 +614,8 @@ A record proves a row only if all of these hold, and the row's line names the fi
     1.0.1's `Top.start` raises unless `AxiVersion.FpgaVersion` is its `FwVersionLock`); rogue_dev
     now writes its replies as a bytearray (rogue 5.9.3 takes no bytes there) and replaces Xilinx's
     Xvc only where rogue has one (5.9.3 has none). wave8pvs itself needed production fixes, each for
-    hardware too (base `b6f370d9f` against this branch, no simulated device,
-    `work/tail3/basehead-w8*.log`): it called `Top.start(pollEn=..., initRead=..., timeout=...)`,
+    hardware too (base `b6f370d9f` against this branch, no simulated device; `wave8pvs --l 0` in the
+    DAQ env fails importing `rogue.hardware.pgp` at both): it called `Top.start(pollEn=..., initRead=..., timeout=...)`,
     which no rogue since 5 takes (a Root takes them when it is made; `start()` takes nothing), so
     with any site rogue it could not start once its board answered; and it passed `dataCapture`,
     which wave8 1.0.1's `Top` does not take (`TypeError` at `wave8pvs.py:66` at base with 1.0.1;
