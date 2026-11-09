@@ -28,7 +28,8 @@ what was last written (0 if never written), except:
           A value {"count_hz": f} makes the register a free-running counter
           that advances f per second from the moment its root starts (a
           clock-cycle counter the script turns into a frequency, such as
-          TimingFrameRx.TxClkCount for TDetTiming.refClockRate()).
+          TimingFrameRx.TxClkCount for TDetTiming.refClockRate()); a value
+          {"string": text} is a string register's text (AxiVersion.ImageName).
   fault   PSDAQ_SIM_ROGUE_FAULT='<register path>[=<value>]': that register
           reads back <value> (default all ones) whatever is written, so
           rogue's write-verify, or the config script's own check, fails
@@ -48,6 +49,13 @@ Two more parts of the device that some config scripts reach without rogue:
           does for a PV no IOC serves, and is listed in missing_pvs.  No CA
           traffic leaves the process.  A fault 'pv:<name>[=<value>]' makes that
           PV read back <value> (default 0).
+
+  UART    a camera behind a camera link FEB (cameralink_gateway: Opal, Piranha4) answers
+          its serial commands, one character per 32-bit word on the lane's VC2 stream (surf
+          ClinkSerialTx/ClinkSerialRx): the seed file's "_uart" {"dests": [stream dests],
+          "replies": {command: reply}, "default": reply} is the camera's answer to each command
+          (a reply ends with CR where the camera's does; "default", ACK by default, answers the
+          rest).  The commands are recorded with the register writes.
 
 Every register write is recorded (WRITES, and one JSON line per write to
 $PSDAQ_SIM_ROGUE_LOG if set) with the register paths it covers.
@@ -262,11 +270,12 @@ class SimStreamDma(ris.Master, ris.Slave):
     synchronous reply could deadlock).  Other frames are dropped and counted.
     """
 
-    def __init__(self, path, dest, ssi=True):
+    def __init__(self, path, dest, ssi=True, uart=None):
         ris.Master.__init__(self)
         ris.Slave.__init__(self)
         self.dest = dest
         self.store = Store('AxiStreamDma(%s,0x%x)' % (path, dest))
+        self.uart = uart                # a SimUart answers this stream instead of SRPv3
         self.dropped = 0
         self._q = queue.Queue()
         self._thread = threading.Thread(target=self._run, daemon=True,
@@ -285,7 +294,7 @@ class SimStreamDma(ris.Master, ris.Slave):
             if ba is None:
                 return
             try:
-                resp = self._srpv3(ba)
+                resp = self.uart.reply(ba, self.dest) if self.uart else self._srpv3(ba)
             except Exception:
                 log.exception('%s: bad request', self.store.name)
                 continue
@@ -333,6 +342,33 @@ class SimStreamDma(ris.Master, ris.Slave):
 
     def _stop(self):
         self._q.put(None)
+
+
+class SimUart(object):
+    """A camera's serial port as its camera link FEB carries it (surf.protocols.clink
+    ClinkSerialTx/ClinkSerialRx): each character in the low byte of a 32-bit word, a command
+    ending with CR.  Each command is answered from the seed file's "_uart" table."""
+
+    def __init__(self, table):
+        self.replies = dict(table.get('replies', {}))
+        self.default = table.get('default', '\x06')        # ACK
+        self.commands = []
+
+    @staticmethod
+    def words(text):
+        out = bytearray(4 * len(text))
+        out[0::4] = text.encode('latin-1')
+        return out
+
+    def reply(self, ba, dest=0):
+        chars = bytes(ba[0::4])
+        if b'\r' not in chars:                 # an escape or a partial line: no answer
+            return None
+        cmd = chars.split(b'\r')[0].decode('latin-1')
+        self.commands.append(cmd)
+        _SIM.record_uart(dest, cmd)
+        r = self.replies.get(cmd, self.default)
+        return self.words(r) if r else None
 
 
 class SimXvc(object):
@@ -400,6 +436,8 @@ class _Sim(object):
         self.fault_applied = None
         self.roots = []
         self.writes = []
+        self.uart = None        # {"dests": [...], "replies": {...}, "default": ...} or None
+        self.uarts = []
         self._logf = None
         self._orig = None
 
@@ -418,9 +456,14 @@ class _Sim(object):
 
     def stream_dma(self, path, dest, ssi=True, *args, **kwargs):
         self._check_path(path)
-        s = SimStreamDma(path, dest, ssi)
+        uart = None
+        if self.uart and dest in [_int(d) for d in self.uart.get('dests', [])]:
+            uart = SimUart(self.uart)
+            self.uarts.append(uart)
+        s = SimStreamDma(path, dest, ssi, uart)
         self.stores.append(s.store)
-        log.info('AxiStreamDma(%s, 0x%x) -> SimStreamDma (SRPv3 responder)', path, dest)
+        log.info('AxiStreamDma(%s, 0x%x) -> SimStreamDma (%s)', path, dest,
+                 'camera UART' if uart else 'SRPv3 responder')
         return s
 
     # ---- write log --------------------------------------------------------
@@ -433,15 +476,29 @@ class _Sim(object):
             self._logf.write(json.dumps(rec) + '\n')
             self._logf.flush()
 
+    def record_uart(self, dest, cmd):
+        rec = {'store': 'uart', 'dest': '0x%x' % dest, 'cmd': cmd}
+        self.writes.append(rec)
+        if self._logf:
+            self._logf.write(json.dumps(rec) + '\n')
+            self._logf.flush()
+
     # ---- seeds / fault ----------------------------------------------------
     def _var_addr(self, var):
         return var.parent.address + var.offset
 
-    def _locate(self, var):
-        """Which store serves var: read it once and see which store answered."""
-        before = [s.ntrans for s in self.stores]
-        var.get(read=True)
-        hit = [s for s, n in zip(self.stores, before) if s.ntrans != n]
+    def _locate(self, var, wait=2.0):
+        """Which store serves var: read it once and see which store answered.  A device whose
+        enableDeps a seed just set (a front-end board behind its PGP link-ready bit) is enabled
+        by pyrogue's update thread, so a read that reaches no store is retried for up to 'wait' s."""
+        end = time.monotonic() + wait
+        while True:
+            before = [s.ntrans for s in self.stores]
+            var.get(read=True)
+            hit = [s for s, n in zip(self.stores, before) if s.ntrans != n]
+            if hit or time.monotonic() >= end:
+                break
+            time.sleep(0.05)
         if len(hit) != 1:
             raise SimDeviceError('rogue_dev: cannot tell which simulated transport serves %s '
                                  '(%d answered)' % (var.path, len(hit)))
@@ -469,7 +526,7 @@ class _Sim(object):
             if not rvars:
                 continue
             try:
-                store = self._locate(rvars[0])
+                store = self._locate(rvars[0], wait=0)
             except Exception as e:
                 log.warning('%s', e)
                 continue
@@ -493,7 +550,6 @@ class _Sim(object):
             log.info('rogue_dev: root %s is not on a simulated transport; left alone', root.path)
             return
         self.roots.append(root)
-        self._index_paths(root)
         pfx = root.path + '.'
         for path in [p for p in self.seeds if p.startswith(pfx)]:
             var = self._resolve(root, path, 'seed')
@@ -510,6 +566,7 @@ class _Sim(object):
             got = var.get(read=True)
             self.applied[path] = (store.name, addr, value)
             log.info('seed %s @%s+0x%x = 0x%x (reads %r)', path, store.name, addr, value, got)
+        self._index_paths(root)         # after the seeds, which may enable a device (_locate)
         if self.fault and self.fault[0].startswith(pfx):
             path, value = self.fault
             var = self._resolve(root, path, 'fault')
@@ -560,16 +617,24 @@ _SIM = _Sim()
 def _seed_value(k, v):
     if k.startswith(PV_PREFIX) and not isinstance(v, str):
         return v                    # PV values keep their JSON type (float, list...)
+    if isinstance(v, dict) and set(v) == {'string'}:     # a string register (pr.String)
+        return int.from_bytes(str(v['string']).encode('ascii'), 'little')
     if isinstance(v, dict):
         if set(v) != {'count_hz'} or float(v['count_hz']) <= 0:
             raise SimDeviceError('rogue_dev: seed %r: a dict seed is {"count_hz": <positive '
-                                 'rate>}, not %r' % (k, v))
+                                 'rate>} or {"string": <text>}, not %r' % (k, v))
         return {'count_hz': float(v['count_hz'])}
     return _int(v)
 
 
+def _comment_key(k):
+    """A seed-file key that is not a register: '_' and no '.' (a register path of a root whose
+    class name starts with '_', such as tb_config's _DevRoot, has dots)."""
+    return k.startswith('_') and '.' not in k
+
+
 def load_seeds(det_type=None, path=None, extra=False):
-    """{path: value} from the type's seed file (keys starting with '_' are comments);
+    """{path: value} from the type's seed file (keys starting with '_' with no '.' are comments);
     with extra=True also its "_proc" text (or None)."""
     path = path or os.environ.get(ENV_SEEDS) or (
         os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
@@ -577,10 +642,20 @@ def load_seeds(det_type=None, path=None, extra=False):
         return ({}, None, None) if extra else ({}, None)
     with open(path) as f:
         d = json.load(f)
-    seeds = {k: _seed_value(k, v) for k, v in d.items() if not k.startswith('_')}
+    seeds = {k: _seed_value(k, v) for k, v in d.items() if not _comment_key(k)}
     proc = d.get('_proc')
     proc = '\n'.join(proc) + '\n' if isinstance(proc, list) else proc
     return (seeds, path, proc) if extra else (seeds, path)
+
+
+def load_uart(det_type=None, path=None):
+    """The seed file's "_uart" table (a camera's serial answers), or None."""
+    path = path or os.environ.get(ENV_SEEDS) or (
+        os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
+    if not path:
+        return None
+    with open(path) as f:
+        return json.load(f).get('_uart')
 
 
 def parse_fault(s):
@@ -619,6 +694,7 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
         seeds, spath, sproc = load_seeds(det_type, extra=True)
         proc = proc if proc is not None else sproc
         log.info('rogue_dev: %d seeds from %s', len(seeds), spath)
+        _SIM.uart = load_uart(det_type)
     pvs = {k[len(PV_PREFIX):]: v for k, v in seeds.items() if k.startswith(PV_PREFIX)}
     _SIM.seeds = {k: v for k, v in seeds.items() if not k.startswith(PV_PREFIX)}
     _SIM.fault = parse_fault(fault if fault is not None else os.environ.get(ENV_FAULT))

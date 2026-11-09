@@ -62,6 +62,15 @@ def seed_type(url, inst, alias, det_type, detname, segm, yaml=None):
     return _store(db, alias, top)
 
 
+def alloc_json(dev, detname, segm):
+    """The Alloc message's drp section as control.py sends it, with this process as the only
+    DRP on its host (psdaq.configdb.barrier.supervisor_info: the supervisor, no workers)."""
+    import socket
+    return json.dumps({'body': {'drp': {'1': {
+        'active': 1, 'proc_info': {'alias': '%s_%d' % (detname, segm), 'host': socket.gethostname(),
+                                   'pid': os.getpid(), 'device': dev}}}}})
+
+
 def connect_json(url, inst, detname, segm, group):
     return json.dumps({'body': {
         'control': {'0': {'control_info': {'instrument': inst,
@@ -130,7 +139,7 @@ def main(argv=None):
 
         current = '%s_connectionInfo' % t
         step(current)
-        info = f('connectionInfo')(root, json.dumps({'body': {}}))
+        info = f('connectionInfo')(root, alloc_json(dev, detname, args.segm))
         print('connectionInfo ->', info, ' paddr=0x%x' % info['paddr'], flush=True)
 
         current = '%s_config' % t
