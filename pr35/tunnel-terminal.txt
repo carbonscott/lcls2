@@ -1,0 +1,76 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T01:09:31+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/up_gui_web.sh web1
+on sdfmilan120, Slurm job 43843200 step 81, wt-gui2 at 9eae39ff1c52c1591049f62bd770039c70a2a7e6, local changes 0
+  + daq_webgui -p 5 -H 127.0.0.1 --port 31063 --configdb-url http://127.0.0.1:31050/ws/ --procstat-cnf /sdf/scratch/users/c/cwang31/gui-w03/dsw/daq_sim.cnf --procstat-logdir /sdf/scratch/users/c/cwang31/gui-w03/dsw/pmlogs --pvgui 'groupca:DAQ:SIM 0 5' --pvgui 'pvant:--bases DAQ:SIM:XPM:0:PART:5 DAQ:SIM:XPM:0:PART:0 --fields NumL0Acc NumL0Inp L0AccRate'
+daq_webgui pid 3139121
+2026-11-08 17:09:40,325 daq_webgui INFO: web GUI webgui-v0 started: backend=daqcontrol state=reset instrument=tst aliases=['BEAM', 'NOBEAM'] (configdb http://127.0.0.1:31050/ws/)
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=none
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p35'
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31063:/tmp/cwang31-p35/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p35/webgui.sock:127.0.0.1:31063 sdfmilan120'
+exedev@indigo-galaxy:redo$ sleep 3; for u in /gui/procstat /gui/groupca /gui/pvant; do curl -s -o /dev/null -w "GET http://127.0.0.1:31063$u on this VM -> HTTP %{http_code}\n" http://127.0.0.1:31063$u; done
+GET http://127.0.0.1:31063/gui/procstat on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/groupca on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/pvant on this VM -> HTTP 200
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python paced_drive.py http://127.0.0.1:31063/ rec/pr35-web --flow gui
+2026-11-09T01:09:49.801+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31063/; highlight >= 1.2 s, gap >= 2.7 s
+2026-11-09T01:09:50.275+00:00 open /gui/procstat -> cnf /sdf/scratch/users/c/cwang31/gui-w03/dsw/daq_sim.cnf; rows {'control': 'RUNNING', 'fakecam_0': 'RUNNING', 'fakecam_1': 'RUNNING', 'teb0': 'RUNNING'}
+2026-11-09T01:09:52.756+00:00 #1  procstat: click the ID column: sort by ID            hold 1.20 s  gap     - s  -> aria-sort ascending, rows ['control', 'fakecam_0', 'fakecam_1', 'teb0'] OK
+2026-11-09T01:09:55.457+00:00 #2  procstat: click ID again: the other order            hold 2.26 s  gap  2.70 s  -> aria-sort descending, rows ['teb0', 'fakecam_1', 'fakecam_0', 'control'] OK
+2026-11-09T01:09:58.158+00:00 #3  procstat: Open Console mode                          hold 2.28 s  gap  2.70 s  -> Open Console aria-pressed true OK
+2026-11-09T01:10:00.862+00:00 #4  procstat: click teb0's status: its procServ console  hold 2.30 s  gap  2.70 s  -> viewer "console: teb0 (telnet localhost 29503)"; "@@@ Welcome to procServ" shown: True OK
+2026-11-09T01:10:04.275+00:00 #5  procstat: View Logfile mode                          hold 1.20 s  gap  3.41 s  -> View Logfile aria-pressed true OK
+2026-11-09T01:10:06.976+00:00 #6  procstat: click fakecam_0: its log file              hold 2.28 s  gap  2.70 s  -> viewer "log: fakecam_0 (/sdf/scratch/users/c/cwang31/gui-w03/dsw/pmlogs/./2026/11/08_15:48:20_sdfm"; 723 lines OK
+2026-11-09T01:10:09.679+00:00 #7  procstat: Restart mode                               hold 2.09 s  gap  2.70 s  -> Restart aria-pressed true OK
+2026-11-09T01:10:12.379+00:00 #8  procstat: click control: a local process             hold 2.30 s  gap  2.70 s  -> dialog "Not Supported": Local processes cannot be individually restarted OK
+2026-11-09T01:10:15.081+00:00 #9  procstat: OK: nothing was restarted                  hold 2.17 s  gap  2.70 s  -> dialog closed; rows {control: RUNNING, fakecam_0: RUNNING, fakecam_1: RUNNING, teb0: RUNNING} OK
+2026-11-09T01:10:16.425+00:00 open /gui/groupca DAQ:SIM 0 5 -> 66 PVs; before: {'DAQ:SIM:XPM:0:PART:5:InhEnable0': 0, 'DAQ:SIM:XPM:0:PART:5:InhInterval0': 10, 'DAQ:SIM:XPM:0:PART:5:DstSelect_Mask': 23555}
+2026-11-09T01:10:18.857+00:00 #10 groupca: tab Group 5                                 hold 1.20 s  gap  3.78 s  -> tab Group 5 selected: True OK
+2026-11-09T01:10:21.558+00:00 #11 groupca: Inhibit 0 enable checkbox: DAQ:SIM:XPM:0:PART:5:InhEnable0 -> 1 hold 2.27 s  gap  2.70 s  -> PV InhEnable0 = 1 OK
+2026-11-09T01:10:24.259+00:00 #12 groupca: type 77 in Inhibit 0 interval, Enter: DAQ:SIM:XPM:0:PART:5:InhInterval0 hold 2.15 s  gap  2.70 s  -> PV InhInterval0 = 77 OK
+2026-11-09T01:10:26.960+00:00 #13 groupca: destination mask bit 3: DAQ:SIM:XPM:0:PART:5:DstSelect_Mask -> 23563 hold 1.91 s  gap  2.70 s  -> PV DstSelect_Mask = 23563 OK
+2026-11-09T01:10:29.665+00:00 #14 groupca: tab Events                                  hold 1.92 s  gap  2.71 s  -> tab Events selected: True OK
+2026-11-09T01:10:32.368+00:00 #15 groupca: Clear: reset group 5 counters               hold 2.30 s  gap  2.70 s  -> PV NumL0Acc = 0.0, page 0.0000 OK
+2026-11-09T01:10:33.110+00:00 groupca before Run: page Run checked False, server Run state None
+2026-11-09T01:10:35.068+00:00 #16 groupca: Run: enable group 5 L0 triggers in simxpm   hold 1.95 s  gap  2.70 s  -> Run checked True; PV NumL0Acc = 799.0 OK
+2026-11-09T01:10:38.897+00:00 groupca running: page NumL0Acc 2799.0000, PV NumL0Acc = 2799.0
+2026-11-09T01:10:42.159+00:00 pvant while running: PART:5 NumL0Acc 3799 -> 6799 in 2.5 s
+2026-11-09T01:10:44.801+00:00 #17 groupca: Run again: disable group 5                  hold 1.20 s  gap  9.73 s  -> Run checked False OK
+2026-11-09T01:10:48.846+00:00 groupca after Run off: PV NumL0Acc 9718.0 -> 9718.0 in 1.5 s (stopped: True); page 9718.0000
+2026-11-09T01:10:50.054+00:00 #18 groupca: tab Group 5                                 hold 1.20 s  gap  5.25 s  -> tab Group 5 selected: True OK
+2026-11-09T01:10:52.755+00:00 #19 groupca: Inhibit 0 enable checkbox: DAQ:SIM:XPM:0:PART:5:InhEnable0 -> 0 hold 2.30 s  gap  2.70 s  -> PV InhEnable0 = 0 OK
+2026-11-09T01:10:55.457+00:00 #20 groupca: type 10 in Inhibit 0 interval, Enter: DAQ:SIM:XPM:0:PART:5:InhInterval0 hold 2.04 s  gap  2.70 s  -> PV InhInterval0 = 10 OK
+2026-11-09T01:10:58.159+00:00 #21 groupca: destination mask bit 3: DAQ:SIM:XPM:0:PART:5:DstSelect_Mask -> 23555 hold 2.12 s  gap  2.70 s  -> PV DstSelect_Mask = 23555 OK
+2026-11-09T01:10:58.987+00:00 groupca PVs put back: True ({'DAQ:SIM:XPM:0:PART:5:InhEnable0': 0, 'DAQ:SIM:XPM:0:PART:5:InhInterval0': 10, 'DAQ:SIM:XPM:0:PART:5:DstSelect_Mask': 23555})
+2026-11-09T01:11:02.785+00:00 pvant after Run off: PART:5 NumL0Acc 9718 -> 9718 (stopped: True; groupca PV 9718.0)
+video page@5aa7a6ef0d4a2c077240cf2600bfcf6e.webm: 74.7 s; browser context open 73.91 s (real speed: the video spans the whole context)
+GUI_FLOW_OK=True  groupca_count_final=9718.0  pvant_count_final=9718
+ACTIONS=21  MIN_HIGHLIGHT_TO_ACT=1.200 s  MIN_GAP_BETWEEN_ACTS=2.700 s
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python pace_check.py rec/pr35-web/actions.jsonl
+rec/pr35-web/actions.jsonl: 21 actions
+  min(act_time - highlight_start) = 1.200 s  (at: groupca: tab Group 5)
+  min gap between consecutive act_times = 2.700 s  (before: groupca: Run: enable group 5 L0 triggers in simxpm)
+ACTIONS=21  MIN_HIGHLIGHT_TO_ACT=1.200 s  MIN_GAP_BETWEEN_ACTS=2.700 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)
+exedev@indigo-galaxy:redo$ read N INH ITV MASK <<< $(python3 -c "import json; r=json.load(open('rec/pr35-web/result.json')); print(int(r['groupca_count_final']), *[int(v) for v in r['groupca_before'].values()])"); echo "page count $N; groupca PVs before the run: InhEnable0 $INH, InhInterval0 $ITV, DstSelect_Mask $MASK"
+page count 9718; groupca PVs before the run: InhEnable0 0, InhInterval0 10, DstSelect_Mask 23555
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/readback_gui.sh $N $INH $ITV $MASK
+== on sdfmilan120, Slurm job 43843200 step 82, tree 9eae39ff1
+  simxpm     pid 2950595  alive
+  control    pid 2950784  RUNNING
+  teb0       pid 2950785  RUNNING
+  fakecam_0  pid 2950786  RUNNING
+  fakecam_1  pid 2950787  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 2
+  pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc        = 9718      expected 9718     ok
+  pvget DAQ:SIM:XPM:0:PART:5:InhEnable0      = 0         expected 0        ok
+  pvget DAQ:SIM:XPM:0:PART:5:InhInterval0    = 10        expected 10       ok
+  pvget DAQ:SIM:XPM:0:PART:5:DstSelect_Mask  = 23555     expected 23555    ok
+READBACK PASS
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/down_gui_web.sh web1
+daq_webgui stopped (exit 0)
+daq_webgui: stopped
+port 31063 on the node: 0 listening
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31063:/tmp/cwang31-p35'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*cwang31-p35/webgui.sock'"; pgrep -af '^ssh .*-L 31063:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ 

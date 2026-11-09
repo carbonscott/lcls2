@@ -1,0 +1,214 @@
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq junit=/sdf/scratch/users/c/cwang31/fix35/run/sim.junit.xml
+walks: (none: no GUI program can pass; run with --run-walks)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 105, 271; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [no run-time import probe collection_widget.probe.json (run with --run-walks)] | -/-/- | FAIL
+cas/datadev_monitor.py | GUI program, no web version (no parity/guis spec) | 5/0/0 (source sites; no walk) | FAIL
+cas/deadca.py | GUI program, no web version (no parity/guis spec) | 3/0/0 (source sites; no walk) | FAIL
+cas/dtica.py | GUI program, no web version (no parity/guis spec) | 17/0/0 (source sites; no walk) | FAIL
+cas/groupca.py | /gui/groupca | 15/0/0 | FAIL
+cas/hsdPs.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+cas/hsdpva.py | GUI program, no web version (no parity/guis spec) | 18/0/0 (source sites; no walk) | FAIL
+cas/partca-sum.py | GUI program, no web version (no parity/guis spec) | 12/0/0 (source sites; no walk) | FAIL
+cas/partca.py | GUI program, no web version (no parity/guis spec) | 27/0/0 (source sites; no walk) | FAIL
+cas/pvant.py | /gui/pvant | 1/0/0 | FAIL
+cas/pvatable.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+cas/tdmpva.py | GUI program, no web version (no parity/guis spec) | 6/0/0 (source sites; no walk) | FAIL
+cas/tprca.py | GUI program, no web version (no parity/guis spec) | 8/0/0 (source sites; no walk) | FAIL
+cas/xpmca.py | GUI program, no web version (no parity/guis spec) | 54/0/0 (source sites; no walk) | FAIL
+cas/xpmpatt.py | GUI program, no web version (no parity/guis spec) | 5/0/0 (source sites; no walk) | FAIL
+cas/xpmpva.py | GUI program, no web version (no parity/guis spec) | 42/0/0 (source sites; no walk) | FAIL
+configdb/configdb_GUI.py | GUI program, no web version (no parity/guis spec) | 17/0/0 (source sites; no walk) | FAIL
+procmgr/procstat | /gui/procstat | 12/0/0 | FAIL
+seq/seq_epixhr.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+seq/seqplot.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+slurm/daqstat.py | GUI program, no web version (no parity/guis spec) | 12/0/0 (source sites; no walk) | FAIL
+trigger/detector_protection_monitor.py | GUI program, no web version (no parity/guis spec) | 2/0/0 (source sites; no walk) | FAIL
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- cas/groupca.py (groupca; own files cas/groupca.py; walk none)
+15 controls found, 0 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 15, M = 0, K = 0, M + K = 0
+walk: no walk groupca.walk.json (run with --run-walks)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+na not confirmed by the walk (1 rows, not counted): id | loc | flags | walk verdict
+  PvPatternStats.PvDbl | cas/groupca.py:163 | unreachable:def-unreachable | no walk: no walk: no na row can be confirmed
+
+Unmapped (13 rows): id | loc | kind | label
+  PvStateMachine.btn | cas/groupca.py:38 | button | QPushButton
+  PvStateMachine.env | cas/groupca.py:39 | text | QLineEdit
+  PvGroupStats.b | cas/groupca.py:181 | button | QPushButton
+  PvGroupStats.PvDbl | cas/groupca.py:208 | widget | PvDbl
+  PvGroupStats.det | cas/groupca.py:213 | widget | QLabel+QLabel
+  addGroup.LblEditEvt | cas/groupca.py:252 | widget | LblEditEvt
+  addGroup.LblEditDst | cas/groupca.py:254 | widget | LblEditDst
+  addGroup.LblEditInt@1 | cas/groupca.py:255 | widget | LblEditInt
+  addGroup.LblCheckBox | cas/groupca.py:261 | widget | LblCheckBox
+  addGroup.LblEditInt@2 | cas/groupca.py:262 | widget | LblEditInt
+  addGroup.LblEditInt@3 | cas/groupca.py:263 | widget | LblEditInt
+  GroupMaster.b | cas/groupca.py:282 | widget | PvCheckBox
+  Ui_MainWindow.tw | cas/groupca.py:302 | widget | QTabWidget
+
+Mapped but not built by the running PyQt GUI, per the walk (1 rows, not counted): id | loc | walk
+  PvGroupStats.runb | cas/groupca.py:188 | no walk: no na row can be confirmed
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+Stale mapping entries, id not in the enumeration (89):
+  GroupMaster.b[DAQ:SIM:XPM:0:PART:5:Master]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:DeadFrac]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:DeadTime]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:L0AccRate]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:L0InpRate]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:NumL0Acc]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:NumL0Inp]
+  PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:RunTime]
+  PvGroupStats.b[Clear]
+  PvGroupStats.det#0
+  PvGroupStats.det#1
+  PvStateMachine.btn[BeginRun]
+  PvStateMachine.btn[ClearReadout]
+  PvStateMachine.btn[Configure]
+  PvStateMachine.btn[Disable]
+  PvStateMachine.btn[Enable]
+  PvStateMachine.btn[EndRun]
+  PvStateMachine.btn[Ping]
+  PvStateMachine.btn[Unconfigure]
+  PvStateMachine.env#0
+  PvStateMachine.env#1
+  PvStateMachine.env#2
+  PvStateMachine.env#3
+  PvStateMachine.env#4
+  PvStateMachine.env#5
+  PvStateMachine.env#6
+  PvStateMachine.env#7
+  Ui_MainWindow.tw.tab[Events]
+  Ui_MainWindow.tw.tab[Group 5]
+  Ui_MainWindow.tw.tab[Transitions]
+  addGroup.LblCheckBox[DAQ:SIM:XPM:0:PART:5:InhEnable0]
+  addGroup.LblCheckBox[DAQ:SIM:XPM:0:PART:5:InhEnable1]
+  addGroup.LblCheckBox[DAQ:SIM:XPM:0:PART:5:InhEnable2]
+  addGroup.LblCheckBox[DAQ:SIM:XPM:0:PART:5:InhEnable3]
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect]
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#0
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#1
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#10
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#11
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#12
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#13
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#14
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#15
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#2
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#3
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#4
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#5
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#6
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#7
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#8
+  addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#9
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select]
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACRate]
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#0
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#1
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#2
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#3
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#4
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#5
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_EventCode]
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate]
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#0
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#1
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#10
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#11
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#12
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#13
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#14
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#15
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#16
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#17
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#2
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#3
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#4
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#5
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#6
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#7
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#8
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#9
+  addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_Sequence]
+  addGroup.LblEditInt@1[DAQ:SIM:XPM:0:PART:5:L0RawUpdate]
+  addGroup.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval0]
+  addGroup.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval1]
+  addGroup.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval2]
+  addGroup.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval3]
+  addGroup.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit0]
+  addGroup.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit1]
+  addGroup.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit2]
+  addGroup.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit3]
+
+RESULT: FAIL: M + K = 0 != N = 15 (13 unmapped, 1 not built, 0 not passing, 1 na unconfirmed, 0 unproven na, 0 invalid); 1 mapped rows not built by the running GUI; 89 stale entries; rows: PvStateMachine.btn, PvStateMachine.env, PvGroupStats.b, PvGroupStats.PvDbl, PvGroupStats.det, addGroup.LblEditEvt, addGroup.LblEditDst, addGroup.LblEditInt@1, addGroup.LblCheckBox, addGroup.LblEditInt@2, addGroup.LblEditInt@3, GroupMaster.b, Ui_MainWindow.tw, PvGroupStats.runb, PvPatternStats.PvDbl, GroupMaster.b[DAQ:SIM:XPM:0:PART:5:Master], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:DeadFrac], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:DeadTime], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:L0AccRate], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:L0InpRate], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:NumL0Acc], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:NumL0Inp], PvGroupStats.PvDbl[DAQ:SIM:XPM:0:PART:5:RunTime], PvGroupStats.b[Clear], PvGroupStats.det#0, PvGroupStats.det#1, PvStateMachine.btn[BeginRun], PvStateMachine.btn[ClearReadout], PvStateMachine.btn[Configure], PvStateMachine.btn[Disable] ...
+
+--- cas/pvant.py (pvant; own files cas/pvant.py; walk none)
+1 controls found, 0 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 1, M = 0, K = 0, M + K = 0
+walk: no walk pvant.walk.json (run with --run-walks)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (1 rows): id | loc | kind | label
+  PvScalarTable.PvInt | cas/pvant.py:56 | widget | PvInt
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+Stale mapping entries, id not in the enumeration (6):
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:L0AccRate]
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Acc]
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Inp]
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:L0AccRate]
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Acc]
+  PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Inp]
+
+RESULT: FAIL: M + K = 0 != N = 1 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); 6 stale entries; rows: PvScalarTable.PvInt, PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:L0AccRate], PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Acc], PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Inp], PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:L0AccRate], PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Acc], PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Inp]
+
+--- procmgr/procstat (procstat; own files procmgr/procstat, procmgr/__init__.py, procmgr/ui_procStat.py; walk none)
+12 controls found, 0 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 12, M = 0, K = 0, M + K = 0
+walk: no walk procstat.walk.json (run with --run-walks)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+na on rows the enumerator says are user-facing (5; not counted, fails the check): id | loc | reason
+  WinProcStat.on_actionAbout_triggered.QMessageBox.about | procmgr/procstat:345 | the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (procmgr/procstat:344)
+  Ui_mainWindow.textBrowser | procmgr/ui_procStat.py:81 | Output File Status box: nothing in procstat or ui_procStat.py writes textBrowser (no setText/append/setHtml), the walk saw it empty; the web page shows the same empty box
+  WinProcStat.on_actionOpen_triggered | procmgr/procstat:332 | the ui (procmgr/ui_procStat.py) creates no object named 'actionOpen', so connectSlotsByName never connects on_actionOpen_triggered: def on_actionOpen_triggered (procmgr/procstat:332)
+  WinProcStat.on_actionQuit_triggered | procmgr/procstat:339 | the ui (procmgr/ui_procStat.py) creates no object named 'actionQuit', so connectSlotsByName never connects on_actionQuit_triggered: def on_actionQuit_triggered (procmgr/procstat:339)
+  WinProcStat.on_actionAbout_triggered | procmgr/procstat:344 | the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects on_actionAbout_triggered: def on_actionAbout_triggered (procmgr/procstat:344)
+
+Unmapped (1 rows): id | loc | kind | label
+  Ui_mainWindow.tableProcStat | procmgr/ui_procStat.py:35 | widget | QTableWidget
+
+Mapped but not built by the running PyQt GUI, per the walk (6 rows, not counted): id | loc | walk
+  WinProcStat.msgBox | procmgr/procstat:113 | no walk: no na row can be confirmed
+  WinProcStat.onProcMgrUnknownError.QMessageBox.critical | procmgr/procstat:309 | no walk: no na row can be confirmed
+  Ui_mainWindow.pushButtonConsole | procmgr/ui_procStat.py:55 | no walk: no na row can be confirmed
+  Ui_mainWindow.pushButtonLogfile | procmgr/ui_procStat.py:59 | no walk: no na row can be confirmed
+  Ui_mainWindow.pushButtonRestart | procmgr/ui_procStat.py:63 | no walk: no na row can be confirmed
+  WinProcStat.on_tableProcStat_currentCellChanged | procmgr/procstat:322 | no walk: no na row can be confirmed
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+Stale mapping entries, id not in the enumeration (3):
+  Ui_mainWindow.tableProcStat.cellClicked
+  Ui_mainWindow.tableProcStat.col[ID]
+  Ui_mainWindow.tableProcStat.col[Status]
+
+RESULT: FAIL: M + K = 0 != N = 12 (1 unmapped, 6 not built, 0 not passing, 0 na unconfirmed, 5 unproven na, 0 invalid); 6 mapped rows not built by the running GUI; 3 stale entries; rows: Ui_mainWindow.tableProcStat, WinProcStat.msgBox, WinProcStat.onProcMgrUnknownError.QMessageBox.critical, Ui_mainWindow.pushButtonConsole, Ui_mainWindow.pushButtonLogfile, Ui_mainWindow.pushButtonRestart, WinProcStat.on_tableProcStat_currentCellChanged, Ui_mainWindow.tableProcStat.cellClicked, Ui_mainWindow.tableProcStat.col[ID], Ui_mainWindow.tableProcStat.col[Status]
+
+RESULT: FAIL (1/23 files pass)

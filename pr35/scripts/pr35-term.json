@@ -1,0 +1,145 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile /sdf/scratch/users/c/cwang31/fix35/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan120",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $R/wt-gui2 && git rev-parse HEAD && git log --format='%h %s' dfd6149d8..HEAD && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "# The new commit: the web procstat refuses a .cnf that names a host that is not loopback, and polls procServ only at 127.0.0.1"
+ },
+ {
+  "send": "git show --stat --format='%h %s' HEAD | cut -c1-138"
+ },
+ {
+  "send": "# The PR by directory: web GUI and sim only. No PyQt GUI file, no hardware path, no compiled code, nothing deleted"
+ },
+ {
+  "send": "git diff --stat dfd6149d8 HEAD | tail -1; git diff --name-only dfd6149d8 HEAD | sed 's,/[^/]*$,,' | sort | uniq -c; echo \"outside CHANGELOG.md, webgui/, sim/: $(git diff --name-only dfd6149d8 HEAD | grep -cvE '^(CHANGELOG.md|psdaq/psdaq/(webgui|sim)/)'); deleted: $(git diff --name-only --diff-filter=D dfd6149d8 HEAD | wc -l)\""
+ },
+ {
+  "send": "# 1. Build at this head"
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; time ./build_all.sh -d -j 48 > $Q/build.log 2>&1; echo BUILD_EXIT=$?; grep -E 'no work to do|Installed|psdaq==' $Q/build.log | tail -4",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import sys, psdaq.webgui.procstat_api as m; print(\"DAQ env\", sys.version.split()[0], m.__file__)'"
+ },
+ {
+  "send": "# 2. A fresh simulated DAQ, started now in this Slurm step: control, teb0, fakecam_0 and fakecam_1. Nothing else is up on the node"
+ },
+ {
+  "send": "echo \"listening on 30050 (XPM pull) or 15075 (PVA): $(ss -ltn | grep -cE ':(30050|15075) ')\"; mkdir $P && echo \"new dir $P\"; ls -d $WD 2>&1"
+ },
+ {
+  "send": "time daq_sim up -w $WD --segments 2 --detach > $P/up.log 2>&1; echo UP_EXIT=$?; tail -3 $P/up.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "daq_sim status -w $WD | head -9; ss -ltnp | grep -E ':(30050|15075) ' | awk '{print \"  listening:\", $4, $6}'"
+ },
+ {
+  "send": "# 3. The whole web GUI suite against it (the other GUIs' tests run their PyQt walks now, on this DAQ)"
+ },
+ {
+  "send": "time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log",
+  "expect": "SUITE_EXIT=\\d+",
+  "timeout": 1800
+ },
+ {
+  "send": "python3 $Q/junit_backends.py $P/sim.junit.xml"
+ },
+ {
+  "send": "python3 $Q/junit_pick.py $P/sim.junit.xml procstat   # the procstat page tests on this DAQ, and the 3 host-guard tests"
+ },
+ {
+  "send": "# 4. check_gui_parity: the walks run now against the DAQ, then one line per file"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --walks $P/walks --junit $P/sim.junit.xml > $P/gui-parity.txt 2>&1; echo GUI_PARITY_EXIT=$?; python3 $Q/gui_lines.py $P/gui-parity.txt",
+  "expect": "GUI_PARITY_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "# 5 of 23 pass at this PR: the 3 web copies and the 2 files that are not GUI programs. The other 18 GUI programs have no web version yet: exit 1"
+ },
+ {
+  "send": "# 5. The control GUI's check, with a fresh offscreen walk: still PASS"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138",
+  "expect": "PARITY_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 6. Negative: PvGroupStats.runb removed from a scratch copy of parity/guis (the same walks)"
+ },
+ {
+  "send": "bash $Q/minus_gui_mapping.sh $P/sim.junit.xml $P/walks $P/minus",
+  "expect": "GUI_PARITY_MINUS_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 7. Negative: the same check with no walks run (no --run-walks): no GUI program can pass"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_gui_parity --junit $P/sim.junit.xml > $P/gui-nowalk.txt 2>&1; echo GUI_NOWALK_EXIT=$?; python3 $Q/gui_lines.py $P/gui-nowalk.txt | grep -E '^walks|PASS|groupca|pvant|procstat|collection|refused|RESULT'; grep '^walk: ' $P/gui-nowalk.txt",
+  "expect": "GUI_NOWALK_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# 8. The procstat host guard: a .cnf with one process with no host and one at 192.0.2.1. telnetlib is stubbed: nothing is contacted"
+ },
+ {
+  "send": "bash $Q/procstat_hosts.sh 9eae39ff1 $P/hosts-before   # the PR before this commit",
+  "timeout": 180
+ },
+ {
+  "send": "bash $Q/procstat_hosts.sh $(git rev-parse --short HEAD) $P/hosts-after   # this head",
+  "timeout": 180
+ },
+ {
+  "send": "# Before: it telnets to 192.0.2.1 and to this machine's name. Now: exit 2 before anything is opened. The tests (also in the suite above):"
+ },
+ {
+  "send": "WEBGUI_SHOTS=$P/shots-guard bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -v -s -p no:warnings -k test_procstat_ > $P/guard.log 2>&1; echo GUARD_TESTS_EXIT=$?; grep -E '::test_procstat_|PASSED|FAILED|records|telnet.open|opens|passed|failed' $P/guard.log | cut -c1-138",
+  "expect": "GUARD_TESTS_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# 9. The DAQ down: everything this step started stops"
+ },
+ {
+  "send": "daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -2 $P/down.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "sleep 2; echo \"listening on 30050 or 15075: $(ss -ltn | grep -cE ':(30050|15075) '); my procServ processes: $(pgrep -u $USER -x procServ | wc -l)\""
+ },
+ {
+  "send": "# 10. The tests as CI would run them, with no simulated DAQ: the ones that need it skip, and say why"
+ },
+ {
+  "send": "WEBGUI_SHOTS=$P/shots-nosim bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -rs -k 'check_gui_parity or test_gui_ or test_procstat_' > $P/nosim.log 2>&1; echo NOSIM_EXIT=$?; tail -1 $P/nosim.log",
+  "expect": "NOSIM_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

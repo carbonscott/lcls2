@@ -1,0 +1,224 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T02:16:56+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=32 --mem=64G --pty bash --rcfile /sdf/scratch/users/c/cwang31/fix35/node_rc.sh -i
+cwang31@sdfmilan120:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan120
+2026-11-08 18:16:59 PST
+Slurm job 43843200 step 95
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan120:agentify-lcls2$ cd $R/wt-gui2 && git rev-parse HEAD && git log --format='%h %s' dfd6149d8..HEAD && echo "local changes: $(git status --short | wc -l)"
+43f0a277f0d84d95e6ac995d8f5eb4ffebafecd2
+43f0a277f webgui procstat: refuse a .cnf naming a non-loopback host; poll procServ only at 127.0.0.1
+9eae39ff1 CHANGELOG, README, RUNBOOK: check_gui_parity and /gui/<name> (#35)
+b7eca208f webgui parity: check_gui_parity runs the GUI walks live, none kept in the tree
+8f76b4e6b webgui: parity for the other QApplication programs; web procstat, groupca and pvant
+local changes: 0
+cwang31@sdfmilan120:wt-gui2$ # The new commit: the web procstat refuses a .cnf that names a host that is not loopback, and polls procServ only at 127.0.0.1
+cwang31@sdfmilan120:wt-gui2$ git show --stat --format='%h %s' HEAD | cut -c1-138
+43f0a277f webgui procstat: refuse a .cnf naming a non-loopback host; poll procServ only at 127.0.0.1
+
+ psdaq/psdaq/webgui/README.md                   |   4 +-
+ psdaq/psdaq/webgui/procstat_api.py             |  87 ++++++++++++++++-
+ psdaq/psdaq/webgui/server.py                   |   3 +
+ psdaq/psdaq/webgui/tests/test_webgui_safety.py | 124 ++++++++++++++++++++++++-
+ 4 files changed, 212 insertions(+), 6 deletions(-)
+cwang31@sdfmilan120:wt-gui2$ # The PR by directory: web GUI and sim only. No PyQt GUI file, no hardware path, no compiled code, nothing deleted
+cwang31@sdfmilan120:wt-gui2$ git diff --stat dfd6149d8 HEAD | tail -1; git diff --name-only dfd6149d8 HEAD | sed 's,/[^/]*$,,' | sort | uniq -c; echo "outside CHANGELOG.md, webgui/, sim/: $(git diff --name-only dfd6149d8 HEAD | grep -cvE '^(CHANGELOG.md|psdaq/psdaq/(webgui|sim)/)'); deleted: $(git diff --name-only --diff-filter=D dfd6149d8 HEAD | wc -l)"
+ 34 files changed, 4422 insertions(+), 14 deletions(-)
+      1 CHANGELOG.md
+      2 psdaq/psdaq/sim
+      4 psdaq/psdaq/webgui
+      5 psdaq/psdaq/webgui/parity
+      6 psdaq/psdaq/webgui/parity/guis
+      3 psdaq/psdaq/webgui/pvgui
+      6 psdaq/psdaq/webgui/static/gui
+      7 psdaq/psdaq/webgui/tests
+outside CHANGELOG.md, webgui/, sim/: 0; deleted: 0
+cwang31@sdfmilan120:wt-gui2$ # 1. Build at this head
+cwang31@sdfmilan120:wt-gui2$ source ./setup_env_daq.sh >/dev/null 2>&1; time ./build_all.sh -d -j 48 > $Q/build.log 2>&1; echo BUILD_EXIT=$?; grep -E 'no work to do|Installed|psdaq==' $Q/build.log | tail -4
+
+real	0m20.638s
+user	0m2.512s
+sys	0m1.019s
+BUILD_EXIT=0
+ninja: no work to do.
+Installed 1 package in 6.28s
+Installed 1 package in 280ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import sys, psdaq.webgui.procstat_api as m; print("DAQ env", sys.version.split()[0], m.__file__)'
+DAQ env 3.9.21 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq/webgui/procstat_api.py
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 2. A fresh simulated DAQ, started now in this Slurm step: control, teb0, fakecam_0 and fakecam_1. Nothing else is up on the node
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ echo "listening on 30050 (XPM pull) or 15075 (PVA): $(ss -ltn | grep -cE ':(30050|15075) ')"; mkdir $P && echo "new dir $P"; ls -d $WD 2>&1
+listening on 30050 (XPM pull) or 15075 (PVA): 0
+new dir /sdf/scratch/users/c/cwang31/fix35/run
+ls: cannot access '/sdf/scratch/users/c/cwang31/fix35/run/dsw': No such file or directory
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ time daq_sim up -w $WD --segments 2 --detach > $P/up.log 2>&1; echo UP_EXIT=$?; tail -3 $P/up.log | cut -c1-138
+
+real	0m32.158s
+user	0m1.253s
+sys	0m0.731s
+UP_EXIT=0
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/users/c/cwang31/fix35/run/dsw --events 1000   or   daq_sim e2e -w /sdf/scratch/users/c/cwang3
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/users/c/cwang31/fix35/run/dsw
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ daq_sim status -w $WD | head -9; ss -ltnp | grep -E ':(30050|15075) ' | awk '{print "  listening:", $4, $6}'
+workdir /sdf/scratch/users/c/cwang31/fix35/run/dsw  host sdfmilan120  platform 5  started 2026-11-08T18:17:41.621-08:00
+  configdb   pid 3281236  alive
+  lgbk       pid 3281263  alive
+  simxpm     pid 3281265  alive
+  control    pid 3281308  RUNNING
+  teb0       pid 3281309  RUNNING
+  fakecam_0  pid 3281310  RUNNING
+  fakecam_1  pid 3281311  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  listening: 127.0.0.1:30050 users:(("python3",pid=3281265,fd=24))
+  listening: 127.0.0.1:15075 users:(("python3",pid=3281265,fd=15))
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 3. The whole web GUI suite against it (the other GUIs' tests run their PyQt walks now, on this DAQ)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log
+
+real	8m1.894s
+user	1m56.906s
+sys	0m18.347s
+SUITE_EXIT=0
+231 passed, 1 skipped, 271 warnings in 475.26s (0:07:55)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ python3 $Q/junit_backends.py $P/sim.junit.xml
+sim.junit.xml: [chromium] testcases by (status, backend): {('passed', 'emulator'): 8, ('passed', 'sim-daq'): 44, ('skipped', 'none'): 1}
+  parity rows tagged by passing-or-not [chromium] tests, by backend: {'sim-daq': 170, 'emulator': 0, 'none': 0}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ python3 $Q/junit_pick.py $P/sim.junit.xml procstat   # the procstat page tests on this DAQ, and the 3 host-guard tests
+  test_check_gui_parity::test_walk_is_of_this_source_and_every_row_has_one_entry[procstat] passed   46.0 s
+  test_gui_procstat::test_table_lists_sim_processes_live_and_sortable[chromium]    passed    4.0 s
+  test_gui_procstat::test_mode_buttons_are_exclusive[chromium]                     passed    0.3 s
+  test_gui_procstat::test_cell_click_opens_console_and_logfile[chromium]           passed    2.1 s
+  test_gui_procstat::test_restart_of_local_process_shows_warning[chromium]         passed    2.5 s
+  test_gui_procstat::test_current_row_kept_across_refresh[chromium]                passed    2.6 s
+  test_gui_procstat::test_unknown_error_shows_critical_and_closes[chromium]        passed    2.5 s
+  test_webgui_safety::test_procstat_cnf_naming_a_remote_host_is_refused            passed    0.4 s
+  test_webgui_safety::test_procstat_poll_opens_only_127_0_0_1                      passed    1.3 s
+  test_webgui_safety::test_procstat_poll_procmgr_refuses_a_remote_host             passed    0.4 s
+  {'passed': 10}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 4. check_gui_parity: the walks run now against the DAQ, then one line per file
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --walks $P/walks --junit $P/sim.junit.xml > $P/gui-parity.txt 2>&1; echo GUI_PARITY_EXIT=$?; python3 $Q/gui_lines.py $P/gui-parity.txt
+GUI_PARITY_EXIT=1
+  collection_widget: qt_walk --probe-import psdaq.cas.collection_widget: 0 QApplication(s) constructed on import
+  groupca variant 0: qt_walk --gui cas/groupca.py: 138 instances, 0 calls, exit 0, elapsed 11.8 s
+  pvant variant 0: qt_walk --gui cas/pvant.py: 11 instances, 0 calls, exit 0, elapsed 10.5 s
+  procstat variant 0: qt_walk --gui procmgr/procstat: 6 instances, 8 calls, exit 0, elapsed 12.4 s
+  procstat variant 1: qt_walk --gui procmgr/procstat: 6 instances, 1 calls, exit 0, elapsed 7.6 s
+walks: /sdf/scratch/users/c/cwang31/fix35/run/walks (run now against the simulated DAQ /sdf/scratch/users/c/cwang31/fix35/run/dsw)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py                | N/A: widget library (CollectionWidget, embedded by ca... | -/-/-          | PASS
+cas/datadev_monitor.py                  | GUI program, no web version (no parity/guis spec)        | 5/0/0 (src)    | FAIL
+cas/deadca.py                           | GUI program, no web version (no parity/guis spec)        | 3/0/0 (src)    | FAIL
+cas/dtica.py                            | GUI program, no web version (no parity/guis spec)        | 17/0/0 (src)   | FAIL
+cas/groupca.py                          | /gui/groupca                                             | 91/90/1        | PASS
+cas/hsdPs.py                            | GUI program, no web version (no parity/guis spec)        | 0/0/0 (src)    | FAIL
+cas/hsdpva.py                           | GUI program, no web version (no parity/guis spec)        | 18/0/0 (src)   | FAIL
+cas/partca-sum.py                       | GUI program, no web version (no parity/guis spec)        | 12/0/0 (src)   | FAIL
+cas/partca.py                           | GUI program, no web version (no parity/guis spec)        | 27/0/0 (src)   | FAIL
+cas/pvant.py                            | /gui/pvant                                               | 6/6/0          | PASS
+cas/pvatable.py                         | GUI program, no web version (no parity/guis spec)        | 0/0/0 (src)    | FAIL
+cas/tdmpva.py                           | GUI program, no web version (no parity/guis spec)        | 6/0/0 (src)    | FAIL
+cas/tprca.py                            | GUI program, no web version (no parity/guis spec)        | 8/0/0 (src)    | FAIL
+cas/xpmca.py                            | GUI program, no web version (no parity/guis spec)        | 54/0/0 (src)   | FAIL
+cas/xpmpatt.py                          | GUI program, no web version (no parity/guis spec)        | 5/0/0 (src)    | FAIL
+cas/xpmpva.py                           | GUI program, no web version (no parity/guis spec)        | 42/0/0 (src)   | FAIL
+configdb/configdb_GUI.py                | GUI program, no web version (no parity/guis spec)        | 17/0/0 (src)   | FAIL
+procmgr/procstat                        | /gui/procstat                                            | 14/9/5         | PASS
+seq/seq_epixhr.py                       | GUI program, no web version (no parity/guis spec)        | 0/0/0 (src)    | FAIL
+seq/seqplot.py                          | GUI program, no web version (no parity/guis spec)        | 0/0/0 (src)    | FAIL
+slurm/daqstat.py                        | GUI program, no web version (no parity/guis spec)        | 12/0/0 (src)   | FAIL
+trigger/detector_protection_monitor.py  | GUI program, no web version (no parity/guis spec)        | 2/0/0 (src)    | FAIL
+webgui/parity/qt_walk.py                | N/A: the parity check's offscreen walk tool, not a GU... | -/-/-          | PASS
+RESULT: FAIL (5/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 5 of 23 pass at this PR: the 3 web copies and the 2 files that are not GUI programs. The other 18 GUI programs have no web version yet: exit 1
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 5. The control GUI's check, with a fresh offscreen walk: still PASS
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138
+PARITY_EXIT=0
+157 controls found, 65 mapped to a web element with a passing headless-browser test, 92 marked not applicable
+N = 157, M = 65, K = 92, M + K = 157
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+Unmapped (0 rows): id | loc | kind | label
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+RESULT: PASS (M + K = N = 157)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 6. Negative: PvGroupStats.runb removed from a scratch copy of parity/guis (the same walks)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ bash $Q/minus_gui_mapping.sh $P/sim.junit.xml $P/walks $P/minus
+removed PvGroupStats.runb from the copy guis/groupca.json: {'web': '[data-parity~="PvGroupStats.runb"]', 'test': 'test_gui_groupca.py::test_run_and_clear[chromium]'}
+GUI_PARITY_MINUS_EXIT=1
+walks: /sdf/scratch/users/c/cwang31/fix35/run/walks (read; not run now)
+cas/groupca.py | /gui/groupca | 91/89/1 | FAIL
+Unmapped (1 rows): id | loc | kind | label
+  PvGroupStats.runb | cas/groupca.py:188 | checkbox | Run
+RESULT: FAIL: M + K = 90 != N = 91 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PvGroupStats.runb
+RESULT: FAIL (4/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 7. Negative: the same check with no walks run (no --run-walks): no GUI program can pass
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ python -m psdaq.webgui.parity.check_gui_parity --junit $P/sim.junit.xml > $P/gui-nowalk.txt 2>&1; echo GUI_NOWALK_EXIT=$?; python3 $Q/gui_lines.py $P/gui-nowalk.txt | grep -E '^walks|PASS|groupca|pvant|procstat|collection|refused|RESULT'; grep '^walk: ' $P/gui-nowalk.txt
+GUI_NOWALK_EXIT=1
+walks: (none: no GUI program can pass; run with --run-walks)
+cas/collection_widget.py                | N/A: widget library (CollectionWidget, embedded by ca... | -/-/-          | FAIL
+    refused: no run-time import probe collection_widget.probe.json (run with --run-walks)
+cas/groupca.py                          | /gui/groupca                                             | 15/0/0         | FAIL
+cas/pvant.py                            | /gui/pvant                                               | 1/0/0          | FAIL
+procmgr/procstat                        | /gui/procstat                                            | 12/0/0         | FAIL
+webgui/parity/qt_walk.py                | N/A: the parity check's offscreen walk tool, not a GU... | -/-/-          | PASS
+RESULT: FAIL (1/23 files pass)
+walk: no walk groupca.walk.json (run with --run-walks)
+walk: no walk pvant.walk.json (run with --run-walks)
+walk: no walk procstat.walk.json (run with --run-walks)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 8. The procstat host guard: a .cnf with one process with no host and one at 192.0.2.1. telnetlib is stubbed: nothing is contacted
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ bash $Q/procstat_hosts.sh 9eae39ff1 $P/hosts-before   # the PR before this commit
+  /sdf/scratch/users/c/cwang31/fix35/run/hosts-before/remote.cnf:
+    platform = '5'
+    procmgr_config = [
+     { id:'here', flags:'s', cmd:'sleep 60' },
+     { host:'192.0.2.1', id:'remote', flags:'s', cmd:'sleep 60' },
+    ]
+  9eae39ff1: procstat_api from tree/psdaq/psdaq/webgui/procstat_api.py; require_loopback_cnf: False
+  daq_webgui --procstat-cnf remote.cnf: exit 124 (still serving after 6 s: stopped by timeout)
+    daq_webgui: listening on http://127.0.0.1:42273/ backend=emulator events=emulator
+  Telnet.open calls: 4; (host, port): {('192.0.2.1', '29503'): 2, ('sdfmilan120', '29502'): 2}
+  socket.connect (audit hook): 0
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ bash $Q/procstat_hosts.sh $(git rev-parse --short HEAD) $P/hosts-after   # this head
+  /sdf/scratch/users/c/cwang31/fix35/run/hosts-after/remote.cnf:
+    platform = '5'
+    procmgr_config = [
+     { id:'here', flags:'s', cmd:'sleep 60' },
+     { host:'192.0.2.1', id:'remote', flags:'s', cmd:'sleep 60' },
+    ]
+  43f0a277f: procstat_api from tree/psdaq/psdaq/webgui/procstat_api.py; require_loopback_cnf: True
+  daq_webgui --procstat-cnf remote.cnf: exit 2
+    daq_webgui: --procstat-cnf /sdf/scratch/users/c/cwang31/fix35/run/hosts-after/remote.cnf: process 'remote' names host '192.0.2.1'; refusing (the web procstat contacts procServ only on this host: a process's host must
+  Telnet.open calls: 0; (host, port): {}
+  socket.connect (audit hook): 0
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # Before: it telnets to 192.0.2.1 and to this machine's name. Now: exit 2 before anything is opened. The tests (also in the suite above):
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ WEBGUI_SHOTS=$P/shots-guard bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -v -s -p no:warnings -k test_procstat_ > $P/guard.log 2>&1; echo GUARD_TESTS_EXIT=$?; grep -E '::test_procstat_|PASSED|FAILED|records|telnet.open|opens|passed|failed' $P/guard.log | cut -c1-138
+GUARD_TESTS_EXIT=0
+test_webgui_safety.py::test_procstat_cnf_naming_a_remote_host_is_refused daq_webgui: --procstat-cnf /lscratch/cwang31/tmp/pytest-of-cwang3
+telnet.open / socket.connect records: []
+PASSED
+test_webgui_safety.py::test_procstat_poll_opens_only_127_0_0_1 telnet.open (host, port): [('127.0.0.1', '29502'), ('127.0.0.1', '29503'), 
+PASSED
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host {'opens': ['127.0.0.1'], 'rows': [['here', 'localhost', 'NOCONNECT
+PASSED
+====================== 3 passed, 229 deselected in 2.57s =======================
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 9. The DAQ down: everything this step started stops
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -2 $P/down.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T18:29:52.322-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T18:29:52.325-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ sleep 2; echo "listening on 30050 or 15075: $(ss -ltn | grep -cE ':(30050|15075) '); my procServ processes: $(pgrep -u $USER -x procServ | wc -l)"
+listening on 30050 or 15075: 0; my procServ processes: 0
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ # 10. The tests as CI would run them, with no simulated DAQ: the ones that need it skip, and say why
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ WEBGUI_SHOTS=$P/shots-nosim bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -rs -k 'check_gui_parity or test_gui_ or test_procstat_' > $P/nosim.log 2>&1; echo NOSIM_EXIT=$?; tail -1 $P/nosim.log
+NOSIM_EXIT=0
+========== 6 passed, 22 skipped, 204 deselected, 5 warnings in 6.27s ===========
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui2$ echo "checkout local changes: $(git status --short | wc -l)"; date '+%F %T %Z'; exit
+checkout local changes: 0
+2026-11-08 18:30:12 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

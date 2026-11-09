@@ -1,0 +1,48 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/up_gui_web.sh web1",
+  "expect": "listening on|rror|exists",
+  "timeout": 300,
+  "fail": "rror|exists"
+ },
+ {
+  "send": "ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p35'"
+ },
+ {
+  "send": "ssh -f -S none -L 31063:/tmp/cwang31-p35/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p35/webgui.sock:127.0.0.1:31063 sdfmilan120'",
+  "timeout": 60
+ },
+ {
+  "send": "sleep 3; for u in /gui/procstat /gui/groupca /gui/pvant; do curl -s -o /dev/null -w \"GET http://127.0.0.1:31063$u on this VM -> HTTP %{http_code}\\n\" http://127.0.0.1:31063$u; done"
+ },
+ {
+  "send": "./pwvenv/bin/python paced_drive.py http://127.0.0.1:31063/ rec/pr35-web --flow gui",
+  "expect": "ACTIONS=|Error|Traceback",
+  "timeout": 600,
+  "fail": "Traceback|GUI_FLOW_OK=False"
+ },
+ {
+  "send": "./pwvenv/bin/python pace_check.py rec/pr35-web/actions.jsonl"
+ },
+ {
+  "send": "read N INH ITV MASK <<< $(python3 -c \"import json; r=json.load(open('rec/pr35-web/result.json')); print(int(r['groupca_count_final']), *[int(v) for v in r['groupca_before'].values()])\"); echo \"page count $N; groupca PVs before the run: InhEnable0 $INH, InhInterval0 $ITV, DstSelect_Mask $MASK\""
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/readback_gui.sh $N $INH $ITV $MASK",
+  "expect": "READBACK (PASS|FAIL)|usage|rror",
+  "timeout": 300
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/users/c/cwang31/guiproof/down_gui_web.sh web1",
+  "expect": "listening|no running",
+  "timeout": 120,
+  "always": true
+ },
+ {
+  "send": "pkill -f '^ssh .*-L 31063:/tmp/cwang31-p35'; ssh sdfiana025 \"pkill -u \\$USER -f '^ssh -N .*cwang31-p35/webgui.sock'\"; pgrep -af '^ssh .*-L 31063:' || echo 'tunnel closed (both hops)'",
+  "always": true
+ }
+]

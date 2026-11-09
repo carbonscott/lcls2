@@ -1,0 +1,56 @@
+host sdfmilan120 date 2026-11-08T18:30:04-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/users/c/cwang31/fix35/run/shots-nosim server-args ''
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.2.0, pluggy-1.7.0
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq/webgui/tests
+configfile: ../../../pyproject.toml
+plugins: playwright-0.10.0
+collected 232 items / 204 deselected / 28 selected
+
+test_check_gui_parity.py ..sssss.s                                       [ 32%]
+test_gui_groupca.py sssssssss                                            [ 64%]
+test_gui_procstat.py ssssss                                              [ 85%]
+test_gui_pvant.py s                                                      [ 89%]
+test_webgui_safety.py ...                                                [100%]
+
+=============================== warnings summary ===============================
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq/procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq/procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_gui_groupca.py::test_tabs[chromium]
+  /sdf/scratch/users/c/cwang31/agentify-webtest/venv/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'base_url' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [3] test_check_gui_parity.py:46: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:84: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:98: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:127: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_gui_groupca.py:129: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:143: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:166: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:181: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:202: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:225: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:254: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:282: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:306: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:64: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:89: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:103: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:122: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:139: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:38: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_pvant.py:34: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+========== 6 passed, 22 skipped, 204 deselected, 5 warnings in 6.27s ===========

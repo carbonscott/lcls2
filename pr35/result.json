@@ -1,0 +1,46 @@
+{
+ "flow": "gui",
+ "events_after_disable": null,
+ "events_after_reset": null,
+ "ok": true,
+ "video": "/home/exedev/projects/lcls2/redo/rec/pr35-web/page@5aa7a6ef0d4a2c077240cf2600bfcf6e.webm",
+ "video_s": 74.68,
+ "wall_s": 73.91,
+ "actions": 21,
+ "min_highlight_to_act_s": 1.2,
+ "min_gap_s": 2.7,
+ "shots": [
+  "rec/pr35-web/01-procstat.png",
+  "rec/pr35-web/02-procstat-console.png",
+  "rec/pr35-web/03-procstat-logfile.png",
+  "rec/pr35-web/04-procstat-restart-refused.png",
+  "rec/pr35-web/05-groupca-group-written.png",
+  "rec/pr35-web/06-groupca-running.png",
+  "rec/pr35-web/07-pvant-running.png",
+  "rec/pr35-web/08-groupca-put-back.png",
+  "rec/pr35-web/09-pvant-stopped.png"
+ ],
+ "error_window_lines": [],
+ "procstat_before": {
+  "control": "RUNNING",
+  "fakecam_0": "RUNNING",
+  "fakecam_1": "RUNNING",
+  "teb0": "RUNNING"
+ },
+ "groupca_before": {
+  "DAQ:SIM:XPM:0:PART:5:InhEnable0": 0,
+  "DAQ:SIM:XPM:0:PART:5:InhInterval0": 10,
+  "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask": 23555
+ },
+ "pvant_running": [
+  "3799",
+  "6799"
+ ],
+ "groupca_count_final": 9718.0,
+ "groupca_after": {
+  "DAQ:SIM:XPM:0:PART:5:InhEnable0": 0,
+  "DAQ:SIM:XPM:0:PART:5:InhInterval0": 10,
+  "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask": 23555
+ },
+ "pvant_count_final": "9718"
+}

@@ -1,0 +1,51 @@
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq junit=/sdf/scratch/users/c/cwang31/fix35/run/sim.junit.xml
+walks: /sdf/scratch/users/c/cwang31/fix35/run/walks (read; not run now)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 105, 271; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | GUI program, no web version (no parity/guis spec) | 5/0/0 (source sites; no walk) | FAIL
+cas/deadca.py | GUI program, no web version (no parity/guis spec) | 3/0/0 (source sites; no walk) | FAIL
+cas/dtica.py | GUI program, no web version (no parity/guis spec) | 17/0/0 (source sites; no walk) | FAIL
+cas/groupca.py | /gui/groupca | 91/89/1 | FAIL
+cas/hsdPs.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+cas/hsdpva.py | GUI program, no web version (no parity/guis spec) | 18/0/0 (source sites; no walk) | FAIL
+cas/partca-sum.py | GUI program, no web version (no parity/guis spec) | 12/0/0 (source sites; no walk) | FAIL
+cas/partca.py | GUI program, no web version (no parity/guis spec) | 27/0/0 (source sites; no walk) | FAIL
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+cas/tdmpva.py | GUI program, no web version (no parity/guis spec) | 6/0/0 (source sites; no walk) | FAIL
+cas/tprca.py | GUI program, no web version (no parity/guis spec) | 8/0/0 (source sites; no walk) | FAIL
+cas/xpmca.py | GUI program, no web version (no parity/guis spec) | 54/0/0 (source sites; no walk) | FAIL
+cas/xpmpatt.py | GUI program, no web version (no parity/guis spec) | 5/0/0 (source sites; no walk) | FAIL
+cas/xpmpva.py | GUI program, no web version (no parity/guis spec) | 42/0/0 (source sites; no walk) | FAIL
+configdb/configdb_GUI.py | GUI program, no web version (no parity/guis spec) | 17/0/0 (source sites; no walk) | FAIL
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+seq/seqplot.py | GUI program, no web version (no parity/guis spec) | 0/0/0 (source sites; no walk) | FAIL
+slurm/daqstat.py | GUI program, no web version (no parity/guis spec) | 12/0/0 (source sites; no walk) | FAIL
+trigger/detector_protection_monitor.py | GUI program, no web version (no parity/guis spec) | 2/0/0 (source sites; no walk) | FAIL
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- cas/groupca.py (groupca; own files cas/groupca.py; walk argv ['DAQ:SIM', '0', '5'], 138 instances, elapsed 11.8 s, python 3.9.21, qt 5.15.8)
+91 controls found, 89 mapped to a web element with a passing headless-browser test, 1 marked not applicable
+N = 91, M = 89, K = 1, M + K = 90
+walk: walk source digest matches (sha256:b840f85bd97f3ee44a9e67698873645aed94834e479dc7fcf8c66d4304db4f0f)
+
+Not applicable (1 rows; def-unreachable 1): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 1]
+  PvPatternStats.PvDbl | cas/groupca.py:163 | unreachable:def-unreachable | class PvPatternStats is never instantiated: its only use, the Pattern tab, is commented out (cas/groupca.py:312 #tw.addTab(PvPatternStats(...))); the walk shows its line never ran | walk agree: line cas/groupca.py:163 never ran; 0 instance(s)
+
+Unmapped (1 rows): id | loc | kind | label
+  PvGroupStats.runb | cas/groupca.py:188 | checkbox | Run
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: FAIL: M + K = 90 != N = 91 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PvGroupStats.runb
+
+RESULT: FAIL (4/23 files pass)

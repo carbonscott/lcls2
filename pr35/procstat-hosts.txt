@@ -1,0 +1,30 @@
+== hosts-before (Slurm job 43843200 step 95; procstat_hosts.sh)
+-- remote.cnf
+platform = '5'
+procmgr_config = [
+ { id:'here', flags:'s', cmd:'sleep 60' },
+ { host:'192.0.2.1', id:'remote', flags:'s', cmd:'sleep 60' },
+]
+-- server stdout
+daq_webgui: listening on http://127.0.0.1:42273/ backend=emulator events=emulator
+daq_webgui: stopped
+-- server stderr
+2026-11-08 18:29:21,012 daq_webgui INFO: web GUI webgui-v0 started: backend=emulator state=reset instrument=TST aliases=['BEAM', 'NOBEAM'] (emulator)
+-- net.jsonl (Telnet.open stub records and socket.connect audit records)
+["telnet.open", "sdfmilan120", "29502"]
+["telnet.open", "192.0.2.1", "29503"]
+["telnet.open", "sdfmilan120", "29502"]
+["telnet.open", "192.0.2.1", "29503"]
+
+== hosts-after (Slurm job 43843200 step 95; procstat_hosts.sh)
+-- remote.cnf
+platform = '5'
+procmgr_config = [
+ { id:'here', flags:'s', cmd:'sleep 60' },
+ { host:'192.0.2.1', id:'remote', flags:'s', cmd:'sleep 60' },
+]
+-- server stdout
+-- server stderr
+daq_webgui: --procstat-cnf /sdf/scratch/users/c/cwang31/fix35/run/hosts-after/remote.cnf: process 'remote' names host '192.0.2.1'; refusing (the web procstat contacts procServ only on this host: a process's host must be localhost, 127.0.0.1, ::1 or none)
+-- net.jsonl (Telnet.open stub records and socket.connect audit records)
+

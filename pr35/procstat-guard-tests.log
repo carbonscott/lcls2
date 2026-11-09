@@ -1,0 +1,18 @@
+host sdfmilan120 date 2026-11-08T18:29:40-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/users/c/cwang31/fix35/run/shots-guard server-args ''
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.2.0, pluggy-1.7.0 -- /sdf/scratch/users/c/cwang31/agentify-webtest/venv/bin/python
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq/webgui/tests
+configfile: ../../../pyproject.toml
+plugins: playwright-0.10.0
+collecting ... collected 232 items / 229 deselected / 3 selected
+
+test_webgui_safety.py::test_procstat_cnf_naming_a_remote_host_is_refused daq_webgui: --procstat-cnf /lscratch/cwang31/tmp/pytest-of-cwang31/pytest-20/test_procstat_cnf_naming_a_rem0/p.cnf: process 'remote' names host '192.0.2.1'; refusing (the web procstat contacts procServ only on this host: a process's host must be localhost, 127.0.0.1, ::1 or none)
+
+telnet.open / socket.connect records: []
+PASSED
+test_webgui_safety.py::test_procstat_poll_opens_only_127_0_0_1 telnet.open (host, port): [('127.0.0.1', '29502'), ('127.0.0.1', '29503'), ('127.0.0.1', '29504')] in 9 opens
+PASSED
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host {'opens': ['127.0.0.1'], 'rows': [['here', 'localhost', 'NOCONNECT'], ['remote', '192.0.2.1', 'NOCONNECT']]}
+PASSED
+
+====================== 3 passed, 229 deselected in 2.57s =======================
