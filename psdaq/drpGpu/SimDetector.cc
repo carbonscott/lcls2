@@ -1,5 +1,6 @@
 #include "SimDetector.hh"
 #include "drp/XpmInfo.hh"               // For connectionInfo()
+#include "drp/MemPoolSim.hh"
 #include "psalg/utils/SysLog.hh"
 
 #include <time.h>
@@ -38,7 +39,8 @@ SimDetector::SimDetector(Parameters* para, MemPoolGpu* pool, unsigned len) :
   m_length      (len),
   m_eventQueue  (pool->dmaCount()),
   m_l1Delay     (1000000),              // L1Accept delay in us
-  m_suPeriod    {1000}                  // SlowUpdate period in ms
+  m_suPeriod    {1000},                 // SlowUpdate period in ms
+  m_sim         (pool->sim())           // With -d sim://, timing comes from simxpm
 {
   if (para->kwargs.find("sim_l1_delay") != para->kwargs.end()) {
     m_l1Delay = std::stoul(para->kwargs.at("sim_l1_delay"));
@@ -75,6 +77,16 @@ json SimDetector::connectionInfo(const json& msg)
 {
   logging::debug("SimDetector::connectionInfo");
 
+  // With a simulated device the event simulator is simxpm: MemPoolGpu's thread puts each
+  // L1Accept's payload, from _genL1Payload(), after the TimingHeader simxpm's frame gives
+  if (m_sim) {
+    m_pool->getAs<MemPoolGpu>()->simPayload([this](uint32_t l1, uint8_t** data_d) {
+      return _genL1Payload(data_d, l1, 0);
+    });
+    logging::info("SimDetector: timing from simxpm through %s", m_para->device.c_str());
+    return xpmInfo(m_sim->paddr());
+  }
+
   // Reset the event queue
   m_eventQueue.startup();
 
@@ -92,6 +104,12 @@ json SimDetector::connectionInfo(const json& msg)
 void SimDetector::connectionShutdown()
 {
   logging::debug("SimDetector::connectionShutdown");
+
+  if (m_sim) {
+    m_sim->disconnect();
+    m_pool->getAs<MemPoolGpu>()->simPayload(nullptr);
+    return;
+  }
 
   // Unblock the record queue
   m_eventQueue.shutdown();
@@ -114,6 +132,8 @@ void SimDetector::connect(const json& connect_json, const std::string& collectio
   std::map<std::string,std::string>::iterator it = m_para->kwargs.find("sim_length");
   if (it != m_para->kwargs.end())
     m_length = stoi(it->second) * sizeof(uint32_t); // Convert to bytes
+
+  if (m_sim)  m_sim->connect(m_readoutGroup, 0);   // simxpm's frames: TimingHeaders only
 
   logging::debug("SimDetector::connect: end this %p", this);
 }

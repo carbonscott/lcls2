@@ -16,6 +16,7 @@ namespace XtcData {
 namespace Drp {
   class Parameters;
   class MemPool;
+  class MemPoolSim;
   namespace Gpu {
 
     class SimDetector : public Gpu::Detector
@@ -45,6 +46,7 @@ namespace Drp {
       std::thread                             m_eventThread;
       unsigned                                m_l1Delay;
       ms_t                                    m_suPeriod;
+      MemPoolSim*                             m_sim;          // -d sim://: simxpm's timing
 };
 
   } // Gpu

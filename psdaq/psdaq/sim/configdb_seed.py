@@ -66,7 +66,7 @@ def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024, det_type='fake
 
 # XpmDetector types with no <type>_config.py: their DRP configures through xpmdet_config only,
 # and their config DB entry holds what fakecam's does
-XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu', 'epixuhremu')
+XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu', 'epixuhremu', 'epixuhrsim')
 # Stores whose default config is a function other than <type>_cdict(): ts_config_store's
 # __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument), and so does
 # epixuhr3x2_config_store's

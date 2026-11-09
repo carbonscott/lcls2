@@ -39,3 +39,8 @@ class fakecam_noOp_0_0_0(_drpgpu_noOp):
 # Gpu::EpixUHRemu: the ePixUHR 3x2 emulator's 336 x 576 panel
 class epixuhremu_noOp_0_0_0(_drpgpu_noOp):
     shape = (336, 576)
+
+
+# Gpu::EpixUHRsim: the GPU DRP's own simulated ePixUHR 3x2 panel, 336 x 576
+class epixuhrsim_noOp_0_0_0(_drpgpu_noOp):
+    shape = (336, 576)

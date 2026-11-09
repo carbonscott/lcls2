@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
 
 using logging = psalg::SysLog;
 using namespace XtcData;
@@ -115,6 +116,8 @@ public:
   {
     return m_reference_d;
   }
+  const std::vector<uint16_t>& raw() const { return m_raw; }
+  unsigned nEvents() const { return m_nEvents; }
   unsigned referenceBufCnt() const
   {
     return m_nEvents;
@@ -150,6 +153,31 @@ public:
   } // Gpu
 } // Drp
 
+
+// What the simulated panel produces, for a reader to check the recorded data against:
+// "EUHRSIM1", then uint32 nEvents, nPixels, nRanges, 0, then the raw frames
+// (uint16[nEvents][nPixels], gain in bit 0, value in bits 1-11), the pedestals and the
+// gains (float32[nRanges][nPixels] each).  The n-th L1Accept carries frame n % nEvents.
+static void _writeSimRef(const std::string& path, unsigned nEvents,
+                         const std::vector<uint16_t>& raw,
+                         const std::vector<float>& peds, const std::vector<float>& gains)
+{
+  FILE* f = fopen(path.c_str(), "wb");
+  if (!f) {
+    logging::error("EpixUHRsim: cannot write %s: %m", path.c_str());
+    return;
+  }
+  const char     magic[8]{'E', 'U', 'H', 'R', 'S', 'I', 'M', '1'};
+  const uint32_t hdr[4]{nEvents, EpixUHRsim::NPixels, EpixUHRsim::NRanges, 0};
+  bool ok = fwrite(magic, sizeof(magic), 1, f) == 1 && fwrite(hdr, sizeof(hdr), 1, f) == 1 &&
+            fwrite(raw.data(),   sizeof(raw[0]),   raw.size(),   f) == raw.size() &&
+            fwrite(peds.data(),  sizeof(peds[0]),  peds.size(),  f) == peds.size() &&
+            fwrite(gains.data(), sizeof(gains[0]), gains.size(), f) == gains.size();
+  ok = (fclose(f) == 0) && ok;
+  if (ok)  logging::info("EpixUHRsim: wrote its %u raw frames and calibration constants to %s",
+                         nEvents, path.c_str());
+  else     logging::error("EpixUHRsim: writing %s failed: %m", path.c_str());
+}
 
 EpixUHRsim::EpixUHRsim(Drp::Parameters& para, MemPoolGpu& pool) :
   Gpu::Detector(&para, &pool)
@@ -240,6 +268,11 @@ unsigned EpixUHRsim::beginrun(XtcData::Xtc& xtc, const void* bufEnd, const nlohm
 
   auto& simDet = *static_cast<SimDet*>(m_det);
   simDet.calculateReference(peds, gains);
+
+  // A simulated device's run (-d sim://) can name a file for what the panel produced
+  auto const ref = m_para->kwargs.find("sim_ref");
+  if (ref != m_para->kwargs.end())
+    _writeSimRef(ref->second, simDet.nEvents(), simDet.raw(), pedsFlat, gainsFlat);
 
   return rc;
 }

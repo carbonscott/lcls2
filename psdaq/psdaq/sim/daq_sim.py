@@ -134,6 +134,12 @@ GPU_SIM_TYPES = {
     # MemPoolSim::fill, 96768 of them = the 336 x 576 uint16 pixels of a panel
     'epixuhremu': {'kwargs': 'reducer=NoOpReducer,sim_length=96768,sim_dma_size=0x60000,'
                              'sim_dma_count=64,dmaBufSize=458752,dmaBufCount=64'},
+    # Gpu::EpixUHRsim: its SimDetector makes 16 random 336 x 576 frames and calibration
+    # constants on the GPU; simxpm's frames only time them.  It writes both to 'ref' at
+    # BeginRun, which xtc2_check calibrates every event's frame from
+    'epixuhrsim': {'kwargs': 'reducer=NoOpReducer,sim_dma_count=64,dmaBufSize=458752,'
+                             'dmaBufCount=64,sim_ref={work}/epixuhrsim-ref.bin',
+                   'ref': 'epixuhrsim-ref.bin'},
 }
 
 
@@ -968,8 +974,9 @@ def _psana_counts(work, state, experiment, run, seed=None):
     # <det>_0's file is the first one in which xtc2_check finds segment 0 (the type's det.raw.raw).
     for path in files:
         out = {'xtc2 file': f'{path} ({os.path.getsize(path)} B)'}
+        ref = (GPU_SIM_TYPES.get(DETECTOR, {}).get('ref') if state.get('drp') == 'drp_gpu' else None)
         r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', path, '--det', DETECTOR,
-                            '--drp', state.get('drp', 'drp'),
+                            '--drp', state.get('drp', 'drp')] + (['--ref', work.path(ref)] if ref else []) + [
                             '--seed', str(state['seed'] if seed is None else seed), '--json'],
                            capture_output=True, text=True, timeout=600)
         try:

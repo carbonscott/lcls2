@@ -6,6 +6,8 @@
 #include <vector>
 #include <thread>
 #include <atomic>
+#include <functional>
+#include <mutex>
 
 #include <cuda_runtime.h>
 #include <cuda/std/atomic>
@@ -202,6 +204,11 @@ public:   // Virtuals
   // timing frames and lays each one out as the type's firmware would; _simFeeder() copies
   // them into the GPU's DMA buffers as GpuAsyncCore would DMA them.  nullptr with hardware.
   Drp::MemPoolSim* sim() override { return m_sim.get(); }
+  // A detector that makes its own L1Accept payload on the GPU (SimDetector) hands it to the
+  // simulated device here: the n-th L1Accept since Configure gets what fn(n, &data_d)
+  // returns, data_d pointing to device memory, after simxpm's TimingHeader.  Empty: none.
+  using SimPayload = std::function<size_t(uint32_t l1, uint8_t** data_d)>;
+  void simPayload(SimPayload fn) { std::lock_guard<std::mutex> lock(m_simLock); m_simPayload = fn; }
 private:  // Virtuals
   ssize_t _freeDma(unsigned count, uint32_t* indices) override { return 0; /* Nothing to do */ }
 public:
@@ -295,6 +302,8 @@ private:
   std::unique_ptr<Drp::MemPoolSim> m_sim;            // -d sim:// only
   std::thread                  m_simThread;          // Runs _simFeeder()
   std::atomic<bool>            m_simTerminate{false};
+  std::mutex                   m_simLock;            // Guards m_simPayload
+  SimPayload                   m_simPayload;
   bool                         m_setMaskBytesDone;
   size_t                       m_hostWrtBufsSize;
   uint32_t*                    m_hostWrtBufs;        // [nBuffers * nElements]

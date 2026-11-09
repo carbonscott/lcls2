@@ -854,6 +854,7 @@ int main(int argc, char* argv[])
             if (kwargs.first == "sim_seed")      continue;  // XpmDetector
             if (kwargs.first == "sim_dma_count") continue;  // MemPoolSim
             if (kwargs.first == "sim_dma_size")  continue;  // MemPoolSim
+            if (kwargs.first == "sim_ref")       continue;  // GPU DRP Simulator (EpixUHRsim)
         }
         logging::critical("Unrecognized kwarg '%s=%s'\n",
                           kwargs.first.c_str(), kwargs.second.c_str());

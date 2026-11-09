@@ -509,6 +509,7 @@ void MemPoolGpu::_simFeeder()
   uint32_t       indices[MaxRead];
   uint32_t       dests[MaxRead];
   unsigned       dmaIdx{0};
+  uint32_t       l1{0};                 // L1Accepts since Configure, for m_simPayload
   uint64_t       nFed{0};
   pollfd         pfd{m_sim->fd(), POLLIN, 0};
   while (!m_simTerminate.load(std::memory_order_acquire)) {
@@ -524,7 +525,7 @@ void MemPoolGpu::_simFeeder()
       uint64_t   pidCtl;
       memcpy(&pidCtl, buffer + thOffset, sizeof(pidCtl));
       auto const tid    = XtcData::TransitionId::Value((pidCtl >> 56) & 0xf);
-      if (tid == XtcData::TransitionId::Configure)  dmaIdx = 0;
+      if (tid == XtcData::TransitionId::Configure)  { dmaIdx = 0;  l1 = 0; }
 
       // Wait for the GPU to hand this DMA buffer back
       volatile uint32_t* const wrEn{(volatile uint32_t*)(coreRegs.registers() +
@@ -543,10 +544,26 @@ void MemPoolGpu::_simFeeder()
       // and with the two copies merely queued in order it was seen to calibrate events
       // whose last tens of kB were still zero
       auto const dmaBuffer = m_panel->dmaBuffers[dmaIdx];
-      DmaDsc const dmaDsc{0x02000000, size};      // SOF and no error, as GpuAsyncCore writes
+      DmaDsc dmaDsc{0x02000000, size};            // SOF and no error, as GpuAsyncCore writes
       // Fatal, as for the hardware: an error here is the context's (a kernel's fault), and
       // nothing more would reach the GPU
       chkFatal(cudaMemcpyAsync(dmaBuffer + frameSize, buffer, size, cudaMemcpyHostToDevice, stream));
+      if (tid == XtcData::TransitionId::L1Accept) {
+        std::lock_guard<std::mutex> lock(m_simLock);
+        if (m_simPayload) {             // The detector's own payload, from the GPU
+          uint8_t* data_d{nullptr};
+          size_t   bytes{m_simPayload(l1, &data_d)};
+          if (frameSize + size + bytes > m_dmaSize) {
+            logging::critical("MemPoolGpu: an L1Accept of %zu B does not fit dmaBufSize %u B",
+                              frameSize + size + bytes, m_dmaSize);
+            abort();
+          }
+          chkFatal(cudaMemcpyAsync(dmaBuffer + frameSize + size, data_d, bytes,
+                                   cudaMemcpyDeviceToDevice, stream));
+          dmaDsc.size += bytes;
+        }
+        ++l1;
+      }
       chkFatal(cudaStreamSynchronize(stream));
       chkFatal(cudaMemcpyAsync(dmaBuffer, &dmaDsc, sizeof(dmaDsc), cudaMemcpyHostToDevice, stream));
       chkFatal(cudaStreamSynchronize(stream));    // The buffer and dmaDsc may now be reused

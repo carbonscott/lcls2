@@ -31,6 +31,9 @@ the TDet words above, read as the type's uint16 pixels; the check computes, for 
 the words (pulseId, seq n, seed, the w[k] pattern) and the calibration the type's own GPU code
 applies to each pixel (GPU_TYPES), and compares every pixel.  The event's pulseId is the one,
 of the few ticks simxpm may add to its timestamp's, whose words match; it must rise.
+epixuhrsim makes its own frames on the GPU (SimDetector): --ref names the file it wrote at
+BeginRun (its 16 raw frames and calibration constants), and the n-th event must hold frame
+(n - 1) % 16 calibrated with them, every pixel; --self-test-offset K expects frame n - 1 + K.
 
 psana2's calibration DB lookup is switched off (skip_calib_load='all') and LCLS_CALIB_HTTP points
 at a dead loopback port unless already set, so reading the file contacts no service.
@@ -53,6 +56,8 @@ GPU_TYPES = {
     'fakecam': (None, lambda u: (u & 0x3fff).astype('float32')),
     # Gpu::EpixUHRemu: gain in bit 0, an 11-bit value in bits 1-11 (EpixUHRemu.hh)
     'epixuhremu': ((336, 576), lambda u: ((u >> 1) & 0x7ff).astype('float32')),
+    # Gpu::EpixUHRsim: its own frames (--ref), gain in bit 0 and an 11-bit value in bits 1-11
+    'epixuhrsim': ((336, 576), None),
 }
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
@@ -414,11 +419,16 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     return r
 
 
-def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp'):
+def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp',
+          ref=None):
     kind = det_name.rsplit('_', 1)[0]
     if drp == 'drp_gpu':
         if kind not in GPU_TYPES:
             raise SystemExit(f'xtc2_check: no GPU DRP check for {kind!r}; one of {sorted(GPU_TYPES)}')
+        if GPU_TYPES[kind][1] is None:
+            if ref is None:
+                raise SystemExit(f'xtc2_check: {kind} needs --ref, the file it wrote at BeginRun')
+            return check_gpu_ref(path, det_name, kind, ref, expect, max_report, offset)
         return check_gpu(path, det_name, kind, seed, expect, max_report, offset)
     if kind in IMAGE_TYPES:
         shape, bits = IMAGE_TYPES[kind]
@@ -559,6 +569,73 @@ def check_gpu(path, det_name, kind, seed=None, expect=None, max_report=5, offset
     return r
 
 
+def read_sim_ref(path):
+    """(raw frames uint16[nEvents][nPixels], pedestals and gains float32[nRanges][nPixels])
+    from the file EpixUHRsim writes at BeginRun with its sim_ref kwarg (EpixUHRsim.cu)."""
+    import numpy as np
+    with open(path, 'rb') as f:
+        if f.read(8) != b'EUHRSIM1':
+            raise ValueError(f'{path}: not an EpixUHRsim reference file')
+        n, npix, nranges, _ = np.frombuffer(f.read(16), dtype=np.uint32)
+        raw = np.frombuffer(f.read(2 * n * npix), dtype=np.uint16).reshape(n, npix)
+        peds = np.frombuffer(f.read(4 * nranges * npix), dtype=np.float32).reshape(nranges, npix)
+        gains = np.frombuffer(f.read(4 * nranges * npix), dtype=np.float32).reshape(nranges, npix)
+    return raw, peds, gains
+
+
+def check_gpu_ref(path, det_name, kind, ref, expect=None, max_report=5, offset=0):
+    """The per-event check of a GPU DRP type that makes its own frames (epixuhrsim)."""
+    os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
+    import numpy as np
+    from psana import DataSource
+    shape = GPU_TYPES[kind][0]
+    raw, peds, gains = read_sim_ref(ref)
+    pix = np.arange(raw.shape[1])
+    gain = (raw & 1).astype(np.int64)                         # range bit 0
+    value = ((raw >> 1) & 0x7ff).astype(np.float32)           # 11 bits from bit 1
+    want = (value - peds[gain, pix]) * gains[gain, pix]       # as PedGainCalib, in float32
+    r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
+         'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
+         'first_seq': None, 'last_seq': None, 'seq_gap_free': None, 'problems': [],
+         'check': (f'every pixel of {det_name}.noOp.calib (drp_gpu: calibrated on the GPU, '
+                   f'NoOpReducer) vs frame (n-1) % {raw.shape[0]} of {os.path.basename(ref)} '
+                   f'calibrated with its constants' + (f', self-test offset {offset}' if offset else ''))}
+    ds = DataSource(files=[path], skip_calib_load='all')
+    for run in ds.runs():
+        r['run'] = run.runnum
+        r['experiment'] = run.expt
+        det = run.Detector(det_name)
+        for evt in run.events():
+            r['events'] += 1
+            n = r['events']
+            got = det.noOp.calib(evt)
+            if got is None:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: no {det_name} data')
+                continue
+            r['with_data'] += 1
+            r['shape'] = list(got.shape)
+            exp = want[(n - 1 + offset) % raw.shape[0]]
+            flat = np.ascontiguousarray(got).reshape(-1)
+            problems = [f'shape {got.shape}, not {shape}'] if got.shape != shape else []
+            bad = int((flat != exp).sum()) if flat.size == exp.size else flat.size
+            if bad:
+                problems.append(f'{bad} of {exp.size} pixels differ from frame {(n - 1 + offset) % raw.shape[0]}')
+            if problems:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: ' + '; '.join(problems))
+            else:
+                r['pattern_ok'] += 1
+    n = r['events']
+    r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
+    r['seq_gap_free'] = r['pattern_ok'] == n
+    r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
+                     and (expect is None or n == expect))
+    if expect is not None and n != expect:
+        r['problems'].append(f'{n} events, expected {expect}')
+    return r
+
+
 def _pulse_id_from_time(timestamp):
     """simxpm's pulseId for an EPICS-epoch (seconds << 32 | nanoseconds) time (simxpm.timing_now)."""
     sec, ns = timestamp >> 32, timestamp & 0xffffffff
@@ -576,10 +653,13 @@ def main():
     parser.add_argument('--json', action='store_true', help='print the result as one JSON line')
     parser.add_argument('--drp', default='drp', choices=('drp', 'drp_gpu'),
                         help='the DRP that wrote the file (default %(default)s)')
+    parser.add_argument('--ref', default=None,
+                        help='drp_gpu -D epixuhrsim: the frames and constants it wrote (its sim_ref kwarg)')
     parser.add_argument('--self-test-offset', type=int, default=0, metavar='K',
                         help='expect pixel/sample/word i to hold the value of i+K (must FAIL)')
     args = parser.parse_args()
-    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset, drp=args.drp)
+    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset, drp=args.drp,
+              ref=args.ref)
     if args.json:
         print(json.dumps(r))
     else:
@@ -587,9 +667,10 @@ def main():
         print(f'xtc2_check: {r["file"]}')
         print(f'  experiment {r.get("experiment")} run {r.get("run")} detector {r["detector"]} raw shape {r["shape"]}')
         if 'check' in r:                # a type checked against its pattern, field by field
+            what = (f'the pattern of seed {next(iter(r["seeds"])):#x}' if r['seeds']
+                    else 'the check')   # epixuhrsim: its own frames, no seed
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
-                  f'events matching the pattern of seed {next(iter(r["seeds"]), -1):#x}: '
-                  f'{r["pattern_ok"]}')
+                  f'events matching {what}: {r["pattern_ok"]}')
             print(f'  check: {r["check"]}{"" if args.expect is None else f"; expected {args.expect} events"}')
         else:
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
