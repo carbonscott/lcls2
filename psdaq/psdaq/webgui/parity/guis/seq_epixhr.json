@@ -1,0 +1,26 @@
+{
+ "file": "seq/seq_epixhr.py",
+ "title": "seq_epixhr --plot (its sequence in seqplot's pyqtgraph plot; --test: nothing written to an XPM; --rate 1000: with the default rate its own --plot path raises in seqplot's simulation)",
+ "web": "/gui/seq_epixhr",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "--test",
+   "--plot",
+   "--rate",
+   "1000"
+  ],
+  "cwd": "{psdaq}/seq",
+  "pump": 3,
+  "timeout": 120,
+  "drive": [
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "PatternWaveform.add.q0[epixhr]": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[epixhr]\"]",
+   "test": "test_gui_seq_epixhr.py::test_plot_shows_the_pyqt_curves[chromium]"
+  }
+ }
+}

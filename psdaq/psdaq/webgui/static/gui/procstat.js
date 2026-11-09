@@ -1,6 +1,7 @@
 // web copy of psdaq/procmgr/procstat: WinProcStat.onProcMgrUpdated / onProcCellClicked / onClick*.
 'use strict';
 const $ = (id) => document.getElementById(id);
+const API = document.body.dataset.api || '/api/procstat';     // daqstat.html: /api/daqstat (the same window)
 const S = { seq: -1, mode: 0, curKey: '', sortCol: null, sortAsc: true, firstSort: false, rows: [],
             errSeq: null, closed: false, logOffset: 0, logId: null };
 
@@ -40,7 +41,7 @@ function showWarning(title, text) {            // WinProcStat.showWarningWindow 
 async function poll() {
   if (S.closed) return;
   try {
-    const r = await fetch('/api/procstat/status', { cache: 'no-store' });
+    const r = await fetch(API + '/status', { cache: 'no-store' });
     const st = await r.json();
     if (!st.ok) { $('statusbar').textContent = st.err_info || 'error'; return; }
     $('cnf').textContent = `${st.cnf} (platform ${st.platform}, every ${st.interval} s)`;
@@ -83,7 +84,7 @@ for (const th of document.querySelectorAll('#tableProcStat th')) {   // sorting 
 }
 
 async function post(body) {
-  const r = await fetch('/api/procstat/click', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  const r = await fetch(API + '/click', { method: 'POST', headers: { 'Content-Type': 'application/json' },
                                                  body: JSON.stringify(body) });
   return r.json();
 }
@@ -99,7 +100,8 @@ async function cellClicked(id) {               // currentCellChanged keeps sCurK
   $('viewer').hidden = false;
   $('viewer').dataset.mode = mode; $('viewer').dataset.id = id;
   $('viewerTitle').textContent = (mode === 'console' ? 'console: ' : 'log: ') + rep.title +
-                                 (rep.path ? ' (' + rep.path + ')' : rep.port ? ` (telnet ${rep.host} ${rep.port})` : '');
+                                 (rep.label ? ' (' + rep.label + ')' : rep.path ? ' (' + rep.path + ')' :
+                                  rep.port ? ` (telnet ${rep.host} ${rep.port})` : '');
   $('viewerText').textContent = rep.text;
   if (mode === 'logfile') { S.logId = id; S.logOffset = rep.offset; } else S.logId = null;
 }

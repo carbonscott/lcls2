@@ -6,7 +6,8 @@ Source.  The GUI's own files are the file that constructs the QApplication (qapp
 psdaq module it imports that no other psdaq file imports (procmgr/ui_procStat.py for procstat);
 modules shared with other programs (cas/pvedit.py, procmgr/ProcMgr.py) are libraries.  A *site* is a
 call in an own file to a counted widget: a Qt class of COUNTED_QT, or a name a library defines that
-(transitively) builds one (pvedit's PvDbl, LblEditEvt, PvCheckBox ...).  Calls to classes defined in
+(transitively) builds one (pvedit's PvDbl, LblEditEvt, PvCheckBox ...), or a class of the own files
+that derives from one (deadca's PvDblArrayW(QtWidgets.QLabel)).  Calls to other classes defined in
 the own files are not sites: the sites inside them are.  Each site records its scope (Class.method or
 function), its binding (self.<attr>, a local name, or the callee), the enclosing guards and whether
 its line can run (def never called, `if __name__ == '__main__':` block).  QLabel sites whose first
@@ -23,9 +24,11 @@ Rows (one per affordance of the running GUI).  Each instance is attributed to th
 of its construction stack in an own file, i.e. to a site.  A site with instances gives one row per
 instance, id `<scope>.<binding>` plus `[<PV>]`, `[<text>]` and `#<n>` qualifiers as needed to keep ids
 unique (QTableWidget: one row per column `.col[<header>]` and one `.cellClicked` row when connected;
-QTabWidget: one row per tab `.tab[<text>]`).  An instance that is a QLabel with no PV and no text
-written after construction is decoration and gives no row.  A site with no instance gives one row
-`<scope>.<binding>` (not built); a slot gives `<Class>.<slot>`.  Kinds: button, checkbox, combo,
+QTabWidget: one row per tab `.tab[<text>]`; QMessageBox: one row for all its instances, a dialog built anew
+each time it is shown).  An instance that is a QLabel with no text written after
+construction is decoration and gives no row, unless the walk saw another label of the same site built by
+the same line (its construction chain's innermost frame) written: that one is a display not yet updated.
+A site with no instance gives one row `<scope>.<binding>` (not built); a slot gives `<Class>.<slot>`.  Kinds: button, checkbox, combo,
 text (editable), value (read-only or live display), column, click, tab, message, slot.
 
 Flags (enumerator side, from source), which check_parity uses for not-applicable rows:
@@ -37,6 +40,8 @@ Flags (enumerator side, from source), which check_parity uses for not-applicable
   inert      a display the source never writes (no setText/append/setHtml/setPlainText on its
              binding in the own files) or a button whose clicked/toggled signal the source never
              connects
+pyqtgraph: a plot panel (a PlotItem that GraphicsLayout.addPlot makes, a PlotWidget, an ImageView) is a row of kind
+plot (qualifier: its left-axis label); its curves are what it shows, not rows of their own.
 reconcile(rows, walk) says 'agree' when the walk saw what the flag says (0 instances and the line
 never ran; no object of that name; display empty at the end and never written, receivers 0), and
 built(rows, walk) when the row's site has an instance (or the slot's object exists) and the line ran.
@@ -53,7 +58,8 @@ from psdaq.webgui.parity import qapps
 COUNTED_QT = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox',
               'QSpinBox', 'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser',
               'QLabel', 'QTableWidget', 'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget',
-              'QProgressBar', 'QMessageBox')
+              'QProgressBar', 'QMessageBox',
+              'addPlot', 'PlotWidget', 'ImageView')       # pyqtgraph plot panels (GraphicsLayout.addPlot makes a PlotItem)
 STATIC_MSG = ('about', 'critical', 'warning', 'information', 'question', 'aboutQt')
 WRITE_METHODS = ('setText', 'append', 'setHtml', 'setPlainText', 'insertPlainText', 'insertHtml', 'setValue')
 CONNECT_SIGNALS = ('clicked', 'toggled', 'pressed', 'released', 'stateChanged', 'currentIndexChanged',
@@ -116,8 +122,10 @@ def own_and_libs(src, target):
         f = _mod_file(src, m)
         if f is None or f == target or f in own or f in libs:
             continue
-        users = [r for r, ms in graph.items() if r != target and any(_mod_file(src, x) == f for x in ms
-                                                                       if x.startswith('psdaq.'))]
+        # a module another psdaq program imports is a library; the web copies and the parity tools (webgui/) import
+        # a GUI's modules to reuse its code (plots_api runs seqplot's), which does not make them a library
+        users = [r for r, ms in graph.items() if r != target and not r.startswith('webgui/') and
+                 any(_mod_file(src, x) == f for x in ms if x.startswith('psdaq.'))]
         (libs if users else own).append(f)
     return own, libs
 
@@ -225,6 +233,10 @@ class _SiteScan(ast.NodeVisitor):
             self.visit(n)
         self.stack.pop()
 
+    def visit_AnnAssign(self, node):          # self._bar: QProgressBar = QProgressBar(self) (detector_protection_monitor)
+        if node.value is not None:
+            self.visit_Assign(ast.Assign(targets=[node.target], value=node.value, lineno=node.lineno))
+
     def visit_Assign(self, node):
         tgt = node.targets[0]
         name = None
@@ -313,17 +325,71 @@ def _called_defs(trees):
     return out
 
 
+def _refs(node):
+    """names a node references (calls, callbacks, attributes, bases): an over-approximation of what it may run."""
+    out = set()
+    for n in ast.walk(node):
+        if isinstance(n, ast.Name):
+            out.add(n.id)
+        elif isinstance(n, ast.Attribute):
+            out.add(n.attr)
+    return out
+
+
+def _reachable(trees):
+    """(names referenced from code that can run, top-level defs/classes reachable) over the own files: from the
+    module-level statements (not the defs and classes themselves) through the defs and classes they reference,
+    transitively; a reachable class makes all its methods' references reachable."""
+    defs, roots = {}, set()
+    for tree in trees:
+        for n in tree.body:
+            if isinstance(n, (ast.FunctionDef, ast.ClassDef)):
+                defs.setdefault(n.name, []).append(n)
+            else:
+                roots |= _refs(n)
+    seen, todo, called = set(), list(roots), set(roots)
+    while todo:
+        name = todo.pop()
+        if name in seen or name not in defs:
+            continue
+        seen.add(name)
+        for n in defs[name]:
+            r = _refs(n)
+            called |= r
+            todo.extend(r - seen)
+    return called, seen
+
+
 def source_sites(src, target):
     """{'own', 'libs', 'sites', 'slots', 'writes', 'connects', 'uses_slots_by_name', 'digest'}"""
     own, libs = own_and_libs(src, target)
     counted = library_counted(src, libs)
     trees, sites, slots, local_classes = [], [], [], set()
+    local_defs = {}
     for rel in own:
         t = _parse(src, rel)
         trees.append(t)
         for n in ast.walk(t):
             if isinstance(n, ast.ClassDef):
                 local_classes.add(n.name)
+                local_defs[n.name] = n
+    # a class of the own files that derives (directly or through another such class) from a counted widget class
+    # is itself a counted widget: its calls are sites (deadca.PvDblArrayW(QtWidgets.QLabel), pvatable.PvField)
+    # (a base names the own files' class of that name if there is one, else a library or Qt class: a local class
+    # that shadows a library name, deadca's own PvEvtTab, is judged by its own bases)
+    local_counted = set()
+    changed = True
+    while changed:
+        changed = False
+        for name, n in local_defs.items():
+            if name in local_counted:
+                continue
+            bases = [_call_name(b) for b in n.bases]
+            if any((b in local_counted) if b in local_defs else (b in counted) for b in bases):
+                local_counted.add(name)
+                changed = True
+    counted = (set(counted) - set(local_defs)) | local_counted
+    local_classes = {c for c in local_classes if c not in local_counted}
     uses_sbn = False
     for rel, t in zip(own, trees):
         sc = _SiteScan(rel, counted, local_classes)
@@ -334,10 +400,19 @@ def source_sites(src, target):
             uses_sbn = True
     writes, connects = _writes_and_connects(trees)
     called = _called_defs(trees)
+    _, reach_top = _reachable(trees)
     for s in sites:
         s['def_called'] = all(d in called or d in ('__init__', 'setupUi', 'main', 'retranslateUi') or
                               d.startswith('on_') for d in s['defs'])
         s['class_used'] = all(c in called or c.startswith('Ui_') for c in s['classes'])
+        # and the def or class it is in is reachable from code that runs (not only referenced by another
+        # unreachable one: deadca's PvEvtTab, used only by PvEditEvt, which only LblEditEvt names, which nothing calls)
+        top = (s['classes'] or s['defs'] or [None])[0]
+        if top is not None and top not in reach_top and not top.startswith('Ui_'):
+            if s['classes']:
+                s['class_used'] = False
+            else:
+                s['def_called'] = False
     return {'own': own, 'libs': libs, 'sites': sites, 'slots': slots if uses_sbn else [],
             'writes': writes, 'connects': connects, 'digest': files_digest(src, own)}
 
@@ -357,10 +432,26 @@ def files_digest(src, files):
 QT_KIND = {'QPushButton': 'button', 'QToolButton': 'button', 'QRadioButton': 'checkbox', 'QCheckBox': 'checkbox',
            'QLineEdit': 'text', 'QComboBox': 'combo', 'QSpinBox': 'text', 'QDoubleSpinBox': 'text',
            'QSlider': 'combo', 'QTextEdit': 'text', 'QPlainTextEdit': 'text', 'QTextBrowser': 'value',
-           'QLabel': 'value', 'QProgressBar': 'value', 'QMessageBox': 'message', 'QListWidget': 'combo'}
+           'QLabel': 'value', 'QProgressBar': 'value', 'QMessageBox': 'message', 'QListWidget': 'combo',
+           'PlotItem': 'plot', 'PlotWidget': 'plot', 'ImageView': 'plot', 'addPlot': 'plot'}
 
 
-def _instance_kind(x):
+def _built_at(x):
+    """(own-file site, the line that constructed it): the innermost frame of its construction chain, a library's line
+    for a widget a library builds (pvedit.PvIntRow's cell label), else the site itself."""
+    ch = x.get('chain') or []
+    return tuple((x.get('site') or [None, None])[:2]) + (tuple(ch[0][:2]) if ch else ())
+
+
+def written_lines(walk):
+    """The construction lines (_built_at) of every label the walk saw written: a label never written but built by
+    the same line as one that was is a display whose update had not run yet (dtica's PvIntRow cells, which pvedit
+    writes from a PV Access thread whose monitors the walk sees deliver to a few cells only), not decoration."""
+    return {_built_at(x) for x in (walk or {}).get('instances', [])
+            if x.get('base') == 'QLabel' and (x.get('writes') or len(set(t for _, t in x.get('texts', []))) >= 2)}
+
+
+def _instance_kind(x, written=()):
     """kind of a walked instance, or None for decoration."""
     base = x['base']
     if base in ('QTableWidget', 'QTableView', 'QTreeWidget', 'QTabWidget'):
@@ -370,13 +461,16 @@ def _instance_kind(x):
         return 'value'
     if k == 'text' and (x.get('readonly') or not x.get('enabled', True)):
         return 'value'
-    if base == 'QLabel' and not x.get('writes') and len(set(t for _, t in x.get('texts', []))) < 2:
-        return None                 # a label nothing writes after construction: decoration
+    if base == 'QLabel' and not x.get('writes') and len(set(t for _, t in x.get('texts', []))) < 2 and \
+            _built_at(x) not in written:
+        return None                 # a label nothing writes after construction (nor another of its line): decoration
     return k
 
 
 def _qual(x):
     for key in ('pv', 'text'):
+        if key == 'text' and x.get('base') == 'QLabel':
+            continue                # a label's text is the value it shows (a kept label is written), not a name
         v = x.get(key)
         if v not in (None, '', '-'):
             return str(v).replace('&', '')
@@ -399,6 +493,7 @@ def make_rows(srcinfo, walk):
         by_file.setdefault(s['file'], []).append(s)
     inst = {}
     walk_only = []
+    written = written_lines(walk)
     for x in (walk or {}).get('instances', []):
         site = x.get('site')
         if not site:
@@ -407,7 +502,7 @@ def make_rows(srcinfo, walk):
         if cands:
             s = min(cands, key=lambda s: (s['end_line'] - s['line'], -s['line']))
             inst.setdefault((s['file'], s['line']), []).append(x)
-        elif _instance_kind(x) is not None:
+        elif _instance_kind(x, written) is not None:
             walk_only.append(x)
     stems = {}
     for k, s in sorted(sites.items()):
@@ -459,10 +554,15 @@ def make_rows(srcinfo, walk):
                                  evidence=['site %s %s; guards: %s' % (s['loc'], reach, '; '.join(s['guards']) or '-')]))
             continue
         out = []
+        n_msg = 0
         for x in xs:
-            k = _instance_kind(x)
+            k = _instance_kind(x, written)
             if k is None:
                 continue
+            if k == 'message':              # a dialog the program builds anew each time it is shown: one row per site
+                n_msg += 1
+                if n_msg > 1:
+                    continue
             if k == 'QTabWidget':
                 for t in x.get('tabs', []):
                     out.append(('tab', '%s.tab[%s]' % (stem, t), t, x))
@@ -473,7 +573,7 @@ def make_rows(srcinfo, walk):
                 if x.get('receivers', {}).get('cellClicked'):
                     out.append(('click', '%s.cellClicked' % stem, 'cell click', x))
                 continue
-            out.append((k, None, _qual(x), x))
+            out.append((k, None, None if k == 'message' else _qual(x), x))   # a dialog's text is what it says now
         # ids for plain instances: stem, + [qual] when needed, + #n when still ambiguous
         plain = [o for o in out if o[1] is None]
         need_q = len(plain) > 1 or not s['self_attr']
@@ -513,7 +613,7 @@ def make_rows(srcinfo, walk):
                      'evidence': ['connectSlotsByName slot for object %r' % sl['object']]})
     for x in walk_only:
         rows.append({'id': 'walk-only:%s:%s' % (x['site'][0], x['site'][1]) + ('[%s]' % _qual(x) if _qual(x) else ''),
-                     'kind': _instance_kind(x) or 'value', 'label': x['cls'], 'file': x['site'][0],
+                     'kind': _instance_kind(x, written) or 'value', 'label': x['cls'], 'file': x['site'][0],
                      'line': x['site'][1], 'loc': '%s:%s' % tuple(x['site'][:2]), 'widget': x['cls'],
                      'reachable': True, 'reach': '', 'hidden': False, 'inert': False, 'guard': None, 'site': x['site'],
                      'evidence': ['walk saw a %s built at %s:%s, a line the source scan has no site for' % (

@@ -1,0 +1,1835 @@
+{
+ "file": "cas/xpmpatt.py",
+ "title": "xpmpatt (XPM pattern statistics PATT:GROUPS / PATT:COINC and the groups' L0Select / DstSelect)",
+ "web": "/gui/xpmpatt",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "{pvbase}:XPM:{xpm}"
+  ],
+  "pump": 4,
+  "timeout": 90,
+  "drive": [
+   "tabs",
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:0:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:1:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:2:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:3:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:4:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:6:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_FixedRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACRate]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACRate]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_EventCode]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_EventCode]\"]",
+   "test": "test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_Sequence]": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_Sequence]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"addGroup.LblEditEvt[DAQ:SIM:XPM:0:PART:7:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:0:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:1:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:2:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:3:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:4:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:6:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect]": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect]\"]",
+   "test": "test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"addGroup.LblEditDst[DAQ:SIM:XPM:0:PART:7:DstSelect_Mask]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#0": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#1": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#2": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#3": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#4": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#5": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#6": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#7": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#8": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#9": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#10": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#11": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#12": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#13": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#14": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#15": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#16": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#17": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#18": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#18\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#19": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#19\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#20": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#20\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#21": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#21\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#22": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#22\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#23": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#23\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#24": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#24\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#25": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#25\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#26": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#26\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#27": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#27\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#28": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#28\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#29": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#29\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#30": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#30\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#31": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#31\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#32": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#32\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#33": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#33\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#34": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#34\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#35": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#35\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#36": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#36\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#37": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#37\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#38": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#38\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#39": {
+   "web": "[data-parity~=\"PatternTab.PvTableDisplay[DAQ:SIM:XPM:0:PATT:GROUPS]#39\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#0": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#0\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#1": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#1\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#2": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#2\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#3": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#3\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#4": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#4\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#5": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#5\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#6": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#6\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#7": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#7\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#8": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#8\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#9": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#9\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#10": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#10\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#11": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#11\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#12": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#12\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#13": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#13\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#14": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#14\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#15": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#15\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#16": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#16\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#17": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#17\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#18": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#18\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#19": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#19\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#20": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#20\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#21": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#21\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#22": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#22\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#23": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#23\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#24": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#24\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#25": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#25\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#26": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#26\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#27": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#27\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#28": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#28\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#29": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#29\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#30": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#30\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#31": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#31\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#32": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#32\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#33": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#33\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#34": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#34\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#35": {
+   "web": "[data-parity~=\"PatternTab.w[DAQ:SIM:XPM:0:PATT:COINC]#35\"]",
+   "test": "test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 0]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 1]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 2]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 2]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 3]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 4]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 4]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 5]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 5]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 6]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 6]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[Group 7]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Group 7]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.PatternTab.tab[Stats]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PatternTab.tab[Stats]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.PatternTab.tab[Coincidences]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PatternTab.tab[Coincidences]\"]",
+   "test": "test_gui_xpmpatt.py::test_tabs[chromium]"
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "file": "cas/tdmpva.py",
+ "na": "not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown",
+ "rule": "no-window",
+ "walk": {
+  "argv": [
+   "{pvbase}:TDM"
+  ],
+  "pump": 1,
+  "timeout": 60
+ }
+}

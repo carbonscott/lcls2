@@ -1,0 +1,12 @@
+{
+ "file": "cas/xpmca.py",
+ "na": "not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, \"PAddr\", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown",
+ "rule": "no-window",
+ "walk": {
+  "argv": [
+   "{pvbase}:XPM:{xpm}"
+  ],
+  "pump": 1,
+  "timeout": 60
+ }
+}

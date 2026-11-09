@@ -1,0 +1,32 @@
+{
+ "file": "seq/seqplot.py",
+ "title": "seqplot (the pyqtgraph sequence plot of sequence scripts; the web copy runs seqplot's own code)",
+ "web": "/gui/seqplot",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "--seq",
+   "0:10k.py",
+   "1:burst.py",
+   "--time",
+   "0",
+   "0.0002"
+  ],
+  "cwd": "{psdaq}/seq",
+  "pump": 3,
+  "timeout": 120,
+  "drive": [
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "PatternWaveform.add.q0[10k.py]": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py]\"]",
+   "test": "test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]"
+  },
+  "PatternWaveform.add.q0[burst.py]": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[burst.py]\"]",
+   "test": "test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]"
+  }
+ }
+}
