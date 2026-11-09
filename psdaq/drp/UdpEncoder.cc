@@ -1,4 +1,5 @@
 #include "UdpEncoder.hh"
+#include "MemPoolSim.hh"
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -638,7 +639,7 @@ unsigned Interpolator::calculate(TimeStamp ts, Damage& damage) const
 }
 
 
-UdpEncoder::UdpEncoder(UdpParameters& para, MemPoolCpu& pool) :
+UdpEncoder::UdpEncoder(UdpParameters& para, MemPool& pool) :
     XpmDetector(&para, &pool)
 {
     virtChan = 0;
@@ -775,7 +776,7 @@ void UdpEncoder::event_(Dgram& dgram, const void* const bufEnd, const encoder_fr
 }
 
 
-UdpDrp::UdpDrp(UdpParameters& para, MemPoolCpu& pool, UdpEncoder& det, ZmqContext& context) :
+UdpDrp::UdpDrp(UdpParameters& para, MemPool& pool, UdpEncoder& det, ZmqContext& context) :
     DrpBase       (para, pool, det, context),
     m_para        (para),
     m_det         (det),
@@ -1192,13 +1193,15 @@ void UdpDrp::_sendToTeb(const EbDgram& dgram, uint32_t index)
 UdpApp::UdpApp(UdpParameters& para) :
     CollectionApp(para.collectionHost, para.partition, "drp", para.alias, para.device),
     m_para(para),
-    m_pool(para),
+    m_pool(MemPoolSim::isSimDevice(para.device)
+           ? std::unique_ptr<MemPool>(std::make_unique<MemPoolSim>(para))
+           : std::unique_ptr<MemPool>(std::make_unique<MemPoolCpu>(para))),
     m_unconfigure(false)
 {
     Py_Initialize();  // Must be called before creating the UdpEncoder
 
-    m_det = std::make_unique<UdpEncoder>(m_para, m_pool);
-    m_drp = std::make_unique<UdpDrp>(para, m_pool, *m_det, context());
+    m_det = std::make_unique<UdpEncoder>(m_para, *m_pool);
+    m_drp = std::make_unique<UdpDrp>(para, *m_pool, *m_det, context());
 
     logging::info("Ready for transitions");
 }

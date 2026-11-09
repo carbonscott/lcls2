@@ -12,6 +12,7 @@ import re
 import struct
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -90,25 +91,45 @@ def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
     """An xtc2 file as a DRP writes a run: a Configure with the runinfo Names and one Names per
     detector (detType, detName); a BeginRun at BEGINRUN with the runinfo (experiment, run
     number); `events` L1Accepts, each with a ShapesData of every detector in with_data (default:
-    all); an EndRun."""
+    all); an EndRun 1 s after the last L1Accept.  A detector named fakecam holds, as the DRP
+    writes it, a uint32 'value' and a uint16 'array_raw' of 1 x 9 words, its seq (words 4, 5) the
+    L1Accept's number and its pixel (word 8) 7, as ami_check reads them (RAW_SEQ_PIXEL); any other
+    a uint32 'value'."""
     path = str(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     expt, run = run_id.split('/r')
     srcs, cfg = {}, [names(RUNINFO_SRC, 'runinfo', 'runinfo', 'runinfo', [('expt', 10, 1), ('runnum', 2, 0)])]
     for i, (dettype, detname) in enumerate(dets):
         srcs[detname] = 0x100 + i       # NamesId(1, i)
-        cfg.append(names(srcs[detname], dettype, detname, 'raw', [('value', 2, 0)]))
+        cfg.append(names(srcs[detname], dettype, detname, 'raw',
+                         [('value', 2, 0), ('array_raw', 1, 2)] if detname == 'fakecam' else [('value', 2, 0)]))
     e = expt.encode() + b'\0'
     e += b'\0' * (-len(e) % 4)
-    l1 = dgram(12, b''.join(shapes_data(srcs[d], [], struct.pack('<I', 7))
-                            for d in (srcs if with_data is None else with_data)))
+
+    def l1(k):
+        return b''.join(shapes_data(srcs[d], [(1, 9, 0, 0, 0)], struct.pack('<I9H', 7, 0, 0, 0, 0, k & 0xffff, k >> 16,
+                                                                            0, 0, RAW_SEQ_PIXEL[1]))
+                        if d == 'fakecam' else shapes_data(srcs[d], [], struct.pack('<I', 7))
+                        for d in (srcs if with_data is None else with_data))
     with open(path, 'wb') as f:
         f.write(dgram(2, b''.join(cfg)))
         f.write(dgram(4, shapes_data(RUNINFO_SRC, [(len(e), 0, 0, 0, 0)], e + struct.pack('<I', int(run))),
                       stamp=BEGINRUN[0] << 32 | BEGINRUN[1]))
-        f.write(l1 * events)
-        f.write(dgram(5, b''))
+        f.write(b''.join(dgram(12, l1(k), stamp=l1_stamp(k)) for k in range(events)))
+        f.write(dgram(5, b'', stamp=l1_stamp(events) + (1 << 32)))
     return path
+
+
+RAW_SEQ_PIXEL = ('the L1Accept\'s number', 7)
+
+
+def l1_stamp(k):
+    """The timestamp of a test run's k-th L1Accept: 100 Hz from 1 s after its BeginRun."""
+    return (BEGINRUN[0] + 1 + k // 100) << 32 | (k % 100) * 10000000
+
+
+L1_FIRST, L1_LAST = coverage.stamp_seconds(l1_stamp(0)), coverage.stamp_seconds(l1_stamp(999))
+BEGINRUN_S, ENDRUN_S = BEGINRUN[0] + BEGINRUN[1] * 1e-9, coverage.stamp_seconds(l1_stamp(1000)) + 1
 
 
 def write_log(path, cmd, *lines):
@@ -136,20 +157,48 @@ def run_files(d, rows, stand_ins=None):
     for exe, ts in types.items():
         files.append(write_log(os.path.join(d, f'{exe}_0.log'), f'{exe} -P tst -D {",".join(ts)} -u {exe}_0',
                                f"Opening file '{xtc2}'"))
+    ami = []
     for r in rows:
         if r.startswith('prog:'):
             name = (stand_ins or {}).get(r, r[len('prog:'):])
             cmd = f'python -m psdaq.sim.{name} -P DAQ:SIM' if name == 'simxpm' else f'{name} -p 5'
+            if name in coverage.AMI_PROGRAMS:   # AMI's logs never name the run: its check does
+                ami.append((name, ami_pid(name), f'{sys.executable} {d}/bin/{name} -p 31150 -H 127.0.0.1'))
+                files.append(write_log(os.path.join(d, f'{name}.log'), f'{d}/bin/{name} -p 31150',
+                                       f'@@@ The PID of new child "x:{name}.log" is: {ami[-1][1]}'))
+                continue
             files.append(write_log(os.path.join(d, f'{name}.log'), cmd,
                                    f'EbAppBase  saw        BeginRun @ {BEGINRUN_TIME} (047325138ca92b)'))
+    if ami:
+        files.append(write_witness(os.path.join(d, 'ami_check.json'), ami_witness(xtc2, ami)))
     return files
 
 
-def record(rows, files, evidence, run_id=RUN_ID, dirty=False):
+def ami_pid(name):
+    return 4000 + coverage.AMI_PROGRAMS.index(name)
+
+
+def ami_witness(xtc2, served, run_id=RUN_ID, matches=None, **kw):
+    """An ami_check witness as daq_sim cycle writes it: the run, AMI's per-event matches with
+    psana2 and the AMI processes [(name, pid, cmdline)] that served the check."""
+    w = {'witness': 'ami_check', 'run_id': run_id, 'xtc2': [xtc2], 'pass': True, 'problems': [],
+         'matches': [[l1_stamp(k), k, 7] for k in range(5)] if matches is None else matches,
+         'served_by': [{'pid': pid, 'cmdline': cmd} for _, pid, cmd in served]}
+    w.update(kw)
+    return w
+
+
+def write_witness(path, w):
+    with open(path, 'w') as f:
+        json.dump(w, f)
+    return path
+
+
+def record(rows, files, evidence, run_id=RUN_ID, dirty=False, data_dir=None):
     """An evidence record at HEAD, as a run from a clean checkout writes it (the tests also run
     in a tree with modified files, so 'dirty' is set here, not read from the tree)."""
     path = coverage.record_evidence(rows, 'test', [str(f) for f in files], run_id=run_id,
-                                    repo=REPO, evidence=str(evidence))
+                                    repo=REPO, evidence=str(evidence), data_dir=data_dir)
     rec = json.load(open(path))
     rec['dirty'] = dirty
     json.dump(rec, open(path, 'w'))
@@ -261,7 +310,7 @@ def test_config_rows_of_the_daq_sim_cnf(tmp_path, det):
     """The rows daq_sim cycle records come from the .cnf daq_sim up writes (up --det <type>)."""
     cnf = write_daq_sim_cnf(str(tmp_path / 'daq_sim.cnf'), det)
     assert sorted(coverage.config_rows(cnf)) == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:teb']
-    assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm']
+    assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm', 'prog:pykcuxpm']
 
 
 @pytest.mark.parametrize('det', ['fakecam', 'epix100'])
@@ -298,7 +347,11 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     for p in daq_sim.PROCS:
         files.append(write_log(work.path('pmlogs', '2026', '11', f'08_12:00:00_node:{p}.log'), *cmds[p]))
     assert f'08_12:00:00_node:{det}_0.log' in ' '.join(files)
-    state = {'cnf': 'daq_sim.cnf', 'det': det,
+    started = time.time() - 60
+    old = write_log(work.path('pmlogs', '2026', '11', '07_12:00:00_node:teb0.log'), *cmds['teb0'])
+    os.utime(old, (started - 3600, started - 3600))     # a log of an earlier 'up' in the work dir: not listed
+    state = {'cnf': 'daq_sim.cnf', 'det': det, 'started': daq_sim.datetime.datetime.fromtimestamp(started)
+             .astimezone().isoformat(timespec='milliseconds'),
              'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in services}}
     daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start')
     printed = capsys.readouterr().out
@@ -309,13 +362,16 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     rec = json.load(open(tmp_path / 'evidence' / names[0]))
     assert rec['sha'] == HEAD and rec['kind'] == 'cycle' and rec['run_id'] == 'tstx00001/r0001'
     assert rec['dirty'] is False
-    assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
+    assert old not in rec['files'] and all(f in rec['files'] for f in files)
+    assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pykcuxpm', 'prog:pyxpm',
+                           'prog:teb']
     assert sorted(rec['files']) == sorted(files + [work.path('daq_sim.cnf')])
     assert sorted(rec['content']) == sorted(rec['files'])
     assert rec['content'][xtc] == {'bytes': os.path.getsize(xtc),
                                    'sha256': hashlib.sha256(open(xtc, 'rb').read()).hexdigest()}
     entries = {r: {'status': 'RUN'} for r in rec['rows']}
-    entries['prog:pyxpm'] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))['prog:pyxpm']
+    for r in ('prog:pyxpm', 'prog:pykcuxpm'):          # STAND-IN simxpm in the tree's status file
+        entries[r] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))[r]
     code, out = run_check(write_status(tmp_path / 'status.json', entries), tmp_path / 'evidence')
     for row in rec['rows']:
         line = line_of(out, row)
@@ -753,18 +809,762 @@ def test_rows_without_status_are_unproven(tmp_path):
     assert f'{len(rows)} rows, 0 run, 0 stand-in, 0 N/A, {len(rows)} unproven' in out
 
 
+# --- witnesses: AMI (R1), GUIs, procstat and monitors (R2, R2b, R2c), PV-server stand-ins (R3), GUIs on them (R4)
+
+AMI_ROWS = [f'prog:{p}' for p in coverage.AMI_PROGRAMS]
+
+
+def ami_run(tmp_path, mutate=None):
+    """(exit code, output) of one record for the AMI rows: the run's xtc2 file, each AMI program's
+    procmgr log (with procServ's pid line) and the ami_check witness; mutate(witness, files) may
+    change the witness (or return other files) before the record hashes them."""
+    files = run_files(str(tmp_path / 'wd'), ['det:drp:fakecam'] + AMI_ROWS)
+    wpath = [f for f in files if f.endswith('ami_check.json')][0]
+    if mutate:
+        w = json.load(open(wpath))
+        files = mutate(w, files) or files
+        write_witness(wpath, w)
+    status = write_status(tmp_path / 'status.json', {r: {'status': 'RUN'} for r in AMI_ROWS})
+    record(AMI_ROWS, files, tmp_path / 'evidence')
+    return run_check(status, tmp_path / 'evidence')
+
+
+def test_ami_rows_are_run_with_the_ami_check_of_the_run(tmp_path):
+    code, out = ami_run(tmp_path)
+    for r in AMI_ROWS:
+        print(line_of(out, r))
+        assert 'evidence ' in line_of(out, r) and 'NO VALID' not in line_of(out, r)
+
+
+def drop_pid_line(w, files):
+    log = [f for f in files if f.endswith('/ami-client.log')][0]
+    write_log(log, f'{os.path.dirname(log)}/bin/ami-client -p 31150', 'no pid here')
+
+
+# name: (mutation of the witness, what the ami-client row's line says)
+AMI_FORGERIES = {
+    'no-witness': (lambda w, files: [f for f in files if not f.endswith('ami_check.json')],
+                   'lists no ami_check witness'),
+    'other-run': (lambda w, f: w.update(run_id='tstx00001/r0002'),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+    'unlisted-xtc2': (lambda w, f: w.update(xtc2=['/elsewhere/tstx00001-r0001-s000-c000.xtc2']),
+                      'names no listed xtc2 file of run tstx00001/r0001'),
+    'failed': (lambda w, f: w.update({'pass': False, 'problems': ['AMI row 0x1: seq 3, psana2 reads seq 4']}),
+               'says the check failed'),
+    'no-matches': (lambda w, f: w.update(matches=[]), 'lists no per-event match of AMI with psana2'),
+    'match-not-in-run': (lambda w, f: w['matches'].append([l1_stamp(5000), 5000, 7]),
+                         'is no L1Accept of the run\'s files'),
+    'client-did-not-serve': (lambda w, f: w.update(served_by=[s for s in w['served_by']
+                                                              if '/ami-client ' not in s['cmdline']]),
+                             'its served_by lists no ami-client process'),
+    'other-pid': (lambda w, f: [s.update(pid=s['pid'] + 100) for s in w['served_by']
+                                if '/ami-client ' in s['cmdline']] and None,
+                  'its log of ami-client gives pid 4000, not one of the ami-client processes that served '
+                  'the check (4100)'),
+    'log-without-pid': (drop_pid_line, 'its log of ami-client gives no pid'),
+    # re-derived from the xtc2 file (the run's fakecam raw array: seq k, pixel 7)
+    'values-edited': (lambda w, f: w.update(matches=[[m[0], m[1] + 7, m[2] ^ 0xff] for m in w['matches']]),
+                      'gives seq 7 pixel 248, the run\'s xtc2 file holds seq 0 pixel 7 there'),
+    'one-pixel-edited': (lambda w, f: w['matches'][2].__setitem__(2, 8),
+                         'gives seq 2 pixel 8, the run\'s xtc2 file holds seq 2 pixel 7 there'),
+    'other-detector': (lambda w, f: w.update(det='cspad'), 'the run\'s files hold no cspad raw array at that L1Accept'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(AMI_FORGERIES))
+def test_ami_forgeries_are_rejected_naming_why(tmp_path, case):
+    mutate, why = AMI_FORGERIES[case]
+    code, out = ami_run(tmp_path, mutate)
+    line = line_of(out, 'prog:ami-client')
+    print(line)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_an_ami_gui_is_served_by_its_window_process(tmp_path):
+    """ami-client's window (a forked 'ami editor') holds AMI's ports: its ancestor is the client whose
+    log gives the pid ('# PID:', as ami_shot writes it); another pid there does not count."""
+    def window(pid):
+        def mutate(w, files):
+            log = [f for f in files if f.endswith('/ami-client.log')][0]
+            write_log(log, f'{os.path.dirname(log)}/bin/ami-client -p 31150 -g ami_shot', '# PID: 4000')
+            client = [s for s in w['served_by'] if '/ami-client ' in s['cmdline']][0]
+            w['served_by'] = [s for s in w['served_by'] if s is not client] + [
+                {'pid': 5000, 'cmdline': 'ami editor', 'ancestors': [dict(client, pid=pid)]}]
+        return mutate
+    code, out = ami_run(tmp_path / 'a', window(4000))
+    assert 'evidence ' in line_of(out, 'prog:ami-client') and 'NO VALID' not in line_of(out, 'prog:ami-client')
+    code, out = ami_run(tmp_path / 'b', window(4001))
+    assert code == 1 and ('its log of ami-client gives pid 4000, not one of the ami-client processes that '
+                          'served the check (4001)') in line_of(out, 'prog:ami-client')
+
+
+def test_log_pid_reads_procservs_line_as_it_writes_it():
+    """procServ ends its lines with \\r\\n; the last pid line counts (a restart writes another)."""
+    text = ('# CMDLINE: /w/bin/ami-manager -p 31150\n@@@ Restarting child "x:ami-manager.log"\r\n'
+            '@@@ The PID of new child "x:ami-manager.log" is: 2681935\r\n@@@ @@@ @@@ @@@ @@@\r\n')
+    assert coverage.log_pid(text) == 2681935
+    assert coverage.log_pid(text + '@@@ The PID of new child "x:ami-manager.log" is: 2681999\r\n') == 2681999
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\n# PID: 77\n') == 77
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\nchild pid 77\n') is None
+
+
+def test_an_ami_row_is_not_proven_by_a_log_naming_the_run(tmp_path):
+    """An AMI program's log that names the BeginRun time is not its check (R1)."""
+    def naming(w, files):
+        log = [f for f in files if f.endswith('/ami-manager.log')][0]
+        write_log(log, f'{os.path.dirname(log)}/bin/ami-manager -p 31150',
+                  f'BeginRun @ {BEGINRUN_TIME}', '@@@ The PID of new child "x" is: 4002')
+        return [f for f in files if not f.endswith('ami_check.json')]
+    code, out = ami_run(tmp_path, naming)
+    assert code == 1 and 'lists no ami_check witness' in line_of(out, 'prog:ami-manager')
+
+
+def control_gui_run(tmp_path, path, data_dir='the run\'s'):
+    """(exit code, line) of a record for prog:control_gui: the run's xtc2 file under <wd>/data and
+    control_gui's log holding control's fileReport with `path`."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'data' / 'tst' / 'tstx00001' / 'xtc' / 'tstx00001-r0001-s000-c000.xtc2',
+                    [('fakecam', 'fakecam')])
+    log = write_log(d / 'control_gui.log', 'control_gui -H localhost -l DEBUG -e tstx00001 -p 5',
+                    '<D> CGWMain.on_zmq_poll Flag zmq.POLLIN in 1 msg: [b\'{"header": {"key": "fileReport"}, '
+                    f'"body": {{"path": "{path}"}}}}\']')
+    status = write_status(tmp_path / 'status.json', {'prog:control_gui': {'status': 'RUN'}})
+    record(['prog:control_gui'], [xtc, log], tmp_path / 'evidence',
+           data_dir=str(d / 'data') if data_dir == 'the run\'s' else data_dir)
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:control_gui'))
+    return code, line_of(out, 'prog:control_gui')
+
+
+def test_a_log_may_name_the_xtc2_file_relative_to_the_data_dir(tmp_path):
+    code, line = control_gui_run(tmp_path, '/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+@pytest.mark.parametrize('path,data_dir', [
+    ('/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2', None),               # record gives no data dir
+    ('/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2', '/elsewhere/data'),  # another data dir
+    ('/tst/tstx00001/xtc/tstx00001-r0002-s000-c000.xtc2', 'the run\'s'),       # another run's file
+    ('/tst/tstx00002/xtc/tstx00001-r0001-s000-c000.xtc2', 'the run\'s'),       # resolves to no such file
+], ids=['no-data-dir', 'other-data-dir', 'other-run', 'other-dir'])
+def test_a_relative_path_counts_only_when_it_resolves_to_the_hashed_file(tmp_path, path, data_dir):
+    code, line = control_gui_run(tmp_path, path, data_dir)
+    assert code == 1 and 'NO VALID EVIDENCE' in line
+    assert 'its log of control_gui names neither the run\'s xtc2 file' in line
+    assert 'and it lists no gui_witness witness' in line
+
+
+PARTITION = 'DAQ:SIM:XPM:0:PART:5'
+
+
+PID_LINE = '@@@ The PID of new child "x:prog.log" is: 4321'    # procServ's line in a procmgr log
+
+
+def table(start, end, rows):
+    """procstat's table: its rows [(procmgr id, status)], and the pids 'procmgr status' gave (PID_LINE's)."""
+    return {'walk': '/w/logs/witness/procstat.walk.json', 'exit': 0, 'start': start, 'end': end, 'problems': [],
+            'reads': [{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows],
+            'procmgr_pids': {i: 4321 if st == 'RUNNING' else None for i, st in rows}}
+
+
+def procstat_entry(rows=(('x', 'RUNNING'),), before=None, after=None):
+    """procstat's entry ('kind': 'procmgr') as cycle writes it: its table while Running, and the tables it read
+    in Configured before the BeginRun and after the EndRun (rows: [(procmgr id, status)]; write_log's id is x)."""
+    e = dict(table(L1_FIRST + 1, L1_FIRST + 5, rows), kind='procmgr', **{'pass': True})
+    e['before'] = table(BEGINRUN_S - 9, BEGINRUN_S - 1, rows if before is None else before)
+    e['after'] = table(ENDRUN_S + 1, ENDRUN_S + 9, rows if after is None else after)
+    return e
+
+
+def gui_witness(xtc2, progs, run_id=RUN_ID, section='programs', **entry):
+    """A gui_witness as daq_sim cycle writes it: for each program (a GUI it ran offscreen, or a
+    stand-in whose PVs it read) the span of its reads and the values of the partition's PVs; a
+    'programs' witness also holds procstat's tables (procstat_entry)."""
+    e = {'pass': True, 'problems': [], 'start': L1_FIRST + 1, 'end': L1_FIRST + 5,
+         'reads': [{'name': PARTITION + ':NumL0Acc', 'values': ['100', '250', '400']}]}
+    e.update(entry)
+    w = {'witness': 'gui_witness', 'run_id': run_id, 'xtc2': [xtc2], 'partition': PARTITION,
+         section: {p: dict(e) for p in progs}}
+    if section == 'programs' and 'procstat' not in progs:
+        w['programs']['procstat'] = procstat_entry()
+    return w
+
+
+# what simxpm served while the witness's reads ran (L1_FIRST + 1 to + 5): NumL0Acc 100, 250, 400
+XPM_SERVED = [(L1_FIRST + 0.5, PARTITION + ':NumL0Acc', 100.), (L1_FIRST + 2, PARTITION + ':NumL0Acc', 250.),
+              (L1_FIRST + 4, PARTITION + ':NumL0Acc', 400.)]
+
+
+SERVICE_PID = 4999                      # the pid daq_sim's '# PID:' gives a stand-in it started
+
+
+def served_file(d, program, posts, pid=SERVICE_PID, name=None, log=True):
+    """[the service's log, if not written yet (log: write it), and] a served-value log as a stand-in writes it
+    (psdaq.sim.served_log) next to it, d/<name>.served.jsonl (name: program); posts [(EPICS-epoch s, pv, value)].
+    The service's log, d/<name>.log, is headed as daq_sim heads it: '# CMDLINE:', then '# PID: N'."""
+    name, want = name or program, log
+    out = []
+    log = os.path.join(str(d), f'{name}.log')
+    os.makedirs(str(d), exist_ok=True)
+    if want and not os.path.exists(log):
+        with open(log, 'w') as f:
+            f.write(f'# CMDLINE: python -m psdaq.sim.{program} -P DAQ:SIM\n# PID: {SERVICE_PID}\n{program}: ready\n')
+        out.append(log)
+    p = os.path.join(str(d), f'{name}.served.jsonl')
+    with open(p, 'w') as f:
+        f.write(json.dumps({'served_log': program, 'pid': pid}) + '\n')
+        for t, pv, v in posts:
+            f.write(json.dumps({'t': t + coverage.EPICS_EPOCH, 'pv': pv, 'v': v}) + '\n')
+    return out + [p]
+
+
+def witness_run(tmp_path, row='prog:groupca', cmd='groupca DAQ:SIM 0 5', stand_in=None, mutate=None,
+                listed=True, served=XPM_SERVED, pid_lines=1, more_logs=(), served_kw=None, log_tail=()):
+    """(exit code, line) of a record for one program row whose log never names the run: the run's
+    xtc2 file, the program's (or stand-in's) procmgr log (pid_lines: procServ's pid lines in it; more_logs:
+    the lines of more procmgr logs of the same id, as a restart writes them; log_tail: lines after the pid
+    lines), a gui_witness for it and
+    simxpm's log and served-value log (served; None: not listed; served_kw: served_file's)."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree', *[PID_LINE] * pid_lines,
+                    *log_tail)
+    logs = [write_log(d / f'prog{k}.log', cmd, *lines) for k, lines in enumerate(more_logs)]
+    prog = stand_in or row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], section='servers' if stand_in else 'programs')
+    if mutate:
+        mutate(w, w['servers' if stand_in else 'programs'][prog])
+    files = [xtc, log] + logs + ([write_witness(d / 'gui_witness.json', w)] if listed else [])
+    files += served_file(d, 'simxpm', served, **(served_kw or {})) if served is not None else []
+    entry = {'status': 'STAND-IN', 'stand_in': stand_in, 'interface': 'its PVs'} if stand_in else {'status': 'RUN'}
+    status = write_status(tmp_path / 'status.json', {row: entry})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_gui_row_is_run_with_its_log_and_a_witness_of_the_run(tmp_path):
+    code, line = witness_run(tmp_path)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+GUI_FORGERIES = {
+    'not-listed': (dict(listed=False), 'and it lists no gui_witness witness'),
+    'no-gui-log': (dict(cmd='pvant --bases DAQ:SIM:XPM:0:PART:5'), 'lists no log of groupca'),
+    'other-run': (dict(mutate=lambda w, e: w.update(run_id='tstx00001/r0002')),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+    'no-entry': (dict(mutate=lambda w, e: w.update(programs={'pvant': e})), 'has no programs entry for groupca'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['walk exit 3']})),
+               'says groupca failed'),
+    'before-the-run': (dict(mutate=lambda w, e: e.update(start=L1_FIRST - 2)),
+                       'not within the run\'s L1Accepts'),
+    'after-the-run': (dict(mutate=lambda w, e: e.update(end=L1_LAST + 0.5)), 'not within the run\'s L1Accepts'),
+    'not-live': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc', 'values': ['7', '7']}])),
+                 'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'placeholder-then-value': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                         'values': ['-', '', '400']}])),
+                               'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'other-partition': (dict(mutate=lambda w, e: e.update(reads=[{'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc',
+                                                                  'values': ['1', '2']}])),
+                        'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'stand-in-section': (dict(mutate=lambda w, e: w.update(servers=w.pop('programs'))),
+                         'has no programs entry for groupca'),
+    # the procmgr instance must run through the run (procstat's tables before, while and after it)
+    'killed-before-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(
+        rows=[('x', 'SHUTDOWN')], before=[('x', 'SHUTDOWN')], after=[('x', 'SHUTDOWN')]))),
+        'procstat\'s table before the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
+    'died-in-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(after=[('x', 'SHUTDOWN')]))),
+                        'procstat\'s table after the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
+    'not-in-the-table': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(before=[('y', 'RUNNING')]))),
+                         'procstat\'s table before the run shows procmgr\'s x not at all, not RUNNING'),
+    'no-procstat': (dict(mutate=lambda w, e: w['programs'].pop('procstat')), 'has no procstat table'),
+    'no-before-table': (dict(mutate=lambda w, e: w['programs']['procstat'].pop('before')),
+                        'its procstat entry holds no table read before the run'),
+    'before-table-in-the-run': (dict(mutate=lambda w, e: w['programs']['procstat']['before'].update(
+        start=BEGINRUN_S - 1, end=BEGINRUN_S + 2)), 'not before the run\'s BeginRun'),
+    'after-table-in-the-run': (dict(mutate=lambda w, e: w['programs']['procstat']['after'].update(
+        start=ENDRUN_S - 2)), 'not after the run\'s EndRun'),
+    'restarted': (dict(pid_lines=2), '(x, 1 listed) name 2 child pids'),
+    'no-pid-line': (dict(pid_lines=0), '(x, 1 listed) name 0 child pids'),
+    # a procmgr (or procstat) restart: the old log names the old child and its end, a new log the new child
+    'restarted-new-log': (dict(more_logs=[['@@@ The PID of new child "x:prog.log" is: 4400']]),
+                          '(x, 2 listed) name 2 child pids'),
+    'child-ended': (dict(log_tail=['@@@ Received a sigChild for process 4321. The process was killed by signal 9']),
+                    'says procServ received a sigChild for process 4321'),
+    'other-pid-after': (dict(mutate=lambda w, e: w['programs']['procstat']['after']['procmgr_pids'].update(x=4400)),
+                        'procmgr status, read with procstat\'s table after the run, gives x pid 4400, not the child '
+                        'pid 4321 its procmgr log names'),
+    'no-status-pids': (dict(mutate=lambda w, e: w['programs']['procstat']['before'].pop('procmgr_pids')),
+                       'procmgr status, read with procstat\'s table before the run, gives x no pid'),
+    # a served-value log counts only next to the listed log of the service that wrote it, with its pid
+    'served-log-other-pid': (dict(served_kw=dict(pid=4998)),
+                             'simxpm.served.jsonl: its first line gives pid 4998, simxpm.log gives 4999 (# PID:)'),
+    'served-log-added': (dict(served_kw=dict(name='extra', log=False)),
+                         'extra.served.jsonl: the record lists no log extra.log of the service that wrote it'),
+    # the values must be ones simxpm served while groupca read
+    'fabricated-values': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                    'values': ['1', '2', '3']}])),
+                          'its groupca entry shows \'1\' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm did not '
+                          'serve while groupca read'),
+    'values-of-another-time': (dict(mutate=lambda w, e: e.update(start=L1_FIRST + 6, end=L1_FIRST + 9)),
+                               'its groupca entry shows \'100\' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm '
+                               'did not serve while groupca read'),
+    'no-served-log': (dict(served=None), 'the record lists no served-value log'),
+    'unserved-pv-only': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':Bogus', 'values': ['1', '2']}])),
+                         'shows groupca read no live value of a PV a served-value log holds (live reads of PVs no '
+                         'log holds: DAQ:SIM:XPM:0:PART:5:Bogus)'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(GUI_FORGERIES))
+def test_gui_witness_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = GUI_FORGERIES[case]
+    code, line = witness_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def procstat_run(tmp_path, rows_shown):
+    """(exit code, line) of a record for prog:procstat: the run's xtc2 file, a teb log (id teb0) and
+    a drp log (id fakecam_0) that name the run, procstat's own log, and a gui_witness whose procstat
+    entry ('kind': 'procmgr') is the table it showed: [(id, status)]."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    logs = []
+    for pid, cmd, line in (('teb0', 'teb -P tst', f'BeginRun @ {BEGINRUN_TIME}'),
+                           ('fakecam_0', 'drp -P tst -D fakecam', f"Opening file '{xtc}'"),
+                           ('procstat', 'procstat -p 5 -i 1 /w/daq_sim.cnf', 'Refreshing')):
+        p = d / f'{pid}.log'
+        p.write_text(f'# ID:      {pid}\n# PLATFORM:5\n# CMDLINE: {cmd}\n{line}\n{PID_LINE}\n')
+        logs.append(str(p))
+    w = gui_witness(xtc, ['procstat'])
+    w['programs']['procstat'] = procstat_entry(rows=rows_shown)
+    status = write_status(tmp_path / 'status.json', {'prog:procstat': {'status': 'RUN'}})
+    record(['prog:procstat'], [xtc] + logs + [write_witness(d / 'gui_witness.json', w)], tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:procstat'))
+    return code, line_of(out, 'prog:procstat')
+
+
+def test_procstat_is_run_when_its_table_showed_the_runs_processes_running(tmp_path):
+    code, line = procstat_run(tmp_path / 'a', [('control', 'RUNNING'), ('teb0', 'RUNNING'), ('fakecam_0', 'RUNNING'),
+                                               ('procstat', 'RUNNING')])
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = procstat_run(tmp_path / 'b', [('teb0', 'RUNNING'), ('fakecam_0', 'SHUTDOWN')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+    code, line = procstat_run(tmp_path / 'c', [('teb0', 'RUNNING')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+
+
+def server_entry(w, e, missing=()):
+    """Make a 'programs'-shaped entry the 'servers' entry of simxpm standing in for pykcuxpm: its
+    own prefix and the interface of pykcuxpm."""
+    e.update(prefix='DAQ:SIM:XPM:0', interfaces={'pykcuxpm': {'defined': 3, 'served': 3 - len(missing),
+                                                              'missing': list(missing)}})
+
+
+def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
+    """R3: a STAND-IN row whose stand-in's log never names the run needs a 'servers' entry: a
+    client of the cycle read the stand-in's PVs while the run ran, and the entry shows the row
+    program's PV names all served; a 'programs' entry is not one."""
+    kw = dict(row='prog:pykcuxpm', cmd='python -m psdaq.sim.simxpm -P DAQ:SIM', stand_in='simxpm')
+    code, line = witness_run(tmp_path / 'a', mutate=server_entry, **kw)
+    assert 'stand-in simxpm (its PVs); evidence ' in line and 'NO VALID' not in line
+    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: (server_entry(w, e), w.update(programs=w.pop('servers'))),
+                             **kw)
+    assert code == 1 and 'has no servers entry for simxpm' in line
+    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: (server_entry(w, e), e.update(end=L1_LAST + 1)), **kw)
+    assert code == 1 and 'not within the run\'s L1Accepts' in line
+    code, line = witness_run(tmp_path / 'd', **kw)                        # no interface
+    assert code == 1 and 'its simxpm entry shows no interface of pykcuxpm' in line
+    code, line = witness_run(tmp_path / 'e', mutate=lambda w, e: server_entry(w, e, ['DAQ:SIM:XPM:0:XTPG:CuDelay']), **kw)
+    assert code == 1 and 'simxpm does not serve 1 of the 3 PVs pykcuxpm defines, e.g. DAQ:SIM:XPM:0:XTPG:CuDelay' in line
+    code, line = witness_run(tmp_path / 'f', mutate=lambda w, e: (server_entry(w, e), e.update(prefix='DAQ:SIM:HSD')),
+                             **kw)                                        # its reads are not under its prefix
+    assert code == 1 and 'shows simxpm read no live value under DAQ:SIM:HSD' in line
+
+
+def own_server_entry(w, e, missing=(), prefix='DAQ:SIM:HPSEX'):
+    """Make a 'programs'-shaped entry the 'servers' entry of bldcas serving its own PVs (R3b): marked as the
+    program's, its own prefix and interface, and the PORT it put and read back."""
+    e.update(program=True, prefix=prefix, reads=[{'name': prefix + ':PORT', 'values': ['11001', '11002', '11001']}],
+             interfaces={'bldcas': {'defined': 2, 'served': 2 - len(missing), 'missing': list(missing)}})
+    w['servers'] = w.pop('programs')
+
+
+BLDCAS = dict(row='prog:bldcas', cmd='bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX')
+
+
+def test_a_pv_server_of_the_tree_is_run_with_a_witness_of_its_own_pvs(tmp_path):
+    """R3b: a RUN row whose program is itself a PV server (bldcas, hpsdbuscas) and never names the run is
+    proven by a 'servers' entry keyed by the program and marked "program": true: read within the run's
+    L1Accepts, every name its source defines served, a PV under its prefix with 2 or more numbers, and the
+    prefix under the -P of the program's own listed log."""
+    code, line = witness_run(tmp_path, mutate=own_server_entry, **BLDCAS)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+R3B_FORGERIES = {
+    'unmarked': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.pop('program'))),
+                 'has no programs entry for bldcas'),
+    'other-prefix': (dict(mutate=lambda w, e: own_server_entry(w, e, prefix='DAQ:LAB2:HPSEX')),
+                     'its bldcas entry reads under DAQ:LAB2:HPSEX, which no listed log of bldcas serves (its -P: DAQ:SIM)'),
+    'other-program-log': (dict(cmd='hpsdbuscas -P DAQ:SIM:HPSCPA'), 'lists no log of bldcas'),
+    'missing-name': (dict(mutate=lambda w, e: own_server_entry(w, e, ['DAQ:SIM:HPSEX:ADDR'])),
+                     'bldcas does not serve 1 of the 2 PVs bldcas defines, e.g. DAQ:SIM:HPSEX:ADDR'),
+    'no-interface': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.pop('interfaces'))),
+                     'its bldcas entry shows no interface of bldcas'),
+    'not-live': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update(
+        reads=[{'name': 'DAQ:SIM:HPSEX:PORT', 'values': ['11001', '11001']}]))),
+        'shows bldcas read no live value under DAQ:SIM:HPSEX'),
+    'after-the-run': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update(end=L1_LAST + 0.5))),
+                      'not within the run\'s L1Accepts'),
+    'failed': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update({'pass': False, 'problems': ['put']}))),
+               'says bldcas failed'),
+    'other-run': (dict(mutate=lambda w, e: (own_server_entry(w, e), w.update(run_id='tstx00001/r0002'))),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R3B_FORGERIES))
+def test_r3b_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R3B_FORGERIES[case]
+    code, line = witness_run(tmp_path, **dict(BLDCAS, **kw))
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def slurm_entry(w, e, refreshes=None, squeue=None):
+    """Make a 'programs'-shaped entry daqstat's (R5): its table at each refresh and the cycle's squeue reads of
+    simslurm, every job RUNNING; 2 refreshes within the run's L1Accepts, each 0.2 s from a read."""
+    rows = [['control', 'RUNNING'], ['teb0', 'RUNNING'], ['fakecam_0', 'RUNNING']]
+    jobs = {f'x0_p5_s0_{i}': 'RUNNING' for i, _ in rows}
+    e.update(kind='slurm', comment_prefix='x0_p5_s0', reads=[],
+             refreshes=refreshes if refreshes is not None else [{'t': L1_FIRST + 2, 'rows': rows},
+                                                                 {'t': L1_FIRST + 3, 'rows': rows}],
+             squeue=squeue if squeue is not None else [{'t': L1_FIRST + 2.2, 'jobs': jobs},
+                                                       {'t': L1_FIRST + 3.2, 'jobs': jobs}])
+
+
+DAQSTAT = dict(row='prog:daqstat', cmd='daqstat -i 1 /w/slurm/daqstat.py')
+ROWS3 = [['control', 'RUNNING'], ['teb0', 'RUNNING'], ['fakecam_0', 'RUNNING']]
+
+
+def test_daqstat_is_run_when_its_refreshes_showed_what_squeue_said(tmp_path):
+    """R5: a GUI that reads no PV (daqstat: Slurm job states) is RUN when its walk recorded 2 or more refreshes
+    within the run's L1Accepts whose table shows, for every row, the state the nearest independent squeue read
+    (by the cycle, within 1.5 s) gave that process's job."""
+    code, line = witness_run(tmp_path, mutate=slurm_entry, **DAQSTAT)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+R5_FORGERIES = {
+    'one-refresh': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': ROWS3}])),
+                    'shows daqstat refreshed 1 time(s) during the run'),
+    'same-refresh-twice': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': ROWS3}] * 2)),
+                           'shows daqstat refreshed 1 time(s) during the run'),
+    'stale-table': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[
+        {'t': L1_FIRST + 2, 'rows': ROWS3}, {'t': L1_FIRST + 3, 'rows': [['control', 'PENDING']] + ROWS3[1:]}])),
+        'the refresh at {:.3f} shows control PENDING, squeue said RUNNING'.format(L1_FIRST + 3)),
+    'no-read-near': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[{'t': L1_FIRST + 0.1, 'jobs': {
+        f'x0_p5_s0_{i}': 'RUNNING' for i, _ in ROWS3}}])), 'no squeue read within 1.5 s of the refresh'),
+    'no-squeue': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[])), 'it lists no squeue read'),
+    'other-jobs': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[{'t': L1_FIRST + 2.2, 'jobs': {'x9_p1_s0_x': 'RUNNING'}},
+                                                                     {'t': L1_FIRST + 3.2, 'jobs': {'x9_p1_s0_x': 'RUNNING'}}])),
+                   'shows control RUNNING, squeue said COMPLETED'),
+    'empty-table': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': []},
+                                                                          {'t': L1_FIRST + 3, 'rows': []}])),
+                    'shows no job squeue listed'),
+    'before-the-run': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST - 3, 'rows': ROWS3},
+                                                                             {'t': L1_FIRST + 3, 'rows': ROWS3}])),
+                       'is not within the run\'s L1Accepts'),
+    'no-prefix': (dict(mutate=lambda w, e: (slurm_entry(w, e), e.pop('comment_prefix'))), 'it gives no job comment prefix'),
+    'walk-outside-the-run': (dict(mutate=lambda w, e: (slurm_entry(w, e), e.update(end=L1_LAST + 1))),
+                             'not within the run\'s L1Accepts'),
+    'no-daqstat-log': (dict(cmd='procstat -p 5 -i 1 /w/daq_sim.cnf'), 'lists no log of daqstat'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R5_FORGERIES))
+def test_r5_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R5_FORGERIES[case]
+    code, line = witness_run(tmp_path, **dict(DAQSTAT, **kw))
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_r5_daqstat_must_list_the_runs_processes(tmp_path):
+    """With procmgr logs (# ID:) naming the run in the record, a matched refresh must list each of them."""
+    entry = {'kind': 'slurm', 'comment_prefix': 'x0_p5_s0', 'pass': True, 'start': 1.0, 'end': 2.0,
+             'refreshes': [{'t': 1.0, 'rows': [['control', 'RUNNING']]}, {'t': 2.0, 'rows': [['control', 'RUNNING']]}],
+             'squeue': [{'t': 1.1, 'jobs': {'x0_p5_s0_control': 'RUNNING'}}, {'t': 2.1, 'jobs': {'x0_p5_s0_control': 'RUNNING'}}]}
+    ok, why = coverage.slurm_matched(entry, 0.5, 2.5)
+    assert len(ok) == 2 and why is None
+    w = {'run_id': RUN_ID, 'xtc2': ['/f.xtc2'], 'programs': {'daqstat': entry}}
+    runs = {'/f.xtc2': {'l1_first': 1 << 32, 'l1_last': 3 << 32}}
+    assert coverage.entry_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control'}) is None
+    why = coverage.entry_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control', 'fakecam_0'})
+    assert why == 'shows daqstat listed no job of fakecam_0 (processes whose logs name the run)'
+    # as every GUI's, daqstat's row also needs procmgr's own instance of it through the run (procmgr_span_problem)
+    why = coverage.live_witness_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control'})
+    assert why.startswith('the record lists no procmgr log (# ID:) of daqstat')
+
+
+def test_a_monitor_is_run_when_a_gauge_of_the_partition_changed_during_the_run(tmp_path):
+    """R2c: a PV monitor (epics_exporter, procmgr id pvrtmon_0) has a 'programs' entry like a GUI's: the
+    gauges it served, named by the PV they export; one under the partition must take 2 or more values."""
+    kw = dict(row='prog:epics_exporter', cmd='epics_exporter -H tst -I xpm-0 -M /w/prom -P DAQ:SIM:XPM:0 NumL0Acc')
+    code, line = witness_run(tmp_path / 'a', mutate=lambda w, e: e.update(port=9203, exit=None), **kw)
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: e.update(
+        reads=[{'name': PARTITION + ':RunTime', 'values': ['3']}, {'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc',
+                                                                     'values': ['0', '9']}]), **kw)
+    assert code == 1 and 'shows epics_exporter read no live value under DAQ:SIM:XPM:0:PART:5' in line
+    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: e.update(start=L1_LAST + 0.1, end=L1_LAST + 2),
+                             **kw)
+    assert code == 1 and 'not within the run\'s L1Accepts' in line
+
+
+HSD = 'DAQ:SIM:HSD:1_DA'
+SIMHSD_CMD = f'python -m psdaq.sim.simhsd -P {HSD}:A {HSD}:B'
+HSD_SERVED = [(L1_FIRST + 0.5, f'{HSD}:A:MONTIMING', {'timframecnt': 1043, 'trigcntsum': [5, 6]}),
+              (L1_FIRST + 3, f'{HSD}:A:MONTIMING', {'timframecnt': 1971, 'trigcntsum': [5, 6]})]
+
+
+def r4_run(tmp_path, si_cmd=SIMHSD_CMD, mutate=None, row='prog:hsdpva', gui_cmd=f'hsdpva {HSD}:A {HSD}:B'):
+    """(exit code, line) of a record for an R4 row (a GUI on a device stand-in's PVs): the run's xtc2 file,
+    the GUI's own log, the stand-in's log (si_cmd, None: not listed) and a gui_witness whose 'programs' entry
+    names the stand-in and holds the GUI's reads, one per widget."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    files = [xtc, write_log(d / 'gui.log', gui_cmd, 'hsdpva: tabs built', PID_LINE)]
+    if si_cmd:
+        files.append(write_log(d / 'simhsd.log', si_cmd, f'# PID: {SERVICE_PID}', 'simhsd: ready'))
+    else:
+        os.makedirs(str(d), exist_ok=True)
+        open(d / 'simhsd.log', 'w').write(f'# CMDLINE: {SIMHSD_CMD}\n# PID: {SERVICE_PID}\n')  # not listed
+    files += served_file(d, 'simhsd', HSD_SERVED)
+    prog = row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], stand_in='simhsd', prefix=HSD,
+                    reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['-', '1043', '1971']},
+                           {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#13', 'values': ['0']}])
+    if mutate:
+        mutate(w, w['programs'][prog])
+    files.append(write_witness(d / 'gui_witness.json', w))
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_gui_on_a_device_stand_in_is_run_with_the_stand_ins_log_and_a_widget_that_changed(tmp_path):
+    """R4: the GUI's own log, the stand-in's log in the same record, and a 'programs' entry naming the
+    stand-in whose reads show one widget's PV, under a prefix the stand-in's -P serves, take 2 values in
+    the run's L1Accepts.  The partition prefix plays no part."""
+    code, line = r4_run(tmp_path)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (r4_run arguments, what the row's line says)
+R4_FORGERIES = {
+    'no-stand-in-log': (dict(si_cmd=None), 'its hsdpva entry reads the PVs of simhsd, but the record lists no log of simhsd'),
+    'other-stand-in': (dict(si_cmd='python -m psdaq.sim.simtpr -P DAQ:SIM:TPR'),
+                       'the record lists no log of simhsd'),
+    'stand-in-serves-other-pvs': (dict(si_cmd='python -m psdaq.sim.simhsd -P DAQ:SIM:HSD:2_DA:A'),
+                                  'shows hsdpva read no live value of a PV simhsd serves (under DAQ:SIM:HSD:2_DA:A'),
+    'no-gui-log': (dict(gui_cmd='tprca DAQ:SIM:TPR'), 'lists no log of hsdpva'),
+    'one-value-per-widget': (dict(mutate=lambda w, e: e.update(reads=[
+        {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['1043']},
+        {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#13', 'values': ['1971']}])),
+        'shows hsdpva read no live value of a PV simhsd serves'),
+    'partition-pv-only': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                     'values': ['-', '100', '250']}])),
+                          'shows hsdpva read no live value of a PV simhsd serves'),
+    'built-text-then-value': (dict(mutate=lambda w, e: e.update(reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'PvEditDbl#3',
+                                                                         'values': ['0', '5.4e-09']}])),
+                              'shows hsdpva read no live value of a PV simhsd serves'),
+    'after-the-run': (dict(mutate=lambda w, e: e.update(end=L1_LAST + 0.5)), 'not within the run\'s L1Accepts'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['walk exited 1']})), 'says hsdpva failed'),
+    'no-stand-in-named': (dict(mutate=lambda w, e: e.update(stand_in='')), 'its hsdpva entry names no stand-in'),
+    'fabricated-values': (dict(mutate=lambda w, e: e.update(reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLabel#3',
+                                                                     'values': ['x', '11', '12']}])),
+                          'its hsdpva entry shows \'11\' for DAQ:SIM:HSD:1_DA:A:MONTIMING, a value simhsd did not serve'),
+    'killed-before-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(
+        before=[('x', 'SHUTDOWN')]))), 'procstat\'s table before the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R4_FORGERIES))
+def test_r4_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R4_FORGERIES[case]
+    code, line = r4_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_r4_entry_without_stand_in_is_judged_on_the_partition(tmp_path):
+    """Without 'stand_in' the entry is an R2 one: a stand-in's PV does not count for it."""
+    code, line = r4_run(tmp_path, mutate=lambda w, e: e.pop('stand_in'))
+    assert code == 1 and 'shows hsdpva read no live value under DAQ:SIM:XPM:0:PART:5' in line
+
+
+def test_shown_numbers_read_a_widget_text_to_its_last_digit():
+    assert coverage.shown_numbers('1,097 (0x449)') == [(1097., 1.)]
+    (x, unit), = coverage.shown_numbers('928.6164kHz')
+    assert x == pytest.approx(928616.4) and unit == pytest.approx(0.1)
+    assert [x for x, _ in coverage.shown_numbers(' 156.25 156.26MHz')] == [pytest.approx(156.25e6), pytest.approx(156.26e6)]
+    (x, unit), = coverage.shown_numbers('3.43571e+07')
+    assert x == 34357100 and unit == pytest.approx(100.)
+    (x, unit), = coverage.shown_numbers('99.99996185302734')     # a float32 shown in full
+    assert coverage.shows(x, unit, 99.99996234) and not coverage.shows(x, unit, 99.9999)
+    assert coverage.shows(99., 1., 99.998)                          # cut (pvant)
+    assert coverage.shows(2., 1., 1.6) and coverage.shows(2., 1., 2.4) and not coverage.shows(2., 1., 1.4)
+    assert not coverage.shows(1., 1., 0.) and not coverage.shows(0., 1., 1.) and coverage.shows(0., 1., 0.4)
+    assert not coverage.shows(99., 1., 100.)
+    assert coverage.shown_numbers('-') == [] and coverage.shown_numbers('RUNNING') == []
+
+
+def test_a_served_value_log_is_read_as_the_stand_ins_write_it(tmp_path, monkeypatch):
+    from psdaq.sim import served_log
+    path = tmp_path / 'simx.served.jsonl'
+    monkeypatch.setenv(served_log.ENV, str(path))
+    log = served_log.ServedLog('simx')
+    log('P:A', 1.5)
+    log('P:A', 1.5)                     # the same value again: not logged
+    log('P:B', {'f': [1, 2], 'g': 3})
+    log('P:A', 2.5)
+    prog, pvs, pid, cap = coverage.served_log(path.read_text())
+    assert prog == 'simx' and [v for _, v in pvs['P:A']] == [1.5, 2.5] and pvs['P:B'][0][1] == {'f': [1, 2], 'g': 3}
+    assert pid == os.getpid() and cap is None
+    monkeypatch.delenv(served_log.ENV)
+    served_log.ServedLog('simx')('P:A', 1)          # no log named: nothing written, no error
+
+
+def test_a_served_value_log_stops_at_its_size_cap_and_says_so(tmp_path, monkeypatch):
+    from psdaq.sim import served_log
+    path = tmp_path / 'simx.served.jsonl'
+    monkeypatch.setenv(served_log.ENV, str(path))
+    monkeypatch.setenv(served_log.MAX_ENV, '200')
+    log = served_log.ServedLog('simx')
+    for k in range(20):
+        log('P:A', k)
+    assert os.path.getsize(path) < 300
+    prog, pvs, pid, cap = coverage.served_log(path.read_text())
+    assert 0 < len(pvs['P:A']) < 20 and cap is not None
+    log('P:A', 99)                                  # after the cap: nothing more
+    assert coverage.served_log(path.read_text())[1] == pvs
+
+
+def test_changed_texts_skip_the_first_text_and_keep_units():
+    assert coverage.changed_texts(['0', '5.4e-09']) == {'5.4e-09'}
+    assert coverage.changed_texts(['-', '928.6154kHz', '928.6164kHz']) == {'928.6154kHz', '928.6164kHz'}
+    assert coverage.changed_texts(['1', '-', '', 'kHz']) == set()
+
+
+def test_pv_prefixes_are_the_words_after_dash_p():
+    assert coverage.pv_prefixes(['-P', 'A:B', 'C:D', '--bind', '127.0.0.1']) == ['A:B', 'C:D']
+    assert coverage.pv_prefixes(['-x', '0']) == []
+
+
 # --- the commands --------------------------------------------------------------------------
 
 @pytest.mark.parametrize('argv', [['-m', 'psdaq.sim.coverage'], ['-m', 'psdaq.sim.daq_sim', 'coverage'],
-                                  ['-m', 'psdaq.sim.daq_sim', 'matrix']])
+                                  ['-m', 'psdaq.sim.daq_sim', 'matrix', '--only', 'coverage']])
 def test_commands_return_the_verdict(tmp_path, argv):
     rows, status, evidence, files = full_coverage(tmp_path)
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([os.path.join(REPO, 'psdaq')] + sys.path))
     env.pop('SIM_ENV_SOURCED', None)
     cmd = [sys.executable] + argv + ['--repo', REPO, '--status', str(status), '--evidence', str(evidence)]
+    if 'matrix' in argv:
+        cmd += ['-w', str(tmp_path / 'matrix')]
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
-    assert r.stdout.rstrip().endswith('PASS')
+    assert r.stdout.rstrip().endswith('MATRIX PASS (1 assertions)' if 'matrix' in argv else 'PASS')
     os.remove(files[0])
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 1 and 'FAIL' in r.stdout
+
+
+CARD = '/w/tpr/tprtrig/tpra'
+TPRTRIG_CMD = 'tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p 5'
+
+
+def tpr_regs(control=7, evtsel=(1 << 30) | (3 << 11) | 5, trig=(1 << 31, 2, 10, 0), t=L1_FIRST + 2):
+    """One read of a TPR card as gui_witness.tpr_reads keeps it: channel 0 and trigger 0 as given, the rest 0."""
+    chans = [{'control': 0, 'evtSel': 0} for _ in range(14)]
+    chans[0] = {'control': control, 'evtSel': evtsel}
+    trigs = [{'control': 0, 'delay': 0, 'width': 0, 'delayTap': 0} for _ in range(12)]
+    trigs[0] = dict(zip(('control', 'delay', 'width', 'delayTap'), trig))
+    return {'t': t, 'channels': chans, 'triggers': trigs}
+
+
+def r8_run(tmp_path, row='prog:tprtrig', cmd=TPRTRIG_CMD, card_line=f'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is {CARD}',
+           mutate=None):
+    """(exit code, line) of a record for an R8 row (a TPR program on a simulated TPR card): the run's xtc2 file, the
+    program's own log (saying which card tpr::Client mapped) and a gui_witness whose 'tpr' entry holds the card's
+    register reads during the run."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    lines = [card_line, 'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra0 is /w/tpr/tprtrig/tpra0'] if card_line else []
+    log = write_log(d / 'prog.log', cmd, *lines, 'Configuring channel 0 outputs 0x1 for Partition 5')
+    prog = row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], kind='tpr', id='tprtrig', card=CARD, reads=[tpr_regs(t=L1_FIRST + 2),
+                                                                            tpr_regs(t=L1_FIRST + 3)], live=['trigger0'])
+    if mutate:
+        mutate(w, w['programs'][prog])
+    files = [xtc, log, write_witness(d / 'gui_witness.json', w)]
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_tpr_program_is_run_when_its_card_held_what_its_command_line_programs(tmp_path):
+    """R8: tprtrig's own log (saying tpr::Client mapped the card) and 2 reads of the card within the run, each with
+    channel 0 started on partition 5 (procmgr's -p) and trigger 0 from channel 0, delay 2, width 10; tpr_trigger's
+    channel follows the partition's readout group."""
+    code, line = r8_run(tmp_path / 'a')
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = r8_run(tmp_path / 'b', row='prog:tpr_trigger',
+                        cmd='tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p 5 -u enc_trig')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (r8_run arguments, what the row's line says)
+R8_FORGERIES = {
+    'no-card-line': (dict(card_line=None), 'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-card': (dict(card_line='Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is /w/tpr/other/tpra'),
+                   'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-delay': (dict(cmd=TPRTRIG_CMD.replace('-d 2', '-d 3')), 'with trigger0.delay 0x2, not the 0x3'),
+    'other-partition': (dict(cmd=TPRTRIG_CMD.replace('-p 5', '-p 4')), 'with channel0.evtSel 0x40001805, not the 0x40001804'),
+    'never-started': (dict(cmd=TPRTRIG_CMD.replace(' -p 5', '')), 'with channel0.control 0x7, not the 0x0'),
+    'refused-argv': (dict(cmd=TPRTRIG_CMD + ' -e 40'), 'gives a command line tprtrig refuses'),
+    'one-read': (dict(mutate=lambda w, e: e.update(reads=e['reads'][:1])), '1 time(s) within the run'),
+    'read-after-run': (dict(mutate=lambda w, e: e['reads'][1].update(t=L1_LAST + 1)), '1 time(s) within the run'),
+    'trigger-off': (dict(mutate=lambda w, e: e['reads'][1]['triggers'][0].update(control=0)),
+                    'with trigger0.control 0x0, not the 0x80000000'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['read the card 0 time(s)']})),
+               'says tprtrig failed'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R8_FORGERIES))
+def test_r8_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R8_FORGERIES[case]
+    code, line = r8_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_tpr_expected_follows_the_programs_getopt():
+    assert coverage.tpr_expected('tprtrig', ['-r', '4', '-o', '0x5', '-c', '3', '-P', '1']) == (
+        {'channel': 3, 'control': 7, 'evtSel': (1 << 30) | 4},
+        [{'trigger': i, 'control': 3 | (1 << 16) | (1 << 31), 'delay': 0, 'width': 1, 'delayTap': 0} for i in (0, 2)])
+    assert coverage.tpr_expected('tprtrig', ['-e', '40']) == ({'channel': 10, 'control': 7,
+                                                             'evtSel': (1 << 30) | (2 << 11) | 40}, [])
+    assert coverage.tpr_expected('tprtrig', ['-p', "'5'"])[0]['evtSel'] == (1 << 30) | (3 << 11) | 5   # procmgr's repr
+    assert coverage.tpr_expected('tpr_trigger', ['-p', '5', '-u', 'x', '-o', '1'], group=2)[0]['evtSel'] == \
+        (1 << 30) | (3 << 11) | 2
+    assert coverage.tpr_expected('tpr_trigger', ['-o', '1']) is None            # no readout group
+    assert coverage.tpr_expected('tprtrig', ['-x']) is None and coverage.tpr_expected('tprtrig', ['extra']) is None

@@ -12,6 +12,7 @@
 #include <Python.h>
 #include "psdaq/aes-stream-drivers/DataDriver.h"
 #include "drp/TebReceiver.hh"
+#include "drp/MemPoolSim.hh"
 #include "drp/RunInfoDef.hh"
 #include "psdaq/service/kwargs.hh"
 #include "psdaq/service/EbDgram.hh"
@@ -81,7 +82,7 @@ EbDgram* Pgp::next(uint32_t& evtIndex)
 
 // ---
 
-EaDetector::EaDetector(Parameters& para, const std::string& pvCfgFile, MemPoolCpu& pool) :
+EaDetector::EaDetector(Parameters& para, const std::string& pvCfgFile, MemPool& pool) :
     XpmDetector(&para, &pool),
     m_pvCfgFile(pvCfgFile)
 {
@@ -179,7 +180,7 @@ void EaDetector::slowupdate(Xtc& xtc, const void* bufEnd)
 
 // ---
 
-EaDrp::EaDrp(Parameters& para, MemPoolCpu& pool, Detector& det, ZmqContext& context) :
+EaDrp::EaDrp(Parameters& para, MemPool& pool, Detector& det, ZmqContext& context) :
     DrpBase    (para, pool, det, context),
     m_para     (para),
     m_det      (det),
@@ -380,13 +381,15 @@ void EaDrp::_sendToTeb(const EbDgram& dgram, uint32_t index)
 EpicsArchApp::EpicsArchApp(Parameters& para, const std::string& pvCfgFile) :
     CollectionApp(para.collectionHost, para.partition, "drp", para.alias, para.device),
     m_para       (para),
-    m_pool       (para),
+    m_pool       (MemPoolSim::isSimDevice(para.device)
+                  ? std::unique_ptr<MemPool>(std::make_unique<MemPoolSim>(para))
+                  : std::unique_ptr<MemPool>(std::make_unique<MemPoolCpu>(para))),
     m_unconfigure(false)
 {
     Py_Initialize();                    // for use by configuration
 
-    m_det = std::make_unique<EaDetector>(m_para, pvCfgFile, m_pool);
-    m_drp = std::make_unique<EaDrp>(para, m_pool, *m_det, context());
+    m_det = std::make_unique<EaDetector>(m_para, pvCfgFile, *m_pool);
+    m_drp = std::make_unique<EaDrp>(para, *m_pool, *m_det, context());
 
     logging::info("Ready for transitions");
 }

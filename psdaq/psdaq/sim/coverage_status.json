@@ -100,5 +100,175 @@
   "prog:qRead": {
     "status": "N/A",
     "reason": "pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no role in a DAQ run"
+  },
+  "prog:monReqServer": {
+    "status": "RUN",
+    "note": "daq_sim up --meb + cycle: monReqServer meb0 serves the TEB's events in shared memory to shmemClient and AMI; its log names each transition it built, the BeginRun's time included"
+  },
+  "prog:shmemClient": {
+    "status": "RUN",
+    "note": "daq_sim up --meb + cycle: shmemClient -v reads the MEB's second queue and prints every datagram's time, the BeginRun's included"
+  },
+  "prog:drp_pva": {
+    "status": "RUN",
+    "note": "daq_sim up --pva + cycle: drp_pva -d sim:// records simxpm's camera PV (an NTNDArray stamped with each L1Accept's time); sysdrp_check reads every image back with psana2 against fakecam's seq of the same L1Accept, and drp_pva's drp_match_count equals psana2's count"
+  },
+  "prog:drp_bld": {
+    "status": "RUN",
+    "note": "daq_sim up --bld + cycle (daq_sim feature e): drp_bld -d sim:// records simxpm's BLD source (simxpm --bld: LCLS-II style packets by multicast on 127.0.0.1, TTL 1, to a group outside 239.255.0.0/16, the group and port from a stand-in IOC's CA PVs, the payload's layout from BLD_PAYLOAD over PVA); sysdrp_check --bld reads every value back with psana2 against fakecam's seq, and drp_bld's L1Accepts less its bld_miss_count equal psana2's count"
+  },
+  "prog:epicsArch": {
+    "status": "RUN",
+    "note": "daq_sim up --epics + cycle: epicsArch -d sim:// archives two CA PVs of a stand-in IOC (softIoc on loopback) and a PVA PV of simxpm; sysdrp_check reads all three back with psana2"
+  },
+  "prog:drp_udpencoder": {
+    "status": "RUN",
+    "note": "daq_sim up --udp + cycle: drp_udpencoder -d sim:// records the frames sim_udpencoder sends on loopback UDP; sysdrp_check reads every frame back in step with fakecam's seq, and drp_match_count equals psana2's count"
+  },
+  "prog:sim_udpencoder": {
+    "status": "RUN",
+    "note": "daq_sim up --udp + cycle: sim_udpencoder -T sim:// sends one encoder frame per L1Accept of its readout group, paced by simxpm's frames instead of /dev/tpra, and prints each transition's time"
+  },
+  "prog:pykcuxpm": {
+    "status": "STAND-IN",
+    "stand_in": "simxpm",
+    "interface": "the XPM PVs of pvctrls.py and pvstats.py and the control -X ZMQ PULL port, which pykcuxpm serves from a KCU card with the same PVCtrls/PVStats classes as pyxpm (pykcuxpm.py:18-19,111-114); not pvxtpg.py's XTPG PVs",
+    "note": "daq_sim cycle, as for pyxpm; simxpm also sends the timing frames"
+  },
+  "prog:ami-client": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle --ami-shot (R1): while the run is Running, psdaq.sim.ami_shot runs ami-client offscreen on the running manager with a viewer of fakecam:raw:raw (the AMI screenshot); the record lists that client's log (# CMDLINE, # PID) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 and the processes that held AMI's ports, the client's window process (an 'ami editor' whose parent is that ami-client pid) among them"
+  },
+  "prog:ami-global": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-global as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-global among them"
+  },
+  "prog:ami-manager": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-manager as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-manager among them"
+  },
+  "prog:ami-node": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-node as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-node among them"
+  },
+  "prog:ami-worker": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-worker as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-worker among them"
+  },
+  "prog:control_gui": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): control_gui -l DEBUG logs control's fileReport, the run's xtc2 path relative to the data dir, which coverage resolves under the record's data_dir to the hashed file"
+  },
+  "prog:groupca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs groupca offscreen (groupca DAQ:SIM 0 <platform>, as asc.cnf starts it); while the run is Running, cycle runs its main() once more offscreen through qt_walk (passive: pumps only) and logs/gui_witness.json, the witness, names the run and the partition PVs it showed, each with 2 or more numbers, read within the run's L1Accepts"
+  },
+  "prog:pvant": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs pvant offscreen (pvant --bases <the partition> --fields NumL0Acc NumL0Inp L0AccRate; lab3-wave8.cnf gives it wave8 bases); while the run is Running, cycle runs its main() once more offscreen through qt_walk (passive: pumps only) and logs/gui_witness.json, the witness, names the run and the partition PVs it showed, each with 2 or more numbers, read within the run's L1Accepts"
+  },
+  "prog:hsdca": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-hsd64.cnf:30 runs 'hsdca', but psdaq/pyproject.toml:44 comments its entry point out (#hsdca = \"psdaq.cas.hsdca:main\") and psdaq/psdaq/cas/hsdca.py does not exist"
+  },
+  "prog:hsdcas": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-hsd64.cnf:29 runs 'hsdcas', but psdaq/pyproject.toml:45 comments its entry point out (#hsdcas = \"psdaq.cas.hsdcas:main\") and psdaq/psdaq/cas/hsdcas.py does not exist"
+  },
+  "prog:xpmpvas": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-xtpg.cnf:26 runs 'xpmpvas -P DAQ:LAB2:XPM:<shelf>', but no file, entry point or build target of that name exists (git grep -w xpmpvas finds only that config and the coverage tests)"
+  },
+  "prog:tmo_acr_opal_feedback": {
+    "status": "N/A",
+    "reason": "no source in the tree: srcf-tmo.cnf:174 runs 'python tmo_acr_opal_feedback.py -P TMO:ACR' from the hutch's working dir; no file of that name exists in the tree"
+  },
+  "prog:xpmPVs": {
+    "status": "N/A",
+    "reason": "R7, not built by the tree: lab3-xtpg.cnf:28 runs 'xpmPVs -a 10.0.3.104 -P DAQ:LAB2', but psdaq/psdaq/meson.build:18 comments its directory out (#subdir('xpm'); psdaq/psdaq/CMakeLists.txt:10 #add_subdirectory(xpm)) and psdaq/psdaq/xpm/meson.build:31 builds only xpm_simple (xpmPVs is only in xpm/CMakeLists.txt:44): 'meson compile -C builddir xpmPVs' fails with \"ERROR: Can't invoke target `xpmPVs`: target not found\""
+  },
+  "prog:hsd64PVs": {
+    "status": "N/A",
+    "reason": "R7, classes absent from the tree: lab3-hsd64.cnf:31 (also lab3-hsd64_cg.cnf:32, lab3-simvalid.cnf:40) runs 'hsd64PVs -P DAQ:LAB2:HSD:DEV06_3E -d /dev/pcie_adc_3e -I', but psdaq/psdaq/hsd/src/hsd64PVs.cc:11,13,14 include Module64.hh, PV64Stats.hh and PV64Ctrls.hh, which the tree does not have (git ls-files lists none), and psdaq/psdaq/hsd/meson.build builds no hsd64PVs: 'meson compile -C builddir hsd64PVs' fails with \"target not found\" and compiling hsd64PVs.cc fails with \"fatal error: psdaq/hsd/src/Module64.hh: No such file or directory\""
+  },
+  "prog:epics_exporter": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2, a PV monitor): procmgr runs epics_exporter -H tst -I xpm-0 -M <prom> -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime (as neh-base.cnf's pvrtmon-0, on simxpm's PVs); while the run is Running cycle scrapes its Prometheus gauges once a second and logs/gui_witness.json names the run and the partition's gauges it served, NumL0Acc changing, within the run's L1Accepts"
+  },
+  "prog:hsdpva": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B offscreen (test-hsd.cnf: hsdpva <pvlist>), its PVA client searching only simhsd's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simhsd and, widget by widget, the MONTIMING (and other) fields it showed changing, read within the run's L1Accepts; the record lists simhsd's log, whose -P serves those PVs"
+  },
+  "prog:tprca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs tprca DAQ:SIM:TPR offscreen (xcs.cnf: tprca DAQ:XCS:TPR), its PVA client searching only simtpr's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simtpr and the TPR PVs it showed changing (EVTCNT, ...), read within the run's L1Accepts; the record lists simtpr's log, whose -P serves those PVs"
+  },
+  "prog:dtica": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs python -m psdaq.cas.dtica DAQ:SIM:DTI offscreen (lab3-cam.cnf: launch_py <bins>/dtica.py DAQ:LAB2:DTI:<shelf>; psdaq installs no dtica command), its PVA client searching only simdti's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simdti and the DTI statistics it showed changing, read within the run's L1Accepts; the record lists simdti's log, whose -P serves those PVs"
+  },
+  "prog:procstat": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs procstat -p <platform> -i 1 <workdir>/daq_sim.cnf offscreen; while the run is Running cycle runs its main() once more offscreen through qt_walk, and logs/gui_witness.json names the run and the table it showed, every process whose procmgr log names the run (teb0, fakecam_0, ...) RUNNING, read within the run's L1Accepts"
+  },
+  "prog:partca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<platform> offscreen (lab3-cam.cnf: launch_py <bins>/partca.py DAQ:LAB2:PART:<platform>; psdaq installs no partca command) on simxpm's partition PVs; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run and the partition PVs it showed changing (NumL0Inp, NumL1, RunTime, rates), read within the run's L1Accepts"
+  },
+  "prog:hsdpvs": {
+    "status": "STAND-IN",
+    "stand_in": "simhsd",
+    "interface": "hsdpvs's PVs over PVA: every name its ChipServer adds under each -P prefix (CONFIG, READY, PGPCONFIG, FWBUILD, ..., MONTIMING, ..., RESET), which simhsd builds with hsdpvs.ChipServer itself; the cycle's witness gets each of them from simhsd and reads its monitoring change while the run runs",
+    "note": "daq_sim up --pvservers + cycle (R3): simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B on PVA ports of its own; logs/gui_witness.json 'servers' entry: hsdpvs's names defined vs served, MONTIMING counters read within the run's L1Accepts"
+  },
+  "prog:tprcas": {
+    "status": "STAND-IN",
+    "stand_in": "simtpr",
+    "interface": "tprcas's PVs over PVA: every name of the table its main() builds for -P <prefix> (ACCSEL ... EVTCNT, CH0..CH13 settings and RATE), which simtpr serves with tprcas's types and start values; the cycle's witness gets each of them from simtpr and reads EVTCNT advance while the run runs",
+    "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own; logs/gui_witness.json 'servers' entry: tprcas's names defined vs served, EVTCNT read within the run's L1Accepts"
+  },
+  "prog:bldcas": {
+    "status": "RUN",
+    "note": "daq_sim up --pvservers + cycle (R3b, a PV server of the tree's own): procmgr runs bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX (lab3-bld.cnf: bldcas -P DAQ:LAB2 <services>) on PVA ports of its own; while the run is Running the cycle's client gets every name bldcas.main() defines (HPSEX:ADDR, HPSEX:PORT) from it and puts HPSEX:PORT to 11002 and back, reading each back; logs/gui_witness.json 'servers' entry bldcas ('program': true), read within the run's L1Accepts, under the -P of its own procmgr log"
+  },
+  "prog:hpsdbuscas": {
+    "status": "RUN",
+    "note": "daq_sim up --pvservers + cycle (R3b, a PV server of the tree's own): procmgr runs hpsdbuscas -P DAQ:SIM:HPSCPA (lab3-bld.cnf: hpsdbuscas -P DAQ:LAB2:<cp>) on PVA ports of its own; while the run is Running the cycle's client gets the 4 names its PVAServer defines (HPS:FIELDNAMES, HPS:FIELDTYPES, HPS:FIELDMASK, PAYLOAD) from it and puts HPS:FIELDMASK to 0x8001 and back, reading it back with PAYLOAD's type ID, which hpsdbuscas rebuilds for each mask; logs/gui_witness.json 'servers' entry hpsdbuscas ('program': true), read within the run's L1Accepts"
+  },
+  "prog:pvatable": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs pvatable --bases DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B --fields MONTIMING.trigcntsum ... MONRAWBUF.freeevt offscreen (test-hsd.cnf: pvatable --bases <pvlist> --fields <fields>), its PVA client searching only simhsd's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk, which names each PvField label by the PvManager's PvBase that holds it with its PV, and logs/gui_witness.json names the run, the stand-in simhsd and the MONTIMING counters it showed changing, read within the run's L1Accepts; the record lists simhsd's log, whose -P serves those PVs"
+  },
+  "prog:xpmpva": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs xpmpva DAQ:SIM:XPM:0 offscreen (lab3-cam.cnf: xpmpva DAQ:LAB2:XPM:<shelf>) on simxpm, which serves the PAddr and Us:RxAlign it reads at start; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simxpm and the XPM PVs it showed changing (PATT:COINC, ...), read within the run's L1Accepts; the record lists simxpm's log, whose -P serves those PVs"
+  },
+  "prog:deadca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs python -m psdaq.cas.deadca DAQ:SIM <platform> 0 offscreen (lab3-cam.cnf: launch_py <bins>/deadca.py DAQ:LAB2 <platform> <shelf>; no deadca console script) on simxpm; while the run is Running the cycle has fakecam_0's link assert full for 0.3 of every 1.3 s (simxpm SIM:LinkFull, as a DRP whose readout stalls: the group's L0s are held back meanwhile) and runs deadca's main() once more offscreen through qt_walk, and logs/gui_witness.json names the run, the stand-in simxpm, the link it made full ('stimulus') and the DeadFLnk share that link's label showed change from second to second, read within the run's L1Accepts; the record lists simxpm's log, whose -P serves those PVs"
+  },
+  "prog:daqstat": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R5, a GUI that reads no PV): up starts simslurm with a Slurm job for each process of daq_sim.cnf (daqmgr's cnftopy) and procmgr runs daqstat -i 1 <workdir>/slurm/daqstat.py offscreen (mfx.py: daqstat -i 5), its Slurm commands answered by simslurm through shims first on its PATH; while the run is Running cycle runs its main() once more offscreen through qt_walk, which records each refresh of its table with its time, while the cycle reads squeue from simslurm itself every 0.5 s; logs/gui_witness.json holds both, and 2 or more refreshes within the run's L1Accepts show, for every row, the state the nearest squeue read gave that process's job, listing every process whose procmgr log names the run"
+  },
+  "prog:hsd134PVs": {
+    "status": "STAND-IN",
+    "stand_in": "simhsd",
+    "interface": "hsd134PVs's PVs over PVA: the 44 names its C++ sources (meson.build hsd134PVs_sources: hsd134PVs.cc, PV134Stats.cc, PVCtrlsBase.cc, PV134Ctrls.cc) connect to under -P <digitizer> for its 2 chips A and B (FWBUILD, FWVERSION, PADDR, PLINK, KEEPROWS it puts; CONFIG, READY, RESET, PGPCONFIG it monitors; MONTIMING ... FEXOOR, PADDR_U it posts), all of which simhsd serves (hsdpvs's ChipServer per chip) and whose monitoring it posts once a second (MONTIMING, MONPGP, MONRAWBUF, MONFEXBUF) as hsd134PVs posts the digitizer's",
+    "note": "daq_sim up --pvservers + cycle (R3): simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B on PVA ports of its own (as hsd134PVs -P DAQ:SIM:HSD:1_DA); logs/gui_witness.json 'servers' entry simhsd: hsd134PVs's names read from its sources (gui_witness.hsd134pvs_names) vs served, MONTIMING counters read within the run's L1Accepts"
+  },
+  "prog:tprioc": {
+    "status": "STAND-IN",
+    "stand_in": "simtpr",
+    "interface": "tprioc's PVs over PVA: the 237 names its C++ source (psdaq/psdaq/app/tprca.cc, meson.build executable('tprioc', 'tprca.cc')) makes under -n <prefix> (TprControl's ACCSEL ... EVTCNT, RXERRSCL, VSNERR, FRAMEVSN, TXCLKRATE; ChannelControl's MODE ... RATE for CH0..CH13, TprBase::NCHANNELS 14), all of which simtpr serves (tprcas's table and the 10 names tprioc adds to it), posting once a second what tprioc posts from the TPR (LINKSTATE, FRAMERATE, RXCLKRATE, TXCLKRATE, EVTCNT, each channel's RATE)",
+    "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own (as tprioc -n DAQ:SIM:TPR, xcs.cnf: tprioc -r a -n DAQ:XCS:TPR); logs/gui_witness.json 'servers' entry simtpr: tprioc's names read from its source (gui_witness.tprioc_names) vs served, EVTCNT read within the run's L1Accepts"
+  },
+  "prog:tprtrig": {
+    "status": "RUN",
+    "note": "daq_sim up --tpr + cycle (R8, a TPR program on a simulated TPR card): procmgr runs tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <platform> (srcf-rix.cnf, flags 'sp') with PSDAQ_SIM_TPR=<workdir>/tpr/tprtrig, so tpr::Client maps the file <workdir>/tpr/tprtrig/tpra (the card's register map) instead of /dev/tpra and its log says so; while the run is Running the cycle reads the card's channel and trigger registers once a second, and logs/gui_witness.json's 'tpr' entry shows channel 0 started on the partition and trigger 0 from channel 0 with delay 2 and width 10, as its command line programs (coverage.tpr_expected), read within the run's L1Accepts"
+  },
+  "prog:tpr_trigger": {
+    "status": "RUN",
+    "note": "daq_sim up --tpr + cycle (R8, a TPR program on a simulated TPR card): procmgr runs tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <platform> -u enc_trig (rix.py mono_enc_trig, flags 'spu') with PSDAQ_SIM_TPR=<workdir>/tpr/enc_trig; it joins the partition as a 'tpr' level process and at Connect programs its card's channel 0 for the readout group control gives it; while the run is Running the cycle reads the card once a second, and logs/gui_witness.json's 'tpr' entry shows channel 0 on the partition's readout group and trigger 0 from channel 0 with delay 2 and width 10, as its command line programs (coverage.tpr_expected), read within the run's L1Accepts"
   }
 }

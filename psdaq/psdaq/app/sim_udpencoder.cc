@@ -6,11 +6,14 @@
 #include <string>
 #include <signal.h>
 #include <cmath>
+#include <cstring>
 
+#include <zmq.h>
 #include "psdaq/tpr/Client.hh"
 #include "psdaq/tpr/Frame.hh"
 
 #include "drp/UdpEncoder.hh"
+#include "xtcdata/xtc/TransitionId.hh"
 
 char m_buf[sizeof(Drp::encoder_header_t) + sizeof(Drp::encoder_channel_t)];
 bool m_verbose = false;
@@ -20,6 +23,7 @@ int m_dropRequest;
 struct sockaddr_in m_loopbackAddr;
 uint16_t m_loopbackFrameCount;
 static const char *m_addr = "127.0.0.1";
+static const char *m_simTiming = 0;     // -T sim://<host>:<port>: timing from simxpm, no TPR
 FILE* m_file = 0;
 static const double PI = 4.0 * std::atan(1.0);
 
@@ -27,6 +31,7 @@ static const double PI = 4.0 * std::atan(1.0);
 void _loopbackInit();
 void _loopbackFini();
 void _loopbackSend();
+int  _simTiming(int group);
 
 static void usage(const char* p) {
   printf("Usage: %s [options]\n",p);
@@ -36,6 +41,8 @@ static void usage(const char* p) {
   printf("         -a <dest addr>  (default %s)\n", m_addr);
   printf("         -d <data port>  (default %d)\n", Drp::UdpEncoder::DefaultDataPort);
   printf("         -f <playback csv file>\n");
+  printf("         -T sim://<host>:<port>  (timing frames of readout group -p from simxpm\n"
+         "                                  (psdaq/psdaq/sim/simxpm.py) instead of /dev/tpra)\n");
   printf("         -v (verbose)\n");
   printf("Either -r or -e or -p is required\n");
 }
@@ -55,7 +62,7 @@ static void sigHandler(int signal)
     printf("SIGUSR2: drop 4 frames\n");
     m_dropRequest = 4;
   } else {
-    tpr->stop();
+    if (tpr)  tpr->stop();
     ::exit(signal);
   }
 }
@@ -71,7 +78,7 @@ int main(int argc, char* argv[])
   m_data_port = Drp::UdpEncoder::DefaultDataPort;
   char* csvFile = NULL;
 
-  while ( (c=getopt( argc, argv, "e:r:p:d:a:f:vh"))!=EOF) {
+  while ( (c=getopt( argc, argv, "e:r:p:d:a:f:T:vh"))!=EOF) {
     switch(c) {
     case 'e':
       evcode = strtol(optarg,NULL,0);
@@ -90,6 +97,9 @@ int main(int argc, char* argv[])
       break;
     case 'f':
       csvFile = optarg;
+      break;
+    case 'T':
+      m_simTiming = optarg;
       break;
     case 'v':
       m_verbose = true;
@@ -120,6 +130,14 @@ int main(int argc, char* argv[])
       perror("CSV file open");
       return 0;
     }
+  }
+
+  if (m_simTiming) {
+    if (partition < 0 || strncmp(m_simTiming, "sim://", 6) != 0) {
+      printf("-T needs sim://<host>:<port> and -p <readout group>\n");
+      return 1;
+    }
+    return _simTiming(partition);
   }
 
   // open the timing receiver
@@ -282,4 +300,85 @@ void _loopbackSend()
     } else {
         if (m_verbose) printf("%s: sent = %d", __PRETTY_FUNCTION__, sent);
     }
+}
+
+// Timing from simxpm instead of a TPR (-T sim://<host>:<port>), with the protocol a DRP's
+// -d sim:// device uses (psdaq/drp/MemPoolSim.hh): HELLO, then CONNECT to readout group -p and
+// CREDIT; simxpm then sends every frame of that group, in timing order, and this sends one
+// encoder frame for each L1Accept, as it does for each TPR frame of the partition.  It prints
+// the time of every transition frame (with -v, of every frame).
+struct SimFrame
+{
+  uint64_t pulseIdAndControl;           // transition id in bits 56-59
+  uint32_t nanoseconds;
+  uint32_t seconds;                     // since the EPICS epoch
+  uint32_t env;
+  uint32_t seq;
+} __attribute__((packed));
+
+static int _simSend(void* socket, const char* type, const void* data, size_t size)
+{
+  if (zmq_send(socket, type, strlen(type), ZMQ_SNDMORE) < 0)  return -1;
+  return zmq_send(socket, data, size, 0);
+}
+
+int _simTiming(int group)
+{
+  std::string endpoint = std::string("tcp://") + (m_simTiming + 6);
+  void* context = zmq_ctx_new();
+  void* socket  = zmq_socket(context, ZMQ_DEALER);
+  int   linger  = 0;
+  zmq_setsockopt(socket, ZMQ_LINGER, &linger, sizeof(linger));
+  if (zmq_connect(socket, endpoint.c_str()) < 0) {
+    printf("zmq_connect(%s): %s\n", endpoint.c_str(), zmq_strerror(zmq_errno()));
+    return 1;
+  }
+  char host[256] = {};
+  gethostname(host, sizeof(host) - 1);
+  char msg[512];
+  snprintf(msg, sizeof(msg), "{\"alias\": \"sim_udpencoder_%d\", \"host\": \"%s\", \"pid\": %d, "
+           "\"lanes\": 1, \"dmaCount\": 1024}", group, host, getpid());
+  _simSend(socket, "HELLO", msg, strlen(msg));
+  printf("sim_udpencoder: timing from simxpm %s, readout group %d, encoder frames to %s:%d\n",
+         endpoint.c_str(), group, m_addr, m_data_port);
+  fflush(stdout);
+
+  const uint32_t window = 1024;         // frames simxpm may send ahead
+  uint32_t credit = 0;
+  bool registered = false;
+  zmq_msg_t type, body;
+  zmq_msg_init(&type);
+  zmq_msg_init(&body);
+  while (zmq_msg_recv(&type, socket, 0) >= 0) {
+    std::string kind((const char*)zmq_msg_data(&type), zmq_msg_size(&type));
+    if (!zmq_msg_more(&type) || zmq_msg_recv(&body, socket, 0) < 0)  continue;
+    if (kind == "WELCOME") {
+      printf("sim_udpencoder: simxpm registered us: %.*s\n", int(zmq_msg_size(&body)),
+             (const char*)zmq_msg_data(&body));
+      snprintf(msg, sizeof(msg), "{\"group\": %d}", group);
+      _simSend(socket, "CONNECT", msg, strlen(msg));
+      registered = true;
+      credit = 0;                       // simxpm starts a (re)registered link with none
+    } else if (kind == "FRAMES") {
+      size_t n = zmq_msg_size(&body) / sizeof(SimFrame);
+      const SimFrame* f = (const SimFrame*)zmq_msg_data(&body);
+      for (size_t i = 0; i < n; ++i) {
+        unsigned tid = unsigned(f[i].pulseIdAndControl >> 56) & 0xf;
+        if (m_verbose || tid != 12)     // every transition, and with -v every L1Accept
+          printf("Timestamp %u.%09u  %-10s seq %u\n", f[i].seconds, f[i].nanoseconds,
+                 tid == 12 ? "L1Accept" : XtcData::TransitionId::name(XtcData::TransitionId::Value(tid)),
+                 f[i].seq);
+        if (tid == 12)                  // XtcData::TransitionId::L1Accept
+          _loopbackSend();
+      }
+      credit = n < credit ? credit - n : 0;
+      fflush(stdout);
+    }
+    if (registered && credit < window / 2) {
+      uint32_t grant = window - credit;
+      if (_simSend(socket, "CREDIT", &grant, sizeof(grant)) >= 0)  credit += grant;
+    }
+  }
+  printf("sim_udpencoder: zmq_msg_recv: %s\n", zmq_strerror(zmq_errno()));
+  return 1;
 }

@@ -419,8 +419,18 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     return r
 
 
+def _segment_raw(det, evt, segment):
+    """One segment's raw array (det.raw.raw gives segment 0's only: cspad_cspadRawAlg_1_2_3), or None."""
+    segs = det.raw._segments(evt)
+    c = (segs or {}).get(segment)
+    return None if c is None else getattr(c, 'array_raw', None)
+
+
 def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp',
-          ref=None):
+          ref=None, segment=None):
+    """Check det_name's data in one xtc2 file event by event (the dict the CLI prints as JSON).  segment
+    (fakecam-like types): check that segment's raw array, for the stream of a DRP of daq_sim up --segments N,
+    instead of det.raw.raw's, which is segment 0's."""
     kind = det_name.rsplit('_', 1)[0]
     if drp == 'drp_gpu':
         if kind not in GPU_TYPES:
@@ -450,7 +460,7 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
         det = run.Detector(det_name)
         for evt in run.events():
             r['events'] += 1
-            raw = det.raw.raw(evt)
+            raw = det.raw.raw(evt) if not segment else _segment_raw(det, evt, segment)
             if raw is None:
                 if len(r['problems']) < max_report:
                     r['problems'].append(f'event {r["events"]}: no {det_name} data')
@@ -472,7 +482,14 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
             if same:
                 r['pattern_ok'] += 1
             elif len(r['problems']) < max_report:
-                r['problems'].append(f'event {r["events"]}: payload pattern broken')
+                bad = np.argwhere(w[:, 4:] != want)
+                if len(bad):                # name the first word that differs
+                    lane, k = int(bad[0][0]), int(bad[0][1])
+                    detail = (f': {len(bad)} of {want.size} payload words differ, first lane {lane} '
+                              f'w{k + 4} {int(w[lane, k + 4]):#x} != {int(want[lane, k]):#x}')
+                else:
+                    detail = ': w0-w3 differ between lanes'
+                r['problems'].append(f'event {r["events"]}: payload pattern broken{detail}')
             pid = int(w[0, 0]) | (int(w[0, 1]) << 32)
             clock = _pulse_id_from_time(evt.timestamp)
             r['pulseid_checked'] += 1

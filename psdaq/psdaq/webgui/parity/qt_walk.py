@@ -830,6 +830,22 @@ def sim_params(sim_dir):
 LOOPBACK_HOSTS = ('127.0.0.1', 'localhost', '::1', '[::1]', '0.0.0.0', '*')
 
 
+def this_host():
+    """This host's own name and addresses: a connect to them stays on this host (procmgr, as procstat runs it,
+    reaches the procServ ports of a local config through the host's name)."""
+    import socket as _socket
+    names = {_socket.gethostname()}
+    try:
+        names.add(_socket.getfqdn())
+        names.update(a[4][0] for a in _socket.getaddrinfo(_socket.gethostname(), None))
+    except OSError:
+        pass
+    return frozenset(n for n in names if n)
+
+
+THIS_HOST = this_host()
+
+
 def _endpoint_host(ep):
     """host of a zmq endpoint ('tcp://h:p'), '' for ipc:// and inproc://, None if unparsable."""
     ep = str(ep)
@@ -881,7 +897,8 @@ def guard_subprocess(OUT):
 
 
 def guard_network(OUT):
-    """The walked GUI may open TCP connections and ZMQ sockets only to this host: anything else is recorded in
+    """The walked GUI may open TCP connections and ZMQ sockets only to this host (loopback, or its own name and
+    addresses, THIS_HOST): anything else is recorded in
     OUT['calls'] (opener 'refused:...') and not made (a ZMQ connect is skipped; a TCP connect raises
     ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none.
     No remote shell or Slurm command starts either (guard_subprocess)."""
@@ -892,7 +909,7 @@ def guard_network(OUT):
 
     def _ok(addr):
         h = addr[0] if isinstance(addr, tuple) else None
-        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.')
+        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.') or str(h) in THIS_HOST
 
     def connect(self, addr):
         if not _ok(addr):
@@ -1136,6 +1153,36 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
             return 0
         setattr(obj, parts[-1], rec)
 
+    # a GUI that reads no PV but Slurm job states (daqstat): its Slurm commands answered by simslurm from the
+    # walk's 'slurm_state' file (psdaq.slurm.utils runs them), and each call of a 'refresh_calls' method (its table
+    # refresh slot) recorded, after it ran, with the time and the cells of the window's tables (OUT['refreshes'])
+    if W.get('slurm_state'):
+        from psdaq.sim import simslurm
+        import psdaq.slurm.utils as _slurm_utils
+        state_path = str(W['slurm_state']).format(**params)
+        _slurm_utils.subprocess = simslurm.SubprocessStandIn(state_path)
+        OUT['notes'].append('Slurm commands answered by simslurm from %s' % state_path)
+    if W.get('refresh_calls'):
+        OUT['refreshes'] = []
+    for spec_call in W.get('refresh_calls', []):       # 'module:Class.method'
+        modname, qual = spec_call.split(':', 1)
+        obj = importlib.import_module(modname)
+        parts = qual.split('.')
+        for p_ in parts[:-1]:
+            obj = getattr(obj, p_)
+        orig = getattr(obj, parts[-1])
+
+        def refreshed(self, *a, _orig=orig, _n=orig.__code__.co_argcount - 1, _name=spec_call):
+            r = _orig(self, *a[:_n])            # a signal may carry more arguments than the slot takes
+            try:
+                OUT['refreshes'].append({'t': time.time(), 'call': _name, 'tables': [
+                    [[(t.item(i, j).text() if t.item(i, j) else None) for j in range(t.columnCount())]
+                     for i in range(t.rowCount())] for t in self.findChildren(QtWidgets.QTableWidget)]})
+            except Exception as ex:
+                OUT['notes'].append('refresh %s: %s' % (_name, ex))
+            return r
+        setattr(obj, parts[-1], refreshed)
+
     APP = []
 
     def pump(sec):
@@ -1156,11 +1203,37 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                 pass
         return out
 
+    HELD = {}
+
+    def holders():
+        """id(widget) -> the PV name of a non-widget object that holds the widget in its 'fields' or 'widgets' list
+        and has a pv: pvatable's PvBase (the PvField labels it calls back) and PvDblArray / PvIntArray (pvedit.py,
+        deadca.py, xpmpva.py: the labels they set), whose widgets hold no PV themselves.  Only with the walk's
+        'bind_holders' (the coverage witness's walks): a parity row's id does not change with it."""
+        import gc
+        out = {}
+        for o in gc.get_objects():
+            try:
+                d = o.__dict__ if not isinstance(o, (type, QtCore.QObject)) else None
+            except Exception:
+                continue
+            if not isinstance(d, dict) or not hasattr(d.get('pv'), 'pvname'):
+                continue
+            for attr in ('fields', 'widgets'):
+                ws = d.get(attr)
+                if isinstance(ws, (list, tuple)):
+                    for w in ws:
+                        if isinstance(w, QtWidgets.QWidget):
+                            out.setdefault(id(w), d['pv'].pvname)
+        return out
+
     def find_pv(x):
         o = x
         for _ in range(4):
             if o is None:
                 return None
+            if id(o) in HELD:
+                return HELD[id(o)]
             pv = getattr(o, 'pv', None)
             if pv is not None and hasattr(pv, 'pvname'):
                 return pv.pvname
@@ -1204,6 +1277,12 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
 
     def collect():
         OUT['instances'] = []
+        if W.get('bind_holders'):      # psdaq.sim.gui_witness's walks only: the parity rows stay as they were
+            try:
+                HELD.clear()
+                HELD.update(holders())
+            except Exception as ex:
+                OUT['notes'].append('collect: holders: %s' % ex)
         for x in list(LIVE):
             try:
                 if sip.isdeleted(x):

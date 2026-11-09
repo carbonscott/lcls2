@@ -416,6 +416,7 @@ namespace Pds {
     const MebParams&                    _prms;
     EbLfClient                          _mrqTransport;
     ZmqSocket                           _inprocSend;
+    bool                                _unconfigured; // Built an Unconfigure since configure() last ran
   };
 };
 
@@ -446,7 +447,8 @@ Meb::Meb(MebParams& prms, ZmqContext& context) :
   _rogCount    (NUM_READOUT_GROUPS, 0),
   _prms        (prms),
   _mrqTransport(prms.verbose, prms.kwargs),
-  _inprocSend  (&context, ZMQ_PAIR)
+  _inprocSend  (&context, ZMQ_PAIR),
+  _unconfigured(false)
 {
   _inprocSend.connect("inproc://drp");  // Yes, 'drp' is the name
 }
@@ -563,6 +565,9 @@ int Meb::connect(const std::shared_ptr<MetricExporter> exporter)
 
 int Meb::configure()
 {
+  // From here until this cycle's Unconfigure is built, a lost DRP link is an error (see run())
+  _unconfigured = false;
+
   // Create pool for transferring events to MyXtcMonitorServer
   unsigned entries = std::bitset<64>(_prms.contributors).count();
   size_t   size    = sizeof(Dgram) + entries * sizeof(Dgram*);
@@ -609,6 +614,13 @@ void Meb::run()
       }
       else if (rc == -FI_ENOTCONN)
       {
+        // After Unconfigure the DRPs drop their links at Disconnect, which may come before
+        // MebApp stops this thread (it does so in handleDisconnect): that is the end, not an error
+        if (_unconfigured)
+        {
+          logging::info("MEB thread: a DRP disconnected after Unconfigure");
+          break;
+        }
         logging::critical("MEB thread lost connection with a DRP");
         abort();
       }
@@ -722,6 +734,8 @@ void Meb::process(EbEvent* event)
                     pid, dg->xtc.src.value(), dg);
     }
   }
+
+  if (dg->service() == TransitionId::Unconfigure)  _unconfigured = true;
 
   if (!dgram->isEvent() || (dgram->pulseId() - _latPid > 13000000/14)) {
     _latency = latency<us_t>(dgram->time);
@@ -932,7 +946,9 @@ void MebApp::handlePhase1(const json& msg)
   {
     // Handle a "queued" Unconfigure, if any
     // Unconfigure if previous transition was Unconfigure and when Configure is being retried
-    if (_unconfigFlag || (_lastKey == key))
+    // or the previous MEB thread has not been joined (it ends by itself when a DRP disconnects
+    // after Unconfigure, see Meb::run())
+    if (_unconfigFlag || (_lastKey == key) || _appThread.joinable())
       _unconfigure();
 
     int rc = _configure(msg);
