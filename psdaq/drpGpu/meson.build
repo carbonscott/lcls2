@@ -17,7 +17,8 @@ if cuda_compiler.found()
   #  # use cuda in conda
   #  cuda_path = conda_base
   #endif
-  cuda_path = '/usr/local/cuda'
+  # build_all.sh passes CUDA_ROOT as custom_cuda_path; without it, the usual install
+  cuda_path = get_option('custom_cuda_path') != '' ? get_option('custom_cuda_path') : '/usr/local/cuda'
 
 cuda_inc_dir = include_directories([
       join_paths(cuda_path, 'targets/x86_64-linux/include'),
@@ -37,6 +38,7 @@ cuda_inc_dir = include_directories([
     dirs: [
       cuda_lib_dirs,
       join_paths(cuda_path, 'lib64/stubs'), # Only needed in Python 3.9
+      join_paths(cuda_path, 'targets/x86_64-linux/lib/stubs'), # A toolkit without the driver
     ]
   )
   cufile_dep = cc.find_library('cufile', dirs: cuda_lib_dirs)

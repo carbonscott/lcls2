@@ -15,6 +15,7 @@
 
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include "GreenCtxCompat.hh"             // CUDA 12: no green contexts
 
 #ifdef __NVCC__
 #define globalFunc __global__
