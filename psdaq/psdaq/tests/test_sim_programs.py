@@ -299,7 +299,8 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
     params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
     for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
-        assert f"cmd:'{name} {' '.join(gui_witness.argv(name, params))}'" in extra, name
+        cmd = 'python -m psdaq.cas.partca' if name == 'partca' else name   # no partca console script
+        assert f"cmd:'{cmd} {' '.join(gui_witness.argv(name, params))}'" in extra, name
     assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
 
 

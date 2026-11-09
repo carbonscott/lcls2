@@ -157,6 +157,6 @@
   },
   "prog:partca": {
     "status": "RUN",
-    "note": "daq_sim up --gui + cycle (R2): procmgr runs partca DAQ:SIM:XPM:0:PART:<platform> offscreen (lab3-cam.cnf: partca DAQ:LAB2:PART:<platform>) on simxpm's partition PVs; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run and the partition PVs it showed changing (NumL0Inp, NumL1, RunTime, rates), read within the run's L1Accepts"
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<platform> offscreen (lab3-cam.cnf: launch_py <bins>/partca.py DAQ:LAB2:PART:<platform>; psdaq installs no partca command) on simxpm's partition PVs; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run and the partition PVs it showed changing (NumL0Inp, NumL1, RunTime, rates), read within the run's L1Accepts"
   }
 }
