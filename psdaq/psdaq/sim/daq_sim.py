@@ -1391,20 +1391,21 @@ def cmd_cycle(args):
     return 0 if ok and not errors else 1
 
 
-def _record_cycle_evidence(work, state, experiment, run, counts, started):
+def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='cycle', log='cycle.jsonl'):
     """Evidence for 'daq_sim coverage' from a passing recorded cycle: the rows of the programs
     the generated .cnf started (and its drp's -D type), plus the rows whose stand-in (in
     coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  It lists the run's
     xtc2 files and the logs coverage reads the rows' proof in (each procmgr process's newest
     log and each service's log).  A failure to write it, or a row coverage would reject, is
-    reported and leaves the cycle's verdict alone; coverage then finds no valid evidence."""
+    reported and leaves the cycle's verdict alone; coverage then finds no valid evidence.
+    'daq_sim feature b' records its scan the same way (kind 'scan', its log feature-b.jsonl)."""
     import glob
     try:
         rows = coverage.config_rows(work.path(state['cnf']))
         rows += coverage.stand_in_rows(state.get('services', {}))
         files = sorted(glob.glob(work.path('data', INSTRUMENT, experiment, 'xtc',
                                            f'{experiment}-r{run:04d}-s*-c*.xtc2')))
-        files += [work.path(state['cnf']), work.path('logs', 'cycle.jsonl')]
+        files += [work.path(state['cnf']), work.path('logs', log)]
         files += [work.path('logs', w) for w in ('ami_check.json', 'gui_witness.json', 'ami-shot/ami-client.log')
                   if os.path.isfile(work.path('logs', w))]       # the checks' witnesses of the run
         files += [s['log'] for s in state.get('services', {}).values()]
@@ -1412,7 +1413,7 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started):
             logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
             files += sorted(logs, key=os.path.getmtime)[-1:]
         cache = {}
-        path = coverage.record_evidence(rows, 'cycle', files, run_id=f'{experiment}/r{run:04d}',
+        path = coverage.record_evidence(rows, kind, files, run_id=f'{experiment}/r{run:04d}',
                                         counts=counts, started=started, cache=cache,
                                         data_dir=work.path('data'))
         eid = os.path.basename(path)[:-5]

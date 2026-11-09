@@ -97,6 +97,10 @@
     "status": "RUN",
     "note": "daq_sim up --pva + cycle: drp_pva -d sim:// records simxpm's camera PV (an NTNDArray stamped with each L1Accept's time); sysdrp_check reads every image back with psana2 against fakecam's seq of the same L1Accept, and drp_pva's drp_match_count equals psana2's count"
   },
+  "prog:drp_bld": {
+    "status": "RUN",
+    "note": "daq_sim up --bld + cycle (daq_sim feature e): drp_bld -d sim:// records simxpm's BLD source (simxpm --bld: LCLS-II style packets by multicast on 127.0.0.1, TTL 1, to a group outside 239.255.0.0/16, the group and port from a stand-in IOC's CA PVs, the payload's layout from BLD_PAYLOAD over PVA); sysdrp_check --bld reads every value back with psana2 against fakecam's seq, and drp_bld's L1Accepts less its bld_miss_count equal psana2's count"
+  },
   "prog:epicsArch": {
     "status": "RUN",
     "note": "daq_sim up --epics + cycle: epicsArch -d sim:// archives two CA PVs of a stand-in IOC (softIoc on loopback) and a PVA PV of simxpm; sysdrp_check reads all three back with psana2"

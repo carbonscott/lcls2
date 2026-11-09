@@ -466,6 +466,9 @@ def cmd_feature(args):
         except (OSError, IndexError, ValueError):
             raise ds.Fail(f'no scan recorded in {work.dir}')
         counts, problems = check_b(work, state, rec, args.breakage)
+        if not args.check_only and not problems:     # evidence of the scan, as a cycle's
+            ds._record_cycle_evidence(work, state, rec['experiment'], rec['run'], rec['counts'], started,
+                                      kind='scan', log='feature-b.jsonl')
     else:
         rec = last_cycle(work)
         if rec is None:
