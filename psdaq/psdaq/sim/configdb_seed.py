@@ -8,8 +8,10 @@ hardware-free DAQ needs to Configure:
                                body control.py dummies up in --sim mode;
                                persistValue must be 0xdeadbeef, the value
                                libtmoTeb writes for an event to be recorded.
-  <inst>/<alias>/<det>         detType 'fakecam': the simulated detector; or, with
-                               --det-type <type>, that type's own default config
+  <inst>/<alias>/<det>         detType 'fakecam': the simulated detector (also for
+                               --det-type cspad, epixhremu, jungfrauemu, which have no
+                               config script of their own); or, with --det-type <type>,
+                               that type's own default config
                                (psdaq.configdb.<type>_config_store, or with --det-yaml
                                a firmware YAML through yaml_config_store_example, as a
                                production config is made), for drp -D <type> -d sim://.
@@ -48,15 +50,25 @@ def trigger_cdict(name, segm=0, script='tebMonRouter.py'):
     return top
 
 
-def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024):
+def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024, det_type='fakecam'):
+    """The config of an XpmDetector type with no config script of its own (fakecam, and with
+    det_type cspad, epixhremu or jungfrauemu): only XpmDetector's sim_seed reads it."""
     top = cdict()
-    top.setAlg('fakecam', [0, 0, 1])
+    top.setAlg(det_type, [0, 0, 1])
     top.set('help:RO', '-- user --\nsim_seed : value mixed into the simulated payload'
                        '\n-- expert --\nsim_length   : payload words per event', 'CHARSTR')
     top.set('user.sim_seed', sim_seed, 'UINT32')
     top.set('expert.sim_length', sim_length, 'UINT32')
-    top.setInfo('fakecam', name, segm, 'sim-fakecam', 'Seeded by psdaq.sim.configdb_seed')
+    top.setInfo(det_type, name, segm, 'sim-%s' % det_type, 'Seeded by psdaq.sim.configdb_seed')
     return top
+
+
+# XpmDetector types with no <type>_config.py: their DRP configures through xpmdet_config only,
+# and their config DB entry holds what fakecam's does
+XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu')
+# Stores whose default config is a function other than <type>_cdict(): ts_config_store's
+# __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument)
+STORE_CDICT = {'ts': 'beam_cdict'}
 
 
 class _StoreCapture(object):
@@ -123,7 +135,11 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         if store != det_type:
             importlib.import_module('psdaq.configdb.%s_config' % store)
         mod = importlib.import_module('psdaq.configdb.%s_config_store' % store)
-        if hasattr(mod, '%s_cdict' % store):
+        if store in STORE_CDICT:
+            if hasattr(mod, 'tsdef'):
+                mod.tsdef.set_instrument('tst')
+            top = getattr(mod, STORE_CDICT[store])()
+        elif hasattr(mod, '%s_cdict' % store):
             top = getattr(mod, '%s_cdict' % store)()
         else:
             top = _store_cdict(mod, store, name, segm)
@@ -151,7 +167,7 @@ def seed(url, inst='tst', alias='BEAM', root='configDB', trigger='tmoteb',
     Returns {device: (key, changed)}."""
     db = configdb(url, inst, create=True, root=root)
     db.add_alias(alias)
-    top = (fakecam_cdict(det, segm, sim_seed, sim_length) if det_type == 'fakecam'
+    top = (fakecam_cdict(det, segm, sim_seed, sim_length, det_type) if det_type in XPMDET_TYPES
            else type_cdict(det_type, det, segm, det_yaml))
     return {
         trigger + '_0': _store(db, alias, trigger_cdict(trigger, 0)),

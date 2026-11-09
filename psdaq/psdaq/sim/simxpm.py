@@ -42,6 +42,8 @@ from p4p.server.thread import SharedPV
 POSIX_TIME_AT_EPICS_EPOCH = 631152000
 NUM_GROUPS = 8
 NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
+NUM_PORTS = 14                          # Front-panel links with per-link PVs, as ts_connect.py uses
+FW_BUILD = 'simxpm (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware'
 PID_MASK = (1 << 56) - 1
 
 
@@ -218,6 +220,25 @@ class SimXpm:
             self._add(f'{P}:DeadFLnk', 'af', [0.] * NUM_LINKS)
             for label in ('NumL0Acc', 'NumL0Inp', 'L0AccRate', 'L0InpRate'):
                 self._add(f'{P}:{label}', 'f', 0.)
+            # Trigger and inhibit settings that ts_config.py writes (pvctrls.py PVCtrls and
+            # GroupCtrls); simxpm keeps them, its L1Accepts stay at SIM:L1Rate
+            for label in ('L0Select', 'L0Select_FixedRate', 'L0Select_ACRate', 'L0Select_ACTimeslot',
+                          'L0Select_EventCode', 'L0Select_Sequence', 'L0Select_SeqBit'):
+                self._add(f'{P}:{label}', 'I', 0)
+            self._add(f'{P}:L0RawUpdate', 'I', 1)
+            for i in range(4):
+                self._add(f'{P}:InhInterval{i}', 'I', 10)
+                self._add(f'{P}:InhLimit{i}', 'I', 4)
+                self._add(f'{P}:InhEnable{i}', 'I', 0)
+        # Per-link PVs that ts_connect.py reads and writes (pvctrls.py LinkCtrls, pvstats.py
+        # LinkStatus): LinkRxReady<n> is 1 while a DRP holds link n (a locked receiver)
+        for n in range(NUM_PORTS):
+            for label in ('LinkGroupMask', 'TxLinkReset', 'RxLinkReset', 'LinkLoopback'):
+                self._add(f'{X}:{label}{n}', 'I', 0)
+            for label in ('LinkTxReady', 'LinkRxReady', 'LinkRxErr', 'LinkRxErrI', 'LinkRxIsXpm',
+                          'RemoteLinkId'):
+                self._add(f'{X}:{label}{n}', 'I', 0)
+        self._add(f'{X}:FwBuild', 's', FW_BUILD)
 
     def _post(self, name, value):
         pv, nt = self.pvs[name]
@@ -338,6 +359,11 @@ class SimXpm:
 
     # --- DRP links --------------------------------------------------------------------
 
+    def _link_ready(self, number, ready):
+        if number < NUM_PORTS:
+            for label in ('LinkTxReady', 'LinkRxReady'):
+                self._post(f'{self.prefix}:{label}{number}', ready)
+
     def _receive(self):
         while True:
             try:
@@ -362,6 +388,7 @@ class SimXpm:
                 self.sock.send_multipart([identity, b'WELCOME', json.dumps(
                     {'xpm': self.xpm, 'link': number, 'pvbase': self.pvbase}).encode()])
                 self._post(f'{self.prefix}:SIM:NumLinks', len(self.links))
+                self._link_ready(number, 1)
                 logging.info('link %d: %s (%s pid %s)', number, alias, info.get('host'), info.get('pid'))
             elif link is None:
                 logging.warning('%s from an unregistered DRP; restart that DRP', kind.decode())
@@ -377,6 +404,7 @@ class SimXpm:
             elif kind == b'BYE':
                 del self.links[identity]
                 self._post(f'{self.prefix}:SIM:NumLinks', len(self.links))
+                self._link_ready(link.number, 0)
                 logging.info('link %d: %s is gone', link.number, link.alias)
 
     def _receive_pull(self):

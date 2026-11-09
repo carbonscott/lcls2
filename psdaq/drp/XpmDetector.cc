@@ -28,8 +28,20 @@ XpmDetector::XpmDetector(Parameters* para, MemPool* pool, unsigned len) :
     m_sim(MemPoolSim::isSimDevice(para->device) ? pool->getAs<MemPoolSim>() : nullptr),
     m_length(len)
 {
-    if (m_sim)  return;             // No timing hardware to initialize: see MemPoolSim
+    // With a simulated device, xpmdet_config programs an emulated timing receiver (the
+    // l2si_drp root on psdaq.sim.rogue_dev's in-process registers); MemPoolSim's timing
+    // frames come from simxpm
+    if (m_sim)  _simInstall();
     _init();
+}
+
+void XpmDetector::_simInstall()
+{
+    PyObject* sim = _check(PyImport_ImportModule("psdaq.sim.rogue_dev"));
+    Py_DECREF(_check(PyObject_CallMethod(sim, "install", "ss", m_para->device.c_str(), "xpmdet")));
+    Py_DECREF(sim);
+    logging::info("XpmDetector: xpmdet_config runs against simulated device %s",
+                  m_para->device.c_str());
 }
 
 void XpmDetector::_init()
@@ -51,12 +63,16 @@ void XpmDetector::_init()
 
 json XpmDetector::connectionInfo(const json& msg)
 {
-    if (m_sim)  return xpmInfo(m_sim->paddr());
-
     PyObject* pDict  = _check(PyModule_GetDict(m_xmodule));
     PyObject* pFunc  = _check(PyDict_GetItemString(pDict, "xpmdet_connectionInfo"));
     PyObject* mbytes = _check(PyObject_CallFunction(pFunc,"s",msg.dump().c_str()));
     json result = xpmInfo(PyLong_AsLong(PyDict_GetItemString(mbytes, "paddr")));
+    if (m_sim) {                        // The timing link is simxpm's, not the emulated RxId
+        unsigned paddr = m_sim->paddr();
+        logging::info("XpmDetector: emulated RxId 0x%lx; link id 0x%x from simxpm",
+                      PyLong_AsLong(PyDict_GetItemString(mbytes, "paddr")), paddr);
+        result = xpmInfo(paddr);
+    }
     Py_DECREF(mbytes);
     return result;
 }
@@ -70,15 +86,14 @@ void XpmDetector::connect(const json& connect_json, const std::string& collectio
     if (it != m_para->kwargs.end())
         m_length = stoi(it->second);
 
-    if (m_sim) {
-        m_connectMsg = connect_json;
-        m_sim->connect(readoutGroup, m_length);
-        return;
-    }
-
     PyObject* pDict  = _check(PyModule_GetDict(m_xmodule));
     PyObject* pFunc  = _check(PyDict_GetItemString(pDict, "xpmdet_connect"));
     Py_DECREF(_check(PyObject_CallFunction(pFunc,"ii",readoutGroup,m_length)));
+
+    if (m_sim) {
+        m_connectMsg = connect_json;
+        m_sim->connect(readoutGroup, m_length);
+    }
 }
 
 unsigned XpmDetector::configure(const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd)
@@ -138,8 +153,6 @@ void XpmDetector::_simConfigure(const std::string& config_alias)
 
 void XpmDetector::shutdown()
 {
-    if (m_sim)  return;
-
     PyObject* pDict  = _check(PyModule_GetDict(m_xmodule));
     PyObject* pFunc  = _check(PyDict_GetItemString(pDict, "xpmdet_unconfig"));
     Py_DECREF(_check(PyObject_CallFunction(pFunc,"")));
@@ -147,13 +160,10 @@ void XpmDetector::shutdown()
 
 void XpmDetector::connectionShutdown()
 {
-    if (m_sim) {
-        m_sim->disconnect();
-        return;
-    }
-
     PyObject* pDict  = _check(PyModule_GetDict(m_xmodule));
     PyObject* pFunc  = _check(PyDict_GetItemString(pDict, "xpmdet_connectionShutdown"));
     Py_DECREF(_check(PyObject_CallFunction(pFunc,"")));
+
+    if (m_sim)  m_sim->disconnect();
 }
 }
