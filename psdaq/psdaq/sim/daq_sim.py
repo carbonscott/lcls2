@@ -36,7 +36,9 @@ caRepeater that libca spawns); then it checks that the ports are free.
 state at a time, reads every state back, waits for --events L1Accepts and goes back to the
 state it started from.  It exits nonzero on any failure.  A passing recorded cycle writes an
 evidence record (psdaq.sim.coverage.record_evidence) for the rows it proves: the programs
-of the generated .cnf, its drp's -D type and the stand-ins 'up' started.
+of the generated .cnf, its drp's -D type and the stand-ins 'up' started; the record lists the
+run's xtc2 files and every process's log with their sizes and sha256, and the cycle prints
+what 'daq_sim coverage' would reject in it.
 'coverage' checks that every row (detector type, program a procmgr config starts) is RUN,
 STAND-IN or N/A, each RUN/STAND-IN row with evidence recorded at HEAD (psdaq.sim.coverage).
 'matrix' runs the whole hardware-free matrix; for now it only runs the coverage check.
@@ -310,9 +312,17 @@ def write_activedet(path, platform, segments=1):
         json.dump(value, f, indent=4, sort_keys=True)
 
 
+def log_header(argv):
+    """The first line of a service's log: its command, as procmgr heads each process's log
+    ('# CMDLINE: ...'); coverage reads it to tell which program the log is of."""
+    return f'# CMDLINE: {" ".join(shlex.quote(a) for a in argv)}\n'
+
+
 def start_service(work, state, name, argv, env):
     log = work.path('logs', name + '.log')
     with open(log, 'ab') as out:
+        out.write(log_header(argv).encode())
+        out.flush()
         p = subprocess.Popen(argv, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                              env=env, cwd=work.dir, start_new_session=True)
     state['services'][name] = {'pid': p.pid, 'cmd': ' '.join(shlex.quote(a) for a in argv), 'log': log}
@@ -872,8 +882,10 @@ def cmd_cycle(args):
 def _record_cycle_evidence(work, state, experiment, run, counts, started):
     """Evidence for 'daq_sim coverage' from a passing recorded cycle: the rows of the programs
     the generated .cnf started (and its drp's -D type), plus the rows whose stand-in (in
-    coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  A failure to
-    write it is reported and leaves the cycle's verdict alone; coverage then finds no evidence."""
+    coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  It lists the run's
+    xtc2 files and the logs coverage reads the rows' proof in (each procmgr process's newest
+    log and each service's log).  A failure to write it, or a row coverage would reject, is
+    reported and leaves the cycle's verdict alone; coverage then finds no valid evidence."""
     import glob
     try:
         rows = coverage.config_rows(work.path(state['cnf']))
@@ -882,12 +894,17 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started):
                                            f'{experiment}-r{run:04d}-s*-c*.xtc2')))
         files += [work.path(state['cnf']), work.path('logs', 'cycle.jsonl')]
         files += [s['log'] for s in state.get('services', {}).values()]
-        for proc in PROCS:              # the newest procmgr log of each process
+        for proc in procs(state):       # the newest procmgr log of each process
             logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
             files += sorted(logs, key=os.path.getmtime)[-1:]
+        cache = {}
         path = coverage.record_evidence(rows, 'cycle', files, run_id=f'{experiment}/r{run:04d}',
-                                        counts=counts, started=started)
-        print(f'{now()} evidence {os.path.basename(path)[:-5]}: {" ".join(sorted(rows))}', flush=True)
+                                        counts=counts, started=started, cache=cache)
+        eid = os.path.basename(path)[:-5]
+        print(f'{now()} evidence {eid}: {" ".join(sorted(rows))}', flush=True)
+        for row, why in sorted(coverage.record_verdicts(path, cache=cache).items()):
+            if why:
+                print(f'{now()} evidence {eid}: coverage would reject it for {row}: {why}', flush=True)
     except Exception as e:
         print(f'{now()} evidence NOT recorded: {type(e).__name__}: {e}', flush=True)
 
