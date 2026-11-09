@@ -24,6 +24,7 @@ run's L1Accepts, so the values were read while the run ran.
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -40,10 +41,20 @@ WITNESS = {
                 'argv': ['--bases', '{part}', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']},
 }
 PUMPS = 4                               # snapshots after the first pump, one per second
+# PV monitors that are not GUIs, witnessed the same way: epics_exporter (the configs' pvrtmon-*
+# processes, e.g. neh-base.cnf: epics_exporter -H tst -I xpm-0 -M <prom dir> -P DAQ:NEH:XPM:0 ...
+# DeadFrac) serves the partitions' PVs <prefix>:PART:<0..7>:<name> as Prometheus gauges labelled
+# partition=<i>; cycle scrapes it once a second while the run is Running.
+MONITORS = {
+    'epics_exporter': {'id': 'pvrtmon_0',
+                       'argv': ['-H', 'tst', '-I', 'xpm-{xpm}', '-M', '{prom}', '-P', '{pvbase}:XPM:{xpm}',
+                                'NumL0Acc', 'NumL0Inp', 'RunTime']},
+}
+PORT_LINE = re.compile(r'Providing run-time monitoring data on port (\d+)')
 
 
 def argv(name, params):
-    return [a.format(**params) for a in WITNESS[name]['argv']]
+    return [a.format(**params) for a in (WITNESS.get(name) or MONITORS[name])['argv']]
 
 
 def spec(name, params):
@@ -85,6 +96,52 @@ def reads(walk):
             if not out[pv] or out[pv][-1] != v:
                 out[pv].append(v)
     return [{'name': k, 'values': v} for k, v in sorted(out.items())]
+
+
+def exporter_port(log):
+    """The Prometheus port an epics_exporter log says it serves on, or None."""
+    try:
+        with open(log, errors='replace') as f:
+            ports = PORT_LINE.findall(f.read())
+    except OSError:
+        return None
+    return int(ports[-1]) if ports else None
+
+
+def scrape_reads(port, names, xpm_prefix, seconds, period=1.0, scrape=None):
+    """Scrape an epics_exporter for `seconds`: (Unix start, Unix end, reads), reads as reads() gives
+    them, one per (name, partition) gauge, named by the PV it exports (<xpm_prefix>:PART:<i>:<name>)."""
+    if scrape is None:
+        from psdaq.sim.daq_sim import scrape
+    out, t0 = {}, time.time()
+    end = t0 + seconds
+    while True:
+        for k, v in scrape(port, names).items():
+            m = re.match(r'(\w+)\{.*partition="(\d+)"', k)
+            if m:
+                vals = out.setdefault(f'{xpm_prefix}:PART:{m.group(2)}:{m.group(1)}', [])
+                text = f'{v:g}'
+                if not vals or vals[-1] != text:
+                    vals.append(text)
+        if time.time() >= end:
+            break
+        time.sleep(period)
+    return t0, time.time(), [{'name': k, 'values': v} for k, v in sorted(out.items())]
+
+
+def monitor_entry(name, port, t0, t1, reads, prefix, params):
+    """The witness entry of a monitor's scrapes (as entry() for a GUI's walk)."""
+    e = {'argv': argv(name, params), 'port': port, 'exit': None,
+         'start': round(t0 - EPICS_EPOCH, 3), 'end': round(t1 - EPICS_EPOCH, 3), 'problems': [],
+         'reads': [r for r in reads if r['name'].startswith(prefix)]}
+    if port is None:
+        e['problems'].append('its log names no Prometheus port')
+    live = [r['name'] for r in e['reads'] if len(numbers(r['values'])) >= 2]
+    if not live:
+        e['problems'].append(f'no PV under {prefix} showed 2 or more distinct numbers')
+    e['live'] = live
+    e['pass'] = not e['problems']
+    return e
 
 
 def numbers(values):

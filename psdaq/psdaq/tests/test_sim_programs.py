@@ -34,7 +34,7 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:drp_udpencoder',
+            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:epics_exporter', 'prog:drp_udpencoder',
             'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
@@ -296,8 +296,32 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     the GUI's own log and the walk agree."""
     from psdaq.sim import gui_witness
     extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
-    for name in gui_witness.WITNESS:
-        assert f"cmd:'{name} {' '.join(gui_witness.argv(name, daq_sim.gui_params(5)))}'" in extra, name
+    params = daq_sim.gui_params(5, str(tmp_path / 'prom'))
+    for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
+        assert f"cmd:'{name} {' '.join(gui_witness.argv(name, params))}'" in extra, name
+    assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
+
+
+def test_monitor_witness_reads_the_exporters_gauges(tmp_path):
+    """epics_exporter's gauges become reads named by the PV they export; its log gives the port."""
+    from psdaq.sim import gui_witness
+    log = tmp_path / 'pvrtmon_0.log'
+    log.write_text('# CMDLINE: epics_exporter -H tst\nINFO:root:Providing run-time monitoring data on port 9203\n')
+    assert gui_witness.exporter_port(str(log)) == 9203
+    assert gui_witness.exporter_port(str(tmp_path / 'none.log')) is None
+    seq = iter([{'NumL0Acc{instrument="tst",partition="5",id="xpm-0"}': 100.0,
+                 'NumL0Acc{instrument="tst",partition="3",id="xpm-0"}': 0.0},
+                {'NumL0Acc{instrument="tst",partition="5",id="xpm-0"}': 200.0,
+                 'NumL0Acc{instrument="tst",partition="3",id="xpm-0"}': 0.0}])
+    t0, t1, reads = gui_witness.scrape_reads(9203, ['NumL0Acc'], 'DAQ:SIM:XPM:0', 0.05, period=0.05,
+                                             scrape=lambda port, names: next(seq))
+    assert reads == [{'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc', 'values': ['0']},
+                     {'name': 'DAQ:SIM:XPM:0:PART:5:NumL0Acc', 'values': ['100', '200']}]
+    params = daq_sim.gui_params(5, '/p')
+    e = gui_witness.monitor_entry('epics_exporter', 9203, t0, t1, reads, params['part'], params)
+    assert e['pass'] and e['live'] == ['DAQ:SIM:XPM:0:PART:5:NumL0Acc'] and len(e['reads']) == 1
+    e = gui_witness.monitor_entry('epics_exporter', None, t0, t1, reads[:1], params['part'], params)
+    assert not e['pass'] and 'its log names no Prometheus port' in e['problems']
 
 
 def test_ami_shot_flowchart_views_the_source():

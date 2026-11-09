@@ -146,5 +146,9 @@
   "prog:tmo_acr_opal_feedback": {
     "status": "N/A",
     "reason": "no source in the tree: srcf-tmo.cnf:174 runs 'python tmo_acr_opal_feedback.py -P TMO:ACR' from the hutch's working dir; no file of that name exists in the tree"
+  },
+  "prog:epics_exporter": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2, a PV monitor): procmgr runs epics_exporter -H tst -I xpm-0 -M <prom> -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime (as neh-base.cnf's pvrtmon-0, on simxpm's PVs); while the run is Running cycle scrapes its Prometheus gauges once a second and logs/gui_witness.json names the run and the partition's gauges it served, NumL0Acc changing, within the run's L1Accepts"
   }
 }

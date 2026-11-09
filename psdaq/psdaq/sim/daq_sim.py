@@ -393,13 +393,15 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # --bases ... --fields ..., here the partition's L0 counters).  Those two never log a run: cycle
 # runs each once more, offscreen, while the run is Running and keeps what it shows
 # (psdaq.sim.gui_witness), as the witness 'daq_sim coverage' reads.
-GUI_PROCS = ('control_gui', 'groupca', 'pvant')
+GUI_PROCS = ('control_gui', 'groupca', 'pvant', 'pvrtmon_0')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'groupca {groupca}' }},
  {{ id:'pvant', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'pvant {pvant}' }},
+ {{ id:'pvrtmon_0', flags:'s',
+   cmd:'epics_exporter {epics_exporter}' }},
 '''
 EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its config file format)
 *sim_count
@@ -434,9 +436,10 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         out += UDP.format(udpport=P['udp'], platform=platform, **common)
     if gui:
         from psdaq.sim import gui_witness
-        params = gui_params(platform)
+        params = gui_params(platform, common['prom'])
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
-                          **{g: ' '.join(gui_witness.argv(g, params)) for g in gui_witness.WITNESS})
+                          **{g: ' '.join(gui_witness.argv(g, params))
+                             for g in list(gui_witness.WITNESS) + list(gui_witness.MONITORS)})
     if ami_bin:
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
@@ -445,10 +448,11 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     return out
 
 
-def gui_params(platform):
-    """The placeholders of psdaq.sim.gui_witness's GUI argv (as qt_walk's sim_params gives them)."""
+def gui_params(platform, prom=None):
+    """The placeholders of psdaq.sim.gui_witness's GUI and monitor argv (as qt_walk's sim_params
+    gives them; prom: the work dir's Prometheus dir)."""
     return {'pvbase': PVBASE, 'xpm': XPM, 'platform': platform,
-            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}'}
+            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom}
 
 
 def udp_busy(port):
@@ -1353,13 +1357,30 @@ class GuiWitness:
     def __init__(self, work, state):
         from psdaq.sim import gui_witness
         self.gw, self.work, self.state = gui_witness, work, state
-        self.params = gui_params(state['platform'])
+        self.params = gui_params(state['platform'], work.path('prom'))
         env = dict(os.environ, **{TAG: work.dir})
-        self.walks = {}
+        self.walks, self.monitors = {}, {}
         for name in gui_witness.WITNESS:
             if name in procs(state):
                 self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), env)) + [None]
                 print(f'{now()} GUI witness: {name} walking offscreen (pid {self.walks[name][0].pid})', flush=True)
+        for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
+            if m['id'] in procs(state):
+                import glob
+                logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{m["id"]}.log')), key=os.path.getmtime)
+                port = gui_witness.exporter_port(logs[-1]) if logs else None
+                res = self.monitors[name] = {'port': port}
+                names, xpm_prefix = m['argv'][8:], f'{PVBASE}:XPM:{XPM}'
+
+                def scrape(res=res, port=port, names=names, xpm_prefix=xpm_prefix):
+                    if port is None:
+                        res.update(t0=time.time(), t1=time.time(), reads=[])
+                        return
+                    res['t0'], res['t1'], res['reads'] = gui_witness.scrape_reads(
+                        port, names, xpm_prefix, gui_witness.PUMPS + 4)
+                res['thread'] = threading.Thread(target=scrape, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: {name} scraped on port {port}', flush=True)
 
     def wait(self, timeout=120):
         end = time.monotonic() + timeout
@@ -1372,6 +1393,8 @@ class GuiWitness:
                 p.wait(10)
             w[4] = time.time()
             print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
+        for name, res in self.monitors.items():
+            res['thread'].join(max(1, end - time.monotonic()))
 
     def check(self, experiment, run):
         import glob
@@ -1380,6 +1403,9 @@ class GuiWitness:
         prefix = self.params['part']
         programs = {name: self.gw.entry(name, walk, p.returncode, t0, t1, prefix, self.params)
                     for name, (p, walk, log, t0, t1) in self.walks.items()}
+        for name, res in self.monitors.items():
+            programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
+                                                   res.get('reads', []), prefix, self.params)
         w = self.gw.witness(f'{experiment}/r{run:04d}', files, prefix, programs)
         with open(self.work.path('logs', 'gui_witness.json'), 'w') as f:
             json.dump(w, f, indent=1)
