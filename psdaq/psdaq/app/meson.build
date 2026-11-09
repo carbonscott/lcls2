@@ -193,6 +193,7 @@ sim_udpencoder = executable('sim_udpencoder',
     xtcdata_dep,
     psalg_utils_dep,
     python_dep,
+    zmq_dep,                            # -T sim://: timing frames from simxpm
     #dl_dep,
     #rt_dep,
   ],
