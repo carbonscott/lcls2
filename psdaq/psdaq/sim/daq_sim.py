@@ -1410,18 +1410,22 @@ class GuiWitness:
                 print(f'{now()} GUI witness: {name} scraped on port {port}', flush=True)
 
     def wait(self, timeout=120):
+        """Wait for the walks (each one's end is the time its exit was seen, polled every 0.1 s) and the
+        reader threads, then 1 s more: the run keeps taking L1Accepts past every read."""
         end = time.monotonic() + timeout
-        for name, w in self.walks.items():
-            p = w[0]
-            try:
-                p.wait(max(1, end - time.monotonic()))
-            except subprocess.TimeoutExpired:
-                p.kill()
-                p.wait(10)
-            w[4] = time.time()
-            print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
+        while any(w[4] is None for w in self.walks.values()):
+            for name, w in self.walks.items():
+                p = w[0]
+                if w[4] is None and (p.poll() is not None or time.monotonic() > end):
+                    if p.poll() is None:
+                        p.kill()
+                        p.wait(10)
+                    w[4] = time.time()
+                    print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
+            time.sleep(0.1)
         for name, res in self.monitors.items():
             res['thread'].join(max(1, end - time.monotonic()))
+        time.sleep(1.0)
 
     def check(self, experiment, run):
         import glob
