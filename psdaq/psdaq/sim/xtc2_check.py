@@ -35,7 +35,7 @@ import sys
 
 
 # BEB types: (raw image shape, pixel bit depth), as MemPoolSim's batcher table writes them
-IMAGE_TYPES = {'epix100': ((704, 768), 14)}
+IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15)}
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
 

@@ -54,3 +54,14 @@ def test_ts_stores_its_own_beam_config():
     assert top['detType:RO'] == 'ts'
     assert top['user']['LINAC'] == 0 and top['user']['Cu']['group0_eventcode'] == 40
     assert top['expert']['group0']['inhibit3']['interval'] == 1
+
+
+def test_epixm320_store_from_the_firmware_project_dir():
+    """epixm320_cdict takes the firmware project's software/config (its __main__'s --dir)."""
+    import os
+    if not os.environ.get('SUBMODULEDIR'):
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    from psdaq.sim.configdb_seed import STORE_DIR, type_cdict
+    assert STORE_DIR['epixm320'] == 'epix-hr-m-320k/software/config'
+    top = json.loads(json.dumps(type_cdict('epixm320', 'epixm320', 0).typed_json()))
+    assert top['detType:RO'] == 'epixm320' and top['user']['asic_enable'] == 0xf

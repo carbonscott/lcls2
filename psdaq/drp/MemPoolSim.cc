@@ -239,12 +239,60 @@ static void hrencoderData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint
     out.tail(8, 2);
 }
 
+// epixm320 (EpixM320::_event): subframes 2..5 are ASICs 0..3, each a 48 B header {rsvd u32,
+// frameNo u32, asicNo u8, ...}, 192 x 384 uint16 in the ASIC's bank order, and a 48 B trailer.
+// EpixM320::_descramble reorders the 24 banks (and shifts each bank's rows up by one for an
+// ASIC firmware bug); the framer puts image pixel (q, r, c) where that loop reads it.  15 data
+// bits (psana's epixm320 raw masks with 0x7fff; bit 15 is the gain bit, 0 here).
+static const unsigned EpixMRows = 192, EpixMCols = 384, EpixMBankRows = 4, EpixMBankCols = 6;
+static const unsigned EpixMBanks = 24, EpixMHdr = 48, EpixMAsic = EpixMRows * EpixMCols;
+
+static std::vector<uint32_t> epixm320Order()    // readout word -> image pixel within an ASIC
+{
+    std::vector<uint32_t> inv(EpixMAsic);
+    const unsigned bankHeight = EpixMRows / EpixMBankRows, bankWidth = EpixMCols / EpixMBankCols;
+    const unsigned hw = bankWidth / 2, hb = bankHeight * hw;
+    uint32_t d = 0;                                 // EpixM320::_descramble's dst, row-major
+    for (unsigned bankRow = 0; bankRow < EpixMBankRows; ++bankRow)
+        for (unsigned row = 0; row < bankHeight; ++row) {
+            unsigned rowFix = row == 0 ? bankHeight - 1 : row - 1;
+            for (unsigned bankCol = 0; bankCol < EpixMBankCols; ++bankCol) {
+                unsigned bank = EpixMBankRows * bankCol + bankRow;
+                for (unsigned col = 0; col < bankWidth; ++col)
+                    inv[(((col + 1) % 2) * hb + hw * rowFix + col / 2) * EpixMBanks + bank] = d++;
+            }
+        }
+    return inv;
+}
+
+static void epixm320Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint32_t> order = epixm320Order();
+    static const std::vector<PixelMap> asics = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t q = 0; q < 4; ++q)
+            v.emplace_back(EpixMAsic, 15, [q](size_t j) { return q * EpixMAsic + order[j]; });
+        return v;
+    }();
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    for (unsigned q = 0; q < 4; ++q) {
+        uint8_t* d = out.data();
+        memset(d, 0, EpixMHdr);
+        memcpy(d + 4, &f.seq, 4);       // frameNo
+        d[8] = uint8_t(q);              // asicNo
+        asics[q].fill(reinterpret_cast<uint16_t*>(d + EpixMHdr), seed, f.seq);
+        memset(d + EpixMHdr + 2 * EpixMAsic, 0, EpixMHdr);
+        out.tail(2 * EpixMHdr + 2 * EpixMAsic, 2 + q);
+    }
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
     { "wave8",   _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(56) + _padded(32), wave8Data },
     { "wave8he", _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(64) + _padded(32), wave8heData },
     { "hrencoder", _padded(8), hrencoderData },
+    { "epixm320", _padded(32) + 4 * _padded(2 * EpixMHdr + 2 * EpixMAsic), epixm320Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)

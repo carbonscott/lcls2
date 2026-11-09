@@ -95,6 +95,7 @@ SIM_TYPES = {
     'wave8he': {'kwargs': 'sim_dma_size=0x2000,sim_dma_count=1024,sim_seed={seed:#x},'
                           'epics_prefix=SIM:W8HE:00'},
     'hrencoder': {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
+    'epixm320':  {'kwargs': 'sim_dma_size=0xa0000,sim_dma_count=256,sim_seed={seed:#x}'},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so

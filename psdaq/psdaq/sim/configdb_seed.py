@@ -27,6 +27,7 @@ Usage:
 import argparse
 import importlib
 import json
+import os
 import sys
 
 from psdaq.configdb.configdb import configdb
@@ -69,6 +70,9 @@ XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu')
 # Stores whose default config is a function other than <type>_cdict(): ts_config_store's
 # __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument)
 STORE_CDICT = {'ts': 'beam_cdict'}
+# Stores whose <type>_cdict() takes the firmware project's config directory, as their __main__
+# passes --dir + '/software/config'
+STORE_DIR = {'epixm320': 'epix-hr-m-320k/software/config'}
 
 
 class _StoreCapture(object):
@@ -139,6 +143,9 @@ def type_cdict(det_type, name, segm=0, yaml=None):
             if hasattr(mod, 'tsdef'):
                 mod.tsdef.set_instrument('tst')
             top = getattr(mod, STORE_CDICT[store])()
+        elif store in STORE_DIR:
+            top = getattr(mod, '%s_cdict' % store)(os.path.join(os.environ['SUBMODULEDIR'],
+                                                                STORE_DIR[store]))
         elif hasattr(mod, '%s_cdict' % store):
             top = getattr(mod, '%s_cdict' % store)()
         else:
