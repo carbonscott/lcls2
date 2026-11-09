@@ -1,0 +1,17 @@
+{
+ "_comment": "The simulated ePixM320 for psdaq.sim.rogue_dev: the KCU (PgpMonitor over AxiMemMap, psdaq/cas/pgpmonitor.py, root 'PgpMonitor') and the driver's /proc text, and the camera behind SRPv3 (ePix320kM.Root, root 'Root'). Keys are pyrogue register paths; values are what the hardware reports.",
+ "_proc": [
+  "Build String     : XilinxKcu1500Pgp4_6Gbps: Vivado v2023.1 (sim)"
+ ],
+ "PgpMonitor.AxiPcieCore.AxiVersion.PCIE_HW_TYPE_G": "0x0D",
+ "PgpMonitor.AxiPcieCore.AxiVersion.DMA_SIZE_G": 1,
+ "PgpMonitor.Lane[0].RxStatus.LinkReady": 1,
+ "PgpMonitor.Lane[0].RxStatus.RemRxLinkReady": 1,
+ "Root.App.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "Root.App.AsicTop.TriggerRegisters.AcqCount": 2500,
+ "Root.App.AsicTop.DigAsicStrmRegisters0.FrameCount": 2500,
+ "Root.App.AsicTop.DigAsicStrmRegisters1.FrameCount": 2500,
+ "Root.App.AsicTop.DigAsicStrmRegisters2.FrameCount": 2500,
+ "Root.App.AsicTop.DigAsicStrmRegisters3.FrameCount": 2500,
+ "_AcqCount": "epixm320_config's fnInitAsicScript runs ePix320kM Root.hwTrigger(2500, 5000), which waits for AcqCount == 2500, and laneDiagnostics, which takes an ASIC's lanes as aligned when its DigAsicStrmRegisters<i>.FrameCount == 2500: what the hardware reports after that 2500-trigger train"
+}

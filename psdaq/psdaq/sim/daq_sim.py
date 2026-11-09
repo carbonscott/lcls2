@@ -18,9 +18,10 @@
   4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
-     with its config in the config DB, all in the partition's readout group; with --det TYPE a
-     BEB type of SIM_TYPES instead of fakecam: its own <type>_config.py configures a device
-     psdaq.sim.rogue_dev emulates, from the type's own config in the config DB),
+     with its config in the config DB, all in the partition's readout group; with --det TYPE
+     another type of SIM_TYPES instead of fakecam: a BEB type's own <type>_config.py configures
+     a device psdaq.sim.rogue_dev emulates, from the type's own config in the config DB; every
+     XpmDetector type, fakecam included, runs xpmdet_config against an emulated TDet receiver),
   6. with --webgui, the web GUI (daq_webgui) on 127.0.0.1:<block +3>: the real DaqControl
      backend against this platform's control, and the events counter read from simxpm's
      NumL0Acc PV over PV Access.
@@ -93,6 +94,19 @@ SIM_TYPES = {
                           'epics_prefix=SIM:W8:00'},
     'wave8he': {'kwargs': 'sim_dma_size=0x2000,sim_dma_count=1024,sim_seed={seed:#x},'
                           'epics_prefix=SIM:W8HE:00'},
+    'hrencoder': {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
+    'epixm320':  {'kwargs': 'sim_dma_size=0xa0000,sim_dma_count=256,sim_seed={seed:#x}'},
+    # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
+    # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
+    # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
+    # pebble) buffers are 256 kB; jungfrauemu records the DMA payload as one 512 x 1024 panel;
+    # ts records the timing message (MemPoolSim.cc) and its ts_config programs simxpm's PVs.
+    'cspad':       {'kwargs': 'sim_length={length}'},
+    'epixhremu':   {'kwargs': 'sim_length={length},sim_dma_size=0x40000,sim_dma_count=1024,'
+                              'xtcfile={work}/epixhremu-frame.xtc2',
+                    'frame': 'epixhremu-frame.xtc2'},
+    'jungfrauemu': {'kwargs': 'sim_length=262144,sim_dma_size=0x101000,sim_dma_count=256'},
+    'ts':          {'kwargs': 'sim_seed={seed:#x}'},
 }
 
 
@@ -397,10 +411,21 @@ def cmd_up(args):
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
 
+        if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
+            r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
+                                '--seed', str(args.seed)], env=env, capture_output=True, text=True,
+                               timeout=120)
+            with open(work.path('logs', 'frame.log'), 'w') as out:
+                out.write(r.stdout + r.stderr)
+            if r.returncode != 0:
+                raise Fail(f'{DETECTOR}_frame failed: {r.stderr.strip()[-400:]}')
+            say(r.stdout.strip().splitlines()[-1] if r.stdout.strip() else f'{DETECTOR} frame written')
+
         write_activedet(work.path('activedet.json'), args.platform, segments)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
-                      simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed))
+                      simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
+                                                                work=work.dir))
         with open(work.path(state['cnf']), 'w') as f:
             f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
                                xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,

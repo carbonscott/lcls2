@@ -1,7 +1,7 @@
 {
   "det:drp:fakecam": {
     "status": "RUN",
-    "note": "daq_sim cycle: drp -D fakecam -d sim:// records a run that psana2 reads back"
+    "note": "daq_sim cycle: drp -D fakecam -d sim:// configures through xpmdet_config.py against an emulated TDet receiver (rogue_dev) and records a run that psana2 reads back"
   },
   "det:drp:epix100": {
     "status": "RUN",
@@ -14,6 +14,30 @@
   "det:drp:wave8he": {
     "status": "RUN",
     "note": "daq_sim up --det wave8he + cycle: wave8he_config.py against rogue_dev, every sample and fex value checked"
+  },
+  "det:drp:hrencoder": {
+    "status": "RUN",
+    "note": "daq_sim up --det hrencoder + cycle: hrencoder_config.py against rogue_dev (PgpMonitor KCU, the encoder board over SRPv3), every event's position and counts checked"
+  },
+  "det:drp:epixm320": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixm320 + cycle: epixm320_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3, its fnInitAsicScript), every pixel of the 4 ASICs checked"
+  },
+  "det:drp:cspad": {
+    "status": "RUN",
+    "note": "daq_sim up --det cspad + cycle: an AreaDetector through xpmdet_config.py against rogue_dev; cspad_raw_2_0_0 checks every word"
+  },
+  "det:drp:epixhremu": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixhremu + cycle: xpmdet_config.py against rogue_dev; the emulator replays the frame daq_sim writes from the seed, every pixel checked"
+  },
+  "det:drp:jungfrauemu": {
+    "status": "RUN",
+    "note": "daq_sim up --det jungfrauemu + cycle: xpmdet_config.py against rogue_dev; one 512 x 1024 panel of TDet words per event, every word checked"
+  },
+  "det:drp:ts": {
+    "status": "RUN",
+    "note": "daq_sim up --det ts + cycle: xpmdet_config.py against rogue_dev and ts_config.py/ts_connect.py against simxpm's PVs; every TimingData field checked through ts_raw_2_1_0"
   },
   "prog:control": {
     "status": "RUN",

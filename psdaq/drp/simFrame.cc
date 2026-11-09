@@ -1,5 +1,6 @@
 // drp_sim_frame <detType> <seq> [<seed>]: write one simulated L1Accept DMA buffer, as
-// MemPoolSim makes it for 'drp -D <detType> -d sim://', to stdout (for the framer's tests).
+// MemPoolSim makes it for 'drp -D <detType> -d sim://', to stdout (for the framer's tests):
+// an EventBatcher buffer for a BEB type, or the TimingHeader and TDet message for 'ts'.
 #include "MemPoolSim.hh"
 #include "xtcdata/xtc/TransitionId.hh"
 
@@ -14,8 +15,10 @@ int main(int argc, char** argv)
         return 2;
     }
     const Drp::MemPoolSim::Batcher* b = Drp::MemPoolSim::batcher(argv[1]);
-    if (!b) {
-        fprintf(stderr, "%s: no simulated EventBatcher layout for detType '%s'\n", argv[0], argv[1]);
+    const Drp::MemPoolSim::TDetMsg* t = Drp::MemPoolSim::tdetMsg(argv[1]);
+    if (!b && !t) {
+        fprintf(stderr, "%s: no simulated EventBatcher layout or TDet message for detType '%s'\n",
+                argv[0], argv[1]);
         return 1;
     }
     Drp::MemPoolSim::Frame f{};
@@ -25,6 +28,14 @@ int main(int argc, char** argv)
     f.env               = 1;                    // readout group 0
     f.seq               = strtoul(argv[2], nullptr, 0);
     uint32_t seed       = argc > 3 ? strtoul(argv[3], nullptr, 0) : 0x1234;
+
+    if (t) {                                    // TimingHeader + the TDet message
+        std::vector<uint8_t> buffer(32 + t->bytes);
+        size_t size = Drp::MemPoolSim::fill(buffer.data(), f, f.seq, 0, 0, seed);
+        t->data(buffer.data() + size, f, seed);
+        size += t->bytes;
+        return fwrite(buffer.data(), 1, size, stdout) == size ? 0 : 1;
+    }
 
     std::vector<uint8_t> buffer(8 + (32 + 8) + b->dataBytes);
     size_t size = Drp::MemPoolSim::fillBatcher(buffer.data(), *b, f, f.seq, true, seed);

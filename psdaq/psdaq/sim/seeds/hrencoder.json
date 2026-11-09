@@ -1,0 +1,14 @@
+{
+ "_comment": "The simulated high-rate encoder for psdaq.sim.rogue_dev: the KCU (PgpMonitor over AxiMemMap, psdaq/cas/pgpmonitor.py, root 'PgpMonitor') and the driver's /proc text, and the encoder board behind SRPv3 on the lane's VC 0 (high_rate_encoder_dev.Root, root 'Root'). Keys are pyrogue register paths; values are what the hardware reports.",
+ "_proc": [
+  "Build String     : XilinxKcu1500Pgp4_6Gbps: Vivado v2023.1 (sim)"
+ ],
+ "PgpMonitor.AxiPcieCore.AxiVersion.PCIE_HW_TYPE_G": "0x0D",
+ "PgpMonitor.AxiPcieCore.AxiVersion.DMA_SIZE_G": 1,
+ "PgpMonitor.Lane[0].RxStatus.LinkReady": 1,
+ "PgpMonitor.Lane[0].RxStatus.RemRxLinkReady": 1,
+ "Root.Core.AxiVersion.FpgaVersion": "0x02040000",
+ "_FpgaVersion": "high_rate_encoder_dev.Root.start requires FebVersionLock 0x02040000",
+ "Root.Core.Pgp4AxiL.RxStatus.RemRxLinkReady": 1,
+ "Root.App.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000"
+}
