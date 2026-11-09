@@ -387,8 +387,8 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 '''
 # --gui: PyQt GUIs as the configs start them, offscreen: control_gui (asc.cnf: control_gui -H
 # localhost -p <p>) on the config DB stand-in, which at its default log level (DEBUG) logs every
-# status message control publishes, the run's fileReport (the xtc2 path) included; and groupca
-# (asc.cnf: groupca DAQ:ASC 0 0) on simxpm's PVs.
+# status message control publishes (the run's fileReport with its path relative to the data dir);
+# and groupca (asc.cnf: groupca DAQ:ASC 0 0) on simxpm's PVs.
 GUI_PROCS = ('control_gui', 'groupca')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},

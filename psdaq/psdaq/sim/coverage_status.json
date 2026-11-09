@@ -68,5 +68,35 @@
   "prog:qRead": {
     "status": "N/A",
     "reason": "pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no role in a DAQ run"
+  },
+  "prog:monReqServer": {
+    "status": "RUN",
+    "note": "daq_sim up --meb + cycle: monReqServer meb0 serves the TEB's events in shared memory to shmemClient and AMI; its log names each transition it built, the BeginRun's time included"
+  },
+  "prog:shmemClient": {
+    "status": "RUN",
+    "note": "daq_sim up --meb + cycle: shmemClient -v reads the MEB's second queue and prints every datagram's time, the BeginRun's included"
+  },
+  "prog:drp_pva": {
+    "status": "RUN",
+    "note": "daq_sim up --pva + cycle: drp_pva -d sim:// records simxpm's camera PV (an NTNDArray stamped with each L1Accept's time); sysdrp_check reads every image back with psana2 against fakecam's seq of the same L1Accept, and drp_pva's drp_match_count equals psana2's count"
+  },
+  "prog:epicsArch": {
+    "status": "RUN",
+    "note": "daq_sim up --epics + cycle: epicsArch -d sim:// archives two CA PVs of a stand-in IOC (softIoc on loopback) and a PVA PV of simxpm; sysdrp_check reads all three back with psana2"
+  },
+  "prog:drp_udpencoder": {
+    "status": "RUN",
+    "note": "daq_sim up --udp + cycle: drp_udpencoder -d sim:// records the frames sim_udpencoder sends on loopback UDP; sysdrp_check reads every frame back in step with fakecam's seq, and drp_match_count equals psana2's count"
+  },
+  "prog:sim_udpencoder": {
+    "status": "RUN",
+    "note": "daq_sim up --udp + cycle: sim_udpencoder -T sim:// sends one encoder frame per L1Accept of its readout group, paced by simxpm's frames instead of /dev/tpra, and prints each transition's time"
+  },
+  "prog:pykcuxpm": {
+    "status": "STAND-IN",
+    "stand_in": "simxpm",
+    "interface": "the XPM PVs of pvctrls.py and pvstats.py and the control -X ZMQ PULL port, which pykcuxpm serves from a KCU card with the same PVCtrls/PVStats classes as pyxpm (pykcuxpm.py:18-19,111-114); not pvxtpg.py's XTPG PVs",
+    "note": "daq_sim cycle, as for pyxpm; simxpm also sends the timing frames"
   }
 }
