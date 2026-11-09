@@ -2,6 +2,7 @@
 procmgr entries they add name the programs the coverage rows count, AMI's console scripts, the
 AMI check's verdict, and simxpm's camera PV."""
 
+import json
 import os
 import subprocess
 import sys
@@ -33,7 +34,9 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:groupca', 'prog:drp_udpencoder', 'prog:sim_udpencoder']
+            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
+            'prog:drp_udpencoder',
+            'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
     assert [r for r in want if r not in enumerated] == []
@@ -230,3 +233,115 @@ def test_sim_udpencoder_sends_one_frame_per_l1accept_from_simxpm(tmp_path):
         drp.close()
         sim.stop.set()
         t.join(2)
+
+
+def test_ami_check_lists_its_matches():
+    """The witness lists every event AMI kept that psana2 read the same: [timestamp, seq, pixel]."""
+    events = {100 + i: (i, 7 * i) for i in range(5)}
+    res = ami_check.check({'rows': [[100 + i, i, 7 * i] for i in range(3)], 'pixsum': 21, 'count': 3}, None,
+                          minimum=1, events=events)
+    assert res['pass'] and res['matches'] == [[100, 0, 0], [101, 1, 7], [102, 2, 14]]
+    res = ami_check.check({'rows': [[100, 0, 1]], 'pixsum': 1, 'count': 1}, None, minimum=1, events=events)
+    assert not res['pass'] and res['matches'] == []
+
+
+def test_served_by_names_the_processes_on_the_ports(tmp_path):
+    """served_by finds a process of ours that holds a TCP socket on one of the ports (from /proc),
+    and leaves out the pids it is told to."""
+    import socket
+    import time
+    s = socket.socket()
+    s.bind(('127.0.0.1', 0))
+    port = s.getsockname()[1]
+    s.close()
+    code = (f'import socket,time; s=socket.socket(); s.bind(("127.0.0.1", {port})); s.listen(1); '
+            'print("up", flush=True); time.sleep(30)')
+    p = subprocess.Popen([sys.executable, '-c', code], stdout=subprocess.PIPE, text=True)
+    try:
+        assert p.stdout.readline().strip() == 'up'
+        found = ami_check.served_by([port])
+        assert [x['pid'] for x in found] == [p.pid] and 'socket.socket()' in found[0]['cmdline']
+        assert ami_check.served_by([port], exclude={p.pid}) == []
+        assert ami_check.served_by([port + 1 if port < 65535 else port - 1]) == []
+    finally:
+        p.kill()
+        p.wait()
+
+
+def test_gui_witness_entry(tmp_path):
+    """A walk whose partition PV showed two numbers passes; placeholders and other PVs do not count."""
+    from psdaq.sim import gui_witness
+    part = 'DAQ:SIM:XPM:0:PART:5'
+    params = daq_sim.gui_params(5)
+    assert params['part'] == part
+    walk = {'argv': gui_witness.argv('groupca', params), 'instances': [
+        {'pv': part + ':NumL0Acc', 'text': '300', 'texts': [['shown', '-'], ['pump:1', '120'], ['pump:1', '300']]},
+        {'pv': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc', 'text': '2', 'texts': [['shown', '1']]},
+        {'pv': None, 'text': 'Clear', 'texts': []}]}
+    path = tmp_path / 'groupca.walk.json'
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('groupca', str(path), 0, 1794225080.0, 1794225085.0, part, params)
+    assert e['pass'] and e['live'] == [part + ':NumL0Acc']
+    assert e['reads'] == [{'name': part + ':NumL0Acc', 'values': ['-', '120', '300']}]
+    assert e['start'] == 1794225080.0 - gui_witness.EPICS_EPOCH
+    walk['instances'][0]['texts'] = [['shown', '-'], ['pump:1', '300']]
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('groupca', str(path), 0, 0, 1, part, params)
+    assert not e['pass'] and 'showed 2 or more distinct numbers' in e['problems'][0]
+    e = gui_witness.entry('groupca', str(tmp_path / 'none.json'), 3, 0, 1, part, params)
+    assert not e['pass'] and 'walk exited 3' in ' '.join(e['problems'])
+
+
+def test_gui_entries_run_the_witnessed_argv(tmp_path):
+    """The procmgr entries of --gui start each witnessed GUI with the argv its witness walk uses, so
+    the GUI's own log and the walk agree."""
+    from psdaq.sim import gui_witness
+    extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
+    params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
+    for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
+        assert f"cmd:'{name} {' '.join(gui_witness.argv(name, params))}'" in extra, name
+    assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
+
+
+def test_monitor_witness_reads_the_exporters_gauges(tmp_path):
+    """epics_exporter's gauges become reads named by the PV they export; its log gives the port."""
+    from psdaq.sim import gui_witness
+    log = tmp_path / 'pvrtmon_0.log'
+    log.write_text('# CMDLINE: epics_exporter -H tst\nINFO:root:Providing run-time monitoring data on port 9203\n')
+    assert gui_witness.exporter_port(str(log)) == 9203
+    assert gui_witness.exporter_port(str(tmp_path / 'none.log')) is None
+    seq = iter([{'NumL0Acc{instrument="tst",partition="5",id="xpm-0"}': 100.0,
+                 'NumL0Acc{instrument="tst",partition="3",id="xpm-0"}': 0.0},
+                {'NumL0Acc{instrument="tst",partition="5",id="xpm-0"}': 200.0,
+                 'NumL0Acc{instrument="tst",partition="3",id="xpm-0"}': 0.0}])
+    t0, t1, reads = gui_witness.scrape_reads(9203, ['NumL0Acc'], 'DAQ:SIM:XPM:0', 0.05, period=0.05,
+                                             scrape=lambda port, names: next(seq))
+    assert reads == [{'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc', 'values': ['0']},
+                     {'name': 'DAQ:SIM:XPM:0:PART:5:NumL0Acc', 'values': ['100', '200']}]
+    params = daq_sim.gui_params(5, '/p')
+    e = gui_witness.monitor_entry('epics_exporter', 9203, t0, t1, reads, params['part'], params)
+    assert e['pass'] and e['live'] == ['DAQ:SIM:XPM:0:PART:5:NumL0Acc'] and len(e['reads']) == 1
+    e = gui_witness.monitor_entry('epics_exporter', None, t0, t1, reads[:1], params['part'], params)
+    assert not e['pass'] and 'its log names no Prometheus port' in e['problems']
+
+
+def test_ami_shot_flowchart_views_the_source():
+    from psdaq.sim import ami_shot
+    fc = ami_shot.flowchart('fakecam:raw:raw')
+    node = fc['nodes'][0]
+    assert node['class'] == 'SourceNode' and node['name'] == 'fakecam:raw:raw' and node['state']['viewed']
+    assert 'source_configuration' not in fc     # loading it must not reconfigure AMI's source
+
+
+def test_procstat_witness_reads_its_table(tmp_path):
+    from psdaq.sim import gui_witness
+    params = daq_sim.gui_params(5, '/p', '/w/daq_sim.cnf')
+    walk = {'argv': gui_witness.argv('procstat', params), 'instances': [
+        {'cls': 'QTableWidget', 'pv': None, 'cells': [['control', 'RUNNING'], ['fakecam_0', ' SHUTDOWN'], [None, None]]}]}
+    path = tmp_path / 'procstat.walk.json'
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('procstat', str(path), 0, 0, 1, params['part'], params)
+    assert e['kind'] == 'procmgr' and e['pass'] and e['live'] == ['procmgr:control']
+    assert e['reads'] == [{'name': 'procmgr:control', 'values': ['RUNNING']},
+                          {'name': 'procmgr:fakecam_0', 'values': ['SHUTDOWN']}]
+    assert gui_witness.spec('procstat', params)['walk']['record_calls'][0].endswith('spawnConsole')

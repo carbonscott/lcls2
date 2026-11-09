@@ -150,7 +150,8 @@ def ports(platform):
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
-            'bld': 31220 + platform}
+            'bld': 31220 + platform,
+            'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform)}
 
 
 def bld_group(platform):
@@ -416,12 +417,21 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # --gui: PyQt GUIs as the configs start them, offscreen: control_gui (asc.cnf: control_gui -H
 # localhost -p <p>) on the config DB stand-in, which at its default log level (DEBUG) logs every
 # status message control publishes (the run's fileReport with its path relative to the data dir);
-# and groupca (asc.cnf: groupca DAQ:ASC 0 0) on simxpm's PVs.
-GUI_PROCS = ('control_gui', 'groupca')
+# and on simxpm's PVs groupca (asc.cnf: groupca DAQ:ASC 0 0) and pvant (lab3-wave8.cnf: pvant
+# --bases ... --fields ..., here the partition's L0 counters).  Those two never log a run: cycle
+# runs each once more, offscreen, while the run is Running and keeps what it shows
+# (psdaq.sim.gui_witness), as the witness 'daq_sim coverage' reads.
+GUI_PROCS = ('control_gui', 'groupca', 'pvant', 'procstat', 'pvrtmon_0')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
-   cmd:'groupca {pvbase} {xpm} {platform}' }},
+   cmd:'groupca {groupca}' }},
+ {{ id:'pvant', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'pvant {pvant}' }},
+ {{ id:'procstat', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'procstat {procstat}' }},
+ {{ id:'pvrtmon_0', flags:'s',
+   cmd:'epics_exporter {epics_exporter}' }},
 '''
 EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its config file format)
 *sim_count
@@ -481,14 +491,24 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     if bld:
         out += BLD.format(bldname=BLD_NAME, bldprefix=BLD_PREFIX, **common)
     if gui:
+        from psdaq.sim import gui_witness
+        params = gui_params(platform, common['prom'], os.path.join(workdir, 'daq_sim.cnf'))
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
-                          pvbase=PVBASE, xpm=XPM, platform=platform)
+                          **{g: ' '.join(gui_witness.argv(g, params))
+                             for g in list(gui_witness.WITNESS) + list(gui_witness.MONITORS)})
     if ami_bin:
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
         out += AMI.format(bin=ami_bin, abase=P['ami'], aopts=aopts, heartbeat=AMI_HEARTBEAT_MS,
                           tag=common['tag'], pvas=AMI_CLIENT_PVAS.format(*P['ami_pvas']))
     return out
+
+
+def gui_params(platform, prom=None, cnf=None):
+    """The placeholders of psdaq.sim.gui_witness's GUI and monitor argv (as qt_walk's sim_params
+    gives them; prom: the work dir's Prometheus dir, cnf: its daq_sim.cnf)."""
+    return {'pvbase': PVBASE, 'xpm': XPM, 'platform': platform,
+            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom, 'cnf': cnf}
 
 
 def udp_busy(port):
@@ -771,6 +791,8 @@ def cmd_up(args):
             raise Fail(f'not RUNNING after start: {bad}\n{text}')
         state['procs'] = {i: int(status[i][1]) for i in procs(state)}
         work.save(state)
+        if gui:
+            _wait_control_gui(work, 120)
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
@@ -930,6 +952,23 @@ def _wait_running(state, timeout):
         if all(status.get(i, ('?',))[0] == 'RUNNING' for i in procs(state)) or time.monotonic() > end:
             return status
         time.sleep(1)
+
+
+def _wait_control_gui(work, timeout):
+    """Wait until control_gui has built its window and polls control (its log's first
+    'CGWMain.on_zmq_poll'), so the cycle's transitions start after: a control_gui that builds its
+    window once the partition is selected dies at -l DEBUG (QWPopupTableCheck.update_partition_table
+    logs logger.debug('list2d\\n', list2d), whose formatting raises TypeError in QWLoggerStd's
+    filter)."""
+    import glob
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:control_gui.log')), key=os.path.getmtime)
+        if logs and 'CGWMain.on_zmq_poll' in open(logs[-1], errors='replace').read():
+            say(f'control_gui polls control ({logs[-1]})')
+            return
+        time.sleep(1)
+    raise Fail(f'control_gui did not start polling control in {timeout} s (its procmgr log)')
 
 
 def _wait_pv(name, timeout, proc=None):
@@ -1247,6 +1286,7 @@ def cmd_cycle(args):
         print(f'{now()} setRecord({args.record}) -> {err or "OK"}', flush=True)
     i0 = STATES.index(start)
     ami = AmiRun(state) if state.get('ami') else None
+    counts = {}
     for target in STATES[i0 + 1:]:
         if not go(target):
             break
@@ -1258,6 +1298,15 @@ def cmd_cycle(args):
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
           f'experiment {status[6]} run {status[7]}', flush=True)
+    witness = GuiWitness(work, state) if ok and state.get('gui') else None
+    shot = None
+    if ok and getattr(args, 'ami_shot', None):
+        if ami:
+            from psdaq.sim import ami_shot
+            shot = ami_shot.Shot(work.dir, state, os.path.abspath(args.ami_shot))
+        else:
+            print(f'{now()} --ami-shot needs a DAQ up with --ami', flush=True)
+            ok = False
     if ok:
         pv = f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc'
         end = time.monotonic() + args.events / max(state['rate'], 1.) * 3 + 30
@@ -1269,7 +1318,13 @@ def cmd_cycle(args):
             time.sleep(1)
         print(f'{now()} {pv} = {count} (wanted >= {args.events})', flush=True)
         ok &= count is not None and count >= args.events
-    counts, prev = {}, None
+    if witness:                         # Still Running: the GUIs' reads end before Disable
+        witness.wait()
+    if shot:
+        counts['ami shot'] = shot.wait()
+        ok &= counts['ami shot'].startswith('PASS')
+        ami.served_running = shot.served           # AMI's processes while the viewer showed the run
+    prev = None
     cur = dc.getState()                 # Back down, one state at a time, to the start state
     if cur in STATES:
         prev = cur
@@ -1306,6 +1361,9 @@ def cmd_cycle(args):
     if (state.get('also') or state.get('fixed_rates') or state.get('bld')) and args.record and run:
         counts.update(_per_drp_counts(work, state, status[6], run, counts))
         ok &= counts.get('per-DRP checks') == 'PASS'
+    if witness:
+        counts.update(witness.check(status[6], run if args.record else 0))
+        ok &= counts.get('gui witness') == 'PASS'
     want = ('simxpm NumL0Acc', 'TEB_WrtCt', 'psana2 events') if args.record and run else \
            ('simxpm NumL0Acc', 'TEB_EvtCt')
     values = [counts.get(k) for k in want]
@@ -1347,13 +1405,16 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started):
         files = sorted(glob.glob(work.path('data', INSTRUMENT, experiment, 'xtc',
                                            f'{experiment}-r{run:04d}-s*-c*.xtc2')))
         files += [work.path(state['cnf']), work.path('logs', 'cycle.jsonl')]
+        files += [work.path('logs', w) for w in ('ami_check.json', 'gui_witness.json', 'ami-shot/ami-client.log')
+                  if os.path.isfile(work.path('logs', w))]       # the checks' witnesses of the run
         files += [s['log'] for s in state.get('services', {}).values()]
         for proc in procs(state):       # the newest procmgr log of each process
             logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
             files += sorted(logs, key=os.path.getmtime)[-1:]
         cache = {}
         path = coverage.record_evidence(rows, 'cycle', files, run_id=f'{experiment}/r{run:04d}',
-                                        counts=counts, started=started, cache=cache)
+                                        counts=counts, started=started, cache=cache,
+                                        data_dir=work.path('data'))
         eid = os.path.basename(path)[:-5]
         print(f'{now()} evidence {eid}: {" ".join(sorted(rows))}', flush=True)
         for row, why in sorted(coverage.record_verdicts(path, cache=cache).items()):
@@ -1432,7 +1493,8 @@ class AmiRun:
         if state.get('ami_src'):
             sys.path.insert(0, state['ami_src'])
         self.addr = f'tcp://127.0.0.1:{state["ports"]["ami"]}'
-        self.result, self.error = None, None
+        self.ports = ami_ports(state['platform'])
+        self.result, self.error, self.served, self.served_running = None, None, [], []
 
     def add(self):
         from psdaq.sim import ami_check
@@ -1450,6 +1512,7 @@ class AmiRun:
         try:
             time.sleep(1.0)             # a few heartbeats: the last events reach the manager
             self.result = ami_check.fetch(self.addr)
+            self.served = ami_check.served_by(self.ports, exclude={os.getpid()})
             with open(work.path('logs', 'ami_check.rows.json'), 'w') as f:
                 json.dump(self.result, f)
             print(f'{now()} AMI fetched {len(self.result["rows"])} rows, ami_pixsum '
@@ -1470,10 +1533,15 @@ class AmiRun:
             return {'ami rows': len(self.result['rows']), 'ami check': 'FAIL no recorded xtc2 file '
                     'to compare with (cycle without --no-record)'}
         res = ami_check.check(self.result, files, DETECTOR)
-        with open(work.path('logs', 'ami_check.json'), 'w') as f:
-            json.dump(dict(res, xtc2=files, addr=self.addr), f, indent=1)
+        with open(work.path('logs', 'ami_check.json'), 'w') as f:      # the witness coverage reads
+            served = [dict(p, when='fetch') for p in self.served] + \
+                     [dict(p, when='running') for p in self.served_running]
+            json.dump(dict(res, witness='ami_check', run_id=f'{experiment}/r{run:04d}', xtc2=files,
+                           addr=self.addr, served_by=served), f, indent=1)
         out = {k: res[k] for k in ('ami rows', 'ami events', 'ami matched', 'ami pixsum',
                                    'psana2 pixsum (same events)', 'ami seq range')}
+        out['ami served by'] = ' '.join(sorted({coverage.resolve(a['cmdline'])[0] or '?' for p in served
+                                                 for a in [p] + p['ancestors'][:1]}))
         out['ami check'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
         return out
 
@@ -1550,6 +1618,77 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
                                 f'({fixed_rate_label(i)} vs {fixed_rate_label(fixed[fast])})')
     out['per-DRP checks'] = 'PASS' if not problems else f'FAIL {problems[:3]}'
     return out
+
+
+class GuiWitness:
+    """The GUI side of a cycle (up --gui): once the run is Running, each GUI of
+    psdaq.sim.gui_witness.WITNESS runs once more offscreen against the partition, its reads are
+    kept, and after the run they become logs/gui_witness.json, the witness coverage reads."""
+
+    def __init__(self, work, state):
+        from psdaq.sim import gui_witness
+        self.gw, self.work, self.state = gui_witness, work, state
+        self.params = gui_params(state['platform'], work.path('prom'), work.path(state['cnf']))
+        env = dict(os.environ, **{TAG: work.dir})
+        self.walks, self.monitors = {}, {}
+        for name in gui_witness.WITNESS:
+            if name in procs(state):
+                self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), env)) + [None]
+                print(f'{now()} GUI witness: {name} walking offscreen (pid {self.walks[name][0].pid})', flush=True)
+        for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
+            if m['id'] in procs(state):
+                import glob
+                logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{m["id"]}.log')), key=os.path.getmtime)
+                port = gui_witness.exporter_port(logs[-1]) if logs else None
+                res = self.monitors[name] = {'port': port}
+                names, xpm_prefix = m['argv'][8:], f'{PVBASE}:XPM:{XPM}'
+
+                def scrape(res=res, port=port, names=names, xpm_prefix=xpm_prefix):
+                    if port is None:
+                        res.update(t0=time.time(), t1=time.time(), reads=[])
+                        return
+                    res['t0'], res['t1'], res['reads'] = gui_witness.scrape_reads(
+                        port, names, xpm_prefix, gui_witness.PUMPS + 4)
+                res['thread'] = threading.Thread(target=scrape, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: {name} scraped on port {port}', flush=True)
+
+    def wait(self, timeout=120):
+        end = time.monotonic() + timeout
+        for name, w in self.walks.items():
+            p = w[0]
+            try:
+                p.wait(max(1, end - time.monotonic()))
+            except subprocess.TimeoutExpired:
+                p.kill()
+                p.wait(10)
+            w[4] = time.time()
+            print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
+        for name, res in self.monitors.items():
+            res['thread'].join(max(1, end - time.monotonic()))
+
+    def check(self, experiment, run):
+        import glob
+        files = sorted(glob.glob(self.work.path('data', INSTRUMENT, experiment, 'xtc',
+                                                f'{experiment}-r{run:04d}-s*-c*.xtc2'))) if run else []
+        prefix = self.params['part']
+        programs = {name: self.gw.entry(name, walk, p.returncode, t0, t1, prefix, self.params)
+                    for name, (p, walk, log, t0, t1) in self.walks.items()}
+        for name, res in self.monitors.items():
+            programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
+                                                   res.get('reads', []), prefix, self.params)
+        w = self.gw.witness(f'{experiment}/r{run:04d}', files, prefix, programs)
+        with open(self.work.path('logs', 'gui_witness.json'), 'w') as f:
+            json.dump(w, f, indent=1)
+        bad = [f'{n}: {e["problems"][:2]}' for n, e in programs.items() if not e['pass']]
+        if not files:
+            bad.append('no recorded xtc2 file (cycle without --no-record)')
+        out = {f'gui witness {n}': f'{len(e["live"])} live PVs, e.g. ' +
+               (', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}'
+                          for r in e['reads'] if r['name'] in e['live'][:2]) or 'none')
+               for n, e in programs.items()}
+        out['gui witness'] = 'PASS' if not bad else f'FAIL {bad[:3]}'
+        return out
 
 
 def _sysdrp_counts(work, state, experiment, run, bld=False):
@@ -1745,7 +1884,9 @@ def main(argv=None):
                              'stand-ins on HOST_A, the --also DRPs on HOST_B)')
     upopts.add_argument('--dry-run', action='store_true', help='print the plan (.cnf, environment); start nothing')
     upopts.add_argument('--gui', action='store_true',
-                        help='also run the PyQt GUIs control_gui and groupca, offscreen, as the configs start them')
+                        help='also run the PyQt GUIs control_gui, groupca and pvant, offscreen, as the '
+                             'configs start them; cycle then runs groupca and pvant once more while '
+                             'Running and checks they show the partition\'s live counts (psdaq.sim.gui_witness)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
@@ -1761,6 +1902,9 @@ def main(argv=None):
     cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
     cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
     cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+    cy.add_argument('--ami-shot', metavar='PNG', default=None,
+                    help='(up --ami) while Running, open a viewer of the camera image in another ami-client, '
+                         'offscreen, and save its window to PNG (psdaq.sim.ami_shot)')
     e2e = sub.add_parser('e2e', parents=[common, upopts],
                          help='end-to-end test: a headless browser drives one run through the web GUI')
     e2e.add_argument('--events', type=int, default=1000,

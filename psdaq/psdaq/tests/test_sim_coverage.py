@@ -99,15 +99,23 @@ def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
         cfg.append(names(srcs[detname], dettype, detname, 'raw', [('value', 2, 0)]))
     e = expt.encode() + b'\0'
     e += b'\0' * (-len(e) % 4)
-    l1 = dgram(12, b''.join(shapes_data(srcs[d], [], struct.pack('<I', 7))
-                            for d in (srcs if with_data is None else with_data)))
+    l1 = b''.join(shapes_data(srcs[d], [], struct.pack('<I', 7))
+                  for d in (srcs if with_data is None else with_data))
     with open(path, 'wb') as f:
         f.write(dgram(2, b''.join(cfg)))
         f.write(dgram(4, shapes_data(RUNINFO_SRC, [(len(e), 0, 0, 0, 0)], e + struct.pack('<I', int(run))),
                       stamp=BEGINRUN[0] << 32 | BEGINRUN[1]))
-        f.write(l1 * events)
+        f.write(b''.join(dgram(12, l1, stamp=l1_stamp(k)) for k in range(events)))
         f.write(dgram(5, b''))
     return path
+
+
+def l1_stamp(k):
+    """The timestamp of a test run's k-th L1Accept: 100 Hz from 1 s after its BeginRun."""
+    return (BEGINRUN[0] + 1 + k // 100) << 32 | (k % 100) * 10000000
+
+
+L1_FIRST, L1_LAST = coverage.stamp_seconds(l1_stamp(0)), coverage.stamp_seconds(l1_stamp(999))
 
 
 def write_log(path, cmd, *lines):
@@ -135,20 +143,48 @@ def run_files(d, rows, stand_ins=None):
     for exe, ts in types.items():
         files.append(write_log(os.path.join(d, f'{exe}_0.log'), f'{exe} -P tst -D {",".join(ts)} -u {exe}_0',
                                f"Opening file '{xtc2}'"))
+    ami = []
     for r in rows:
         if r.startswith('prog:'):
             name = (stand_ins or {}).get(r, r[len('prog:'):])
             cmd = f'python -m psdaq.sim.{name} -P DAQ:SIM' if name == 'simxpm' else f'{name} -p 5'
+            if name in coverage.AMI_PROGRAMS:   # AMI's logs never name the run: its check does
+                ami.append((name, ami_pid(name), f'{sys.executable} {d}/bin/{name} -p 31150 -H 127.0.0.1'))
+                files.append(write_log(os.path.join(d, f'{name}.log'), f'{d}/bin/{name} -p 31150',
+                                       f'@@@ The PID of new child "x:{name}.log" is: {ami[-1][1]}'))
+                continue
             files.append(write_log(os.path.join(d, f'{name}.log'), cmd,
                                    f'EbAppBase  saw        BeginRun @ {BEGINRUN_TIME} (047325138ca92b)'))
+    if ami:
+        files.append(write_witness(os.path.join(d, 'ami_check.json'), ami_witness(xtc2, ami)))
     return files
 
 
-def record(rows, files, evidence, run_id=RUN_ID, dirty=False):
+def ami_pid(name):
+    return 4000 + coverage.AMI_PROGRAMS.index(name)
+
+
+def ami_witness(xtc2, served, run_id=RUN_ID, matches=None, **kw):
+    """An ami_check witness as daq_sim cycle writes it: the run, AMI's per-event matches with
+    psana2 and the AMI processes [(name, pid, cmdline)] that served the check."""
+    w = {'witness': 'ami_check', 'run_id': run_id, 'xtc2': [xtc2], 'pass': True, 'problems': [],
+         'matches': [[l1_stamp(k), k, 7] for k in range(5)] if matches is None else matches,
+         'served_by': [{'pid': pid, 'cmdline': cmd} for _, pid, cmd in served]}
+    w.update(kw)
+    return w
+
+
+def write_witness(path, w):
+    with open(path, 'w') as f:
+        json.dump(w, f)
+    return path
+
+
+def record(rows, files, evidence, run_id=RUN_ID, dirty=False, data_dir=None):
     """An evidence record at HEAD, as a run from a clean checkout writes it (the tests also run
     in a tree with modified files, so 'dirty' is set here, not read from the tree)."""
     path = coverage.record_evidence(rows, 'test', [str(f) for f in files], run_id=run_id,
-                                    repo=REPO, evidence=str(evidence))
+                                    repo=REPO, evidence=str(evidence), data_dir=data_dir)
     rec = json.load(open(path))
     rec['dirty'] = dirty
     json.dump(rec, open(path, 'w'))
@@ -752,6 +788,259 @@ def test_rows_without_status_are_unproven(tmp_path):
     code, out = run_check(status, evidence)
     assert code == 1
     assert f'{len(rows)} rows, 0 run, 0 stand-in, 0 N/A, {len(rows)} unproven' in out
+
+
+# --- witnesses: AMI (R1), GUIs and monitors (R2), PV-server stand-ins (R3) ----------------
+
+AMI_ROWS = [f'prog:{p}' for p in coverage.AMI_PROGRAMS]
+
+
+def ami_run(tmp_path, mutate=None):
+    """(exit code, output) of one record for the AMI rows: the run's xtc2 file, each AMI program's
+    procmgr log (with procServ's pid line) and the ami_check witness; mutate(witness, files) may
+    change the witness (or return other files) before the record hashes them."""
+    files = run_files(str(tmp_path / 'wd'), ['det:drp:fakecam'] + AMI_ROWS)
+    wpath = [f for f in files if f.endswith('ami_check.json')][0]
+    if mutate:
+        w = json.load(open(wpath))
+        files = mutate(w, files) or files
+        write_witness(wpath, w)
+    status = write_status(tmp_path / 'status.json', {r: {'status': 'RUN'} for r in AMI_ROWS})
+    record(AMI_ROWS, files, tmp_path / 'evidence')
+    return run_check(status, tmp_path / 'evidence')
+
+
+def test_ami_rows_are_run_with_the_ami_check_of_the_run(tmp_path):
+    code, out = ami_run(tmp_path)
+    for r in AMI_ROWS:
+        print(line_of(out, r))
+        assert 'evidence ' in line_of(out, r) and 'NO VALID' not in line_of(out, r)
+
+
+def drop_pid_line(w, files):
+    log = [f for f in files if f.endswith('/ami-client.log')][0]
+    write_log(log, f'{os.path.dirname(log)}/bin/ami-client -p 31150', 'no pid here')
+
+
+# name: (mutation of the witness, what the ami-client row's line says)
+AMI_FORGERIES = {
+    'no-witness': (lambda w, files: [f for f in files if not f.endswith('ami_check.json')],
+                   'lists no ami_check witness'),
+    'other-run': (lambda w, f: w.update(run_id='tstx00001/r0002'),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+    'unlisted-xtc2': (lambda w, f: w.update(xtc2=['/elsewhere/tstx00001-r0001-s000-c000.xtc2']),
+                      'names no listed xtc2 file of run tstx00001/r0001'),
+    'failed': (lambda w, f: w.update({'pass': False, 'problems': ['AMI row 0x1: seq 3, psana2 reads seq 4']}),
+               'says the check failed'),
+    'no-matches': (lambda w, f: w.update(matches=[]), 'lists no per-event match of AMI with psana2'),
+    'match-not-in-run': (lambda w, f: w['matches'].append([l1_stamp(5000), 5000, 7]),
+                         'is no L1Accept of the run\'s files'),
+    'client-did-not-serve': (lambda w, f: w.update(served_by=[s for s in w['served_by']
+                                                              if '/ami-client ' not in s['cmdline']]),
+                             'its served_by lists no ami-client process'),
+    'other-pid': (lambda w, f: [s.update(pid=s['pid'] + 100) for s in w['served_by']
+                                if '/ami-client ' in s['cmdline']] and None,
+                  'its log of ami-client gives pid 4000, not one of the ami-client processes that served '
+                  'the check (4100)'),
+    'log-without-pid': (drop_pid_line, 'its log of ami-client gives no pid'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(AMI_FORGERIES))
+def test_ami_forgeries_are_rejected_naming_why(tmp_path, case):
+    mutate, why = AMI_FORGERIES[case]
+    code, out = ami_run(tmp_path, mutate)
+    line = line_of(out, 'prog:ami-client')
+    print(line)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_an_ami_gui_is_served_by_its_window_process(tmp_path):
+    """ami-client's window (a forked 'ami editor') holds AMI's ports: its ancestor is the client whose
+    log gives the pid ('# PID:', as ami_shot writes it); another pid there does not count."""
+    def window(pid):
+        def mutate(w, files):
+            log = [f for f in files if f.endswith('/ami-client.log')][0]
+            write_log(log, f'{os.path.dirname(log)}/bin/ami-client -p 31150 -g ami_shot', '# PID: 4000')
+            client = [s for s in w['served_by'] if '/ami-client ' in s['cmdline']][0]
+            w['served_by'] = [s for s in w['served_by'] if s is not client] + [
+                {'pid': 5000, 'cmdline': 'ami editor', 'ancestors': [dict(client, pid=pid)]}]
+        return mutate
+    code, out = ami_run(tmp_path / 'a', window(4000))
+    assert 'evidence ' in line_of(out, 'prog:ami-client') and 'NO VALID' not in line_of(out, 'prog:ami-client')
+    code, out = ami_run(tmp_path / 'b', window(4001))
+    assert code == 1 and ('its log of ami-client gives pid 4000, not one of the ami-client processes that '
+                          'served the check (4001)') in line_of(out, 'prog:ami-client')
+
+
+def test_log_pid_reads_procservs_line_as_it_writes_it():
+    """procServ ends its lines with \\r\\n; the last pid line counts (a restart writes another)."""
+    text = ('# CMDLINE: /w/bin/ami-manager -p 31150\n@@@ Restarting child "x:ami-manager.log"\r\n'
+            '@@@ The PID of new child "x:ami-manager.log" is: 2681935\r\n@@@ @@@ @@@ @@@ @@@\r\n')
+    assert coverage.log_pid(text) == 2681935
+    assert coverage.log_pid(text + '@@@ The PID of new child "x:ami-manager.log" is: 2681999\r\n') == 2681999
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\n# PID: 77\n') == 77
+    assert coverage.log_pid('# CMDLINE: ami-client -p 1\nchild pid 77\n') is None
+
+
+def test_an_ami_row_is_not_proven_by_a_log_naming_the_run(tmp_path):
+    """An AMI program's log that names the BeginRun time is not its check (R1)."""
+    def naming(w, files):
+        log = [f for f in files if f.endswith('/ami-manager.log')][0]
+        write_log(log, f'{os.path.dirname(log)}/bin/ami-manager -p 31150',
+                  f'BeginRun @ {BEGINRUN_TIME}', '@@@ The PID of new child "x" is: 4002')
+        return [f for f in files if not f.endswith('ami_check.json')]
+    code, out = ami_run(tmp_path, naming)
+    assert code == 1 and 'lists no ami_check witness' in line_of(out, 'prog:ami-manager')
+
+
+def control_gui_run(tmp_path, path, data_dir='the run\'s'):
+    """(exit code, line) of a record for prog:control_gui: the run's xtc2 file under <wd>/data and
+    control_gui's log holding control's fileReport with `path`."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'data' / 'tst' / 'tstx00001' / 'xtc' / 'tstx00001-r0001-s000-c000.xtc2',
+                    [('fakecam', 'fakecam')])
+    log = write_log(d / 'control_gui.log', 'control_gui -H localhost -l DEBUG -e tstx00001 -p 5',
+                    '<D> CGWMain.on_zmq_poll Flag zmq.POLLIN in 1 msg: [b\'{"header": {"key": "fileReport"}, '
+                    f'"body": {{"path": "{path}"}}}}\']')
+    status = write_status(tmp_path / 'status.json', {'prog:control_gui': {'status': 'RUN'}})
+    record(['prog:control_gui'], [xtc, log], tmp_path / 'evidence',
+           data_dir=str(d / 'data') if data_dir == 'the run\'s' else data_dir)
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:control_gui'))
+    return code, line_of(out, 'prog:control_gui')
+
+
+def test_a_log_may_name_the_xtc2_file_relative_to_the_data_dir(tmp_path):
+    code, line = control_gui_run(tmp_path, '/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+@pytest.mark.parametrize('path,data_dir', [
+    ('/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2', None),               # record gives no data dir
+    ('/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2', '/elsewhere/data'),  # another data dir
+    ('/tst/tstx00001/xtc/tstx00001-r0002-s000-c000.xtc2', 'the run\'s'),       # another run's file
+    ('/tst/tstx00002/xtc/tstx00001-r0001-s000-c000.xtc2', 'the run\'s'),       # resolves to no such file
+], ids=['no-data-dir', 'other-data-dir', 'other-run', 'other-dir'])
+def test_a_relative_path_counts_only_when_it_resolves_to_the_hashed_file(tmp_path, path, data_dir):
+    code, line = control_gui_run(tmp_path, path, data_dir)
+    assert code == 1 and 'NO VALID EVIDENCE' in line
+    assert 'its log of control_gui names neither the run\'s xtc2 file' in line
+    assert 'and it lists no gui_witness witness' in line
+
+
+PARTITION = 'DAQ:SIM:XPM:0:PART:5'
+
+
+def gui_witness(xtc2, progs, run_id=RUN_ID, section='programs', **entry):
+    """A gui_witness as daq_sim cycle writes it: for each program (a GUI it ran offscreen, or a
+    stand-in whose PVs it read) the span of its reads and the values of the partition's PVs."""
+    e = {'pass': True, 'problems': [], 'start': L1_FIRST + 1, 'end': L1_FIRST + 5,
+         'reads': [{'name': PARTITION + ':NumL0Acc', 'values': ['100', '250', '400']}]}
+    e.update(entry)
+    return {'witness': 'gui_witness', 'run_id': run_id, 'xtc2': [xtc2], 'partition': PARTITION,
+            section: {p: dict(e) for p in progs}}
+
+
+def witness_run(tmp_path, row='prog:groupca', cmd='groupca DAQ:SIM 0 5', stand_in=None, mutate=None,
+                listed=True):
+    """(exit code, line) of a record for one program row whose log never names the run: the run's
+    xtc2 file, the program's (or stand-in's) log and a gui_witness for it."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree')
+    prog = stand_in or row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], section='servers' if stand_in else 'programs')
+    if mutate:
+        mutate(w, w['servers' if stand_in else 'programs'][prog])
+    files = [xtc, log] + ([write_witness(d / 'gui_witness.json', w)] if listed else [])
+    entry = {'status': 'STAND-IN', 'stand_in': stand_in, 'interface': 'its PVs'} if stand_in else {'status': 'RUN'}
+    status = write_status(tmp_path / 'status.json', {row: entry})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_gui_row_is_run_with_its_log_and_a_witness_of_the_run(tmp_path):
+    code, line = witness_run(tmp_path)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+GUI_FORGERIES = {
+    'not-listed': (dict(listed=False), 'and it lists no gui_witness witness'),
+    'no-gui-log': (dict(cmd='pvant --bases DAQ:SIM:XPM:0:PART:5'), 'lists no log of groupca'),
+    'other-run': (dict(mutate=lambda w, e: w.update(run_id='tstx00001/r0002')),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+    'no-entry': (dict(mutate=lambda w, e: w.update(programs={'pvant': e})), 'has no programs entry for groupca'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['walk exit 3']})),
+               'says groupca failed'),
+    'before-the-run': (dict(mutate=lambda w, e: e.update(start=L1_FIRST - 2)),
+                       'not within the run\'s L1Accepts'),
+    'after-the-run': (dict(mutate=lambda w, e: e.update(end=L1_LAST + 0.5)), 'not within the run\'s L1Accepts'),
+    'not-live': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc', 'values': ['7', '7']}])),
+                 'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'placeholder-then-value': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                         'values': ['-', '', '400']}])),
+                               'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'other-partition': (dict(mutate=lambda w, e: e.update(reads=[{'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc',
+                                                                  'values': ['1', '2']}])),
+                        'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
+    'stand-in-section': (dict(mutate=lambda w, e: w.update(servers=w.pop('programs'))),
+                         'has no programs entry for groupca'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(GUI_FORGERIES))
+def test_gui_witness_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = GUI_FORGERIES[case]
+    code, line = witness_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def procstat_run(tmp_path, rows_shown):
+    """(exit code, line) of a record for prog:procstat: the run's xtc2 file, a teb log (id teb0) and
+    a drp log (id fakecam_0) that name the run, procstat's own log, and a gui_witness whose procstat
+    entry ('kind': 'procmgr') is the table it showed: [(id, status)]."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    logs = []
+    for pid, cmd, line in (('teb0', 'teb -P tst', f'BeginRun @ {BEGINRUN_TIME}'),
+                           ('fakecam_0', 'drp -P tst -D fakecam', f"Opening file '{xtc}'"),
+                           ('procstat', 'procstat -p 5 -i 1 /w/daq_sim.cnf', 'Refreshing')):
+        p = d / f'{pid}.log'
+        p.write_text(f'# ID:      {pid}\n# PLATFORM:5\n# CMDLINE: {cmd}\n{line}\n')
+        logs.append(str(p))
+    w = gui_witness(xtc, ['procstat'], kind='procmgr',
+                    reads=[{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows_shown])
+    status = write_status(tmp_path / 'status.json', {'prog:procstat': {'status': 'RUN'}})
+    record(['prog:procstat'], [xtc] + logs + [write_witness(d / 'gui_witness.json', w)], tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:procstat'))
+    return code, line_of(out, 'prog:procstat')
+
+
+def test_procstat_is_run_when_its_table_showed_the_runs_processes_running(tmp_path):
+    code, line = procstat_run(tmp_path / 'a', [('control', 'RUNNING'), ('teb0', 'RUNNING'), ('fakecam_0', 'RUNNING'),
+                                               ('procstat', 'RUNNING')])
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = procstat_run(tmp_path / 'b', [('teb0', 'RUNNING'), ('fakecam_0', 'SHUTDOWN')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+    code, line = procstat_run(tmp_path / 'c', [('teb0', 'RUNNING')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+
+
+def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
+    """R3: a STAND-IN row whose stand-in's log never names the run needs a 'servers' entry: a
+    client of the cycle read the stand-in's PVs while the run ran; a 'programs' entry is not one."""
+    kw = dict(row='prog:pykcuxpm', cmd='python -m psdaq.sim.simxpm -P DAQ:SIM', stand_in='simxpm')
+    code, line = witness_run(tmp_path / 'a', **kw)
+    assert 'stand-in simxpm (its PVs); evidence ' in line and 'NO VALID' not in line
+    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: w.update(programs=w.pop('servers')), **kw)
+    assert code == 1 and 'has no servers entry for simxpm' in line
+    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: e.update(end=L1_LAST + 1), **kw)
+    assert code == 1 and 'not within the run\'s L1Accepts' in line
 
 
 # --- the commands --------------------------------------------------------------------------
