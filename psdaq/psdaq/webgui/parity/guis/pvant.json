@@ -1,0 +1,48 @@
+{
+ "file": "cas/pvant.py",
+ "title": "pvant (a grid of PV values: --bases across, --fields down)",
+ "web": "/gui/pvant",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "--bases",
+   "{part}",
+   "{pvbase}:XPM:{xpm}:PART:0",
+   "--fields",
+   "NumL0Acc",
+   "NumL0Inp",
+   "L0AccRate"
+  ],
+  "pump": 4,
+  "timeout": 90,
+  "drive": [
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:L0AccRate]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:L0AccRate]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  },
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Acc]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Acc]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  },
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Inp]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:0:NumL0Inp]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  },
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:L0AccRate]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:L0AccRate]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  },
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Acc]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Acc]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  },
+  "PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Inp]": {
+   "web": "[data-parity~=\"PvScalarTable.PvInt[DAQ:SIM:XPM:0:PART:5:NumL0Inp]\"]",
+   "test": "test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]"
+  }
+ }
+}

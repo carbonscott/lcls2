@@ -288,3 +288,106 @@ def run_server_cmd(args, timeout=30):
     """Run the server CLI to completion (for refusal / --print-config checks)."""
     return subprocess.run([SERVER_PYTHON, '-m', 'psdaq.webgui.server'] + list(args), env=server_env(),
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=timeout)
+
+
+# ---------------- web copies of the other PyQt GUIs (procstat, groupca): server on the simulated DAQ ----------------
+
+def gui_server(extra_args, check, timeout=120):
+    """A server on the simulated DAQ of WEBGUI_SIM_DAQ (sim.server_args()) plus extra_args (--procstat-cnf ...,
+    --pvgui ...).  Its backend stays 'sim-daq' only if check(server, sim) -> (ok, why) confirms that the GUI page's
+    own data source is that daq_sim too (its procmgr .cnf and processes; its simxpm); else 'gui-source-mismatch'.
+    Returns None without WEBGUI_SIM_DAQ (these tests need the simulated DAQ)."""
+    sim = sim_daq()
+    if sim is None:
+        return None
+    s = ServerProc(sim.server_args() + list(extra_args)).start(timeout=timeout)
+    s.sim = sim
+    ok, why = check(s, sim)
+    if s.backend == 'sim-daq' and not ok:
+        s.backend = 'gui-source-mismatch'
+    s.backend_why = '%s; gui source: %s' % (s.backend_why, why)
+    s.started_entry.update(backend=s.backend, why=s.backend_why)
+    return s
+
+
+def check_procstat_source(s, sim):
+    """procstat page: the .cnf is the daq_sim's and its rows are the processes daq_sim up started, all alive."""
+    st = s.get('/api/procstat/status')
+    state = sim.work.load()
+    cnf = os.path.join(state['workdir'], state['cnf'])
+    t0 = time.time()
+    while not st.get('rows') and time.time() - t0 < 20:
+        time.sleep(0.5)
+        st = s.get('/api/procstat/status')
+    ids = sorted(r['showId'] for r in st.get('rows', []))
+    ok_alive, why_alive = sim.alive()
+    ok = st.get('cnf') == cnf and ids == sorted(sim.procs()) and ok_alive
+    return ok, 'procstat cnf %s (daq_sim %s), rows %s (daq_sim procs %s); %s' % (
+        st.get('cnf'), cnf, ids, sorted(sim.procs()), why_alive)
+
+
+def check_simxpm_source(name):
+    """pvgui page: its PVs are the daq_sim's simxpm: prefix <PVBASE>:XPM:<XPM>, the simxpm-only SIM:NumLinks PV
+    answers through the server's loopback PVA client, every PV connected, the simxpm process alive."""
+    def check(s, sim):
+        info = {}
+        t0 = time.time()
+        while time.time() - t0 < 20:
+            info = s.get('/api/pvgui/info?gui=' + name)
+            if info.get('connected') == info.get('read_pvs'):
+                break
+            time.sleep(0.5)
+        state = sim.work.load()
+        pid = state['services']['simxpm']['pid']
+        alive = sim.ds.pid_alive(pid)
+        want = '%s:XPM:%d' % (sim.ds.PVBASE, sim.ds.XPM)
+        ok = (info.get('xpm_prefix') == want and isinstance(info.get('sim_numlinks'), int) and alive and
+              info.get('connected') == info.get('read_pvs'))
+        return ok, 'pvgui %s prefix %s (daq_sim simxpm %s pid %s alive %s), SIM:NumLinks=%s, %s/%s PVs connected' % (
+            name, info.get('xpm_prefix'), want, pid, alive, info.get('sim_numlinks'), info.get('connected'),
+            info.get('read_pvs'))
+    return check
+
+
+_WALKS = {}
+
+
+def gui_walks():
+    """The directory holding this tree's offscreen walks of the other PyQt GUIs and their import probes, run once
+    per session by check_gui_parity.run_walks (qt_walk --gui with SERVER_PYTHON, PyQt5 offscreen, against the
+    simulated DAQ of WEBGUI_SIM_DAQ); no walk is kept in the tree.  None without WEBGUI_SIM_DAQ."""
+    if sim_daq() is None:
+        return None
+    if 'dir' not in _WALKS:
+        from psdaq.webgui.parity import check_gui_parity, qapps
+        src = qapps.default_src()
+        d = tempfile.mkdtemp(prefix='gui-walks-')
+        check_gui_parity.run_walks(src, check_gui_parity.load_specs(), qapps.scan(src), SIM_DAQ_DIR, d,
+                                   python=SERVER_PYTHON, log=sys.stdout)
+        _WALKS['dir'] = d
+    return _WALKS['dir']
+
+
+def pva(op, items, timeout=30):
+    """PV Access from the test, independent of the server under test: op 'get' (items = PV names) -> {pv: value},
+    op 'put' (items = [[pv, value], ...]).  Runs the DAQ env's python (p4p) with this process's loopback-only
+    EPICS_PVA env (run_webgui_tests.sh after sim_env.sh)."""
+    code = (
+        'import json,sys\n'
+        'from p4p.client.thread import Context\n'
+        'from psdaq.webgui.netguard import require_loopback_pva_env\n'
+        'import os\n'
+        'c=Context("pva",conf=require_loopback_pva_env(os.environ),useenv=False)\n'
+        'op,items=json.loads(sys.argv[1])\n'
+        'def plain(v):\n'
+        '    return v.tolist() if hasattr(v,"tolist") else (v if isinstance(v,(int,float,str,bool)) else str(v))\n'
+        'if op=="get":\n'
+        '    print(json.dumps({n:plain(v) for n,v in zip(items,c.get(items,timeout=5.0))}))\n'
+        'else:\n'
+        '    for n,v in items: c.put(n,v,timeout=5.0)\n'
+        '    print("{}")\n')
+    p = subprocess.run([SERVER_PYTHON, '-c', code, json.dumps([op, items])], env=server_env(), stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, text=True, timeout=timeout)
+    if p.returncode != 0:
+        raise RuntimeError('pva %s failed: %s' % (op, p.stderr[-800:]))
+    return json.loads(p.stdout.strip().splitlines()[-1])

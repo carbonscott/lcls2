@@ -176,6 +176,7 @@ class SimXpm:
         self.step_done = [False] * NUM_GROUPS
         self.num_l0acc = [0] * NUM_GROUPS
         self.num_l0inp = [0] * NUM_GROUPS
+        self.run_time = [0.] * NUM_GROUPS     # seconds with L0 enabled (RunTime)
         self.pending = collections.deque()      # Transitions waiting for credit
         self.links = {}                 # identity -> Link
         self.link_numbers = {}          # alias -> link number, kept across restarts
@@ -204,6 +205,13 @@ class SimXpm:
         self._add(f'{X}:CommonL0Delay', 'I', 0)
         self._add(f'{X}:SIM:L1Rate', 'd', self.rate, _Put(self, 'rate'))
         self._add(f'{X}:SIM:NumLinks', 'I', 0)
+        # Stand-ins for the pyxpm PVs the XPM GUIs read (groupca: xpmTree, XpmDeadTime): stored values only.
+        # RemoteLinkId stays 0 (no remote id, so groupca never resolves a host name); LinkGroupMask<n> is
+        # 1 << group while the DRP of link n is in a readout group (pyxpm pvctrls LinkGroupMask).
+        self._add(f'{X}:FwBuild', 's', 'simxpm (psdaq/psdaq/sim/simxpm.py)')
+        for n in range(NUM_LINKS):
+            self._add(f'{X}:RemoteLinkId{n}', 'I', 0)
+            self._add(f'{X}:LinkGroupMask{n}', 'I', 0)
         for g in range(NUM_GROUPS):
             P = f'{X}:PART:{g}'
             self._add(f'{P}:MsgHeader', 'I', 0, _Put(self, 'msghdr', g))
@@ -217,6 +225,18 @@ class SimXpm:
             self._add(f'{P}:Recording', 'b', 0)
             self._add(f'{P}:DeadFLnk', 'af', [0.] * NUM_LINKS)
             for label in ('NumL0Acc', 'NumL0Inp', 'L0AccRate', 'L0InpRate'):
+                self._add(f'{P}:{label}', 'f', 0.)
+            # Stand-ins (pyxpm pvctrls/pvstats names and types) for groupca and partca: stored values,
+            # RunTime/DeadFrac/DeadTime/NumL1/L1Rate computed from the counters in _stats.
+            for label in ('L0Select', 'L0Select_FixedRate', 'L0Select_ACRate', 'L0Select_ACTimeslot',
+                          'L0Select_EventCode', 'L0Select_Sequence', 'L0Select_SeqBit'):
+                self._add(f'{P}:{label}', 'I', 0)
+            self._add(f'{P}:L0RawUpdate', 'I', 1)
+            for i in range(4):
+                self._add(f'{P}:InhInterval{i}', 'I', 10)
+                self._add(f'{P}:InhLimit{i}', 'I', 4)
+                self._add(f'{P}:InhEnable{i}', 'I', 0)
+            for label in ('RunTime', 'DeadFrac', 'DeadTime', 'NumL1', 'L1Rate', 'NumL0Inh'):
                 self._add(f'{P}:{label}', 'f', 0.)
 
     def _post(self, name, value):
@@ -324,6 +344,7 @@ class SimXpm:
             for g in range(NUM_GROUPS):
                 if value & (1 << g):
                     self.num_l0acc[g] = self.num_l0inp[g] = 0
+                    self.run_time[g] = 0.
             self._post_counts()
         elif command == 'stepgroups':
             self.inhibit &= ~self.step_groups[arg]
@@ -369,9 +390,11 @@ class SimXpm:
                 link.credit += struct.unpack('<I', body[:4])[0]
             elif kind == b'CONNECT':
                 link.group = int(json.loads(body)['group'])
+                self._post(f'{self.prefix}:LinkGroupMask{link.number}', 1 << link.group)
                 logging.info('link %d: %s joins readout group %d', link.number, link.alias, link.group)
             elif kind == b'DISCONNECT':
                 link.group = None
+                self._post(f'{self.prefix}:LinkGroupMask{link.number}', 0)
                 link.outbox = []
                 logging.info('link %d: %s leaves its readout group', link.number, link.alias)
             elif kind == b'BYE':
@@ -413,8 +436,17 @@ class SimXpm:
                 if l.group == g and ticks:
                     dead[l.number] = min(1., l.blocked / ticks)
             self._post(f'{P}:DeadFLnk', dead)
-            self._post(f'{P}:L0AccRate', (self.num_l0acc[g] - self._last_acc[g]) / dt)
+            acc = self.num_l0acc[g] - self._last_acc[g]
+            self._post(f'{P}:L0AccRate', acc / dt)
             self._post(f'{P}:L0InpRate', ticks / dt)
+            self._post(f'{P}:L1Rate', acc / dt)
+            if (self.l0en & ~self.inhibit) & (1 << g):
+                self.run_time[g] += dt
+            self._post(f'{P}:RunTime', self.run_time[g])
+            self._post(f'{P}:NumL1', float(self.num_l0acc[g]))
+            self._post(f'{P}:DeadFrac', (ticks - acc) / ticks if ticks else 0.)
+            self._post(f'{P}:DeadTime', ((self.num_l0inp[g] - self.num_l0acc[g]) / self.num_l0inp[g])
+                       if self.num_l0inp[g] else 0.)
         for l in self.links.values():
             l.blocked = 0
         self._last_acc = list(self.num_l0acc)

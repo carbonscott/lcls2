@@ -39,8 +39,17 @@ phase's `probe_lines` do not count) and, for a widget row, an instance bound to
 <Class>.<attr> existed.  check_parity refuses to count a mapped row the walk does
 not show built.
 
+Other GUIs (check_gui_parity): --gui parity/guis/<name>.json walks that program instead: its own
+main() with the spec's argv against the simulated DAQ of --sim-daq, every counted Qt widget class
+replaced by a recording subclass (construction stack, PV, texts written, receivers), exec_ replaced
+by a driver that pumps events, runs the spec's drive steps and writes the observations
+(gui_rows.make_rows / built / reconcile read them).  --probe-import MODULE records whether importing
+a module constructs a QApplication.
+
 Usage:
     python -m psdaq.webgui.parity.qt_walk --out walk.json        # DAQ env (PyQt5)
+    python -m psdaq.webgui.parity.qt_walk --gui parity/guis/procstat.json --sim-daq $WD --out procstat.walk.json
+    python -m psdaq.webgui.parity.qt_walk --probe-import psdaq.cas.collection_widget --out probe.json
     python -m psdaq.webgui.parity.qt_walk --reconcile walk.json [--src DIR]
 """
 
@@ -795,13 +804,392 @@ def run_walk(out_path, workdir):
     os._exit(0)
 
 
+# ---------------------------------------------------------------- walk of another GUI (Qt)
+
+GUI_WALK_VERSION = 1
+GUI_COUNTED = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox', 'QSpinBox',
+               'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser', 'QLabel', 'QTableWidget',
+               'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget', 'QProgressBar', 'QMessageBox')
+GUI_SIGNALS = ('clicked', 'toggled', 'stateChanged', 'currentIndexChanged', 'activated', 'editingFinished',
+               'returnPressed', 'textChanged', 'cellClicked', 'currentCellChanged', 'currentChanged')
+
+
+def sim_params(sim_dir):
+    """Placeholders a GUI spec's walk argv may use, from a running `daq_sim up` work dir."""
+    from psdaq.sim import daq_sim as ds
+    st = ds.Work(sim_dir).load()
+    if not st:
+        raise SystemExit('qt_walk: no daq_sim state in %s' % sim_dir)
+    return {'platform': st['platform'], 'cnf': os.path.join(st['workdir'], st['cnf']), 'workdir': st['workdir'],
+            'pvbase': ds.PVBASE, 'xpm': ds.XPM, 'part': '%s:XPM:%d:PART:%d' % (ds.PVBASE, ds.XPM, st['platform'])}
+
+
+def run_gui_walk(spec_path, out_path, workdir, sim_dir):
+    """Run the GUI a parity/guis/<name>.json spec names, offscreen, with its own main() and the spec's argv
+    (placeholders from the simulated DAQ in sim_dir), and record every counted widget it builds."""
+    import importlib
+    import importlib.machinery
+    import importlib.util
+    import threading
+    import time
+    import traceback
+    t0 = time.time()
+    with open(spec_path) as f:
+        spec = json.load(f)
+    W = spec['walk']
+    os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+    for k, v in (('EPICS_CA_AUTO_ADDR_LIST', 'NO'), ('EPICS_CA_ADDR_LIST', '127.0.0.1'),
+                 ('EPICS_PVA_AUTO_ADDR_LIST', 'NO'), ('EPICS_PVA_ADDR_LIST', '127.0.0.1'),
+                 ('EPICS_PVAS_INTF_ADDR_LIST', '127.0.0.1'), ('EPICS_CAS_INTF_ADDR_LIST', '127.0.0.1')):
+        os.environ[k] = v
+    for k in ('HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy'):
+        os.environ[k] = 'http://127.0.0.1:9'
+    import psdaq
+    src = os.path.dirname(os.path.realpath(psdaq.__file__))
+    from psdaq.webgui.parity import gui_rows
+    target = spec['file']
+    own, libs = gui_rows.own_and_libs(src, target)
+    own_abs = {os.path.realpath(os.path.join(src, f)): f for f in own}
+    params = sim_params(sim_dir) if sim_dir else {}
+    argv = [str(a).format(**params) for a in W.get('argv', [])]
+    OUT = {'version': GUI_WALK_VERSION, 'kind': 'gui', 'file': target, 'src': src, 'own': own, 'libs': libs,
+           'src_digest': gui_rows.files_digest(src, own), 'argv': argv, 'sim_daq': sim_dir, 'params': params,
+           'instances': [], 'calls': [], 'notes': [], 'object_names': [], 'phase_log': []}
+    hits = collections.defaultdict(set)
+
+    def local(frame, event, arg):
+        if event == 'line':
+            hits[frame.f_code.co_filename].add(frame.f_lineno)
+        return local
+    fcache = {}
+
+    def glob(frame, event, arg):
+        fn = frame.f_code.co_filename
+        ok = fcache.get(fn)
+        if ok is None:
+            ok = fcache[fn] = os.path.realpath(fn) in own_abs
+        if not ok:
+            return None
+        hits[fn].add(frame.f_lineno)
+        return local
+
+    def finish(code):
+        sys.settrace(None)
+        threading.settrace(None)
+        OUT['lines'] = {}
+        for fn, ls in sorted(hits.items()):
+            OUT['lines'][own_abs.get(os.path.realpath(fn), fn)] = _ranges(ls)
+        OUT['elapsed'] = round(time.time() - t0, 1)
+        try:
+            import PyQt5.QtCore as QC
+            OUT['qt'] = QC.QT_VERSION_STR
+        except Exception:
+            pass
+        OUT['python'] = sys.version.split()[0]
+        OUT['exit'] = code
+        with open(out_path, 'w') as f:
+            json.dump(OUT, f, indent=0, sort_keys=True, default=str)
+        print('qt_walk --gui %s: %d instances, %d calls, exit %d, elapsed %.1f s -> %s' % (
+            target, len(OUT['instances']), len(OUT['calls']), code, OUT['elapsed'], out_path))
+        sys.stdout.flush()
+        os._exit(code)
+
+    def watchdog():
+        time.sleep(float(W.get('timeout', 90)))
+        stacks = {str(k): traceback.format_stack(v)[-6:] for k, v in sys._current_frames().items()}
+        OUT['notes'].append('watchdog: walk did not finish in %s s; stacks %s' % (W.get('timeout', 90), stacks))
+        collect()
+        finish(3)
+    threading.Thread(target=watchdog, daemon=True).start()
+
+    from PyQt5 import QtWidgets, QtCore
+    from PyQt5 import sip
+    ORIG = {n: getattr(QtWidgets, n) for n in GUI_COUNTED}
+    SEQ = [0]
+    LIVE = []
+    parity_dir = os.path.realpath(HERE)
+
+    def construction_site():
+        site, chain = None, []
+        f = sys._getframe(2)
+        while f is not None:
+            p = os.path.realpath(f.f_code.co_filename)
+            if p.startswith(src + os.sep) and not p.startswith(parity_dir):
+                rel = os.path.relpath(p, src)
+                chain.append([rel, f.f_lineno, f.f_code.co_name])
+                if site is None and p in own_abs:
+                    site = [own_abs[p], f.f_lineno, f.f_code.co_name]
+            f = f.f_back
+        return site, chain[:8]
+
+    def make_rec(name, base):
+        def __init__(self, *a, **k):
+            base.__init__(self, *a, **k)
+            SEQ[0] += 1
+            self._pw_seq = SEQ[0]
+            self._pw_site, self._pw_chain = construction_site()
+            self._pw_writes = 0
+            self._pw_base = name
+            LIVE.append(self)
+        ns = {'__init__': __init__}
+        for m in ('setText', 'append', 'setHtml', 'setPlainText', 'insertPlainText'):
+            if hasattr(base, m):
+                def w(self, *a, _m=m, **k):
+                    if getattr(self, '_pw_seq', None) is not None:
+                        self._pw_writes += 1
+                    return getattr(base, _m)(self, *a, **k)
+                ns[m] = w
+        if name == 'QMessageBox':
+            for m in ('about', 'critical', 'warning', 'information', 'question', 'aboutQt'):
+                def st(*a, _m=m, **k):
+                    s, ch = construction_site()
+                    OUT['calls'].append({'opener': 'QMessageBox.' + _m, 'site': s, 'chain': ch,
+                                         'args': [str(x)[:120] for x in a[1:3]]})
+                    return ORIG['QMessageBox'].Ok
+                ns[m] = staticmethod(st)
+            ns['exec_'] = lambda self: (OUT['calls'].append({'opener': 'QMessageBox.exec_', 'site': self._pw_site}),
+                                        ORIG['QMessageBox'].Ok)[1]
+        return type(name, (base,), ns)
+    for n in GUI_COUNTED:
+        setattr(QtWidgets, n, make_rec(n, ORIG[n]))
+
+    # per-GUI stand-ins for calls the walk must not make for real (an xterm, a process restart)
+    for spec_call in W.get('record_calls', []):        # 'module:Class.attr' or 'module:attr'
+        modname, qual = spec_call.split(':', 1)
+        obj = importlib.import_module(modname)
+        parts = qual.split('.')
+        for p_ in parts[:-1]:
+            obj = getattr(obj, p_)
+
+        def rec(*a, _name=spec_call, **k):
+            s, ch = construction_site()
+            OUT['calls'].append({'opener': _name, 'site': s, 'chain': ch, 'args': [str(x)[:120] for x in a[1:4]]})
+            return 0
+        setattr(obj, parts[-1], rec)
+
+    APP = []
+
+    def pump(sec):
+        end = time.time() + sec
+        while time.time() < end:
+            APP[0].processEvents()
+            time.sleep(0.02)
+
+    def signals(x):
+        out = {}
+        for s in GUI_SIGNALS:
+            sig = getattr(x, s, None)
+            if sig is None:
+                continue
+            try:
+                out[s] = x.receivers(sig)
+            except Exception:
+                pass
+        return out
+
+    def find_pv(x):
+        o = x
+        for _ in range(4):
+            if o is None:
+                return None
+            pv = getattr(o, 'pv', None)
+            if pv is not None and hasattr(pv, 'pvname'):
+                return pv.pvname
+            try:
+                o = o.parentWidget()
+            except Exception:
+                return None
+        return None
+
+    def text_of(x):
+        for m in ('text', 'toPlainText', 'currentText', 'windowTitle'):
+            f = getattr(x, m, None)
+            if f is not None:
+                try:
+                    return str(f())
+                except Exception:
+                    pass
+        return None
+
+    def collect():
+        OUT['instances'] = []
+        for x in list(LIVE):
+            try:
+                if sip.isdeleted(x):
+                    continue
+                rec = {'seq': x._pw_seq, 'cls': type(x).__name__, 'base': x._pw_base, 'site': x._pw_site,
+                       'chain': x._pw_chain, 'pv': find_pv(x), 'text': text_of(x), 'enabled': x.isEnabled(),
+                       'visible': x.isVisible(), 'window_visible': x.window().isVisible(),
+                       'writes': x._pw_writes, 'receivers': signals(x), 'object_name': x.objectName()}
+                if isinstance(x, QtWidgets.QAbstractButton):
+                    rec['checkable'] = x.isCheckable()
+                    rec['checked'] = x.isChecked()
+                if isinstance(x, (ORIG['QLineEdit'], ORIG['QTextEdit'], ORIG['QPlainTextEdit'])):
+                    rec['readonly'] = x.isReadOnly()
+                if isinstance(x, (ORIG['QTextEdit'], ORIG['QPlainTextEdit'])):
+                    rec['content'] = x.toPlainText()[:400]
+                if isinstance(x, ORIG['QComboBox']):
+                    rec['choices'] = [x.itemText(i) for i in range(x.count())]
+                if isinstance(x, ORIG['QTabWidget']):
+                    rec['tabs'] = [x.tabText(i) for i in range(x.count())]
+                if isinstance(x, ORIG['QTableWidget']):
+                    rec['columns'] = [(x.horizontalHeaderItem(i).text() if x.horizontalHeaderItem(i) else str(i))
+                                      for i in range(x.columnCount())]
+                    rec['rows'] = x.rowCount()
+                    rec['cells'] = [[(x.item(r, c).text() if x.item(r, c) else None) for c in range(x.columnCount())]
+                                    for r in range(min(x.rowCount(), 40))]
+                    rec['edit_triggers'] = int(x.editTriggers())
+                rec['texts'] = getattr(x, '_pw_texts', [])
+                OUT['instances'].append(rec)
+            except Exception as ex:
+                OUT['notes'].append('collect: %s' % ex)
+        names = set()
+        app_ = APP[0] if APP and APP[0] is not None else QtWidgets.QApplication.instance()
+        for top in app_.topLevelWidgets() if app_ is not None else []:
+            for o in [top] + top.findChildren(QtCore.QObject):
+                if o.objectName():
+                    names.add(o.objectName())
+        OUT['object_names'] = sorted(names)
+
+    def snapshot(label):
+        for x in LIVE:
+            try:
+                if not sip.isdeleted(x):
+                    t = text_of(x)
+                    h = getattr(x, '_pw_texts', None)
+                    if h is None:
+                        h = x._pw_texts = []
+                    if not h or h[-1][1] != t:
+                        h.append([label, t])
+            except Exception:
+                pass
+
+    def drive(app):
+        APP[0] = app
+        OUT['phase_log'].append(['exec', round(time.time() - t0, 2)])
+        snapshot('shown')
+        pump(float(W.get('pump', 5)))
+        snapshot('after-pump')
+        for step in W.get('drive', []):
+            OUT['phase_log'].append([step, round(time.time() - t0, 2)])
+            try:
+                if step == 'tabs':
+                    for x in list(LIVE):
+                        if isinstance(x, ORIG['QTabWidget']) and not sip.isdeleted(x):
+                            for i in list(range(x.count())) + [x.currentIndex()]:
+                                x.setCurrentIndex(i)
+                                pump(0.1)
+                elif step == 'checkable-buttons-then-cells':
+                    btns = [x for x in LIVE if isinstance(x, QtWidgets.QAbstractButton) and x.isCheckable()
+                            and isinstance(x, ORIG['QPushButton'])]
+                    tables = [x for x in LIVE if isinstance(x, ORIG['QTableWidget'])]
+                    for b in btns:
+                        b.click()
+                        pump(0.1)
+                        for t in tables:
+                            for r in range(t.rowCount()):
+                                t.cellClicked.emit(r, 0)
+                                t.setCurrentCell(r, 0)
+                                pump(0.05)
+                        b.click()
+                        pump(0.1)
+                elif step.startswith('pump:'):
+                    pump(float(step.split(':', 1)[1]))
+                snapshot(step)
+            except Exception as ex:
+                OUT['notes'].append('drive %s: %s' % (step, traceback.format_exc()[-600:]))
+        collect()
+        finish(0)
+
+    sys.settrace(glob)
+    threading.settrace(glob)
+    sys.argv = [os.path.basename(target)] + argv
+    APP.append(None)
+    QtWidgets.QApplication.exec_ = lambda self: drive(self)
+    QtWidgets.QApplication.exec = lambda self: drive(self)
+    path = os.path.join(src, target)
+    try:
+        if target.endswith('.py'):
+            mod = importlib.import_module('psdaq.' + target[:-3].replace('/', '.'))
+        else:
+            loader = importlib.machinery.SourceFileLoader('psdaq_gui_' + os.path.basename(target), path)
+            specm = importlib.util.spec_from_loader(loader.name, loader)
+            mod = importlib.util.module_from_spec(specm)
+            loader.exec_module(mod)
+        getattr(mod, W.get('entry', 'main'))()
+        OUT['notes'].append('entry returned without calling QApplication.exec_')
+    except SystemExit as ex:
+        OUT['notes'].append('entry raised SystemExit(%s) before exec_' % ex.code)
+    except Exception:
+        OUT['notes'].append('entry failed: %s' % traceback.format_exc()[-1500:])
+    if APP[0] is None:
+        app = QtWidgets.QApplication.instance()
+        if app is not None:
+            APP[0] = app
+    collect()
+    finish(4)
+
+
+def probe_import(module, out_path):
+    """Import a module offscreen and record whether that alone constructs a QApplication (the not-a-program
+    evidence for a widget library whose QApplication is only in its __main__ demo)."""
+    import importlib
+    import time
+    os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+    for k, v in (('EPICS_PVA_AUTO_ADDR_LIST', 'NO'), ('EPICS_PVA_ADDR_LIST', '127.0.0.1'),
+                 ('EPICS_CA_AUTO_ADDR_LIST', 'NO'), ('EPICS_CA_ADDR_LIST', '127.0.0.1')):
+        os.environ[k] = v
+    from PyQt5 import QtWidgets
+    made = []
+    orig = QtWidgets.QApplication
+
+    class Rec(orig):
+        def __init__(self, *a, **k):
+            made.append(''.join(__import__('traceback').format_stack()[-3:-1]))
+            orig.__init__(self, *a, **k)
+    QtWidgets.QApplication = Rec
+    t0 = time.time()
+    err = None
+    try:
+        m = importlib.import_module(module)
+        names = sorted(n for n in vars(m) if not n.startswith('_'))
+    except Exception as ex:
+        err, names = repr(ex), []
+    out = {'version': GUI_WALK_VERSION, 'kind': 'import-probe', 'module': module, 'qapplications_on_import': len(made),
+           'stacks': made, 'error': err, 'names': names[:80], 'top_level_widgets': [], 'elapsed': round(time.time() - t0, 2),
+           'python': sys.version.split()[0]}
+    app = QtWidgets.QApplication.instance()
+    if app is not None:
+        out['top_level_widgets'] = [type(w).__name__ for w in app.topLevelWidgets()]
+    with open(out_path, 'w') as f:
+        json.dump(out, f, indent=1, sort_keys=True)
+    print('qt_walk --probe-import %s: %d QApplication(s) constructed on import, error %s -> %s' % (
+        module, len(made), err, out_path))
+    sys.stdout.flush()
+    os._exit(0)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description='offscreen PyQt walk / reconcile for the parity check')
     ap.add_argument('--out', help='run the walk (needs PyQt5) and write the raw observations here')
     ap.add_argument('--workdir', default=None, help='scratch dir for the GUI log files (default: next to --out)')
     ap.add_argument('--reconcile', metavar='WALK', help='print per-row verdicts for a saved walk')
     ap.add_argument('--src', default=None, help='psdaq package dir (default: the imported psdaq)')
+    ap.add_argument('--gui', metavar='SPEC', help='with --out: walk the GUI a parity/guis/<name>.json spec names '
+                    '(another psdaq GUI than control_gui) instead of control_gui')
+    ap.add_argument('--sim-daq', default=os.environ.get('WEBGUI_SIM_DAQ'),
+                    help='--gui: work dir of the running daq_sim whose processes/PVs the GUI watches '
+                    '(default $WEBGUI_SIM_DAQ)')
+    ap.add_argument('--probe-import', metavar='MODULE', help='with --out: import MODULE offscreen and record whether '
+                    'the import constructs a QApplication')
     a = ap.parse_args(argv)
+    if a.out and a.probe_import:
+        probe_import(a.probe_import, os.path.abspath(a.out))
+        return 0
+    if a.out and a.gui:
+        run_gui_walk(os.path.abspath(a.gui), os.path.abspath(a.out),
+                     a.workdir or os.path.dirname(os.path.abspath(a.out)), a.sim_daq)
+        return 0
     if a.out:
         run_walk(os.path.abspath(a.out), a.workdir or os.path.dirname(os.path.abspath(a.out)))
         return 0

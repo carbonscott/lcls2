@@ -13,7 +13,10 @@ def _parity_rows(request, record_property):
     webgui_harness.detect_backend found when the server started), which check_parity reads."""
     mod = getattr(request.node, 'module', None)
     name = mod.__name__.rsplit('.', 1)[-1] if mod is not None else ''
-    for rid in ROWS.get(name, {}).get(getattr(request.node, 'originalname', request.node.name), []):
+    test = getattr(request.node, 'originalname', request.node.name)
+    rows = list(ROWS.get(name, {}).get(test, []))
+    rows += list(getattr(mod, 'PARITY_ROWS', {}).get(test, []))   # the other GUIs' tests (test_gui_*.py) list their own
+    for rid in rows:
         record_property('parity', rid)
     n0 = len(webgui_harness.STARTED)
     yield
