@@ -426,8 +426,9 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
-`wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), and the XpmDetector
-types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
+`wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), `epixquad1kfps`,
+`epixUHR` (§3h), the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f), and the
+digitizer `hsd` (§3h).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -482,29 +483,26 @@ entry points in the DRP's order against `rogue_dev` and a private config DB. It 
 failure with its traceback, which is how a type's seeds are found.
 
 **Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
-- **epixquad1kfps:** `ePixQuad.Top.start` (its epix-quad-1kfps package) reads the camera's ADC
-  calibration from its SPI PROM (`CypressS25Fl`: `resetFlash`, `readCmd`, `waitForFlashReady`), a
-  command/response device behind registers; `rogue_dev`'s registers only keep what is written,
-  so `epixquad1kfps_init` never returns (`seeds/` has none for it). Before that it needs the
-  card's image name and `FpgaVersion` >= 0x04020000 on `Top.AxiPcieCore`; its config DB entry
-  is `epixquad_config_store`'s (`configdb_seed.BORROWED_STORES`).
-- **tt:** `tt_init` dies building `lcls2_timetool.TimeToolKcu1500Root`: that package's surf
-  `AxiMicronN25Q` passes `size=` to pyrogue's `Device`, which this rogue (6.1.3) rejects
-  (`TypeError: __init__() got an unexpected keyword argument 'size'`), before any register access,
-  so on hardware too. `tt_config.py` also has no `tt_connectionInfo` (it has `tt_connect(cl)`),
-  which `BEBDetector::connectionInfo` calls.
-- **hsd:** its DRP class (`Digitizer`) is not a BEBDetector: `hsd_init` builds
-  `l2si_drp.DrpPgpIlvRoot` on the device itself, with no `rogue_dev` under `sim://`, and the rest
-  of its configuration goes through the hsdioc's PVA PVs (`<prefix>:CONFIG`, `:READY`, `:PADDR_U`,
-  `:MONTIMING`, `:RESET`, ...), for
-  which there is no stand-in yet; the hsd data format has no `MemPoolSim` framer.
+- **tt:** `tt_init` dies building `lcls2_timetool.TimeToolKcu1500Root`: the surf that package
+  carries is older than this rogue (6.1.3) in more than one place. `AxiMicronN25Q` passes `size=`
+  to pyrogue's `Device` (`TypeError: __init__() got an unexpected keyword argument 'size'`); with
+  that argument dropped, `AxiVersion.parseUpTime` calls `Variable.get(read)` positionally
+  (`TypeError: get() takes 1 positional argument but 2 were given`) when the root starts. Both
+  come before any register access, and `setup_env_daq.sh` sets up the same env and
+  `SUBMODULEDIR` for hardware, so `tt_init` fails there too; the fix is an lcls2-timetool release
+  built on a surf that matches rogue 6. `tt_config.py` also has no `tt_connectionInfo` (it has
+  `tt_connect(cl)`), which `BEBDetector::connectionInfo` calls.
 - **jungfrau:** its DRP drives the modules through `sls::Detector` (the slsDetector control
-  protocol to each module's server at `slsHosts`); there is no stand-in for that server, and the
-  module data arrives over UDP (`jungfrauSim` generates such packets, not the control protocol).
-- **epixuhr3x2:** `epixuhr3x2_config_store.beam_cdict()` (what its `__main__` writes) reads PLL
-  tables and pixel bitmaps from `/cds/home/p/psrel/EpixUHR/{pll,pixelBitMaps_prod}/`, facility
-  paths absent here (the PLL CSVs are also in `$SUBMODULEDIR/epix-uhr-gtreadout-dev`, the
-  `pixelBitMaps_prod` maps nowhere), so `configdb_seed` cannot build its default config.
+  protocol to each module's server at `slsHosts`). The env has slsdetlib 9.0.0's client and
+  receiver (`sls_detector_get`, `slsReceiver`) but no virtual detector server
+  (`jungfrauDetectorServer_virtual` is built only from slsDetectorPackage's source with its
+  simulator option), and there is no stand-in for that server; the module data arrives over UDP
+  (`jungfrauSim` generates such packets, not the control protocol).
+- **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3h).
+  `epixuhr3x2_init` then hangs starting `epixuhr_3x2_readout_testing.Root`: its C1100 card's
+  `axipcie.CmsProxy._start` resets the card-management mailbox and polls `HOST_STATUS2_REG` and
+  `CONTROL_REG[5]`, a request/response handshake with the card's management firmware through
+  the mailbox, which `rogue_dev`'s registers do not answer.
 - **epixhr2x2:** `drp -D epixhr2x2 -d sim://` aborts at start: `epixhr2x2_config.py` imports
   `lcls2_epix_hr_pcie` and `epix_hr_single_10k` without the `psdaq.utils.enable_*` modules that
   put them on the path (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`). With those
@@ -513,10 +511,6 @@ failure with its traceback, which is how a type's seeds are found.
   board's registers are answered by no simulated transport (rogue_dev cannot place its seeds).
   It also has no `epixhr2x2_connectionInfo`, which `BEBDetector::connectionInfo` requires (it has
   `epixhr2x2_connect(base)` instead); no run gets that far yet.
-- **epixUHR:** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables from
-  `/cds/home/p/psrel/EpixUHR/pll/`, a facility path (the same CSVs are in
-  `$SUBMODULEDIR/epix-uhr-gtreadout-dev/software/config/pll/`), so `configdb_seed` cannot build its
-  default config here; nothing past that was tried.
 
 ## 3f. XpmDetector types: fakecam, cspad, epixhremu, jungfrauemu, ts
 
@@ -600,6 +594,51 @@ Fault runs that fail Configure and name the register: opal and piranha4
 tb `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay` (all
 rogue's write-verify), epixquad `Top.SystemRegs.TrigEn=0` (write-verify when `_checkADCs` switches
 to external triggers).
+
+## 3h. The digitizer, the ePixQuad 1 kfps and the ePixUHR: hsd, epixquad1kfps, epixUHR
+
+`daq_sim up --det hsd|epixquad1kfps|epixUHR`, then `daq_sim cycle` as in §3e.
+
+- **hsd.** Its DRP class (`Digitizer`) is not a BEBDetector; with a `sim://` device it installs
+  `rogue_dev` the same way before importing `hsd_config.py`, joins simxpm's readout group at
+  Connect and takes its timing link from simxpm (`Digitizer: simulated device, PADDR_U 0xff000000;
+  link id 0x... from simxpm`). `hsd_init` builds `l2si_drp.DrpPgpIlvRoot` on the emulated card
+  (`seeds/hsd.json`: the 185.71 MHz `MonClkRate_3` `hsd_connect` checks, `PgpQPllLock`); everything
+  else the config code does goes over PVA to the hsd's IOC. `up` starts `simhsdioc` for that,
+  with channels `DAQ:SIM:HSD:1_SIM:A` and `:B` (the DRP's `-k hsd_epics_prefix` is A;
+  `hsd_init` disables both): it serves hsdpvs's PVs (`psdaq/psdaq/cas/hsdpvs.py`'s `ChipServer`)
+  and does what hsd134PVs, the IOC, does with them as far as `hsd_config` reads it back: a
+  `CONFIG` put sets `READY`, and with `enable` sets `MONTIMING.group` and `l0delay` (81; the
+  store's `user.raw.start_ns` of 93000 needs at most 86); `FEXOOR` is posted every second (Connect
+  checks its age); `MONPGP.remlinkid` is the link id `hsd_connect` writes into the card's
+  `TxLinkId` on this host; `PADDR_U`, `FWVERSION`, `FWBUILD`, free buffers. `logs/simhsdioc.log`
+  lists every `CONFIG` it applied. The config DB entry is what `hsd_config_store.py`, a script,
+  writes when run with `--name hsd --segm 0` (configdb_seed runs it against a configdb that
+  contacts nothing), with `user.fex.prescale` 1 so the config asks for the fex stream the
+  simulated digitizer sends.
+- **epixquad1kfps.** The same EpixQuad DRP and data as epixquad (§3g), configured by
+  `epixquad1kfps_config.py` and the epix-quad-1kfps package's `ePixQuad.Top`, whose `start` reads
+  the ADC calibration from the camera's SPI PROM (surf `CypressS25Fl`). A seed
+  `{"response": v, "bits": n}` makes a register's low n bits read v whatever is written:
+  `Top.CypressS25Fl.CmdReg`'s low byte, the flash's status, reads 0 (idle; `waitForFlashReady`
+  polls bit 0, active-low ready). The calibration data `Top.start` then reads (git hash, board
+  ids) reads 0, as do the camera registers it compares them with.
+- **epixUHR.** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables and pixel maps from
+  `EPIXUHR_CONFIG_DIR` (default the facility's `/cds/home/p/psrel/EpixUHR`); `up` writes
+  simulated ones (`psdaq.sim.epixuhr_files`: Si5345 tables of a few registers, all-zero 168 x 192
+  pixel maps) under the work dir and points it there. `seeds/epixUHR.json` is the PgpMonitor KCU
+  (as epixm320's) and the camera's `RxId`, which `epixUHR_init` waits for.
+
+| type | config entry points run | emulated device / stand-in | DRP data | psana check |
+|---|---|---|---|---|
+| hsd | `hsd_init` (`DrpPgpIlvRoot`, `hsd_unconfig` of A and B), `hsd_connect` (clock, QPLL, `TxLinkId`, `FEXOOR` age, `PADDR_U`, `MONPGP.remlinkid`), `hsd_config` (PGP resets, `READY`/`CONFIG` handshake twice, `MONTIMING`, buffers, `KEEPROWS`, `RESET.jesdclear`, `FWVERSION`), `hsd_unconfig` | `DrpPgpIlvRoot` seeds; `simhsdioc` | the TimingHeader's opaque words as the hsd event header (raw and fex streams, JESD ok), then a raw stream of 1160 12-bit samples and a fex stream of 44 words: 3 skip groups around 2 peaks | `hsd_raw_3_0_0` `waveforms()` every sample, `peaks()` every peak's start and samples |
+| epixquad1kfps | `epixquad1kfps_init` (`DevRoot`, `ePixQuad.Top` with its PROM), `_connectionInfo`, `_config`, `_enable`, `_disable`, `_unconfig` | as epixquad, plus `Top.AxiPcieCore` image name and `FpgaVersion`, and the PROM's status byte | as epixquad | `epix10ka_raw_3_0_1` raw (4, 352, 384), every pixel, 14 bit |
+| epixUHR | `epixUHR_init` (PgpMonitor, the camera `Root`, `ConfigLclsTimingV2`, the `RxId` wait), `_connectionInfo`, `_config` (PLL, ASIC gains, batchers), `_enable`, `_disable`, `_unconfig` | PgpMonitor KCU, `RxId` | 1: timing copy; 2-5: ASICs 0-3, each 168 x 192 12-bit pixels packed as the ASIC's 8 serial lanes send them (psana's descrambler run backwards) | `epixuhr_raw_*` raw (4, 168, 192) through its descrambler, every pixel, 12 bit |
+
+Fault runs that fail Configure and name the register: hsd `DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset`
+(rogue's write-verify when `hsd_config` pulses the QPLL reset), epixquad1kfps
+`DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`, epixUHR
+`Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`.
 
 ## 4. Read the file back with psana2
 ```bash
@@ -685,6 +724,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   preset. It runs no firmware logic: a register the firmware would change on its own (a counter,
   a status bit) keeps its seed. A BEB type's frame has the subframes its DRP reads, with the
   timing header copied where the firmware sends a detailed timing frame.
+- **hsd.** The simulated digitizer sends the same streams whatever `CONFIG` asks for: 1160 raw
+  samples (what `hsd_config_store`'s default gate gives) and a fex stream of 2 peaks. `simhsdioc`
+  acts on a `CONFIG` put only as far as `hsd_config` reads it back (`READY`, the readout group
+  and L0 delay in `MONTIMING`); it does not model buffers, prescales or deadtime.
 - **XpmDetector types.** `xpmdet_config` runs against registers that keep what is written; the
   timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
   the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and
