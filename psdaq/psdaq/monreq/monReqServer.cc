@@ -416,6 +416,7 @@ namespace Pds {
     const MebParams&                    _prms;
     EbLfClient                          _mrqTransport;
     ZmqSocket                           _inprocSend;
+    bool                                _unconfigured; // Built an Unconfigure since the last Configure
   };
 };
 
@@ -446,7 +447,8 @@ Meb::Meb(MebParams& prms, ZmqContext& context) :
   _rogCount    (NUM_READOUT_GROUPS, 0),
   _prms        (prms),
   _mrqTransport(prms.verbose, prms.kwargs),
-  _inprocSend  (&context, ZMQ_PAIR)
+  _inprocSend  (&context, ZMQ_PAIR),
+  _unconfigured(false)
 {
   _inprocSend.connect("inproc://drp");  // Yes, 'drp' is the name
 }
@@ -609,6 +611,13 @@ void Meb::run()
       }
       else if (rc == -FI_ENOTCONN)
       {
+        // After Unconfigure the DRPs drop their links at Disconnect, which may come before
+        // MebApp stops this thread (it does so in handleDisconnect): that is the end, not an error
+        if (_unconfigured)
+        {
+          logging::info("MEB thread: a DRP disconnected after Unconfigure");
+          break;
+        }
         logging::critical("MEB thread lost connection with a DRP");
         abort();
       }
@@ -722,6 +731,9 @@ void Meb::process(EbEvent* event)
                     pid, dg->xtc.src.value(), dg);
     }
   }
+
+  if      (dg->service() == TransitionId::Unconfigure)  _unconfigured = true;
+  else if (dg->service() == TransitionId::Configure)    _unconfigured = false;
 
   if (!dgram->isEvent() || (dgram->pulseId() - _latPid > 13000000/14)) {
     _latency = latency<us_t>(dgram->time);
