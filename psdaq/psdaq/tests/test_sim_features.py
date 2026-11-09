@@ -238,6 +238,9 @@ def test_two_node_plan(capsys):
     assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB', '--dry-run', '--also', 'epix100:6']) == 0
     out = capsys.readouterr().out
     assert "host:'nodeB', id:'epix100_0'" in out and 'EPICS_PVA_ADDR_LIST="nodeA nodeB"' in out
+    assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB', '--dry-run', '--det', 'hrencoder']) == 0
+    assert "id:'hrencoder_0'" in capsys.readouterr().out
+    daq_sim.use_det('fakecam')
     assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB']) == 1                 # plan only for now
     assert daq_sim.main(['up', '--hosts', 'nodeA,drp-srcf-cmp001', '--dry-run']) == 1
     assert daq_sim.main(['up', '--hosts', 'nodeA', '--dry-run']) == 1

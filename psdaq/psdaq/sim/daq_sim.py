@@ -1808,6 +1808,7 @@ def cmd_plan(args):
         short = h.split('.')[0]
         if re.match(r'(drp|daq|mon|ctl|ioc)-', short):
             raise Fail(f'refusing {h}: it looks like a hutch or DAQ host')
+    use_det(args.det)
     also = parse_also(args.also or [], args.platform)
     plan = multi_host_plan(hosts[0], hosts[1], args.platform, also, os.path.abspath(args.workdir))
     print('# .cnf')
