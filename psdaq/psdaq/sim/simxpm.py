@@ -42,13 +42,15 @@ import threading
 import time
 
 import zmq
-from p4p.nt import NTNDArray, NTScalar
+from p4p.nt import NTNDArray, NTScalar, NTTable
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
 
 POSIX_TIME_AT_EPICS_EPOCH = 631152000
 NUM_GROUPS = 8
 NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
+NUM_COINC = NUM_GROUPS * (NUM_GROUPS + 1) // 2      # PATT:COINC entries (pyxpm pvstats NCOINC)
+PATT_STATS = ('Sum', 'First', 'Last', 'MinIntv', 'MaxIntv')     # PATT:GROUPS columns (pyxpm pvstats pattStats)
 NUM_PORTS = 14                          # Front-panel links with per-link PVs, as ts_connect.py uses
 FW_BUILD = 'simxpm (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware'
 PID_MASK = (1 << 56) - 1
@@ -219,6 +221,7 @@ class SimXpm:
         self.link_numbers = {}          # alias -> link number, kept across restarts
         self.last_pid = 0
         self.frames_sent = 0
+        self.coinc = {}                 # readout-group mask of an L0Accept tick -> ticks since the last stats
 
         self.provider = StaticProvider('simxpm')
         self.pvs = {}
@@ -226,6 +229,14 @@ class SimXpm:
         self.camera = CameraPV(camera, self.provider, camera_seed) if camera else None
 
     # --- PVs --------------------------------------------------------------------------
+
+    def _add_table(self, name, columns, rows):
+        """An NTTable PV as pyxpm pvhandler.addPVT makes it: columns [(label, 'i')], rows [{label: value}]."""
+        nt = NTTable(columns)
+        pv = SharedPV(initial=nt.wrap(rows), handler=_Put(self))
+        self.provider.add(name, pv)
+        self.pvs[name] = (pv, nt)
+        return pv
 
     def _add(self, name, ntype, initial, handler=None):
         nt = NTScalar(ntype)
@@ -250,6 +261,15 @@ class SimXpm:
         for n in range(NUM_LINKS):
             self._add(f'{X}:RemoteLinkId{n}', 'I', 0)
             self._add(f'{X}:LinkGroupMask{n}', 'I', 0)
+            # LinkLabel<n>: the link's name, as the older XPM IOC served it (deadca, partca-sum read it): the
+            # alias of the DRP on that link, '' while none is
+            self._add(f'{X}:LinkLabel{n}', 's', '')
+        # Pattern statistics (pyxpm pvstats PatternStats, NTTables): per group, Sum = L0Accepts in the last
+        # second (First/Last/MinIntv/MaxIntv 0); COINC = for each pair of groups i <= j, the L0Accept ticks of
+        # the last second that both took (xpmpatt, xpmpva Pattern tab)
+        self._add_table(f'{X}:PATT:GROUPS', [(c, 'i') for c in PATT_STATS],
+                        [{c: 0 for c in PATT_STATS} for _ in range(NUM_GROUPS)])
+        self._add_table(f'{X}:PATT:COINC', [('Coinc', 'i')], [{'Coinc': 0} for _ in range(NUM_COINC)])
         for g in range(NUM_GROUPS):
             P = f'{X}:PART:{g}'
             self._add(f'{P}:MsgHeader', 'I', 0, _Put(self, 'msghdr', g))
@@ -278,6 +298,11 @@ class SimXpm:
                 self._add(f'{P}:InhEnable{i}', 'I', 0)
             for label in ('RunTime', 'DeadFrac', 'DeadTime', 'NumL1', 'L1Rate', 'NumL0Inh'):
                 self._add(f'{P}:{label}', 'f', 0.)
+            # The group PVs the older partition IOC served that partca's buttons and fields write (pyxpm keeps
+            # only MsgConfigKey): stored values, no frames (groupca's MsgHeader + GroupMsgInsert make those)
+            for label in ('MsgConfig', 'MsgConfigKey', 'MsgEnable', 'MsgDisable', 'MsgClear', 'MsgInsert',
+                          'ResetL0'):
+                self._add(f'{P}:{label}', 'I', 0)
         # Per-link PVs that ts_connect.py reads and writes (pvctrls.py LinkCtrls, pvstats.py
         # LinkStatus): LinkRxReady<n> is 1 while a DRP holds link n (a locked receiver).
         # LinkGroupMask<n>, RemoteLinkId<n> and FwBuild are added above for the XPM GUIs.
@@ -289,6 +314,9 @@ class SimXpm:
 
     def _post(self, name, value):
         pv, nt = self.pvs[name]
+        if isinstance(nt, NTTable):
+            pv.post(nt.wrap(value))
+            return
         pv.post(nt.wrap(value, timestamp=time.time()))
 
     def command(self, command, arg, value):
@@ -362,6 +390,7 @@ class SimXpm:
         for g in range(NUM_GROUPS):
             if rog & (1 << g):
                 self.num_l0acc[g] += 1
+        self.coinc[rog] = self.coinc.get(rog, 0) + 1
         self._emit(TransitionId.L1Accept, rog, self.num_l0acc[low])
         if self.camera is not None:
             self.camera.post(self.last_sec, self.last_ns, self.num_l0acc[low])
@@ -436,6 +465,7 @@ class SimXpm:
                     number = next(n for n in range(NUM_LINKS) if n not in used)
                     self.link_numbers[alias] = number
                 self.links[identity] = Link(identity, alias, number)
+                self._post(f'{self.prefix}:LinkLabel{number}', alias)
                 self.sock.send_multipart([identity, b'WELCOME', json.dumps(
                     {'xpm': self.xpm, 'link': number, 'pvbase': self.pvbase}).encode()])
                 self._post(f'{self.prefix}:SIM:NumLinks', len(self.links))
@@ -493,7 +523,9 @@ class SimXpm:
             for l in self.links.values():
                 if l.group == g and ticks:
                     dead[l.number] = min(1., l.blocked / ticks)
-            self._post(f'{P}:DeadFLnk', dead)
+            if dead != self._last_dead[g]:      # posted when it changes (a value put to it stays until then)
+                self._post(f'{P}:DeadFLnk', dead)
+                self._last_dead[g] = dead
             acc = self.num_l0acc[g] - self._last_acc[g]
             self._post(f'{P}:L0AccRate', acc / dt)
             self._post(f'{P}:L0InpRate', ticks / dt)
@@ -507,9 +539,22 @@ class SimXpm:
                        if self.num_l0inp[g] else 0.)
         for l in self.links.values():
             l.blocked = 0
+        self._post_patt()
         self._last_acc = list(self.num_l0acc)
         self._last_inp = list(self.num_l0inp)
         self._post_counts()
+
+    def _post_patt(self):
+        rows = [{c: 0 for c in PATT_STATS} for _ in range(NUM_GROUPS)]
+        for g in range(NUM_GROUPS):
+            rows[g]['Sum'] = self.num_l0acc[g] - self._last_acc[g]
+        coinc = []
+        for i in range(NUM_GROUPS):         # pyxpm order: (0,0) (0,1) .. (0,7) (1,1) .. (7,7)
+            for j in range(i, NUM_GROUPS):
+                coinc.append(sum(n for m, n in self.coinc.items() if m & (1 << i) and m & (1 << j)))
+        self.coinc = {}
+        self._post(f'{self.prefix}:PATT:GROUPS', rows)
+        self._post(f'{self.prefix}:PATT:COINC', [{'Coinc': c} for c in coinc])
 
     def run(self):
         ctx = zmq.Context.instance()
@@ -528,6 +573,7 @@ class SimXpm:
             logging.info('control.py -X messages on %s', self.pull)
         self._last_acc = [0] * NUM_GROUPS
         self._last_inp = [0] * NUM_GROUPS
+        self._last_dead = [None] * NUM_GROUPS
         next_l1 = time.monotonic()
         next_stats = next_l1 + 1.
         while not self.stop.is_set():

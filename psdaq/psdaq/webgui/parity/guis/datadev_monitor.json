@@ -1,0 +1,57 @@
+{
+ "file": "cas/datadev_monitor.py",
+ "title": "datadev_monitor (datadev files on the drp-srcf-cmp nodes; the web copy checks only psdaq.sim.simdatadev's simulated nodes, the walk refuses every ssh)",
+ "web": "/gui/datadev_monitor",
+ "backend": "sim-device:simdatadev",
+ "walk": {
+  "argv": [],
+  "pump": 3,
+  "timeout": 90,
+  "drive": [
+   "click:Refresh All",
+   "pump:6"
+  ]
+ },
+ "mapping": {
+  "MainWindow._build_ui._refresh_btn": {
+   "web": "[data-parity~=\"MainWindow._build_ui._refresh_btn\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._progress": {
+   "web": "[data-parity~=\"MainWindow._build_ui._progress\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._ts_label": {
+   "web": "[data-parity~=\"MainWindow._build_ui._ts_label\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[Node]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[Node]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[Groups]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[Groups]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[/proc/datadev_*]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[/proc/datadev_*]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[datadev.ko]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[datadev.ko]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[datadev.service]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[datadev.service]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[cfgRxCount]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[cfgRxCount]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  },
+  "MainWindow._build_ui._table.col[ExecStart]": {
+   "web": "[data-parity~=\"MainWindow._build_ui._table.col[ExecStart]\"]",
+   "test": "test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]"
+  }
+ }
+}
