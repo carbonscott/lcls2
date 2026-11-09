@@ -21,6 +21,11 @@ int main(int argc, char** argv)
                 argv[0], argv[1]);
         return 1;
     }
+    if (b && !b->data) {                        // jungfrau: its module sends the data (UdpFront)
+        fprintf(stderr, "%s: %s's data comes from its module over UDP (psdaq.sim.simsls), not "
+                "from a framer\n", argv[0], argv[1]);
+        return 1;
+    }
     Drp::MemPoolSim::Frame f{};
     f.pulseIdAndControl = (uint64_t(XtcData::TransitionId::L1Accept) << 56) | 0x123456789abull;
     f.nanoseconds       = 500000000;
