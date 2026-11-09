@@ -5,8 +5,8 @@
  "backend": "sim-device:simdetprot",
  "walk": {
   "argv": ["-b", "{pvbase}:JF16M:BLOCKER", "-d", "Jungfrau"],
-  "devices": [{"module": "simdetprot", "args": ["-P", "{pvbase}:JF16M:BLOCKER", "--trip-after", "8"]}],
-  "pump": 10,
+  "devices": [{"module": "simdetprot", "args": ["-P", "{pvbase}:JF16M:BLOCKER", "--trip-after", "25"]}],
+  "pump": 30,
   "timeout": 90,
   "drive": ["pump:1"]
  },
