@@ -46,9 +46,12 @@ c  The MEB serving events to AMI, AMI showing live detector data: up --ami (the 
    least 100 events, AMI's sum of the pixel equal to psana2's); a second ami-client, AMI's own
    GUI, showed the camera image while the run was Running (the screenshot, ami_shot).
 d  Two nodes: one partition over two hosts of this Slurm job's allocation (daq_sim up --hosts
-   A,B).  NOT AVAILABLE unless --hosts names two different hosts of the job's allocation
-   (SLURM_JOB_NODELIST); given two, it prints the plan (up --hosts --dry-run) and fails: up
-   --hosts runs a plan only (RUNBOOK: two nodes lists what running it needs).
+   A,B --segments 2 --rate 100, run on A, psdaq.sim.twonode): control, the TEB, simxpm and
+   fakecam_0 on A; fakecam_1 on B, started by procmgr through a procmgrd in a step of the job on
+   B.  One recorded cycle.  Checks: the cycle passed; each DRP's DAQ count equals psana2's events
+   in its own stream; while Running, 'ss -tnp' on each host shows established TCP connections to
+   the other host owned by DAQ processes.  NOT AVAILABLE unless --hosts names two different
+   hosts of the job's allocation (SLURM_JOB_NODELIST).
 
 --check-only re-runs a feature's checks on the run already recorded in WORKDIR (no DAQ).
 --break KIND makes a check fail on purpose (with --check-only; the recorded files stay as they
@@ -58,6 +61,7 @@ are, a broken copy is checked):
   b: expect-values  expect the step values + 1
   c: ami-tamper     change the pixel of one event in a copy of the result fetched from AMI
   e: bld-seed       expect the BLD values of seq + 1
+  d: kill-remote-drp  (a live run, no --check-only) SIGKILL the DRP on the second host once Running
 """
 
 import glob
@@ -80,7 +84,7 @@ FEATURES = {'a': 'readout groups at different rates',
             'c': 'the MEB serving events to AMI, AMI showing live detector data',
             'd': 'two nodes (--hosts: two hosts of this Slurm job)',
             'e': 'drp_pva, drp_bld, drp_udpencoder and epicsArch with a PGP DRP'}
-BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'c': ('ami-tamper',), 'd': (),
+BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'c': ('ami-tamper',), 'd': ('kill-remote-drp',),
           'e': ('bld-seed',)}
 SCAN_VALUES = (700000., 710000., 720000.)        # --linear 700000 730000 10000
 SCAN_DET = 'epix100'                             # generic_timing_scan --detname epix100_0
@@ -97,7 +101,7 @@ def up_options(feature, platform):
                   '--fixed-rate', f'{platform}:3', '--fixed-rate', f'{g2}:4'],
             'b': ['--det', 'tb', '--also', SCAN_DET, '--rate', '100'],
             'c': ['--ami', '--rate', '100'],
-            'd': ['--det', 'hrencoder', '--also', f'epix100:{platform}'],
+            'd': ['--segments', '2', '--rate', '100'],
             'e': ['--pva', '--epics', '--udp', '--bld', '--rate', '100']}[feature]
 
 
@@ -280,9 +284,11 @@ def check_c(work, state, rec, breakage=None, recompute=False):
 
 
 def allocated_hosts():
-    """The short names of the hosts of this Slurm job's allocation (SLURM_JOB_NODELIST,
-    expanded by scontrol); [] outside a job."""
-    nodelist = os.environ.get('SLURM_JOB_NODELIST') or os.environ.get('SLURM_NODELIST')
+    """The short names of the hosts of this Slurm job's allocation (squeue's node list of
+    SLURM_JOB_ID, else SLURM_JOB_NODELIST: twonode.job_nodelist; expanded by scontrol); [] outside
+    a job."""
+    from psdaq.sim import twonode
+    nodelist = twonode.job_nodelist()
     if not nodelist:
         return []
     try:
@@ -313,25 +319,114 @@ def unavailable(feature, hosts=None):
     return None
 
 
+DAQ_PROGRAMS = ('drp', 'teb', 'control', 'python')     # the owners of a DAQ connection (control is python)
+
+
+def tcp_peers(two):
+    """The established TCP connections between the two hosts, from 'ss -tnp' on each (on the other host in a
+    step of the job): {host: [(local, peer, owners)]}."""
+    from psdaq.sim import twonode
+    a, b = two['hosts']
+    ip = two['ips']
+    return {a: twonode.established(ip[b], ip[a], twonode.ss_lines()),
+            b: twonode.established(ip[a], ip[b], twonode.ss_lines(b))}
+
+
 def feature_d(args, work, started):
-    """Feature d: NOT AVAILABLE unless --hosts names two hosts of this job's allocation; given
-    two, the plan of one partition over them, and FAIL: up --hosts runs a plan only."""
+    """Feature d: one partition over two hosts of this job (daq_sim up --hosts A,B, run on A): control, the
+    TEB and <det>_0 on A, <det>_1 on B, one recorded cycle of --events L1Accepts (default 1000).  Checks: the
+    cycle passed; each DRP's DAQ count (the L1Accepts simxpm sent its link) equals psana2's events in its own
+    stream, all with data and passing the per-event check; the DRP on B ran there (procmgr's host); while
+    Running, 'ss -tnp' on each host shows established TCP connections to the other host owned by DAQ
+    processes.  NOT AVAILABLE unless --hosts names two hosts of this job's allocation.  --break
+    kill-remote-drp SIGKILLs the DRP on B once the run's L1Accepts are in (cycle --kill-drp <det>_1)."""
     hosts = getattr(args, 'hosts', None)
     why = unavailable('d', hosts)
     sha, dirty = head()
-    print('---- FEATURE d report', flush=True)
-    print(f'job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")} host '
-          f'{socket.gethostname()} HEAD {sha} (files changed: {dirty}) hosts {hosts or "none"} '
-          f'allocated {",".join(allocated_hosts()) or "none"}', flush=True)
     if why:
+        print('---- FEATURE d report', flush=True)
+        print(f'job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")} host '
+              f'{socket.gethostname()} HEAD {sha} (files changed: {dirty}) hosts {hosts or "none"} '
+              f'allocated {",".join(allocated_hosts()) or "none"}', flush=True)
         print(f'FEATURE d NOT AVAILABLE: {why}', flush=True)
         return 1
-    rc = run_echo(daq_sim('up', '-w', work.dir, '-p', str(args.platform), '--hosts', hosts, '--dry-run',
-                          *up_options('d', args.platform)), '  plan| ', timeout=120)
-    print(f'  problem: the two-node run is not done: daq_sim up --hosts runs a plan only (plan exit {rc}; '
-          f'RUNBOOK: two nodes lists what running it needs)', flush=True)
-    print('FEATURE d FAIL', flush=True)
-    return 1
+    events = args.events or 1000
+    peers, crc, problems = {}, None, []
+    rc = run_echo(daq_sim('up', '-w', work.dir, '--detach', '-p', str(args.platform), '--hosts', hosts,
+                          *up_options('d', args.platform)), '  up| ', timeout=600)
+    try:
+        if rc != 0:
+            problems.append(f'up --hosts exit {rc}')
+        else:
+            st = work.load()
+            kill = ['--kill-drp', sorted(st['remote'])[0]] if args.breakage == 'kill-remote-drp' else []
+            p = subprocess.Popen(daq_sim('cycle', '-w', work.dir, '--events', str(events), '--timeout',
+                                         str(args.timeout), *kill), stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT, text=True, bufsize=1)
+            timer = threading.Timer(1800, p.kill)
+            timer.start()
+            try:
+                for line in p.stdout:
+                    print(f'  cycle| {line.rstrip()}', flush=True)
+                    if not peers and re.search(r' status: transition \S+ state running', line):
+                        try:            # while Running: the connections between the hosts
+                            peers = tcp_peers(st['two'])
+                            peers['when'] = ds.now()
+                        except Exception as e:
+                            peers = {'error': f'{type(e).__name__}: {e}'}
+                        print(f'{ds.now()} ss -tnp read on both hosts while Running', flush=True)
+                crc = p.wait()
+            finally:
+                timer.cancel()
+            print(f'{ds.now()} cycle exit {crc}', flush=True)
+    finally:
+        if not args.keep_up:
+            rc_down = run_echo(daq_sim('down', '-w', work.dir), '  down| ', timeout=300)
+            print(f'{ds.now()} down exit {rc_down}', flush=True)
+            if rc_down != 0:
+                problems.append(f'down exit {rc_down} (not clean)')
+    state = work.load() or {}
+    two = state.get('two') or {}
+    rec = last_cycle(work) or {'counts': {}, 'transitions': []}
+    counts = dict(rec.get('counts') or {})
+    m = re.search(r'/(\w+)-r(\d{4})-s\d+-c000\.xtc2', str(counts.get('xtc2 file', '')))
+    rec['experiment'], rec['run'] = (m.group(1), int(m.group(2))) if m else (None, None)
+    print('---- FEATURE d: hosts', flush=True)
+    for h in two.get('hosts', []):
+        procs = [i for i in ds.procs(state) if (state.get('remote') or {}).get(i, two['hosts'][0]) == h]
+        print(f'  {h} {two["ips"][h]} ({two["nic"].get(h)}): {" ".join(procs)}', flush=True)
+    for h, info in (state.get('hostd') or {}).items():
+        print(f'  procmgrd on {h}: Slurm step {info.get("job")}.{info.get("step")} (twonode.hostd)', flush=True)
+    if two:
+        from psdaq.sim import twonode
+        a, b = two['hosts']
+        for h in (a, b):                # what up --hosts set (twonode.epics_env): A's IP, B's own for its servers
+            env = twonode.epics_env(two['ips'][a], two['ips'][h])
+            print(f'  EPICS on {h}: ' + ' '.join(f'{k}={v}' for k, v in env.items() if 'AUTO' not in k) +
+                  ' (AUTO_ADDR_LIST and AUTO_BEACON_ADDR_LIST NO; ports from sim_env.sh)', flush=True)
+    print(f'  established TCP between the hosts while Running ({peers.get("when", "not read")}):', flush=True)
+    for h in two.get('hosts', []):
+        conns = peers.get(h) or []
+        daq = [c for c in conns if any(f'(("{n}"' in c[2] for n in DAQ_PROGRAMS)]
+        print(f'    on {h}: {len(conns)} connection(s), {len(daq)} owned by DAQ processes', flush=True)
+        for loc, peer, own in conns:
+            print(f'      {loc:<22} -> {peer:<22} {own}', flush=True)
+        if not daq:
+            problems.append(f'ss -tnp on {h} shows no established TCP connection to the other host owned by a DAQ '
+                            f'process ({peers.get("error", "")})')
+    remote = state.get('remote') or {}
+    for k in list(counts):
+        if k.startswith('drp '):
+            counts[k] = f'on {remote.get(k[4:], two.get("hosts", ["?"])[0])}: {counts[k]}'
+    if not remote:
+        problems.append('no DRP ran on the second host')
+    if crc != 0:
+        problems.append(f'cycle exit {crc}' + (' (--break kill-remote-drp)' if args.breakage else ''))
+    elif counts.get('per-DRP checks') != 'PASS':
+        problems.append(f'per-DRP checks: {counts.get("per-DRP checks")}')
+    if crc == 0 and not rec.get('ok'):
+        problems.append('the cycle failed')
+    return report('d', work, state, rec, counts, problems, started)
 
 
 def broken_copy(work, experiment, run, alias, drop=DROP_L1):
@@ -574,7 +669,7 @@ def cmd_feature(args):
           flush=True)
     if args.breakage and args.breakage not in BREAKS[feature]:
         raise ds.Fail(f'--break {args.breakage} is not one of feature {feature}\'s {BREAKS[feature]}')
-    if args.breakage and not args.check_only:
+    if args.breakage and not args.check_only and feature != 'd':
         raise ds.Fail('--break needs --check-only (it breaks a copy of a recorded run)')
     if feature == 'd':
         return feature_d(args, work, started)

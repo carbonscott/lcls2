@@ -3,15 +3,15 @@
     daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--segments N]
                    [--det TYPE] [--also TYPE[:GROUP]]... [--fixed-rate GROUP:INDEX]... [--bld]
                    [--meb] [--ami] [--pva] [--epics] [--udp] [--gui] [--pvservers] [--tpr] [--webgui] [--detach]
-                   [--hosts HOST_A,HOST_B --dry-run]
+                   [--hosts HOST_A,HOST_B [--dry-run]]
     daq_sim status [-w WORKDIR]
-    daq_sim cycle  [-w WORKDIR] [--events N] [--no-record] [--kill-drp]
+    daq_sim cycle  [-w WORKDIR] [--events N] [--no-record] [--kill-drp [ALIAS]]
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
                    [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
     daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
     daq_sim matrix   [-w WORKDIR] [--only types|programs|features|coverage] [--types T,..] [--features x,..]
-                     [--events N] [--lock FILE] [--ami-src DIR] [--hosts A,B]
+                     [--events N] [--lock FILE] [--ami-src DIR] [--hosts A,B [--locks LA,LB]] [--gpu-host G]
                      [--break register|kill-drp|corrupt] (psdaq.sim.matrix)
     daq_sim feature  a|b|c|d|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] [--ami-src DIR]
                      [--hosts A,B] (psdaq.sim.feature)
@@ -59,8 +59,10 @@ STAND-IN or N/A, each RUN/STAND-IN row with evidence recorded at HEAD (psdaq.sim
 system features, then the coverage check; it exits 0 only if every assertion passes (psdaq.sim.matrix).
 'feature' runs one system feature end to end (up, its run, its checks, down) and prints its
 report (psdaq.sim.feature).
-'up --hosts A,B --dry-run' prints the .cnf and environment of one partition spread over two
-nodes (multi_host_plan) without starting anything.
+'up --hosts A,B', run on host A in a Slurm step, brings up one partition over two hosts of the
+job: control, the TEB, the stand-ins and <det>_0 on A, the other DRPs on B, which procmgr starts
+through a procmgrd up runs in a step of the job on B (psdaq.sim.twonode).  With --dry-run it
+prints an earlier plan of it (multi_host_plan) and starts nothing.
 'e2e' is the end-to-end test: the same run driven through the web GUI by a headless browser
 (psdaq.webgui.e2e); it brings the DAQ up with --webgui unless it is up already, checks
 every state and count itself, prints E2E PASS or E2E FAIL and the exit code says which.
@@ -239,17 +241,27 @@ def port_busy(port):
         s.close()
 
 
-def wait_listen(port, timeout, proc=None, what=''):
+def wait_listen(port, timeout, proc=None, what='', host='127.0.0.1'):
     end = time.monotonic() + timeout
     while time.monotonic() < end:
         if proc is not None and proc.poll() is not None:
             raise Fail(f'{what} exited with code {proc.returncode} before listening on {port}')
         try:
-            with socket.create_connection(('127.0.0.1', port), timeout=1):
+            with socket.create_connection((host, port), timeout=1):
                 return
         except OSError:
             time.sleep(0.2)
-    raise Fail(f'{what} not listening on 127.0.0.1:{port} after {timeout} s')
+    raise Fail(f'{what} not listening on {host}:{port} after {timeout} s')
+
+
+def use_hosts(state):
+    """For a DAQ 'up --hosts' started (state 'two'): this process's EPICS lists and NO_PROXY as the
+    partition's (psdaq.sim.twonode.apply_env), before it opens a PV client."""
+    two = (state or {}).get('two')
+    if two:
+        from psdaq.sim import twonode
+        twonode.apply_env(os.environ, two['hosts'][0], two['hosts'][1], two['ips'])
+    return two
 
 
 def pid_alive(pid):
@@ -529,6 +541,30 @@ EPICS = ''' {{ id:'epics_0', flags:'spu',
 '''
 
 
+def two_host_cnf(two, args, cfg_url, extra_also, segments, common, work):
+    """The .cnf of 'up --hosts A,B' (psdaq.sim.twonode): control, teb0 and <det>_0 on A as CNF has them, but
+    with libfabric over A's interface and simxpm's frames and the config DB at A's address; <det>_1 .. and
+    the --also DRPs on B (procmgr's host:), their collection host A, libfabric over B's interface, their EPICS
+    servers on B's IP (env:)."""
+    a, b = two['hosts']
+    ip_a, ip_b = two['ips'][a], two['ips'][b]
+    ep = {h: f'ep_domain={two["nic"][h]},ep_provider=tcp' for h in (a, b)}
+    cb = dict(common, ep=ep[b])
+    remote = ''.join(SEGMENT.format(segm=i, **cb) for i in range(1, segments))
+    for x in extra_also:
+        remote += ALSO.format(**dict(cb, alias=x['alias'], det=x['det'], simk=SIM_TYPES[x['det']]['kwargs'].format(
+            length=args.length, seed=args.seed, work=work.dir)))
+    remote = remote.replace(" { id:", f" {{ host:'{b}', env:'EPICS_PVAS_INTF_ADDR_LIST={ip_b} "
+                                      f"EPICS_CAS_INTF_ADDR_LIST={ip_b}', id:").replace('-C localhost', f'-C {a}')
+    text = CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS, xpm=XPM, pvbase=PVBASE,
+                      trigger=TRIGGER, slow=args.slow_update, configdb=cfg_url + 'configDB',
+                      lgbk=f'http://127.0.0.1:{ports(args.platform)["lgbk"]}/',
+                      activedet=work.path('activedet.json'), segments=remote, **dict(common, ep=ep[a]))
+    text = text.replace('sim://127.0.0.1:', f'sim://{ip_a}:')
+    return (f'# daq_sim up --hosts {a},{b}: control, teb0 and {DETECTOR}_0 on {a} ({ip_a}), the entries with '
+            f'host:\'{b}\' on {b} ({ip_b}), started there through procmgrd (psdaq.sim.twonode)\n' + text)
+
+
 def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
                   gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False, tpr=False):
     """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui, --tpr and --ami
@@ -719,7 +755,25 @@ def cmd_up(args):
     tpr = getattr(args, 'tpr', False)
     also = parse_also(getattr(args, 'also', None) or [], args.platform)
     fixed = parse_fixed_rates(getattr(args, 'fixed_rate', None) or [])
-    why = barrier_conflict([DETECTOR] + [a['det'] for a in also], pva or epics or udp or bld)
+    two = None
+    if getattr(args, 'hosts', None):    # one partition over two hosts of this Slurm job (psdaq.sim.twonode)
+        from psdaq.sim import twonode
+        try:
+            a_host, b_host, ips = twonode.check_hosts(args.hosts, host)
+        except ValueError as e:
+            raise Fail(str(e))
+        bad = [o for o in ('meb', 'ami', 'pva', 'epics', 'udp', 'bld', 'gui', 'pvservers', 'tpr', 'webgui')
+               if getattr(args, o, False)] + (['fixed-rate'] if fixed else [])
+        if bad:
+            raise Fail(f'--hosts runs control, the TEB and PGP DRPs only, not --{", --".join(bad)}')
+        if not also:                    # a DRP on each host: <det>_1 on B
+            segments = max(segments, 2)
+        two = {'hosts': [a_host, b_host], 'ips': ips, 'nic': {a_host: twonode.nic_of(ips[a_host])}}
+        # each host's DRPs wait at Connect for those on their own host only (barrier.supervisor_info)
+        why = barrier_conflict([DETECTOR]) or barrier_conflict(
+            ([DETECTOR] if segments > 1 else []) + [a['det'] for a in also])
+    else:
+        why = barrier_conflict([DETECTOR] + [a['det'] for a in also], pva or epics or udp or bld)
     if why:
         raise Fail(why)
     ioc = soft_ioc() if (epics or bld) else None
@@ -755,6 +809,8 @@ def cmd_up(args):
             os.unlink(loglink)
         os.symlink(work.path('pmlogs'), loglink)
 
+    if two:                             # EPICS lists name A's IP, NO_PROXY both hosts (twonode.apply_env)
+        twonode.apply_env(os.environ, a_host, b_host, ips)
     env = dict(os.environ)
     env[TAG] = work.dir
     env['PYTHONUNBUFFERED'] = '1'
@@ -767,7 +823,9 @@ def cmd_up(args):
              'segments': segments, 'det': DETECTOR, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
              'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp,
              'also': also, 'fixed_rates': fixed, 'bld': bld, 'pvservers': pvservers,
-             'tpr': tpr}
+             'tpr': tpr, 'two': two,
+             'remote': ({f'{DETECTOR}_{i}': two['hosts'][1] for i in range(1, segments)} |
+                        {x['alias']: two['hosts'][1] for x in also}) if two else {}}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -784,12 +842,29 @@ def cmd_up(args):
                 raise Fail('preflight failed: not starting anything')
 
         py = sys.executable
-        cfg_url = f'http://127.0.0.1:{P["configdb"]}/ws/'
+        bind = ips[a_host] if two else '127.0.0.1'     # what host B's DRPs reach on A: config DB, frames, PVA
+        if two:                         # procmgrd on B, in a step of this job there (twonode.hostd)
+            hp = twonode.start_hostd(work, state, b_host, ips[b_host], loglink, RCFILE,
+                                     work.path('logs', f'hostd-{twonode.short(b_host)}.log'))
+            state['hostd'] = {b_host: {'srun_pid': hp.pid}}
+            work.save(state)
+            try:
+                info = twonode.wait_hostd(work, b_host, hp)
+            except RuntimeError as e:
+                raise Fail(str(e))
+            two['nic'][b_host] = info['nic']
+            state['hostd'][b_host].update(job=info['job'], step=info['step'])
+            work.save(state)
+            say(f'hostd on {b_host}: step {info["job"]}.{info["step"]}, procmgrd{args.platform} on port '
+                f'{twonode.procmgrd_port(args.platform)}; {b_host} {ips[b_host]} ({info["nic"]}), '
+                f'{a_host} {ips[a_host]} ({two["nic"][a_host]})')
+        cfg_url = f'http://{bind}:{P["configdb"]}/ws/'
         p = start_service(work, state, 'configdb',
                           [py, '-m', 'psdaq.sim.configdb_server', '--store', work.path('configdb.json'),
                            '--port', str(P['configdb']),
-                           '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
-        wait_listen(P['configdb'], 30, p, 'configdb_server')
+                           '--access-log', work.path('logs', 'configdb-access.jsonl')] +
+                          (['--host', bind] if two else []), env)
+        wait_listen(P['configdb'], 30, p, 'configdb_server', host=bind)
         sim_type = SIM_TYPES[DETECTOR]
         det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
         if sim_type.get('det_yaml'):
@@ -803,7 +878,8 @@ def cmd_up(args):
             r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
                                 '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
                                 '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
-                                '--sim-length', str(args.length)] + dargs,
+                                '--sim-length', str(args.length)] + dargs +
+                               (['--allow-host', bind] if two else []),
                                env=env, capture_output=True, text=True, timeout=60)
             with open(work.path('logs', 'seed.log'), 'a' if i else 'w') as out:
                 out.write(r.stdout + r.stderr)
@@ -820,13 +896,14 @@ def cmd_up(args):
 
         p = start_service(work, state, 'simxpm',
                           [py, '-m', 'psdaq.sim.simxpm', '-P', PVBASE, '-x', str(XPM),
-                           '--frames', f'tcp://127.0.0.1:{P["frames"]}', '--rate', str(args.rate),
+                           '--frames', f'tcp://{bind}:{P["frames"]}', '--rate', str(args.rate),
                            '--pull', 'auto'] +
+                          (['--bind', bind, '--allow-remote'] if two else []) +
                           (['--camera-pv', CAMERA_PV, '--camera-seed', str(args.seed)] if pva else []) +
                           (['--fixed-rates'] if fixed else []) +
                           (['--bld', BLD_PREFIX, '--bld-dest', f'{bld_group(args.platform)}:{P["bld"]}',
                             '--bld-seed', str(args.seed)] if bld else []), env)
-        wait_listen(P['frames'], 30, p, 'simxpm frames')
+        wait_listen(P['frames'], 30, p, 'simxpm frames', host=bind)
         wait_listen(pull_port(), 30, p, 'simxpm pull')
         for g, index in sorted(fixed.items()):     # as an operator sets a group's trigger (XPM GUI)
             for label, value in (('L0Select', 0), ('L0Select_FixedRate', index)):
@@ -884,18 +961,23 @@ def cmd_up(args):
             for i in TPR_PROCS:
                 os.makedirs(work.path('tpr', i), exist_ok=True)
         extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
-                              also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr)
+                              also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr) if not two else ''
+        # (with --hosts the --also DRPs are written by two_host_cnf, on host B)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
                                                                 work=work.dir))
         with open(work.path(state['cnf']), 'w') as f:
-            f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
-                               xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
-                               slow=args.slow_update, configdb=cfg_url + 'configDB',
-                               lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
-                               segments=''.join(SEGMENT.format(segm=i, **common)
-                                                for i in range(1, segments)) + extra, **common))
+            if two:
+                f.write(two_host_cnf(two, args, cfg_url, extra_also=also, segments=segments, common=common,
+                                     work=work))
+            else:
+                f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
+                                   xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
+                                   slow=args.slow_update, configdb=cfg_url + 'configDB',
+                                   lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
+                                   segments=''.join(SEGMENT.format(segm=i, **common)
+                                                    for i in range(1, segments)) + extra, **common))
         if gui:                         # daqstat's Slurm: simslurm's jobs for daq_sim.cnf's processes, shims on its PATH
             from psdaq.sim import simslurm
             slurm = work.path(SLURM_DIR)
@@ -1248,6 +1330,10 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
+    hostd_ok = True
+    if state.get('hostd'):              # up --hosts: each other host's step, and what is left in it
+        from psdaq.sim import twonode
+        hostd_ok = twonode.stop_hostd(work, state, say)
     for name in ('simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
@@ -1259,7 +1345,7 @@ def teardown(work, quiet=False):
             _kill(pid, 'leftover (tagged)', False)
     time.sleep(0.5)
     left = [(pid, cmdline(pid)) for pid in tagged_pids(work.dir) if pid != state.get('up_pid')]
-    ok = not left
+    ok = not left and hostd_ok
     if left:
         say(f'LEFTOVER processes: {left}')
     if state.get('platform') is not None:
@@ -1296,22 +1382,24 @@ def cmd_down(args):
 # --- status --------------------------------------------------------------------------------
 
 def prometheus_targets(promdir):
-    out = []
+    """[(host, port)] of the exporters the DAQ's processes wrote in promdir (<host>:<port> in each yaml);
+    the host is 127.0.0.1 for this host (up --hosts: a DRP on the other host exports there)."""
+    out, here = [], {socket.gethostname(), socket.gethostname().split('.')[0], 'localhost'}
     for name in sorted(os.listdir(promdir)) if os.path.isdir(promdir) else []:
         if name.endswith('.yaml'):
-            m = re.search(r":(\d+)'", open(os.path.join(promdir, name)).read())
+            m = re.search(r"([^'\s:]*):(\d+)'", open(os.path.join(promdir, name)).read())
             if m:
-                out.append(int(m.group(1)))
+                out.append(('127.0.0.1' if not m.group(1) or m.group(1) in here else m.group(1), int(m.group(2))))
     return out
 
 
-def scrape(port, names):
-    """{metric{labels}: value} for metric names in 'names', from 127.0.0.1:port."""
+def scrape(port, names, host='127.0.0.1'):
+    """{metric{labels}: value} for metric names in 'names', from host:port."""
     import urllib.request
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     out = {}
     try:
-        text = opener.open(f'http://127.0.0.1:{port}/metrics', timeout=3).read().decode()
+        text = opener.open(f'http://{host}:{port}/metrics', timeout=3).read().decode()
     except OSError:
         return out
     for line in text.splitlines():
@@ -1347,6 +1435,7 @@ def cmd_status(args):
     if state is None:
         print(f'daq_sim: nothing recorded in {work.dir}')
         return 1
+    use_hosts(state)
     ok = True
     print(f'workdir {work.dir}  host {state["host"]}  platform {state["platform"]}  started {state["started"]}'
           f'{"  (down)" if state.get("down") else ""}')
@@ -1384,8 +1473,8 @@ def cmd_status(args):
     g = state['platform']
     for pv in ('NumL0Acc', 'NumL0Inp'):
         print(f'  simxpm     PART:{g}:{pv} = {pv_get(f"{PVBASE}:XPM:{XPM}:PART:{g}:{pv}")}')
-    for port in prometheus_targets(work.path('prom')):
-        for k, v in scrape(port, COUNTERS).items():
+    for host, port in prometheus_targets(work.path('prom')):
+        for k, v in scrape(port, COUNTERS, host).items():
             print(f'  prom:{port} {k} = {v:g}')
     return 0 if ok else 1
 
@@ -1404,6 +1493,7 @@ def cmd_cycle(args):
     state = work.load()
     if state is None or state.get('down'):
         raise Fail(f'not up in {work.dir}')
+    use_hosts(state)
     plat = state['platform']
     dc = DaqControl(host='localhost', platform=plat, timeout=args.timeout * 1000)
     msgs, stop = [], threading.Event()
@@ -1480,7 +1570,7 @@ def cmd_cycle(args):
             print(f'{now()} --ami-shot needs a DAQ up with --ami', flush=True)
             ok = False
     if ok and getattr(args, 'kill_drp', False):
-        _kill_drp(state, plat)
+        _kill_drp(state, plat, args.kill_drp if isinstance(args.kill_drp, str) else None)
     if ok:
         pv = f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc'
         end = time.monotonic() + args.events / max(state['rate'], 1.) * 3 + 30
@@ -1536,7 +1626,7 @@ def cmd_cycle(args):
     if ami:
         counts.update(ami.check(work, status[6], run if args.record else 0))
         ok &= counts.get('ami check') == 'PASS'
-    if (state.get('also') or state.get('fixed_rates') or state.get('bld')) and args.record and run:
+    if (state.get('also') or state.get('fixed_rates') or state.get('bld') or state.get('two')) and args.record and run:
         counts.update(_per_drp_counts(work, state, status[6], run, counts))
         ok &= counts.get('per-DRP checks') == 'PASS'
     if witness:
@@ -1570,9 +1660,10 @@ def cmd_cycle(args):
     return 0 if ok and not errors else 1
 
 
-def _kill_drp(state, plat):
-    """cycle --kill-drp, a deliberate break: once the run's first L1Accepts are in, SIGKILL the
-    DRP of <det>_0 (as a crash would end it)."""
+def _kill_drp(state, plat, alias=None):
+    """cycle --kill-drp [ALIAS], a deliberate break: once the run's first L1Accepts are in, SIGKILL the
+    DRP of ALIAS (default <det>_0; up --hosts: one on the other host too, by a step of the job there),
+    as a crash would end it."""
     pv = f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc'
     end, v = time.monotonic() + 30, None
     while time.monotonic() < end:
@@ -1580,9 +1671,18 @@ def _kill_drp(state, plat):
         if not isinstance(v, str) and int(v) > 0:
             break
         time.sleep(0.05)
-    pid, cmd = drp_pid(state, f'{DETECTOR}_0')
+    alias = alias or f'{DETECTOR}_0'
     n = v if isinstance(v, str) or v is None else int(v)     # a p4p value prints with its time stamp
-    print(f'{now()} --kill-drp: SIGKILL {DETECTOR}_0 pid {pid} at {pv} = {n}: {cmd[:160]}', flush=True)
+    host = (state.get('remote') or {}).get(alias)
+    if host:                            # up --hosts: its pid is the one procmgr status gave
+        from psdaq.sim import twonode
+        pid = (state.get('procs') or {}).get(alias)
+        rc, out = twonode.kill_on(host, pid) if pid else (None, 'no pid')
+        print(f'{now()} --kill-drp: SIGKILL {alias} pid {pid} on {host} at {pv} = {n}: kill exit {rc} '
+              f'{out.strip()[-160:]}', flush=True)
+        return
+    pid, cmd = drp_pid(state, alias)
+    print(f'{now()} --kill-drp: SIGKILL {alias} pid {pid} at {pv} = {n}: {cmd[:160]}', flush=True)
     if pid:
         os.kill(pid, signal.SIGKILL)
 
@@ -1646,8 +1746,8 @@ def _run_counts(work, plat):
     except (ValueError, TypeError, KeyError):
         out['simxpm links'] = f'unreadable: {v}'
 
-    for port in prometheus_targets(work.path('prom')):
-        for k, val in scrape(port, COUNTERS + PER_DRP_COUNTERS).items():
+    for host, port in prometheus_targets(work.path('prom')):
+        for k, val in scrape(port, COUNTERS + PER_DRP_COUNTERS, host).items():
             name = k.split('{')[0]
             if name in PER_DRP_COUNTERS:    # one per system DRP: keep its alias
                 m = re.search(r'alias="([^"]*)"', k)
@@ -1750,6 +1850,26 @@ class AmiRun:
         return out
 
 
+def configure_segments(path):
+    """{detName: {segment}} of the Names in the Configure (the first datagram) of an xtc2 file; {} if
+    it cannot be read (psdaq.sim.coverage's reader)."""
+    try:
+        with open(path, 'rb') as f:
+            hdr = f.read(coverage.DGRAM.size)
+            extent = coverage.DGRAM.unpack(hdr)[5]
+            start, end = coverage.DGRAM.size, coverage.TRANSITION_SIZE + extent
+            f.seek(start)
+            buf = f.read(end - start)
+        out = {}
+        for o, src, typ, ext in coverage._xtcs(lambda p, k: buf[p - start:p - start + k], start, end, 'Configure'):
+            if typ == coverage.NAMES:
+                (_, detname, segment, _), _ = coverage._names(buf[o - start:o - start + ext], 'Configure')
+                out.setdefault(detname, set()).add(segment)
+        return out
+    except Exception:                   # OSError, ValueError, struct.error: not a readable Configure
+        return {}
+
+
 def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
     """Each PGP DRP's and drp_bld's L1Accepts: what simxpm sent its link (SIM:LinkL1Acc, read
     after Disable) against what psana2 reads from its own stream, event by event
@@ -1766,9 +1886,13 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
           [(a['alias'], a['group']) for a in state.get('also', ())]
     for alias, group in pgp:
         res = None
-        for path in files:              # its stream: the file in which it has data (psana2 names
+        mine, seg = files, None
+        if alias.startswith(f'{DETECTOR}_') and state.get('segments', 1) > 1:     # a segment: the stream whose
+            seg = int(alias.rsplit('_', 1)[1])                                   # Configure has it, its data
+            mine = [p for p in files if seg in configure_segments(p).get(DETECTOR, ())] or files
+        for path in mine:               # its stream: the file in which it has data (psana2 names
             try:                        # the detector by its alias less the segment)
-                r = xtc2_check.check(path, alias.rsplit('_', 1)[0], state['seed'])
+                r = xtc2_check.check(path, alias.rsplit('_', 1)[0], state['seed'], segment=seg)
             except Exception:
                 continue
             if r.get('with_data'):
@@ -2213,8 +2337,10 @@ def main(argv=None):
                         help=f'also run drp_bld (bld_0) on simxpm\'s BLD source {BLD_PREFIX} (multicast on '
                              '127.0.0.1, TTL 1), its group and port from the stand-in IOC (CA)')
     upopts.add_argument('--hosts', default=None, metavar='HOST_A,HOST_B',
-                        help='with --dry-run: plan one partition over two nodes (control, the TEB and '
-                             'stand-ins on HOST_A, the --also DRPs on HOST_B)')
+                        help='one partition over two hosts of this Slurm job, run on HOST_A: control, the TEB, '
+                             'the stand-ins and <det>_0 there, <det>_1 (--segments, at least 2) and the --also '
+                             'DRPs on HOST_B, which procmgr starts through a procmgrd in a step of the job there '
+                             '(psdaq.sim.twonode); with --dry-run: print the plan only')
     upopts.add_argument('--dry-run', action='store_true', help='print the plan (.cnf, environment); start nothing')
     upopts.add_argument('--gui', action='store_true',
                         help='also run the PyQt GUIs control_gui, groupca, partca, pvant and procstat and the '
@@ -2245,9 +2371,10 @@ def main(argv=None):
     cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
     cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
     cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
-    cy.add_argument('--kill-drp', action='store_true',
-                    help=f'a deliberate break: SIGKILL the DRP of <det>_0 once the run\'s first L1Accepts are in '
-                         '(daq_sim matrix --break kill-drp)')
+    cy.add_argument('--kill-drp', nargs='?', const=True, default=False, metavar='ALIAS',
+                    help=f'a deliberate break: SIGKILL the DRP of ALIAS (default <det>_0) once the run\'s first '
+                         'L1Accepts are in (daq_sim matrix --break kill-drp; feature d --break kill-remote-drp: '
+                         'the DRP on the other host)')
     cy.add_argument('--ami-shot', metavar='PNG', default=None,
                     help='(up --ami) while Running, open a viewer of the camera image in another ami-client, '
                          'offscreen, and save its window to PNG (psdaq.sim.ami_shot)')
@@ -2293,7 +2420,7 @@ def main(argv=None):
         except Fail as e:
             print(f'daq_sim matrix: {e}', file=sys.stderr, flush=True)
             return 1
-    if args.command == 'up' and (args.dry_run or args.hosts):
+    if args.command == 'up' and args.dry_run:
         try:                            # a plan only: no DAQ env needed
             return cmd_plan(args)
         except Fail as e:

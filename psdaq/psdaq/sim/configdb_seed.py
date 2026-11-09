@@ -216,8 +216,13 @@ def main():
                         help='store this type\'s own default config instead of fakecam\'s')
     parser.add_argument('--det-yaml', default=None,
                         help='with --det-type: make it from this firmware YAML')
+    parser.add_argument('--allow-host', default=None, metavar='ADDR',
+                        help='also accept a URL on this address (daq_sim up --hosts: the first host\'s own, '
+                             'where the config DB stand-in listens for the other host\'s DRPs)')
     args = parser.parse_args()
-    if 'ws-auth' in args.url or 'ws-kerb' in args.url or not args.url.startswith('http://127.'):
+    local = args.url.startswith('http://127.') or bool(args.allow_host) and args.url.startswith(
+        'http://%s:' % args.allow_host)
+    if 'ws-auth' in args.url or 'ws-kerb' in args.url or not local:
         sys.exit('configdb_seed: refusing non-local URL %s' % args.url)
     result = seed(args.url, args.inst, args.alias, args.root, args.trigger, args.det,
                   args.segm, args.sim_seed, args.sim_length, args.det_type, args.det_yaml)

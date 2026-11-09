@@ -1,8 +1,9 @@
 """System features of the hardware-free DAQ without a DAQ: simxpm's readout groups at different
 rates (--fixed-rates) and per-link seq and counts, its BLD source (--bld) over loopback multicast,
-daq_sim's --also/--fixed-rate/--bld plumbing, the two-node plan (up --hosts A,B --dry-run), the
-feature command's argument checks, feature c's checks on a recorded result (ami_check again,
---break ami-tamper) and feature d's refusal unless two hosts of the job are given."""
+daq_sim's --also/--fixed-rate/--bld plumbing, the two-node plan (up --hosts A,B --dry-run) and the
+two-host .cnf, address lists and TCP peers of up --hosts (psdaq.sim.twonode), the feature command's
+argument checks, feature c's checks on a recorded result (ami_check again, --break ami-tamper) and
+feature d's refusal unless two hosts of the job are given."""
 
 import json
 import socket
@@ -242,7 +243,7 @@ def test_two_node_plan(capsys):
     assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB', '--dry-run', '--det', 'hrencoder']) == 0
     assert "id:'hrencoder_0'" in capsys.readouterr().out
     daq_sim.use_det('fakecam')
-    assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB']) == 1                 # plan only for now
+    assert daq_sim.main(['up', '--hosts', 'nodeA,nodeB']) == 1                 # not run on nodeA (twonode.check_hosts)
     assert daq_sim.main(['up', '--hosts', 'nodeA,drp-srcf-cmp001', '--dry-run']) == 1
     assert daq_sim.main(['up', '--hosts', 'nodeA', '--dry-run']) == 1
 
@@ -282,8 +283,8 @@ def test_features_c_and_d_have_entries():
     from psdaq.sim import feature
     assert list(feature.FEATURES) == ['a', 'b', 'c', 'd', 'e']
     assert feature.up_options('c', 5) == ['--ami', '--rate', '100']
-    assert feature.up_options('d', 5) == ['--det', 'hrencoder', '--also', 'epix100:5']
-    assert feature.BREAKS['c'] == ('ami-tamper',) and feature.BREAKS['d'] == ()
+    assert feature.up_options('d', 5) == ['--segments', '2', '--rate', '100']
+    assert feature.BREAKS['c'] == ('ami-tamper',) and feature.BREAKS['d'] == ('kill-remote-drp',)
     assert feature.unavailable('a') is None and feature.unavailable('c') is None
 
 
@@ -325,10 +326,10 @@ def test_feature_d_not_available_unless_two_allocated_hosts(monkeypatch, tmp_pat
     monkeypatch.setattr(feature, 'allocated_hosts', lambda: ['nodeA', 'nodeB'])
     assert feature.unavailable('d', 'nodeA,nodeB') is None
     args.breakage, args.check_only, args.hosts = None, False, 'nodeA,nodeB'
-    assert feature.cmd_feature(args) == 1                       # the plan, then FAIL: a plan only
+    assert feature.cmd_feature(args) == 1                       # up --hosts runs only on nodeA: FAIL
     out = capsys.readouterr().out
-    assert "plan| " in out and "host:'nodeB', id:'epix100_0'" in out and 'FEATURE d FAIL' in out
-    assert 'NOT AVAILABLE' not in out
+    assert 'up| ' in out and 'run up --hosts on its first host nodeA' in out and 'FEATURE d FAIL' in out
+    assert 'problem: up --hosts exit 1' in out and 'NOT AVAILABLE' not in out
 
 
 def _ami_result(n=120, ts0=1 << 40):
@@ -373,3 +374,76 @@ def test_feature_c_checks(monkeypatch, tmp_path):
     assert 'up --ami' in ' '.join(feature.check_c(work, dict(state, ami=False), rec)[1])
     png.unlink()
     assert any(p.startswith('ami shot: PASS') for p in feature.check_c(work, state, rec)[1])
+
+
+def test_two_host_up_refuses_what_it_cannot_run(monkeypatch):
+    """up --hosts A,B: two different hosts of this Slurm job, run on A, neither a hutch host, both with an
+    address this host can tell apart (twonode.check_hosts)."""
+    from psdaq.sim import twonode
+    monkeypatch.setattr(twonode, 'allocated_hosts', lambda: ['nodeA', 'nodeB'])
+    monkeypatch.setattr(twonode, 'ipv4', lambda h: {'nodeA': '10.0.0.1', 'nodeB': '10.0.0.2'}[twonode.short(h)])
+    monkeypatch.setattr(twonode, 'nic_of', lambda ip: 'eth9' if ip == '10.0.0.1' else None)
+    monkeypatch.setenv('SLURM_JOB_ID', '42')
+    assert twonode.check_hosts('nodeA,nodeB', 'nodeA.example') == ('nodeA', 'nodeB',
+                                                                  {'nodeA': '10.0.0.1', 'nodeB': '10.0.0.2'})
+    for hosts, here, why in (('nodeA', 'nodeA', 'two different hosts'), ('nodeA,nodeA', 'nodeA', 'two different'),
+                             ('nodeA,drp-srcf-cmp001', 'nodeA', 'hutch or DAQ host'),
+                             ('nodeB,nodeA', 'nodeA', 'run up --hosts on its first host nodeB'),
+                             ('nodeA,nodeC', 'nodeA', 'nodeC not in Slurm job 42')):
+        with pytest.raises(ValueError, match=why):
+            twonode.check_hosts(hosts, here)
+    monkeypatch.delenv('SLURM_JOB_ID')
+    with pytest.raises(ValueError, match='not inside a Slurm job'):
+        twonode.check_hosts('nodeA,nodeB', 'nodeA')
+
+
+def test_two_host_env_names_only_the_first_hosts_address():
+    from psdaq.sim import twonode
+    env = {'PROCMGR_EXPORT': 'EPICS_PVA_ADDR_LIST=127.0.0.1,HTTP_PROXY=http://127.0.0.1:9,FI_PROVIDER=tcp',
+           'NO_PROXY': 'localhost,127.0.0.1'}
+    got = twonode.apply_env(env, 'nodeA', 'nodeB', {'nodeA': '10.0.0.1', 'nodeB': '10.0.0.2'})
+    assert got == twonode.epics_env('10.0.0.1', '10.0.0.1')
+    lists = [v for k, v in env.items() if k.startswith('EPICS_') and 'AUTO' not in k]
+    assert lists and set(lists) == {'10.0.0.1'}
+    assert all(env[k] == 'NO' for k in env if k.startswith('EPICS_') and 'AUTO' in k)
+    exported = dict(x.split('=', 1) for x in env['PROCMGR_EXPORT'].split(','))
+    assert exported['EPICS_PVA_ADDR_LIST'] == '10.0.0.1' and exported['HTTP_PROXY'] == 'http://127.0.0.1:9'
+    assert ' ' not in env['PROCMGR_EXPORT']             # procmgr sends each to tcsh as setenv K V
+    assert set(env['NO_PROXY'].split(',')) >= {'10.0.0.1', '10.0.0.2', 'nodeA', 'nodeB', 'localhost'}
+    assert twonode.epics_env('10.0.0.1', '10.0.0.2')['EPICS_PVAS_INTF_ADDR_LIST'] == '10.0.0.2'
+
+
+def test_two_host_cnf_puts_the_other_drps_on_the_second_host(tmp_path):
+    import argparse
+    daq_sim.use_det('fakecam')
+    work = daq_sim.Work(str(tmp_path / 'w'))
+    two = {'hosts': ['nodeA', 'nodeB'], 'ips': {'nodeA': '10.0.0.1', 'nodeB': '10.0.0.2'},
+           'nic': {'nodeA': 'eth9', 'nodeB': 'eth7'}}
+    args = argparse.Namespace(platform=5, slow_update=1, length=64, seed=0x1234)
+    P = daq_sim.ports(5)
+    common = dict(instr=daq_sim.INSTRUMENT, ep=daq_sim.EP, prom=work.path('prom'), det='fakecam',
+                  frames=P['frames'], data=work.path('data'), length=64, v='',
+                  simk=daq_sim.SIM_TYPES['fakecam']['kwargs'].format(length=64, seed=0x1234, work=work.dir))
+    cnf = daq_sim.two_host_cnf(two, args, 'http://10.0.0.1:31050/ws/', daq_sim.parse_also(['hrencoder:5'], 5), 2,
+                               common, work)
+    ns = {}
+    exec(cnf, {'platform': None, 'host': 'host', 'id': 'id', 'flags': 'flags', 'cmd': 'cmd', 'env': 'env'}, ns)
+    e = {x['id']: x for x in ns['procmgr_config']}
+    assert {i: x.get('host') for i, x in e.items()} == {'control': None, 'teb0': None, 'fakecam_0': None,
+                                                       'fakecam_1': 'nodeB', 'hrencoder_0': 'nodeB'}
+    for i in ('fakecam_1', 'hrencoder_0'):
+        assert '-C nodeA' in e[i]['cmd'] and 'ep_domain=eth7' in e[i]['cmd'] and 'sim://10.0.0.1:' in e[i]['cmd']
+        assert e[i]['env'] == 'EPICS_PVAS_INTF_ADDR_LIST=10.0.0.2 EPICS_CAS_INTF_ADDR_LIST=10.0.0.2'
+    for i in ('teb0', 'fakecam_0'):
+        assert 'ep_domain=eth9' in e[i]['cmd'] and 'ep_domain=lo' not in e[i]['cmd']
+    assert 'sim://127.0.0.1' not in cnf and '-d http://10.0.0.1:31050/ws/configDB' in e['control']['cmd']
+
+
+def test_tcp_peers_from_ss_lines():
+    from psdaq.sim import twonode
+    lines = ['0      0      10.0.0.1:41234   10.0.0.2:29980 users:(("drp",pid=1,fd=3))',
+             '0 0 [::ffff:10.0.0.1]:5000 [::ffff:10.0.0.2]:6000 users:(("teb",pid=2,fd=4))',
+             '0 0 127.0.0.1:1 127.0.0.1:2 users:(("x",pid=3,fd=1))', '0 0 10.0.0.1:7 10.0.0.9:8 users:(("y",pid=4))']
+    got = twonode.established('10.0.0.2', '10.0.0.1', lines)
+    assert [g[2] for g in got] == ['users:(("drp",pid=1,fd=3))', 'users:(("teb",pid=2,fd=4))']
+    assert twonode.established('10.0.0.1', '10.0.0.2', lines) == []
