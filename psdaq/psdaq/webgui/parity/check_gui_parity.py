@@ -47,6 +47,7 @@ Usage (DAQ env, PyQt5; $WD the work dir of a running daq_sim up):
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -249,8 +250,9 @@ def start_devices(spec, sim_dir, env, python, log, wdir=None):
 
 
 def wait_ready(p, timeout):
-    """The first line of process p's output that says 'ready' (None if it exits or `timeout` s pass); the rest of its
-    output is read and dropped by a thread, so the pipe never fills."""
+    """The first line of process p's output that says 'ready' as a word (None if it exits or `timeout` s pass; a log
+    line saying 'already' is not it); the rest of its output is read and dropped by a thread, so the pipe never
+    fills."""
     import queue
     import threading
     q = queue.Queue()
@@ -269,7 +271,7 @@ def wait_ready(p, timeout):
             break
         if ln is None:
             break
-        if 'ready' in ln:
+        if re.search(r'\bready\b', ln):
             return ln.strip()
     return None
 
