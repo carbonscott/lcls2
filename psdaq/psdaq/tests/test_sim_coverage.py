@@ -36,16 +36,17 @@ def all_rows():
     return rows
 
 
-def write_daq_sim_cnf(path, det='fakecam'):
-    """The .cnf daq_sim up writes, with placeholder values."""
+def write_daq_sim_cnf(path, det='fakecam', drp='drp', env=''):
+    """The .cnf daq_sim up writes (up --det <det> --drp <drp>), with placeholder values."""
     from psdaq.sim import daq_sim
+    types = daq_sim.GPU_SIM_TYPES if drp == 'drp_gpu' else daq_sim.SIM_TYPES
     with open(path, 'w') as f:
         f.write(daq_sim.CNF.format(
             when='now', platform=5, alias='BEAM', instr='tst', xpm=0, pvbase='DAQ:SIM', trigger='tmoteb',
             slow=1, configdb='http://127.0.0.1:1/ws/configDB', lgbk='http://127.0.0.1:2/',
             activedet='/dev/null', ep=daq_sim.EP, prom='/tmp', det=det, frames=3, data='/tmp',
-            length=64, v='', segments='',
-            simk=daq_sim.SIM_TYPES[det]['kwargs'].format(length=64, seed=0x1234)))
+            length=64, v='', segments='', drp=drp, env=env,
+            simk=types[det]['kwargs'].format(length=64, seed=0x1234, work='/tmp')))
     return path
 
 
