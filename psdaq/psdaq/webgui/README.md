@@ -127,6 +127,9 @@ with a run-time import probe, `no-window`: the walk of the program's own entry r
 | `trigger/detector_protection_monitor.py` | `/gui/detector_protection_monitor` | simdetprot (BLOCKED, NPIX, NPIX_OT, ADU over loopback Channel Access) | `--dpm '-b <base> -d <detector>'` |
 | `seq/seqplot.py` | `/gui/seqplot` | the program's own sequence engine on the tree's sequence scripts | `--seqplot '--seq 0:10k.py ... --time T0 T1' [--seq-dir D]` |
 | `seq/seq_epixhr.py` | `/gui/seq_epixhr` | the program's own code with `--test --plot` (nothing written to an XPM) | `--seq-epixhr '--test --plot ...'` |
+| `cas/hsdPs.py` | `/gui/hsdPs` | simhsd (MONTRIG counts 70 kHz of triggers split by the RESET phase) and a simxpm of its own | `--hsdps '--base B... --xpm X [--range A B S]'` |
+| `configdb/configdb_GUI.py` | `/gui/configdb_GUI` | the config DB stand-in (`configdb_server --seed-gui`) | `--configdb-gui '--url http://127.0.0.1:<port>/ws-auth/ --hutch H [--password P]'` |
+| `cas/xpmpva.py` | `/gui/xpmpva` | two simxpms the tests start (XPM 5 with `xtpg` in FwBuild: ATCA and CuTiming; XPM 6 `Kcu1500`: QSFP and UsTiming) | `--pvgui 'xpmpva:<base>:XPM:<n> [...]'` |
 
 `cas/partca-sum.py` and `cas/xpmca.py` are `no-window`: run as written, each raises `TypeError` in its own setup
 (the old three-argument `PvLabel`) before any window shows; `cas/tdmpva.py` too: it imports `psdaq.pytdm`, which the
@@ -136,6 +139,16 @@ The walk refuses every remote shell (ssh, scp, ...) to any host and every Slurm 
 (`qt_walk.guard_subprocess`, recorded as `refused:subprocess`): `datadev_monitor`'s Refresh All ssh-es to 80 DAQ
 nodes and `daqstat`'s daqmgr Runner queries Slurm.  pyqtgraph plot panels (a `PlotItem` made by `addPlot`, a
 `PlotWidget`, an `ImageView`) are rows of kind `plot`; their curves are what the walk records and the tests compare.
+Each panel's context menu is 48 rows more (`parity/pg_options.py`): the ViewBox's X / Y axis panels and the PlotItem's
+Plot Options, a row `<plot row>.<xaxis|yaxis|ctrl>.<widget>` each.  The walk's drive step `pg-options:<W>x<H>` fits
+every ViewBox to the page's plot area, sets each control through its widget (the right-click popup first), records
+every panel (`pg_walk.pg_state`: the view, the axes, each curve as displayed, each widget) before the last action and
+after it, waits for the panels to settle and puts the panel back; one test per panel and control does the same through
+the page's menu (`static/gui/plots.js`, a port of the pyqtgraph code those controls drive) and compares.  A program
+whose window lives in a `multiprocessing` child (`hsdPs`) is followed into it: its drive steps run there and its walk
+is merged.  A `QTreeWidget` gives a row per column and, when its selection is used, a `.select` row; the drive steps
+`tree-select`, `text`, `check` and `close` and a spec's `"dialog": "accept"` (QDialog.exec answered) walk
+`configdb_GUI` through select, Apply, its ConfirmDialog and a close while a write runs.
 
 The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
 `data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
