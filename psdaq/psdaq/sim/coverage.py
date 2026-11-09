@@ -29,10 +29,31 @@ as the coverage tool reads them (xtc2_content, read_log):
                      whose BeginRun runinfo is the record's run_id; and a listed log whose
                      '# CMDLINE:' runs <drp> with -D <type> and names that run
   prog:<program>     a listed log whose '# CMDLINE:' runs <program> (for a STAND-IN row, its
-                     stand_in) and names the run
-A log names the run if it holds the path of a listed .xtc2 file of the run or that file's
-BeginRun time (sec.nsec, as the TEB and simxpm log it).  Any other record is rejected for
-the row, and the row's line says why.
+                     stand_in) and names the run, or, for a program whose log never names a
+                     run, that log and a witness of the run (below)
+A log names the run if it holds the path of a listed .xtc2 file of the run, that path relative
+to the record's data_dir (control_gui logs control's fileReport, '/<instr>/<expt>/xtc/<file>',
+which counts only when it resolves under data_dir to that very file), or that file's BeginRun
+time (sec.nsec, as the TEB and simxpm log it).
+
+A witness is a listed JSON log a check of the cycle wrote, {"witness": <kind>, "run_id",
+"xtc2": [the run's files], ...}; it counts only with the record's run_id and one of the run's
+listed .xtc2 files.  Rows that need one:
+  prog:ami-*         always (AMI's logs never name a run): an 'ami_check' witness that PASSed,
+                     with 'matches' [[timestamp, seq, pixel], ...], at least one, every timestamp
+                     an L1Accept of the run's file; and 'served_by' [{pid, cmdline, ancestors}], the
+                     processes that held AMI's ports during the check, one of them or of their
+                     ancestors the row's program with the pid its log gives (procServ's 'The PID
+                     of new child ... is: N', or daq_sim's '# PID: N')
+  prog:<GUI or monitor>, STAND-IN prog:<PV server>
+                     when its (or its stand-in's) log does not name the run: a 'gui_witness'
+                     witness whose 'programs' (GUIs run offscreen against the run's partition,
+                     psdaq.sim.gui_witness) or 'servers' (stand-ins whose PVs a client read) entry
+                     for the program PASSed, ran within the run's L1Accepts ('start' and 'end',
+                     EPICS-epoch seconds, between the file's first and last L1Accept) and read at
+                     least one value under the witness's 'partition' prefix that changed (2 or
+                     more distinct numbers)
+Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
 claimed without valid evidence', where R and S count only rows with valid evidence at HEAD,
@@ -466,12 +487,13 @@ def content_hash(path, size):
 
 
 def record_evidence(rows, kind, files, run_id=None, counts=None, started=None, ended=None,
-                    job_id=None, host=None, repo=None, evidence=None, cache=None):
+                    job_id=None, host=None, repo=None, evidence=None, cache=None, data_dir=None):
     """Write one evidence record, for a run that passed its own checks, saying it proved
     `rows` at this checkout's HEAD; return its path.  `files` are the run's outputs (xtc2
     files, logs); the record keeps each one's size and sha256 as they are now ('content'), so
     coverage can tell they are still the files the run left, and reads its rows' proof in them.
-    `cache` (a dict) keeps the hashes for a record_verdicts call on the same files."""
+    `data_dir` is the run's data dir (the drp's -o), against which a log's relative xtc2 path
+    resolves.  `cache` (a dict) keeps the hashes for a record_verdicts call on the same files."""
     repo = repo or find_repo()
     rows = [rows] if isinstance(rows, str) else list(rows)
     files = [os.path.abspath(f) for f in files]
@@ -485,7 +507,8 @@ def record_evidence(rows, kind, files, run_id=None, counts=None, started=None, e
     record = {'sha': sha, 'dirty': dirty(repo), 'rows': sorted(set(rows)), 'kind': kind,
               'run_id': run_id, 'job_id': job_id or os.environ.get('SLURM_JOB_ID'),
               'host': host or socket.gethostname(), 'files': files, 'content': content,
-              'started': started, 'ended': ended or now(), 'counts': counts or {}}
+              'started': started, 'ended': ended or now(), 'counts': counts or {},
+              'data_dir': os.path.abspath(data_dir) if data_dir else None}
     d = evidence_dir(evidence, repo)
     os.makedirs(d, exist_ok=True)
     rid = f'{time.strftime("%Y%m%dT%H%M%S")}-{re.sub(r"[^A-Za-z0-9_.-]", "_", kind)}-{sha[:9]}-{os.getpid()}'
@@ -601,9 +624,12 @@ def xtc2_content(path):
                  (as DrpBase::runInfoData writes it), or None
       beginrun   that BeginRun's time, 'sec.nsec' with 9 digits of ns, or None
       l1accepts  the number of L1Accepts
-      l1_with    {detType or detName: L1Accepts holding a ShapesData of that detector}"""
+      l1_with    {detType or detName: L1Accepts holding a ShapesData of that detector}
+      l1_stamps  the set of the L1Accepts' timestamps (sec << 32 | nsec, as psana2's
+                 evt.timestamp), and l1_first, l1_last the smallest and largest, or None"""
     size = os.path.getsize(path)
-    c = {'types': set(), 'run': None, 'beginrun': None, 'l1accepts': 0, 'l1_with': {}}
+    c = {'types': set(), 'run': None, 'beginrun': None, 'l1accepts': 0, 'l1_with': {},
+         'l1_stamps': set(), 'l1_first': None, 'l1_last': None}
     dets, items = {}, {}                 # NamesId -> (detType, detName, segment, alg), its items
     off = n = 0
     with open(path, 'rb') as f:
@@ -649,6 +675,9 @@ def xtc2_content(path):
                                     c['run'] = f'{v["expt"]}/r{v["runnum"]:04d}'
                     else:
                         c['l1accepts'] += 1
+                        c['l1_stamps'].add(stamp)
+                        c['l1_first'] = stamp if c['l1_first'] is None else min(c['l1_first'], stamp)
+                        c['l1_last'] = stamp if c['l1_last'] is None else max(c['l1_last'], stamp)
                         held = set()
                         for o, src, typ, ext in xtcs:
                             if typ == SHAPESDATA and src in dets:
@@ -687,6 +716,136 @@ def names_file(text, path):
     real = os.path.realpath(path)
     return any(os.path.realpath(m.group(0)) == real for m in
                re.finditer(r'[^\s\'"]*' + re.escape(os.path.basename(path)), text))
+
+
+def names_relative(text, path, data_dir):
+    """True if text holds `path` relative to data_dir ('/tst/tstx00001/xtc/<file>', as control's
+    fileReport gives it), i.e. a spelling that, joined to data_dir, resolves to the same file,
+    and path lies under data_dir."""
+    if not data_dir:
+        return False
+    root, real = os.path.realpath(data_dir), os.path.realpath(path)
+    if not real.startswith(root + os.sep):
+        return False
+    for m in re.finditer(r'[^\s\'"\\]*' + re.escape(os.path.basename(path)), text):
+        if os.path.realpath(os.path.join(root, m.group(0).lstrip(os.sep))) == real:
+            return True
+    return False
+
+
+# --- witnesses: what a check of the cycle saw, for a program whose own log never names a run
+
+WITNESSES = ('ami_check', 'gui_witness')
+AMI_PROGRAMS = ('ami-client', 'ami-global', 'ami-manager', 'ami-node', 'ami-worker')
+EPICS_EPOCH = 631152000                 # 1990-01-01 in Unix seconds: timing timestamps count from it
+CHILD_PID = re.compile(r'^(?:@@@ The PID of new child .* is:|# PID:)[ \t]*(\d+)[ \t]*$', re.M)
+
+
+def witness(text):
+    """The witness a log holds ({'witness': kind, ...}), or None if it is not one."""
+    try:
+        w = json.loads(text)
+    except ValueError:
+        return None
+    return w if isinstance(w, dict) and w.get('witness') in WITNESSES else None
+
+
+def stamp_seconds(stamp):
+    """A timing timestamp (sec << 32 | nsec) as EPICS-epoch seconds."""
+    return (stamp >> 32) + (stamp & 0xffffffff) * 1e-9
+
+
+def log_pid(text):
+    """The pid of a log's program: the last 'The PID of new child ... is: N' line of a procmgr log
+    (procServ writes it), or the '# PID: N' line daq_sim writes under a log's '# CMDLINE:'; None if
+    it has neither."""
+    pids = CHILD_PID.findall(text)
+    return int(pids[-1]) if pids else None
+
+
+def _witness_run(w, run_id, mine):
+    """Why a witness is not of the record's run, or None; it must give the run_id and name one of
+    the run's listed xtc2 files."""
+    if w.get('run_id') != run_id:
+        return f'names run {w.get("run_id")}, the record says {run_id}'
+    real = {os.path.realpath(f) for f in mine}
+    if not any(isinstance(f, str) and os.path.realpath(f) in real for f in w.get('xtc2') or []):
+        return f'names no listed xtc2 file of run {run_id}'
+    return None
+
+
+def ami_witness_problem(prog, w, run_id, mine, runs, logs):
+    """Why an ami_check witness does not prove prog:<prog> (an AMI program), or None (module doc)."""
+    p = _witness_run(w, run_id, mine)
+    if p:
+        return p
+    if w.get('pass') is not True:
+        return f'says the check failed: {str(w.get("problems"))[:160]}'
+    matches = w.get('matches')
+    if not isinstance(matches, list) or not matches:
+        return 'lists no per-event match of AMI with psana2 (matches)'
+    stamps = set().union(*(runs[f]['l1_stamps'] for f in mine))
+    for m in matches:
+        if not (isinstance(m, list) and len(m) == 3 and all(isinstance(x, int) for x in m)):
+            return f'match {str(m)[:60]} is not [timestamp, seq, pixel]'
+        if m[0] not in stamps:
+            return f'match timestamp {m[0]:#x} is no L1Accept of the run\'s files'
+    served = [s for s in w.get('served_by') or [] if isinstance(s, dict)]
+    procs = [p for s in served for p in [s] + [a for a in s.get('ancestors') or [] if isinstance(a, dict)]]
+    pids = {p.get('pid') for p in procs if isinstance(p.get('cmdline'), str) and resolve(p['cmdline'])[0] == prog}
+    if not pids:
+        return (f'its served_by lists no {prog} process (it lists '
+                f'{", ".join(sorted({str(resolve(str(p.get("cmdline")))[0]) for p in procs})) or "none"})')
+    given = [log_pid(text) for text in logs]
+    if not any(given):
+        return f'its log of {prog} gives no pid (procServ\'s "The PID of new child ... is: N", or "# PID: N")'
+    if not any(pid in pids for pid in given):
+        return (f'its log of {prog} gives pid {", ".join(str(p) for p in given if p)}, not one of the '
+                f'{prog} processes that served the check ({", ".join(str(p) for p in sorted(pids))})')
+    return None
+
+
+def live_witness_problem(prog, w, run_id, mine, runs, section):
+    """Why a gui_witness does not show prog read live values of the run (its 'programs' or, for a
+    stand-in, 'servers' entry), or None (module doc)."""
+    p = _witness_run(w, run_id, mine)
+    if p:
+        return p
+    e = (w.get(section) or {}).get(prog)
+    if not isinstance(e, dict):
+        return f'has no {section} entry for {prog}'
+    if e.get('pass') is not True:
+        return f'says {prog} failed: {str(e.get("problems"))[:160]}'
+    first = [runs[f]['l1_first'] for f in mine if runs[f]['l1_first'] is not None]
+    last = [runs[f]['l1_last'] for f in mine if runs[f]['l1_last'] is not None]
+    start, end = e.get('start'), e.get('end')
+    if not (first and isinstance(start, (int, float)) and isinstance(end, (int, float))):
+        return f'gives no start and end of {prog}\'s reads, or the run has no L1Accept'
+    lo, hi = stamp_seconds(min(first)), stamp_seconds(max(last))
+    if not lo <= start <= end <= hi:
+        return (f'{prog} read from {start:.3f} to {end:.3f}, not within the run\'s L1Accepts '
+                f'({lo:.3f} to {hi:.3f}, EPICS-epoch seconds)')
+    prefix = w.get('partition')
+    if not (isinstance(prefix, str) and prefix):
+        return 'gives no partition prefix'
+    live = [r for r in e.get('reads') or [] if isinstance(r, dict) and str(r.get('name', '')).startswith(prefix)
+            and isinstance(r.get('values'), list) and len(numbers(r['values'])) >= 2]
+    if not live:
+        return f'shows {prog} read no live value under {prefix} (2 or more distinct numbers of one name)'
+    return None
+
+
+def numbers(values):
+    """The distinct numbers among a widget's texts (a placeholder such as '' or '-' is none)."""
+    out = set()
+    for v in values:
+        try:
+            x = float(str(v).replace(',', ''))
+        except ValueError:
+            continue
+        if x == x:                      # not NaN
+            out.add(x)
+    return out
 
 
 def _cached(cache, key, make):
@@ -757,15 +916,16 @@ def row_problem(rid, entry, rec, cache=None):
     """Why a record that passes record_problem does not prove row `rid` (status `entry`), or
     None: the content of its files must show the row ran in the record's run (module doc)."""
     run_id = str(rec['run_id'])
+    data_dir = rec.get('data_dir') if isinstance(rec.get('data_dir'), str) else None
     runs = {f: _cached(cache, ('xtc2', f), lambda f=f: xtc2_content(f))[1]
             for f in rec['files'] if f.endswith('.xtc2')}
-    logs = [(log_program(text), text) for text in
-            (read_log(f, rec['content'][f]['bytes'], cache) for f in rec['files']
-             if not f.endswith('.xtc2'))]
+    named = [(f, rec['content'][f]['bytes']) for f in rec['files'] if not f.endswith('.xtc2')]
+    texts = [read_log(f, size, cache) for f, size in named]
+    logs = [(log_program(text), text) for text in texts]
 
     def names_run(text, paths):
-        return any(names_file(text, p) or (runs[p]['beginrun'] and runs[p]['beginrun'] in text)
-                   for p in paths)
+        return any(names_file(text, p) or names_relative(text, p, data_dir) or
+                   (runs[p]['beginrun'] and runs[p]['beginrun'] in text) for p in paths)
 
     if rid.startswith('det:'):
         exe, typ = rid.split(':', 2)[1:]
@@ -800,10 +960,28 @@ def row_problem(rid, entry, rec, cache=None):
     ran = [text for (name, _), text in logs if name == prog]
     if not ran:
         return f'lists no log of {prog} (a log whose "# CMDLINE:" runs {prog})'
-    if not any(names_run(text, mine) for text in ran):
-        return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} nor its '
-                f'BeginRun time {runs[mine[0]]["beginrun"]}')
-    return None
+    witnesses = [w for w in (_cached(cache, ('witness', f, size), lambda t=t: witness(t))
+                             for (f, size), t in zip(named, texts)) if w]
+    if prog in AMI_PROGRAMS and entry.get('status') != 'STAND-IN':
+        kind = 'ami_check'
+        why = [ami_witness_problem(prog, w, run_id, mine, runs, ran) for w in witnesses
+               if w['witness'] == kind]
+    elif any(names_run(text, mine) for text in ran):
+        return None
+    else:
+        kind = 'gui_witness'
+        section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
+        why = [live_witness_problem(prog, w, run_id, mine, runs, section) for w in witnesses
+               if w['witness'] == kind]
+        if not why:
+            return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '
+                    f'relative to the data dir {data_dir}) nor its BeginRun time '
+                    f'{runs[mine[0]]["beginrun"]}, and it lists no {kind} witness')
+    if not why:
+        return f'lists no {kind} witness (a JSON log {{"witness": "{kind}", ...}}) for {prog}'
+    if None in why:
+        return None
+    return f'its {kind} witness {why[0]}'
 
 
 def record_verdicts(path, repo=None, status_path=None, cache=None):
