@@ -34,7 +34,8 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:epics_exporter', 'prog:drp_udpencoder',
+            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
+            'prog:drp_udpencoder',
             'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
@@ -296,7 +297,7 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     the GUI's own log and the walk agree."""
     from psdaq.sim import gui_witness
     extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
-    params = daq_sim.gui_params(5, str(tmp_path / 'prom'))
+    params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
     for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
         assert f"cmd:'{name} {' '.join(gui_witness.argv(name, params))}'" in extra, name
     assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
@@ -330,3 +331,17 @@ def test_ami_shot_flowchart_views_the_source():
     node = fc['nodes'][0]
     assert node['class'] == 'SourceNode' and node['name'] == 'fakecam:raw:raw' and node['state']['viewed']
     assert 'source_configuration' not in fc     # loading it must not reconfigure AMI's source
+
+
+def test_procstat_witness_reads_its_table(tmp_path):
+    from psdaq.sim import gui_witness
+    params = daq_sim.gui_params(5, '/p', '/w/daq_sim.cnf')
+    walk = {'argv': gui_witness.argv('procstat', params), 'instances': [
+        {'cls': 'QTableWidget', 'pv': None, 'cells': [['control', 'RUNNING'], ['fakecam_0', ' SHUTDOWN'], [None, None]]}]}
+    path = tmp_path / 'procstat.walk.json'
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('procstat', str(path), 0, 0, 1, params['part'], params)
+    assert e['kind'] == 'procmgr' and e['pass'] and e['live'] == ['procmgr:control']
+    assert e['reads'] == [{'name': 'procmgr:control', 'values': ['RUNNING']},
+                          {'name': 'procmgr:fakecam_0', 'values': ['SHUTDOWN']}]
+    assert gui_witness.spec('procstat', params)['walk']['record_calls'][0].endswith('spawnConsole')

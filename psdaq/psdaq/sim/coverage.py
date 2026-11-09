@@ -52,7 +52,8 @@ listed .xtc2 files.  Rows that need one:
                      for the program PASSed, ran within the run's L1Accepts ('start' and 'end',
                      EPICS-epoch seconds, between the file's first and last L1Accept) and read at
                      least one value under the witness's 'partition' prefix that changed (2 or
-                     more distinct numbers)
+                     more distinct numbers); for procstat ('kind': 'procmgr'), its table instead
+                     lists every process whose procmgr log ('# ID:') names the run, RUNNING
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -805,9 +806,13 @@ def ami_witness_problem(prog, w, run_id, mine, runs, logs):
     return None
 
 
-def live_witness_problem(prog, w, run_id, mine, runs, section):
+LOG_ID = re.compile(r'^# ID:[ \t]*(\S+)', re.M)        # procmgr heads each process's log with its id
+
+
+def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=()):
     """Why a gui_witness does not show prog read live values of the run (its 'programs' or, for a
-    stand-in, 'servers' entry), or None (module doc)."""
+    stand-in, 'servers' entry), or None (module doc).  run_ids: the procmgr ids of the record's
+    logs that name the run, which a 'procmgr' entry (procstat's table) must show RUNNING."""
     p = _witness_run(w, run_id, mine)
     if p:
         return p
@@ -825,6 +830,16 @@ def live_witness_problem(prog, w, run_id, mine, runs, section):
     if not lo <= start <= end <= hi:
         return (f'{prog} read from {start:.3f} to {end:.3f}, not within the run\'s L1Accepts '
                 f'({lo:.3f} to {hi:.3f}, EPICS-epoch seconds)')
+    if e.get('kind') == 'procmgr':
+        if not run_ids:
+            return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
+        running = {str(r.get('name'))[len('procmgr:'):] for r in e.get('reads') or [] if isinstance(r, dict)
+                   and str(r.get('name', '')).startswith('procmgr:') and isinstance(r.get('values'), list)
+                   and r['values'][-1:] == ['RUNNING']}
+        missing = sorted(set(run_ids) - running)
+        if missing:
+            return (f'shows {prog} did not list {", ".join(missing)} RUNNING (processes whose logs name the run)')
+        return None
     prefix = w.get('partition')
     if not (isinstance(prefix, str) and prefix):
         return 'gives no partition prefix'
@@ -971,7 +986,8 @@ def row_problem(rid, entry, rec, cache=None):
     else:
         kind = 'gui_witness'
         section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section) for w in witnesses
+        run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
+        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids) for w in witnesses
                if w['witness'] == kind]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '

@@ -37,6 +37,13 @@ EPICS_EPOCH = 631152000                 # 1990-01-01 in Unix seconds
 # here: it reads <xpm>:Us:RxAlign at startup, a PV this simxpm does not serve, and exits.)
 WITNESS = {
     'groupca': {'file': 'cas/groupca.py', 'argv': ['{pvbase}', '{xpm}', '{platform}']},
+    # procstat (the configs: procstat <CONFIGDIR>/p<platform>.cnf.last) shows procmgr's table of the
+    # partition's processes, ID and status, polled every -i s: its reads are the rows it showed,
+    # 'procmgr:<id>' with the status, and coverage checks that every process whose log names the
+    # run was among them RUNNING.  The calls its menus would make for real are recorded instead.
+    'procstat': {'file': 'procmgr/procstat', 'argv': ['-p', '{platform}', '-i', '1', '{cnf}'], 'kind': 'procmgr',
+                 'record_calls': ['psdaq.procmgr.ProcMgr:ProcMgr.spawnConsole', 'psdaq.procmgr.ProcMgr:ProcMgr.spawnLogfile',
+                                  'psdaq.procmgr.ProcMgr:ProcMgr.stop', 'psdaq.procmgr.ProcMgr:ProcMgr.start']},
     'pvant':   {'file': 'cas/pvant.py',
                 'argv': ['--bases', '{part}', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']},
 }
@@ -61,7 +68,7 @@ def spec(name, params):
     """The qt_walk --gui spec of a passive walk of GUI `name`."""
     return {'file': WITNESS[name]['file'], 'web': None, 'backend': 'sim-daq',
             'walk': {'argv': WITNESS[name]['argv'], 'pump': 3, 'timeout': 60,
-                     'drive': ['pump:1'] * PUMPS}}
+                     'drive': ['pump:1'] * PUMPS, 'record_calls': WITNESS[name].get('record_calls', [])}}
 
 
 def start(workdir, name, outdir, env=None):
@@ -79,6 +86,17 @@ def start(workdir, name, outdir, env=None):
         p = subprocess.Popen(cmd, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=env,
                              cwd=outdir)
     return p, walk, log, t0
+
+
+def table_reads(walk):
+    """[{'name': 'procmgr:<id>', 'values': [status]}] of the rows procstat's table showed at the end
+    of a qt_walk --gui result (its first two columns, ID and status)."""
+    out = []
+    for inst in walk.get('instances', []):
+        for row in inst.get('cells') or []:
+            if len(row) >= 2 and row[0]:
+                out.append({'name': f'procmgr:{row[0]}', 'values': [str(row[1] or '').strip()]})
+    return out
 
 
 def reads(walk):
@@ -163,10 +181,17 @@ def entry(name, walk_path, code, t0, t1, prefix, params):
         e['problems'].append(f'walk exited {code}' + (f': {walk.get("notes", [])[:1]}' if walk else ''))
     if walk and walk.get('argv') != e['argv']:
         e['problems'].append(f'walk ran argv {walk.get("argv")}, the procmgr entry gives {e["argv"]}')
-    e['reads'] = [r for r in reads(walk) if r['name'].startswith(prefix)]
-    live = [r['name'] for r in e['reads'] if len(numbers(r['values'])) >= 2]
-    if not live:
-        e['problems'].append(f'no PV under {prefix} showed 2 or more distinct numbers')
+    if WITNESS[name].get('kind') == 'procmgr':
+        e['kind'] = 'procmgr'
+        e['reads'] = table_reads(walk)
+        live = [r['name'] for r in e['reads'] if r['values'][-1:] == ['RUNNING']]
+        if not live:
+            e['problems'].append('its table showed no process RUNNING')
+    else:
+        e['reads'] = [r for r in reads(walk) if r['name'].startswith(prefix)]
+        live = [r['name'] for r in e['reads'] if len(numbers(r['values'])) >= 2]
+        if not live:
+            e['problems'].append(f'no PV under {prefix} showed 2 or more distinct numbers')
     e['live'] = live
     e['pass'] = not e['problems']
     return e

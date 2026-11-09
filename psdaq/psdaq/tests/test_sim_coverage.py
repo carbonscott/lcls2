@@ -999,6 +999,38 @@ def test_gui_witness_forgeries_are_rejected_naming_why(tmp_path, case):
     assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
 
 
+def procstat_run(tmp_path, rows_shown):
+    """(exit code, line) of a record for prog:procstat: the run's xtc2 file, a teb log (id teb0) and
+    a drp log (id fakecam_0) that name the run, procstat's own log, and a gui_witness whose procstat
+    entry ('kind': 'procmgr') is the table it showed: [(id, status)]."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    logs = []
+    for pid, cmd, line in (('teb0', 'teb -P tst', f'BeginRun @ {BEGINRUN_TIME}'),
+                           ('fakecam_0', 'drp -P tst -D fakecam', f"Opening file '{xtc}'"),
+                           ('procstat', 'procstat -p 5 -i 1 /w/daq_sim.cnf', 'Refreshing')):
+        p = d / f'{pid}.log'
+        p.write_text(f'# ID:      {pid}\n# PLATFORM:5\n# CMDLINE: {cmd}\n{line}\n')
+        logs.append(str(p))
+    w = gui_witness(xtc, ['procstat'], kind='procmgr',
+                    reads=[{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows_shown])
+    status = write_status(tmp_path / 'status.json', {'prog:procstat': {'status': 'RUN'}})
+    record(['prog:procstat'], [xtc] + logs + [write_witness(d / 'gui_witness.json', w)], tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:procstat'))
+    return code, line_of(out, 'prog:procstat')
+
+
+def test_procstat_is_run_when_its_table_showed_the_runs_processes_running(tmp_path):
+    code, line = procstat_run(tmp_path / 'a', [('control', 'RUNNING'), ('teb0', 'RUNNING'), ('fakecam_0', 'RUNNING'),
+                                               ('procstat', 'RUNNING')])
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = procstat_run(tmp_path / 'b', [('teb0', 'RUNNING'), ('fakecam_0', 'SHUTDOWN')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+    code, line = procstat_run(tmp_path / 'c', [('teb0', 'RUNNING')])
+    assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
+
+
 def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
     """R3: a STAND-IN row whose stand-in's log never names the run needs a 'servers' entry: a
     client of the cycle read the stand-in's PVs while the run ran; a 'programs' entry is not one."""

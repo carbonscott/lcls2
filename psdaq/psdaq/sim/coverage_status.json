@@ -150,5 +150,9 @@
   "prog:epics_exporter": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2, a PV monitor): procmgr runs epics_exporter -H tst -I xpm-0 -M <prom> -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime (as neh-base.cnf's pvrtmon-0, on simxpm's PVs); while the run is Running cycle scrapes its Prometheus gauges once a second and logs/gui_witness.json names the run and the partition's gauges it served, NumL0Acc changing, within the run's L1Accepts"
+  },
+  "prog:procstat": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs procstat -p <platform> -i 1 <workdir>/daq_sim.cnf offscreen; while the run is Running cycle runs its main() once more offscreen through qt_walk, and logs/gui_witness.json names the run and the table it showed, every process whose procmgr log names the run (teb0, fakecam_0, ...) RUNNING, read within the run's L1Accepts"
   }
 }

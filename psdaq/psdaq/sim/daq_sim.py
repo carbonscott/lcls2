@@ -393,13 +393,15 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # --bases ... --fields ..., here the partition's L0 counters).  Those two never log a run: cycle
 # runs each once more, offscreen, while the run is Running and keeps what it shows
 # (psdaq.sim.gui_witness), as the witness 'daq_sim coverage' reads.
-GUI_PROCS = ('control_gui', 'groupca', 'pvant', 'pvrtmon_0')
+GUI_PROCS = ('control_gui', 'groupca', 'pvant', 'procstat', 'pvrtmon_0')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'groupca {groupca}' }},
  {{ id:'pvant', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'pvant {pvant}' }},
+ {{ id:'procstat', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'procstat {procstat}' }},
  {{ id:'pvrtmon_0', flags:'s',
    cmd:'epics_exporter {epics_exporter}' }},
 '''
@@ -436,7 +438,7 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         out += UDP.format(udpport=P['udp'], platform=platform, **common)
     if gui:
         from psdaq.sim import gui_witness
-        params = gui_params(platform, common['prom'])
+        params = gui_params(platform, common['prom'], os.path.join(workdir, 'daq_sim.cnf'))
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
                           **{g: ' '.join(gui_witness.argv(g, params))
                              for g in list(gui_witness.WITNESS) + list(gui_witness.MONITORS)})
@@ -448,11 +450,11 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     return out
 
 
-def gui_params(platform, prom=None):
+def gui_params(platform, prom=None, cnf=None):
     """The placeholders of psdaq.sim.gui_witness's GUI and monitor argv (as qt_walk's sim_params
-    gives them; prom: the work dir's Prometheus dir)."""
+    gives them; prom: the work dir's Prometheus dir, cnf: its daq_sim.cnf)."""
     return {'pvbase': PVBASE, 'xpm': XPM, 'platform': platform,
-            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom}
+            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom, 'cnf': cnf}
 
 
 def udp_busy(port):
@@ -1376,7 +1378,7 @@ class GuiWitness:
     def __init__(self, work, state):
         from psdaq.sim import gui_witness
         self.gw, self.work, self.state = gui_witness, work, state
-        self.params = gui_params(state['platform'], work.path('prom'))
+        self.params = gui_params(state['platform'], work.path('prom'), work.path(state['cnf']))
         env = dict(os.environ, **{TAG: work.dir})
         self.walks, self.monitors = {}, {}
         for name in gui_witness.WITNESS:
