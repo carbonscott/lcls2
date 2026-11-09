@@ -12,6 +12,7 @@ import re
 import struct
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -345,7 +346,11 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     for p in daq_sim.PROCS:
         files.append(write_log(work.path('pmlogs', '2026', '11', f'08_12:00:00_node:{p}.log'), *cmds[p]))
     assert f'08_12:00:00_node:{det}_0.log' in ' '.join(files)
-    state = {'cnf': 'daq_sim.cnf', 'det': det,
+    started = time.time() - 60
+    old = write_log(work.path('pmlogs', '2026', '11', '07_12:00:00_node:teb0.log'), *cmds['teb0'])
+    os.utime(old, (started - 3600, started - 3600))     # a log of an earlier 'up' in the work dir: not listed
+    state = {'cnf': 'daq_sim.cnf', 'det': det, 'started': daq_sim.datetime.datetime.fromtimestamp(started)
+             .astimezone().isoformat(timespec='milliseconds'),
              'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in services}}
     daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start')
     printed = capsys.readouterr().out
@@ -356,6 +361,7 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     rec = json.load(open(tmp_path / 'evidence' / names[0]))
     assert rec['sha'] == HEAD and rec['kind'] == 'cycle' and rec['run_id'] == 'tstx00001/r0001'
     assert rec['dirty'] is False
+    assert old not in rec['files'] and all(f in rec['files'] for f in files)
     assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pykcuxpm', 'prog:pyxpm',
                            'prog:teb']
     assert sorted(rec['files']) == sorted(files + [work.path('daq_sim.cnf')])
@@ -954,8 +960,10 @@ PID_LINE = '@@@ The PID of new child "x:prog.log" is: 4321'    # procServ's line
 
 
 def table(start, end, rows):
+    """procstat's table: its rows [(procmgr id, status)], and the pids 'procmgr status' gave (PID_LINE's)."""
     return {'walk': '/w/logs/witness/procstat.walk.json', 'exit': 0, 'start': start, 'end': end, 'problems': [],
-            'reads': [{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows]}
+            'reads': [{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows],
+            'procmgr_pids': {i: 4321 if st == 'RUNNING' else None for i, st in rows}}
 
 
 def procstat_entry(rows=(('x', 'RUNNING'),), before=None, after=None):
@@ -986,31 +994,47 @@ XPM_SERVED = [(L1_FIRST + 0.5, PARTITION + ':NumL0Acc', 100.), (L1_FIRST + 2, PA
               (L1_FIRST + 4, PARTITION + ':NumL0Acc', 400.)]
 
 
-def served_file(d, program, posts):
-    """A served-value log as a stand-in writes it (psdaq.sim.served_log); posts [(EPICS-epoch s, pv, value)]."""
-    p = os.path.join(str(d), f'{program}.served.jsonl')
+SERVICE_PID = 4999                      # the pid daq_sim's '# PID:' gives a stand-in it started
+
+
+def served_file(d, program, posts, pid=SERVICE_PID, name=None, log=True):
+    """[the service's log, if not written yet (log: write it), and] a served-value log as a stand-in writes it
+    (psdaq.sim.served_log) next to it, d/<name>.served.jsonl (name: program); posts [(EPICS-epoch s, pv, value)].
+    The service's log, d/<name>.log, is headed as daq_sim heads it: '# CMDLINE:', then '# PID: N'."""
+    name, want = name or program, log
+    out = []
+    log = os.path.join(str(d), f'{name}.log')
     os.makedirs(str(d), exist_ok=True)
+    if want and not os.path.exists(log):
+        with open(log, 'w') as f:
+            f.write(f'# CMDLINE: python -m psdaq.sim.{program} -P DAQ:SIM\n# PID: {SERVICE_PID}\n{program}: ready\n')
+        out.append(log)
+    p = os.path.join(str(d), f'{name}.served.jsonl')
     with open(p, 'w') as f:
-        f.write(json.dumps({'served_log': program, 'pid': 4321}) + '\n')
+        f.write(json.dumps({'served_log': program, 'pid': pid}) + '\n')
         for t, pv, v in posts:
             f.write(json.dumps({'t': t + coverage.EPICS_EPOCH, 'pv': pv, 'v': v}) + '\n')
-    return p
+    return out + [p]
 
 
 def witness_run(tmp_path, row='prog:groupca', cmd='groupca DAQ:SIM 0 5', stand_in=None, mutate=None,
-                listed=True, served=XPM_SERVED, pid_lines=1):
+                listed=True, served=XPM_SERVED, pid_lines=1, more_logs=(), served_kw=None, log_tail=()):
     """(exit code, line) of a record for one program row whose log never names the run: the run's
-    xtc2 file, the program's (or stand-in's) procmgr log (pid_lines: procServ's pid lines in it), a
-    gui_witness for it and simxpm's served-value log (served; None: not listed)."""
+    xtc2 file, the program's (or stand-in's) procmgr log (pid_lines: procServ's pid lines in it; more_logs:
+    the lines of more procmgr logs of the same id, as a restart writes them; log_tail: lines after the pid
+    lines), a gui_witness for it and
+    simxpm's log and served-value log (served; None: not listed; served_kw: served_file's)."""
     d = tmp_path / 'wd'
     xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
-    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree', *[PID_LINE] * pid_lines)
+    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree', *[PID_LINE] * pid_lines,
+                    *log_tail)
+    logs = [write_log(d / f'prog{k}.log', cmd, *lines) for k, lines in enumerate(more_logs)]
     prog = stand_in or row.split(':', 1)[1]
     w = gui_witness(xtc, [prog], section='servers' if stand_in else 'programs')
     if mutate:
         mutate(w, w['servers' if stand_in else 'programs'][prog])
-    files = [xtc, log] + ([write_witness(d / 'gui_witness.json', w)] if listed else [])
-    files += [served_file(d, 'simxpm', served)] if served is not None else []
+    files = [xtc, log] + logs + ([write_witness(d / 'gui_witness.json', w)] if listed else [])
+    files += served_file(d, 'simxpm', served, **(served_kw or {})) if served is not None else []
     entry = {'status': 'STAND-IN', 'stand_in': stand_in, 'interface': 'its PVs'} if stand_in else {'status': 'RUN'}
     status = write_status(tmp_path / 'status.json', {row: entry})
     record([row], files, tmp_path / 'evidence')
@@ -1061,8 +1085,23 @@ GUI_FORGERIES = {
         start=BEGINRUN_S - 1, end=BEGINRUN_S + 2)), 'not before the run\'s BeginRun'),
     'after-table-in-the-run': (dict(mutate=lambda w, e: w['programs']['procstat']['after'].update(
         start=ENDRUN_S - 2)), 'not after the run\'s EndRun'),
-    'restarted': (dict(pid_lines=2), 'names 2 child pids'),
-    'no-pid-line': (dict(pid_lines=0), 'names 0 child pids'),
+    'restarted': (dict(pid_lines=2), '(x, 1 listed) name 2 child pids'),
+    'no-pid-line': (dict(pid_lines=0), '(x, 1 listed) name 0 child pids'),
+    # a procmgr (or procstat) restart: the old log names the old child and its end, a new log the new child
+    'restarted-new-log': (dict(more_logs=[['@@@ The PID of new child "x:prog.log" is: 4400']]),
+                          '(x, 2 listed) name 2 child pids'),
+    'child-ended': (dict(log_tail=['@@@ Received a sigChild for process 4321. The process was killed by signal 9']),
+                    'says procServ received a sigChild for process 4321'),
+    'other-pid-after': (dict(mutate=lambda w, e: w['programs']['procstat']['after']['procmgr_pids'].update(x=4400)),
+                        'procmgr status, read with procstat\'s table after the run, gives x pid 4400, not the child '
+                        'pid 4321 its procmgr log names'),
+    'no-status-pids': (dict(mutate=lambda w, e: w['programs']['procstat']['before'].pop('procmgr_pids')),
+                       'procmgr status, read with procstat\'s table before the run, gives x no pid'),
+    # a served-value log counts only next to the listed log of the service that wrote it, with its pid
+    'served-log-other-pid': (dict(served_kw=dict(pid=4998)),
+                             'simxpm.served.jsonl: its first line gives pid 4998, simxpm.log gives 4999 (# PID:)'),
+    'served-log-added': (dict(served_kw=dict(name='extra', log=False)),
+                         'extra.served.jsonl: the record lists no log extra.log of the service that wrote it'),
     # the values must be ones simxpm served while groupca read
     'fabricated-values': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
                                                                     'values': ['1', '2', '3']}])),
@@ -1174,8 +1213,11 @@ def r4_run(tmp_path, si_cmd=SIMHSD_CMD, mutate=None, row='prog:hsdpva', gui_cmd=
     xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
     files = [xtc, write_log(d / 'gui.log', gui_cmd, 'hsdpva: tabs built', PID_LINE)]
     if si_cmd:
-        files.append(write_log(d / 'simhsd.log', si_cmd, 'simhsd: ready'))
-    files.append(served_file(d, 'simhsd', HSD_SERVED))
+        files.append(write_log(d / 'simhsd.log', si_cmd, f'# PID: {SERVICE_PID}', 'simhsd: ready'))
+    else:
+        os.makedirs(str(d), exist_ok=True)
+        open(d / 'simhsd.log', 'w').write(f'# CMDLINE: {SIMHSD_CMD}\n# PID: {SERVICE_PID}\n')  # not listed
+    files += served_file(d, 'simhsd', HSD_SERVED)
     prog = row.split(':', 1)[1]
     w = gui_witness(xtc, [prog], stand_in='simhsd', prefix=HSD,
                     reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['-', '1043', '1971']},
@@ -1265,10 +1307,26 @@ def test_a_served_value_log_is_read_as_the_stand_ins_write_it(tmp_path, monkeypa
     log('P:A', 1.5)                     # the same value again: not logged
     log('P:B', {'f': [1, 2], 'g': 3})
     log('P:A', 2.5)
-    prog, pvs = coverage.served_log(path.read_text())
+    prog, pvs, pid, cap = coverage.served_log(path.read_text())
     assert prog == 'simx' and [v for _, v in pvs['P:A']] == [1.5, 2.5] and pvs['P:B'][0][1] == {'f': [1, 2], 'g': 3}
+    assert pid == os.getpid() and cap is None
     monkeypatch.delenv(served_log.ENV)
     served_log.ServedLog('simx')('P:A', 1)          # no log named: nothing written, no error
+
+
+def test_a_served_value_log_stops_at_its_size_cap_and_says_so(tmp_path, monkeypatch):
+    from psdaq.sim import served_log
+    path = tmp_path / 'simx.served.jsonl'
+    monkeypatch.setenv(served_log.ENV, str(path))
+    monkeypatch.setenv(served_log.MAX_ENV, '200')
+    log = served_log.ServedLog('simx')
+    for k in range(20):
+        log('P:A', k)
+    assert os.path.getsize(path) < 300
+    prog, pvs, pid, cap = coverage.served_log(path.read_text())
+    assert 0 < len(pvs['P:A']) < 20 and cap is not None
+    log('P:A', 99)                                  # after the cap: nothing more
+    assert coverage.served_log(path.read_text())[1] == pvs
 
 
 def test_changed_texts_skip_the_first_text_and_keep_units():

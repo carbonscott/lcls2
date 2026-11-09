@@ -635,13 +635,19 @@ def log_header(argv):
 
 def start_service(work, state, name, argv, env):
     log = work.path('logs', name + '.log')
-    # a PV-server stand-in logs every value it serves there (psdaq.sim.served_log); coverage reads it
-    env = dict(env, **{served_log.ENV: work.path('logs', name + '.served.jsonl')})
+    # a PV-server stand-in logs every value it serves there (psdaq.sim.served_log); coverage reads it, and
+    # counts it only with the '# PID:' this log gives (a log of an earlier 'up' in the work dir goes first)
+    served = work.path('logs', name + '.served.jsonl')
+    if os.path.exists(served):
+        os.unlink(served)
+    env = dict(env, **{served_log.ENV: served})
     with open(log, 'ab') as out:
         out.write(log_header(argv).encode())
         out.flush()
         p = subprocess.Popen(argv, stdout=out, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
                              env=env, cwd=work.dir, start_new_session=True)
+        out.write(f'# PID: {p.pid}\n'.encode())
+        out.flush()
     state['services'][name] = {'pid': p.pid, 'cmd': ' '.join(shlex.quote(a) for a in argv), 'log': log}
     work.save(state)
     return p
@@ -1496,9 +1502,10 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
     """Evidence for 'daq_sim coverage' from a passing recorded cycle: the rows of the programs
     the generated .cnf started (and its drp's -D type), plus the rows whose stand-in (in
     coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  It lists the run's
-    xtc2 files and the logs coverage reads the rows' proof in (each procmgr process's newest
-    log and each service's log).  A failure to write it, or a row coverage would reject, is
-    reported and leaves the cycle's verdict alone; coverage then finds no valid evidence.
+    xtc2 files and the logs coverage reads the rows' proof in (every procmgr log of each
+    process since 'up', each service's log and served-value log).  A failure to write it, or a
+    row coverage would reject, is reported and leaves the cycle's verdict alone; coverage then
+    finds no valid evidence.
     'daq_sim feature b' records its scan the same way (kind 'scan', its log feature-b.jsonl)."""
     import glob
     try:
@@ -1512,9 +1519,10 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
         files += [s['log'] for s in state.get('services', {}).values()]
         files += [p for p in (s['log'][:-len('.log')] + '.served.jsonl' for s in state.get('services', {}).values())
                   if os.path.isfile(p)]  # what the stand-ins served (psdaq.sim.served_log)
-        for proc in procs(state):       # the newest procmgr log of each process
+        since = datetime.datetime.fromisoformat(state['started']).timestamp() if state.get('started') else 0
+        for proc in procs(state):       # every procmgr log of each process since 'up' (a restart writes another)
             logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
-            files += sorted(logs, key=os.path.getmtime)[-1:]
+            files += sorted((f for f in logs if os.path.getmtime(f) >= since), key=os.path.getmtime)
         cache = {}
         path = coverage.record_evidence(rows, kind, files, run_id=f'{experiment}/r{run:04d}',
                                         counts=counts, started=started, cache=cache,
@@ -1728,8 +1736,8 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
 
 
 def procstat_table(work, label):
-    """Walk procstat offscreen once, now, for its table of procmgr's processes (gui_witness.snapshot_entry's
-    inputs: walk path, exit code, Unix start and end)."""
+    """Walk procstat offscreen once, now, for its table of procmgr's processes, then read 'procmgr status'
+    (gui_witness.snapshot_entry's inputs: walk path, exit code, Unix start and end, {procmgr id: pid})."""
     from psdaq.sim import gui_witness
     env = dict(os.environ, **{TAG: work.dir})
     p, walk, log, t0 = gui_witness.start(work.dir, 'procstat', work.path('logs', 'witness'), env, label=label, pumps=1)
@@ -1739,8 +1747,15 @@ def procstat_table(work, label):
         p.kill()
         code = p.wait(10)
     t1 = time.time()
-    print(f'{now()} GUI witness: procstat table {label} the run, walk exit {code}', flush=True)
-    return walk, code, t0, t1
+    pids = {}
+    try:
+        for i, (_, pid) in procmgr_status(work.load())[0].items():
+            pids[i] = int(pid) if str(pid).isdigit() else None
+    except Exception as ex:
+        print(f'{now()} GUI witness: procmgr status {label} the run failed: {type(ex).__name__}: {ex}', flush=True)
+    print(f'{now()} GUI witness: procstat table {label} the run, walk exit {code}; procmgr status pids '
+          f'{" ".join(f"{i}={p}" for i, p in sorted(pids.items()))}', flush=True)
+    return walk, code, t0, t1, pids
 
 
 class GuiWitness:

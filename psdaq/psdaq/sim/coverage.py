@@ -66,18 +66,24 @@ listed .xtc2 files.  Rows that need one:
                      a prefix the stand-in serves (the -P of the stand-in's own log, which the
                      record must list)
                      Every 'programs' entry (a GUI or monitor) also needs procmgr's own instance of
-                     the program to have run through the run: the record must list its procmgr log
-                     ('# ID:', one 'The PID of new child' line: procServ never restarted it), and
+                     the program to have run through the run: the record must list its procmgr logs
+                     ('# ID:'; daq_sim lists every one of the id since 'up'), which between them name
+                     one child pid ('The PID of new child': a procmgr or procstat restart starts a
+                     new log with another) and never say the child ended ('Received a sigChild');
                      procstat's entry of the same witness must show that id RUNNING in its table
                      'before' (read in Configured, ending before the run's BeginRun), in its table
-                     while Running and in its table 'after' (read after the run's EndRun).
+                     while Running and in its table 'after' (read after the run's EndRun), and the
+                     'before' and 'after' tables' 'procmgr_pids' (what 'procmgr status' gave right
+                     after each walk) must give the id that same child pid.
                      The values a GUI, monitor or client read are checked against what the PVs'
                      servers logged they served (psdaq.sim.served_log, logs the stand-ins write
-                     and the record lists): a read of a PV no such log holds does not count, and a
-                     read that counts as live must show only values its server served while the
-                     entry read (from its last post before 'start' to 'end', 2 s either side),
-                     within the precision the text shows (rounded or cut at its last digit, scaled by
-                     a k/M/G unit at its end)
+                     and the record lists; a served-value log counts only at <service>.served.jsonl
+                     next to a listed <service>.log that runs the program its first line names, with
+                     the pid its first line gives as that log's '# PID: N'): a read of a PV no such
+                     log holds does not count, and a read that counts as live must show only values
+                     its server served while the entry read (from its last post before 'start' to
+                     'end', 2 s either side), within the precision the text shows (rounded or cut at
+                     its last digit, scaled by a k/M/G unit at its end)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -883,6 +889,7 @@ def ami_witness_problem(prog, w, run_id, mine, runs, logs):
 
 
 LOG_ID = re.compile(r'^# ID:[ \t]*(\S+)', re.M)        # procmgr heads each process's log with its id
+SIGCHILD = re.compile(r'^@@@ Received a sigChild for process (\d+)', re.M)      # procServ: its child ended
 
 
 def pv_prefixes(args):
@@ -898,7 +905,7 @@ def pv_prefixes(args):
 
 
 def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=(), own=(),
-                         served=None):
+                         served=None, caps=None):
     """Why a gui_witness does not show prog read live values of the run, or None: entry_problem, then, for a
     'programs' entry (a GUI or monitor), procmgr_span_problem (own: the texts of prog's logs in the record), and
     for an entry with PV values, served_problem (served: served_logs of the record)."""
@@ -911,27 +918,40 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         if p:
             return p
     if e.get('kind') != 'procmgr':
-        return served_problem(prog, e, section, served or {}, w.get('partition'))
+        return served_problem(prog, e, section, served or {}, w.get('partition'), caps)
     return None
 
 
 def procmgr_span_problem(prog, w, own, runs, mine):
     """Why procstat's tables in the witness do not show procmgr's own instance of prog (the '# ID:' of its
     procmgr log, own: the texts of prog's logs in the record) RUNNING from before the run's BeginRun to after
-    its EndRun, or None.  The instance must be one: its log names one child pid (procServ's 'The PID of new
-    child ... is: N'; a restart writes another).  The tables: procstat's entry's 'before' (its walk ended
-    before the BeginRun time), the entry itself (read while Running) and 'after' (its walk started after the
-    EndRun time), each listing the id RUNNING."""
-    ids = sorted({m.group(1) for m in (LOG_ID.search(t) for t in own) if m})
+    its EndRun, or None.  The instance must be one: the id's logs in the record (daq_sim lists every procmgr
+    log of the id since 'up') name one child pid between them (procServ's 'The PID of new child ... is: N'; a
+    procmgr or procstat restart writes a new log with another) and none says procServ saw the child end
+    ('Received a sigChild').  The tables: procstat's entry's 'before' (its walk ended before the BeginRun
+    time), the entry itself (read while Running) and 'after' (its walk started after the EndRun time), each
+    listing the id RUNNING; 'before' and 'after' also give the pid 'procmgr status' showed for the id
+    ('procmgr_pids'), which must be that one child pid."""
+    by_id = {}
+    for t in own:
+        m = LOG_ID.search(t)
+        if m:
+            by_id.setdefault(m.group(1), []).append(t)
+    ids = sorted(by_id)
     if not ids:
         return (f'the record lists no procmgr log (# ID:) of {prog}, so no table can show procmgr\'s instance of '
                 f'it ran through the run')
-    for t in own:
-        m = LOG_ID.search(t)
-        n = len(CHILD_PID.findall(t)) if m else 1
-        if n != 1:
-            return (f'its procmgr log of {prog} ({m.group(1)}) names {n} child pids ("The PID of new child"), '
-                    f'not one instance of it that ran through the run')
+    child = {}
+    for i in ids:
+        pids = [p for t in by_id[i] for p in CHILD_PID.findall(t)]
+        if len(pids) != 1:
+            return (f'its procmgr logs of {prog} ({i}, {len(by_id[i])} listed) name {len(pids)} child pids '
+                    f'("The PID of new child"), not one instance of it that ran through the run')
+        died = [m.group(1) for t in by_id[i] for m in SIGCHILD.finditer(t)]
+        if died:
+            return (f'its procmgr log of {prog} ({i}) says procServ received a sigChild for process {died[0]}: '
+                    f'that instance ended before the record was written')
+        child[i] = int(pids[0])
     ps = (w.get('programs') or {}).get('procstat')
     if not (isinstance(ps, dict) and ps.get('kind') == 'procmgr'):
         return (f'has no procstat table (a programs entry of kind procmgr) to show procmgr\'s {ids[0]} RUNNING '
@@ -965,6 +985,14 @@ def procmgr_span_problem(prog, w, own, runs, mine):
             if shown.get(i) != 'RUNNING':
                 return (f'procstat\'s table {label} the run shows procmgr\'s {i} '
                         f'{shown[i] if i in shown else "not at all"}, not RUNNING')
+            if label == 'while Running':
+                continue
+            pids = t.get('procmgr_pids')
+            got = pids.get(i) if isinstance(pids, dict) else None
+            if got != child[i]:
+                return (f'procmgr status, read with procstat\'s table {label} the run, gives {i} '
+                        f'{"pid " + str(got) if got is not None else "no pid"}, not the child pid {child[i]} its '
+                        f'procmgr log names')
     return None
 
 
@@ -975,8 +1003,9 @@ UNIT_SCALE = {'k': 1e3, 'M': 1e6, 'G': 1e9}
 
 
 def served_log(text):
-    """(program, {pv: [(Unix time, value)]}) of a served-value log (psdaq.sim.served_log), or None if the text is
-    not one.  A line cut off where the record's hash ends is skipped."""
+    """(program, {pv: [(Unix time, value)]}, pid, cap) of a served-value log (psdaq.sim.served_log): the program
+    and pid of its first line, its posts, and the Unix time it stopped at its size cap (None if it did not); None
+    if the text is not one.  A line cut off where the record's hash ends is skipped."""
     first, _, rest = text.partition('\n')
     try:
         head = json.loads(first)
@@ -984,7 +1013,7 @@ def served_log(text):
         return None
     if not (isinstance(head, dict) and isinstance(head.get('served_log'), str)):
         return None
-    pvs = {}
+    pvs, cap = {}, None
     for line in rest.splitlines():
         try:
             d = json.loads(line)
@@ -992,9 +1021,30 @@ def served_log(text):
             continue
         if isinstance(d, dict) and isinstance(d.get('pv'), str) and isinstance(d.get('t'), (int, float)):
             pvs.setdefault(d['pv'], []).append((d['t'], d.get('v')))
+        elif isinstance(d, dict) and 'capped' in d and isinstance(d.get('t'), (int, float)) and cap is None:
+            cap = d['t']
     for posts in pvs.values():
         posts.sort(key=lambda p: p[0])
-    return head['served_log'], pvs
+    return head['served_log'], pvs, head.get('pid'), cap
+
+
+def served_log_problem(path, s, listed):
+    """Why a served-value log (path, s: served_log of its text) does not count for a record, or None.  It counts
+    only at <service>.served.jsonl next to <service>.log, a log the record lists (listed: {path: text}) whose
+    '# CMDLINE:' runs the program its first line names and whose pid ('# PID: N', daq_sim writes it when it
+    starts the service) is the pid its first line gives: the file daq_sim named for that very process."""
+    if not path.endswith('.served.jsonl'):
+        return 'it is not at <service>.served.jsonl'
+    log = path[:-len('.served.jsonl')] + '.log'
+    if log not in listed:
+        return f'the record lists no log {os.path.basename(log)} of the service that wrote it'
+    program, pid = log_program(listed[log])[0], log_pid(listed[log])
+    if program != s[0]:
+        return f'its first line names {s[0]}, {os.path.basename(log)} runs {program}'
+    if pid is None or pid != s[2]:
+        return (f'its first line gives pid {s[2]}, {os.path.basename(log)} gives '
+                f'{pid if pid is not None else "no pid"} (# PID:)')
+    return None
 
 
 def shown_numbers(text):
@@ -1049,12 +1099,13 @@ def _numbers_in(v, field=None):
     return out
 
 
-def served_problem(prog, e, section, served, partition):
+def served_problem(prog, e, section, served, partition, caps=None):
     """Why the values of a witness entry's live reads are not ones their PVs' servers logged they served
     while the entry read, or None.  served: {program: {pv: [(t, value)]}} (served_logs).  A read is live as
     entry_problem counts it (R4: 2 or more changed texts; else 2 or more numbers, under the entry's prefix); a
     live read of a PV no log holds does not count, and one at least must be of a PV a log holds, every number
-    it shows a value served from the last post before 'start' to 'end' (SERVED_SLACK either side)."""
+    it shows a value served from the last post before 'start' to 'end' (SERVED_SLACK either side).  caps:
+    {program: Unix time its log stopped at its size cap}, named when a read ran past it."""
     r4 = section == 'programs' and 'stand_in' in e
     prefix = e.get('prefix') if section == 'servers' else partition
     lo, hi = e['start'] + EPICS_EPOCH - SERVED_SLACK, e['end'] + EPICS_EPOCH + SERVED_SLACK
@@ -1087,9 +1138,12 @@ def served_problem(prog, e, section, served, partition):
         for text in counted:
             for x, unit in shown_numbers(text):
                 if not any(shows(x, unit, c) for c in cands):
+                    capped = [f'{p}\'s served-value log stopped at its size cap at {caps[p] - EPICS_EPOCH:.3f}'
+                              for p in holders if (caps or {}).get(p) is not None and caps[p] < hi]
                     return (f'its {prog} entry shows {str(text).strip()!r} for {name}, a value '
                             f'{"/".join(holders)} did not serve while {prog} read ({e["start"]:.3f} to '
-                            f'{e["end"]:.3f}, EPICS-epoch seconds; its served-value log)')
+                            f'{e["end"]:.3f}, EPICS-epoch seconds; its served-value log)'
+                            + (f' ({"; ".join(capped)})' if capped else ''))
         live += 1
     if not live:
         if not served:
@@ -1318,18 +1372,28 @@ def row_problem(rid, entry, rec, cache=None):
         kind = 'gui_witness'
         section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
-        served = {}
+        served, caps, ignored = {}, {}, []
+        listed = {f: t for (f, size), t in zip(named, texts) if f.endswith('.log')}
         for (f, size), t in zip(named, texts):
             s = _cached(cache, ('served', f, size), lambda t=t: served_log(t))
-            if s:
-                for pv, posts in s[1].items():
-                    served.setdefault(s[0], {}).setdefault(pv, []).extend(posts)
+            if not s:
+                continue
+            p = served_log_problem(f, s, listed)
+            if p:
+                ignored.append(f'{os.path.basename(f)}: {p}')
+                continue
+            for pv, posts in s[1].items():
+                served.setdefault(s[0], {}).setdefault(pv, []).extend(posts)
+            if s[3] is not None:
+                caps[s[0]] = min(s[3], caps.get(s[0], s[3]))
         for pvs in served.values():
             for posts in pvs.values():
                 posts.sort(key=lambda p: p[0])
         why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs,
-                                    ran, served)
+                                    ran, served, caps)
                for w in witnesses if w['witness'] == kind]
+        if ignored and why and None not in why:
+            why = [f'{y} (served-value logs not counted: {"; ".join(ignored[:2])})' for y in why]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '
                     f'relative to the data dir {data_dir}) nor its BeginRun time '

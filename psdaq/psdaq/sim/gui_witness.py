@@ -23,8 +23,10 @@ server logged it served then (psdaq.sim.served_log).
 
 procstat's entry ("kind": "procmgr") also holds "before" and "after": procstat's table read once
 more by cycle in Configured before BeginRun and after EndRun (snapshot_entry: "walk", "exit",
-"start", "end", "reads").  Coverage counts a GUI or monitor row only if procmgr's own instance of
-it is RUNNING in all three tables, so the program ran from before the run to after it.
+"start", "end", "reads", and "procmgr_pids", the pids 'procmgr status' gave right after the walk).
+Coverage counts a GUI or monitor row only if procmgr's own instance of it is RUNNING in all three
+tables, with the one child pid its procmgr logs name in "before" and "after", so the same process
+ran from before the run to after it.
 
 A GUI whose PVs come from a device stand-in (R4: hsdpva on simhsd, tprca on simtpr, dtica on simdti,
 started by 'daq_sim up --pvservers') walks with a PVA client that searches only that stand-in's ports;
@@ -158,11 +160,14 @@ def table_reads(walk):
     return out
 
 
-def snapshot_entry(walk_path, code, t0, t1):
+def snapshot_entry(walk_path, code, t0, t1, pids=None):
     """procstat's table read once (cycle: in Configured, before BeginRun or after EndRun): its walk, exit code,
-    start and end (EPICS-epoch seconds, the walk's process) and its rows, as table_reads gives them."""
+    start and end (EPICS-epoch seconds, the walk's process), its rows, as table_reads gives them, and pids
+    ({procmgr id: pid}, what 'procmgr status' gave right after the walk) as 'procmgr_pids'."""
     e = {'walk': walk_path, 'exit': code, 'start': round(t0 - EPICS_EPOCH, 3), 'end': round(t1 - EPICS_EPOCH, 3),
          'reads': [], 'problems': []}
+    if pids is not None:
+        e['procmgr_pids'] = dict(pids)
     try:
         with open(walk_path) as f:
             e['reads'] = table_reads(json.load(f))
