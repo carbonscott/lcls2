@@ -19,6 +19,7 @@ class HpsRoot(pr.Root):
 
     def __init__(self,
                  ipAddr      = '192.168.0.1',
+                 port        = 8193,
                  **kwargs):
 
         # Pass custom value to parent via super function
@@ -26,6 +27,7 @@ class HpsRoot(pr.Root):
 
         # Set base
         self.add(hps.Top(
-            ipAddr = ipAddr
+            ipAddr = ipAddr,
+            port   = port,
         ))
     

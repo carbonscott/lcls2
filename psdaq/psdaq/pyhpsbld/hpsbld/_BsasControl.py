@@ -18,7 +18,9 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue        as pr
-import psdaq.pyxpm.LclsTimingCore               as timing
+# LclsTimingCore from the cameralink-gateway submodules, as pyxpm since 04ac138c5 (the tree's copy went there)
+from psdaq.utils import enable_cameralink_gateway
+import LclsTimingCore               as timing
 
 class BsasModule(pr.Device):
 

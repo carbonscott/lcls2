@@ -12,6 +12,7 @@ void HpsEventIterator::_first(size_t sz)
 {
   _ts  = _buff[1]; _ts  <<= 32; _ts  += _buff[0];
   _pid = _buff[3]; _pid <<= 32; _pid += _buff[2];
+  _id         = _buff[4];   // the channel mask, the payload's ID (PAYLOAD's type ID is the mask: pyhpsbld, hpsdbuscas)
   v.channels  = _buff[4];
   v.beam      = _buff[5];
   v.timeStamp = _ts;
