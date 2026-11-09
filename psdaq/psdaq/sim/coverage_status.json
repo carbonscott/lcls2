@@ -202,5 +202,31 @@
     "stand_in": "simtpr",
     "interface": "tprcas's PVs over PVA: every name of the table its main() builds for -P <prefix> (ACCSEL ... EVTCNT, CH0..CH13 settings and RATE), which simtpr serves with tprcas's types and start values; the cycle's witness gets each of them from simtpr and reads EVTCNT advance while the run runs",
     "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own; logs/gui_witness.json 'servers' entry: tprcas's names defined vs served, EVTCNT read within the run's L1Accepts"
+  },
+  "prog:bldcas": {
+    "status": "RUN",
+    "note": "daq_sim up --pvservers + cycle (R3b, a PV server of the tree's own): procmgr runs bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX (lab3-bld.cnf: bldcas -P DAQ:LAB2 <services>) on PVA ports of its own; while the run is Running the cycle's client gets every name bldcas.main() defines (HPSEX:ADDR, HPSEX:PORT) from it and puts HPSEX:PORT to 11002 and back, reading each back; logs/gui_witness.json 'servers' entry bldcas ('program': true), read within the run's L1Accepts, under the -P of its own procmgr log"
+  },
+  "prog:hpsdbuscas": {
+    "status": "RUN",
+    "note": "daq_sim up --pvservers + cycle (R3b, a PV server of the tree's own): procmgr runs hpsdbuscas -P DAQ:SIM:HPSCPA (lab3-bld.cnf: hpsdbuscas -P DAQ:LAB2:<cp>) on PVA ports of its own; while the run is Running the cycle's client gets the 4 names its PVAServer defines (HPS:FIELDNAMES, HPS:FIELDTYPES, HPS:FIELDMASK, PAYLOAD) from it and puts HPS:FIELDMASK to 0x8001 and back, reading it back with PAYLOAD's type ID, which hpsdbuscas rebuilds for each mask; logs/gui_witness.json 'servers' entry hpsdbuscas ('program': true), read within the run's L1Accepts"
+  },
+  "prog:pvatable": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs pvatable --bases DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B --fields MONTIMING.trigcntsum ... MONRAWBUF.freeevt offscreen (test-hsd.cnf: pvatable --bases <pvlist> --fields <fields>), its PVA client searching only simhsd's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk, which names each PvField label by the PvManager's PvBase that holds it with its PV, and logs/gui_witness.json names the run, the stand-in simhsd and the MONTIMING counters it showed changing, read within the run's L1Accepts; the record lists simhsd's log, whose -P serves those PVs"
+  },
+  "prog:xpmpva": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs xpmpva DAQ:SIM:XPM:0 offscreen (lab3-cam.cnf: xpmpva DAQ:LAB2:XPM:<shelf>) on simxpm, which serves the PAddr and Us:RxAlign it reads at start; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simxpm and the XPM PVs it showed changing (PATT:COINC, ...), read within the run's L1Accepts; the record lists simxpm's log, whose -P serves those PVs"
+  },
+  "prog:daqstat": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R5, a GUI that reads no PV): up starts simslurm with a Slurm job for each process of daq_sim.cnf (daqmgr's cnftopy) and procmgr runs daqstat -i 1 <workdir>/slurm/daqstat.py offscreen (mfx.py: daqstat -i 5), its Slurm commands answered by simslurm through shims first on its PATH; while the run is Running cycle runs its main() once more offscreen through qt_walk, which records each refresh of its table with its time, while the cycle reads squeue from simslurm itself every 0.5 s; logs/gui_witness.json holds both, and 2 or more refreshes within the run's L1Accepts show, for every row, the state the nearest squeue read gave that process's job, listing every process whose procmgr log names the run"
+  },
+  "prog:hsd134PVs": {
+    "status": "STAND-IN",
+    "stand_in": "simhsd",
+    "interface": "hsd134PVs's PVs over PVA: the 44 names its C++ sources (meson.build hsd134PVs_sources: hsd134PVs.cc, PV134Stats.cc, PVCtrlsBase.cc, PV134Ctrls.cc) connect to under -P <digitizer> for its 2 chips A and B (FWBUILD, FWVERSION, PADDR, PLINK, KEEPROWS it puts; CONFIG, READY, RESET, PGPCONFIG it monitors; MONTIMING ... FEXOOR, PADDR_U it posts), all of which simhsd serves (hsdpvs's ChipServer per chip) and whose monitoring it posts once a second (MONTIMING, MONPGP, MONRAWBUF, MONFEXBUF) as hsd134PVs posts the digitizer's",
+    "note": "daq_sim up --pvservers + cycle (R3): simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B on PVA ports of its own (as hsd134PVs -P DAQ:SIM:HSD:1_DA); logs/gui_witness.json 'servers' entry simhsd: hsd134PVs's names read from its sources (gui_witness.hsd134pvs_names) vs served, MONTIMING counters read within the run's L1Accepts"
   }
 }

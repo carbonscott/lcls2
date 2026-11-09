@@ -318,6 +318,7 @@ class SimXpm:
         self.last_pid = 0
         self.frames_sent = 0
         self.coinc = {}                 # readout-group mask of an L0Accept tick -> ticks since the last stats
+        self.patt = {}                  # group -> [first, last, min, max interval] pulse IDs since the last stats
 
         self.provider = StaticProvider('simxpm')
         self.pvs = {}
@@ -356,6 +357,17 @@ class SimXpm:
         # RemoteLinkId stays 0 (no remote id, so groupca never resolves a host name); LinkGroupMask<n> is
         # 1 << group while the DRP of link n is in a readout group (pyxpm pvctrls LinkGroupMask).
         self._add(f'{X}:FwBuild', 's', FW_BUILD)
+        # xpmpva reads these at start (a .get() that fails ends it): PAddr, this XPM's upstream address, 0xffffffff
+        # as for an XPM with no parent XPM (xpmpva's XpmGroups climbs no further); Us:RxAlign and Cu:RxAlign, the
+        # timing receivers' alignment scans (pyxpm pvstats.py: 'aI', 65 words: the chosen tap, then 64 counts)
+        self._add(f'{X}:PAddr', 'I', 0xffffffff)
+        for t in ('Us', 'Cu'):
+            self._add(f'{X}:{t}:RxAlign', 'aI', [0] * 65)
+        # The SFP table of an ATCA XPM (pyxpm pvstats.py SFPStatus, an NTTable of 14 links; xpmpva reads it at start
+        # on an XPM whose FwBuild names no KCU card, as this one's does): no SFP, nothing lost
+        self._add_table(f'{X}:SFPSTATUS', [('LossOfSignal', 'i'), ('ModuleAbsent', 'i'), ('TxPower', 'f'),
+                                           ('RxPower', 'f')],
+                        [{'LossOfSignal': 0, 'ModuleAbsent': 0, 'TxPower': 0., 'RxPower': 0.} for _ in range(14)])
         for n in range(NUM_LINKS):
             self._add(f'{X}:RemoteLinkId{n}', 'I', 0)
             self._add(f'{X}:LinkGroupMask{n}', 'I', 0)
@@ -363,7 +375,8 @@ class SimXpm:
             # alias of the DRP on that link, '' while none is
             self._add(f'{X}:LinkLabel{n}', 's', '')
         # Pattern statistics (pyxpm pvstats PatternStats, NTTables): per group, Sum = L0Accepts in the last
-        # second (First/Last/MinIntv/MaxIntv 0); COINC = for each pair of groups i <= j, the L0Accept ticks of
+        # second, First/Last the low 20 bits of its first and last L0Accept's pulse ID, MinIntv/MaxIntv the least and
+        # most pulse IDs between two (_post_patt); COINC = for each pair of groups i <= j, the L0Accept ticks of
         # the last second that both took (xpmpatt, xpmpva Pattern tab)
         self._add_table(f'{X}:PATT:GROUPS', [(c, 'i') for c in PATT_STATS],
                         [{c: 0 for c in PATT_STATS} for _ in range(NUM_GROUPS)])
@@ -528,6 +541,14 @@ class SimXpm:
                 self.num_l0acc[g] += 1
         self.coinc[rog] = self.coinc.get(rog, 0) + 1
         self._emit(TransitionId.L1Accept, rog, self.num_l0acc[low])
+        for g in range(NUM_GROUPS):     # PATT:GROUPS First/Last/MinIntv/MaxIntv of the second
+            if rog & (1 << g):
+                p = self.patt.get(g)
+                if p is None:
+                    self.patt[g] = [self.last_pid, self.last_pid, None, 0]
+                else:
+                    d = self.last_pid - p[1]
+                    p[1], p[2], p[3] = self.last_pid, d if p[2] is None else min(p[2], d), max(p[3], d)
         if self.camera is not None:
             self.camera.post(self.last_sec, self.last_ns, self.num_l0acc[low])
         if self.bld is not None:
@@ -705,9 +726,17 @@ class SimXpm:
         self._post_counts()
 
     def _post_patt(self):
+        """PATT:GROUPS: per group, Sum = its L0Accepts of the last second, First and Last the low 20 bits of the
+        pulse IDs of the first and last of them, MinIntv and MaxIntv the fewest and most pulse IDs between two of
+        them (20 bits all ones for none, the empty value xpmpva's Pattern tab shows as '-'); PATT:COINC as below."""
         rows = [{c: 0 for c in PATT_STATS} for _ in range(NUM_GROUPS)]
+        none = (1 << 20) - 1
         for g in range(NUM_GROUPS):
             rows[g]['Sum'] = self.num_l0acc[g] - self._last_acc[g]
+            first, last, lo, hi = self.patt.get(g) or (None, None, None, 0)
+            rows[g].update(First=none if first is None else first & none, Last=none if last is None else last & none,
+                           MinIntv=none if lo is None else min(lo, none), MaxIntv=min(hi, none))
+        self.patt = {}
         coinc = []
         for i in range(NUM_GROUPS):         # pyxpm order: (0,0) (0,1) .. (0,7) (1,1) .. (7,7)
             for j in range(i, NUM_GROUPS):

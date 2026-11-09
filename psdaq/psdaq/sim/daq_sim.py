@@ -159,7 +159,9 @@ def ports(platform):
             'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform),
             'pvservers': {'simhsd': (31300 + 10 * platform, 31301 + 10 * platform),
                           'simtpr': (31302 + 10 * platform, 31303 + 10 * platform),
-                          'simdti': (31304 + 10 * platform, 31305 + 10 * platform)}}
+                          'simdti': (31304 + 10 * platform, 31305 + 10 * platform),
+                          'bldcas': (31306 + 10 * platform, 31307 + 10 * platform),
+                          'hpsdbuscas': (31308 + 10 * platform, 31309 + 10 * platform)}}
 
 
 def bld_group(platform):
@@ -341,7 +343,8 @@ def procs(state):
         (PVA_PROCS if state.get('pva') else ()) + (EPICS_PROCS if state.get('epics') else ()) + \
         (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ()) + \
         tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ()) + \
-        (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ())
+        (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ()) + \
+        (PVSERVER_PROCS if state.get('pvservers') else ())
 
 
 def procmgr_status(state):
@@ -452,12 +455,25 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # XPM's partition PVs.  None of them logs a run: cycle runs each GUI once more, offscreen, while
 # the run is Running, scrapes the exporter, and keeps what they show (psdaq.sim.gui_witness), as
 # the witness 'daq_sim coverage' reads.
-GUI_PROCS = ('control_gui', 'groupca', 'partca', 'pvant', 'procstat', 'pvrtmon_0')
+GUI_PROCS = ('control_gui', 'groupca', 'partca', 'pvant', 'procstat', 'pvrtmon_0', 'daqstat')
+# daqstat (mfx.py: daqstat -i 5) shows the Slurm job of each process of a daqmgr config: here simslurm's jobs for the
+# processes of daq_sim.cnf (up starts simslurm, psdaq.sim.simslurm), its Slurm commands answered by simslurm through
+# the shims first on its PATH, never by a Slurm controller; HOME is where daqmgr's Runner makes daq/logs
+DAQSTAT = ''' {{ id:'daqstat', flags:'s', env:'QT_QPA_PLATFORM=offscreen HOME={home} PATH={path}',
+   cmd:'daqstat {args}' }},
+'''
+SLURM_DIR = 'slurm'                     # <workdir>/slurm: simslurm's state, the daqmgr config, shims, logs, HOME
 # --gui with --pvservers (R4): the GUIs whose PVs come from a device stand-in (gui_witness.WITNESS 'server'), each
 # with a PVA client that searches only its stand-in's ports on 127.0.0.1
-SERVER_GUI_PROCS = ('hsdpva', 'tprca', 'dtica')
+SERVER_GUI_PROCS = ('hsdpva', 'tprca', 'dtica', 'pvatable', 'xpmpva')
 SERVER_GUI = ''' {{ id:'{id}', flags:'s', env:'QT_QPA_PLATFORM=offscreen {pvaenv}',
    cmd:'{cmd} {args}' }},
+'''
+# --pvservers: the tree's own PV servers (gui_witness.PROGRAM_SERVERS, RUN rows) under procmgr as lab3-bld.cnf starts
+# them, each serving on PVA ports of its own on 127.0.0.1 (so simxpm stays the only server on the search port)
+PVSERVER_PROCS = ('bldcas', 'hpsdbuscas')
+PVSERVER = ''' {{ id:'{id}', flags:'s', env:'EPICS_PVAS_SERVER_PORT={srv} EPICS_PVAS_BROADCAST_PORT={bcast}',
+   cmd:'{id} {args}' }},
 '''
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
@@ -536,12 +552,21 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
                           **{g: ' '.join(gui_witness.argv(g, params))
                              for g in list(gui_witness.WITNESS) + list(gui_witness.MONITORS)})
+        slurm = os.path.join(workdir, SLURM_DIR)
+        out += DAQSTAT.format(home=os.path.join(slurm, 'home'), args=' '.join(gui_witness.argv('daqstat', params)),
+                              path=os.path.join(slurm, 'bin') + os.pathsep + os.environ.get('PATH', ''))
         for g in (SERVER_GUI_PROCS if pvservers else ()):
             W = gui_witness.WITNESS[g]
             out += SERVER_GUI.format(id=g, cmd=f'python -m {W["module"]}' if W.get('module') else g,
                                      args=' '.join(gui_witness.argv(g, params)),
                                      pvaenv=' '.join(f'{k}={v}' for k, v in gui_witness.pva_env(
-                                         P['pvservers'][W['server']][1]).items()))
+                                         P['pvservers'][W['server']][1]).items())
+                                     if W['server'] in P['pvservers'] else '')    # simxpm: the node's own ports
+    if pvservers:
+        from psdaq.sim import gui_witness
+        for g in PVSERVER_PROCS:
+            out += PVSERVER.format(id=g, srv=P['pvservers'][g][0], bcast=P['pvservers'][g][1], args=' '.join(
+                a.format(**gui_params(platform)) for a in gui_witness.PROGRAM_SERVERS[g]['args']))
     if ami_bin:
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
@@ -550,11 +575,26 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     return out
 
 
+def write_daqmgr_config(cnf, path, platform):
+    """Write the daqmgr config (psdaq/slurm: platform and procmgr_config) of the processes of the procmgr config
+    cnf, as procmgr loads it, for simslurm's jobs and daqstat.  (daqmgr's cnftopy converts a .cnf line by line and
+    breaks on daq_sim.cnf's entries, which span two lines.)"""
+    with open(cnf) as f:
+        ns = coverage.exec_config(cnf, f.read())
+    entries = [{'id': e['id'], 'cmd': e['cmd']} for e in ns['procmgr_config']]
+    with open(path, 'w') as f:
+        f.write(f'# Written by daq_sim up --gui from {cnf}: its processes, for simslurm and daqstat\n'
+                f'platform = {str(platform)!r}\nprocmgr_config = [\n' +
+                ''.join(f' {e!r},\n' for e in entries) + ']\n')
+    return [e['id'] for e in entries]
+
+
 def gui_params(platform, prom=None, cnf=None):
     """The placeholders of psdaq.sim.gui_witness's GUI and monitor argv (as qt_walk's sim_params
     gives them; prom: the work dir's Prometheus dir, cnf: its daq_sim.cnf)."""
     return {'pvbase': PVBASE, 'xpm': XPM, 'platform': platform,
-            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom, 'cnf': cnf}
+            'part': f'{PVBASE}:XPM:{XPM}:PART:{platform}', 'prom': prom, 'cnf': cnf,
+            'workdir': os.path.dirname(cnf) if cnf else None}
 
 
 def udp_busy(port):
@@ -832,6 +872,18 @@ def cmd_up(args):
                                lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
                                segments=''.join(SEGMENT.format(segm=i, **common)
                                                 for i in range(1, segments)) + extra, **common))
+        if gui:                         # daqstat's Slurm: simslurm's jobs for daq_sim.cnf's processes, shims on its PATH
+            from psdaq.sim import simslurm
+            slurm = work.path(SLURM_DIR)
+            os.makedirs(os.path.join(slurm, 'home'), exist_ok=True)
+            simslurm.write_shims(os.path.join(slurm, 'bin'), os.path.join(slurm, 'state.json'), py)
+            write_daqmgr_config(work.path(state['cnf']), os.path.join(slurm, 'daqstat.py'), args.platform)
+            p = start_service(work, state, 'simslurm', [py, '-m', 'psdaq.sim.simslurm', '--state',
+                                                        os.path.join(slurm, 'state.json'), '--cnf',
+                                                        os.path.join(slurm, 'daqstat.py'), '--logdir',
+                                                        os.path.join(slurm, 'logs')], env)
+            _wait_log(state['services']['simslurm']['log'], 'ready', 60, p, 'simslurm')
+            say(f'simslurm pid {p.pid}: a Slurm job for each process of {state["cnf"]}, for daqstat')
         say('procmgr start', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             rc = subprocess.run(procmgr_cmd(state, 'start') + ['-v'], cwd=work.dir, stdout=out,
@@ -1747,12 +1799,53 @@ class GuiWitness:
                 res['thread'] = threading.Thread(target=read, daemon=True)
                 res['thread'].start()
                 print(f'{now()} GUI witness: reading {name}\'s PVs', flush=True)
+        for name in gui_witness.PROGRAM_SERVERS:        # the tree's own PV servers: read in a thread while Running
+            if name in procs(state):
+                res = self.servers[name] = {}
+                port = state['ports']['pvservers'][name][1]
+                try:
+                    prepared = gui_witness.program_server_prepare(name, self.params, port)
+                except Exception as ex:
+                    prepared, res['entry'] = None, {'pass': False, 'problems': [f'{type(ex).__name__}: {ex}']}
+
+                def pread(res=res, name=name, port=port, prepared=prepared):
+                    if prepared is None:
+                        return
+                    try:
+                        res['entry'] = gui_witness.program_server_entry(name, self.params, port, gui_witness.PUMPS + 4,
+                                                                        prepared=prepared)
+                    except Exception as ex:
+                        res['entry'] = {'pass': False, 'problems': [f'{type(ex).__name__}: {ex}']}
+                res['thread'] = threading.Thread(target=pread, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: reading {name}\'s PVs (its own server)', flush=True)
         for name in gui_witness.WITNESS:
             if name in procs(state):
                 server = gui_witness.WITNESS[name].get('server')     # R4: search only the stand-in's ports
-                wenv = dict(env, **gui_witness.pva_env(state['ports']['pvservers'][server][1])) if server else env
+                wenv = dict(env, **gui_witness.pva_env(state['ports']['pvservers'][server][1])) \
+                    if server in state['ports'].get('pvservers', {}) else env
                 self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), wenv)) + [None]
                 print(f'{now()} GUI witness: {name} walking offscreen (pid {self.walks[name][0].pid})', flush=True)
+        self.slurm = None
+        if 'daqstat' in self.walks:     # R5: squeue read from simslurm by this process, apart from daqstat's walk
+            import json as _json
+            st = work.path(SLURM_DIR, 'state.json')
+            try:
+                with open(st) as f:
+                    prefix = _json.load(f).get('prefix')
+            except (OSError, ValueError):
+                prefix = None
+            self.slurm = {'prefix': prefix, 'reads': [], 'stop': threading.Event()}
+
+            def squeue(res=self.slurm, st=st):
+                while not res['stop'].wait(0.5):
+                    try:
+                        res['reads'].append(gui_witness.squeue_read(st))
+                    except Exception as ex:
+                        res.setdefault('errors', []).append(f'{type(ex).__name__}: {ex}')
+            self.slurm['thread'] = threading.Thread(target=squeue, daemon=True)
+            self.slurm['thread'].start()
+            print(f'{now()} GUI witness: reading squeue from simslurm every 0.5 s', flush=True)
         for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
             if m['id'] in procs(state):
                 import glob
@@ -1788,13 +1881,17 @@ class GuiWitness:
         for name, res in list(self.monitors.items()) + list(self.servers.items()):
             res['thread'].join(max(1, end - time.monotonic()))
         time.sleep(1.0)
+        if self.slurm:
+            self.slurm['stop'].set()
+            self.slurm['thread'].join(5)
 
     def check(self, experiment, run):
         import glob
         files = sorted(glob.glob(self.work.path('data', INSTRUMENT, experiment, 'xtc',
                                                 f'{experiment}-r{run:04d}-s*-c*.xtc2'))) if run else []
         prefix = self.params['part']
-        programs = {name: self.gw.entry(name, walk, p.returncode, t0, t1, prefix, self.params)
+        programs = {name: self.gw.entry(name, walk, p.returncode, t0, t1, prefix, self.params,
+                                        slurm=self.slurm if name == 'daqstat' else None)
                     for name, (p, walk, log, t0, t1) in self.walks.items()}
         for name, res in self.monitors.items():
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
@@ -1812,8 +1909,10 @@ class GuiWitness:
             if e.get('stand_in'):
                 rs = [r for r in rs if len(coverage.changed_texts(r['values'])) >= 2][:2]
             return ', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}' for r in rs) or 'none'
-        out = {f'gui witness {n}': f'{len(e["live"])} live PVs' +
-               (f' of {e["stand_in"]}' if e.get('stand_in') else '') + ', e.g. ' + shown(e)
+        out = {f'gui witness {n}': (f'{len(e["live"])} refreshes as squeue said, of {len(e.get("refreshes", []))}; '
+                                    f'{len(e.get("squeue", []))} squeue reads' if e.get('kind') == 'slurm' else
+                                    f'{len(e["live"])} live PVs' + (f' of {e["stand_in"]}' if e.get('stand_in') else '') +
+                                    ', e.g. ' + shown(e))
                for n, e in programs.items()}
         out.update({f'pv server {n}': f'{len(e.get("live", []))} live PVs; ' + ', '.join(
             f'{p} {i["served"]}/{i["defined"]} PVs served' for p, i in e.get('interfaces', {}).items())

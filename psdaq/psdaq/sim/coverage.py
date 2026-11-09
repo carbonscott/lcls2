@@ -856,6 +856,15 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
     if not lo <= start <= end <= hi:
         return (f'{prog} read from {start:.3f} to {end:.3f}, not within the run\'s L1Accepts '
                 f'({lo:.3f} to {hi:.3f}, EPICS-epoch seconds)')
+    if e.get('kind') == 'slurm':                            # R5: a GUI that shows Slurm job states (daqstat)
+        ok, why = slurm_matched(e, lo, hi)
+        if len(ok) < 2:
+            return (f'shows {prog} refreshed {len(ok)} time(s) during the run with what an independent squeue read '
+                    f'gave (2 or more needed)' + (f': {why}' if why else ''))
+        missing = sorted(set(run_ids) - {r[0] for f in ok for r in f['rows']})
+        if missing:
+            return f'shows {prog} listed no job of {", ".join(missing)} (processes whose logs name the run)'
+        return None
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -897,11 +906,67 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
                     f'e.g. {", ".join(map(str, missing[:3]))}')
     if not (isinstance(prefix, str) and prefix):
         return 'gives no partition prefix' if section != 'servers' else f'its {prog} entry gives no prefix'
+    if section == 'servers' and prog == row_prog:          # R3b: the program serves its PVs itself
+        served = sorted({p for (name, args), _ in logs if name == prog for p in pv_prefixes(args)})
+        if not any(prefix == p or prefix.startswith(p + ':') for p in served):
+            return (f'its {prog} entry reads under {prefix}, which no listed log of {prog} serves '
+                    f'(its -P: {", ".join(served) or "none"})')
     live = [r for r in e.get('reads') or [] if isinstance(r, dict) and str(r.get('name', '')).startswith(prefix)
             and isinstance(r.get('values'), list) and len(numbers(r['values'])) >= 2]
     if not live:
         return f'shows {prog} read no live value under {prefix} (2 or more distinct numbers of one name)'
     return None
+
+
+SLURM_SKEW = 1.5                        # s: R5, a refresh matches the squeue read nearest it if this close
+
+
+def slurm_matched(e, lo=None, hi=None):
+    """R5: (the refreshes of a 'slurm' entry, within [lo, hi] (EPICS-epoch seconds) if given, whose table shows for
+    every row the state the squeue read nearest in time (within SLURM_SKEW) gave the job of that process (comment
+    <comment_prefix>_<ID>; COMPLETED when squeue lists none, as daqstat shows a job that ended), with one job
+    squeue listed at least; why the first other refresh does not count, or None)."""
+    prefix = e.get('comment_prefix')
+    if not (isinstance(prefix, str) and prefix):
+        return [], 'it gives no job comment prefix'
+    reads = [r for r in e.get('squeue') or [] if isinstance(r, dict) and isinstance(r.get('t'), (int, float))
+             and isinstance(r.get('jobs'), dict)]
+    if not reads:
+        return [], 'it lists no squeue read'
+    ok, why, seen = [], None, set()
+    for f in e.get('refreshes') or []:
+        if not (isinstance(f, dict) and isinstance(f.get('t'), (int, float)) and isinstance(f.get('rows'), list)):
+            continue
+        t = f['t']
+        if lo is not None and not lo <= t <= hi:
+            why = why or f'the refresh at {t:.3f} is not within the run\'s L1Accepts'
+            continue
+        rows = [r for r in f['rows'] if isinstance(r, list) and len(r) == 2]
+        near = min(reads, key=lambda r: abs(r['t'] - t))
+        want = {str(i): near['jobs'].get(f'{prefix}_{i}', 'COMPLETED') for i, _ in rows}
+        bad = [(i, st) for i, st in rows if st != want[str(i)]]
+        if abs(near['t'] - t) > SLURM_SKEW:
+            why = why or f'no squeue read within {SLURM_SKEW} s of the refresh at {t:.3f}'
+        elif bad:
+            why = why or f'the refresh at {t:.3f} shows {bad[0][0]} {bad[0][1]}, squeue said {want[str(bad[0][0])]}'
+        elif not any(f'{prefix}_{i}' in near['jobs'] for i, _ in rows):
+            why = why or f'the refresh at {t:.3f} shows no job squeue listed'
+        elif t not in seen:
+            seen.add(t)
+            ok.append(f)
+    return ok, why
+
+
+def witness_section(entry, prog, w):
+    """The gui_witness section that proves prog: 'servers' for a STAND-IN row (R3), and for a RUN row whose
+    program is a PV server of the tree's own (R3b: a 'servers' entry keyed by the program and marked
+    "program": true, and no 'programs' entry; it then needs the program's own interface served, under a prefix
+    its own log's -P serves); 'programs' otherwise."""
+    if entry.get('status') == 'STAND-IN':
+        return 'servers'
+    e = (w.get('servers') or {}).get(prog)
+    own = isinstance(e, dict) and e.get('program') is True and prog not in (w.get('programs') or {})
+    return 'servers' if own else 'programs'
 
 
 def changed_texts(values):
@@ -1046,9 +1111,9 @@ def row_problem(rid, entry, rec, cache=None):
         return None
     else:
         kind = 'gui_witness'
-        section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs)
+        why = [live_witness_problem(prog, w, run_id, mine, runs, witness_section(entry, prog, w), run_ids,
+                                    rid.split(':', 1)[1], logs)
                for w in witnesses if w['witness'] == kind]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '

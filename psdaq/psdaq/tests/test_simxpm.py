@@ -249,3 +249,23 @@ def test_ts_config_pvs_and_link_ready():
     finally:
         sim.stop.set()
         t.join(2)
+
+
+def test_pattern_stats_and_xpmpva_start_pvs():
+    """PATT:GROUPS: Sum, the low 20 bits of the first and last L0Accept's pulse IDs of the second, the least and most
+    pulse IDs between two, all ones for a group with none; and the PVs xpmpva reads at start (PAddr, Us:RxAlign,
+    SFPSTATUS) are served."""
+    sim = SimXpm('SIMTEST', 3, f'tcp://127.0.0.1:{_free_port()}', rate=100.)
+    try:
+        sim.patt = {5: [0x1234567, 0x1240000, 9285, 9290]}
+        sim.num_l0acc[5], sim._last_acc = 100, [0] * 8          # run() starts _last_acc
+        sim._post_patt()
+        rows = sim.pvs['SIMTEST:XPM:3:PATT:GROUPS'][0].current().todict()['value']
+        assert (rows['Sum'][5], rows['First'][5], rows['Last'][5], rows['MinIntv'][5], rows['MaxIntv'][5]) == \
+            (100, 0x34567, 0x40000, 9285, 9290)
+        assert (rows['First'][0], rows['MinIntv'][0], rows['MaxIntv'][0]) == ((1 << 20) - 1, (1 << 20) - 1, 0)
+        assert sim.patt == {}
+        for name in ('PAddr', 'Us:RxAlign', 'Cu:RxAlign', 'SFPSTATUS'):
+            assert f'SIMTEST:XPM:3:{name}' in sim.pvs, name
+    finally:
+        sim.stop.set()

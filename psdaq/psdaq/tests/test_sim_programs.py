@@ -36,7 +36,8 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
             'prog:control_gui', 'prog:groupca', 'prog:partca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
             'prog:drp_udpencoder',
-            'prog:sim_udpencoder', 'prog:hsdpva', 'prog:tprca', 'prog:dtica']
+            'prog:sim_udpencoder', 'prog:hsdpva', 'prog:tprca', 'prog:dtica', 'prog:pvatable', 'prog:xpmpva',
+            'prog:bldcas', 'prog:hpsdbuscas', 'prog:daqstat']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
     assert [r for r in want if r not in enumerated] == []
@@ -310,15 +311,27 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     assert all(f"id:'{g}'" not in extra for g in daq_sim.SERVER_GUI_PROCS)
     # R4: with --pvservers, each GUI on a stand-in searches only that stand-in's PVA ports
     both = daq_sim.extra_entries(str(tmp_path), 5, gui=True, pvservers=True)
-    assert tuple(gui_witness.witnessed(True, True)[-3:]) == daq_sim.SERVER_GUI_PROCS
+    assert tuple(n for n in gui_witness.witnessed(True, True) if n not in gui_witness.witnessed()) == \
+        daq_sim.SERVER_GUI_PROCS
     assert daq_sim.SERVER_GUI_PROCS == tuple(n for n, w in gui_witness.WITNESS.items() if w.get('server'))
     for name in daq_sim.SERVER_GUI_PROCS:
         W = gui_witness.WITNESS[name]
         cmd = f'python -m {W["module"]}' if W.get('module') else name
-        port = daq_sim.ports(5)['pvservers'][W['server']][1]
         entry = [e for e in both.split('},') if f"id:'{name}'" in e][0]
         assert f"cmd:'{cmd} {' '.join(gui_witness.argv(name, params))}'" in entry, name
+        if W['server'] == 'simxpm':     # xpmpva: simxpm serves on the node's own PVA ports
+            assert 'EPICS_PVA' not in entry and W['prefix'].format(**params) == 'DAQ:SIM:XPM:0', entry
+            continue
+        port = daq_sim.ports(5)['pvservers'][W['server']][1]
         assert f'EPICS_PVA_BROADCAST_PORT={port}' in entry and 'EPICS_PVA_AUTO_ADDR_LIST=NO' in entry, entry
+    # the tree's own PV servers, each on its own PVA ports, as lab3-bld.cnf starts them
+    for name in daq_sim.PVSERVER_PROCS:
+        srv, bcast = daq_sim.ports(5)['pvservers'][name]
+        entry = [e for e in both.split('},') if f"id:'{name}'" in e][0]
+        assert f'EPICS_PVAS_SERVER_PORT={srv} EPICS_PVAS_BROADCAST_PORT={bcast}' in entry, entry
+    assert "cmd:'bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX'" in both and "cmd:'hpsdbuscas -P DAQ:SIM:HPSCPA'" in both
+    assert all(f"id:'{g}'" not in daq_sim.extra_entries(str(tmp_path), 5, gui=True) for g in daq_sim.PVSERVER_PROCS)
+    assert set(daq_sim.PVSERVER_PROCS) <= set(daq_sim.procs({'pvservers': True}))
     assert "cmd:'python -m psdaq.cas.dtica DAQ:SIM:DTI'" in both and "cmd:'hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B'" in both
 
 
@@ -395,7 +408,7 @@ def test_r4_entry_reads_the_stand_ins_pvs_widget_by_widget(tmp_path):
     assert gui_witness.reads(walk)[0]['values'] == ['7', '0', '12kHz', '15kHz']   # R2's merge, which R4 does not use
     assert gui_witness.pva_env(31301) == {'EPICS_PVA_ADDR_LIST': '127.0.0.1', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
                                           'EPICS_PVA_BROADCAST_PORT': '31301'}
-    assert set(gui_witness.SERVER_GUI_BLOCKERS) == {'pvatable', 'deadca', 'daqstat', 'xpmpva'}
+    assert set(gui_witness.SERVER_GUI_BLOCKERS) == {'deadca'}
 
 
 def test_stand_in_interfaces_come_from_the_programs_own_source():
@@ -407,6 +420,69 @@ def test_stand_in_interfaces_come_from_the_programs_own_source():
     assert 'X:HSD:A:MONTIMING' in hsd and 'X:HSD:B:CONFIG' in hsd and len(hsd) == 2 * len([n for n in hsd if n.startswith('X:HSD:A:')])
     tpr = gui_witness.interface('tprcas', ['-P', 'X:TPR'])
     assert 'X:TPR:EVTCNT' in tpr and 'X:TPR:CH0:DELAY' in tpr and all(n.startswith('X:TPR:') for n in tpr)
+
+
+def test_hsd134pvs_interface_comes_from_its_cpp_sources():
+    """hsd134PVs's names: read from the sources meson builds it from, for its 2 chips (PVCtrlsBase's 1-chip case,
+    <P>:CONFIG and <P>:READY, is not taken), and simhsd on the chips' prefixes stands in under their parent."""
+    from psdaq.sim import gui_witness
+    names = gui_witness.hsd134pvs_names('P', repo=REPO)
+    assert len(names) == 44 and len([n for n in names if n.startswith('P:A:')]) == 22
+    assert {'P:A:MONTIMING', 'P:B:FEXOOR', 'P:A:PADDR_U', 'P:B:KEEPROWS', 'P:A:PGPCONFIG', 'P:B:READY'} <= set(names)
+    assert 'P:CONFIG' not in names and 'P:READY' not in names
+    assert gui_witness.interface('hsd134PVs', ['-P', 'P:A', 'P:B']) == names
+    served = gui_witness.interface('hsdpvs', ['-P', 'P:A', 'P:B'])
+    assert set(names) <= set(served)        # simhsd (hsdpvs's ChipServer per chip) serves every one
+
+
+def test_program_servers_interfaces_come_from_their_own_source():
+    """bldcas's names from the table its main() builds (2 per service), hpsdbuscas's from its PVAServer."""
+    from psdaq.sim import gui_witness
+    assert gui_witness.interface('bldcas', ['-P', 'X', '-A', '239.254.32.1', 'HPSEX', 'HPSCPA']) == \
+        ['X:HPSCPA:ADDR', 'X:HPSCPA:PORT', 'X:HPSEX:ADDR', 'X:HPSEX:PORT']
+    assert gui_witness.interface('hpsdbuscas', ['-P', 'X:CP']) == \
+        ['X:CP:HPS:FIELDMASK', 'X:CP:HPS:FIELDNAMES', 'X:CP:HPS:FIELDTYPES', 'X:CP:PAYLOAD']
+
+
+def test_program_server_entry_puts_and_reads_back():
+    """A program server's entry: its own interface, and the put PV read back after each put (2 numbers, the
+    PAYLOAD type ID with them); one that ignores the puts, or does not serve a name, fails."""
+    from psdaq.sim import gui_witness
+
+    class Ctx:
+        def __init__(self, missing=(), ignore=False):
+            self.v, self.missing, self.ignore, self.puts = 0x8000, set(missing), ignore, []
+
+        def get(self, names, timeout=None, throw=True):
+            if isinstance(names, list):
+                return [TimeoutError() if n in self.missing else 1 for n in names]
+            if names.endswith('PAYLOAD'):
+                class V:
+                    def getID(s):
+                        return str(self.v)
+                return V()
+            return self.v
+
+        def put(self, name, value, timeout=None):
+            self.puts.append((name, value))
+            if not self.ignore:
+                self.v = value
+    params = {'pvbase': 'X'}
+    args = ['-P', 'X:HPSCPA']
+    names = gui_witness.interface('hpsdbuscas', args)
+    ctx = Ctx()
+    e = gui_witness.program_server_entry('hpsdbuscas', params, 0, 0.05, period=0.02, prepared=(args, {'hpsdbuscas': names}, ctx))
+    assert e['pass'] and e['program'] is True and e['prefix'] == 'X:HPSCPA', e
+    assert e['interfaces']['hpsdbuscas'] == {'defined': 4, 'served': 4, 'missing': []}
+    assert ctx.puts == [('X:HPSCPA:HPS:FIELDMASK', 0x8001), ('X:HPSCPA:HPS:FIELDMASK', 0x8000)]
+    assert e['reads'] == [{'name': 'X:HPSCPA:HPS:FIELDMASK', 'values': ['32768', '32769', '32768']}]
+    assert e['live'] == ['X:HPSCPA:HPS:FIELDMASK'] and e['type_ids'][:2] == ['32768', '32769']
+    e = gui_witness.program_server_entry('hpsdbuscas', params, 0, 0.05, period=0.02,
+                                         prepared=(args, {'hpsdbuscas': names}, Ctx(ignore=True)))
+    assert not e['pass'] and e['live'] == [] and 'did not read back 2 or more distinct numbers' in e['problems'][0]
+    e = gui_witness.program_server_entry('hpsdbuscas', params, 0, 0.05, period=0.02,
+                                         prepared=(args, {'hpsdbuscas': names}, Ctx(missing=['X:HPSCPA:PAYLOAD'])))
+    assert not e['pass'] and e['interfaces']['hpsdbuscas']['missing'] == ['X:HPSCPA:PAYLOAD']
 
 
 def test_server_entry_reads_the_interface_and_live_pvs():
@@ -432,3 +508,68 @@ def test_server_entry_reads_the_interface_and_live_pvs():
     e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02,
                                  prepared=(args, {'tprcas': names}, Ctx(missing=['X:TPR:CH3:RATE'])))
     assert not e['pass'] and e['interfaces']['tprcas']['missing'] == ['X:TPR:CH3:RATE']
+
+
+def test_simslurm_shims_answer_from_the_state_file(tmp_path):
+    """R5: daqstat's procmgr instance finds the Slurm commands first on its PATH in <workdir>/slurm/bin, each
+    answered by simslurm from the state file, never by a Slurm controller."""
+    import subprocess
+    import sys
+    from psdaq.sim import simslurm
+    state = str(tmp_path / 'state.json')
+    with simslurm.locked(state) as st:
+        st['jobs'] = [{'job_id': 9100001, 'job_name': 'control', 'comment': 'x0_p5_s0_control', 'nodelist': 'localhost',
+                       'state': 'RUNNING', 'since': 0, 'logfile': ''}]
+    shims = simslurm.write_shims(str(tmp_path / 'bin'), state, sys.executable)
+    assert sorted(os.path.basename(p) for p in shims) == sorted(simslurm.SHIMS)
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    r = subprocess.run([str(tmp_path / 'bin' / 'squeue'), '-u', 'x', '-h', '-o', '%k|%T'], capture_output=True,
+                       text=True, env=env, timeout=60)
+    assert r.returncode == 0 and r.stdout == 'x0_p5_s0_control|RUNNING\n', r
+    assert gui_witness_squeue(state)['jobs'] == {'x0_p5_s0_control': 'RUNNING'}
+    r = subprocess.run([str(tmp_path / 'bin' / 'srun')] if os.path.exists(tmp_path / 'bin' / 'srun') else
+                       [sys.executable, '-m', 'psdaq.sim.simslurm', 'cmd', state, 'srun', 'x'], capture_output=True,
+                       text=True, env=env, timeout=60)
+    assert r.returncode == 127                       # anything but daqmgr's Slurm commands is refused
+
+
+def gui_witness_squeue(state):
+    from psdaq.sim import gui_witness
+    return gui_witness.squeue_read(state, user='x')
+
+
+def test_daqstat_witness_entry_matches_refreshes_to_squeue(tmp_path):
+    """R5: the walk's recorded refreshes (first table: ID, Status) become the entry's 'refreshes', the cycle's squeue
+    reads its 'squeue'; it passes with 2 refreshes that showed what squeue said."""
+    from psdaq.sim import gui_witness
+    params = daq_sim.gui_params(5, '/p', str(tmp_path / 'daq_sim.cnf'))
+    assert gui_witness.argv('daqstat', params) == ['-i', '1', f'{tmp_path}/slurm/daqstat.py']
+    E = gui_witness.EPICS_EPOCH
+    cells = [['control', 'RUNNING'], ['teb0', 'RUNNING']]
+    walk = {'argv': gui_witness.argv('daqstat', params), 'instances': [],
+            'refreshes': [{'t': E + 10.0, 'tables': [cells]}, {'t': E + 11.0, 'tables': [cells]}]}
+    path = tmp_path / 'daqstat.walk.json'
+    path.write_text(json.dumps(walk))
+    jobs = {'x0_p5_s0_control': 'RUNNING', 'x0_p5_s0_teb0': 'RUNNING'}
+    slurm = {'prefix': 'x0_p5_s0', 'reads': [{'t': 10.2, 'jobs': jobs}, {'t': 11.2, 'jobs': jobs}]}
+    e = gui_witness.entry('daqstat', str(path), 0, E + 9, E + 12, params['part'], params, slurm=slurm)
+    assert e['pass'] and e['kind'] == 'slurm' and len(e['live']) == 2, e
+    assert e['refreshes'][0] == {'t': 10.0, 'rows': cells}
+    slurm['reads'] = [{'t': 10.2, 'jobs': dict(jobs, x0_p5_s0_teb0='PENDING')}, {'t': 11.2, 'jobs': jobs}]
+    e = gui_witness.entry('daqstat', str(path), 0, E + 9, E + 12, params['part'], params, slurm=slurm)
+    assert not e['pass'] and 'shows teb0 RUNNING, squeue said PENDING' in e['problems'][0]
+    spec = gui_witness.spec('daqstat', params)['walk']
+    assert spec['slurm_state'] == '{workdir}/slurm/state.json' and spec['refresh_calls']
+
+
+def test_daqmgr_config_of_the_daq_sim_cnf_loads_in_daqmgr(tmp_path, monkeypatch):
+    """R5: up --gui writes daqmgr's config of daq_sim.cnf's processes (cnftopy breaks on its two-line entries), and
+    daqmgr's Runner loads it: the job comments daqstat looks for are x0_p5_s0_<id>."""
+    extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
+    cnf = write_cnf(str(tmp_path / 'daq_sim.cnf'), extra)
+    ids = daq_sim.write_daqmgr_config(cnf, str(tmp_path / 'daqstat.py'), 5)
+    assert ids[:3] == ['control', 'teb0', 'fakecam_0'] and 'daqstat' in ids and 'procstat' in ids
+    monkeypatch.setenv('USER', 'x')
+    from psdaq.slurm.main import Runner
+    r = Runner(str(tmp_path / 'daqstat.py'), output=str(tmp_path / 'logs'))
+    assert list(r.config) == ids and r.sbman.get_comment('control') == 'x0_p5_s0_control'
