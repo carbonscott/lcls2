@@ -22,14 +22,17 @@ Hosts.  ProcMgr(cnf, platform) telnets, in its constructor, to the procServ cont
 the machine's name (a network address, not loopback).  So:
   - at startup (server.configure -> require_loopback_cnf) the server reads the .cnf with ProcMgr in a dry run that
     opens no connection, and exits 2 if any process names a host other than localhost, 127.0.0.1 or ::1
-    (or no host);
+    (or no host), or if the .cnf sets procmgr_macro['HOST'] (where ProcMgr opens a 'localhost' process) to a
+    name that is neither loopback nor this machine's name;
   - every ProcMgr the server makes is a LoopbackProcMgr: its procServ connections go to 127.0.0.1 (::1 for
-    ::1), the HOST macro included, and any other host is refused without a socket (NO CONNECT);
+    ::1), the HOST macro included when it is this machine's name, and any other host is refused without a
+    socket (NO CONNECT);
   - the console reads 127.0.0.1:<ctrl port>, and restart reaches only 127.0.0.1 and ::1.
 """
 
 import logging
 import os
+import platform as _platform
 import socket
 import threading
 import time
@@ -41,6 +44,17 @@ STATUS_TEXT = {'NOCONNECT': (' NO CONNECT', (0, 0, 192)), 'RUNNING': ('RUNNING',
                'SHUTDOWN': (' SHUTDOWN', (192, 192, 0)), 'ERROR': (' ERROR', (255, 0, 0))}   # procstat:162-175
 LOOPBACK = ('localhost', '127.0.0.1', '::1')
 _PM_CLASS = []
+
+
+def this_host_names():
+    """The names of this machine ProcMgr may use for its HOST macro (ProcMgr.getUser: platform.node()), and the
+    socket module's name for it."""
+    return {n for n in (_platform.node(), socket.gethostname()) if n}
+
+
+def host_macro_ok(host):
+    """A HOST macro the web procstat accepts: none, a loopback name, or this machine's name."""
+    return host is None or host in LOOPBACK or host in this_host_names()
 
 
 def loopback_procmgr_class():
@@ -67,18 +81,22 @@ def loopback_procmgr_class():
             if pm.dry:
                 pm.seen.append((getattr(pm, 'uniqueid', '?'), getattr(pm, 'host', host)))
                 raise ConnectionRefusedError('dry run: %s port %s not contacted' % (host, port))
+            macro_host = pm.procmgr_macro.get('HOST')
             if host == '::1':
                 to = '::1'
-            elif host in LOOPBACK or host == pm.procmgr_macro.get('HOST'):
+            elif host in LOOPBACK or (host == macro_host and host_macro_ok(macro_host)):
                 to = '127.0.0.1'
             else:
                 raise ConnectionRefusedError('host %s is not loopback: not contacted' % host)
             return super().open(to, port, *args, **kw)
 
     class LoopbackProcMgr(ProcMgr):
-        def __init__(self, configfilename, platform, dry=False, seen=None):
+        def __init__(self, configfilename, platform, dry=False, seen=None, procmgr_macro=None):
             self.dry, self.seen = dry, ([] if seen is None else seen)
-            super().__init__(configfilename, platform)
+            if procmgr_macro is None:
+                super().__init__(configfilename, platform)
+            else:                       # a dict of the caller's, which the .cnf's procmgr_macro[...] = ... fills
+                super().__init__(configfilename, platform, procmgr_macro=procmgr_macro)
 
         @property
         def telnet(self):
@@ -94,23 +112,28 @@ def loopback_procmgr_class():
 
 def require_loopback_cnf(cnf, platform=-1):
     """Startup check (server.configure): raise NonLoopbackError if a process of cnf names a host that is not
-    loopback.  The .cnf is read by LoopbackProcMgr in a dry run (no connection); a .cnf that ProcMgr cannot read
+    loopback, or if the .cnf sets procmgr_macro['HOST'] (the host ProcMgr opens for a 'localhost' process and
+    shows) to a name that is neither loopback nor this machine's name.  The .cnf is read by LoopbackProcMgr in a
+    dry run (no connection) with a macro dict of its own, read back after the run; a .cnf that ProcMgr cannot read
     is checked up to the error and then left to the poll, which shows ProcMgr's error as procstat does.
     Returns [(id, host)] of the processes read."""
     from psdaq.procmgr.ProcMgr import deduce_platform
     from psdaq.webgui.netguard import NonLoopbackError
-    cnf, seen = os.path.abspath(cnf), []
+    cnf, seen, macro = os.path.abspath(cnf), [], {}
     try:
         if platform is None or platform < 0:
             platform = deduce_platform(cnf)
-        loopback_procmgr_class()(cnf, platform, dry=True, seen=seen)
+        loopback_procmgr_class()(cnf, platform, dry=True, seen=seen, procmgr_macro=macro)
     except Exception:
         pass
-    bad = [(i, h) for i, h in seen if h not in LOOPBACK]
+    bad = ['process %r names host %r' % b for b in seen if b[1] not in LOOPBACK]
+    if not host_macro_ok(macro.get('HOST')):
+        bad.append("procmgr_macro['HOST'] is %r, neither loopback nor this machine's name (%s)" % (
+            macro.get('HOST'), ', '.join(sorted(this_host_names()))))
     if bad:
         raise NonLoopbackError('--procstat-cnf %s: %s; refusing (the web procstat contacts procServ only on this '
-                               'host: a process\'s host must be localhost, 127.0.0.1, ::1 or none)'
-                               % (cnf, ', '.join('process %r names host %r' % b for b in bad)))
+                               'host: a process\'s host must be localhost, 127.0.0.1, ::1 or none, and the HOST macro '
+                               'this machine\'s name)' % (cnf, ', '.join(bad)))
     return seen
 
 
