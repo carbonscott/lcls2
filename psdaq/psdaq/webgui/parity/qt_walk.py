@@ -1140,7 +1140,8 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
         state_path = str(W['slurm_state']).format(**params)
         _slurm_utils.subprocess = simslurm.SubprocessStandIn(state_path)
         OUT['notes'].append('Slurm commands answered by simslurm from %s' % state_path)
-    OUT['refreshes'] = []
+    if W.get('refresh_calls'):
+        OUT['refreshes'] = []
     for spec_call in W.get('refresh_calls', []):       # 'module:Class.method'
         modname, qual = spec_call.split(':', 1)
         obj = importlib.import_module(modname)
@@ -1185,7 +1186,8 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     def holders():
         """id(widget) -> the PV name of a non-widget object that holds the widget in its 'fields' or 'widgets' list
         and has a pv: pvatable's PvBase (the PvField labels it calls back) and PvDblArray / PvIntArray (pvedit.py,
-        deadca.py, xpmpva.py: the labels they set), whose widgets hold no PV themselves."""
+        deadca.py, xpmpva.py: the labels they set), whose widgets hold no PV themselves.  Only with the walk's
+        'bind_holders' (the coverage witness's walks): a parity row's id does not change with it."""
         import gc
         out = {}
         for o in gc.get_objects():
@@ -1252,11 +1254,12 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
 
     def collect():
         OUT['instances'] = []
-        try:
-            HELD.clear()
-            HELD.update(holders())
-        except Exception as ex:
-            OUT['notes'].append('collect: holders: %s' % ex)
+        if W.get('bind_holders'):      # psdaq.sim.gui_witness's walks only: the parity rows stay as they were
+            try:
+                HELD.clear()
+                HELD.update(holders())
+            except Exception as ex:
+                OUT['notes'].append('collect: holders: %s' % ex)
         for x in list(LIVE):
             try:
                 if sip.isdeleted(x):

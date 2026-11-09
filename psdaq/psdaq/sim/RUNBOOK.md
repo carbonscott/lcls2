@@ -446,9 +446,10 @@ A record proves a row only if all of these hold, and the row's line names the fi
     which is the `-P` of the stand-in's own log, listed by the same record
     (`its hsdpva entry reads the PVs of simhsd, but the record lists no log of simhsd`, `shows
     hsdpva read no live value of a PV simhsd serves (under ...)`). The partition prefix plays no
-    part. The walk names a widget's PV by a `pv` on it or its parents, or by the object that holds
-    the widget in its `fields` or `widgets` list and has a `pv` (pvatable's `PvBase`, which calls
-    its `PvField` labels back; `PvDblArray`, which sets its labels). Not witnessed yet, so
+    part. The walk names a widget's PV by a `pv` on it or its parents, or (the witness's walks
+    only, `bind_holders`: the parity check's rows stay as they were) by the object that holds the
+    widget in its `fields` or `widgets` list and has a `pv` (pvatable's `PvBase`, which calls its
+    `PvField` labels back; `PvDblArray`, which sets its labels). Not witnessed yet, so
     UNPROVEN: deadca (its only values are the partition's `DeadFLnk` per link, and simxpm posts
     them only when a link is dead, so a healthy run shows 0 throughout:
     `gui_witness.SERVER_GUI_BLOCKERS`).

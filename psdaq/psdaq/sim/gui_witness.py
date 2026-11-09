@@ -154,7 +154,7 @@ def spec(name, params):
     """The qt_walk --gui spec of a passive walk of GUI `name`."""
     W = WITNESS[name]
     return {'file': W['file'], 'web': None, 'backend': 'sim-daq',
-            'walk': dict({'argv': W['argv'], 'pump': 3, 'timeout': 60,
+            'walk': dict({'argv': W['argv'], 'pump': 3, 'timeout': 60, 'bind_holders': True,
                           'drive': ['pump:1'] * PUMPS, 'record_calls': W.get('record_calls', [])},
                          **{k: W[k] for k in ('slurm_state', 'refresh_calls') if k in W})}
 

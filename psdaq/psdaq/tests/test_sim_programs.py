@@ -560,6 +560,7 @@ def test_daqstat_witness_entry_matches_refreshes_to_squeue(tmp_path):
     assert not e['pass'] and 'shows teb0 RUNNING, squeue said PENDING' in e['problems'][0]
     spec = gui_witness.spec('daqstat', params)['walk']
     assert spec['slurm_state'] == '{workdir}/slurm/state.json' and spec['refresh_calls']
+    assert spec['bind_holders'] is True         # the witness walk names labels by their PV's holder; parity's does not
 
 
 def test_daqmgr_config_of_the_daq_sim_cnf_loads_in_daqmgr(tmp_path, monkeypatch):
