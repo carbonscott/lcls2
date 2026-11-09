@@ -12,6 +12,17 @@ one of its readout groups, and only when all of them have credit, so none is dro
 DRPs of a group see the same pulses.  A DRP that stops returning credit causes deadtime, as
 it would with a real XPM.
 
+Deadtime per link.  A real XPM holds back a readout group's L0s while one of its links asserts full
+(the DRP's TriggerEventBuffer is past its PauseThreshold) and reports, for each link, the share of
+the last second it did so (pyxpm pvstats.py GroupStats: DeadFLnk, from the firmware's inhibit-time
+counters), which deadca shows.  simxpm's link is full while its DRP has no credit, so a healthy run
+shows 0.  SIM:LinkFull (one share per link, 0 by default; a sim-only PV) makes link n also assert
+full for that share of every FULL_PERIOD seconds from the put, as a DRP whose readout stalls
+periodically would: its group's L0s are held back meanwhile (counted in NumL0Inp, not NumL0Acc, so
+DeadFrac rises and fewer L1Accepts are recorded) and DeadFLnk[n] is the share of the second's L0s
+it held.  FULL_PERIOD is not a whole second, so each second's share differs.  Transitions are not
+held back, as on a real XPM.
+
 control.py started with '-X <host>' sends the frame-producing writes (MsgHeader, GroupMsgInsert,
 GroupL0Enable/Disable, GroupL0Reset, StepEnd, StepGroups) as JSON over a ZMQ PUSH socket instead
 of PVA, to the PULL socket that pyxpm binds at xpm_pull_port(<pvbase>:XPM:<n>)
@@ -72,6 +83,7 @@ from p4p.server.thread import SharedPV
 POSIX_TIME_AT_EPICS_EPOCH = 631152000
 NUM_GROUPS = 8
 NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
+FULL_PERIOD = 1.3                       # s: the period of a SIM:LinkFull share (module doc)
 NUM_COINC = NUM_GROUPS * (NUM_GROUPS + 1) // 2      # PATT:COINC entries (pyxpm pvstats NCOINC)
 PATT_STATS = ('Sum', 'First', 'Last', 'MinIntv', 'MaxIntv')     # PATT:GROUPS columns (pyxpm pvstats pattStats)
 NUM_PORTS = 14                          # Front-panel links with per-link PVs, as ts_connect.py uses
@@ -319,6 +331,8 @@ class SimXpm:
         self.frames_sent = 0
         self.coinc = {}                 # readout-group mask of an L0Accept tick -> ticks since the last stats
         self.patt = {}                  # group -> [first, last, min, max interval] pulse IDs since the last stats
+        self.link_full = [0.] * NUM_LINKS   # SIM:LinkFull: share of every FULL_PERIOD link n asserts full
+        self.full_t0 = time.monotonic()     # when SIM:LinkFull was last put
 
         self.provider = StaticProvider('simxpm')
         self.pvs = {}
@@ -353,6 +367,7 @@ class SimXpm:
         self._add(f'{X}:SIM:L1Rate', 'd', self.rate, _Put(self, 'rate'))
         self._add(f'{X}:SIM:NumLinks', 'I', 0)
         self._add(f'{X}:SIM:LinkL1Acc', 's', '{}')
+        self._add(f'{X}:SIM:LinkFull', 'ad', [0.] * NUM_LINKS, _Put(self, 'linkfull'))
         # Stand-ins for the pyxpm PVs the XPM GUIs read (groupca: xpmTree, XpmDeadTime): stored values only.
         # RemoteLinkId stays 0 (no remote id, so groupca never resolves a host name); LinkGroupMask<n> is
         # 1 << group while the DRP of link n is in a readout group (pyxpm pvctrls LinkGroupMask).
@@ -530,7 +545,7 @@ class SimXpm:
             if rog & (1 << g):
                 self.num_l0inp[g] += 1
         targets = self._targets(rog)
-        blocked = [l for l in targets if l.credit == 0]
+        blocked = [l for l in targets if l.credit == 0 or self._full(l)]
         if self.pending or blocked:
             for l in blocked:
                 l.blocked += 1
@@ -561,6 +576,11 @@ class SimXpm:
                 self._post(f'{self.prefix}:PART:{g}:StepDone', 1)
                 self._post_counts()
                 logging.info('step done for group %d at %d L1Accepts', g, self.num_l0acc[g])
+
+    def _full(self, link):
+        """True while SIM:LinkFull has link assert full (module doc)."""
+        share = self.link_full[link.number] if link.number < NUM_LINKS else 0.
+        return share > 0. and (time.monotonic() - self.full_t0) % FULL_PERIOD < share * FULL_PERIOD
 
     def link_counts(self):
         """{alias: {link, group, l1acc}}: the L1Accepts each DRP was sent (SIM:LinkL1Acc)."""
@@ -608,6 +628,11 @@ class SimXpm:
             self._post(f'{self.prefix}:PART:{arg}:StepDone', 0)
         elif command == 'rate':
             self.rate = float(value)
+        elif command == 'linkfull':
+            full = [min(1., max(0., float(v))) for v in list(value)[:NUM_LINKS]]
+            self.link_full = full + [0.] * (NUM_LINKS - len(full))
+            self.full_t0 = time.monotonic()
+            logging.info('SIM:LinkFull: %s', {n: d for n, d in enumerate(self.link_full) if d} or 'none')
         elif command in ('l0select', 'fixedrate'):
             (self.l0select if command == 'l0select' else self.fixed_rate)[arg] = int(value)
             if self.fixed_rates:

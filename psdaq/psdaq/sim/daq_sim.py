@@ -465,7 +465,7 @@ DAQSTAT = ''' {{ id:'daqstat', flags:'s', env:'QT_QPA_PLATFORM=offscreen HOME={h
 SLURM_DIR = 'slurm'                     # <workdir>/slurm: simslurm's state, the daqmgr config, shims, logs, HOME
 # --gui with --pvservers (R4): the GUIs whose PVs come from a device stand-in (gui_witness.WITNESS 'server'), each
 # with a PVA client that searches only its stand-in's ports on 127.0.0.1
-SERVER_GUI_PROCS = ('hsdpva', 'tprca', 'dtica', 'pvatable', 'xpmpva')
+SERVER_GUI_PROCS = ('hsdpva', 'tprca', 'dtica', 'pvatable', 'xpmpva', 'deadca')
 SERVER_GUI = ''' {{ id:'{id}', flags:'s', env:'QT_QPA_PLATFORM=offscreen {pvaenv}',
    cmd:'{cmd} {args}' }},
 '''
@@ -1012,6 +1012,26 @@ def parse_fixed_rates(items):
             raise Fail(f'--fixed-rate {item}: group 0..7, index 0..6')
         out[g] = index
     return out
+
+
+EPICS_EPOCH_UNIX = 631152000             # 1990-01-01 in Unix seconds (the witness's times are EPICS-epoch)
+
+
+def link_full(alias, share):
+    """Have the link of DRP `alias` assert full for `share` of every simxpm FULL_PERIOD (simxpm's SIM:LinkFull, a
+    sim-only PV): what was put, its link and when (EPICS-epoch seconds), or why not, for the witness."""
+    from psdaq.sim.simxpm import NUM_LINKS
+    rec = {'pv': f'{PVBASE}:XPM:{XPM}:SIM:LinkFull', 'alias': alias, 'share': share, 'link': None}
+    v = pv_get(f'{PVBASE}:XPM:{XPM}:SIM:LinkL1Acc')
+    try:                                # a p4p string scalar: its value is in .raw
+        rec['link'] = int(json.loads(v.raw['value'] if hasattr(v, 'raw') else str(v))[alias]['link'])
+    except (ValueError, TypeError, KeyError) as e:
+        rec['error'] = f'no link of {alias} in SIM:LinkL1Acc ({type(e).__name__}: {e})'
+        return rec
+    rec['value'] = [share if n == rec['link'] else 0. for n in range(NUM_LINKS)]
+    rec['on'] = round(time.time() - EPICS_EPOCH_UNIX, 3)
+    rec['error'] = pv_put(rec['pv'], rec['value'])
+    return rec
 
 
 def pv_put(name, value, timeout=5.0):
@@ -1826,6 +1846,12 @@ class GuiWitness:
                     if server in state['ports'].get('pvservers', {}) else env
                 self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), wenv)) + [None]
                 print(f'{now()} GUI witness: {name} walking offscreen (pid {self.walks[name][0].pid})', flush=True)
+        self.stimulus = None            # deadca: a DRP's link asserts full part of the time while the walks run
+        alias = gui_witness.WITNESS.get('deadca', {}).get('link_full')
+        if 'deadca' in self.walks and alias:
+            self.stimulus = link_full(alias, gui_witness.LINK_FULL)
+            print(f'{now()} GUI witness: {alias}\'s link asserts full {gui_witness.LINK_FULL} of the time '
+                  f'(simxpm SIM:LinkFull): {self.stimulus}', flush=True)
         self.slurm = None
         if 'daqstat' in self.walks:     # R5: squeue read from simslurm by this process, apart from daqstat's walk
             import json as _json
@@ -1880,6 +1906,10 @@ class GuiWitness:
             time.sleep(0.1)
         for name, res in list(self.monitors.items()) + list(self.servers.items()):
             res['thread'].join(max(1, end - time.monotonic()))
+        if self.stimulus and self.stimulus.get('link') is not None:     # the link is full no more
+            err = pv_put(self.stimulus['pv'], [0.] * len(self.stimulus['value']))
+            self.stimulus.update(off=round(time.time() - EPICS_EPOCH_UNIX, 3), off_error=err)
+            print(f'{now()} GUI witness: SIM:LinkFull back to 0{f" FAILED: {err}" if err else ""}', flush=True)
         time.sleep(1.0)
         if self.slurm:
             self.slurm['stop'].set()
@@ -1898,6 +1928,8 @@ class GuiWitness:
                                                    res.get('reads', []), prefix, self.params)
         servers = {name: res.get('entry') or {'pass': False, 'problems': ['no result']}
                    for name, res in self.servers.items()}
+        if 'deadca' in programs:
+            programs['deadca']['stimulus'] = self.stimulus
         w = self.gw.witness(f'{experiment}/r{run:04d}', files, prefix, programs, servers)
         with open(self.work.path('logs', 'gui_witness.json'), 'w') as f:
             json.dump(w, f, indent=1)
@@ -2108,8 +2140,9 @@ def main(argv=None):
     upopts.add_argument('--gui', action='store_true',
                         help='also run the PyQt GUIs control_gui, groupca, partca, pvant and procstat and the '
                              'monitor epics_exporter, offscreen, as the configs start them (with --pvservers also '
-                             'hsdpva, tprca and dtica on the stand-ins); cycle then runs each GUI once more while '
-                             'Running and checks it shows live values (psdaq.sim.gui_witness)')
+                             'hsdpva, tprca, dtica, pvatable, xpmpva and deadca on the stand-ins); cycle then runs each GUI '
+                             'once more while Running and checks it shows live values (psdaq.sim.gui_witness; for '
+                             'deadca the first DRP\'s link asserts full part of the time meanwhile)')
     upopts.add_argument('--pvservers', action='store_true',
                         help='also run the PV-server stand-ins simhsd (for hsdpvs), simtpr (for tprcas) and simdti '
                              '(for dticas), each on PVA ports of its own; cycle reads their PVs while Running '

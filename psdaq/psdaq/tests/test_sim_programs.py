@@ -36,7 +36,7 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
             'prog:control_gui', 'prog:groupca', 'prog:partca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
             'prog:drp_udpencoder',
-            'prog:sim_udpencoder', 'prog:hsdpva', 'prog:tprca', 'prog:dtica', 'prog:pvatable', 'prog:xpmpva',
+            'prog:sim_udpencoder', 'prog:hsdpva', 'prog:tprca', 'prog:dtica', 'prog:pvatable', 'prog:xpmpva', 'prog:deadca',
             'prog:bldcas', 'prog:hpsdbuscas', 'prog:daqstat']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
@@ -408,7 +408,41 @@ def test_r4_entry_reads_the_stand_ins_pvs_widget_by_widget(tmp_path):
     assert gui_witness.reads(walk)[0]['values'] == ['7', '0', '12kHz', '15kHz']   # R2's merge, which R4 does not use
     assert gui_witness.pva_env(31301) == {'EPICS_PVA_ADDR_LIST': '127.0.0.1', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
                                           'EPICS_PVA_BROADCAST_PORT': '31301'}
-    assert set(gui_witness.SERVER_GUI_BLOCKERS) == {'deadca'}
+    assert gui_witness.SERVER_GUI_BLOCKERS == {}
+
+
+def test_deadca_walks_on_simxpm_while_a_link_asserts_full(tmp_path, monkeypatch):
+    """deadca (R4 on simxpm): procmgr runs it as python -m psdaq.cas.deadca <base> <platform> <shelf>; its entry passes
+    when one DeadFLnk label (bound through its PvDblArray) shows 2 shares after its first text; the cycle's stimulus
+    puts SIM:LinkFull with LINK_FULL on the link SIM:LinkL1Acc gives the DRP, and says why when it cannot."""
+    from psdaq.sim import gui_witness
+    from psdaq.sim.simxpm import NUM_LINKS
+    W = gui_witness.WITNESS['deadca']
+    params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
+    assert gui_witness.argv('deadca', params) == ['DAQ:SIM', '5', '0'] and W['server'] == 'simxpm'
+    assert "cmd:'python -m psdaq.cas.deadca DAQ:SIM 5 0'" in daq_sim.extra_entries(str(tmp_path), 5, gui=True,
+                                                                                  pvservers=True)
+    dead = 'DAQ:SIM:XPM:0:PART:5:DeadFLnk'
+    walk = {'argv': ['DAQ:SIM', '5', '0'], 'instances': [
+        {'cls': 'PvDblArrayW', 'pv': dead, 'text': '0.000000', 'texts': [['pump:1', '0.000000']] * 3},
+        {'cls': 'PvDblArrayW', 'pv': dead, 'text': '0.170000',
+         'texts': [['shown', '-'], ['pump:1', '0.390000'], ['pump:1', '0.000000'], ['pump:1', '0.170000']]}]}
+    path = tmp_path / 'deadca.walk.json'
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('deadca', str(path), 0, 0, 1, params['part'], params)
+    assert e['pass'] and e['stand_in'] == 'simxpm' and e['prefix'] == 'DAQ:SIM:XPM:0' and e['live'] == [dead], e
+    walk['instances'].pop()
+    path.write_text(json.dumps(walk))
+    assert not gui_witness.entry('deadca', str(path), 0, 0, 1, params['part'], params)['pass']
+    puts = []
+    monkeypatch.setattr(daq_sim, 'pv_put', lambda name, value: puts.append((name, list(value))))
+    monkeypatch.setattr(daq_sim, 'pv_get', lambda name: json.dumps({'fakecam_0': {'link': 2, 'group': 5, 'l1acc': 9}}))
+    rec = daq_sim.link_full(W['link_full'], gui_witness.LINK_FULL)
+    assert rec['link'] == 2 and rec['error'] is None and isinstance(rec['on'], float)
+    assert puts == [('DAQ:SIM:XPM:0:SIM:LinkFull', [0., 0., gui_witness.LINK_FULL] + [0.] * (NUM_LINKS - 3))]
+    monkeypatch.setattr(daq_sim, 'pv_get', lambda name: 'error: timeout')
+    rec = daq_sim.link_full('fakecam_0', 0.3)
+    assert rec['link'] is None and 'no link of fakecam_0' in rec['error'] and len(puts) == 1
 
 
 def test_stand_in_interfaces_come_from_the_programs_own_source():

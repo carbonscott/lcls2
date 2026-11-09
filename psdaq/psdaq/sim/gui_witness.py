@@ -21,10 +21,11 @@ prefix showed 2 or more distinct numbers.  Coverage also checks that [start, end
 run's L1Accepts, so the values were read while the run ran.
 
 A GUI whose PVs come from a device stand-in (R4: hsdpva and pvatable on simhsd, tprca on simtpr, dtica on simdti,
-started by 'daq_sim up --pvservers'; xpmpva on simxpm) walks with a PVA client that searches only that stand-in's ports;
-its entry adds "stand_in" and "prefix" (the stand-in's PVs), and its reads are one per widget
+started by 'daq_sim up --pvservers'; xpmpva and deadca on simxpm) walks with a PVA client that searches only that
+stand-in's ports; its entry adds "stand_in" and "prefix" (the stand-in's PVs), and its reads are one per widget
 ({"name": <PV>, "widget": "<class>#<n>", "values": [...]}) under that prefix; it passes if one widget
-showed 2 or more distinct values after its first text (psdaq.sim.coverage.changed_texts).
+showed 2 or more distinct values after its first text (psdaq.sim.coverage.changed_texts).  deadca's entry adds
+"stimulus": the link the cycle had assert full during the walks (simxpm SIM:LinkFull), its share and when.
 
 daqstat (R5) reads no PV: its entry ("kind": "slurm") holds the walk's refreshes of its table and the cycle's own squeue
 reads of simslurm meanwhile.  The tree's own PV servers (PROGRAM_SERVERS: bldcas, hpsdbuscas) get a 'servers' entry
@@ -61,8 +62,7 @@ WITNESS = {
     # up --gui --pvservers starts them as the configs do: hsdpva <bases> (test-hsd.cnf: hsdpva <pvlist>), tprca
     # <prefix> (xcs.cnf: tprca DAQ:XCS:TPR), dtica <prefix> (lab3-cam.cnf: launch_py <bins>/dtica.py
     # DAQ:LAB2:DTI:<shelf>; no dtica console script, so python -m).  Their reads are kept per widget (a structure
-    # PV such as <hsd>:MONTIMING shows each field in a widget of its own).  (pvatable and deadca are not here: their
-    # value widgets hold no PV the walk can name; see SERVER_GUI_BLOCKERS.)
+    # PV such as <hsd>:MONTIMING shows each field in a widget of its own).
     'hsdpva':  {'file': 'cas/hsdpva.py', 'argv': ['{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B'], 'server': 'simhsd'},
     'tprca':   {'file': 'cas/tprca.py', 'argv': ['{pvbase}:TPR'], 'server': 'simtpr'},
     'dtica':   {'file': 'cas/dtica.py', 'argv': ['{pvbase}:DTI'], 'server': 'simdti', 'module': 'psdaq.cas.dtica'},
@@ -77,6 +77,13 @@ WITNESS = {
     # ports ('prefix': no SERVERS entry): it reads <xpm>:Us:RxAlign and PAddr at start, which simxpm serves
     'xpmpva':  {'file': 'cas/xpmpva.py', 'argv': ['{pvbase}:XPM:{xpm}'], 'server': 'simxpm',
                 'prefix': '{pvbase}:XPM:{xpm}'},
+    # deadca <base> <partition> <shelf> (lab3-cam.cnf: launch_py <bins>/deadca.py DAQ:LAB2 <platform> <shelf>; no deadca
+    # console script, so python -m) on simxpm: its labels show the partition's DeadFLnk, one per link (PvDblArray sets
+    # them).  A healthy run has no deadtime, so while the walks run the cycle has the first DRP's link assert full for
+    # LINK_FULL of every simxpm FULL_PERIOD (simxpm SIM:LinkFull, as a DRP whose readout stalls), then not; simxpm holds
+    # the group's L0s back meanwhile and posts each second's share in DeadFLnk, as an XPM does (the entry's 'stimulus')
+    'deadca':  {'file': 'cas/deadca.py', 'argv': ['{pvbase}', '{platform}', '{xpm}'], 'server': 'simxpm',
+                'prefix': '{pvbase}:XPM:{xpm}', 'module': 'psdaq.cas.deadca', 'link_full': 'fakecam_0'},
     # R5: daqstat reads no PV but the Slurm job of each process of a daqmgr config (mfx.py: daqstat -i 5), here the
     # campaign's own DAQ: 'up --gui' has simslurm hold a job for each process of daq_sim.cnf (converted by daqmgr's
     # cnftopy) and answer daqstat's Slurm commands (PATH shims for the procmgr one; the walk's psdaq.slurm.utils
@@ -88,12 +95,10 @@ WITNESS = {
                 'record_calls': ['psdaq.slurm.main:Runner.spawnConsole', 'psdaq.slurm.main:Runner.spawnLogfile',
                                  'psdaq.slurm.main:Runner.restart']},
 }
-# The GUIs on a device stand-in that are not witnessed yet, and why (RUNBOOK §3d, R4).
-SERVER_GUI_BLOCKERS = {
-    'deadca': 'its only values are the partition\'s DeadFLnk per link (PvDblArrayW labels, which the walk now binds '
-              'through their PvDblArray), and simxpm posts DeadFLnk only when a link is dead: a healthy run shows 0 '
-              'throughout, so no label changes',
-}
+# The GUIs on a device stand-in that are not witnessed yet, and why (RUNBOOK §3d, R4): none since deadca (LINK_FULL).
+SERVER_GUI_BLOCKERS = {}
+# deadca's walk (WITNESS 'link_full'): the share of every simxpm FULL_PERIOD the DRP's link asserts full meanwhile
+LINK_FULL = 0.3
 PUMPS = 4                               # snapshots after the first pump, one per second
 # PV monitors that are not GUIs, witnessed the same way: epics_exporter (the configs' pvrtmon-*
 # processes, e.g. neh-base.cnf: epics_exporter -H tst -I xpm-0 -M <prom dir> -P DAQ:NEH:XPM:0 ...

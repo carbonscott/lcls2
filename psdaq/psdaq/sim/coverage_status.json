@@ -219,6 +219,10 @@
     "status": "RUN",
     "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs xpmpva DAQ:SIM:XPM:0 offscreen (lab3-cam.cnf: xpmpva DAQ:LAB2:XPM:<shelf>) on simxpm, which serves the PAddr and Us:RxAlign it reads at start; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simxpm and the XPM PVs it showed changing (PATT:COINC, ...), read within the run's L1Accepts; the record lists simxpm's log, whose -P serves those PVs"
   },
+  "prog:deadca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs python -m psdaq.cas.deadca DAQ:SIM <platform> 0 offscreen (lab3-cam.cnf: launch_py <bins>/deadca.py DAQ:LAB2 <platform> <shelf>; no deadca console script) on simxpm; while the run is Running the cycle has fakecam_0's link assert full for 0.3 of every 1.3 s (simxpm SIM:LinkFull, as a DRP whose readout stalls: the group's L0s are held back meanwhile) and runs deadca's main() once more offscreen through qt_walk, and logs/gui_witness.json names the run, the stand-in simxpm, the link it made full ('stimulus') and the DeadFLnk share that link's label showed change from second to second, read within the run's L1Accepts; the record lists simxpm's log, whose -P serves those PVs"
+  },
   "prog:daqstat": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R5, a GUI that reads no PV): up starts simslurm with a Slurm job for each process of daq_sim.cnf (daqmgr's cnftopy) and procmgr runs daqstat -i 1 <workdir>/slurm/daqstat.py offscreen (mfx.py: daqstat -i 5), its Slurm commands answered by simslurm through shims first on its PATH; while the run is Running cycle runs its main() once more offscreen through qt_walk, which records each refresh of its table with its time, while the cycle reads squeue from simslurm itself every 0.5 s; logs/gui_witness.json holds both, and 2 or more refreshes within the run's L1Accepts show, for every row, the state the nearest squeue read gave that process's job, listing every process whose procmgr log names the run"
