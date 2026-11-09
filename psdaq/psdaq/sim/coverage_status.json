@@ -23,6 +23,22 @@
     "status": "RUN",
     "note": "daq_sim up --det epixm320 + cycle: epixm320_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3, its fnInitAsicScript), every pixel of the 4 ASICs checked"
   },
+  "det:drp:opal": {
+    "status": "RUN",
+    "note": "daq_sim up --det opal + cycle: opal_config.py against rogue_dev (ClinkDevRoot: the KCU, the FEB over SRPv3, the Opal-1000 answering its serial commands), every pixel of the 1024 x 1024 image checked"
+  },
+  "det:drp:piranha4": {
+    "status": "RUN",
+    "note": "daq_sim up --det piranha4 + cycle: piranha4_config.py against rogue_dev (ClinkDevRoot and the Piranha4 serial console), every pixel of the 2048-pixel line checked"
+  },
+  "det:drp:tb": {
+    "status": "RUN",
+    "note": "daq_sim up --det tb + cycle: tb_config.py against rogue_dev (the card image name, lcls2_pgp_pcie_apps DevRoot) and simxpm PVs, every field of the event timing message checked through ts_raw_2_1_0"
+  },
+  "det:drp:epixquad": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixquad + cycle: epixquad_config.py against rogue_dev (DevRoot and ePixQuad.Top over SRPv3), every pixel of the 4 elements (4, 352, 384) checked through epix10ka_raw_3_0_1"
+  },
   "det:drp:cspad": {
     "status": "RUN",
     "note": "daq_sim up --det cspad + cycle: an AreaDetector through xpmdet_config.py against rogue_dev; cspad_raw_2_0_0 checks every word"

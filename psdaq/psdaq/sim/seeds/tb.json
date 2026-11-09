@@ -1,0 +1,10 @@
+{
+ "_comment": "The simulated KCU1500 of the timing BEB (drp -D tb) for psdaq.sim.rogue_dev: psdaq/configdb/tb_config.py first reads the card's firmware image name through its own _DevRoot, then builds lcls2_pgp_pcie_apps.DevRoot for that image on the same PCIe map. Keys are pyrogue register paths; values are what the hardware reports.",
+ "_DevRoot.DevPcie.AxiVersion.BuildStamp": {"string": "Lcls2XilinxKcu1500Pgp4_6Gbps: Vivado v2023.1, rdsrv (Ubuntu 20.04), Built Mon Jan  1 00:00:00 PST 2024 by sim"},
+ "_BuildStamp": "AxiVersion.ImageName is parsed from it ('<image>: <env>, <server>, Built <date> by <builder>'); tb_init takes an image starting with Lcls2Xilinx to lcls2_pgp_pcie_apps.DevRoot",
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked": 3,
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp": 1,
+ "_Locked": "what the timing receiver reports once its clocks and link are up: ConfigLclsTimingV2's LockProc waits for MmcmLocked == 3 and RxLinkUp == 1",
+ "DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id; the DRP takes the link id simxpm assigns, not this one"
+}

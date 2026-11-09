@@ -14,6 +14,7 @@ import logging
 #  I need to import some project to get the surf library
 #  This library may be a different version in other projects
 #
+from psdaq.utils import enable_lcls2_pgp_pcie_apps
 import lcls2_pgp_pcie_apps
 
 #
@@ -173,7 +174,7 @@ def ts_connect(json_connect_info):
     connector = ts_connector(json_connect_info)
     return json.dumps({})
 
-def tb_connectionInfo(base):
+def tb_connectionInfo(base, alloc_json_str=None):
     pbase = base['pcie']
     rxId = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId.get()
     logging.info('RxId {:x}'.format(rxId))

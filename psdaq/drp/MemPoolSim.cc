@@ -286,6 +286,100 @@ static void epixm320Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     }
 }
 
+// opal (Opal::_event, write_image): subframe 2 is the camera's image as the camera link FEB
+// sends it, rows x columns uint16 in row order (tdest 1 is the timing frame).  The model the
+// camera answers '@ID?' with (psdaq/psdaq/sim/seeds/opal.json: an Opal-1000) sets the shape
+// Opal::_connectionInfo allocates, 1024 x 1024; 12 data bits (opal_config's '@OR12').
+static const unsigned OpalRows = 1024, OpalCols = 1024, OpalBits = 12;
+
+static void opalData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap pixels(OpalRows * OpalCols, OpalBits, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    pixels.fill(reinterpret_cast<uint16_t*>(out.data()), seed, f.seq);
+    out.tail(2 * OpalRows * OpalCols, 2);
+}
+
+// piranha4 (Piranha4::_event, write_image): subframe 2 is the line camera's one row of pixels,
+// uint16; the model in the camera's 'gcp' summary (seeds/piranha4.json: P4_CM_02K..) sets the
+// 2048 pixels Piranha4::_connectionInfo allocates; 12 data bits (piranha4_config's 'spf 2').
+static const unsigned Piranha4Pixels = 2048, Piranha4Bits = 12;
+
+static void piranha4Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap pixels(Piranha4Pixels, Piranha4Bits, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    pixels.fill(reinterpret_cast<uint16_t*>(out.data()), seed, f.seq);
+    out.tail(2 * Piranha4Pixels, 2);
+}
+
+// tb (TimingBEB::_event, TimingDef::createDataETM): the timing system's event timing message
+// in the last subframe (tdest 2, the lane's data channel), read with the TimingHeader of
+// subframe 0: {u64 pulseId (not recorded), u16 rate markers (fixed 0-9, AC 10-15), u8 AC
+// time slot, u8 beam (present bit 0, destination bits 4-7), 18 x u16 sequence values}.  The
+// fields are pattern(seed, seq, element, bits), elements 2, 3, 4, 5.. in that order; the DRP
+// records the other TimingData fields as 0.
+static const unsigned TbEtmBytes = 48;
+
+static void tbData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    uint8_t* d   = out.data();
+    uint64_t pid = f.pulseIdAndControl & ((1ull << 56) - 1);
+    memcpy(d, &pid, 8);
+    uint16_t rates = uint16_t(MemPoolSim::pattern(seed, f.seq, 2, 16));
+    memcpy(d + 8, &rates, 2);
+    d[10] = uint8_t(MemPoolSim::pattern(seed, f.seq, 3, 3));
+    d[11] = uint8_t(MemPoolSim::pattern(seed, f.seq, 4, 8));
+    for (unsigned i = 0; i < 18; ++i) {
+        uint16_t v = uint16_t(MemPoolSim::pattern(seed, f.seq, 5 + i, 16));
+        memcpy(d + 12 + 2 * i, &v, 2);
+    }
+    out.tail(TbEtmBytes, 2);
+}
+
+// epixquad (EpixQuad::_event): 4 subframes; tdest 2 is the camera's frame, a 32 B header and
+// then, for each of 176 super rows i, 8 rows of 384 pixels of elements (2, 3, 2, 3, 0, 1, 0, 1)
+// at rows (175-i, 175-i, 176+i, 176+i, ...) with each row's columns reversed, then 4
+// calibration rows of elements 2, 3, 0, 1.  The framer puts raw pixel (element q, row r,
+// column c) where that loop reads it; 14 data bits (gain bits 0).  Tdest 1 (unused by the DRP)
+// and 3 carry copies of the timing frame.
+static const unsigned EquadRows = 352, EquadCols = 384, EquadAsicRows = 176, EquadCalib = 4;
+static const unsigned EquadBytes = 32 + (8 * EquadAsicRows + 4 * EquadCalib) * EquadCols * 2;
+
+static std::vector<uint32_t> epixquadOrder()    // readout word -> raw pixel index (or past it)
+{
+    std::vector<uint32_t> order;
+    const unsigned image = 4 * EquadRows * EquadCols;
+    auto row = [&](unsigned el, unsigned r, uint32_t base) {
+        for (unsigned k = 0; k < EquadCols; ++k)  order.push_back(base + (el * EquadRows + r) * EquadCols + EquadCols - 1 - k);
+    };
+    for (unsigned i = 0; i < EquadAsicRows; ++i) {
+        unsigned up = EquadAsicRows - i - 1, dn = EquadAsicRows + i;
+        row(2, up, 0); row(3, up, 0); row(2, dn, 0); row(3, dn, 0);
+        row(0, up, 0); row(1, up, 0); row(0, dn, 0); row(1, dn, 0);
+    }
+    for (unsigned i = 0; i < EquadCalib; ++i) {     // calibration rows: indices past the image
+        auto cal = [&](unsigned el) {
+            for (unsigned k = 0; k < EquadCols; ++k)  order.push_back(image + (el * EquadCalib + i) * EquadCols + EquadCols - 1 - k);
+        };
+        cal(2); cal(3); cal(0); cal(1);
+    }
+    return order;
+}
+
+static void epixquadData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint32_t> order = epixquadOrder();
+    static const PixelMap pixels(order.size(), 14, [](size_t j) { return order[j]; });
+    out.timingCopy(1);
+    uint8_t* data = out.data();
+    memset(data, 0, 32);
+    _dataHeader(data, f, seed);
+    pixels.fill(reinterpret_cast<uint16_t*>(data + 32), seed, f.seq);
+    out.tail(EquadBytes, 2);
+    out.timingCopy(3);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
@@ -293,6 +387,10 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "wave8he", _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(64) + _padded(32), wave8heData },
     { "hrencoder", _padded(8), hrencoderData },
     { "epixm320", _padded(32) + 4 * _padded(2 * EpixMHdr + 2 * EpixMAsic), epixm320Data },
+    { "opal",     _padded(32) + _padded(2 * OpalRows * OpalCols), opalData },
+    { "piranha4", _padded(32) + _padded(2 * Piranha4Pixels), piranha4Data },
+    { "tb",       _padded(TbEtmBytes), tbData },
+    { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
