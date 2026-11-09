@@ -124,7 +124,21 @@ TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' 
 
 def ports(platform):
     base = 31000 + 10 * platform
-    return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3}
+    return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
+            'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
+            'udp': 31200 + platform}
+
+
+def ami_ports(platform):
+    """The 10 TCP ports AMI takes from its base port (ami.comm.Ports: Comm .. Sync)."""
+    base = ports(platform)['ami']
+    return list(range(base, base + 10))
+
+
+def meb_tag(platform):
+    """The MEB's shared-memory tag (monReqServer -t), which its clients name (shmemClient -p,
+    psana shmem=)."""
+    return f'{INSTRUMENT}sim{platform}'
 
 
 def control_ports(platform):
@@ -262,8 +276,12 @@ def procmgr_cmd(state, verb):
 
 
 def procs(state):
-    """procmgr ids 'up' starts: PROCS plus the extra detector segments of --segments."""
-    return PROCS + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1)))
+    """procmgr ids 'up' starts: PROCS plus the extra detector segments of --segments, and the
+    MEB, its shmemClient and the AMI processes of --meb / --ami."""
+    return PROCS + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1))) + \
+        (MEB_PROCS if state.get('meb') else ()) + (AMI_PROCS if state.get('ami') else ()) + \
+        (PVA_PROCS if state.get('pva') else ()) + (EPICS_PROCS if state.get('epics') else ()) + \
+        (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ())
 
 
 def procmgr_status(state):
@@ -298,14 +316,176 @@ SEGMENT = ''' {{ id:'{det}_{segm}', flags:'spu',
    cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
        ' -k {ep},{simk} -M {prom}' }},
 '''
+# --meb: the monitoring event builder (rix.cnf's meb_cmd: -d distributes events over -q queues)
+# and a shmemClient on its second queue (as lab3-hsd134_cg.cnf); -v prints every datagram's time.
+MEB_PROCS = ('meb0', 'shmc0')
+MEB = ''' {{ id:'meb0', flags:'spu',
+   cmd:'monReqServer{v} -P {instr} -C localhost -k {ep} -M {prom} -d -n 16 -q 2 -t {tag}' }},
+ {{ id:'shmc0', flags:'s', cmd:'shmemClient -p {tag} -i 1 -v -R' }},
+'''
+# --ami: AMI as ami.cnf runs it (manager, global collector, a node collector and a worker that
+# reads the MEB, plus the client GUI, offscreen), every port on 127.0.0.1.  The ami-* commands
+# are the AMI source tree's console scripts, written into <workdir>/bin (ami_scripts).
+AMI_PROCS = ('ami-manager', 'ami-global', 'ami-node_0', 'ami-worker_0', 'ami-client')
+AMI_SCRIPTS = {'ami-manager': ('ami.manager', 'main'), 'ami-global': ('ami.collector', 'global_main'),
+               'ami-node': ('ami.collector', 'node_main'), 'ami-worker': ('ami.worker', 'main'),
+               'ami-client': ('ami.client', 'main')}
+AMI = ''' {{ id:'ami-manager', flags:'s',
+   cmd:'{bin}/ami-manager -p {abase} -H 127.0.0.1 -n 1 -N 1 {aopts}' }},
+ {{ id:'ami-global', flags:'s',
+   cmd:'{bin}/ami-global -p {abase} -H 127.0.0.1 -N 0 -n 1 {aopts}' }},
+ {{ id:'ami-node_0', flags:'s',
+   cmd:'{bin}/ami-node -p {abase} -H 127.0.0.1 -N 0 -n 1 {aopts}' }},
+ {{ id:'ami-worker_0', flags:'s',
+   cmd:'{bin}/ami-worker -p {abase} -H 127.0.0.1 -N 0 -n 1 -b {heartbeat} {aopts}'
+       ' psana://shmem={tag},skip_calib_load=all' }},
+ {{ id:'ami-client', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'{bin}/ami-client -p {abase} -H 127.0.0.1 {aopts}' }},
+'''
+AMI_HEARTBEAT_MS = 200
+# --pva: drp_pva records simxpm's camera PV (simxpm --camera-pv), an NTNDArray whose every update
+# carries the time of one L1Accept, as an areaDetector IOC with a timing receiver stamps frames.
+PVA_PROCS = ('pvcam_0',)
+CAMERA_PV = f'{PVBASE}:CAM:IMAGE'
+PVA = ''' {{ id:'pvcam_0', flags:'spu',
+   cmd:'drp_pva{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep} -M {prom} pva/{campv}' }},
+'''
+# --epics: epicsArch archives the PVs of a stand-in IOC (EPICS base's softIocPVA, serving CA and
+# PVA on loopback) that 'up' starts from EPICS_DB, one PV over each provider.
+EPICS_PROCS = ('epics_0',)
+EPICS_DB = '''# Written by daq_sim up --epics: the stand-in IOC whose PVs epicsArch records
+record(calc, "{pvbase}:EPICS:COUNT") {{
+  field(SCAN, ".1 second")
+  field(CALC, "A+1")
+  field(INPA, "{pvbase}:EPICS:COUNT NPP")
+}}
+record(ao, "{pvbase}:EPICS:CONST") {{
+  field(VAL, "{const}")
+  field(PINI, "YES")
+}}
+'''
+EPICS_CONST = 1234.5
+# --udp: drp_udpencoder reads the encoder frames sim_udpencoder sends to 127.0.0.1:<udp port>,
+# one per L1Accept of the readout group, paced by simxpm's frames (sim_udpencoder -T sim://)
+# instead of a TPR; -v prints each frame's time.
+UDP_PROCS = ('encoder_0', 'simenc')
+UDP = ''' {{ id:'encoder_0', flags:'spu',
+   cmd:'drp_udpencoder{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep} -M {prom} -L {udpport}' }},
+ {{ id:'simenc', flags:'s',
+   cmd:'sim_udpencoder -T sim://127.0.0.1:{frames} -p {platform} -a 127.0.0.1 -d {udpport} -v' }},
+'''
+# --gui: the PyQt control GUI as the configs start it (asc.cnf: control_gui -H localhost -p <p>),
+# offscreen, on the config DB stand-in; at its default log level (DEBUG) it logs every status
+# message control publishes, the run's fileReport (the xtc2 path) included.
+GUI_PROCS = ('control_gui',)
+GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
+'''
+EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its config file format)
+*sim_count
+{pvbase}:EPICS:COUNT ca
+*sim_const
+{pvbase}:EPICS:CONST pva
+'''
+EPICS = ''' {{ id:'epics_0', flags:'spu',
+   cmd:'epicsArch{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep} -M {prom} {pvlist}' }},
+'''
 
 
-def write_activedet(path, platform, segments=1):
-    """What control writes after an alloc of this partition, so its first rollcall finds it."""
-    dets = [f'{DETECTOR}_{i}' for i in range(segments)]
+def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
+                  gui=False, udp=False):
+    """The procmgr entries of --pva, --epics, --meb, --udp, --gui and --ami (ami_bin: where the
+    ami-* programs are)."""
+    P = ports(platform)
+    common = dict(v=' -v' if verbose else '', instr=INSTRUMENT, ep=EP, frames=P['frames'],
+                  data=os.path.join(workdir, 'data'), prom=os.path.join(workdir, 'prom'),
+                  tag=meb_tag(platform))
+    out = ''
+    if pva:
+        out += PVA.format(campv=CAMERA_PV, **common)
+    if epics:
+        out += EPICS.format(pvlist=os.path.join(workdir, 'epicsArch.txt'), **common)
+    if meb or ami_bin:
+        out += MEB.format(**common)
+    if udp:
+        out += UDP.format(udpport=P['udp'], platform=platform, **common)
+    if gui:
+        out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/')
+    if ami_bin:
+        aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
+                 f'--hutch {INSTRUMENT}_sim{platform}')
+        out += AMI.format(bin=ami_bin, abase=P['ami'], aopts=aopts, heartbeat=AMI_HEARTBEAT_MS,
+                          tag=common['tag'])
+    return out
+
+
+def udp_busy(port):
+    """True if a UDP socket is bound to port."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.bind(('0.0.0.0', port))
+        return False
+    except OSError:
+        return True
+    finally:
+        s.close()
+
+
+def soft_ioc():
+    """EPICS base's softIocPVA (CA and PVA): on PATH, else in $CONDA_PREFIX/epics/bin/<arch>."""
+    found = shutil.which('softIocPVA')
+    if found:
+        return found
+    import glob
+    hits = sorted(glob.glob(os.path.join(os.environ.get('CONDA_PREFIX', '/nonexistent'), 'epics', 'bin',
+                                         '*', 'softIocPVA')))
+    if not hits:
+        raise Fail('--epics: no softIocPVA on PATH or under $CONDA_PREFIX/epics/bin (EPICS base)')
+    return hits[0]
+
+
+def ami_source(arg=None):
+    """The AMI source tree (the directory holding the 'ami' package) for --ami: --ami-src, else
+    $DAQ_SIM_AMI_SRC; None if neither is set (then the ami-* programs must be on PATH)."""
+    src = arg or os.environ.get('DAQ_SIM_AMI_SRC') or None
+    if src and not os.path.isfile(os.path.join(src, 'ami', 'manager.py')):
+        raise Fail(f'--ami-src {src}: no ami/manager.py there (an AMI source tree, e.g. a clone '
+                   'of github.com/slac-lcls/ami, holds the ami package)')
+    return src
+
+
+def ami_scripts(bindir, src):
+    """Write the ami-* console scripts (AMI's pyproject [project.scripts]) for this python into
+    bindir, importing ami from src; return bindir.  With no src, the ami-* on PATH are used."""
+    if src is None:
+        missing = [n for n in AMI_SCRIPTS if not shutil.which(n)]
+        if missing:
+            raise Fail(f'--ami: {" ".join(missing)} not on PATH; install AMI in this env or pass '
+                       '--ami-src (or set DAQ_SIM_AMI_SRC) to an AMI source tree')
+        return os.path.dirname(shutil.which('ami-manager'))
+    os.makedirs(bindir, exist_ok=True)
+    for name, (module, func) in AMI_SCRIPTS.items():
+        path = os.path.join(bindir, name)
+        with open(path, 'w') as f:
+            f.write(f'#!{sys.executable}\n# {name}: console script of the AMI source tree in {src}, '
+                    f'written by daq_sim up --ami\nimport sys\nsys.path.insert(0, {src!r})\n'
+                    f'from {module} import {func}\nsys.exit({func}())\n')
+        os.chmod(path, 0o755)
+    return bindir
+
+
+def write_activedet(path, platform, segments=1, meb=False, others=()):
+    """What control writes after an alloc of this partition, so its first rollcall finds it;
+    'others' are more DRP aliases (drp_pva, epicsArch), in the same readout group."""
+    dets = [f'{DETECTOR}_{i}' for i in range(segments)] + list(others)
     value = {'activedet': {'drp': {d: {'active': 1, 'det_info': {'readout': platform}} for d in dets},
                            'teb': {'teb0': {'active': 1}}},
              'history': {'drp': {d: {'det_info': {'readout': platform}} for d in dets}}}
+    if meb:
+        value['activedet']['meb'] = {'meb0': {'active': 1}}
     with open(path, 'w') as f:
         json.dump(value, f, indent=4, sort_keys=True)
 
@@ -323,6 +503,14 @@ def start_service(work, state, name, argv, env):
 def cmd_up(args):
     host = check_host(args.any_host)
     segments = getattr(args, 'segments', 1)
+    ami = getattr(args, 'ami', False)
+    meb = getattr(args, 'meb', False) or ami
+    amisrc = ami_source(getattr(args, 'ami_src', None)) if ami else None
+    pva = getattr(args, 'pva', False)
+    epics = getattr(args, 'epics', False)
+    gui = getattr(args, 'gui', False)
+    udp = getattr(args, 'udp', False)
+    ioc = soft_ioc() if epics else None
     work = Work(args.workdir)
     os.makedirs(work.dir, exist_ok=True)
     old = work.load()
@@ -335,6 +523,10 @@ def cmd_up(args):
     want = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(args.platform)
     if getattr(args, 'webgui', False):
         want.append(P['webgui'])
+    if ami:
+        want += ami_ports(args.platform)
+    if udp and udp_busy(P['udp']):
+        raise Fail(f'UDP port {P["udp"]} already in use')
     busy = [p for p in want if port_busy(p)]
     if busy:
         raise Fail(f'ports already in use: {busy}')
@@ -358,7 +550,8 @@ def cmd_up(args):
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
-             'segments': segments, 'det': DETECTOR}
+             'segments': segments, 'det': DETECTOR, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
+             'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -407,7 +600,8 @@ def cmd_up(args):
         p = start_service(work, state, 'simxpm',
                           [py, '-m', 'psdaq.sim.simxpm', '-P', PVBASE, '-x', str(XPM),
                            '--frames', f'tcp://127.0.0.1:{P["frames"]}', '--rate', str(args.rate),
-                           '--pull', 'auto'], env)
+                           '--pull', 'auto'] +
+                          (['--camera-pv', CAMERA_PV, '--camera-seed', str(args.seed)] if pva else []), env)
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
 
@@ -421,7 +615,22 @@ def cmd_up(args):
                 raise Fail(f'{DETECTOR}_frame failed: {r.stderr.strip()[-400:]}')
             say(r.stdout.strip().splitlines()[-1] if r.stdout.strip() else f'{DETECTOR} frame written')
 
-        write_activedet(work.path('activedet.json'), args.platform, segments)
+        write_activedet(work.path('activedet.json'), args.platform, segments, meb,
+                        (PVA_PROCS if pva else ()) + (EPICS_PROCS if epics else ()) +
+                        (UDP_PROCS[:1] if udp else ()))
+        if epics:
+            with open(work.path('sim_ioc.db'), 'w') as f:
+                f.write(EPICS_DB.format(pvbase=PVBASE, const=EPICS_CONST))
+            with open(work.path('epicsArch.txt'), 'w') as f:
+                f.write(EPICS_PVLIST.format(pvbase=PVBASE))
+            p = start_service(work, state, 'ioc', [ioc, '-S', '-d', work.path('sim_ioc.db')], env)
+            _wait_pv(f'{PVBASE}:EPICS:CONST', 30, p)
+            say(f'stand-in IOC {ioc} pid {p.pid}: {PVBASE}:EPICS:COUNT (CA), {PVBASE}:EPICS:CONST (PVA)')
+        bindir = ami_scripts(work.path('bin'), amisrc) if ami else None
+        if ami:
+            say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
+                f'worker reads psana://shmem={meb_tag(args.platform)}')
+        extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
@@ -432,7 +641,7 @@ def cmd_up(args):
                                slow=args.slow_update, configdb=cfg_url + 'configDB',
                                lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
                                segments=''.join(SEGMENT.format(segm=i, **common)
-                                                for i in range(1, segments)), **common))
+                                                for i in range(1, segments)) + extra, **common))
         say('procmgr start', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             rc = subprocess.run(procmgr_cmd(state, 'start') + ['-v'], cwd=work.dir, stdout=out,
@@ -539,6 +748,18 @@ def _wait_running(state, timeout):
         time.sleep(1)
 
 
+def _wait_pv(name, timeout, proc=None):
+    """Wait until a PV answers over PVA (from this node's loopback, sim_env.sh)."""
+    end = time.monotonic() + timeout
+    while True:
+        v = pv_get(name, timeout=2.0)
+        if not isinstance(v, str):
+            return v
+        if (proc is not None and proc.poll() is not None) or time.monotonic() > end:
+            raise Fail(f'{name} does not answer over PVA: {v}')
+        time.sleep(0.5)
+
+
 def _control_state(platform, timeout=5000):
     from psdaq.control.DaqControl import DaqControl
     dc = DaqControl(host='localhost', platform=platform, timeout=timeout)
@@ -611,7 +832,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('simxpm', 'lgbk', 'configdb'):
+    for name in ('ioc', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -628,6 +849,8 @@ def teardown(work, quiet=False):
         check = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(state['platform'])
         if 'webgui' in state['services']:
             check.append(P['webgui'])
+        if state.get('ami'):
+            check += ami_ports(state['platform'])
         busy = [p for p in check if port_busy(p)]
         if busy:
             ok = False
@@ -680,7 +903,8 @@ def scrape(port, names):
     return out
 
 
-COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'DRP_RecordSize', 'drp_num_dma_errors',
+COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_ReqCt',
+            'DRP_RecordSize', 'drp_num_dma_errors',
             'drp_num_pgp_jump', 'drp_num_th_error', 'drp_num_missing_rogs', 'DRP_Damage')
 
 
@@ -803,11 +1027,14 @@ def cmd_cycle(args):
         err = dc.setRecord(args.record)
         print(f'{now()} setRecord({args.record}) -> {err or "OK"}', flush=True)
     i0 = STATES.index(start)
+    ami = AmiRun(state) if state.get('ami') else None
     for target in STATES[i0 + 1:]:
         if not go(target):
             break
         if target == 'unallocated':
             select_all(dc)
+        if target == 'configured' and ami:
+            ok &= ami.add()
     count = None
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
@@ -832,6 +1059,8 @@ def cmd_cycle(args):
                 break
             if prev == 'running' and target == 'paused':
                 counts.update(_run_counts(work, plat))
+                if ami:
+                    ami.fetch(work)
             prev = target
     final = dc.getState()
     ok &= final == start
@@ -842,6 +1071,14 @@ def cmd_cycle(args):
     run = status[7] if isinstance(status[7], int) else 0
     if args.record and run:
         counts.update(_psana_counts(work, state, status[6], run))
+    if state.get('meb'):
+        counts.update(_meb_counts(work, state))
+    if (state.get('pva') or state.get('epics') or state.get('udp')) and args.record and run:
+        counts.update(_sysdrp_counts(work, state, status[6], run))
+        ok &= counts.get('system DRP checks') == 'PASS'
+    if ami:
+        counts.update(ami.check(work, status[6], run if args.record else 0))
+        ok &= counts.get('ami check') == 'PASS'
     want = ('simxpm NumL0Acc', 'TEB_WrtCt', 'psana2 events') if args.record and run else \
            ('simxpm NumL0Acc', 'TEB_EvtCt')
     values = [counts.get(k) for k in want]
@@ -936,6 +1173,96 @@ def _psana_counts(work, state, experiment, run, seed=None):
     return out
 
 
+class AmiRun:
+    """The AMI side of a cycle (up --ami): at Configure the check's graph goes to AMI's manager,
+    after Disable its result is fetched, and once the run's file is closed psdaq.sim.ami_check
+    compares it with psana2, event by event."""
+
+    def __init__(self, state):
+        if state.get('ami_src'):
+            sys.path.insert(0, state['ami_src'])
+        self.addr = f'tcp://127.0.0.1:{state["ports"]["ami"]}'
+        self.result, self.error = None, None
+
+    def add(self):
+        from psdaq.sim import ami_check
+        try:
+            took = ami_check.add(self.addr, DETECTOR, timeout=60)
+            print(f'{now()} AMI {self.addr}: check graph {"added" if took else "NOT added"}', flush=True)
+            return took
+        except Exception as e:
+            self.error = f'graph not added: {type(e).__name__}: {e}'
+            print(f'{now()} AMI {self.addr}: {self.error}', flush=True)
+            return False
+
+    def fetch(self, work):
+        from psdaq.sim import ami_check
+        try:
+            time.sleep(1.0)             # a few heartbeats: the last events reach the manager
+            self.result = ami_check.fetch(self.addr)
+            with open(work.path('logs', 'ami_check.rows.json'), 'w') as f:
+                json.dump(self.result, f)
+            print(f'{now()} AMI fetched {len(self.result["rows"])} rows, ami_pixsum '
+                  f'{self.result["pixsum"]}', flush=True)
+        except Exception as e:
+            self.error = f'fetch failed: {type(e).__name__}: {e}'
+            print(f'{now()} AMI {self.error}', flush=True)
+
+    def check(self, work, experiment, run):
+        """Counts for the cycle: AMI's rows, how many psana2 matched, the verdict."""
+        from psdaq.sim import ami_check
+        import glob
+        if self.error or self.result is None:
+            return {'ami check': f'FAIL {self.error or "no result"}'}
+        files = sorted(glob.glob(work.path('data', INSTRUMENT, experiment, 'xtc',
+                                           f'{experiment}-r{run:04d}-s*-c000.xtc2'))) if run else []
+        if not files:
+            return {'ami rows': len(self.result['rows']), 'ami check': 'FAIL no recorded xtc2 file '
+                    'to compare with (cycle without --no-record)'}
+        res = ami_check.check(self.result, files[0], DETECTOR)
+        with open(work.path('logs', 'ami_check.json'), 'w') as f:
+            json.dump(dict(res, xtc2=files[0], addr=self.addr), f, indent=1)
+        out = {k: res[k] for k in ('ami rows', 'ami matched', 'ami pixsum', 'psana2 pixsum (same events)',
+                                   'ami seq range')}
+        out['ami check'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
+        return out
+
+
+def _sysdrp_counts(work, state, experiment, run):
+    """psana2 over every stream of the run: what drp_pva and epicsArch recorded
+    (psdaq.sim.sysdrp_check)."""
+    argv = [sys.executable, '-m', 'psdaq.sim.sysdrp_check', '--dir',
+            work.path('data', INSTRUMENT, experiment, 'xtc'), '--exp', experiment, '--run', str(run),
+            '--seed', str(state['seed']), '--det', DETECTOR]
+    if state.get('pva'):
+        argv += ['--pva', PVA_PROCS[0].rsplit('_', 1)[0]]
+    if state.get('epics'):
+        argv += ['--epics']
+    if state.get('udp'):
+        argv += ['--udp', UDP_PROCS[0].rsplit('_', 1)[0]]
+    r = subprocess.run(argv, capture_output=True, text=True, timeout=900)
+    try:
+        res = json.loads(r.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return {'system DRP checks': f'FAIL sysdrp_check: {r.stderr.strip()[-300:]}'}
+    out = {f'sysdrp {k}': v for k, v in res.items() if k not in ('problems', 'pass')}
+    out['system DRP checks'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
+    return out
+
+
+def _meb_counts(work, state):
+    """The MEB's served-event count is MEB_EvtCt (Prometheus, read after Disable in _run_counts);
+    this adds what shmemClient (-v, one line per datagram) printed from its queue."""
+    import glob
+    logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:shmc0.log')), key=os.path.getmtime)
+    if not logs:
+        return {'shmemClient L1Accepts': 'no log'}
+    with open(logs[-1], errors='replace') as f:
+        text = f.read()
+    return {'shmemClient L1Accepts': len(re.findall(r'^L1Accept\s+transition: time', text, re.M)),
+            'shmemClient BeginRun': len(re.findall(r'^BeginRun\s+transition: time', text, re.M))}
+
+
 def select_all(dc):
     """Select every process that answered rollcall, as the GUIs' partition dialog does.
 
@@ -987,6 +1314,23 @@ def main(argv=None):
                         help='DRPs of the --det type, as segments 0..N-1 of one detector (default %(default)d)')
     upopts.add_argument('--det', default='fakecam', choices=sorted(SIM_TYPES),
                         help='simulated detector type for the DRP (default %(default)s)')
+    upopts.add_argument('--meb', action='store_true',
+                        help='also run the MEB (monReqServer meb0) and a shmemClient (shmc0) reading it')
+    upopts.add_argument('--ami', action='store_true',
+                        help='also run AMI on the MEB (implies --meb): ami-manager, ami-global, ami-node, '
+                             'ami-worker (psana://shmem=<tag>) and ami-client (offscreen), all on 127.0.0.1; '
+                             'cycle then checks what AMI computed against psana2 (psdaq.sim.ami_check)')
+    upopts.add_argument('--ami-src', default=None,
+                        help='AMI source tree for --ami (default $DAQ_SIM_AMI_SRC; else ami-* from PATH)')
+    upopts.add_argument('--pva', action='store_true',
+                        help=f'also run drp_pva (pvcam_0) on simxpm\'s camera PV {CAMERA_PV}, one update per L1Accept')
+    upopts.add_argument('--epics', action='store_true',
+                        help='also run epicsArch (epics_0) on the PVs of a stand-in IOC (softIocPVA, loopback)')
+    upopts.add_argument('--udp', action='store_true',
+                        help='also run drp_udpencoder (encoder_0) on the encoder frames sim_udpencoder sends on '
+                             'loopback UDP, paced by simxpm (sim_udpencoder -T sim://)')
+    upopts.add_argument('--gui', action='store_true',
+                        help='also run the PyQt control GUI (control_gui), offscreen, as the configs start it')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')

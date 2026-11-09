@@ -21,6 +21,13 @@ control.py still connects its PUSH socket to 'tcp://None:<port>', so run it with
 
 Both the PVA server and the frame and PULL sockets bind to the loopback interface unless told
 otherwise.
+
+With --camera-pv NAME it also serves a camera PV for drp_pva, as an areaDetector IOC whose
+frames a timing receiver stamps: an NTNDArray (uint16, CAMERA_SHAPE) updated once for every
+L1Accept, its timeStamp the L1Accept's time (drp_pva matches PV updates to L1Accepts by exact
+time), its pixels camera_image(seed, seq): pixels 0 and 1 the L1Accept's seq (low, high 16 bits),
+pixel i >= 2 psdaq.sim.pattern.pattern(seed, seq, i, 16).  A reader checks each recorded image
+against the seq it carries.
 """
 
 import argparse
@@ -35,7 +42,7 @@ import threading
 import time
 
 import zmq
-from p4p.nt import NTScalar
+from p4p.nt import NTNDArray, NTScalar
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
 
@@ -45,6 +52,34 @@ NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
 NUM_PORTS = 14                          # Front-panel links with per-link PVs, as ts_connect.py uses
 FW_BUILD = 'simxpm (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware'
 PID_MASK = (1 << 56) - 1
+CAMERA_SHAPE = (8, 16)                  # --camera-pv image: rows, columns
+
+
+def camera_image(seed, seq, shape=CAMERA_SHAPE):
+    """The --camera-pv image of the L1Accept with this seq (module doc)."""
+    import numpy as np
+    from psdaq.sim import pattern
+    img = np.asarray(pattern.pattern(seed, seq, np.arange(shape[0] * shape[1]), 16), dtype=np.uint16)
+    img[0], img[1] = seq & 0xffff, (seq >> 16) & 0xffff
+    return img.reshape(shape)
+
+
+class CameraPV:
+    """--camera-pv: an NTNDArray PV posted once per L1Accept with that L1Accept's time."""
+
+    def __init__(self, name, provider, seed):
+        self.name, self.seed, self.nt = name, seed, NTNDArray()
+        self.pv = SharedPV(initial=self.nt.wrap(camera_image(seed, 0)))   # posts Values, as _add
+        provider.add(name, self.pv)
+        self.posted = 0
+
+    def post(self, sec, ns, seq):
+        value = self.nt.wrap(camera_image(self.seed, seq))
+        value['uniqueId'] = seq
+        value['timeStamp.secondsPastEpoch'] = sec + POSIX_TIME_AT_EPICS_EPOCH
+        value['timeStamp.nanoseconds'] = ns
+        self.pv.post(value)
+        self.posted += 1
 
 
 class TransitionId:
@@ -159,7 +194,7 @@ class _Put:
 
 
 class SimXpm:
-    def __init__(self, pvbase, xpm, endpoint, rate, pull=None):
+    def __init__(self, pvbase, xpm, endpoint, rate, pull=None, camera=None, camera_seed=0):
         self.pvbase = pvbase
         self.xpm = xpm
         self.prefix = f'{pvbase}:XPM:{xpm}'
@@ -188,6 +223,7 @@ class SimXpm:
         self.provider = StaticProvider('simxpm')
         self.pvs = {}
         self._make_pvs()
+        self.camera = CameraPV(camera, self.provider, camera_seed) if camera else None
 
     # --- PVs --------------------------------------------------------------------------
 
@@ -269,6 +305,7 @@ class SimXpm:
         if any(l.credit == 0 for l in targets):
             return False
         self.last_pid, sec, ns = timing_now(self.last_pid)
+        self.last_sec, self.last_ns = sec, ns
         frame = pack_frame(tid, self.last_pid, sec, ns, rog, seq)
         for l in targets:
             l.credit -= 1
@@ -326,6 +363,8 @@ class SimXpm:
             if rog & (1 << g):
                 self.num_l0acc[g] += 1
         self._emit(TransitionId.L1Accept, rog, self.num_l0acc[low])
+        if self.camera is not None:
+            self.camera.post(self.last_sec, self.last_ns, self.num_l0acc[low])
         for g in range(NUM_GROUPS):     # Step end: stop the step's groups, report done
             if (self.step_groups[g] and not self.step_done[g] and
                     self.num_l0acc[g] >= self.step_end[g]):
@@ -555,6 +594,11 @@ def main():
                         "tcp://127.0.0.1:<xpm_pull_port>, as pyxpm does on all interfaces; 'none' disables")
     parser.add_argument('--bind', default='127.0.0.1', help='PVA server interface (default %(default)s)')
     parser.add_argument('--allow-remote', action='store_true', help='allow non-loopback --frames/--bind/--pull')
+    parser.add_argument('--camera-pv', metavar='NAME', default=None,
+                        help='also serve NAME, an NTNDArray camera PV updated with the time of every '
+                             'L1Accept (for drp_pva)')
+    parser.add_argument('--camera-seed', type=lambda s: int(s, 0), default=0,
+                        help='seed of the --camera-pv images (default %(default)s)')
     parser.add_argument('-v', action='store_true', help='be verbose')
     args = parser.parse_args()
 
@@ -571,7 +615,7 @@ def main():
         if value:
             conf[f'EPICS_PVAS_{key}'] = value
 
-    sim = SimXpm(args.P, args.x, args.frames, args.rate, pull)
+    sim = SimXpm(args.P, args.x, args.frames, args.rate, pull, args.camera_pv, args.camera_seed)
     with Server(providers=[sim.provider], conf=conf, useenv=False) as server:
         logging.info('serving %d PVs under %s; server conf %s', len(sim.pvs), sim.prefix, server.conf())
         try:
