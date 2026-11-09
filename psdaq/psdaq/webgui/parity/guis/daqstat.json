@@ -1,0 +1,106 @@
+{
+ "file": "slurm/daqstat.py",
+ "title": "daqstat (daqmgr Slurm job state of the processes of a daqmgr config; the Slurm commands answered by the simulator simslurm)",
+ "web": "/gui/daqstat",
+ "backend": "sim-device:simslurm",
+ "walk": {
+  "argv": [
+   "-i",
+   "1",
+   "{walkdir}/daqstat.py"
+  ],
+  "devices": [
+   {
+    "module": "simslurm",
+    "args": [
+     "--state",
+     "{walkdir}/slurm.json",
+     "--cnf",
+     "{cnf}",
+     "--py",
+     "{walkdir}/daqstat.py",
+     "--logdir",
+     "{walkdir}/slurm-logs"
+    ]
+   }
+  ],
+  "env": {
+   "HOME": "{walkdir}/home"
+  },
+  "pump": 6,
+  "timeout": 90,
+  "drive": [
+   "checkable-buttons-then-cells",
+   "pump:1"
+  ],
+  "record_calls": [
+   "psdaq.slurm.main:Runner.spawnConsole",
+   "psdaq.slurm.main:Runner.spawnLogfile",
+   "psdaq.slurm.main:Runner.restart"
+  ],
+  "variants": [
+   {
+    "argv": [
+     "-i",
+     "1",
+     "{walkdir}/missing.py"
+    ],
+    "pump": 3,
+    "drive": []
+   }
+  ]
+ },
+ "mapping": {
+  "WinProcStat.msgBox": {
+   "web": "[data-parity~=\"WinProcStat.msgBox\"]",
+   "test": "test_gui_daqstat.py::test_unknown_error_shows_critical_and_closes[chromium]"
+  },
+  "WinProcStat.onProcMgrUnknownError.QMessageBox.critical": {
+   "web": "[data-parity~=\"WinProcStat.onProcMgrUnknownError.QMessageBox.critical\"]",
+   "test": "test_gui_daqstat.py::test_unknown_error_shows_critical_and_closes[chromium]"
+  },
+  "WinProcStat.on_actionAbout_triggered.QMessageBox.about": {
+   "na": "the ui (slurm/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (slurm/daqstat.py:373)"
+  },
+  "Ui_mainWindow.tableProcStat.col[ID]": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.col[ID]\"]",
+   "test": "test_gui_daqstat.py::test_table_lists_the_jobs_states_live_and_sortable[chromium]"
+  },
+  "Ui_mainWindow.tableProcStat.col[Status]": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.col[Status]\"]",
+   "test": "test_gui_daqstat.py::test_table_lists_the_jobs_states_live_and_sortable[chromium]"
+  },
+  "Ui_mainWindow.tableProcStat.cellClicked": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.cellClicked\"]",
+   "test": "test_gui_daqstat.py::test_cell_click_opens_console_logfile_and_restarts[chromium]"
+  },
+  "Ui_mainWindow.pushButtonConsole": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonConsole\"]",
+   "test": "test_gui_daqstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.pushButtonLogfile": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonLogfile\"]",
+   "test": "test_gui_daqstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.pushButtonRestart": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonRestart\"]",
+   "test": "test_gui_daqstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.textBrowser": {
+   "na": "Output File Status box: nothing in daqstat or slurm/ui_procStat.py writes textBrowser (no setText/append/setHtml), the walk saw it empty; the web page shows the same empty box"
+  },
+  "WinProcStat.on_tableProcStat_currentCellChanged": {
+   "web": "[data-parity~=\"WinProcStat.on_tableProcStat_currentCellChanged\"]",
+   "test": "test_gui_daqstat.py::test_current_row_kept_across_refresh[chromium]"
+  },
+  "WinProcStat.on_actionOpen_triggered": {
+   "na": "the ui (slurm/ui_procStat.py) creates no object named 'actionOpen', so connectSlotsByName never connects on_actionOpen_triggered: def on_actionOpen_triggered (slurm/daqstat.py:361)"
+  },
+  "WinProcStat.on_actionQuit_triggered": {
+   "na": "the ui (slurm/ui_procStat.py) creates no object named 'actionQuit', so connectSlotsByName never connects on_actionQuit_triggered: def on_actionQuit_triggered (slurm/daqstat.py:368)"
+  },
+  "WinProcStat.on_actionAbout_triggered": {
+   "na": "the ui (slurm/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (slurm/daqstat.py:373)"
+  }
+ }
+}

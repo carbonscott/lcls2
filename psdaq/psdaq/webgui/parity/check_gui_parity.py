@@ -7,7 +7,9 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
   a GUI program with a web version
       {"file", "web": "<path the web GUI serves>", "backend": "sim-daq" | "sim-device:<stand-in>",
        "walk": {"argv": [...], "pump", "drive", "record_calls", "variants": [{"argv": ...}, ...],
-                "devices": [{"module": "<campaign simulator psdaq/sim/<module>.py>", "args": [...]}]},
+                "devices": [{"module": "<campaign simulator psdaq/sim/<module>.py>", "args": [...]}],
+                "env": {"HOME": "{walkdir}/home"}},     (placeholders: qt_walk.sim_params and {walkdir}, a scratch
+                                                         dir per spec for its devices and env)
        "mapping": {"<row id>": {"web": "<CSS selector>", "test": "<pytest node id>[chromium]"} | {"na": "<reason>"}}}
       Rows: gui_rows.make_rows from the source sites and the offscreen walk of the running program
       (qt_walk --gui against the simulated DAQ), run by --run-walks, as check_parity --run-walk does for
@@ -199,9 +201,11 @@ def run_walks(src, specs, files, sim_dir, d, only=None, python=sys.executable, l
             continue
         walks = []
         variants = [{}] + spec['walk'].get('variants', [])
-        devs = start_devices(spec, sim_dir, env, python, log)
+        wdir = os.path.join(d, 'runs', spec['_name'] + '-dir')        # {walkdir}: scratch for its devices and env
+        os.makedirs(wdir, exist_ok=True)
+        devs = start_devices(spec, sim_dir, env, python, log, wdir)
         try:
-            run_variants(spec, variants, sim_dir, d, env, python, log, walks)
+            run_variants(spec, variants, sim_dir, d, env, python, log, walks, wdir)
         finally:
             for p, _ in devs:
                 p.terminate()
@@ -215,15 +219,20 @@ def run_walks(src, specs, files, sim_dir, d, only=None, python=sys.executable, l
             json.dump(merged, f, indent=0, sort_keys=True)
 
 
-def start_devices(spec, sim_dir, env, python, log):
+def walk_params(sim_dir, wdir):
+    """The placeholders of a spec's walk argv, device args and env: qt_walk.sim_params plus {walkdir}."""
+    from psdaq.webgui.parity.qt_walk import sim_params
+    return dict(sim_params(sim_dir), walkdir=wdir)
+
+
+def start_devices(spec, sim_dir, env, python, log, wdir=None):
     """Start the campaign simulators a spec's walk names ("devices": [{"module": "simtpr", "args": [...]}], args with
     the walk's placeholders), each `python -m psdaq.sim.<module>`, and wait for its 'ready' line."""
     out = []
     devs = spec['walk'].get('devices', [])
     if not devs:
         return out
-    from psdaq.webgui.parity.qt_walk import sim_params
-    params = sim_params(sim_dir)
+    params = walk_params(sim_dir, wdir)
     for dv in devs:
         args = [str(a).format(**params) for a in dv.get('args', [])]
         cmd = [python, '-m', 'psdaq.sim.' + dv['module']] + args
@@ -264,12 +273,13 @@ def wait_ready(p, timeout):
     return None
 
 
-def run_variants(spec, variants, sim_dir, d, env, python, log, walks):
+def run_variants(spec, variants, sim_dir, d, env, python, log, walks, wdir=None):
     for i, var in enumerate(variants):
         tmp = os.path.join(d, 'runs', '%s-%d' % (spec['_name'], i))
         os.makedirs(tmp, exist_ok=True)
         vspec = dict(spec)
         vspec['walk'] = dict(spec['walk'], **var)
+        vspec['walk']['walkdir'] = wdir or tmp
         vspec.pop('_path', None)
         sp = os.path.join(tmp, 'spec.json')
         with open(sp, 'w') as f:
@@ -277,7 +287,14 @@ def run_variants(spec, variants, sim_dir, d, env, python, log, walks):
         out = os.path.join(tmp, 'walk.json')
         cmd = [python, '-m', 'psdaq.webgui.parity.qt_walk', '--gui', sp, '--sim-daq', sim_dir, '--out', out,
                '--workdir', tmp]
-        p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+        venv = dict(env)
+        if vspec['walk'].get('env'):                 # e.g. HOME: daqstat's Runner makes $HOME/daq/logs
+            params = walk_params(sim_dir, wdir or tmp)
+            for k, v in vspec['walk']['env'].items():
+                venv[k] = str(v).format(**params)
+                if k == 'HOME':
+                    os.makedirs(venv[k], exist_ok=True)
+        p = subprocess.run(cmd, env=venv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                            timeout=float(vspec['walk'].get('timeout', 90)) + 60)
         lines = [ln for ln in p.stdout.splitlines() if ln.startswith('qt_walk')]
         log.write('%s variant %d %s: %s\n' % (spec['_name'], i, vspec['walk'].get('argv'), lines[-1] if lines else

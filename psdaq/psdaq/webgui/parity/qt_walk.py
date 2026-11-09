@@ -948,6 +948,7 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     own, libs = gui_rows.own_and_libs(src, target)
     own_abs = {os.path.realpath(os.path.join(src, f)): f for f in own}
     params = sim_params(sim_dir) if sim_dir else {}
+    params['walkdir'] = W.get('walkdir') or workdir             # check_gui_parity.run_walks sets it per spec
     argv = [str(a).format(**params) for a in W.get('argv', [])]
     OUT = {'version': GUI_WALK_VERSION, 'kind': 'gui', 'file': target, 'src': src, 'own': own, 'libs': libs,
            'src_digest': gui_rows.files_digest(src, own), 'argv': argv, 'sim_daq': sim_dir, 'params': params,

@@ -37,7 +37,7 @@ from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_lo
 # register(app, get_routes, post_routes): get_routes maps a path to
 # fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
 EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api',
-               'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api')
+               'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api', 'psdaq.webgui.daqstat_api')
 
 
 def load_extensions(app, names=EXT_MODULES):
@@ -480,6 +480,10 @@ def build_parser():
                    help="/gui/detector_protection_monitor: web copy of trigger/detector_protection_monitor.py with the "
                         "PyQt program's arguments, e.g. '-b DAQ:SIM:JF16M:BLOCKER -d Jungfrau' (Channel Access, "
                         "loopback EPICS_CA_* env only)")
+    p.add_argument('--daqstat-cnf', default=None, help='/gui/daqstat: the daqmgr .cnf whose jobs it shows (as daqstat <cnf>)')
+    p.add_argument('--daqstat-slurm', default=None, metavar='STATE',
+                   help='/gui/daqstat: the psdaq.sim.simslurm state file that answers its Slurm commands (required)')
+    p.add_argument('--daqstat-interval', type=float, default=5.0, help='/gui/daqstat: query interval [s] (daqstat -i)')
     p.add_argument('--datadev-sim', default=None, metavar='ROOT',
                    help='/gui/datadev_monitor: web copy of cas/datadev_monitor.py on the simulated nodes of a '
                         'psdaq.sim.simdatadev root (it never starts ssh)')
