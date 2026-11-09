@@ -152,7 +152,11 @@ def check_a(work, state, rec, breakage=None, recompute=False):
         if breakage == 'drop-l1':
             xtcdir = broken_copy(work, experiment, run, 'epix100_0')
         counts = dict(counts)
-        counts.update(ds._per_drp_counts(work, st, experiment, run, counts, xtcdir=xtcdir))
+        try:
+            counts.update(ds._per_drp_counts(work, st, experiment, run, counts, xtcdir=xtcdir))
+        finally:
+            if xtcdir:                  # the broken copy is not kept
+                shutil.rmtree(xtcdir, ignore_errors=True)
     drps = [(f'{state["det"]}_{i}', state['platform']) for i in range(state.get('segments', 1))] + \
            [(a['alias'], a['group']) for a in state.get('also', ())]
     types = {d.rsplit('_', 1)[0] for d, _ in drps}
@@ -214,7 +218,7 @@ def broken_copy(work, experiment, run, alias, drop=DROP_L1):
             with open(out, 'r+b') as f:
                 f.truncate(cut)
             print(f'{ds.now()} --break drop-l1: {os.path.basename(path)} ({alias}): kept {len(l1) - drop} of '
-                  f'{len(l1)} L1Accepts, cut at {cut} B (copy in {dst})', flush=True)
+                  f'{len(l1)} L1Accepts, cut at {cut} B (in a copy, {dst}, removed after the check)', flush=True)
     return dst
 
 
