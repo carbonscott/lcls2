@@ -411,7 +411,11 @@ A record proves a row only if all of these hold, and the row's line names the fi
   - `prog:ami-*` (R1), always: an `ami_check` witness (`logs/ami_check.json`) that passed
     (`says the check failed`), with `matches`, AMI's per-event agreement with psana2 as
     `[timestamp, seq, pixel]`, at least one, every timestamp an L1Accept of the run's file
-    (`lists no per-event match`, `match timestamp ... is no L1Accept of the run's files`), and
+    (`lists no per-event match`, `match timestamp ... is no L1Accept of the run's files`) whose
+    seq and pixel are what that file holds there: the tool reads the detector's (`det`, default
+    fakecam) raw array itself, words 4 and 5 of its first row (seq) and word 8 (pixel), as
+    `ami_check` reads them with psana2 (`match 0x... gives seq 7 pixel 248, the run's xtc2 file
+    holds seq 0 pixel 7 there`), and
     `served_by`, the processes (`pid`, `cmdline`, `ancestors`) that held a TCP socket on AMI's
     ports while the cycle fetched AMI's result, and, with `--ami-shot`, while the screenshot's
     ami-client showed the run: one of them, or one of their ancestors (AMI's GUI windows are
@@ -456,8 +460,26 @@ A record proves a row only if all of these hold, and the row's line names the fi
     row's program gives `defined`, the PV names the program's source defines (more than 0), and
     `missing`, those the stand-in does not serve, empty (`simhsd does not serve 2 of the 40 PVs
     hsdpvs defines, e.g. ...`).
-  `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R4) and
-  checks the row's line says why.
+  - every GUI or monitor row above (R2, R2b, R2c, R4) also needs procmgr's own instance of the
+    program to have run through the run, not only cycle's offscreen copy of it: the record lists
+    its procmgr log (`# ID:`, with one `The PID of new child` line: procServ never restarted it),
+    and procstat's entry holds two more tables that `cycle` reads with procstat in Configured,
+    `before` (its walk ends before the run's BeginRun) and `after` (its walk starts after the
+    EndRun); the id must be RUNNING in both and in the table read while Running (`procstat's
+    table before the run shows procmgr's groupca SHUTDOWN, not RUNNING`, `procstat's table
+    "after" was read from ... not after the run's EndRun`, `names 2 child pids`).
+  - the values a GUI, monitor or client read must be ones their PVs' servers served while it
+    read. Each stand-in (simxpm, simhsd, simtpr, simdti) logs every value it serves to
+    `logs/<service>.served.jsonl` (`psdaq.sim.served_log`), which the record lists. A live read
+    counts only if its PV is in such a log and every number it shows was served from the last
+    post before the read's `start` to its `end` (2 s either side), to the precision the text
+    shows (rounded or cut at its last digit, scaled by a `k`, `M` or `G` unit at its end) (`its groupca
+    entry shows '1' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm did not serve while groupca
+    read`, `shows groupca read no live value of a PV a served-value log holds`, `the record lists
+    no served-value log`). simhsd, simtpr and simdti start their counts at a random second, so
+    another run's values do not fit this one's log.
+  `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R4, the
+  procmgr instance, the served values) and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
