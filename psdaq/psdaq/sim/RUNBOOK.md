@@ -592,6 +592,7 @@ its evidence record lists their logs.
 | `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every recorded image is `camera_image(seed, seq)` with fakecam's seq of the same L1Accept, and drp_pva's `drp_match_count` equals the L1Accepts that have an image |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIoc -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (CA, 1234.5); simxpm's `DAQ:SIM:XPM:0:PART:<p>:NumL0Acc` (PVA) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` and `sim_l0acc` never decrease, `sim_l0acc` stays within the run's L1Accepts |
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
+| `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B` and `simtpr -P DAQ:SIM:TPR`, each on PVA ports of its own (31300 + 10 p + 0..3: simxpm stays the only server on the node's search port) | the stand-ins of `hsdpvs` and `tprcas` (R3) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the table `tprcas.main()` builds) and reads its monitoring counters (`MONTIMING`, `EVTCNT`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs` and `prog:tprcas` from |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime` | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
@@ -610,7 +611,7 @@ Prometheus exporters from 31180 + 2 p. The UDP port is 31200 + p.
 ```bash
 # step A (WD as in §2)
 daq_sim up -w $WD --ami --ami-src /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526 \
-    --pva --epics --udp --gui --rate 100 --detach
+    --pva --epics --udp --gui --pvservers --rate 100 --detach
 # step B: a cycle; besides the fakecam counts it prints the MEB, AMI and system DRP counts
 daq_sim cycle -w $WD --events 1000
 daq_sim down -w $WD
@@ -733,6 +734,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   `logger.debug('list2d\n', list2d)`, whose formatting raises `TypeError` in `QWLoggerStd`'s
   filter. `up --gui` therefore waits until control_gui polls control (its log's first
   `CGWMain.on_zmq_poll`) before it returns, so the cycle selects the partition after.
+- **Walk network guard.** The parity walk (`qt_walk`) refuses every connection to another host;
+  a connect to this host's own name or addresses (`qt_walk.THIS_HOST`) is let through, since
+  procstat's procmgr reaches the local procServ ports through the host's name (refused, every
+  process showed `NO CONNECT`).
 - **GUI witnesses.** The witness of groupca, partca, pvant and procstat is a second instance of each GUI,
   run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
   `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. xpmpva is

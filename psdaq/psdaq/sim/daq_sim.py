@@ -129,7 +129,9 @@ def ports(platform):
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
-            'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform)}
+            'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform),
+            'pvservers': {'simhsd': (31300 + 10 * platform, 31301 + 10 * platform),
+                          'simtpr': (31302 + 10 * platform, 31303 + 10 * platform)}}
 
 
 def ami_ports(platform):
@@ -557,6 +559,7 @@ def cmd_up(args):
     epics = getattr(args, 'epics', False)
     gui = getattr(args, 'gui', False)
     udp = getattr(args, 'udp', False)
+    pvservers = getattr(args, 'pvservers', False)
     ioc = soft_ioc() if epics else None
     work = Work(args.workdir)
     os.makedirs(work.dir, exist_ok=True)
@@ -598,7 +601,7 @@ def cmd_up(args):
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
              'segments': segments, 'det': DETECTOR, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
-             'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp}
+             'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp, 'pvservers': pvservers}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -651,6 +654,16 @@ def cmd_up(args):
                           (['--camera-pv', CAMERA_PV, '--camera-seed', str(args.seed)] if pva else []), env)
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
+
+        if pvservers:                   # R3 stand-ins, each on PVA ports of its own (gui_witness.SERVERS)
+            from psdaq.sim import gui_witness
+            for name, S in gui_witness.SERVERS.items():
+                srv, bcast = P['pvservers'][name]
+                senv = dict(env, EPICS_PVAS_SERVER_PORT=str(srv), EPICS_PVAS_BROADCAST_PORT=str(bcast))
+                p = start_service(work, state, name, [py, '-m', f'psdaq.sim.{name}'] +
+                                  [a.format(**gui_params(args.platform)) for a in S['args']], senv)
+                _wait_log(state['services'][name]['log'], 'ready', 30, p, name)
+                say(f'{name} pid {p.pid}: PVA {srv}/{bcast} on 127.0.0.1, stands in for {", ".join(S["programs"])}')
 
         if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
             r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
@@ -797,6 +810,17 @@ def _wait_running(state, timeout):
         time.sleep(1)
 
 
+def _wait_log(path, text, timeout, proc=None, what=''):
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        if text in open(path, errors='replace').read():
+            return
+        if proc is not None and proc.poll() is not None:
+            raise Fail(f'{what} exited {proc.returncode} ({path})')
+        time.sleep(0.5)
+    raise Fail(f'{what} did not say {text!r} in {timeout} s ({path})')
+
+
 def _wait_control_gui(work, timeout):
     """Wait until control_gui has built its window and polls control (its log's first
     'CGWMain.on_zmq_poll'), so the cycle's transitions start after: a control_gui that builds its
@@ -927,7 +951,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('ioc', 'simxpm', 'lgbk', 'configdb'):
+    for name in ('simhsd', 'simtpr', 'ioc', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -1141,7 +1165,7 @@ def cmd_cycle(args):
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
           f'experiment {status[6]} run {status[7]}', flush=True)
-    witness = GuiWitness(work, state) if ok and state.get('gui') else None
+    witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers')) else None
     shot = None
     if ok and getattr(args, 'ami_shot', None):
         if ami:
@@ -1386,7 +1410,27 @@ class GuiWitness:
         self.gw, self.work, self.state = gui_witness, work, state
         self.params = gui_params(state['platform'], work.path('prom'), work.path(state['cnf']))
         env = dict(os.environ, **{TAG: work.dir})
-        self.walks, self.monitors = {}, {}
+        self.walks, self.monitors, self.servers = {}, {}, {}
+        for name in gui_witness.SERVERS:                # R3 stand-ins: read in a thread while Running
+            if name in state.get('services', {}):
+                res = self.servers[name] = {}
+                port = state['ports']['pvservers'][name][1]
+                try:
+                    prepared = gui_witness.server_prepare(name, self.params, port)   # imports: in this thread
+                except Exception as ex:
+                    prepared, res['entry'] = None, {'pass': False, 'problems': [f'{type(ex).__name__}: {ex}']}
+
+                def read(res=res, name=name, port=port, prepared=prepared):
+                    if prepared is None:
+                        return
+                    try:
+                        res['entry'] = gui_witness.server_entry(name, self.params, port, gui_witness.PUMPS + 4,
+                                                                prepared=prepared)
+                    except Exception as ex:
+                        res['entry'] = {'pass': False, 'problems': [f'{type(ex).__name__}: {ex}']}
+                res['thread'] = threading.Thread(target=read, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: reading {name}\'s PVs', flush=True)
         for name in gui_witness.WITNESS:
             if name in procs(state):
                 self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), env)) + [None]
@@ -1423,7 +1467,7 @@ class GuiWitness:
                     w[4] = time.time()
                     print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
             time.sleep(0.1)
-        for name, res in self.monitors.items():
+        for name, res in list(self.monitors.items()) + list(self.servers.items()):
             res['thread'].join(max(1, end - time.monotonic()))
         time.sleep(1.0)
 
@@ -1437,16 +1481,21 @@ class GuiWitness:
         for name, res in self.monitors.items():
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
                                                    res.get('reads', []), prefix, self.params)
-        w = self.gw.witness(f'{experiment}/r{run:04d}', files, prefix, programs)
+        servers = {name: res.get('entry') or {'pass': False, 'problems': ['no result']}
+                   for name, res in self.servers.items()}
+        w = self.gw.witness(f'{experiment}/r{run:04d}', files, prefix, programs, servers)
         with open(self.work.path('logs', 'gui_witness.json'), 'w') as f:
             json.dump(w, f, indent=1)
-        bad = [f'{n}: {e["problems"][:2]}' for n, e in programs.items() if not e['pass']]
+        bad = [f'{n}: {e["problems"][:2]}' for n, e in list(programs.items()) + list(servers.items()) if not e['pass']]
         if not files:
             bad.append('no recorded xtc2 file (cycle without --no-record)')
         out = {f'gui witness {n}': f'{len(e["live"])} live PVs, e.g. ' +
                (', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}'
                           for r in e['reads'] if r['name'] in e['live'][:2]) or 'none')
                for n, e in programs.items()}
+        out.update({f'pv server {n}': f'{len(e.get("live", []))} live PVs; ' + ', '.join(
+            f'{p} {i["served"]}/{i["defined"]} PVs served' for p, i in e.get('interfaces', {}).items())
+            for n, e in servers.items()})
         out['gui witness'] = 'PASS' if not bad else f'FAIL {bad[:3]}'
         return out
 
@@ -1557,6 +1606,9 @@ def main(argv=None):
                         help='also run the PyQt GUIs control_gui, groupca and pvant, offscreen, as the '
                              'configs start them; cycle then runs groupca and pvant once more while '
                              'Running and checks they show the partition\'s live counts (psdaq.sim.gui_witness)')
+    upopts.add_argument('--pvservers', action='store_true',
+                        help='also run the PV-server stand-ins simhsd (for hsdpvs) and simtpr (for tprcas), each on '
+                             'PVA ports of its own; cycle reads their PVs while Running (psdaq.sim.gui_witness)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
