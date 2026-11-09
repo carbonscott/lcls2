@@ -26,9 +26,10 @@ a frame (frames matched in order, none repeated or out of place), and the value 
 be sim_udpencoder's test pattern, 200 for an odd frameCount, 100 for an even one
 (sim_udpencoder.cc _loopbackSend).
 
---epics: epicsArch recorded the stand-in IOC's PVs (daq_sim up --epics): sim_const (PVA) must be
-EPICS_CONST wherever psana2 has a value, sim_count (CA, +1 every 0.1 s) must never decrease,
-and both must have values.
+--epics: epicsArch recorded the stand-in IOC's CA PVs and simxpm's PVA count (daq_sim up --epics):
+sim_const must be EPICS_CONST wherever psana2 has a value, sim_count (+1 every 0.1 s) and
+sim_l0acc (simxpm's L0 accept count of the partition) must never decrease, sim_l0acc must never
+exceed the run's L1Accepts, and all three must have values.
 
 Prints one JSON line of counts; exits 0 only if every check passes.  psana2's calibration DB
 lookup is off and LCLS_CALIB_HTTP points at a dead loopback port unless set.
@@ -102,8 +103,8 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
     if udp:
         names[udp] = frame
     if epics:
-        names['sim_count'] = lambda d, evt: d(evt)
-        names['sim_const'] = lambda d, evt: d(evt)
+        for n in ('sim_count', 'sim_const', 'sim_l0acc'):
+            names[n] = lambda d, evt: d(evt)
     data, where = read_streams(xtcdir, exp, run, names)
     events = sorted((ts, s) for ts, s in data[det].items() if s is not None)   # the L1Accepts
     out = {'events': len(events), 'streams': where}
@@ -180,8 +181,15 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
         back = [(a, b) for a, b in zip(counts, counts[1:]) if b < a]
         if back:
             problem(f'sim_count went back {len(back)} times, e.g. {back[0][0]} -> {back[0][1]}')
-        if not consts or not counts:
-            problem('epicsArch: sim_const or sim_count has no value in any event')
+        l0acc = [float(v) for _, v in sorted(data['sim_l0acc'].items()) if v is not None]
+        out['epics l0acc events'] = len(l0acc)
+        out['epics l0acc range'] = [l0acc[0], l0acc[-1]] if l0acc else None
+        if any(b < a for a, b in zip(l0acc, l0acc[1:])):
+            problem('sim_l0acc went back')
+        if l0acc and l0acc[-1] > len(events):
+            problem(f'sim_l0acc {l0acc[-1]} exceeds the run\'s {len(events)} L1Accepts')
+        if not consts or not counts or not l0acc:
+            problem('epicsArch: sim_const, sim_count or sim_l0acc has no value in any event')
     out['problems'] = problems
     out['pass'] = not problems and len(events) > 0
     return out

@@ -128,7 +128,7 @@ def ports(platform):
     base = 31000 + 10 * platform
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
-            'udp': 31200 + platform}
+            'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform)}
 
 
 def ami_ports(platform):
@@ -343,9 +343,13 @@ AMI = ''' {{ id:'ami-manager', flags:'s',
  {{ id:'ami-worker_0', flags:'s',
    cmd:'{bin}/ami-worker -p {abase} -H 127.0.0.1 -N 0 -n 1 -b {heartbeat} {aopts}'
        ' psana://shmem={tag},skip_calib_load=all' }},
- {{ id:'ami-client', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+ {{ id:'ami-client', flags:'s', env:'QT_QPA_PLATFORM=offscreen {pvas}',
    cmd:'{bin}/ami-client -p {abase} -H 127.0.0.1 {aopts}' }},
 '''
+# ami-client starts a PVA server of its own (PvCtrlServer).  On the node's PVA search port it would
+# share the unicast searches with simxpm's server, and a search reaches only one of the sockets
+# bound to a port, so the DRPs' and control's searches could miss simxpm: it gets its own ports.
+AMI_CLIENT_PVAS = 'EPICS_PVAS_SERVER_PORT={0} EPICS_PVAS_BROADCAST_PORT={1}'
 AMI_HEARTBEAT_MS = 200
 # --pva: drp_pva records simxpm's camera PV (simxpm --camera-pv), an NTNDArray whose every update
 # carries the time of one L1Accept, as an areaDetector IOC with a timing receiver stamps frames.
@@ -355,8 +359,9 @@ PVA = ''' {{ id:'pvcam_0', flags:'spu',
    cmd:'drp_pva{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
        ' -k {ep} -M {prom} pva/{campv}' }},
 '''
-# --epics: epicsArch archives the PVs of a stand-in IOC (EPICS base's softIocPVA, serving CA and
-# PVA on loopback) that 'up' starts from EPICS_DB, one PV over each provider.
+# --epics: epicsArch archives two CA PVs of a stand-in IOC (EPICS base's softIoc, on loopback) that
+# 'up' starts from EPICS_DB, and one PVA PV of simxpm, its partition's L0 accept count (the one PVA
+# server on the node, see AMI_CLIENT_PVAS).
 EPICS_PROCS = ('epics_0',)
 EPICS_DB = '''# Written by daq_sim up --epics: the stand-in IOC whose PVs epicsArch records
 record(calc, "{pvbase}:EPICS:COUNT") {{
@@ -394,7 +399,9 @@ EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its 
 *sim_count
 {pvbase}:EPICS:COUNT ca
 *sim_const
-{pvbase}:EPICS:CONST pva
+{pvbase}:EPICS:CONST ca
+*sim_l0acc
+{l0acc} pva
 '''
 EPICS = ''' {{ id:'epics_0', flags:'spu',
    cmd:'epicsArch{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
@@ -426,7 +433,7 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
         out += AMI.format(bin=ami_bin, abase=P['ami'], aopts=aopts, heartbeat=AMI_HEARTBEAT_MS,
-                          tag=common['tag'])
+                          tag=common['tag'], pvas=AMI_CLIENT_PVAS.format(*P['ami_pvas']))
     return out
 
 
@@ -443,15 +450,15 @@ def udp_busy(port):
 
 
 def soft_ioc():
-    """EPICS base's softIocPVA (CA and PVA): on PATH, else in $CONDA_PREFIX/epics/bin/<arch>."""
-    found = shutil.which('softIocPVA')
+    """EPICS base's softIoc (CA only): on PATH, else in $CONDA_PREFIX/epics/bin/<arch>."""
+    found = shutil.which('softIoc')
     if found:
         return found
     import glob
     hits = sorted(glob.glob(os.path.join(os.environ.get('CONDA_PREFIX', '/nonexistent'), 'epics', 'bin',
-                                         '*', 'softIocPVA')))
+                                         '*', 'softIoc')))
     if not hits:
-        raise Fail('--epics: no softIocPVA on PATH or under $CONDA_PREFIX/epics/bin (EPICS base)')
+        raise Fail('--epics: no softIoc on PATH or under $CONDA_PREFIX/epics/bin (EPICS base)')
     return hits[0]
 
 
@@ -638,10 +645,10 @@ def cmd_up(args):
             with open(work.path('sim_ioc.db'), 'w') as f:
                 f.write(EPICS_DB.format(pvbase=PVBASE, const=EPICS_CONST))
             with open(work.path('epicsArch.txt'), 'w') as f:
-                f.write(EPICS_PVLIST.format(pvbase=PVBASE))
+                f.write(EPICS_PVLIST.format(pvbase=PVBASE, l0acc=count_pv(args.platform)))
             p = start_service(work, state, 'ioc', [ioc, '-S', '-d', work.path('sim_ioc.db')], env)
-            _wait_pv(f'{PVBASE}:EPICS:CONST', 30, p)
-            say(f'stand-in IOC {ioc} pid {p.pid}: {PVBASE}:EPICS:COUNT (CA), {PVBASE}:EPICS:CONST (PVA)')
+            _wait_ca(f'{PVBASE}:EPICS:CONST', 30, p)
+            say(f'stand-in IOC {ioc} pid {p.pid}: {PVBASE}:EPICS:COUNT, {PVBASE}:EPICS:CONST (CA)')
         bindir = ami_scripts(work.path('bin'), amisrc) if ami else None
         if ami:
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
@@ -773,6 +780,19 @@ def _wait_pv(name, timeout, proc=None):
             return v
         if (proc is not None and proc.poll() is not None) or time.monotonic() > end:
             raise Fail(f'{name} does not answer over PVA: {v}')
+        time.sleep(0.5)
+
+
+def _wait_ca(name, timeout, proc=None):
+    """Wait until a PV answers over CA (from this node's loopback, sim_env.sh)."""
+    import epics
+    end = time.monotonic() + timeout
+    while True:
+        v = epics.caget(name, timeout=2.0)
+        if v is not None:
+            return v
+        if (proc is not None and proc.poll() is not None) or time.monotonic() > end:
+            raise Fail(f'{name} does not answer over CA')
         time.sleep(0.5)
 
 
@@ -1361,7 +1381,8 @@ def main(argv=None):
     upopts.add_argument('--pva', action='store_true',
                         help=f'also run drp_pva (pvcam_0) on simxpm\'s camera PV {CAMERA_PV}, one update per L1Accept')
     upopts.add_argument('--epics', action='store_true',
-                        help='also run epicsArch (epics_0) on the PVs of a stand-in IOC (softIocPVA, loopback)')
+                        help='also run epicsArch (epics_0) on two CA PVs of a stand-in IOC (softIoc, loopback) '
+                             'and a PVA PV of simxpm')
     upopts.add_argument('--udp', action='store_true',
                         help='also run drp_udpencoder (encoder_0) on the encoder frames sim_udpencoder sends on '
                              'loopback UDP, paced by simxpm (sim_udpencoder -T sim://)')
