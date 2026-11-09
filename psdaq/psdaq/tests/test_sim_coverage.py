@@ -1297,3 +1297,87 @@ def test_commands_return_the_verdict(tmp_path, argv):
     os.remove(files[0])
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 1 and 'FAIL' in r.stdout
+
+
+CARD = '/w/tpr/tprtrig/tpra'
+TPRTRIG_CMD = 'tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p 5'
+
+
+def tpr_regs(control=7, evtsel=(1 << 30) | (3 << 11) | 5, trig=(1 << 31, 2, 10, 0), t=L1_FIRST + 2):
+    """One read of a TPR card as gui_witness.tpr_reads keeps it: channel 0 and trigger 0 as given, the rest 0."""
+    chans = [{'control': 0, 'evtSel': 0} for _ in range(14)]
+    chans[0] = {'control': control, 'evtSel': evtsel}
+    trigs = [{'control': 0, 'delay': 0, 'width': 0, 'delayTap': 0} for _ in range(12)]
+    trigs[0] = dict(zip(('control', 'delay', 'width', 'delayTap'), trig))
+    return {'t': t, 'channels': chans, 'triggers': trigs}
+
+
+def r8_run(tmp_path, row='prog:tprtrig', cmd=TPRTRIG_CMD, card_line=f'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is {CARD}',
+           mutate=None):
+    """(exit code, line) of a record for an R8 row (a TPR program on a simulated TPR card): the run's xtc2 file, the
+    program's own log (saying which card tpr::Client mapped) and a gui_witness whose 'tpr' entry holds the card's
+    register reads during the run."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    lines = [card_line, 'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra0 is /w/tpr/tprtrig/tpra0'] if card_line else []
+    log = write_log(d / 'prog.log', cmd, *lines, 'Configuring channel 0 outputs 0x1 for Partition 5')
+    prog = row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], kind='tpr', id='tprtrig', card=CARD, reads=[tpr_regs(t=L1_FIRST + 2),
+                                                                            tpr_regs(t=L1_FIRST + 3)], live=['trigger0'])
+    if mutate:
+        mutate(w, w['programs'][prog])
+    files = [xtc, log, write_witness(d / 'gui_witness.json', w)]
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_tpr_program_is_run_when_its_card_held_what_its_command_line_programs(tmp_path):
+    """R8: tprtrig's own log (saying tpr::Client mapped the card) and 2 reads of the card within the run, each with
+    channel 0 started on partition 5 (procmgr's -p) and trigger 0 from channel 0, delay 2, width 10; tpr_trigger's
+    channel follows the partition's readout group."""
+    code, line = r8_run(tmp_path / 'a')
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = r8_run(tmp_path / 'b', row='prog:tpr_trigger',
+                        cmd='tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p 5 -u enc_trig')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (r8_run arguments, what the row's line says)
+R8_FORGERIES = {
+    'no-card-line': (dict(card_line=None), 'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-card': (dict(card_line='Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is /w/tpr/other/tpra'),
+                   'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-delay': (dict(cmd=TPRTRIG_CMD.replace('-d 2', '-d 3')), 'with trigger0.delay 0x2, not the 0x3'),
+    'other-partition': (dict(cmd=TPRTRIG_CMD.replace('-p 5', '-p 4')), 'with channel0.evtSel 0x40001805, not the 0x40001804'),
+    'never-started': (dict(cmd=TPRTRIG_CMD.replace(' -p 5', '')), 'with channel0.control 0x7, not the 0x0'),
+    'refused-argv': (dict(cmd=TPRTRIG_CMD + ' -e 40'), 'gives a command line tprtrig refuses'),
+    'one-read': (dict(mutate=lambda w, e: e.update(reads=e['reads'][:1])), '1 time(s) within the run'),
+    'read-after-run': (dict(mutate=lambda w, e: e['reads'][1].update(t=L1_LAST + 1)), '1 time(s) within the run'),
+    'trigger-off': (dict(mutate=lambda w, e: e['reads'][1]['triggers'][0].update(control=0)),
+                    'with trigger0.control 0x0, not the 0x80000000'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['read the card 0 time(s)']})),
+               'says tprtrig failed'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R8_FORGERIES))
+def test_r8_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R8_FORGERIES[case]
+    code, line = r8_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_tpr_expected_follows_the_programs_getopt():
+    assert coverage.tpr_expected('tprtrig', ['-r', '4', '-o', '0x5', '-c', '3', '-P', '1']) == (
+        {'channel': 3, 'control': 7, 'evtSel': (1 << 30) | 4},
+        [{'trigger': i, 'control': 3 | (1 << 16) | (1 << 31), 'delay': 0, 'width': 1, 'delayTap': 0} for i in (0, 2)])
+    assert coverage.tpr_expected('tprtrig', ['-e', '40']) == ({'channel': 10, 'control': 7,
+                                                             'evtSel': (1 << 30) | (2 << 11) | 40}, [])
+    assert coverage.tpr_expected('tprtrig', ['-p', "'5'"])[0]['evtSel'] == (1 << 30) | (3 << 11) | 5   # procmgr's repr
+    assert coverage.tpr_expected('tpr_trigger', ['-p', '5', '-u', 'x', '-o', '1'], group=2)[0]['evtSel'] == \
+        (1 << 30) | (3 << 11) | 2
+    assert coverage.tpr_expected('tpr_trigger', ['-o', '1']) is None            # no readout group
+    assert coverage.tpr_expected('tprtrig', ['-x']) is None and coverage.tpr_expected('tprtrig', ['extra']) is None

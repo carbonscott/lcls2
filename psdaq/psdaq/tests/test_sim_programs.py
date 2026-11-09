@@ -625,3 +625,48 @@ def test_daqmgr_config_of_the_daq_sim_cnf_loads_in_daqmgr(tmp_path, monkeypatch)
     from psdaq.slurm.main import Runner
     r = Runner(str(tmp_path / 'daqstat.py'), output=str(tmp_path / 'logs'))
     assert list(r.config) == ids and r.sbman.get_comment('control') == 'x0_p5_s0_control'
+
+
+def test_tpr_entries_run_the_configs_tpr_programs_on_cards_of_their_own(tmp_path):
+    """--tpr: tprtrig as srcf-rix.cnf starts it and tpr_trigger as rix.py's mono_enc_trig, each with PSDAQ_SIM_TPR on a
+    card (a directory) of its own; their rows are enumerated from the tree's configs."""
+    from psdaq.sim import gui_witness
+    extra = daq_sim.extra_entries(str(tmp_path), 5, tpr=True)
+    assert daq_sim.TPR_PROCS == tuple(T['id'] for T in gui_witness.TPR_PROGRAMS.values())
+    assert f"id:'tprtrig', flags:'sp', env:'PSDAQ_SIM_TPR={tmp_path}/tpr/tprtrig'" in extra
+    assert "cmd:'tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z'" in extra
+    assert f"id:'enc_trig', flags:'spu', env:'PSDAQ_SIM_TPR={tmp_path}/tpr/enc_trig'" in extra
+    assert "cmd:'tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10'" in extra
+    assert gui_witness.tpr_card(str(tmp_path), 'tpr_trigger') == f'{tmp_path}/tpr/enc_trig/tpra'
+    assert set(daq_sim.TPR_PROCS) <= set(daq_sim.procs({'tpr': True}))
+    assert not set(daq_sim.TPR_PROCS) & set(daq_sim.procs({}))
+    assert "PSDAQ_SIM_TPR" not in daq_sim.extra_entries(str(tmp_path), 5, gui=True, pvservers=True)
+    rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
+    assert {'prog:tprtrig', 'prog:tpr_trigger'} <= set(rows)
+    enumerated, _ = coverage.enumerate_rows(REPO)
+    assert {'prog:tprtrig', 'prog:tpr_trigger'} <= set(enumerated)
+
+
+def test_tprtrig_programs_a_simulated_card_as_its_argv_says(tmp_path):
+    """tpr::Client with PSDAQ_SIM_TPR (psdaq/psdaq/tpr/Client.cc) maps a file for /dev/tpra; tprtrig programs it as it
+    would a card, and gui_witness.tpr_registers reads back what coverage.tpr_expected says its argv programs.  Without
+    PSDAQ_SIM_TPR it opens /dev/tpra, as before (none here)."""
+    import shutil
+    from psdaq.sim import gui_witness
+    exe = shutil.which('tprtrig')
+    if not exe:
+        pytest.skip('tprtrig is not built')
+    argv = ['-t', 'a', '-c', '0', '-o', '1', '-d', '2', '-w', '10', '-p', '5']
+    env = dict(os.environ, PSDAQ_SIM_TPR=str(tmp_path))
+    r = subprocess.run([exe] + argv, env=env, capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
+    assert f'simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is {tmp_path}/tpra\n' in r.stdout
+    regs = gui_witness.tpr_registers(str(tmp_path / 'tpra'))
+    chan, trigs = coverage.tpr_expected('tprtrig', argv)
+    assert regs['channels'][0] == {'control': chan['control'], 'evtSel': chan['evtSel']}
+    assert regs['triggers'][0] == {k: trigs[0][k] for k in ('control', 'delay', 'width', 'delayTap')}
+    assert all(t['control'] == 0 for t in regs['triggers'][1:]) and len(trigs) == 1
+    if not os.path.exists('/dev/tpra'):
+        env.pop('PSDAQ_SIM_TPR')
+        r = subprocess.run([exe] + argv, env=env, capture_output=True, text=True, timeout=60)
+        assert r.returncode != 0 and 'Could not open tpr: No such file or directory' in r.stdout + r.stderr

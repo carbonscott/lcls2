@@ -29,7 +29,9 @@ showed 2 or more distinct values after its first text (psdaq.sim.coverage.change
 
 daqstat (R5) reads no PV: its entry ("kind": "slurm") holds the walk's refreshes of its table and the cycle's own squeue
 reads of simslurm meanwhile.  The tree's own PV servers (PROGRAM_SERVERS: bldcas, hpsdbuscas) get a 'servers' entry
-keyed by the program (R3b), the stand-ins of SERVERS one keyed by the stand-in (R3).
+keyed by the program (R3b), the stand-ins of SERVERS one keyed by the stand-in (R3).  The TPR programs ('daq_sim up
+--tpr': tprtrig, tpr_trigger, each on a simulated TPR card) get a 'programs' entry ("kind": "tpr", R8) with their card's
+channel and trigger registers, read once a second.
 """
 
 import argparse
@@ -109,6 +111,84 @@ MONITORS = {
                        'argv': ['-H', 'tst', '-I', 'xpm-{xpm}', '-M', '{prom}', '-P', '{pvbase}:XPM:{xpm}',
                                 'NumL0Acc', 'NumL0Inp', 'RunTime']},
 }
+# R8: the TPR programs of the configs, which 'daq_sim up --tpr' runs on simulated TPR cards (psdaq/psdaq/tpr/Client.cc
+# with PSDAQ_SIM_TPR=<dir>: the card's register map is the file <dir>/tpr<x>, which keeps what the program writes): tprtrig
+# as srcf-rix.cnf starts it (flags 'sp': procmgr adds -p <platform>, the partition its channel follows) and tpr_trigger as
+# rix.py's mono_enc_trig (flags 'spu': a 'tpr' level process of the partition, its readout group from control at
+# Connect), each on a card of its own (both program /dev/tpra channel 0, output 1, as the configs do).  Neither logs a
+# run: while the run is Running the cycle reads each card's channel and trigger registers once a second, and coverage
+# checks them against what the program's own command line programs.
+TPR_PROGRAMS = {
+    'tprtrig':     {'id': 'tprtrig', 'flags': 'sp', 'argv': ['-t', 'a', '-c', '0', '-o', '1', '-d', '2', '-w', '10', '-z']},
+    'tpr_trigger': {'id': 'enc_trig', 'flags': 'spu',
+                    'argv': ['-H', '{instr}', '-C', 'localhost', '-t', 'a', '-c', '0', '-o', '1', '-d', '2', '-w', '10']},
+}
+# TprReg (psdaq/psdaq/tpr/Module.hh, the card's BAR 1): TprBase at 0x80000, its 14 channels 0x1000 bytes apart
+# (control, evtSel, ...), its 12 triggers from 0xA0000, 0x1000 bytes apart (control, delay, width, delayTap)
+TPR_CHANNELS, TPR_TRIGGERS, TPR_STRIDE, TPR_NCHANNELS, TPR_NTRIGGERS = 0x80000, 0xA0000, 0x1000, 14, 12
+
+
+def tpr_registers(path):
+    """The channel and trigger registers of a TPR register map file (TprReg): {'channels': [{'control', 'evtSel'}],
+    'triggers': [{'control', 'delay', 'width', 'delayTap'}]}."""
+    import struct
+    with open(path, 'rb') as f:
+        def words(off, n):
+            f.seek(off)
+            b = f.read(4 * n)
+            return list(struct.unpack(f'<{n}I', b)) if len(b) == 4 * n else [None] * n
+        chans = [dict(zip(('control', 'evtSel'), words(TPR_CHANNELS + i * TPR_STRIDE, 2))) for i in range(TPR_NCHANNELS)]
+        trigs = [dict(zip(('control', 'delay', 'width', 'delayTap'), words(TPR_TRIGGERS + i * TPR_STRIDE, 4)))
+                 for i in range(TPR_NTRIGGERS)]
+    return {'channels': chans, 'triggers': trigs}
+
+
+def tpr_card(workdir, name):
+    """The register map file of TPR program `name`'s simulated card: <workdir>/tpr/<procmgr id>/tpra."""
+    return os.path.join(workdir, 'tpr', TPR_PROGRAMS[name]['id'], 'tpr' + TPR_PROGRAMS[name]['argv'][
+        TPR_PROGRAMS[name]['argv'].index('-t') + 1])
+
+
+def tpr_reads(card, seconds, period=1.0):
+    """Read the card's registers every `period` for `seconds`: (Unix start, Unix end, reads), each read
+    {'t': EPICS-epoch seconds, 'channels': [...], 'triggers': [...]} (one per change, the last always kept)."""
+    out, t0 = [], time.time()
+    end = t0 + seconds
+    while True:
+        try:
+            r = tpr_registers(card)
+        except OSError as ex:
+            r = {'error': f'{type(ex).__name__}: {ex}'}
+        r['t'] = round(time.time() - EPICS_EPOCH, 3)
+        out.append(r)
+        if time.time() >= end:
+            break
+        time.sleep(period)
+    return t0, time.time(), out
+
+
+def tpr_argv(name, instr):
+    """The argv procmgr's entry of TPR program `name` gives it (before procmgr's -p and -u)."""
+    return [a.format(instr=instr) for a in TPR_PROGRAMS[name]['argv']]
+
+
+def tpr_entry(name, card, t0, t1, reads):
+    """The witness entry of a TPR program's card (R8): its register reads while the run ran; it passes if the card was
+    read 2 or more times and shows a trigger output enabled (coverage checks the values against the program's argv)."""
+    e = {'kind': 'tpr', 'id': TPR_PROGRAMS[name]['id'], 'card': card, 'start': round(t0 - EPICS_EPOCH, 3), 'end': round(t1 - EPICS_EPOCH, 3), 'reads': reads,
+         'problems': []}
+    ok = [r for r in reads if 'error' not in r]
+    if len(ok) < 2:
+        e['problems'].append(f'read the card {card} {len(ok)} time(s) (2 or more needed): '
+                             f'{[r["error"] for r in reads if "error" in r][:1]}')
+    live = sorted({f'trigger{i}' for r in ok for i, t in enumerate(r['triggers']) if (t['control'] or 0) >> 31})
+    if ok and not live:
+        e['problems'].append(f'no trigger output of the card {card} is enabled')
+    e['live'] = live
+    e['pass'] = not e['problems']
+    return e
+
+
 # PV-server stand-ins (R3) daq_sim up --pvservers starts, each on PVA ports of its own (so simxpm stays the
 # only server on the node's search port): what the cycle reads of each while Running (a PV and a field that
 # changes once a second) and the programs it stands in for, each with the PV names that program's own source

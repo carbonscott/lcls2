@@ -5,8 +5,39 @@
 
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <string>
 
 using namespace Pds::Tpr;
+
+//  A stand-in for the TPR card, for running without hardware (psdaq/psdaq/sim, RUNBOOK 3d):
+//  with PSDAQ_SIM_TPR=<dir> in the environment, the card's register map (BAR 1) and the
+//  channel's message queues are regular files in <dir> named after the device files
+//  (<dir>/tpra, <dir>/tpra<channel>), created zero-filled and mapped as the driver's device
+//  files are.  The registers keep what is written (no firmware acts on them), so another
+//  process can read what was programmed; no timing frame reaches the queues.  Without
+//  PSDAQ_SIM_TPR the device files are opened, as before.
+static std::string _simPath(const char* devname)
+{
+  const char* dir = getenv("PSDAQ_SIM_TPR");
+  if (!dir || !*dir)  return std::string();
+  const char* base = strrchr(devname, '/');
+  return std::string(dir) + "/" + (base ? base+1 : devname);
+}
+
+static int _open(const char* devname, const std::string& sim, size_t size)
+{
+  if (sim.empty())  return ::open(devname, O_RDWR);
+  int fd = ::open(sim.c_str(), O_RDWR|O_CREAT, 0644);
+  if (fd >= 0 && ftruncate(fd, size) < 0) {
+    close(fd);
+    return -1;
+  }
+  printf("Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): %s is %s\n", devname, sim.c_str());
+  return fd;
+}
 
 Client::Client(const char* devname,
                unsigned    channel,
@@ -16,7 +47,7 @@ Client::Client(const char* devname,
   _dev    (nullptr),
   _queues (nullptr)
 {
-  _fd = ::open(devname, O_RDWR);
+  _fd = _open(devname, _simPath(devname), sizeof(Pds::Tpr::TprReg));
   if (_fd<0) {
     perror("Could not open tpr");
     throw std::string("Could not open tpr");
@@ -67,7 +98,7 @@ Client::Client(const char* devname,
   char dev[16];
   sprintf(dev,"%s%x",devname,_channel);
 
-  _fdsh = open(dev, O_RDWR);
+  _fdsh = _open(dev, _simPath(dev), sizeof(Pds::Tpr::Queues));
   if (_fdsh < 0) {
     perror("Could not open sh");
     throw std::string("Could not open sh");

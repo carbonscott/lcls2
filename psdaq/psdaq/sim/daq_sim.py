@@ -2,7 +2,7 @@
 
     daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--segments N]
                    [--det TYPE] [--also TYPE[:GROUP]]... [--fixed-rate GROUP:INDEX]... [--bld]
-                   [--meb] [--ami] [--pva] [--epics] [--udp] [--gui] [--webgui] [--detach]
+                   [--meb] [--ami] [--pva] [--epics] [--udp] [--gui] [--pvservers] [--tpr] [--webgui] [--detach]
                    [--hosts HOST_A,HOST_B --dry-run]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record] [--kill-drp]
@@ -344,7 +344,7 @@ def procs(state):
         (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ()) + \
         tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ()) + \
         (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ()) + \
-        (PVSERVER_PROCS if state.get('pvservers') else ())
+        (PVSERVER_PROCS if state.get('pvservers') else ()) + (TPR_PROCS if state.get('tpr') else ())
 
 
 def procmgr_status(state):
@@ -475,6 +475,12 @@ PVSERVER_PROCS = ('bldcas', 'hpsdbuscas')
 PVSERVER = ''' {{ id:'{id}', flags:'s', env:'EPICS_PVAS_SERVER_PORT={srv} EPICS_PVAS_BROADCAST_PORT={bcast}',
    cmd:'{id} {args}' }},
 '''
+# --tpr: the TPR programs of the configs (gui_witness.TPR_PROGRAMS: tprtrig, tpr_trigger) on simulated TPR cards, one
+# each: tpr::Client maps <workdir>/tpr/<id>/tpra, a file, instead of /dev/tpra (PSDAQ_SIM_TPR, psdaq/psdaq/tpr/Client.cc)
+TPR_PROCS = ('tprtrig', 'enc_trig')    # the procmgr ids of gui_witness.TPR_PROGRAMS
+TPR_ENTRY = ''' {{ id:'{id}', flags:'{flags}', env:'PSDAQ_SIM_TPR={card}',
+   cmd:'{cmd}' }},
+'''
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
@@ -524,8 +530,8 @@ EPICS = ''' {{ id:'epics_0', flags:'spu',
 
 
 def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
-                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False):
-    """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui and --ami
+                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False, tpr=False):
+    """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui, --tpr and --ami
     (ami_bin: where the ami-* programs are); with --gui and --pvservers also the GUIs on the
     device stand-ins (R4)."""
     P = ports(platform)
@@ -562,6 +568,11 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
                                      pvaenv=' '.join(f'{k}={v}' for k, v in gui_witness.pva_env(
                                          P['pvservers'][W['server']][1]).items())
                                      if W['server'] in P['pvservers'] else '')    # simxpm: the node's own ports
+    if tpr:
+        from psdaq.sim import gui_witness
+        for name, T in gui_witness.TPR_PROGRAMS.items():
+            out += TPR_ENTRY.format(id=T['id'], flags=T['flags'], card=os.path.join(workdir, 'tpr', T['id']),
+                                    cmd=' '.join([name] + gui_witness.tpr_argv(name, INSTRUMENT)))
     if pvservers:
         from psdaq.sim import gui_witness
         for g in PVSERVER_PROCS:
@@ -697,6 +708,7 @@ def cmd_up(args):
     udp = getattr(args, 'udp', False)
     bld = getattr(args, 'bld', False)
     pvservers = getattr(args, 'pvservers', False)
+    tpr = getattr(args, 'tpr', False)
     also = parse_also(getattr(args, 'also', None) or [], args.platform)
     fixed = parse_fixed_rates(getattr(args, 'fixed_rate', None) or [])
     why = barrier_conflict([DETECTOR] + [a['det'] for a in also], pva or epics or udp or bld)
@@ -746,7 +758,8 @@ def cmd_up(args):
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
              'segments': segments, 'det': DETECTOR, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
              'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp,
-             'also': also, 'fixed_rates': fixed, 'bld': bld, 'pvservers': pvservers}
+             'also': also, 'fixed_rates': fixed, 'bld': bld, 'pvservers': pvservers,
+             'tpr': tpr}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -859,8 +872,11 @@ def cmd_up(args):
         if ami:
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
                 f'worker reads psana://shmem={meb_tag(args.platform)}')
+        if tpr:                         # each TPR program's simulated card (tpr::Client, PSDAQ_SIM_TPR)
+            for i in TPR_PROCS:
+                os.makedirs(work.path('tpr', i), exist_ok=True)
         extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
-                              also, bld, args.seed, args.length, pvservers=pvservers)
+                              also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
@@ -1438,7 +1454,8 @@ def cmd_cycle(args):
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
           f'experiment {status[6]} run {status[7]}', flush=True)
-    witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers')) else None
+    witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers') or state.get('tpr')) \
+        else None
     shot = None
     if ok and getattr(args, 'ami_shot', None):
         if ami:
@@ -1872,6 +1889,16 @@ class GuiWitness:
             self.slurm['thread'] = threading.Thread(target=squeue, daemon=True)
             self.slurm['thread'].start()
             print(f'{now()} GUI witness: reading squeue from simslurm every 0.5 s', flush=True)
+        self.tprs = {}
+        for name, T in gui_witness.TPR_PROGRAMS.items():   # R8: each TPR program's card, read in a thread
+            if T['id'] in procs(state):
+                res = self.tprs[name] = {'card': gui_witness.tpr_card(work.dir, name)}
+
+                def tread(res=res):
+                    res['t0'], res['t1'], res['reads'] = gui_witness.tpr_reads(res['card'], gui_witness.PUMPS + 4)
+                res['thread'] = threading.Thread(target=tread, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: reading {name}\'s TPR card {res["card"]}', flush=True)
         for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
             if m['id'] in procs(state):
                 import glob
@@ -1904,7 +1931,7 @@ class GuiWitness:
                     w[4] = time.time()
                     print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
             time.sleep(0.1)
-        for name, res in list(self.monitors.items()) + list(self.servers.items()):
+        for name, res in list(self.monitors.items()) + list(self.servers.items()) + list(self.tprs.items()):
             res['thread'].join(max(1, end - time.monotonic()))
         if self.stimulus and self.stimulus.get('link') is not None:     # the link is full no more
             err = pv_put(self.stimulus['pv'], [0.] * len(self.stimulus['value']))
@@ -1926,6 +1953,9 @@ class GuiWitness:
         for name, res in self.monitors.items():
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
                                                    res.get('reads', []), prefix, self.params)
+        for name, res in self.tprs.items():
+            programs[name] = self.gw.tpr_entry(name, res['card'], res.get('t0', 0), res.get('t1', 0),
+                                               res.get('reads', []))
         servers = {name: res.get('entry') or {'pass': False, 'problems': ['no result']}
                    for name, res in self.servers.items()}
         if 'deadca' in programs:
@@ -1943,6 +1973,8 @@ class GuiWitness:
             return ', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}' for r in rs) or 'none'
         out = {f'gui witness {n}': (f'{len(e["live"])} refreshes as squeue said, of {len(e.get("refreshes", []))}; '
                                     f'{len(e.get("squeue", []))} squeue reads' if e.get('kind') == 'slurm' else
+                                    f'TPR card read {len(e["reads"])} times, enabled: {" ".join(e["live"]) or "none"}'
+                                    if e.get('kind') == 'tpr' else
                                     f'{len(e["live"])} live PVs' + (f' of {e["stand_in"]}' if e.get('stand_in') else '') +
                                     ', e.g. ' + shown(e))
                for n, e in programs.items()}
@@ -2147,6 +2179,10 @@ def main(argv=None):
                         help='also run the PV-server stand-ins simhsd (for hsdpvs), simtpr (for tprcas) and simdti '
                              '(for dticas), each on PVA ports of its own; cycle reads their PVs while Running '
                              '(psdaq.sim.gui_witness)')
+    upopts.add_argument('--tpr', action='store_true',
+                        help='also run the TPR programs tprtrig and tpr_trigger as the configs start them, each on a '
+                             'simulated TPR card (tpr::Client with PSDAQ_SIM_TPR: its register map is a file in '
+                             '<workdir>/tpr/<id>/); cycle reads their registers while Running (psdaq.sim.gui_witness)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')

@@ -62,7 +62,11 @@ listed .xtc2 files.  Rows that need one:
                      (gui_witness keeps a read per widget), 2 or more distinct values after the
                      widget's first text (which may be the text it was built with) of a PV under
                      a prefix the stand-in serves (the -P of the stand-in's own log, which the
-                     record must list)
+                     record must list); for a TPR program ('kind': 'tpr', R8: tprtrig and
+                     tpr_trigger on a simulated TPR card, tpr::Client with PSDAQ_SIM_TPR), 2 or
+                     more reads of the card's registers within the run, each showing what the
+                     program's own command line programs (tpr_expected; tpr_trigger's channel on
+                     the partition's readout group), of the card its own log says it mapped
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -865,6 +869,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         if missing:
             return f'shows {prog} listed no job of {", ".join(missing)} (processes whose logs name the run)'
         return None
+    if e.get('kind') == 'tpr':                              # R8: a TPR program on a simulated TPR card
+        return tpr_problem(prog, e, logs, w.get('partition'), lo, hi)
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -915,6 +921,100 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
             and isinstance(r.get('values'), list) and len(numbers(r['values'])) >= 2]
     if not live:
         return f'shows {prog} read no live value under {prefix} (2 or more distinct numbers of one name)'
+    return None
+
+
+TPR_CARD = re.compile(r'Tpr::Client: simulated TPR \(PSDAQ_SIM_TPR\): (\S+) is (\S+)')
+# getopt strings of the TPR programs (psdaq/psdaq/app/tprtrig.cc, psdaq/drp/TprTrigger.cc), '?' left out
+TPR_GETOPT = {'tprtrig': 'c:d:D:m:w:o:t:r:e:p:zC:L:M:P:h', 'tpr_trigger': 'p:C:u:k:H:c:d:D:w:o:t:K:L:M:P:hv'}
+
+
+def _strtoul(text):
+    """C's strtoul(text, NULL, 0) for a whole argument (0x hex, leading-0 octal, decimal; quotes procmgr's repr adds
+    to -p dropped); None if it is not one."""
+    t = str(text).strip().strip('\'"')
+    try:
+        return int(t, 16) if t.lower().startswith('0x') else int(t, 8) if len(t) > 1 and t.startswith('0') else int(t)
+    except ValueError:
+        return None
+
+
+def tpr_expected(prog, args, group=None):
+    """R8: what TPR program `prog` (tprtrig, tpr_trigger) with command line `args` writes to its TPR card's registers,
+    as its source does through tpr::Client (TprBase::setupChannel and setupTrigger, psdaq/psdaq/tpr/Module.cc):
+    ({'channel': i, 'control': c, 'evtSel': s or None}, [{'trigger': i, 'control', 'delay', 'width', 'delayTap'}]),
+    tpr_trigger's channel on readout group `group` (control's, at Connect); None for an argv the program refuses."""
+    import getopt
+    try:
+        opts, rest = getopt.getopt(list(args), TPR_GETOPT[prog])
+    except (getopt.GetoptError, KeyError):
+        return None
+    if rest:
+        return None
+    v = {'c': 10, 'o': 0, 'd': 0, 'w': 1, 'D': 0, 'P': 0}
+    mode = rate = None
+    for o, a in opts:
+        o = o[1:]
+        if o in v:
+            v[o] = _strtoul(a)
+        elif prog == 'tprtrig' and o in 'erp':
+            if mode is not None:
+                return None             # only one rate selection mode
+            mode, rate = 'erp'.index(o), _strtoul(a)
+    if None in v.values() or (mode is not None and rate is None):
+        return None
+    if prog == 'tpr_trigger':
+        if group is None:
+            return None
+        mode, rate = 2, group
+    m32 = 0xffffffff
+    if mode is None:                    # tprtrig without -e/-r/-p: the channel is stopped, never started
+        chan = {'channel': v['c'], 'control': 0, 'evtSel': None}
+    else:
+        sel = ((1 << 30) | (2 << 11) | (rate & 0x3ff), (1 << 30) | rate, (1 << 30) | (3 << 11) | (rate & 0xf))[mode]
+        chan = {'channel': v['c'], 'control': 7, 'evtSel': sel & m32}
+    trigs = [{'trigger': i, 'control': ((v['c'] & 0xffff) | ((1 << 16) if v['P'] else 0) | (1 << 31)) & m32,
+              'delay': v['d'] & m32, 'width': v['w'] & m32, 'delayTap': v['D'] & m32}
+             for i in range(32) if v['o'] >> i & 1]
+    return chan, trigs
+
+
+def tpr_problem(prog, e, logs, partition, lo, hi):
+    """R8: why a 'tpr' witness entry does not show TPR program prog's card programmed as its command line says
+    while the run ran (lo..hi, EPICS-epoch seconds), or None.  The card is the file the program's own log says
+    tpr::Client mapped (TPR_CARD); tpr_trigger's readout group is the partition's (<...>:PART:<group>)."""
+    card = e.get('card')
+    mine = [(args, text) for (name, args), text in logs if name == prog]
+    named = [(args, m.group(1)) for args, text in mine for m in TPR_CARD.finditer(text) if isinstance(card, str)
+             and (m.group(2) == card or os.path.realpath(m.group(2)) == os.path.realpath(card))]
+    if not named:
+        return (f'its {prog} entry reads the card {card}, but no listed log of {prog} says tpr::Client mapped it '
+                f'(PSDAQ_SIM_TPR)')
+    m = re.search(r':PART:(\d+)$', str(partition or ''))
+    group = int(m.group(1)) if m else None
+    exp = tpr_expected(prog, named[0][0], group)
+    if exp is None:
+        return f'its log of {prog} gives a command line {prog} refuses, or no readout group for it: {named[0][0]}'
+    chan, trigs = exp
+    reads = [r for r in e.get('reads') or [] if isinstance(r, dict) and isinstance(r.get('t'), (int, float))
+             and lo <= r['t'] <= hi and isinstance(r.get('channels'), list) and isinstance(r.get('triggers'), list)]
+    if len(reads) < 2:
+        return f'read {prog}\'s card {len(reads)} time(s) within the run\'s L1Accepts (2 or more needed)'
+    for r in reads:
+        try:
+            c = r['channels'][chan['channel']]
+            got = [(k, c.get(k), chan[k]) for k in ('control', 'evtSel') if chan[k] is not None and c.get(k) != chan[k]]
+            for t in trigs:
+                tr = r['triggers'][t['trigger']]
+                got += [(f'trigger{t["trigger"]}.{k}', tr.get(k), t[k]) for k in ('control', 'delay', 'width', 'delayTap')
+                        if tr.get(k) != t[k]]
+        except (IndexError, AttributeError, TypeError):
+            return f'its {prog} entry has a read at {r["t"]:.3f} without the channel or trigger its command line programs'
+        if got:
+            k, have, want = got[0]
+            where = k if k.startswith('trigger') else f'channel{chan["channel"]}.{k}'
+            return (f'shows {prog}\'s card at {r["t"]:.3f} with {where} '
+                    f'{hex(have) if isinstance(have, int) else have}, not the {hex(want)} its command line programs')
     return None
 
 

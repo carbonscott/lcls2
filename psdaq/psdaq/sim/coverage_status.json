@@ -246,5 +246,13 @@
     "stand_in": "simtpr",
     "interface": "tprioc's PVs over PVA: the 237 names its C++ source (psdaq/psdaq/app/tprca.cc, meson.build executable('tprioc', 'tprca.cc')) makes under -n <prefix> (TprControl's ACCSEL ... EVTCNT, RXERRSCL, VSNERR, FRAMEVSN, TXCLKRATE; ChannelControl's MODE ... RATE for CH0..CH13, TprBase::NCHANNELS 14), all of which simtpr serves (tprcas's table and the 10 names tprioc adds to it), posting once a second what tprioc posts from the TPR (LINKSTATE, FRAMERATE, RXCLKRATE, TXCLKRATE, EVTCNT, each channel's RATE)",
     "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own (as tprioc -n DAQ:SIM:TPR, xcs.cnf: tprioc -r a -n DAQ:XCS:TPR); logs/gui_witness.json 'servers' entry simtpr: tprioc's names read from its source (gui_witness.tprioc_names) vs served, EVTCNT read within the run's L1Accepts"
+  },
+  "prog:tprtrig": {
+    "status": "RUN",
+    "note": "daq_sim up --tpr + cycle (R8, a TPR program on a simulated TPR card): procmgr runs tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <platform> (srcf-rix.cnf, flags 'sp') with PSDAQ_SIM_TPR=<workdir>/tpr/tprtrig, so tpr::Client maps the file <workdir>/tpr/tprtrig/tpra (the card's register map) instead of /dev/tpra and its log says so; while the run is Running the cycle reads the card's channel and trigger registers once a second, and logs/gui_witness.json's 'tpr' entry shows channel 0 started on the partition and trigger 0 from channel 0 with delay 2 and width 10, as its command line programs (coverage.tpr_expected), read within the run's L1Accepts"
+  },
+  "prog:tpr_trigger": {
+    "status": "RUN",
+    "note": "daq_sim up --tpr + cycle (R8, a TPR program on a simulated TPR card): procmgr runs tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <platform> -u enc_trig (rix.py mono_enc_trig, flags 'spu') with PSDAQ_SIM_TPR=<workdir>/tpr/enc_trig; it joins the partition as a 'tpr' level process and at Connect programs its card's channel 0 for the readout group control gives it; while the run is Running the cycle reads the card once a second, and logs/gui_witness.json's 'tpr' entry shows channel 0 on the partition's readout group and trigger 0 from channel 0 with delay 2 and width 10, as its command line programs (coverage.tpr_expected), read within the run's L1Accepts"
   }
 }
