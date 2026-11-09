@@ -36,7 +36,7 @@ function fmtDbl(v) { return (v === null || v === undefined) ? '-' : Number(v).to
 
 function render(n) {
   switch (n.type) {
-    case 'box': { const e = el('div', { class: n.dir === 'h' ? 'row' : 'col' });
+    case 'box': { const e = el('div', { class: n.dir === 'h' ? 'row' : 'col', hidden: n.hidden ? '' : null });
                   for (const c of n.children) e.append(render(c)); return e; }
     case 'group': { const e = el('fieldset', {}, el('legend', { text: n.title }));
                     for (const c of n.children) e.append(render(c)); return e; }
@@ -90,7 +90,7 @@ function render(n) {
       return i;
     }
     case 'pvcombo': case 'seqsel': {
-      const s = el('select', { 'data-parity': n.id, 'data-pv': n.pv });
+      const s = el('select', { 'data-parity': n.id, 'data-pv': n.pv, disabled: n.disabled ? '' : null });
       n.choices.forEach((c, k) => s.append(el('option', { value: k, text: c })));
       s.addEventListener('change', () => { sent(n.pv, +s.value); put(n.id, +s.value); stacks(); });   // currentIndexChanged
       W[n.id] = { node: n, el: s, update: (v) => { const q = v[n.pv]; if (blocked(n.pv, q)) return;
@@ -105,6 +105,7 @@ function render(n) {
       const send = () => { let m = 0; cbs.forEach((c, i) => { if (c.checked) m |= (1 << i); }); sent(n.pv, m); put(n.bits[0].id, m); };
       cbs.forEach(c => c.addEventListener('click', send));                                // PvMaskTab.setValue
       W[n.pv + '#mask'] = { node: n, el: box, update: (v) => { const q = v[n.pv];
+        if (n.nomon) return;                            // tprca.PvDstTab: never reads the PV, only writes it
         if (blocked(n.pv, q)) return;
         if (q !== null && q !== undefined) cbs.forEach((c, i) => c.checked = !!(q & (1 << i)));
         if (n.validate === 'nonzero') box.classList.toggle('err', q === 0);
@@ -128,6 +129,34 @@ function render(n) {
       return el('label', {}, cb, ' ' + n.label);
     }
     case 'edit': return el('input', { class: 'pv-edit', 'data-parity': n.id, value: n.text });
+    case 'pvbutton': {                                                                  // PvPushButton: put 1, 0
+      const b = el('button', { 'data-parity': n.id, 'data-pv': n.pv, text: n.label });
+      b.addEventListener('click', () => put(n.id, 1));
+      return b;
+    }
+    case 'pvedit': {                // a QLineEdit with the PyQt update()'s text (server side); Enter puts conv(text)
+      const i = el('input', { class: 'pv-edit', 'data-parity': n.id, 'data-pv': n.pv, value: n.init === undefined ? '-' : n.init,
+                              disabled: n.disabled ? '' : null });
+      const fin = () => { put(n.id, i.value); };
+      i.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { fin(); i.dataset.sent = '1'; } });
+      i.addEventListener('blur', () => { if (i.dataset.sent !== '1' && i.dataset.dirty === '1') fin(); i.dataset.sent = ''; i.dataset.dirty = ''; });
+      i.addEventListener('input', () => { i.dataset.dirty = '1'; });
+      W[n.id] = { node: n, el: i, update: (v, c) => { const t = c['text:' + n.id];
+        if (t !== undefined && document.activeElement !== i) i.value = t; } };
+      return i;
+    }
+    case 'list': {                                         // a QListWidget the program fills (computed server side)
+      const u = el('ul', { class: 'list', 'data-parity': n.id });
+      W[n.id] = { node: n, el: u, update: (v, c) => { const items = c[n.source]; if (!Array.isArray(items)) return;
+        if (u.dataset.items === JSON.stringify(items)) return;
+        u.dataset.items = JSON.stringify(items); u.replaceChildren(...items.map(t => el('li', { text: t }))); } };
+      return u;
+    }
+    case 'text': {                // a display whose text the server computes with the PyQt widget's update()
+      const s = el('span', { class: 'pv', 'data-parity': n.id, 'data-pv': n.pv, text: n.init === undefined ? '-' : n.init });
+      W[n.id] = { node: n, el: s, update: (v, c) => { const t = c['text:' + n.id]; if (t !== undefined) s.textContent = t; } };
+      return n.label === undefined ? s : el('span', { class: 'row' }, el('span', { class: 'lbl', text: n.label }), s);
+    }
     case 'value': {
       const s = el('span', { class: 'pv', 'data-parity': n.id });
       W[n.id] = { node: n, el: s, update: (v, c) => { const t = c[n.source]; if (t !== undefined) s.textContent = t; } };

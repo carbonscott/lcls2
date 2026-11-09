@@ -107,17 +107,37 @@ subclass), M = rows whose headless-browser test passed tagged with the row and w
 the source flags (main block, a def nothing calls, a slot whose object the ui never creates, a display nothing
 writes) and the walk agrees with.  A file is either a GUI program with a spec `parity/guis/<name>.json` (web path,
 walk arguments, mapping) or not a GUI program (`"na"` with a rule the check verifies: `walk-tool`, `library-demo`
-with a run-time import probe); a file with no spec fails.
+with a run-time import probe, `no-window`: the walk of the program's own entry raises in its own files before
+`QApplication.exec_` and shows no window, the reason citing the line); a file with no spec fails.
 
 | PyQt program | web page | data source in the tests | server arguments |
 |---|---|---|---|
 | `procmgr/procstat` | `/gui/procstat` | the daq_sim .cnf, its procServ ports and logs | `--procstat-cnf F [--procstat-platform P --procstat-interval S --procstat-logdir D]` |
 | `cas/groupca.py` | `/gui/groupca` | simxpm `PART:<group>` and XPM PVs (PV Access, loopback only) | `--pvgui 'groupca:<pvbase> <xpm> <groups>'` |
 | `cas/pvant.py` | `/gui/pvant` | simxpm PVs | `--pvgui 'pvant:--bases B... --fields F...'` |
+| `cas/deadca.py` | `/gui/deadca` | simxpm `PART:<group>:DeadFLnk`, `LinkLabel<n>` | `--pvgui 'deadca:<base> <group> <xpm>'` |
+| `cas/partca.py` | `/gui/partca` | simxpm `PART:<group>` PVs; the collection panel: the control at 127.0.0.1 | `--pvgui 'partca:<base>:XPM:<n>:PART:<group>'` |
+| `cas/xpmpatt.py` | `/gui/xpmpatt` | simxpm `PATT:GROUPS`, `PATT:COINC`, `PART:<g>` trigger PVs | `--pvgui 'xpmpatt:<base>:XPM:<n>'` |
+| `cas/tprca.py` | `/gui/tprca` | simtpr (the PVs of `cas/tprcas.py`) | `--pvgui 'tprca:<prefix>'` |
+| `cas/pvatable.py` | `/gui/pvatable` | simhsd (the PVs of `cas/hsdpvs.py`) | `--pvgui 'pvatable:--bases B... --fields PV.field...'` |
+
+`cas/partca-sum.py` and `cas/xpmca.py` are `no-window`: run as written, each raises `TypeError` in its own setup
+(the old three-argument `PvLabel`) before any window shows.
 
 The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
 `data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
-LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime).
+LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime), for the older IOC's PVs deadca and
+partca read and write (LinkLabel<n>, PART:<g>:MsgConfig, MsgConfigKey, MsgEnable, MsgDisable, MsgClear, MsgInsert,
+ResetL0: stored values) and pyxpm's pattern statistics PATT:GROUPS / PATT:COINC (counted from its L0Accepts).
+
+A GUI whose PVs come from a device, not the DAQ, is checked against a campaign device simulator
+(`psdaq/psdaq/sim/<module>.py`, PVA bound to 127.0.0.1): the spec's `"backend": "sim-device:<module>"` and
+`"walk": {"devices": [{"module", "args"}]}` start it for the walk, and the test starts it (`webgui_harness.DeviceSim`)
+and records that backend only if the page's `<prefix>:SIM:PID`, read through the server, is that process's pid.
+`simtpr` serves the PVs of `cas/tprcas.py` (the soft TPR IOC xcs.cnf starts with tprca), with a locked link and
+counters; `simhsd` serves those of `cas/hsdpvs.py` (built by its `ChipServer`), with counters.  The offscreen walk
+refuses every TCP or ZMQ connection to a host other than this one (collection_widget's hard-coded DAQ host is
+recorded as refused, never contacted).
 
 Each page is served at `/gui/<name>` (`/gui/procstat`, `/gui/groupca`, `/gui/pvant`) by any `daq_webgui` started
 with that page's arguments from the table, beside the control GUI at `/`.  On a node with the DAQ up (`$WD`, platform

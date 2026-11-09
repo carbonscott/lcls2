@@ -824,6 +824,62 @@ def sim_params(sim_dir):
             'pvbase': ds.PVBASE, 'xpm': ds.XPM, 'part': '%s:XPM:%d:PART:%d' % (ds.PVBASE, ds.XPM, st['platform'])}
 
 
+LOOPBACK_HOSTS = ('127.0.0.1', 'localhost', '::1', '[::1]', '0.0.0.0', '*')
+
+
+def _endpoint_host(ep):
+    """host of a zmq endpoint ('tcp://h:p'), '' for ipc:// and inproc://, None if unparsable."""
+    ep = str(ep)
+    if ep.startswith(('ipc://', 'inproc://')):
+        return ''
+    if '://' not in ep:
+        return None
+    rest = ep.split('://', 1)[1]
+    return rest.rsplit(':', 1)[0] if ':' in rest else rest
+
+
+def guard_network(OUT):
+    """The walked GUI may open TCP connections and ZMQ sockets only to this host: anything else is recorded in
+    OUT['calls'] (opener 'refused:...') and not made (a ZMQ connect is skipped; a TCP connect raises
+    ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none."""
+    import socket as _socket
+    orig_connect = _socket.socket.connect
+    orig_connect_ex = _socket.socket.connect_ex
+
+    def _ok(addr):
+        h = addr[0] if isinstance(addr, tuple) else None
+        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.')
+
+    def connect(self, addr):
+        if not _ok(addr):
+            OUT['calls'].append({'opener': 'refused:socket.connect', 'args': [str(addr)]})
+            raise ConnectionRefusedError('qt_walk: refused non-loopback connect to %s' % (addr,))
+        return orig_connect(self, addr)
+
+    def connect_ex(self, addr):
+        if not _ok(addr):
+            OUT['calls'].append({'opener': 'refused:socket.connect_ex', 'args': [str(addr)]})
+            return 111
+        return orig_connect_ex(self, addr)
+    _socket.socket.connect = connect
+    _socket.socket.connect_ex = connect_ex
+    try:
+        import zmq
+    except ImportError:
+        return
+    for meth in ('connect', 'bind'):
+        orig = getattr(zmq.Socket, meth)
+
+        def f(self, addr, *a, _orig=orig, _m=meth, **k):
+            h = _endpoint_host(addr)
+            if h is None or h == '' or h in LOOPBACK_HOSTS or h.startswith('127.'):
+                OUT['calls'].append({'opener': 'zmq.Socket.' + _m, 'args': [str(addr)]})
+                return _orig(self, addr, *a, **k)
+            OUT['calls'].append({'opener': 'refused:zmq.Socket.' + _m, 'args': [str(addr)]})
+            return None
+        setattr(zmq.Socket, meth, f)
+
+
 def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     """Run the GUI a parity/guis/<name>.json spec names, offscreen, with its own main() and the spec's argv
     (placeholders from the simulated DAQ in sim_dir), and record every counted widget it builds."""
@@ -909,7 +965,9 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     LIVE = []
     parity_dir = os.path.realpath(HERE)
 
-    def construction_site():
+    def construction_site(obj=None):
+        """[own file, line, function] of the innermost own-file frame that calls the constructor (frames of obj's
+        own constructors, a local subclass's __init__, are skipped: its call site is the site), and the chain."""
         site, chain = None, []
         f = sys._getframe(2)
         while f is not None:
@@ -917,21 +975,39 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
             if p.startswith(src + os.sep) and not p.startswith(parity_dir):
                 rel = os.path.relpath(p, src)
                 chain.append([rel, f.f_lineno, f.f_code.co_name])
-                if site is None and p in own_abs:
+                own_ctor = obj is not None and f.f_code.co_name == '__init__' and f.f_locals.get('self') is obj
+                if site is None and p in own_abs and not own_ctor:
                     site = [own_abs[p], f.f_lineno, f.f_code.co_name]
             f = f.f_back
         return site, chain[:8]
 
+    def record(self, name):
+        SEQ[0] += 1
+        self._pw_seq = SEQ[0]
+        self._pw_site, self._pw_chain = construction_site(self)
+        self._pw_writes = 0
+        self._pw_base = name
+        LIVE.append(self)
+
     def make_rec(name, base):
         def __init__(self, *a, **k):
             base.__init__(self, *a, **k)
-            SEQ[0] += 1
-            self._pw_seq = SEQ[0]
-            self._pw_site, self._pw_chain = construction_site()
-            self._pw_writes = 0
-            self._pw_base = name
-            LIVE.append(self)
-        ns = {'__init__': __init__}
+            record(self, name)
+
+        def __init_subclass__(cls, **kw):
+            # a subclass whose __init__ skips this one (super(QtWidgets.QLabel, self).__init__ in pvatable.PvField)
+            # is still recorded, after its own __init__
+            super(rec_cls[0], cls).__init_subclass__(**kw)
+            init = cls.__dict__.get('__init__')
+            if init is not None and not getattr(init, '_pw_wrapped', False):
+                def wrapped(self, *a, _init=init, **k):
+                    _init(self, *a, **k)
+                    if getattr(self, '_pw_seq', None) is None:
+                        record(self, name)
+                wrapped._pw_wrapped = True
+                cls.__init__ = wrapped
+        rec_cls = []
+        ns = {'__init__': __init__, '__init_subclass__': classmethod(__init_subclass__)}
         for m in ('setText', 'append', 'setHtml', 'setPlainText', 'insertPlainText'):
             if hasattr(base, m):
                 def w(self, *a, _m=m, **k):
@@ -949,7 +1025,8 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                 ns[m] = staticmethod(st)
             ns['exec_'] = lambda self: (OUT['calls'].append({'opener': 'QMessageBox.exec_', 'site': self._pw_site}),
                                         ORIG['QMessageBox'].Ok)[1]
-        return type(name, (base,), ns)
+        rec_cls.append(type(name, (base,), ns))
+        return rec_cls[0]
     for n in GUI_COUNTED:
         setattr(QtWidgets, n, make_rec(n, ORIG[n]))
 
@@ -1108,20 +1185,34 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     QtWidgets.QApplication.exec_ = lambda self: drive(self)
     QtWidgets.QApplication.exec = lambda self: drive(self)
     path = os.path.join(src, target)
+    guard_network(OUT)
+    entry = W.get('entry', 'main')
     try:
-        if target.endswith('.py'):
-            mod = importlib.import_module('psdaq.' + target[:-3].replace('/', '.'))
+        if entry == '__main__':                 # a script with no main(): its __main__ block (partca-sum.py)
+            import runpy
+            runpy.run_path(path, run_name='__main__')
         else:
-            loader = importlib.machinery.SourceFileLoader('psdaq_gui_' + os.path.basename(target), path)
-            specm = importlib.util.spec_from_loader(loader.name, loader)
-            mod = importlib.util.module_from_spec(specm)
-            loader.exec_module(mod)
-        getattr(mod, W.get('entry', 'main'))()
+            if target.endswith('.py'):
+                mod = importlib.import_module('psdaq.' + target[:-3].replace('/', '.'))
+            else:
+                loader = importlib.machinery.SourceFileLoader('psdaq_gui_' + os.path.basename(target), path)
+                specm = importlib.util.spec_from_loader(loader.name, loader)
+                mod = importlib.util.module_from_spec(specm)
+                loader.exec_module(mod)
+            getattr(mod, entry)()
         OUT['notes'].append('entry returned without calling QApplication.exec_')
     except SystemExit as ex:
         OUT['notes'].append('entry raised SystemExit(%s) before exec_' % ex.code)
-    except Exception:
+    except Exception as ex:
         OUT['notes'].append('entry failed: %s' % traceback.format_exc()[-1500:])
+        tb = ex.__traceback__
+        own_frames = []
+        while tb is not None:
+            p_ = os.path.realpath(tb.tb_frame.f_code.co_filename)
+            if p_ in own_abs:
+                own_frames.append([own_abs[p_], tb.tb_lineno, tb.tb_frame.f_code.co_name])
+            tb = tb.tb_next
+        OUT['entry_error'] = {'type': type(ex).__name__, 'message': str(ex)[:300], 'own_frames': own_frames}
     if APP[0] is None:
         app = QtWidgets.QApplication.instance()
         if app is not None:

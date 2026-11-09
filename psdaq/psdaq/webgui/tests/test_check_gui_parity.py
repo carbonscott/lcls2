@@ -43,7 +43,7 @@ def test_no_walk_is_kept_in_the_tree():
     assert not [n for n in os.listdir(C.GUIS_DIR) if n.endswith(('.walk.json', '.probe.json'))]
 
 
-@pytest.mark.parametrize('name', ['procstat', 'groupca', 'pvant'])
+@pytest.mark.parametrize('name', ['procstat', 'groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable'])
 def test_walk_is_of_this_source_and_every_row_has_one_entry(walks, name):
     spec = _spec(name)
     with open(C.walk_path(spec, walks)) as f:
@@ -129,3 +129,37 @@ def test_library_demo_needs_the_import_probe(walks):
     spec = C.load_specs()['cas/collection_widget.py']
     ok, why = C.check_na(files['cas/collection_widget.py'], spec, walks)
     assert ok and 'constructed 0 QApplications' in why, why
+
+
+@pytest.mark.parametrize('name, line', [('partca-sum', 'cas/partca-sum.py:34'), ('xpmca', 'cas/xpmca.py:180')])
+def test_no_window_rule_needs_the_walk_to_raise_at_the_cited_line(walks, name, line):
+    files = {e['file']: e for e in qapps.scan(SRC)}
+    spec = _spec(name)
+    e = files[spec['file']]
+    ok, why = C.check_na(e, spec, walks, SRC)
+    assert ok and 'raised TypeError at %s' % line in why, why
+    assert not C.check_na(e, spec, None, SRC)[0]                               # no walk: no proof
+    bad = dict(spec, na=spec['na'].replace(line, 'somewhere'))
+    ok, why = C.check_na(e, bad, walks, SRC)
+    assert not ok and 'must cite the line that raised (%s)' % line in why, why
+    prog = dict(_spec('groupca'), na='x ' + ' '.join('%s:%d' % (files['cas/groupca.py']['file'], s_['line'])
+                                                     for s_ in files['cas/groupca.py']['sites']), rule='no-window')
+    ok, why = C.check_na(files['cas/groupca.py'], prog, walks, SRC)            # groupca's walk shows its window
+    assert not ok, why
+
+
+def test_walk_refuses_other_hosts(walks):
+    with open(C.walk_path(_spec('partca'), walks)) as f:
+        walk = json.load(f)
+    refused = [c for c in walk['calls'] if c['opener'].startswith('refused:')]
+    assert refused and all('drp-tst-acc06' in c['args'][0] for c in refused), walk['calls']   # collection_widget
+    from psdaq.webgui.parity.qt_walk import _endpoint_host
+    assert [_endpoint_host(x) for x in ('tcp://127.0.0.1:5', 'tcp://drp-x:5', 'ipc:///tmp/a', 'inproc://a')] == \
+        ['127.0.0.1', 'drp-x', '', '']
+
+
+def test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable():
+    rows = {r['id']: r for r in gui_rows.make_rows(gui_rows.source_sites(SRC, 'cas/deadca.py'), None)}
+    assert rows['PvEvtTab.PvEditCmb@1']['reach'] == 'def-unreachable'      # used by PvEditEvt, named only by LblEditEvt
+    assert rows['LblEditEvt.PvInput']['reach'] == 'def-unreachable'
+    assert rows['Ui_MainWindow.PvDblArrayW']['reach'] == 'not-built'        # setupUi's, reachable (no walk given)

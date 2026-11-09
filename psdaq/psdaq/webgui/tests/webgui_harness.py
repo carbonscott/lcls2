@@ -292,7 +292,54 @@ def run_server_cmd(args, timeout=30):
 
 # ---------------- web copies of the other PyQt GUIs (procstat, groupca): server on the simulated DAQ ----------------
 
-def gui_server(extra_args, check, timeout=120):
+class DeviceSim:
+    """A campaign device simulator (python -m psdaq.sim.<module> args) started by a test, e.g. simtpr; the test
+    server's backend becomes 'sim-device:<module>' only if check_device_source finds the page's PVs served by it."""
+
+    def __init__(self, module, args, timeout=30):
+        from psdaq.webgui.parity.check_gui_parity import wait_ready
+        self.module, self.args = module, list(args)
+        self.p = subprocess.Popen([SERVER_PYTHON, '-m', 'psdaq.sim.' + module] + self.args, env=server_env(),
+                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        self.pid = self.p.pid
+        self.ready = wait_ready(self.p, timeout)
+        if self.ready is None:
+            self.stop()
+            raise RuntimeError('%s %s did not start (exit %s)' % (module, args, self.p.poll()))
+
+    def alive(self):
+        return self.p.poll() is None
+
+    def stop(self):
+        if self.p.poll() is None:
+            self.p.terminate()
+            try:
+                self.p.wait(10)
+            except subprocess.TimeoutExpired:
+                self.p.kill()
+
+
+def check_device_source(name, dev):
+    """pvgui page served from a campaign device simulator: the page's <prefix>:SIM:PID, read through the server's
+    loopback PVA client, is the pid of the simulator this test started, which is alive, and every PV of the page that
+    the simulator serves is connected (the page's sim_absent PVs, which the real IOC does not serve either, are not)."""
+    def check(s, sim):
+        info = {}
+        t0 = time.time()
+        while time.time() - t0 < 20:
+            info = s.get('/api/pvgui/info?gui=' + name)
+            if info.get('sim_pid') == dev.pid and info.get('connected') == info.get('read_pvs') - info.get('absent', 0):
+                break
+            time.sleep(0.5)
+        ok = info.get('sim_pid') == dev.pid and dev.alive() and \
+            info.get('connected') == info.get('read_pvs') - info.get('absent', 0)
+        return ok, 'pvgui %s: SIM:PID %s (%s %s pid %s alive %s), %s/%s PVs connected (%s not served: %s)' % (
+            name, info.get('sim_pid'), dev.module, ' '.join(dev.args), dev.pid, dev.alive(), info.get('connected'),
+            info.get('read_pvs'), info.get('absent', 0), info.get('unconnected', [])[:6])
+    return check
+
+
+def gui_server(extra_args, check, timeout=120, backend=None):
     """A server on the simulated DAQ of WEBGUI_SIM_DAQ (sim.server_args()) plus extra_args (--procstat-cnf ...,
     --pvgui ...).  Its backend stays 'sim-daq' only if check(server, sim) -> (ok, why) confirms that the GUI page's
     own data source is that daq_sim too (its procmgr .cnf and processes; its simxpm); else 'gui-source-mismatch'.
@@ -305,6 +352,8 @@ def gui_server(extra_args, check, timeout=120):
     ok, why = check(s, sim)
     if s.backend == 'sim-daq' and not ok:
         s.backend = 'gui-source-mismatch'
+    elif s.backend == 'sim-daq' and backend:          # the page's data source is a campaign device simulator
+        s.backend = backend
     s.backend_why = '%s; gui source: %s' % (s.backend_why, why)
     s.started_entry.update(backend=s.backend, why=s.backend_why)
     return s
@@ -369,7 +418,8 @@ def gui_walks():
 
 
 def pva(op, items, timeout=30):
-    """PV Access from the test, independent of the server under test: op 'get' (items = PV names) -> {pv: value},
+    """PV Access from the test, independent of the server under test: op 'get' (items = PV names) -> {pv: value}
+    (a structure, e.g. an NTTable, as its todict() with arrays as lists),
     op 'put' (items = [[pv, value], ...]).  Runs the DAQ env's python (p4p) with this process's loopback-only
     EPICS_PVA env (run_webgui_tests.sh after sim_env.sh)."""
     code = (
@@ -380,6 +430,9 @@ def pva(op, items, timeout=30):
         'c=Context("pva",conf=require_loopback_pva_env(os.environ),useenv=False)\n'
         'op,items=json.loads(sys.argv[1])\n'
         'def plain(v):\n'
+        '    if isinstance(v,dict): return {k:plain(x) for k,x in v.items()}\n'
+        '    if isinstance(v,(list,tuple)): return [plain(x) for x in v]\n'
+        '    if hasattr(v,"todict"): return plain(v.todict())\n'
         '    return v.tolist() if hasattr(v,"tolist") else (v if isinstance(v,(int,float,str,bool)) else str(v))\n'
         'if op=="get":\n'
         '    print(json.dumps({n:plain(v) for n,v in zip(items,c.get(items,timeout=5.0))}))\n'

@@ -15,12 +15,19 @@ Node types the renderer knows
   pvint {pv}                       PvEditInt: shows int(value); Enter / leaving the field puts int(text)
   pvcombo {pv, choices}            PvEditCmb: index = value; a choice puts its index
   pvdbl {pv}                       PvDbl: read only, '{:.4f}'
-  mask {pv, bits: [{id, label}]}   PvMaskTab / PvDstTab: one checkbox per bit, a click puts the mask
+  mask {pv, bits: [{id, label}]}   PvMaskTab / PvDstTab: one checkbox per bit, a click puts the mask (nomon: the
+                                   boxes never follow the PV, tprca.PvDstTab)
   seqsel {pv, choices}             PvDefSeq.seqsel: puts its index to <pv>_Sequence, switches the stack
   button {label, action}           a QPushButton whose action the page module runs server side
   check {label, action, pv_on, pv_off}  a QCheckBox with a server-side action (groupca Run)
   edit {text}                      a plain QLineEdit (no PV; an action reads it)
   value {source}                   a QLabel the program writes (computed server side: values[source])
+  pvbutton {pv, label}             PvPushButton: a click puts 1, then 0
+  pvedit {pv, fmt, conv, init}     a QLineEdit showing text_of() of its PV (unless being edited); Enter / leaving the
+                                   field puts conv(text) (int or float; text conv rejects puts nothing), disabled: display
+  text {pv, fmt, ...}              a display whose text text_of() computes server side from the PV's value with
+                                   the Python of the PyQt widget's update() (PvLabel, PvDblArray, PvTableDisplay ...)
+  label {text | pv_once}           pv_once: the text is the PV's value, read once when the page loads (QLabel(pv.get()))
 """
 
 NBeamSeq = 16
@@ -39,6 +46,7 @@ class Page:
         self.read_pvs, self.write_pvs = set(), set()
         self.startup = []           # [(pv, value)] the PyQt program puts when it starts
         self.computed = {}          # source -> fn(values) for value nodes
+        self.once = []              # label nodes whose text is a PV read once when the page loads
 
     def add(self, node):
         for b in node.get('bits', []):
@@ -51,8 +59,11 @@ class Page:
         for k in ('pv',):
             if node.get(k):
                 self.read_pvs.add(node[k])
-                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel'):
+                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel', 'pvbutton', 'pvedit') and \
+                        not node.get('disabled'):
                     self.write_pvs.add(node[k])
+        if node.get('pv_once'):
+            self.once.append(node)
         for k in ('pv_on', 'pv_off'):
             if node.get(k):
                 self.read_pvs.add(node[k])
@@ -138,3 +149,77 @@ def lbl_widget(kind):
     def edit(page, nid, pv, label=''):
         return pvint(page, nid, pv)
     return {'check': chk, 'int': edit}[kind]
+
+
+# ---------------------------------------------------------------- display texts (the PyQt widgets' update())
+
+def _fmt_pvlabel(q, isInt=False, isTime=False, scale=None, units=None):
+    """pvedit.PvLabel.update without dName (no PvLabel of these GUIs passes one)."""
+    if isTime:
+        import datetime
+        dat = datetime.datetime(1990, 1, 1, tzinfo=datetime.timezone.utc) + datetime.timedelta(seconds=int(q))
+        return dat.astimezone().strftime('%Y-%b-%d %H:%M:%S')
+    try:
+        if isInt:
+            s = "%s (0x%s)" % ('{:,}'.format(int(q)), format(int(q) & 0xffffffff, 'x'))
+        elif scale is None:
+            s = '{:,}'.format(q)
+            if units is not None:
+                s = s + units
+        else:
+            s = '{0:.4f}'.format(q * scale)
+            if units is not None:
+                s = s + units
+    except Exception:
+        v = ''
+        for i in range(len(q)):
+            v = v + " %5.2f" % (q[i] * scale)
+            if (i % 8) == 7:
+                v = v + '\n'
+        if units is not None:
+            v = v + units
+        s = v
+    return s
+
+
+def text_of(node, q):
+    """The text the PyQt widget a 'text' node copies shows for PV value q (None: not yet received, keep '-')."""
+    if q is None:
+        return None
+    f = node['fmt']
+    if f == 'pvlabel':
+        return _fmt_pvlabel(q, **node.get('args', {}))
+    if f == 'arr':                                   # element i in the format of the program's array update():
+        i = node['index']                            # pvedit.PvDblArray '.4f', deadca.PvDblArray '4f', PvIntArray 'd'
+        if not isinstance(q, list) or i >= len(q):
+            return None
+        return format(int(q[i]) if node['spec'] == 'd' else q[i], node['spec'])
+    if f == 'table':                                 # pvedit.PvTableDisplay.update: str(q) or '-' when == colEmpty
+        col = (q.get('value') or {}).get(node['column'])
+        if not isinstance(col, list) or node['row'] >= len(col):
+            return None
+        qv = col[node['row']]
+        return str(qv) if qv != node.get('empty') else '-'
+    if f == 'str':
+        return str(q)
+    if f == 'pvfield':                               # pvatable.PvField.update: str(int(f)), or the elements '\n'-joined
+        v = q.get(node['field']) if isinstance(q, dict) else None
+        if v is None:
+            return None
+        if node.get('index', -1) >= 0:
+            v = v[node['index']]
+        try:
+            return str(int(v))
+        except Exception:
+            return '\n'.join('{:}'.format(x) for x in v)
+    if f == 'pyfmt':                                 # tprca.PvEditDbl.update: fmt.format(q), ' '-joined for an array
+        try:
+            return node['spec'].format(q)
+        except Exception:
+            return ''.join(' ' + node['spec'].format(x) for x in q)
+    if f == 'int':                                   # tprca.PvEditInt.update: str(int(q)), ' %f' each for an array
+        try:
+            return str(int(q))
+        except Exception:
+            return ''.join(' %f' % x for x in q)
+    raise ValueError('text node %s: unknown fmt %r' % (node.get('id'), f))
