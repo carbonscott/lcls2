@@ -29,6 +29,11 @@ Node types the renderer knows
                                    the Python of the PyQt widget's update() (PvLabel, PvDblArray, PvTableDisplay ...)
   label {text | pv_once}           pv_once: the text is the PV's value, read once when the page loads (QLabel(pv.get()))
   localcombo {choices}             a QComboBox with no PV (hsdpva's base selector): only switches a stack
+  exclbox {pv, index, offset, group}  one box of an exclusive group on one PV (dtica PvEditCheckList): box value-offset
+                                   is checked when the PV changes; a click puts index+offset
+  fwdcell {slot, i, j}             dtica's downstream-link box (i, j): column j exclusive; the page module's act()
+                                   puts the slot's seven UsLinkFwdMask<i> from the checked box of each column
+  maskdisp {pv, bit}               a disabled box showing bit `bit` of the PV (pvedit.PvMask)
   fieldedit {pv, fmt, ...}         a QLineEdit a structure PV's update() rewrites when the PV changes; it puts nothing
                                    itself: a button with 'fields' (the ids of its fieldedits) sends their texts
                                    to the page module's act() (hsdpva's PvScalarBox / PvArrayTable Apply)
@@ -65,7 +70,7 @@ class Page:
         for k in ('pv',):
             if node.get(k):
                 self.read_pvs.add(node[k])
-                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel', 'pvbutton', 'pvedit') and \
+                if node['type'] in ('pvcheck', 'pvint', 'pvcombo', 'mask', 'seqsel', 'pvbutton', 'pvedit', 'exclbox') and \
                         not node.get('disabled'):
                     self.write_pvs.add(node[k])
         if node.get('pv_once'):
@@ -304,6 +309,10 @@ def text_of(node, q):
         if ((q >> 24) & 0xff) == 0xfb and (q & 0xffff) != 0:
             return '172.21.%u.%u:%u' % ((q >> 8) & 0xff, q & 0xff, (q >> 16) & 0xff)
         return 'Unknown'
+    if f == 'introw':                                # pvedit.PvIntRow.update: '{0:.4f}' of a (numpy) array element
+        if not isinstance(q, list) or node['index'] >= len(q):
+            return None
+        return '{0:.4f}'.format(q[node['index']])
     if f == 'pyfmt':                                 # tprca.PvEditDbl.update: fmt.format(q), ' '-joined for an array
         try:
             return node['spec'].format(q)

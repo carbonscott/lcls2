@@ -3,6 +3,8 @@
 const GUI = document.body.dataset.gui || new URLSearchParams(location.search).get('gui');
 const W = {};            // node id -> {node, el, update(values, computed)}
 const STACKS = [];       // [{select id, children els}]
+const GROUPS = {};       // exclbox groups by PV (dtica PvEditCheckList)
+const FWD = {};          // fwdcell matrices by slot prefix (dtica DtiAllocation)
 let VALUES = {}, COMPUTED = {};
 // A widget's own write wins over polls until the server reports it (or 3 s pass): a poll that left before the
 // put landed must not undo the click (pvedit widgets only see monitor events, which come after the put).
@@ -135,6 +137,44 @@ function render(n) {
       n.choices.forEach((c, k) => s.append(el('option', { value: k, text: c })));
       s.addEventListener('change', () => stacks());
       return s;
+    }
+    case 'exclbox': {                         // dtica PvEditCheckList: exclusive boxes on one PV
+      const cb = el('input', { type: 'checkbox', 'data-parity': n.id, 'data-pv': n.pv });
+      const g = GROUPS[n.group] = GROUPS[n.group] || { boxes: [], last: undefined };
+      g.boxes[n.index] = cb;
+      const only = (k) => g.boxes.forEach((b, i) => { if (b) b.checked = i === k; });
+      cb.addEventListener('click', () => { only(n.index);                                // buttonClicked: checkedId()-1
+        const w = n.index + n.offset; sent(n.pv, w < 0 ? w + 4294967296 : w); put(n.id, null); });   // (unsigned PV)
+      if (n.index === 0) W[n.group + '#excl'] = { node: n, el: cb, update: (v) => { const q = v[n.pv];
+        if (q === null || q === undefined || blocked(n.pv, q) || q === g.last) return;     // the PV's monitor event
+        g.last = q; const k = Math.trunc(Number(q)) - n.offset; if (k >= 0 && k < g.boxes.length) only(k); } };
+      return cb;
+    }
+    case 'fwdcell': {                         // dtica DtiAllocation: column j exclusive; a click puts the 7 masks
+      const cb = el('input', { type: 'checkbox', 'data-parity': n.id });
+      const m = FWD[n.slot] = FWD[n.slot] || { cells: {}, last: undefined };
+      m.cells[n.i + ',' + n.j] = cb;
+      const col = (j) => Object.entries(m.cells).filter(([k]) => +k.split(',')[1] === j);
+      const check = (i, j) => col(j).forEach(([k, b]) => { b.checked = +k.split(',')[0] === i; });
+      cb.addEventListener('click', () => { check(n.i, n.j);
+        const cols = []; for (let j = 0; j < 7; j++) { const c = col(j).find(([, b]) => b.checked); cols.push(c ? +c[0].split(',')[0] : -1); }
+        const want = [0, 0, 0, 0, 0, 0, 0]; cols.forEach((i, j) => { if (i >= 0) want[i] |= 1 << j; });
+        m.pending = { key: JSON.stringify(want), t: Date.now() };     // polls that left before the puts landed wait
+        put(n.id, cols); });
+      if (n.i === 0 && n.j === 0) W[n.slot + '#fwd'] = { node: n, el: cb, update: (v) => {         // updateTable
+        const masks = []; for (let i = 0; i < 7; i++) masks.push(v[n.slot + 'UsLinkFwdMask' + i]);
+        if (masks.some(x => x === null || x === undefined)) return;
+        const key = JSON.stringify(masks);
+        if (m.pending) { if (key !== m.pending.key && Date.now() - m.pending.t < 3000) return; m.pending = null; }
+        if (key === m.last) return; m.last = key;
+        masks.forEach((q, i) => { for (let j = 0; j < 7; j++) if (q & (1 << j)) check(i, j); }); } };
+      return cb;
+    }
+    case 'maskdisp': {                        // pvedit.PvMask: a disabled box per bit
+      const cb = el('input', { type: 'checkbox', disabled: '', 'data-parity': n.id, 'data-pv': n.pv });
+      W[n.id] = { node: n, el: cb, update: (v) => { const q = v[n.pv];
+        if (q !== null && q !== undefined) cb.checked = !!(Math.trunc(Number(q)) & (1 << n.bit)); } };
+      return cb;
     }
     case 'fieldedit': {                       // a QLineEdit its PV's update() rewrites when the PV changes; no put
       const i = el('input', { class: 'pv-edit', 'data-parity': n.id, 'data-pv': n.pv, value: n.init === undefined ? '-' : n.init });

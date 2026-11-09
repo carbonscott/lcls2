@@ -198,9 +198,15 @@ class PvGuiApi:
             return 400, {'ok': False, 'err_info': 'no widget %r on %s' % (body.get('id'), name)}
         t, value = node['type'], body.get('value')
         try:
-            if t in ('button', 'check'):
+            if t in ('button', 'check', 'fwdcell'):
                 done = self.mods[name].act(page, self._put, node, value)
                 return 200, {'ok': True, 'puts': done}
+            if t == 'exclbox':                                     # dtica PvEditCheckList: checkedId() - 1
+                pv, v = node['pv'], node['index'] + node['offset']
+                if pv not in page.write_pvs:
+                    return 403, {'ok': False, 'err_info': '%s is not written by %s' % (pv, body.get('id'))}
+                self._put(pv, v)
+                return 200, {'ok': True, 'puts': [[pv, v]]}
             pv = node['pv']
             if t == 'pvbutton':                                    # PvPushButton.buttonClicked: put 1, then 0
                 if pv not in page.write_pvs:
