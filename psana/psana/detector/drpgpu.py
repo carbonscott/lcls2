@@ -46,6 +46,11 @@ class epixuhrsim_noOp_0_0_0(_drpgpu_noOp):
     shape = (336, 576)
 
 
+# Gpu::EpixUHR3x2: the ePixUHR 3x2 panel, 336 x 576, calibrated with its constants
+class epixuhr3x2_noOp_0_0_0(_drpgpu_noOp):
+    shape = (336, 576)
+
+
 # Gpu::Jungfrau: one module's 512 x 1024 panel (more modules: one after the other)
 class jungfrau_noOp_0_0_0(_drpgpu_noOp):
     shape = (512, 1024)
