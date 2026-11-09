@@ -278,3 +278,17 @@ def test_tb_event_timing_message_layout():
     pid, rates, slot, beam = struct.unpack_from('<QHBB', etm, 0)
     assert (pid, rates, slot, beam) == (PID, p(2, 16), p(3, 3), p(4, 8))
     assert list(struct.unpack_from('<18H', etm, 12)) == [p(5 + i, 16) for i in range(18)]
+
+
+def test_tt_frame_layout():
+    """TimeTool::_event reads subframe 2 as the camera's region of interest, one uint8 per
+    pixel, and records it only if its length is the config's ROI1 - ROI0 + 1 (2048 with
+    tt_config_store's ROI 1..2048); tdest 1 (the firmware's FEX results) is not produced."""
+    seq = 7
+    data, order = subframes(frame('tt', seq))
+    assert order == [0, 2]
+    assert data[0] == timing_header(seq)
+    roi = np.frombuffer(data[2], dtype=np.uint8)
+    assert roi.shape == (2048,)
+    assert (roi == pattern.image(SEED, seq, (2048,), 8)).all()
+    assert len(set(roi.tolist())) > 200                     # the pixels differ from each other

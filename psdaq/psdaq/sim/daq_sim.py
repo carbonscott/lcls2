@@ -104,6 +104,11 @@ SIM_TYPES = {
     # the timing BEB: tb_config reads the card's image name, then programs simxpm's PVs as ts does
     'tb':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
     'epixquad':  {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}'},
+    # the timetool: tt_config builds lcls2_timetool's root, whose bundled surf does not work with
+    # this rogue; PSDAQ_SIM_PYTHONPATH in the environment of 'up' (inherited by the drp through
+    # procmgr) names a working one (sim_path, RUNBOOK §3e).  'up' never sets it.
+    'tt':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}',
+                  'env': ['PSDAQ_SIM_PYTHONPATH']},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -374,10 +379,13 @@ def cmd_up(args):
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
-             'segments': segments, 'det': DETECTOR}
+             'segments': segments, 'det': DETECTOR,
+             'det_env': {k: os.environ.get(k) for k in SIM_TYPES[DETECTOR].get('env', [])}}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
+    for k, v in state['det_env'].items():   # what the type's drp inherits; unset is reported
+        say(f'{DETECTOR}: {k}={v!r}' if v else f'{DETECTOR}: {k} is not set (RUNBOOK §3e)')
 
     try:
         if not args.skip_preflight:
@@ -443,12 +451,17 @@ def cmd_up(args):
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
                                                                 work=work.dir))
         with open(work.path(state['cnf']), 'w') as f:
-            f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
-                               xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
-                               slow=args.slow_update, configdb=cfg_url + 'configDB',
-                               lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
-                               segments=''.join(SEGMENT.format(segm=i, **common)
-                                                for i in range(1, segments)), **common))
+            cnf = CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
+                             xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
+                             slow=args.slow_update, configdb=cfg_url + 'configDB',
+                             lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
+                             segments=''.join(SEGMENT.format(segm=i, **common)
+                                              for i in range(1, segments)), **common)
+            # after the two header lines: what the type's drp inherits from 'up' (SIM_TYPES 'env')
+            line1, line2, rest = cnf.split('\n', 2)
+            inherit = ''.join(f'# {DETECTOR}_* inherit {k}={v}\n'
+                              for k, v in state['det_env'].items() if v)
+            f.write(f'{line1}\n{line2}\n{inherit}{rest}')
         say('procmgr start', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             rc = subprocess.run(procmgr_cmd(state, 'start') + ['-v'], cwd=work.dir, stdout=out,

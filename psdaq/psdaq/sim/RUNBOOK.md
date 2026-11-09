@@ -426,8 +426,8 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
-`wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), and the XpmDetector
-types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
+`wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), `tt` (§3h), and the
+XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -500,11 +500,11 @@ export PSDAQ_SIM_PYTHONPATH="$H/python:$H/submodules/surf/python:$H/submodules/a
 QT_QPA_PLATFORM=offscreen python -B -m psdaq.sim.rogue_drive --type epixhr2x2
 ```
 
-Neither has a DRP run yet: `MemPoolSim` has no framer for either (`TimeTool::_event` takes
-subframe 2, `EpixHR2x2::_event` its ASIC frames), and `daq_sim` does not pass the variable for
-them. On hardware the same surf error stops `tt_init`, and before this change both types also
-lacked the `<type>_connectionInfo` that `BEBDetector::connectionInfo` calls (d6b1e7552 merged
-`<det>_connect` into it; these two kept `tt_connect` and `epixhr2x2_connect`).
+tt runs in a DRP with it (§3h). epixhr2x2 has no DRP run yet: `MemPoolSim` has no framer for
+its ASIC frames (`EpixHR2x2::_event`). On hardware the same surf error stops `tt_init`, and
+before 99cc4db8d both types also lacked the `<type>_connectionInfo` that
+`BEBDetector::connectionInfo` calls (d6b1e7552 merged `<det>_connect` into it; these two kept
+`tt_connect` and `epixhr2x2_connect`).
 
 **Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
 - **epixquad1kfps:** `ePixQuad.Top.start` (its epix-quad-1kfps package) reads the camera's ADC
@@ -612,6 +612,53 @@ Fault runs that fail Configure and name the register: opal and piranha4
 tb `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay` (all
 rogue's write-verify), epixquad `Top.SystemRegs.TrigEn=0` (write-verify when `_checkADCs` switches
 to external triggers).
+
+## 3h. The timetool: tt
+
+```bash
+# step A as in §3e, with the variable of §3e in the environment of 'up' (the drp inherits it)
+export PSDAQ_SIM_PYTHONPATH='$SUBMODULEDIR/lcls2-pgp-pcie-apps/firmware/submodules/surf/python'
+daq_sim up -w $WD --det tt            # prints: tt: PSDAQ_SIM_PYTHONPATH='$SUBMODULEDIR/...'
+# step B as in §3e
+daq_sim cycle -w $WD --events 1000
+```
+`drp -D tt` is a BEBDetector (`TimeTool.cc`): `tt_config.py` builds
+`lcls2_timetool.TimeToolKcu1500Root` (the KCU's TimeToolKcu1500 and, behind the camera link FEB on
+PGP lane 0, a Piranha4 line camera) on `rogue_dev`, with the surf the variable names
+(`sim_path`). `up` never sets the variable: it reports it (`tt: PSDAQ_SIM_PYTHONPATH=...`, or
+`... is not set`), stores it in `state.json` (`det_env`) and writes it as a comment at the top
+of `daq_sim.cnf`. Unset, the drp stops in `tt_init` with the surf error of §3e (`TypeError:
+__init__() got an unexpected keyword argument 'size'`, `**** python error`) a few seconds after
+`up` has seen it RUNNING, and `cycle` fails at Alloc (`at least one DRP is required`).
+
+| config entry points run | emulated device (`seeds/tt.json`) | DB config | DRP data (subframes) | psana check |
+|---|---|---|---|---|
+| `tt_init` (`TimeToolKcu1500Root` start, `ConfigureXpmMini`, `ConfigLclsTimingV2`), `tt_init_feb`, `tt_connectionInfo` (the PGP link check, `TxId`, `RxId`), `tt_config` (`user_to_expert`, `config_expert` over registers and the camera's UART, `gcp`, `MasterEnable`, the firmware version), `tt_unconfig` | `PgpMon[0].RxRemLinkReady`, `XpmMessageAligner.RxId`; the Piranha4's console (every command `OK` and the `USER>` prompt, `gcp` its summary) | `tt_config_store` through its `write_to_daq_config_db` | 2: the camera's region of interest, 2048 uint8 pixels (tdest 1, the firmware's FEX results, is not produced: `TimeTool::_event` does not read it) | `tt_raw_2_0_0` `image()` (2048,) uint8 and `_info().image`, every pixel, 8 bit |
+
+`TimeTool::_configure` takes the region of interest's length from the config
+(`UartPiranha4.ROI1 - ROI0 + 1`) and `TimeTool::_event` records subframe 2 only if it has that
+length, else it marks the event damaged. Before this change the type could not configure on
+hardware either: `tt_config_store` wrote `ROI[0]`, `ROI[1]` and `SAD[0..2]`, names an
+`XtcData::Name` refuses since 2b0873c2c (`*** Error: illegal XtcData::Name:
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.` at Configure), and
+`TimeTool::_configure` read `expert.ClinkFeb[0].ClinkTop.Ch[0].UartPiranha4.ROI[1]`, a name that
+cannot be in the xtc. The store now writes `ROI0`, `ROI1`, `SAD0`, `SAD1`, `SAD2`, `tt_config`
+maps them to the camera's `ROI[i]` and `SAD[i]` (as it maps `PllConfig0` to `PllConfig[0]`), and
+`TimeTool::_configure` reads `expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI0` and `ROI1`.
+Config DB entries written by the old store keep the old names and still abort at Configure;
+they must be written again.
+
+Not fixed: the store's `expert.TimeToolKcu1500.Application.AppLane.*` settings (prescalers, FIR
+coefficients, IIR time constant, background subtraction) do not reach the firmware tree, which
+names the lane `AppLane[0]` (lcls2_timetool `_Application.py`) and for which `tt_config`'s
+translation has no `AppLane` entry: it prints `Lookup failed for node [AppLane] in path
+[cl.TimeToolKcu1500.Application]` and skips them, on hardware as here.
+
+Fault run that fails Configure and names the register:
+`TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`
+(rogue's write-verify when `config_expert` applies the trigger delay `user_to_expert` computes:
+`Verify error for block ...TriggerEventBuffer[0].TriggerDelay ... Got: 0xff, Exp: 0x17`, then
+`**** python error` and signal 6 in the drp's log).
 
 ## 4. Read the file back with psana2
 ```bash

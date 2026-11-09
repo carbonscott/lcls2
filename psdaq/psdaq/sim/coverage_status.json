@@ -35,6 +35,10 @@
     "status": "RUN",
     "note": "daq_sim up --det tb + cycle: tb_config.py against rogue_dev (the card image name, lcls2_pgp_pcie_apps DevRoot) and simxpm PVs, every field of the event timing message checked through ts_raw_2_1_0"
   },
+  "det:drp:tt": {
+    "status": "RUN",
+    "note": "daq_sim up --det tt + cycle, with PSDAQ_SIM_PYTHONPATH naming a rogue-6 surf of the release: tt_config.py against rogue_dev (TimeToolKcu1500Root: the KCU, the camera link FEB over SRPv3, the Piranha4 console), every pixel of the 2048-pixel uint8 region of interest checked through tt_raw_2_0_0"
+  },
   "det:drp:epixquad": {
     "status": "RUN",
     "note": "daq_sim up --det epixquad + cycle: epixquad_config.py against rogue_dev (DevRoot and ePixQuad.Top over SRPv3), every pixel of the 4 elements (4, 352, 384) checked through epix10ka_raw_3_0_1"
