@@ -38,7 +38,7 @@ from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_lo
 # fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
 EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api',
                'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api', 'psdaq.webgui.daqstat_api',
-               'psdaq.webgui.plots_api')
+               'psdaq.webgui.plots_api', 'psdaq.webgui.configdb_gui_api')
 
 
 def load_extensions(app, names=EXT_MODULES):
@@ -486,6 +486,10 @@ def build_parser():
                         "'--seq 0:10k.py --time 0 0.0001'")
     p.add_argument('--seq-epixhr', default=None, metavar='ARGS',
                    help="/gui/seq_epixhr: web copy of seq/seq_epixhr.py --plot (with --test: no XPM write)")
+    p.add_argument('--configdb-gui', default=None, metavar='ARGS',
+                   help="/gui/configdb_GUI: web copy of configdb/configdb_GUI.py with the PyQt program's arguments; its "
+                        "--url must be loopback (the config DB stand-in), e.g. \"--url http://127.0.0.1:<port>/ws-auth/ "
+                        "--hutch tst --password x\"")
     p.add_argument('--hsdps', default=None, metavar='ARGS',
                    help="/gui/hsdPs: web copy of cas/hsdPs.py (its phase scan, against loopback PVs only: simhsd and a "
                         "simxpm) with the PyQt program's arguments, e.g. \"--base DAQ:SIM:HSD:1_PS:A --xpm DAQ:SIM:XPM:7\"")
@@ -510,6 +514,9 @@ def configure(args):
     if args.procstat_cnf:
         from psdaq.webgui.procstat_api import require_loopback_cnf
         require_loopback_cnf(args.procstat_cnf, args.procstat_platform)    # every process's host is loopback
+    if args.configdb_gui:
+        from psdaq.webgui.configdb_gui_api import require_loopback_args
+        require_loopback_args(args.configdb_gui)                           # its --url is the stand-in's
     if args.hsdps:
         require_loopback_pva_env(os.environ, '--hsdps')                    # its PVs are simhsd's and simxpm's
     if args.emulate:

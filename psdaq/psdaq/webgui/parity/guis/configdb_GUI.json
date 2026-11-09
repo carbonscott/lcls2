@@ -1,0 +1,83 @@
+{
+ "file": "configdb/configdb_GUI.py",
+ "title": "configdb_GUI (change one parameter across many detectors), against the config DB stand-in",
+ "web": "/gui/configdb_GUI",
+ "backend": "sim-device:configdb_server",
+ "walk": {
+  "argv": [
+   "--url",
+   "http://127.0.0.1:47321/ws-auth/",
+   "--hutch",
+   "tst",
+   "--password",
+   "sim"
+  ],
+  "devices": [
+   {
+    "module": "configdb_server",
+    "args": [
+     "--store",
+     "{walkdir}/configdb.json",
+     "--port",
+     "47321",
+     "--seed-gui",
+     "--delay-modify",
+     "3"
+    ]
+   }
+  ],
+  "env": {
+   "HOME": "{walkdir}/home"
+  },
+  "dialog": "accept",
+  "pump": 3,
+  "timeout": 120,
+  "drive": [
+   "tree-select:0:tst/BEAM",
+   "pump:2",
+   "tree-select-many:1:fakecam_0,fakecam_1",
+   "pump:2",
+   "tree-select:2:user */sim_seed",
+   "pump:2",
+   "text:0:10794",
+   "check:Read-only:off",
+   "pump:0.5",
+   "click:Apply",
+   "pump:0.5",
+   "close",
+   "pump:1"
+  ],
+  "variants": [
+   {
+    "argv": [
+     "--url",
+     "http://127.0.0.1:47321/ws-auth/",
+     "--hutch",
+     "tst"
+    ],
+    "drive": [
+     "pump:1",
+     "check:Read-only:off",
+     "pump:0.5"
+    ]
+   },
+   {
+    "argv": [
+     "--url",
+     "http://127.0.0.1:47321/ws-auth/",
+     "--hutch",
+     "tst"
+    ],
+    "drive": [
+     "tree-select:0:tst/BEAM",
+     "pump:2",
+     "tree-select-many:1:fakecam_2",
+     "pump:2",
+     "tree-select:2:user */mode",
+     "pump:2"
+    ]
+   }
+  ]
+ },
+ "mapping": {}
+}
