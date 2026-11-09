@@ -808,8 +808,8 @@ It brings up one DAQ at a time, each in its own work dir under `-w`, and always 
 | section | what runs, in `<WD>/...` | assertions (each named, each PASS or FAIL) |
 |---|---|---|
 | `types` | for each detector type: `daq_sim up --det <T> --detach`, one recorded `daq_sim cycle --events 1000`, `daq_sim down`, in `types/<T>` | `types/<T>/up`; `.../transitions` (every state read back as requested, no error message, back to the start state); `.../drp-alive` (the DRP `up` started is still alive after the run); `.../counts` (simxpm's L1Accepts == `TEB_WrtCt` == psana2's events == psana2's events with `<T>`'s data, all >= 1000); `.../per-event` (`xtc2_check` compared every event's data, through the type's own psana interface, with what the simulated device was set to send); `.../evidence` (the cycle wrote a record for `det:drp:<T>` that coverage accepts); `.../down` (`down: clean`) |
-| `programs` | `daq_sim up --ami --pva --epics --udp --gui --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter: §3h), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
-| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature that `psdaq.sim.feature` does not run yet (c: the MEB with AMI; d: two nodes) is `NOT AVAILABLE`, a failed assertion |
+| `programs` | `daq_sim up --ami --pva --epics --udp --gui --pvservers --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter, and the PV-server stand-ins simhsd and simtpr: §3h), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
+| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` (c with `--ami-src`, d with `--hosts`) | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature `psdaq.sim.feature` cannot run here is `NOT AVAILABLE`, a failed assertion, and starts nothing: d (two nodes) unless `--hosts` names two hosts of this Slurm job, and with two it fails (`up --hosts` runs a plan only, §3j) |
 | `coverage` | `daq_sim coverage` (§3d), after the runs above wrote their evidence | `coverage` (PASS: every row RUN, STAND-IN or N/A with valid evidence at HEAD) |
 
 The types are every `det:drp` row that `coverage_status.json` marks RUN, in the order
@@ -832,7 +832,8 @@ coverage's counts, every assertion and the runs.
 |---|---|
 | `-w DIR` | Work dir of the whole matrix (each type's and feature's DAQ in a subdirectory, replaced by its next run). |
 | `--only types\|programs\|features\|coverage` | Run only these sections (repeatable, or comma-separated). |
-| `--ami-src DIR` | The AMI source tree of the programs run (default: `daq_sim up`'s, `$DAQ_SIM_AMI_SRC`, else `ami-*` on PATH). |
+| `--ami-src DIR` | The AMI source tree of the programs run and of feature c (default: `daq_sim up`'s, `$DAQ_SIM_AMI_SRC`, else `ami-*` on PATH). |
+| `--hosts A,B` | Feature d's two nodes; without two hosts of this Slurm job's allocation, d is `NOT AVAILABLE`. |
 | `--types T,T` | Only these detector types (any of `up --det`). |
 | `--features x,x` | Only these features. |
 | `--events N` | L1Accepts of each type's cycle; default 1000. |
