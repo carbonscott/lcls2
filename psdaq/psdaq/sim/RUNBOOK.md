@@ -338,15 +338,19 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
 
 **Evidence.** Each passing run writes one JSON record with
 `psdaq.sim.coverage.record_evidence(rows, kind, files, ...)`:
-- **Fields:** `{sha, dirty, rows, kind, run_id, job_id, host, files, started, ended, counts}`;
-  `dirty` is true when tracked files differed from HEAD during the run.
+- **Fields:** `{sha, dirty, rows, kind, run_id, job_id, host, files, content, started, ended,
+  counts}`; `dirty` is true when tracked files differed from HEAD during the run; `content`
+  holds, per listed file, its size and sha256 when the record was written (`{bytes, sha256}`).
 - **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
 - **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
   `daq_sim.cnf` (control, teb, drp), the drp's `-D` type (`fakecam`, or the `--det` type of
   §3e), and `prog:pyxpm`, because the status file names simxpm as its stand-in. It prints
-  `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`.
-- **Files:** the record lists the run's xtc2 file and logs from the work dir. If you delete the
-  work dir, the record no longer counts.
+  `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`, then, for any row
+  the check below would reject, `evidence <id>: coverage would reject it for <row>: <why>`.
+- **Files:** the record lists the run's xtc2 files, `daq_sim.cnf`, `logs/cycle.jsonl`, each
+  service's log (which `up` heads with its `# CMDLINE:`, as procmgr heads each process's log)
+  and the newest procmgr log of each process. If you delete the work dir, the record no longer
+  counts.
 
 **Verdict.** The tool prints every row on its own line with its status and either its evidence id
 or its reason. Then it prints `N rows, R run, S stand-in, K N/A, U unproven, X claimed without
@@ -355,13 +359,35 @@ valid evidence`: R and S count only rows whose evidence is valid at HEAD. The ne
 - **PASS (exit 0):** no row is UNPROVEN and every RUN and STAND-IN row has a valid record.
 - **FAIL (exit 1):** the failing rows follow.
 
-A record is valid only if all of these hold, and the row's line names the first that does not:
+A record proves a row only if all of these hold, and the row's line names the first that does not:
 - its `sha` is `git rev-parse HEAD` (`recorded at <sha>, not at HEAD <sha>`);
 - `dirty` is false: the run used the commit's own code (`recorded with tracked files modified`);
 - it has a `run_id` (`names no run (run_id)`);
-- every file it lists exists and is non-empty, and every `.xtc2` file is a whole chain of xtc2
-  datagrams that starts with a Configure and ends at the end of the file
-  (`coverage.xtc2_problem`; e.g. `not an xtc2 file (first datagram is transition 8, not a Configure)`).
+- it has `content` (`holds no content hashes of its files`), and every file it lists exists, is
+  non-empty and still starts with the bytes the record hashed: a log may have grown since, an
+  `.xtc2` file not (`1 of 9 files changed, e.g. <file>: ...`; the kinds are `missing`, `empty`,
+  `unhashed`, `changed` and `not xtc2`);
+- every `.xtc2` file is a whole chain of xtc2 datagrams that starts with a Configure and ends at
+  the end of the file, the Xtcs of its Configure, BeginRun and L1Accepts each inside its parent
+  (`coverage.xtc2_content`; e.g. `not an xtc2 file (first datagram is transition 8, not a Configure)`);
+- then, read from the files themselves (only the bytes the record hashed count):
+  - for `det:<drp>:<type>`: a listed `.xtc2` file whose Configure has a detector of type `<type>`
+    (its Names' detType or detName), whose BeginRun runinfo is the record's `run_id`, with at
+    least 1000 L1Accepts holding that detector's data; and a listed log whose `# CMDLINE:` runs
+    `<drp>` with `-D <type>` and names the run (`no listed xtc2 file has a detector of type
+    wave8he in its Configure (they have: wave8)`, `... 3 of its 3 L1Accepts hold wave8he data,
+    fewer than 1000`, `... its BeginRun is run tstx00001/r0002, the record says
+    tstx00001/r0001`, `lists no xtc2 file`, `no listed log runs drp -D wave8he and names the
+    run of ...`);
+  - for `prog:<program>`: a listed log whose `# CMDLINE:` runs `<program>` (for a STAND-IN row,
+    its `stand_in`, e.g. simxpm) and names the run (`lists no log of teb`, `its log of teb names
+    neither the run's xtc2 file ... nor its BeginRun time ...`).
+
+  A log names the run if it holds the path of a listed `.xtc2` file of the run (the DRP logs
+  `Opening file <path>`, control the file reports) or that file's BeginRun time as `sec.nsec`
+  (the TEB logs `BeginRun @ <time>`, simxpm `BeginRun ... time <time>`). The tool reads the
+  xtc2 files itself (datagram and Xtc headers, Names, the runinfo), as psana2's reader lays
+  them out; it needs no psana.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
