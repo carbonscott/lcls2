@@ -28,6 +28,12 @@ Node types the renderer knows
   text {pv, fmt, ...}              a display whose text text_of() computes server side from the PV's value with
                                    the Python of the PyQt widget's update() (PvLabel, PvDblArray, PvTableDisplay ...)
   label {text | pv_once}           pv_once: the text is the PV's value, read once when the page loads (QLabel(pv.get()))
+  localcombo {choices}             a QComboBox with no PV (hsdpva's base selector): only switches a stack
+  fieldedit {pv, fmt, ...}         a QLineEdit a structure PV's update() rewrites when the PV changes; it puts nothing
+                                   itself: a button with 'fields' (the ids of its fieldedits) sends their texts
+                                   to the page module's act() (hsdpva's PvScalarBox / PvArrayTable Apply)
+Sites collects the nodes of one PyQt construction site and gives them the ids gui_rows.make_rows gives the site's
+instances (stem, [qualifier] when needed, #n when still ambiguous), so a page module need not count them itself.
 """
 
 NBeamSeq = 16
@@ -68,6 +74,54 @@ class Page:
             if node.get(k):
                 self.read_pvs.add(node[k])
         return node
+
+
+class Sites:
+    """Nodes in the construction order of the PyQt program, grouped by site stem (<scope>.<binding>[@k]); assign()
+    names them as gui_rows.make_rows names the walk's instances of one site, assuming every instance is shown:
+    a plain instance gets [<qualifier>] (its PV, else its text) when the site has several instances or is not kept
+    in a self.<attr>, a qualifier shared by several instances of no PV is dropped, and #n numbers the ids still
+    equal; a QTabWidget's tabs are given whole ('<stem>.tab[<title>]', then #n)."""
+
+    def __init__(self):
+        self.order = []                 # [(stem, qual, pv, node, self_attr)]
+
+    def add(self, stem, pv, node, qual=None, self_attr=False):
+        self.order.append((stem, qual if qual is not None else pv, pv, node, self_attr))
+        return node
+
+    def assign(self, page):
+        by = {}
+        for e in self.order:
+            by.setdefault(e[0].split('.tab[')[0] if '.tab[' in e[0] else e[0], []).append(e)
+        for stem, es in by.items():
+            plain = [e for e in es if '.tab[' not in e[0]]
+            need_q = len(plain) > 1 or not all(e[4] for e in plain)
+            qs = [e[1] for e in plain]
+            names = []
+            for e in es:
+                if '.tab[' in e[0]:
+                    names.append(e[0])
+                    continue
+                q = e[1]
+                if q and not e[2] and qs.count(q) > 1:
+                    q = None
+                names.append(e[0] + ('[%s]' % str(q).replace('&', '') if need_q and q else ''))
+            seen = {}
+            for n in names:
+                seen[n] = seen.get(n, 0) + 1
+            idx = {}
+            for e, n in zip(es, names):
+                if seen[n] > 1:
+                    idx[n] = idx.get(n, -1) + 1
+                    n = '%s#%d' % (n, idx[n])
+                e[3]['id'] = n
+        for e in self.order:
+            page.add(e[3])
+        for e in self.order:                # a button's fields: the ids of the nodes it reads
+            if isinstance(e[3].get('fields'), list):
+                e[3]['fields'] = [f['id'] if isinstance(f, dict) else f for f in e[3]['fields']]
+        return page
 
 
 def ordinal_ids(stem, pv, n):
@@ -182,6 +236,23 @@ def _fmt_pvlabel(q, isInt=False, isTime=False, scale=None, units=None):
     return s
 
 
+def str_float32(x):
+    """str(numpy.float32(x)) without numpy: the shortest decimal that reads back as the same float32, printed as
+    Python prints that decimal (positional with '.0' between 1e-4 and 1e16, else exponent, as numpy does)."""
+    import math
+    import struct
+    f = struct.unpack('f', struct.pack('f', float(x)))[0]
+    if math.isnan(f) or math.isinf(f):
+        return {True: 'nan'}.get(math.isnan(f), 'inf' if f > 0 else '-inf')
+    for p in range(1, 10):
+        s = '%.*g' % (p, f)
+        if struct.unpack('f', struct.pack('f', float(s)))[0] == f:
+            if f != 0 and (abs(f) < 1e-4 or abs(f) >= 1e16):        # numpy's switch to an exponent (of the float32)
+                return '%.*e' % (p - 1, float(s))
+            return repr(float(s))
+    return repr(f)
+
+
 def text_of(node, q):
     """The text the PyQt widget a 'text' node copies shows for PV value q (None: not yet received, keep '-')."""
     if q is None:
@@ -212,6 +283,27 @@ def text_of(node, q):
             return str(int(v))
         except Exception:
             return '\n'.join('{:}'.format(x) for x in v)
+    if f == 'field':                                 # hsdpva PvScalarBox / PvArrayTable / PvJesd .update
+        v = q.get(node['field']) if isinstance(q, dict) else None
+        i = node.get('index', -1)
+        if v is None or (i >= 0 and (not isinstance(v, list) or i >= len(v))):
+            return None
+        if i >= 0:
+            v = v[i]
+        if node.get('spec'):                         # the field's format (PvArrayTable) or '{0:.4f}' (clocks)
+            return node['spec'].format(v)
+        if node.get('f32'):                          # an element of a float32 array: str(numpy.float32)
+            return str_float32(v)
+        return str(v)                                # QString(q[v]) of the structure's todict()
+    if f in ('cstring', 'plink') and isinstance(q, dict) and 'value' in q:
+        q = q['value']                               # an NTScalar read as its structure (webgui_harness.pva)
+    if f == 'cstring':                               # pvedit.PvCString.update: the characters before the first NUL
+        return str(q).split('\0', 1)[0]
+    if f == 'plink':                                 # hsdpva.PvPLink.update, without the reverse DNS lookup
+        q = int(q)
+        if ((q >> 24) & 0xff) == 0xfb and (q & 0xffff) != 0:
+            return '172.21.%u.%u:%u' % ((q >> 8) & 0xff, q & 0xff, (q >> 16) & 0xff)
+        return 'Unknown'
     if f == 'pyfmt':                                 # tprca.PvEditDbl.update: fmt.format(q), ' '-joined for an array
         try:
             return node['spec'].format(q)

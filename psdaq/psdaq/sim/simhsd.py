@@ -6,7 +6,10 @@ CONFIG, READY, PGPCONFIG, FWBUILD, FWVERSION, PADDR, PADDR_U, PLINK, KEEPROWS, F
 MONRAWBUF, MONFEXBUF, MONRAWDET, MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD, MONJESDTTL, RESET.  Unlike hsdpvs,
 once a second MONTIMING counts a locked timing link and a 1 kHz trigger (timframecnt += 928571, trigcntsum += 1000,
 trigcntrate = 1000), MONPGP counts frames on its 4 lanes (txcnt / rxcnt = 1000, txcntsum / rxcntsum += 1000), and
-MONRAWBUF / MONFEXBUF report free buffers (freesz 2048 - n, freeevt 16 - n for a slowly varying n).
+MONRAWBUF / MONFEXBUF report free buffers (freesz 2048 - n, freeevt 16 - n for a slowly varying n).  At start every
+field of the other monitoring structures (MONTRIG, MONRAWDET, MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD and the rest
+of MONTIMING / MONPGP) gets its own value, pattern(chip, field, element), so a display of the wrong field or element
+shows a wrong number (float32 fields get values float32 cannot hold exactly).
 <prefix>:SIM:PID is this process's pid (simhsd only: a client can tell the simulator from an HSD).
 
 The PVA server binds the loopback interface unless told otherwise (--bind, --allow-remote), like simxpm.
@@ -28,6 +31,17 @@ FRAMES_PER_S = 928571
 TRIG_HZ = 1000
 
 
+MON_PATTERNED = ('monTiming', 'monTrig', 'monPgp', 'monRawBuf', 'monFexBuf', 'monRawDet', 'monFexDet', 'monFlow',
+                 'monEnv', 'monAdc', 'monJesd')
+
+
+def pattern(chip, field, element, floating):
+    """The start value of element `element` (0 for a scalar) of field number `field` of chip `chip`'s structures."""
+    if floating:
+        return (chip + 1) + field / 10. + element / 100. + 0.05
+    return (chip + 1) * 1000 + field * 16 + element + 1
+
+
 class SimHsd:
     def __init__(self, prefixes, start=True):
         from psdaq.cas.hsdpvs import ChipServer
@@ -41,8 +55,22 @@ class SimHsd:
             self.pids.append(pv)
         self.stop = threading.Event()
 
+    def seed(self):
+        for ci, c in enumerate(self.chips):
+            for attr in MON_PATTERNED:
+                pv = getattr(c, attr)
+                v = pv.current()
+                for fi, (name, val) in enumerate(v.todict().items()):
+                    floating = 'float' in str(getattr(val, 'dtype', type(val)))
+                    if hasattr(val, '__len__'):
+                        v[name] = [pattern(ci, fi, j, floating) for j in range(len(val))]
+                    else:
+                        v[name] = pattern(ci, fi, 0, floating)
+                pv.post(v)
+
     def run(self):
         n = 0
+        self.seed()
         for c in self.chips:
             for pv, val in ((c.ready, 1), (c.fwBuild, 'simhsd (psdaq/psdaq/sim/simhsd.py)')):
                 v = pv.current()                       # post() takes only the exact type the PV was opened with

@@ -148,7 +148,7 @@ class PvGuiApi:
         out = comp(page, vals) if comp else {}
         from psdaq.webgui.pvgui import text_of
         for nid, n in page.nodes.items():           # 'text' nodes: the text the PyQt widget's update() writes
-            if n['type'] in ('text', 'pvedit'):
+            if n['type'] in ('text', 'pvedit', 'fieldedit'):
                 try:
                     t = text_of(n, vals.get(n['pv']))
                 except Exception:                    # the PyQt update() raises too: the display keeps its text

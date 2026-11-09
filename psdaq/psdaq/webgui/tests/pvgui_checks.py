@@ -61,6 +61,7 @@ def paths(PAGE):
             for c in r:
                 walk(c, path)
         for t in n.get('tabs', []):
+            out.setdefault(t['id'], list(path))       # a tab button: shown once its stack page is (hsdpva)
             walk(t['child'], path + [('tab', t['id'])])
     walk(PAGE.tree, [])
     return out
@@ -292,7 +293,7 @@ def check_tabs(page, PAGE, tab_ids, walk):
         reveal(page, PAGE, t)
         page.locator(sel(t)).click()
         expect(page.locator(sel(t))).to_have_attribute('aria-selected', 'true')
-        title = re.search(r'\[(.*)\]$', t).group(1)
+        title = re.search(r'\.tab\[(.*)\](#\d+)?$', t).group(1)     # #n: one of several QTabWidgets (hsdpva)
         assert page.locator(sel(t)).inner_text() == title
         stem = t.rsplit('.tab[', 1)[0]
         inst = next(x for k, x in walk.items() if k.startswith(stem + '.tab['))

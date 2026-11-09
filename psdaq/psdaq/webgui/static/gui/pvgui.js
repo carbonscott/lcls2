@@ -115,7 +115,8 @@ function render(n) {
     case 'button': {
       const b = el('button', { 'data-parity': n.id, text: n.label });
       b.addEventListener('click', async () => {
-        const env = n.env ? document.querySelector(`[data-parity="${n.env}"]`).value : null;
+        const q = (f) => document.querySelector(`[data-parity="${CSS.escape(f)}"]`);
+        const env = n.fields ? n.fields.map(f => q(f).value) : (n.env ? q(n.env).value : null);   // hsdpva Apply
         b.setAttribute('aria-pressed', 'true');
         await put(n.id, env);
         b.setAttribute('aria-pressed', 'false');                                         // setChecked(False)
@@ -129,6 +130,18 @@ function render(n) {
       return el('label', {}, cb, ' ' + n.label);
     }
     case 'edit': return el('input', { class: 'pv-edit', 'data-parity': n.id, value: n.text });
+    case 'localcombo': {                      // a QComboBox with no PV: switches its stack (hsdpva tabsel)
+      const s = el('select', { 'data-parity': n.id });
+      n.choices.forEach((c, k) => s.append(el('option', { value: k, text: c })));
+      s.addEventListener('change', () => stacks());
+      return s;
+    }
+    case 'fieldedit': {                       // a QLineEdit its PV's update() rewrites when the PV changes; no put
+      const i = el('input', { class: 'pv-edit', 'data-parity': n.id, 'data-pv': n.pv, value: n.init === undefined ? '-' : n.init });
+      W[n.id] = { node: n, el: i, update: (v, c) => { const t = c['text:' + n.id];
+        if (t !== undefined && t !== i.dataset.last) { i.dataset.last = t; i.value = t; } } };
+      return i;
+    }
     case 'pvbutton': {                                                                  // PvPushButton: put 1, 0
       const b = el('button', { 'data-parity': n.id, 'data-pv': n.pv, text: n.label });
       b.addEventListener('click', () => put(n.id, 1));
