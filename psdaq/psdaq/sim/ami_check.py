@@ -12,10 +12,12 @@ lane 0 are seq; word 4 depends on seed, pulse ID and lane), and keeps them in a 
 reductions run in its worker, node collector and global collector, so the rows reach the
 manager through the whole chain.
 
-check reads the run's xtc2 file with psana2 and, for every row AMI kept, finds the event with
-the same timestamp: the row counts as matched only if its seq and pixel equal what psana2
-reads.  It passes if AMI kept at least --min rows, every row matched, no timestamp repeats, and
-ami_pixsum equals psana2's sum of the pixel over the events AMI saw.  The MEB serves AMI a
+check reads the run's xtc2 file with psana2 and, for every event AMI kept, finds the event with
+the same timestamp: it counts as matched only if its seq and pixel equal what psana2 reads.
+AMI's RollingBuffer hands its collectors the worker's whole buffer at every heartbeat, so one
+event's row can reach the manager more than once: identical rows count as one event, and two
+rows that disagree for one timestamp fail.  It passes if AMI kept at least --min events, every
+one matched, ami_count is that number and ami_pixsum equals psana2's sum of the pixel over them.  The MEB serves AMI a
 subset of the events (whatever its buffers hold when AMI asks), so the counts differ from the
 DAQ's; the check is per event, not a total.
 
@@ -133,13 +135,14 @@ def check(ami, path, det='fakecam', minimum=100, events=None):
     """The verdict on AMI's result 'ami' (fetch()) against the xtc2 file: a dict with 'pass'.
     'events' (psana_events of the file) may be given instead of read."""
     events = psana_events(path, det) if events is None else events
-    rows = ami['rows']
-    seen, matched, problems, psum = set(), 0, [], 0
+    seen, problems = {}, []
+    for ts, seq, pix in ami['rows']:
+        if ts in seen and seen[ts] != (seq, pix):
+            problems.append(f'AMI rows disagree for timestamp {ts:#x}: {seen[ts]} and {(seq, pix)}')
+        seen.setdefault(ts, (seq, pix))
+    rows = [(ts, seq, pix) for ts, (seq, pix) in sorted(seen.items())]
+    matched, psum = 0, 0
     for ts, seq, pix in rows:
-        if ts in seen:
-            problems.append(f'timestamp {ts:#x} twice in AMI\'s rows')
-            continue
-        seen.add(ts)
         want = events.get(ts)
         if want is None:
             problems.append(f'AMI row {ts:#x} seq {seq}: no event with that timestamp in the file')
@@ -150,13 +153,14 @@ def check(ami, path, det='fakecam', minimum=100, events=None):
             matched += 1
             psum += pix
     if len(rows) < minimum:
-        problems.append(f'AMI kept {len(rows)} rows, fewer than {minimum}')
+        problems.append(f'AMI kept {len(rows)} events, fewer than {minimum}')
     if ami.get('count') != len(rows):
-        problems.append(f'ami_count {ami.get("count")} != {len(rows)} rows')
+        problems.append(f'ami_count {ami.get("count")} != {len(rows)} events in AMI\'s rows')
     if ami.get('pixsum') != psum:
         problems.append(f'ami_pixsum {ami.get("pixsum")} != psana2 sum {psum} over the events AMI saw')
     seqs = sorted(s for _, s, _ in rows)
-    return {'xtc2 events': len(events), 'ami rows': len(rows), 'ami matched': matched,
+    return {'xtc2 events': len(events), 'ami rows': len(ami['rows']), 'ami events': len(rows),
+            'ami matched': matched,
             'ami pixsum': ami.get('pixsum'), 'psana2 pixsum (same events)': psum,
             'ami seq range': f'{seqs[0]}..{seqs[-1]}' if seqs else None,
             'problems': problems[:5] + ([f'... {len(problems) - 5} more'] if len(problems) > 5 else []),

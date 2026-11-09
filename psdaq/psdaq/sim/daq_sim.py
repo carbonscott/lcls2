@@ -1245,8 +1245,8 @@ class AmiRun:
         res = ami_check.check(self.result, files[0], DETECTOR)
         with open(work.path('logs', 'ami_check.json'), 'w') as f:
             json.dump(dict(res, xtc2=files[0], addr=self.addr), f, indent=1)
-        out = {k: res[k] for k in ('ami rows', 'ami matched', 'ami pixsum', 'psana2 pixsum (same events)',
-                                   'ami seq range')}
+        out = {k: res[k] for k in ('ami rows', 'ami events', 'ami matched', 'ami pixsum',
+                                   'psana2 pixsum (same events)', 'ami seq range')}
         out['ami check'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
         return out
 

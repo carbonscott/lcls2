@@ -104,9 +104,11 @@ def test_ami_check_verdict():
     assert not res['pass'] and 'ami_pixsum' in res['problems'][-1]
     res = ami_check.check(good, None, minimum=101, events=events)
     assert not res['pass'] and 'fewer than 101' in res['problems'][0]
-    res = ami_check.check(dict(good, rows=rows + rows[:1], count=len(rows) + 1), None, minimum=1,
-                          events=events)
-    assert not res['pass'] and 'twice' in res['problems'][0]
+    res = ami_check.check(dict(good, rows=rows + rows[:3]), None, minimum=100, events=events)
+    assert res['pass'] and res['ami events'] == 100 and res['ami rows'] == 103, res    # resent rows
+    res = ami_check.check(dict(good, rows=rows + [[rows[0][0], rows[0][1], rows[0][2] + 1]]), None,
+                          minimum=1, events=events)
+    assert not res['pass'] and 'disagree' in res['problems'][0]
 
 
 def test_ami_graph_functions_need_no_psdaq():

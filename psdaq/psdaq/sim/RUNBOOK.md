@@ -567,7 +567,7 @@ Prometheus exporters from 31180 + 2 p. The UDP port is 31200 + p.
 ```bash
 # step A (WD as in §2)
 daq_sim up -w $WD --ami --ami-src /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526 \
-    --pva --epics --udp --gui --detach
+    --pva --epics --udp --gui --rate 100 --detach
 # step B: a cycle; besides the fakecam counts it prints the MEB, AMI and system DRP counts
 daq_sim cycle -w $WD --events 1000
 daq_sim down -w $WD
@@ -669,7 +669,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   time, so their logs cannot name the run and coverage does not count their rows (ami_check
   shows they processed the run's events).
 - **System DRPs.** drp_pva records one camera PV that simxpm updates for every L1Accept; drp_bld
-  is not run. epicsArch archives two PVs of a softIocPVA on loopback. sim_udpencoder sends the
+  is not run. drp_pva takes PV updates only once it has handled Enable, and at the default 1 kHz
+  its PVA monitor fell behind for the first ~50 L1Accepts of a run (they were recorded without
+  the image); run `--pva` at `--rate 100`, near a camera's rate, as §3g does. epicsArch archives two PVs of a softIocPVA on loopback. sim_udpencoder sends the
   100/200 test pattern only (no `-f` playback in the run).
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
