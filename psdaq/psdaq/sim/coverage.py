@@ -56,7 +56,13 @@ listed .xtc2 files.  Rows that need one:
                      lists every process whose procmgr log ('# ID:') names the run, RUNNING; a
                      'servers' entry reads under its own 'prefix' (the stand-in's PVs) and must
                      give the row program's 'interfaces' entry: 'defined' (PV names its source
-                     defines, > 0) and 'missing' (those the stand-in does not serve) empty
+                     defines, > 0) and 'missing' (those the stand-in does not serve) empty; a
+                     'programs' entry with 'stand_in' (R4, a GUI on a device stand-in: hsdpva on
+                     simhsd, tprca on simtpr, dtica on simdti) instead shows, in one read
+                     (gui_witness keeps a read per widget), 2 or more distinct values after the
+                     widget's first text (which may be the text it was built with) of a PV under
+                     a prefix the stand-in serves (the -P of the stand-in's own log, which the
+                     record must list)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -812,13 +818,27 @@ def ami_witness_problem(prog, w, run_id, mine, runs, logs):
 LOG_ID = re.compile(r'^# ID:[ \t]*(\S+)', re.M)        # procmgr heads each process's log with its id
 
 
-def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None):
+def pv_prefixes(args):
+    """The PV prefixes a stand-in's command line serves: the words after its -P, up to the next option."""
+    out = []
+    for k, a in enumerate(args):
+        if a == '-P':
+            for b in args[k + 1:]:
+                if b.startswith('-'):
+                    break
+                out.append(b)
+    return out
+
+
+def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=()):
     """Why a gui_witness does not show prog read live values of the run (its 'programs' or, for a
     stand-in, 'servers' entry), or None (module doc).  run_ids: the procmgr ids of the record's
     logs that name the run, which a 'procmgr' entry (procstat's table) must show RUNNING.  A
     'servers' entry (a stand-in's PVs, read by a client of the cycle) reads under its own
     'prefix' and must hold the row program's interface: {'interfaces': {row_prog: {'defined': n,
-    'missing': [...]}}}, the PV names the program's source defines, every one served."""
+    'missing': [...]}}}, the PV names the program's source defines, every one served.  A 'programs'
+    entry with 'stand_in' (R4: a GUI on a device stand-in's PVs) must read a PV under a prefix the
+    stand-in serves by the command line of its log in the record (logs: [((program, args), text)])."""
     p = _witness_run(w, run_id, mine)
     if p:
         return p
@@ -846,6 +866,23 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         if missing:
             return (f'shows {prog} did not list {", ".join(missing)} RUNNING (processes whose logs name the run)')
         return None
+    if section == 'programs' and 'stand_in' in e:         # R4: a GUI on a device stand-in's PVs
+        si = e.get('stand_in')
+        if not (isinstance(si, str) and si):
+            return f'its {prog} entry names no stand-in'
+        ran = [args for (name, args), _ in logs if name == si]
+        if not ran:
+            return (f'its {prog} entry reads the PVs of {si}, but the record lists no log of {si} '
+                    f'(a log whose "# CMDLINE:" runs {si})')
+        served = sorted({p for args in ran for p in pv_prefixes(args)})
+        if not served:
+            return f'its log of {si} gives no PV prefix (-P) for {prog} to read under'
+        live = [r for r in e.get('reads') or [] if isinstance(r, dict) and isinstance(r.get('values'), list)
+                and any(str(r.get('name', '')).startswith(p + ':') for p in served) and len(changed_texts(r['values'])) >= 2]
+        if not live:
+            return (f'shows {prog} read no live value of a PV {si} serves (under {", ".join(served)}; '
+                    f'2 or more distinct values in one read after its first text)')
+        return None
     prefix = w.get('partition')
     if section == 'servers':
         prefix = e.get('prefix')
@@ -865,6 +902,13 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
     if not live:
         return f'shows {prog} read no live value under {prefix} (2 or more distinct numbers of one name)'
     return None
+
+
+def changed_texts(values):
+    """R4: the distinct texts holding a digit among a widget's texts after its first one.  The first may be
+    the text the widget was built with (tprca's PvEditDbl shows '0' before its PV's value), and a value may
+    carry units or be an array (dtica's '928.6154kHz'), so texts, not numbers, are compared."""
+    return {str(v).strip() for v in values[1:] if any(c.isdigit() for c in str(v))}
 
 
 def numbers(values):
@@ -1004,7 +1048,7 @@ def row_problem(rid, entry, rec, cache=None):
         kind = 'gui_witness'
         section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1])
+        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs)
                for w in witnesses if w['witness'] == kind]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '

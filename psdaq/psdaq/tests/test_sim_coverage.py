@@ -790,7 +790,7 @@ def test_rows_without_status_are_unproven(tmp_path):
     assert f'{len(rows)} rows, 0 run, 0 stand-in, 0 N/A, {len(rows)} unproven' in out
 
 
-# --- witnesses: AMI (R1), GUIs and monitors (R2), PV-server stand-ins (R3) ----------------
+# --- witnesses: AMI (R1), GUIs, procstat and monitors (R2, R2b, R2c), PV-server stand-ins (R3), GUIs on them (R4)
 
 AMI_ROWS = [f'prog:{p}' for p in coverage.AMI_PROGRAMS]
 
@@ -1057,6 +1057,104 @@ def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
     code, line = witness_run(tmp_path / 'f', mutate=lambda w, e: (server_entry(w, e), e.update(prefix='DAQ:SIM:HSD')),
                              **kw)                                        # its reads are not under its prefix
     assert code == 1 and 'shows simxpm read no live value under DAQ:SIM:HSD' in line
+
+
+def test_a_monitor_is_run_when_a_gauge_of_the_partition_changed_during_the_run(tmp_path):
+    """R2c: a PV monitor (epics_exporter, procmgr id pvrtmon_0) has a 'programs' entry like a GUI's: the
+    gauges it served, named by the PV they export; one under the partition must take 2 or more values."""
+    kw = dict(row='prog:epics_exporter', cmd='epics_exporter -H tst -I xpm-0 -M /w/prom -P DAQ:SIM:XPM:0 NumL0Acc')
+    code, line = witness_run(tmp_path / 'a', mutate=lambda w, e: e.update(port=9203, exit=None), **kw)
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: e.update(
+        reads=[{'name': PARTITION + ':RunTime', 'values': ['3']}, {'name': 'DAQ:SIM:XPM:0:PART:3:NumL0Acc',
+                                                                     'values': ['0', '9']}]), **kw)
+    assert code == 1 and 'shows epics_exporter read no live value under DAQ:SIM:XPM:0:PART:5' in line
+    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: e.update(start=L1_LAST + 0.1, end=L1_LAST + 2),
+                             **kw)
+    assert code == 1 and 'not within the run\'s L1Accepts' in line
+
+
+HSD = 'DAQ:SIM:HSD:1_DA'
+SIMHSD_CMD = f'python -m psdaq.sim.simhsd -P {HSD}:A {HSD}:B'
+
+
+def r4_run(tmp_path, si_cmd=SIMHSD_CMD, mutate=None, row='prog:hsdpva', gui_cmd=f'hsdpva {HSD}:A {HSD}:B'):
+    """(exit code, line) of a record for an R4 row (a GUI on a device stand-in's PVs): the run's xtc2 file,
+    the GUI's own log, the stand-in's log (si_cmd, None: not listed) and a gui_witness whose 'programs' entry
+    names the stand-in and holds the GUI's reads, one per widget."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    files = [xtc, write_log(d / 'gui.log', gui_cmd, 'hsdpva: tabs built')]
+    if si_cmd:
+        files.append(write_log(d / 'simhsd.log', si_cmd, 'simhsd: ready'))
+    prog = row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], stand_in='simhsd', prefix=HSD,
+                    reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['-', '1043', '1971']},
+                           {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#13', 'values': ['0']}])
+    if mutate:
+        mutate(w, w['programs'][prog])
+    files.append(write_witness(d / 'gui_witness.json', w))
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_gui_on_a_device_stand_in_is_run_with_the_stand_ins_log_and_a_widget_that_changed(tmp_path):
+    """R4: the GUI's own log, the stand-in's log in the same record, and a 'programs' entry naming the
+    stand-in whose reads show one widget's PV, under a prefix the stand-in's -P serves, take 2 values in
+    the run's L1Accepts.  The partition prefix plays no part."""
+    code, line = r4_run(tmp_path)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (r4_run arguments, what the row's line says)
+R4_FORGERIES = {
+    'no-stand-in-log': (dict(si_cmd=None), 'its hsdpva entry reads the PVs of simhsd, but the record lists no log of simhsd'),
+    'other-stand-in': (dict(si_cmd='python -m psdaq.sim.simtpr -P DAQ:SIM:TPR'),
+                       'the record lists no log of simhsd'),
+    'stand-in-serves-other-pvs': (dict(si_cmd='python -m psdaq.sim.simhsd -P DAQ:SIM:HSD:2_DA:A'),
+                                  'shows hsdpva read no live value of a PV simhsd serves (under DAQ:SIM:HSD:2_DA:A'),
+    'no-gui-log': (dict(gui_cmd='tprca DAQ:SIM:TPR'), 'lists no log of hsdpva'),
+    'one-value-per-widget': (dict(mutate=lambda w, e: e.update(reads=[
+        {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['1043']},
+        {'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#13', 'values': ['1971']}])),
+        'shows hsdpva read no live value of a PV simhsd serves'),
+    'partition-pv-only': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                     'values': ['-', '100', '250']}])),
+                          'shows hsdpva read no live value of a PV simhsd serves'),
+    'built-text-then-value': (dict(mutate=lambda w, e: e.update(reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'PvEditDbl#3',
+                                                                         'values': ['0', '5.4e-09']}])),
+                              'shows hsdpva read no live value of a PV simhsd serves'),
+    'after-the-run': (dict(mutate=lambda w, e: e.update(end=L1_LAST + 0.5)), 'not within the run\'s L1Accepts'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['walk exited 1']})), 'says hsdpva failed'),
+    'no-stand-in-named': (dict(mutate=lambda w, e: e.update(stand_in='')), 'its hsdpva entry names no stand-in'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R4_FORGERIES))
+def test_r4_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R4_FORGERIES[case]
+    code, line = r4_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_r4_entry_without_stand_in_is_judged_on_the_partition(tmp_path):
+    """Without 'stand_in' the entry is an R2 one: a stand-in's PV does not count for it."""
+    code, line = r4_run(tmp_path, mutate=lambda w, e: e.pop('stand_in'))
+    assert code == 1 and 'shows hsdpva read no live value under DAQ:SIM:XPM:0:PART:5' in line
+
+
+def test_changed_texts_skip_the_first_text_and_keep_units():
+    assert coverage.changed_texts(['0', '5.4e-09']) == {'5.4e-09'}
+    assert coverage.changed_texts(['-', '928.6154kHz', '928.6164kHz']) == {'928.6154kHz', '928.6164kHz'}
+    assert coverage.changed_texts(['1', '-', '', 'kHz']) == set()
+
+
+def test_pv_prefixes_are_the_words_after_dash_p():
+    assert coverage.pv_prefixes(['-P', 'A:B', 'C:D', '--bind', '127.0.0.1']) == ['A:B', 'C:D']
+    assert coverage.pv_prefixes(['-x', '0']) == []
 
 
 # --- the commands --------------------------------------------------------------------------
