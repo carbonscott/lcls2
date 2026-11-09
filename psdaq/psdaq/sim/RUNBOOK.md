@@ -695,7 +695,7 @@ Disable, the MEB's served-event count `MEB_EvtCt`. The client's PVA server takes
 daq_sim cycle -w $WD --events 1000 --ami-shot $WD/ami.png
 ```
 
-## 3i. System features: `daq_sim feature a|b|e`
+## 3i. System features: `daq_sim feature a|b|c|d|e`
 
 Each feature is one command, run inside a Slurm step on the node as in §2. It brings the DAQ up
 (`up --detach` with the feature's options), drives one run, takes the DAQ down (always, unless
@@ -710,6 +710,8 @@ L1Accepts simxpm sent its link, `SIM:LinkL1Acc`) against psana2's events in its 
 daq_sim feature a -w $WD       # readout groups at different rates
 daq_sim feature b -w $WD       # a 3-step scan through generic_timing_scan.py
 daq_sim feature e -w $WD       # drp_pva, drp_bld, drp_udpencoder, epicsArch with a PGP DRP
+daq_sim feature c -w $WD       # the MEB serving AMI; AMI's GUI shows the camera ($DAQ_SIM_AMI_SRC or --ami-src)
+daq_sim feature d --hosts nodeA,nodeB     # two nodes: NOT AVAILABLE unless both are hosts of this job
 daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail (no DAQ)
 ```
 
@@ -718,6 +720,8 @@ daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail 
 | a | `--det hrencoder --also epix100:<p+1> --also wave8:<p+1> --fixed-rate <p>:3 --fixed-rate <p+1>:4` | one cycle of `--events` (1000) L1Accepts of group p | hrencoder_0 (group p, 1.02 kHz marker), epix100_0 and wave8_0 (group p+1, 102 Hz): each DRP's DAQ count == psana2's events in its stream == events with its data, each passing the type's per-event check (`xtc2_check`); each group took its marker's share (group p+1 1/10 of group p's, within 10 %) |
 | b | `--det tb --also epix100 --rate 100` | `python -m psdaq.cas.generic_timing_scan -p <p> -C localhost --detname epix100_0 --scantype timing --events <N> --record 1 --config BEAM --linear 700000 730000 10000`, from connected | psana2 reads 3 steps in tb's stream, `step_value` 700000, 710000, 720000 and a `step_docstring` naming each; each DRP has `--events` (200) L1Accepts in every step, all with data; each DRP's DAQ count == psana2's; every event passes its per-event check; `epix100_update` applied 700000, 710000, 720000 in order (its DRP's log) |
 | e | `--pva --epics --udp --bld --rate 100` | one cycle | sysdrp_check reads drp_pva's, drp_udpencoder's, epicsArch's and drp_bld's data event by event; each system DRP's DAQ count == psana2's events in its stream; drp_bld's L1Accepts less its `bld_miss_count` == psana2's events with BLD data |
+| c | `--ami --rate 100` (`--ami-src` passed on; §3h) | one cycle with `--ami-shot <WD>/ami-shot.png` | fakecam_0's DAQ count == psana2's events in its stream == events with its data, each passing the per-event check; the MEB served events (`MEB_EvtCt` > 0 and at least the events AMI kept); every event AMI computed from the MEB matches psana2's event with the same timestamp (`ami_check`: seq and pixel, at least 100 events, AMI's pixel sum == psana2's over them); a second `ami-client` showed the camera image while Running (the screenshot path is in the report) |
+| d | `--det hrencoder --also epix100:<p>`, over `--hosts A,B` | none yet | NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (`SLURM_JOB_NODELIST`, expanded by `scontrol show hostnames`); with two, it prints the plan (§3j) and fails: `up --hosts` runs a plan only |
 
 The step values are recorded by the timing DRP, as at the hutches: `TimingBEB::scanEnabled()`
 (tb) and `TimingSystem::scanEnabled()` (ts) are true, `Epix100::scanEnabled()` is false, so a scan
@@ -758,8 +762,12 @@ What each feature adds to `up` (usable on its own):
 
 Breaks (`--check-only --break KIND`, on a broken copy of the recorded run; the run's files stay
 as they are): `a`: `drop-l1` cuts the last 10 L1Accepts off epix100_0's stream, `same-rate`
-expects both groups at one rate; `b`: `expect-values` expects each step value + 1; `e`:
-`bld-seed` expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1.
+expects both groups at one rate; `b`: `expect-values` expects each step value + 1; `c`:
+`ami-tamper` flips one bit of one event's pixel in a copy of the result fetched from AMI
+(`logs/ami_check.rows.json`), which `ami_check` then finds against psana2; `e`: `bld-seed`
+expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1.
+`--check-only` without a break re-runs the checks on the recorded files (for c, `ami_check`
+again on the fetched result).
 
 ## 3j. Two nodes (a plan): `daq_sim up --hosts A,B --dry-run`
 
