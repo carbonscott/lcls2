@@ -24,7 +24,8 @@ Rows (one per affordance of the running GUI).  Each instance is attributed to th
 of its construction stack in an own file, i.e. to a site.  A site with instances gives one row per
 instance, id `<scope>.<binding>` plus `[<PV>]`, `[<text>]` and `#<n>` qualifiers as needed to keep ids
 unique (QTableWidget: one row per column `.col[<header>]` and one `.cellClicked` row when connected;
-QTabWidget: one row per tab `.tab[<text>]`).  An instance that is a QLabel with no text written after
+QTabWidget: one row per tab `.tab[<text>]`; QMessageBox: one row for all its instances, a dialog built anew
+each time it is shown).  An instance that is a QLabel with no text written after
 construction is decoration and gives no row, unless the walk saw another label of the same site built by
 the same line (its construction chain's innermost frame) written: that one is a display not yet updated.
 A site with no instance gives one row `<scope>.<binding>` (not built); a slot gives `<Class>.<slot>`.  Kinds: button, checkbox, combo,
@@ -226,6 +227,10 @@ class _SiteScan(ast.NodeVisitor):
         for n in node.orelse:
             self.visit(n)
         self.stack.pop()
+
+    def visit_AnnAssign(self, node):          # self._bar: QProgressBar = QProgressBar(self) (detector_protection_monitor)
+        if node.value is not None:
+            self.visit_Assign(ast.Assign(targets=[node.target], value=node.value, lineno=node.lineno))
 
     def visit_Assign(self, node):
         tgt = node.targets[0]
@@ -543,10 +548,15 @@ def make_rows(srcinfo, walk):
                                  evidence=['site %s %s; guards: %s' % (s['loc'], reach, '; '.join(s['guards']) or '-')]))
             continue
         out = []
+        n_msg = 0
         for x in xs:
             k = _instance_kind(x, written)
             if k is None:
                 continue
+            if k == 'message':              # a dialog the program builds anew each time it is shown: one row per site
+                n_msg += 1
+                if n_msg > 1:
+                    continue
             if k == 'QTabWidget':
                 for t in x.get('tabs', []):
                     out.append(('tab', '%s.tab[%s]' % (stem, t), t, x))
@@ -557,7 +567,7 @@ def make_rows(srcinfo, walk):
                 if x.get('receivers', {}).get('cellClicked'):
                     out.append(('click', '%s.cellClicked' % stem, 'cell click', x))
                 continue
-            out.append((k, None, _qual(x), x))
+            out.append((k, None, None if k == 'message' else _qual(x), x))   # a dialog's text is what it says now
         # ids for plain instances: stem, + [qual] when needed, + #n when still ambiguous
         plain = [o for o in out if o[1] is None]
         need_q = len(plain) > 1 or not s['self_attr']
