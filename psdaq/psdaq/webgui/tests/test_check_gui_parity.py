@@ -3,6 +3,7 @@ tree: the tests that need one take the walks webgui_harness.gui_walks() runs onc
 --run-walks, PyQt5 offscreen, against the simulated DAQ of WEBGUI_SIM_DAQ), and skip without a simulated DAQ."""
 
 import copy
+import importlib
 import json
 import os
 import xml.etree.ElementTree as ET
@@ -95,6 +96,54 @@ def test_check_passes_and_fails_when_a_mapping_or_the_backend_goes(tmp_path, wal
     rep = _check(spec, _junit(tmp_path, spec, drop_backend_for=emu), walks)
     assert not rep['ok'] and 'PvGroupStats.runb' in [r['id'] for r, _, _ in rep['failing']]
     assert 'backend emulator, not sim-daq' in [st for _, _, st in rep['failing']]
+
+
+def test_pv_compare_counts_the_same_pv_and_names_another():
+    rows = [{'id': k, 'pv': pv} for k, pv in [('a', 'X:A'), ('b', 'X:B'), ('c', None), ('d', 'X:D'), ('e', 'X:E'),
+                                              ('f', 'X:F')]]
+    mapping = {k: {'web': '[data-parity~="%s"]' % k, 'test': 'test_x.py::test_x[chromium]'} for k in 'abcde'}
+    mapping['f'] = {'na': 'not applicable'}
+    nodes = {'a': {'pv': 'X:A'}, 'b': {'pv': 'X:B2'}, 'c': {'pv': 'X:C'}, 'd': {'type': 'tab'}, 'f': {'pv': 'X:G'}}
+    assert C.pv_compare(rows, mapping, nodes) == {'same': 1, 'differ': [('b', 'X:B', 'X:B2')], 'walk_no_pv': 1,
+                                                   'page_no_pv': 1, 'no_node': 1}
+
+
+PVGUI = ['groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable', 'hsdpva', 'dtica', 'xpmpva']
+NO_PV_IN_WALK = {'deadca', 'pvatable'}     # their widgets (PvDblArrayW, PvField) carry no .pv: nothing to compare
+
+
+@pytest.mark.parametrize('name', PVGUI)
+def test_each_page_widget_has_the_pv_of_its_pyqt_widget(tmp_path, walks, monkeypatch, name):
+    """The page built with the walk's argv gives every mapped row whose PyQt widget had a PV in the walk a node with
+    that PV; one node given another PV takes its row out of M and fails the check, naming both PVs."""
+    spec = _spec(name)
+    junit = check_parity.load_junit([_junit(tmp_path, spec, backend=spec.get('backend', 'sim-daq'))])
+    e = next(x for x in qapps.scan(SRC) if x['file'] == spec['file'])
+    rep, _, _, rows = C.check_gui(SRC, e, spec, junit, walks)
+    pv = rep['pv']
+    assert rep['ok'] and pv['differ'] == [] and pv['error'] is None, C.pv_line(pv) + '\n' + check_parity.render(rep)
+    if name in NO_PV_IN_WALK:
+        assert pv['same'] == 0 and pv['walk_no_pv'] > 0, C.pv_line(pv)
+        return
+    assert pv['same'] > 0, C.pv_line(pv)
+    mod = importlib.import_module('psdaq.webgui.pvgui.' + name)
+    build, hit = mod.build, []
+
+    def other_pv(*a, **k):
+        page = build(*a, **k)
+        for r in rows:
+            n = page.nodes.get(r['id'])
+            if r.get('pv') and n and n.get('pv') == r['pv'] and 'test' in spec['mapping'].get(r['id'], {}):
+                page.nodes[r['id']] = dict(n, pv=n['pv'] + 'X')
+                hit.append((r['id'], r['pv']))
+                break
+        return page
+    monkeypatch.setattr(mod, 'build', other_pv)
+    bad, _, _, _ = C.check_gui(SRC, e, spec, junit, walks)
+    rid, wpv = hit[0]
+    assert not bad['ok'] and bad['M'] == rep['M'] - 1 and bad['pv']['differ'] == [(rid, wpv, wpv + 'X')]
+    assert (rid, 'the page widget has PV %sX, the PyQt widget %s (walk)' % (wpv, wpv)) in bad['invalid']
+    assert rid in check_parity.render(bad).splitlines()[-1]
 
 
 def test_check_fails_without_a_walk_or_with_a_walk_of_other_source(tmp_path, walks):

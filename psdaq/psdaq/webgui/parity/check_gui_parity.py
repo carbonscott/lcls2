@@ -23,6 +23,10 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
       and the walk is of the same source (sha256 of the GUI's own files).
       A backend sim-device:<name> is accepted only when <name> is a campaign simulator, a module
       psdaq/sim/<name>.py (e.g. simxpm), and the test recorded it (webgui_harness checks it runs).
+      A web copy built by psdaq.webgui.pvgui.<name> (its widgets read and write the PV of their node) is also
+      checked PV by PV (page_pvs): the page built with the walk's argv, as daq_webgui --pvgui builds it, must give
+      each mapped row whose PyQt widget had a PV in the walk a node with that same PV; a row whose node has another
+      PV is not counted in M and is listed as invalid, with both PVs.
   not a standalone GUI program
       {"file", "na": "<one-line reason citing every construction line>", "rule": "walk-tool" | "library-demo" |
        "no-window", ["walk": {...}]}
@@ -45,6 +49,7 @@ Usage (DAQ env, PyQt5; $WD the work dir of a running daq_sim up):
 """
 
 import argparse
+import importlib
 import json
 import os
 import re
@@ -153,6 +158,72 @@ def campaign_simulators(src):
     return sorted(n[:-3] for n in os.listdir(d) if n.endswith('.py') and n != '__init__.py') if os.path.isdir(d) else []
 
 
+def pv_compare(rows, mapping, nodes):
+    """Each mapped row (a {"web", "test"} entry) against the page node of the same id: 'same' / 'differ' when both the
+    walk's instance and the node have a PV, else counted as not compared ('walk_no_pv': the walk saw no PV on the
+    PyQt widget; 'page_no_pv': the node has none, e.g. a tab; 'no_node')."""
+    out = {'same': 0, 'differ': [], 'walk_no_pv': 0, 'page_no_pv': 0, 'no_node': 0}
+    for r in rows:
+        e = mapping.get(r['id'])
+        if not isinstance(e, dict) or 'test' not in e:
+            continue
+        n = nodes.get(r['id'])
+        if n is None:
+            out['no_node'] += 1
+        elif not r.get('pv'):
+            out['walk_no_pv'] += 1
+        elif not n.get('pv'):
+            out['page_no_pv'] += 1
+        elif n['pv'] == r['pv']:
+            out['same'] += 1
+        else:
+            out['differ'].append((r['id'], r['pv'], n['pv']))
+    return out
+
+
+def walk_fwbuild(walk):
+    """FwBuild of each XPM the walk's simxpm devices served (--fwbuild), for a page that reads it while it builds."""
+    fw = {}
+    for dv in (walk or {}).get('devices', []):
+        a = dv.get('args', [])
+        if dv.get('module') == 'simxpm' and '--fwbuild' in a and '-P' in a and '-x' in a:
+            fw['%s:XPM:%s:FwBuild' % (a[a.index('-P') + 1], a[a.index('-x') + 1])] = a[a.index('--fwbuild') + 1]
+    return fw
+
+
+def page_pvs(src, spec, walk, rows):
+    """The PV check of a web copy that psdaq.webgui.pvgui.<name> builds (None for any other web copy): the page
+    built with the walk's argv (a GET_AT_BUILD page reads FwBuild: answered from the walk's simxpm devices) and
+    pv_compare with the walk's rows, plus 'page' (name, argv) and 'error' (no walk, or a page module that is not
+    the --src tree's)."""
+    web = spec.get('web') or ''
+    name = web.rsplit('/', 1)[-1]
+    path = os.path.join(src, 'webgui', 'pvgui', name + '.py')
+    if not web.startswith('/gui/') or not os.path.isfile(path):
+        return None
+    out = {'same': 0, 'differ': [], 'walk_no_pv': 0, 'page_no_pv': 0, 'no_node': 0, 'page': name, 'error': None}
+    if walk is None:
+        out['error'] = 'no walk of this source: PVs not compared'
+        return out
+    mod = importlib.import_module('psdaq.webgui.pvgui.' + name)
+    if os.path.realpath(mod.__file__) != os.path.realpath(path):
+        out['error'] = 'psdaq.webgui.pvgui.%s is imported from %s, not from --src (%s): PVs not compared' % (
+            name, mod.__file__, path)
+        return out
+    argv = list(walk.get('argv', []))
+    page = mod.build(argv, fwbuild=walk_fwbuild(walk).get) if getattr(mod, 'GET_AT_BUILD', False) else mod.build(argv)
+    out.update(pv_compare(rows, spec.get('mapping', {}), page.nodes))
+    out['page'] = '%s %s' % (name, argv)
+    return out
+
+
+def pv_line(pv):
+    return 'PV check (page %s vs the walk): %d mapped rows with the same PV, %d with another; not compared: %d the ' \
+           'walk saw no PV on the PyQt widget, %d the page node has none, %d no page node%s' % (
+               pv['page'], pv['same'], len(pv['differ']), pv['walk_no_pv'], pv['page_no_pv'], pv['no_node'],
+               '; ' + pv['error'] if pv['error'] else '')
+
+
 def check_gui(src, e, spec, results, d=None):
     """(rep, srcinfo, walk, rows) for a GUI program spec; d: the dir --run-walks wrote the walks to (None: none)."""
     srcinfo = gui_rows.source_sites(src, e['file'])
@@ -176,6 +247,17 @@ def check_gui(src, e, spec, results, d=None):
                              reconcile_fn=gui_rows.reconcile, built_fn=gui_rows.built, required_backend=backend)
     if note:
         rep['walk_note'] = note
+    pv = page_pvs(src, spec, None if note else walk, rows)
+    rep['pv'] = pv
+    if pv is not None and (pv['differ'] or pv['error']):
+        bad = {rid: (wpv, ppv) for rid, wpv, ppv in pv['differ']}
+        rep['mapped'] = [(r, x) for r, x in rep['mapped'] if r['id'] not in bad]
+        rep['M'] = len(rep['mapped'])
+        rep['invalid'] += [(rid, 'the page widget has PV %s, the PyQt widget %s (walk)' % (ppv, wpv))
+                           for rid, (wpv, ppv) in bad.items()]
+        if pv['error'] and walk is not None and not note:
+            rep['invalid'].append(('(page %s)' % pv['page'], pv['error']))
+        rep['ok'] = False
     return rep, srcinfo, walk, rows
 
 
@@ -341,6 +423,7 @@ def main(argv=None):
         walks_note = '(none: no GUI program can pass; run with --run-walks)'
     lines, details, ok_all = [], [], True
     n_pass = 0
+    pvs = []
     for e in files:
         spec = specs.get(e['file'])
         if a.only and (spec is None or spec['_name'] != a.only):
@@ -370,12 +453,15 @@ def main(argv=None):
         ok_all = ok_all and ok
         lines.append('%s | %s | %d/%d/%d | %s' % (e['file'], spec.get('web') or '(no web path)', rep['N'], rep['M'],
                                                   rep['K'], 'PASS' if ok else 'FAIL'))
+        if rep.get('pv') is not None:
+            pvs.append((spec['_name'], rep['pv']))
         if a.details or not ok:
             details.append(check_parity.render(rep, '--- %s (%s; own files %s; walk %s)' % (
                 e['file'], spec['_name'], ', '.join(srcinfo['own']),
                 ('argv %s, %s instances, elapsed %s s, python %s, qt %s' % (
                     walk.get('argv'), len(walk.get('instances', [])), walk.get('elapsed'), walk.get('python'),
-                    walk.get('qt'))) if walk else 'none')))
+                    walk.get('qt'))) if walk else 'none') + (
+                    '\n' + pv_line(rep['pv']) if rep.get('pv') is not None else '')))
     listed = {e['file'] for e in files}
     for f_, spec in sorted(specs.items()):
         if f_ not in listed and not a.only:
@@ -395,6 +481,14 @@ def main(argv=None):
     for dt in details:
         print()
         print(dt)
+    if pvs:
+        print()
+        print('PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has '
+              'that PV): %d same, %d another PV, in %d pages: %s' % (
+                  sum(p['same'] for _, p in pvs), sum(len(p['differ']) for _, p in pvs), len(pvs),
+                  ', '.join('%s %d/%d' % (n, p['same'], p['same'] + len(p['differ'])) + (' (%s)' % p['error'] if
+                                                                                         p['error'] else '')
+                            for n, p in pvs)))
     print()
     print('RESULT: %s (%d/%d files pass)' % ('PASS' if ok_all and lines else 'FAIL', n_pass, len(lines)))
     return 0 if ok_all and lines else 1

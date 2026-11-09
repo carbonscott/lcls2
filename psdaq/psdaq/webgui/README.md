@@ -151,7 +151,10 @@ is merged.  A `QTreeWidget` gives a row per column and, when its selection is us
 `configdb_GUI` through select, Apply, its ConfirmDialog and a close while a write runs.
 
 The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
-`data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
+`data-parity="<row id>"`, and the server reads and writes the PV of its node.  `check_gui_parity` builds each such page
+with the walk's arguments (xpmpva's FwBuild from the walk's simxpms) and compares, row by row, the node's PV with the
+PV the walk saw on the PyQt widget: a mapped row whose node has another PV is not counted and fails the check, with
+both PVs; rows where the walk saw no PV on the widget (pvedit's labels and table cells) are counted, not compared.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
 LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime), for the older IOC's PVs deadca and
 partca read and write (LinkLabel<n>, PART:<g>:MsgConfig, MsgConfigKey, MsgEnable, MsgDisable, MsgClear, MsgInsert,
 ResetL0: stored values) and pyxpm's pattern statistics PATT:GROUPS / PATT:COINC (counted from its L0Accepts).
