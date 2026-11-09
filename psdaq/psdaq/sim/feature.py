@@ -59,6 +59,7 @@ import time
 
 from psdaq.sim import daq_sim as ds
 
+FEATURES = ('a', 'b', 'e')                       # the features this module runs (daq_sim matrix reads it)
 BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'e': ('bld-seed',)}
 SCAN_VALUES = (700000., 710000., 720000.)        # --linear 700000 730000 10000
 SCAN_DET = 'epix100'                             # generic_timing_scan --detname epix100_0
@@ -78,7 +79,7 @@ def up_options(feature, platform):
 
 
 def add_arguments(p):
-    p.add_argument('feature', choices=('a', 'b', 'e'), help='a: readout groups at different rates; '
+    p.add_argument('feature', choices=FEATURES, help='a: readout groups at different rates; '
                    'b: a scan; e: drp_pva, drp_bld, drp_udpencoder and epicsArch with a PGP DRP')
     p.add_argument('-p', '--platform', type=int, default=5, choices=range(8))
     p.add_argument('--events', type=int, default=None,

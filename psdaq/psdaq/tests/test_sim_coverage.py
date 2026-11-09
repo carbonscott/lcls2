@@ -1046,15 +1046,17 @@ def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
 # --- the commands --------------------------------------------------------------------------
 
 @pytest.mark.parametrize('argv', [['-m', 'psdaq.sim.coverage'], ['-m', 'psdaq.sim.daq_sim', 'coverage'],
-                                  ['-m', 'psdaq.sim.daq_sim', 'matrix']])
+                                  ['-m', 'psdaq.sim.daq_sim', 'matrix', '--only', 'coverage']])
 def test_commands_return_the_verdict(tmp_path, argv):
     rows, status, evidence, files = full_coverage(tmp_path)
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([os.path.join(REPO, 'psdaq')] + sys.path))
     env.pop('SIM_ENV_SOURCED', None)
     cmd = [sys.executable] + argv + ['--repo', REPO, '--status', str(status), '--evidence', str(evidence)]
+    if 'matrix' in argv:
+        cmd += ['-w', str(tmp_path / 'matrix')]
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
-    assert r.stdout.rstrip().endswith('PASS')
+    assert r.stdout.rstrip().endswith('MATRIX PASS (1 assertions)' if 'matrix' in argv else 'PASS')
     os.remove(files[0])
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 1 and 'FAIL' in r.stdout

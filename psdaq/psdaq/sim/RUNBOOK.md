@@ -25,7 +25,8 @@ Everything in `psdaq/psdaq/sim/`:
 | `pattern.py` | The simulated BEB pixel values, the same function as `MemPoolSim::pattern` in C++. |
 | `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
-| `coverage.py`, `coverage_status.json` | `daq_sim coverage` and `daq_sim matrix` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
+| `coverage.py`, `coverage_status.json` | `daq_sim coverage` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
+| `matrix.py` | `daq_sim matrix` (§3k): the whole matrix in one command, every detector type, the system features and coverage, with an exit code that is the verdict. |
 | `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3g). |
 | `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3g). |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
@@ -447,9 +448,9 @@ Options:
 | `-v` | Show where each row comes from (`file:line`, or the configs that start it). |
 | `--json` | Print the result as JSON. |
 
-`daq_sim matrix` (same options) is the one command for the whole hardware-free matrix. For now it
-only runs the coverage check and returns its exit code; later changes add the runs that write the
-evidence. Until every row has a run, both commands end in FAIL.
+`daq_sim matrix` (§3k) is the one command for the whole hardware-free matrix: it runs every
+detector type and the system features, which write the evidence, and then this check. Until every
+row has a run, both commands end in FAIL.
 
 ## 3e. BEB detector types: `daq_sim up --det <type>`
 
@@ -774,6 +775,77 @@ checks the plan. It has not run on two nodes. To run it:
   its `--bind`, `--frames` and `--pull` (with `--allow-remote`);
 - preflight.sh must accept those two-node address lists (it now requires loopback only);
 - the DRP on node B writes its file under the work dir, on a file system both nodes share.
+
+## 3k. The whole matrix, one command: `daq_sim matrix`
+
+`daq_sim matrix` runs, unattended, a cycle of every detector type, the system features and the
+coverage check, and exits 0 only if every assertion passes. Run it in one `srun` step on the
+node (it takes about an hour; a shell that cuts commands off needs `nohup` and a log, §1):
+
+```bash
+# one srun step on the node (JOB, ROOT and WD as in §1 and §2)
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=16 --mem=32G bash -c "
+  cd $ROOT/lcls2 && source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh &&
+  daq_sim matrix -w $WD/matrix; echo MATRIX_EXIT=\$?"
+```
+
+It brings up one DAQ at a time, each in its own work dir under `-w`, and always takes it down:
+
+| section | what runs, in `<WD>/...` | assertions (each named, each PASS or FAIL) |
+|---|---|---|
+| `types` | for each detector type: `daq_sim up --det <T> --detach`, one recorded `daq_sim cycle --events 1000`, `daq_sim down`, in `types/<T>` | `types/<T>/up`; `.../transitions` (every state read back as requested, no error message, back to the start state); `.../drp-alive` (the DRP `up` started is still alive after the run); `.../counts` (simxpm's L1Accepts == `TEB_WrtCt` == psana2's events == psana2's events with `<T>`'s data, all >= 1000); `.../per-event` (`xtc2_check` compared every event's data, through the type's own psana interface, with what the simulated device was set to send); `.../evidence` (the cycle wrote a record for `det:drp:<T>` that coverage accepts); `.../down` (`down: clean`) |
+| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature that `psdaq.sim.feature` does not run yet (c: the MEB with AMI; d: two nodes) is `NOT AVAILABLE`, a failed assertion |
+| `coverage` | `daq_sim coverage` (§3d), after the runs above wrote their evidence | `coverage` (PASS: every row RUN, STAND-IN or N/A with valid evidence at HEAD) |
+
+The types are every `det:drp` row that `coverage_status.json` marks RUN, in the order
+`PGPDetectorApp.cc` registers them, then any other type `up --det` runs. A RUN row that `up --det`
+cannot run (a `drp_gpu` type, for now) fails as `types/<row>/runnable`. For each type the matrix
+prints the line the coverage goal asks for:
+
+```
+TYPE epix100      node sdfmilan048 job 43839059 run <WD>/matrix/types/epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1018 psana2 1018 with-data 1018 per-event PASS PASS
+```
+
+The end is a summary: the type lines, one line per feature, coverage's counts, every assertion with
+its detail, the failed ones again as `FAILED <name>: <why>`, and `MATRIX PASS` (exit 0) or
+`MATRIX FAIL (k of n assertions failed)` (exit 1). The same is written as JSON to
+`<WD>/matrix/matrix-summary.json` (`--summary FILE`): the per-type and per-feature results,
+coverage's counts, every assertion and the runs.
+
+| option | effect |
+|---|---|
+| `-w DIR` | Work dir of the whole matrix (each type's and feature's DAQ in a subdirectory, replaced by its next run). |
+| `--only types\|features\|coverage` | Run only these sections (repeatable, or comma-separated). |
+| `--types T,T` | Only these detector types (any of `up --det`). |
+| `--features x,x` | Only these features. |
+| `--events N` | L1Accepts of each type's cycle; default 1000. |
+| `--lock FILE` | Take an exclusive `flock(2)` on FILE around each DAQ, from `up` to `down` of one type or one feature, and release it in between; for a node where several people's DAQs take turns (`flock(1)` takes the same lock). Default `$DAQ_SIM_MATRIX_LOCK`, else none. `--lock-timeout S` (default 3600). |
+| `--repo`, `--status`, `--evidence`, `-v` | As for `daq_sim coverage`. |
+| `-p P` | Platform; default 5. |
+
+**Restart.** A section, a type or a feature can be re-run alone, e.g. after fixing one type:
+`daq_sim matrix -w $WD/matrix --types epix100`, then `--only coverage`. The exit code is the
+verdict of what ran. The JSON keeps, for what did not run, the last result at the same HEAD
+(`"carried": true`, with its time); its `whole` entry is the verdict over all of it (`not run`
+lists what has no result at this HEAD; `stale` says coverage ran before a later run).
+
+**Deliberate breaks.** `--break KIND` runs one type in `<WD>/break-<KIND>` (its own summary, no
+feature, no coverage, no evidence) with a fault that must make the matrix fail, and the summary
+names the failed assertions:
+
+| `--break` | type (`--types` to change) | the fault | fails |
+|---|---|---|---|
+| `register` | epix100 | `PSDAQ_SIM_ROGUE_FAULT=ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay` in the DAQ's environment: `rogue_dev` reads that register back wrong, so `epix100_config` fails Configure (`--fault` for another register; the types with a known register are in `matrix.FAULTS`, from §3e and §3g) | `transitions` (`epix100_0 did not respond to configure`, and the DRP log's `FAULT ... DaqTriggerDelay ... reads back` and rogue's `Verify error for block ...DaqTriggerDelay`), `drp-alive` (the DRP exits after the failed Configure, as on hardware), so no run: `counts`, `per-event`, `evidence`; `up` and `down` pass |
+| `kill-drp` | fakecam | `daq_sim cycle --kill-drp`: SIGKILL the DRP once Running, after its first L1Accepts | `drp-alive` (gone), `transitions` (`fakecam_0 did not respond to disable`; the run stays Running), `counts` (simxpm's L1Accepts against the TEB's and an empty file: the DRP never wrote it), `per-event` (no event), `evidence`; `down` still passes (`down: clean`) |
+| `corrupt` | fakecam | `PSDAQ_SIM_CORRUPT_SEQ=500` (`--events` / 2): `MemPoolSim` inverts one byte of that L1Accept's payload (the middle byte of its largest data subframe for a BEB type, of its TDet words or message otherwise; `drp_sim_frame` makes the same buffer; the DRP logs `byte 160 of 288 inverted`) | `per-event` only, and so `evidence`: every count agrees, and `xtc2_check` names the event and the word (`event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 ...`) |
+
+```bash
+daq_sim matrix -w $WD/matrix --break register; echo MATRIX_EXIT=$?    # 1
+daq_sim matrix -w $WD/matrix --break kill-drp; echo MATRIX_EXIT=$?    # 1
+daq_sim matrix -w $WD/matrix --break corrupt; echo MATRIX_EXIT=$?     # 1
+```
+`PSDAQ_SIM_ROGUE_FAULT` and `PSDAQ_SIM_CORRUPT_SEQ` act only on a `sim://` device; a run without
+`--break` removes them from the DAQ's environment.
 
 ## 4. Read the file back with psana2
 ```bash

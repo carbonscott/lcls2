@@ -5,12 +5,13 @@
                    [--meb] [--ami] [--pva] [--epics] [--udp] [--gui] [--webgui] [--detach]
                    [--hosts HOST_A,HOST_B --dry-run]
     daq_sim status [-w WORKDIR]
-    daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
+    daq_sim cycle  [-w WORKDIR] [--events N] [--no-record] [--kill-drp]
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
                    [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
     daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
-    daq_sim matrix   [the coverage options]
+    daq_sim matrix   [-w WORKDIR] [--only types|features|coverage] [--types T,..] [--features x,..]
+                     [--events N] [--lock FILE] [--break register|kill-drp|corrupt] (psdaq.sim.matrix)
     daq_sim feature  a|b|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] (psdaq.sim.feature)
 
 'up' starts, in this order and all on this node:
@@ -44,14 +45,16 @@ process of this user whose environment carries this work dir's DAQ_SIM_WORKDIR t
 caRepeater that libca spawns); then it checks that the ports are free.
 'cycle' drives one run with the same client the GUIs use (psdaq.control.DaqControl), one
 state at a time, reads every state back, waits for --events L1Accepts and goes back to the
-state it started from.  It exits nonzero on any failure.  A passing recorded cycle writes an
+state it started from.  It exits nonzero on any failure (--kill-drp, a deliberate one, SIGKILLs
+the DRP once Running).  A passing recorded cycle writes an
 evidence record (psdaq.sim.coverage.record_evidence) for the rows it proves: the programs
 of the generated .cnf, its drp's -D type and the stand-ins 'up' started; the record lists the
 run's xtc2 files and every process's log with their sizes and sha256, and the cycle prints
 what 'daq_sim coverage' would reject in it.
 'coverage' checks that every row (detector type, program a procmgr config starts) is RUN,
 STAND-IN or N/A, each RUN/STAND-IN row with evidence recorded at HEAD (psdaq.sim.coverage).
-'matrix' runs the whole hardware-free matrix; for now it only runs the coverage check.
+'matrix' runs the whole hardware-free matrix unattended: a cycle of every detector type, the
+system features, then the coverage check; it exits 0 only if every assertion passes (psdaq.sim.matrix).
 'feature' runs one system feature end to end (up, its run, its checks, down) and prints its
 report (psdaq.sim.feature).
 'up --hosts A,B --dry-run' prints the .cnf and environment of one partition spread over two
@@ -274,6 +277,26 @@ def cmdline(pid):
             return f.read().replace(b'\0', b' ').decode(errors='replace').strip()
     except OSError:
         return ''
+
+
+def drp_pid(state, alias):
+    """(pid, cmdline) of the program procmgr runs as alias, e.g. <det>_0's drp: the pid 'up'
+    recorded, or, when that is the procServ holding it, procServ's child; (None, '') if gone."""
+    pid = (state.get('procs') or {}).get(alias)
+    if pid is None or not pid_alive(pid):
+        return None, ''
+    if os.path.basename(cmdline(pid).split(' ')[0]) != 'procServ':
+        return pid, cmdline(pid)
+    for d in os.listdir('/proc'):
+        if d.isdigit():
+            try:
+                with open(f'/proc/{d}/stat') as f:
+                    ppid = int(f.read().rsplit(')', 1)[1].split()[1])
+            except (OSError, IndexError, ValueError):
+                continue
+            if ppid == pid and pid_alive(int(d)):
+                return int(d), cmdline(int(d))
+    return None, ''
 
 
 # --- state file ----------------------------------------------------------------------------
@@ -1307,6 +1330,8 @@ def cmd_cycle(args):
         else:
             print(f'{now()} --ami-shot needs a DAQ up with --ami', flush=True)
             ok = False
+    if ok and getattr(args, 'kill_drp', False):
+        _kill_drp(state, plat)
     if ok:
         pv = f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc'
         end = time.monotonic() + args.events / max(state['rate'], 1.) * 3 + 30
@@ -1336,6 +1361,8 @@ def cmd_cycle(args):
                 if ami:
                     ami.fetch(work)
             prev = target
+    if count is not None and 'simxpm NumL0Acc' not in counts:
+        counts.update(_run_counts(work, plat))      # the way down failed before Disable's counts
     final = dc.getState()
     ok &= final == start
     stop.set()
@@ -1381,7 +1408,8 @@ def cmd_cycle(args):
     print(f'  equal ({" == ".join(want)}) >= {args.events}: {bool(equal)}', flush=True)
     with open(work.path('logs', 'cycle.jsonl'), 'a') as f:
         f.write(json.dumps({'when': now(), 'transitions': rows, 'messages': msgs, 'counts': counts,
-                            'ok': ok}) + '\n')
+                            'ok': ok, 'start': start, 'final': final, 'events': args.events,
+                            'experiment': status[6], 'run': run}) + '\n')
     errors = [m for m in msgs if m[1] == 'error']
     if errors:
         print(f'{now()} {len(errors)} error message(s) on the status stream', flush=True)
@@ -1389,6 +1417,22 @@ def cmd_cycle(args):
         _record_cycle_evidence(work, state, status[6], run, counts, started)
     print(f'{now()} cycle {"PASS" if ok and not errors else "FAIL"}', flush=True)
     return 0 if ok and not errors else 1
+
+
+def _kill_drp(state, plat):
+    """cycle --kill-drp, a deliberate break: once the run's first L1Accepts are in, SIGKILL the
+    DRP of <det>_0 (as a crash would end it)."""
+    pv = f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc'
+    end, v = time.monotonic() + 30, None
+    while time.monotonic() < end:
+        v = pv_get(pv)
+        if not isinstance(v, str) and int(v) > 0:
+            break
+        time.sleep(0.05)
+    pid, cmd = drp_pid(state, f'{DETECTOR}_0')
+    print(f'{now()} --kill-drp: SIGKILL {DETECTOR}_0 pid {pid} at {pv} = {v}: {cmd[:120]}', flush=True)
+    if pid:
+        os.kill(pid, signal.SIGKILL)
 
 
 def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='cycle', log='cycle.jsonl'):
@@ -1469,6 +1513,9 @@ def _psana_counts(work, state, experiment, run, seed=None):
     # <det>_0's file is the first one in which xtc2_check finds segment 0 (the type's det.raw.raw).
     for path in files:
         out = {'xtc2 file': f'{path} ({os.path.getsize(path)} B)'}
+        if os.path.getsize(path) == 0 and path == files[-1]:    # e.g. its DRP died before writing
+            return dict(out, **{'psana2 events': 0, 'psana2 with data': 0,
+                                'psana2 checks': 'FAIL: the file is empty (0 B)'})
         r = subprocess.run([sys.executable, '-m', 'psdaq.sim.xtc2_check', path, '--det', DETECTOR,
                             '--seed', str(state['seed'] if seed is None else seed), '--json'],
                            capture_output=True, text=True, timeout=600)
@@ -1826,15 +1873,6 @@ def cmd_plan(args):
     return 0
 
 
-# --- matrix --------------------------------------------------------------------------------
-
-def cmd_matrix(args):
-    """The whole hardware-free matrix, unattended; its exit code is the verdict.  For now it
-    only runs the coverage check: the runs that write evidence for each row come later."""
-    say('matrix: no runs yet, coverage check only')
-    return coverage.run(args)
-
-
 # --- main ----------------------------------------------------------------------------------
 
 def main(argv=None):
@@ -1904,6 +1942,9 @@ def main(argv=None):
     cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
     cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
     cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+    cy.add_argument('--kill-drp', action='store_true',
+                    help=f'a deliberate break: SIGKILL the DRP of <det>_0 once the run\'s first L1Accepts are in '
+                         '(daq_sim matrix --break kill-drp)')
     cy.add_argument('--ami-shot', metavar='PNG', default=None,
                     help='(up --ami) while Running, open a viewer of the camera image in another ami-client, '
                          'offscreen, and save its window to PNG (psdaq.sim.ami_shot)')
@@ -1933,16 +1974,22 @@ def main(argv=None):
     cov = sub.add_parser('coverage', help='is every detector type and program proven at HEAD? '
                          '(psdaq.sim.coverage)')
     coverage.add_arguments(cov)
-    mx = sub.add_parser('matrix', help='the whole hardware-free matrix (for now: the coverage check)')
-    coverage.add_arguments(mx)
+    from psdaq.sim import matrix
+    matrix.add_arguments(sub.add_parser('matrix', parents=[common], help='the whole hardware-free matrix, '
+                                        'unattended: every detector type, the features, coverage '
+                                        '(psdaq.sim.matrix)'))
     from psdaq.sim import feature
     feature.add_arguments(sub.add_parser('feature', parents=[common], help='run one system feature '
                                          'end to end with its checks (psdaq.sim.feature)'))
     args = parser.parse_args(argv)
     if args.command == 'coverage':      # reads the checkout only: no DAQ env needed
         return coverage.run(args)
-    if args.command == 'matrix':
-        return cmd_matrix(args)
+    if args.command == 'matrix':        # the DAQ env only for the sections that run a DAQ
+        try:
+            return matrix.cmd_matrix(args, argv)
+        except Fail as e:
+            print(f'daq_sim matrix: {e}', file=sys.stderr, flush=True)
+            return 1
     if args.command == 'up' and (args.dry_run or args.hosts):
         try:                            # a plan only: no DAQ env needed
             return cmd_plan(args)
