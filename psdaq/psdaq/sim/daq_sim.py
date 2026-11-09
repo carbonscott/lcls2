@@ -851,6 +851,22 @@ def _kill(pid, what, quiet):
         pass
 
 
+def _remove_meb_files(tag, quiet):
+    """Remove the shared memory and message queues the MEB of tag left (XtcMonitorServer does not
+    unlink them), once its processes are gone: this user's files with names ending in _<tag> or
+    _<tag>_<n>."""
+    import glob
+    for path in glob.glob(f'/dev/shm/*_{tag}') + glob.glob(f'/dev/mqueue/*_{tag}') + \
+            glob.glob(f'/dev/mqueue/*_{tag}_[0-9]*'):
+        try:
+            if os.stat(path).st_uid == os.getuid():
+                os.unlink(path)
+                if not quiet:
+                    say(f'removed {path}')
+        except OSError as e:
+            say(f'could not remove {path}: {e}')
+
+
 def teardown(work, quiet=False):
     """Stop everything 'up' started in work.dir; return True if all is gone and ports are free."""
     state = work.load()
@@ -872,6 +888,8 @@ def teardown(work, quiet=False):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
+    if state.get('meb') and state.get('platform') is not None:
+        _remove_meb_files(meb_tag(state['platform']), quiet)
     for pid in tagged_pids(work.dir):
         if pid != state.get('up_pid'):
             _kill(pid, 'leftover (tagged)', False)

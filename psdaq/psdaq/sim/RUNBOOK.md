@@ -554,7 +554,9 @@ its evidence record lists their logs.
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>` and `groupca DAQ:SIM 0 <p>`, offscreen | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport`, but with the path relative to the data dir (`/tst/<expt>/xtc/...`), and groupca's log names no run, so coverage counts neither |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
-does (MemPoolSim); without it they open the PGP card as before.
+does (MemPoolSim); without it they open the PGP card as before. The MEB does not unlink its
+shared memory (`/dev/shm/PdsMonitorSharedMemory_tstsim<p>`, about 250 MB) or message queues;
+`daq_sim down` removes this user's ones of the tag.
 
 AMI is not part of the lcls2 tree. `--ami` runs the `ami-*` programs found on PATH, or, with
 `--ami-src DIR` (or `$DAQ_SIM_AMI_SRC`), writes their console scripts into `<workdir>/bin` for an
