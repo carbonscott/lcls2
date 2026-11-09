@@ -2,7 +2,7 @@
 (drp_pva, epicsArch, drp_udpencoder) recorded from their simulated sources, event by event.
 
     python -m psdaq.sim.sysdrp_check --dir <xtc dir> --exp tstx00001 --run 1 --seed 0x1234
-                                     [--pva pvcam] [--epics] [--udp encoder] [--det fakecam]
+                                     [--pva pvcam] [--epics] [--udp encoder] [--bld simbld] [--det fakecam]
 
 Each DRP writes its own stream (-s<N>-c000.xtc2).  psana2 reads each stream file on its own
 (files=..., so it asks no run database for the file list) and the events are joined by their
@@ -25,6 +25,13 @@ L1Accept (sim_udpencoder -T sim://): frameCount - seq must be the same for every
 a frame (frames matched in order, none repeated or out of place), and the value must
 be sim_udpencoder's test pattern, 200 for an odd frameCount, 100 for an even one
 (sim_udpencoder.cc _loopbackSend).
+
+--bld NAME: drp_bld's BLD source NAME (psana2's scbld_raw_1_0_0) recorded the packets simxpm --bld
+sent by multicast, one per L1Accept tick: every value must be simxpm.bld_values(seed, seq) of the
+L1Accept's own seq (fakecam's), field by field, the 2-bit severity of each field included
+(<field>_sevr).  An L1Accept may have no BLD (drp_bld then records it damaged and counts it in
+bld_miss_count); daq_sim cycle checks that drp_bld's L1Accepts less its misses equal those with
+data here.  At least one must have it.  --self-test-offset K expects seq + K (must fail).
 
 --epics: epicsArch recorded the stand-in IOC's CA PVs and simxpm's PVA count (daq_sim up --epics):
 sim_const must be EPICS_CONST wherever psana2 has a value, sim_count (+1 every 0.1 s) and
@@ -80,10 +87,13 @@ def read_streams(xtcdir, exp, run, names):
     return out, where
 
 
+BLD_FIELDS = ('energy', 'value', 'seq')     # simxpm.BLD_FIELDS, in order
+
+
 def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0, max_report=5,
-          udp=None):
+          udp=None, bld=None):
     import numpy as np
-    from psdaq.sim.simxpm import camera_image
+    from psdaq.sim.simxpm import bld_values, camera_image
 
     def seq_of(d, evt):
         raw = d.raw.raw(evt)
@@ -97,9 +107,18 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
         segs = d.raw._segments(evt)
         return None if segs is None else (_scalar(segs[0].frameCount), _scalar(segs[0].encoderValue))
 
+    def bld_of(d, evt):
+        v = d.raw.energy(evt)
+        if v is None:
+            return None
+        return (float(v), int(d.raw.value(evt)), int(d.raw.seq(evt)),
+                tuple(int(getattr(d.raw, f'{f}_sevr')(evt)) for f in BLD_FIELDS))
+
     names = {det: seq_of}
     if pva:
         names[pva] = image
+    if bld:
+        names[bld] = bld_of
     if udp:
         names[udp] = frame
     if epics:
@@ -161,18 +180,40 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
             else:
                 out['udp matched'] = out.get('udp matched', 0) + 1
         out['udp frameCount - seq'] = first
-    for k in ('pva', 'udp'):
+    if bld:
+        if bld not in where:
+            problem(f'no stream has a detector {bld}')
+        got = data.get(bld, {})
+        out['bld events'] = len(got)
+        out['bld problems'] = 0
+        for k, (ts, seq) in enumerate(events):
+            v = got.get(ts)
+            if v is None:
+                out.setdefault('bld missing (first 5 seqs)', []).append(seq)
+                continue
+            out['bld with data'] = out.get('bld with data', 0) + 1
+            sevr, want = bld_values(seed, seq + offset)
+            want_t = (want['energy'], want['value'], want['seq'], tuple((sevr >> (2 * i)) & 3
+                                                                         for i in range(len(BLD_FIELDS))))
+            if v != want_t:
+                out['bld problems'] += 1
+                problem(f'L1Accept {k + 1}: {bld} (energy, value, seq, severities) {v} != '
+                        f'{want_t} for {det} seq {seq}{f" + {offset}" if offset else ""}')
+            else:
+                out['bld matched'] = out.get('bld matched', 0) + 1
+    for k, name in (('pva', pva), ('udp', udp), ('bld', bld)):
         miss = out.pop(f'{k} missing (first 5 seqs)', [])
-        if (k == 'pva' and pva) or (k == 'udp' and udp):
+        if name:
             out[f'{k} missing'] = len(miss)
             out[f'{k} missing seqs'] = miss[:5]
             if not out.get(f'{k} with data'):
-                problem(f'{pva if k == "pva" else udp}: no L1Accept has its data')
+                problem(f'{name}: no L1Accept has its data')
     if epics:
         if 'sim_count' not in where:
             problem('no stream has the epicsArch variables sim_count/sim_const')
         consts = [v for _, v in sorted(data['sim_const'].items()) if v is not None]
         counts = [float(v) for _, v in sorted(data['sim_count'].items()) if v is not None]
+        out['epics events'] = len(data['sim_count'])
         out['epics const events'], out['epics count events'] = len(consts), len(counts)
         out['epics count range'] = [counts[0], counts[-1]] if counts else None
         bad = [c for c in consts if float(c) != EPICS_CONST]
@@ -207,11 +248,12 @@ def main(argv=None):
     parser.add_argument('--pva', default=None, help='drp_pva detector name (e.g. pvcam)')
     parser.add_argument('--epics', action='store_true')
     parser.add_argument('--udp', default=None, help='drp_udpencoder detector name (e.g. encoder)')
+    parser.add_argument('--bld', default=None, help='drp_bld BLD source name (e.g. simbld)')
     parser.add_argument('--det', default='fakecam')
     parser.add_argument('--self-test-offset', type=int, default=0)
     args = parser.parse_args(argv)
     res = check(args.dir, args.exp, args.run, args.seed, args.pva, args.epics, args.det,
-                args.self_test_offset, udp=args.udp)
+                args.self_test_offset, udp=args.udp, bld=args.bld)
     print(json.dumps(res))
     return 0 if res['pass'] else 1
 

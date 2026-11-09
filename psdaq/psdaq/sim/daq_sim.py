@@ -1,7 +1,9 @@
 """daq_sim: bring up, check, drive and take down the hardware-free lcls2 DAQ on one node.
 
     daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--segments N]
-                   [--det TYPE] [--webgui] [--detach]
+                   [--det TYPE] [--also TYPE[:GROUP]]... [--fixed-rate GROUP:INDEX]... [--bld]
+                   [--meb] [--ami] [--pva] [--epics] [--udp] [--gui] [--webgui] [--detach]
+                   [--hosts HOST_A,HOST_B --dry-run]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
@@ -9,6 +11,7 @@
     daq_sim down   [-w WORKDIR]
     daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
     daq_sim matrix   [the coverage options]
+    daq_sim feature  a|b|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] (psdaq.sim.feature)
 
 'up' starts, in this order and all on this node:
   1. the isolation env (sim_env.sh, sourced by re-executing through bash) and the fail-closed
@@ -22,6 +25,13 @@
      another type of SIM_TYPES instead of fakecam: a BEB type's own <type>_config.py configures
      a device psdaq.sim.rogue_dev emulates, from the type's own config in the config DB; every
      XpmDetector type, fakecam included, runs xpmdet_config against an emulated TDet receiver),
+     With --also TYPE[:GROUP], one more DRP <TYPE>_0 of another simulated type, in readout group
+     GROUP (default: the platform's); with --fixed-rate GROUP:INDEX, simxpm runs with
+     --fixed-rates and 'up' sets that group's L0Select to FixedRate and its L0Select_FixedRate to
+     INDEX (pyxpm's PVs, as an operator does in the XPM GUI), so groups take L1Accepts at
+     different rates; with --bld, drp_bld (bld_0) records simxpm's BLD source (simxpm --bld:
+     multicast on 127.0.0.1, TTL 1, to a group outside LCLS's 239.255.0.0/16), the multicast
+     group and port from the stand-in IOC's CA PVs as BldPVA reads them,
   6. with --webgui, the web GUI (daq_webgui) on 127.0.0.1:<block +3>: the real DaqControl
      backend against this platform's control, and the events counter read from simxpm's
      NumL0Acc PV over PV Access.
@@ -42,12 +52,17 @@ what 'daq_sim coverage' would reject in it.
 'coverage' checks that every row (detector type, program a procmgr config starts) is RUN,
 STAND-IN or N/A, each RUN/STAND-IN row with evidence recorded at HEAD (psdaq.sim.coverage).
 'matrix' runs the whole hardware-free matrix; for now it only runs the coverage check.
+'feature' runs one system feature end to end (up, its run, its checks, down) and prints its
+report (psdaq.sim.feature).
+'up --hosts A,B --dry-run' prints the .cnf and environment of one partition spread over two
+nodes (multi_host_plan) without starting anything.
 'e2e' is the end-to-end test: the same run driven through the web GUI by a headless browser
 (psdaq.webgui.e2e); it brings the DAQ up with --webgui unless it is up already, checks
 every state and count itself, prints E2E PASS or E2E FAIL and the exit code says which.
 
 Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
+UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>).
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
 EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
@@ -134,7 +149,13 @@ def ports(platform):
     base = 31000 + 10 * platform
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
-            'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform)}
+            'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
+            'bld': 31220 + platform}
+
+
+def bld_group(platform):
+    """--bld's multicast group: administratively scoped, outside LCLS's 239.255.0.0/16."""
+    return f'239.254.31.{platform}'
 
 
 def ami_ports(platform):
@@ -289,7 +310,8 @@ def procs(state):
     return PROCS + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1))) + \
         (MEB_PROCS if state.get('meb') else ()) + (AMI_PROCS if state.get('ami') else ()) + \
         (PVA_PROCS if state.get('pva') else ()) + (EPICS_PROCS if state.get('epics') else ()) + \
-        (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ())
+        (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ()) + \
+        tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ())
 
 
 def procmgr_status(state):
@@ -409,6 +431,27 @@ EPICS_PVLIST = '''# Written by daq_sim up --epics: what epicsArch archives (its 
 *sim_l0acc
 {l0acc} pva
 '''
+# --also TYPE[:GROUP]: one more DRP of another simulated type (its readout group: activedet)
+ALSO = ''' {{ id:'{alias}', flags:'spu',
+   cmd:'drp{v} -P {instr} -C localhost -D {det} -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep},{simk} -M {prom}' }},
+'''
+# --bld: drp_bld records simxpm's BLD source (simxpm --bld), LCLS-II style: -D <name>+<type>+<PV prefix>
+# (BldPVA), type scbld (psana2's scbld_raw_1_0_0), multicast joined on the loopback interface.
+BLD_PROCS = ('bld_0',)
+BLD_NAME = 'simbld'
+BLD_PREFIX = f'{PVBASE}:BLD'
+BLD = ''' {{ id:'bld_0', flags:'spu',
+   cmd:'drp_bld{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
+       ' -k {ep},interface=lo -M {prom} -D {bldname}+scbld+{bldprefix}' }},
+'''
+BLD_DB = '''record(stringin, "{prefix}:BLD1_MULT_ADDR") {{
+  field(VAL, "{group}")
+}}
+record(longin, "{prefix}:BLD1_MULT_PORT") {{
+  field(VAL, "{port}")
+}}
+'''
 EPICS = ''' {{ id:'epics_0', flags:'spu',
    cmd:'epicsArch{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
        ' -k {ep} -M {prom} {pvlist}' }},
@@ -416,14 +459,17 @@ EPICS = ''' {{ id:'epics_0', flags:'spu',
 
 
 def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
-                  gui=False, udp=False):
-    """The procmgr entries of --pva, --epics, --meb, --udp, --gui and --ami (ami_bin: where the
-    ami-* programs are)."""
+                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64):
+    """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui and --ami
+    (ami_bin: where the ami-* programs are)."""
     P = ports(platform)
     common = dict(v=' -v' if verbose else '', instr=INSTRUMENT, ep=EP, frames=P['frames'],
                   data=os.path.join(workdir, 'data'), prom=os.path.join(workdir, 'prom'),
                   tag=meb_tag(platform))
     out = ''
+    for a in also:
+        out += ALSO.format(alias=a['alias'], det=a['det'], simk=SIM_TYPES[a['det']]['kwargs'].format(
+            length=length, seed=seed, work=workdir), **common)
     if pva:
         out += PVA.format(campv=CAMERA_PV, **common)
     if epics:
@@ -432,6 +478,8 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         out += MEB.format(**common)
     if udp:
         out += UDP.format(udpport=P['udp'], platform=platform, **common)
+    if bld:
+        out += BLD.format(bldname=BLD_NAME, bldprefix=BLD_PREFIX, **common)
     if gui:
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
                           pvbase=PVBASE, xpm=XPM, platform=platform)
@@ -498,13 +546,15 @@ def ami_scripts(bindir, src):
     return bindir
 
 
-def write_activedet(path, platform, segments=1, meb=False, others=()):
+def write_activedet(path, platform, segments=1, meb=False, others=(), groups=None):
     """What control writes after an alloc of this partition, so its first rollcall finds it;
-    'others' are more DRP aliases (drp_pva, epicsArch), in the same readout group."""
-    dets = [f'{DETECTOR}_{i}' for i in range(segments)] + list(others)
-    value = {'activedet': {'drp': {d: {'active': 1, 'det_info': {'readout': platform}} for d in dets},
+    'others' are more DRP aliases (drp_pva, epicsArch), in the same readout group, and 'groups'
+    {alias: readout group} more DRPs in their own groups (--also)."""
+    rog = {d: platform for d in [f'{DETECTOR}_{i}' for i in range(segments)] + list(others)}
+    rog.update(groups or {})
+    value = {'activedet': {'drp': {d: {'active': 1, 'det_info': {'readout': g}} for d, g in rog.items()},
                            'teb': {'teb0': {'active': 1}}},
-             'history': {'drp': {d: {'det_info': {'readout': platform}} for d in dets}}}
+             'history': {'drp': {d: {'det_info': {'readout': g}} for d, g in rog.items()}}}
     if meb:
         value['activedet']['meb'] = {'meb0': {'active': 1}}
     with open(path, 'w') as f:
@@ -539,7 +589,10 @@ def cmd_up(args):
     epics = getattr(args, 'epics', False)
     gui = getattr(args, 'gui', False)
     udp = getattr(args, 'udp', False)
-    ioc = soft_ioc() if epics else None
+    bld = getattr(args, 'bld', False)
+    also = parse_also(getattr(args, 'also', None) or [], args.platform)
+    fixed = parse_fixed_rates(getattr(args, 'fixed_rate', None) or [])
+    ioc = soft_ioc() if (epics or bld) else None
     work = Work(args.workdir)
     os.makedirs(work.dir, exist_ok=True)
     old = work.load()
@@ -556,6 +609,8 @@ def cmd_up(args):
         want += ami_ports(args.platform)
     if udp and udp_busy(P['udp']):
         raise Fail(f'UDP port {P["udp"]} already in use')
+    if bld and udp_busy(P['bld']):
+        raise Fail(f'UDP port {P["bld"]} already in use')
     busy = [p for p in want if port_busy(p)]
     if busy:
         raise Fail(f'ports already in use: {busy}')
@@ -580,7 +635,8 @@ def cmd_up(args):
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
              'segments': segments, 'det': DETECTOR, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
-             'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp}
+             'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp,
+             'also': also, 'fixed_rates': fixed, 'bld': bld}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
@@ -607,13 +663,18 @@ def cmd_up(args):
         det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
         if sim_type.get('det_yaml'):
             det_args += ['--det-yaml', sim_type['det_yaml'].format(**os.environ)]
-        for segm in range(segments):
+        seeds = [(DETECTOR, segm, det_args) for segm in range(segments)]
+        for a in also:                  # each --also type: its own config, as for --det
+            yaml = SIM_TYPES[a['det']].get('det_yaml')
+            seeds.append((a['det'], 0, (['--det-type', a['det']] if a['det'] != 'fakecam' else []) +
+                          (['--det-yaml', yaml.format(**os.environ)] if yaml else [])))
+        for i, (name, segm, dargs) in enumerate(seeds):
             r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
                                 '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
-                                '--det', DETECTOR, '--segm', str(segm), '--sim-seed', str(args.seed),
-                                '--sim-length', str(args.length)] + det_args,
+                                '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
+                                '--sim-length', str(args.length)] + dargs,
                                env=env, capture_output=True, text=True, timeout=60)
-            with open(work.path('logs', 'seed.log'), 'a' if segm else 'w') as out:
+            with open(work.path('logs', 'seed.log'), 'a' if i else 'w') as out:
                 out.write(r.stdout + r.stderr)
             if r.returncode != 0:
                 raise Fail(f'configdb_seed failed: {r.stderr.strip()[-400:]}')
@@ -630,9 +691,20 @@ def cmd_up(args):
                           [py, '-m', 'psdaq.sim.simxpm', '-P', PVBASE, '-x', str(XPM),
                            '--frames', f'tcp://127.0.0.1:{P["frames"]}', '--rate', str(args.rate),
                            '--pull', 'auto'] +
-                          (['--camera-pv', CAMERA_PV, '--camera-seed', str(args.seed)] if pva else []), env)
+                          (['--camera-pv', CAMERA_PV, '--camera-seed', str(args.seed)] if pva else []) +
+                          (['--fixed-rates'] if fixed else []) +
+                          (['--bld', BLD_PREFIX, '--bld-dest', f'{bld_group(args.platform)}:{P["bld"]}',
+                            '--bld-seed', str(args.seed)] if bld else []), env)
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
+        for g, index in sorted(fixed.items()):     # as an operator sets a group's trigger (XPM GUI)
+            for label, value in (('L0Select', 0), ('L0Select_FixedRate', index)):
+                pv = count_pv(g, label)
+                err = pv_put(pv, value)
+                if err:
+                    raise Fail(f'--fixed-rate: put {pv} = {value}: {err}')
+            say(f'readout group {g}: L0Select FixedRate, L0Select_FixedRate {index} '
+                f'({fixed_rate_label(index)})')
 
         if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
             r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
@@ -646,20 +718,29 @@ def cmd_up(args):
 
         write_activedet(work.path('activedet.json'), args.platform, segments, meb,
                         (PVA_PROCS if pva else ()) + (EPICS_PROCS if epics else ()) +
-                        (UDP_PROCS[:1] if udp else ()))
-        if epics:
+                        (UDP_PROCS[:1] if udp else ()) + (BLD_PROCS if bld else ()),
+                        {a['alias']: a['group'] for a in also})
+        if epics or bld:
             with open(work.path('sim_ioc.db'), 'w') as f:
-                f.write(EPICS_DB.format(pvbase=PVBASE, const=EPICS_CONST))
-            with open(work.path('epicsArch.txt'), 'w') as f:
-                f.write(EPICS_PVLIST.format(pvbase=PVBASE, l0acc=count_pv(args.platform)))
+                if epics:
+                    f.write(EPICS_DB.format(pvbase=PVBASE, const=EPICS_CONST))
+                if bld:
+                    f.write(BLD_DB.format(prefix=BLD_PREFIX, group=bld_group(args.platform), port=P['bld']))
+            if epics:
+                with open(work.path('epicsArch.txt'), 'w') as f:
+                    f.write(EPICS_PVLIST.format(pvbase=PVBASE, l0acc=count_pv(args.platform)))
             p = start_service(work, state, 'ioc', [ioc, '-S', '-d', work.path('sim_ioc.db')], env)
-            _wait_ca(f'{PVBASE}:EPICS:CONST', 30, p)
-            say(f'stand-in IOC {ioc} pid {p.pid}: {PVBASE}:EPICS:COUNT, {PVBASE}:EPICS:CONST (CA)')
+            _wait_ca(f'{PVBASE}:EPICS:CONST' if epics else f'{BLD_PREFIX}:BLD1_MULT_PORT', 30, p)
+            say(f'stand-in IOC {ioc} pid {p.pid}: ' + ', '.join(
+                ([f'{PVBASE}:EPICS:COUNT', f'{PVBASE}:EPICS:CONST'] if epics else []) +
+                ([f'{BLD_PREFIX}:BLD1_MULT_ADDR {bld_group(args.platform)}',
+                  f'{BLD_PREFIX}:BLD1_MULT_PORT {P["bld"]}'] if bld else [])) + ' (CA)')
         bindir = ami_scripts(work.path('bin'), amisrc) if ami else None
         if ami:
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
                 f'worker reads psana://shmem={meb_tag(args.platform)}')
-        extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp)
+        extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
+                              also, bld, args.seed, args.length)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
@@ -739,6 +820,59 @@ def webgui_url(state):
 def count_pv(platform, label='NumL0Acc'):
     """simxpm's partition counter, named as pyxpm names it: <pvbase>:XPM:<xpm>:PART:<group>:<label>."""
     return f'{PVBASE}:XPM:{XPM}:PART:{platform}:{label}'
+
+
+def parse_also(items, platform):
+    """--also TYPE[:GROUP] values -> [{det, group, alias}]: one DRP <TYPE>_0 per distinct type."""
+    out = []
+    for item in items:
+        det, _, group = item.partition(':')
+        if det not in SIM_TYPES:
+            raise Fail(f'--also {item}: unknown type {det!r}; one of {sorted(SIM_TYPES)}')
+        if det == DETECTOR or det in [a['det'] for a in out]:
+            raise Fail(f'--also {item}: one DRP per type ({det} is already in the partition)')
+        if SIM_TYPES[det].get('frame'):
+            raise Fail(f'--also {item}: {det} replays a frame file; run it with --det')
+        g = int(group) if group else platform
+        if not 0 <= g < 8:
+            raise Fail(f'--also {item}: readout group {g} not in 0..7')
+        out.append({'det': det, 'group': g, 'alias': f'{det}_0'})
+    return out
+
+
+FIXED_RATE_LABELS = ('929 kHz', '71.4 kHz', '10.2 kHz', '1.02 kHz', '102 Hz', '10.2 Hz', '1.02 Hz')
+FIXED_RATE_DIV = (1, 13, 91, 910, 9100, 91000, 910000)     # simxpm.FIXED_RATE_DIV
+
+
+def fixed_rate_label(index):
+    return FIXED_RATE_LABELS[index] if 0 <= index < len(FIXED_RATE_LABELS) else f'index {index}'
+
+
+def parse_fixed_rates(items):
+    """--fixed-rate GROUP:INDEX values -> {group: index} (pyxpm's L0Select_FixedRate 0..6)."""
+    out = {}
+    for item in items:
+        try:
+            g, index = (int(x) for x in item.split(':'))
+        except ValueError:
+            raise Fail(f'--fixed-rate {item}: GROUP:INDEX, e.g. 5:3 (1.02 kHz)')
+        if not (0 <= g < 8 and 0 <= index < len(FIXED_RATE_LABELS)):
+            raise Fail(f'--fixed-rate {item}: group 0..7, index 0..6')
+        out[g] = index
+    return out
+
+
+def pv_put(name, value, timeout=5.0):
+    """Put a PV over PVA; None on success, else the error."""
+    from p4p.client.thread import Context
+    ctx = Context('pva')
+    try:
+        ctx.put(name, value, timeout=timeout)
+        return None
+    except Exception as e:
+        return f'{type(e).__name__}: {e}'
+    finally:
+        ctx.close()
 
 
 def start_webgui(work, state, env):
@@ -966,7 +1100,7 @@ def scrape(port, names):
 # What drp_pva and drp_udpencoder count of their PV updates / encoder frames (PvaDetector.cc,
 # UdpEncoder.cc exporters), per DRP
 PER_DRP_COUNTERS = ('drp_match_count', 'drp_timeout_count', 'drp_miss_count', 'drp_empty_count',
-                    'drp_tooOld_count')
+                    'drp_tooOld_count', 'bld_miss_count')
 COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_ReqCt',
             'DRP_RecordSize', 'drp_num_dma_errors',
             'drp_num_pgp_jump', 'drp_num_th_error', 'drp_num_missing_rogs', 'DRP_Damage')
@@ -1137,8 +1271,8 @@ def cmd_cycle(args):
         counts.update(_psana_counts(work, state, status[6], run))
     if state.get('meb'):
         counts.update(_meb_counts(work, state))
-    if (state.get('pva') or state.get('epics') or state.get('udp')) and args.record and run:
-        counts.update(_sysdrp_counts(work, state, status[6], run))
+    if (state.get('pva') or state.get('epics') or state.get('udp') or state.get('bld')) and args.record and run:
+        counts.update(_sysdrp_counts(work, state, status[6], run, bld=state.get('bld')))
         for proc, key in ((PVA_PROCS[0], 'sysdrp pva with data'), (UDP_PROCS[0], 'sysdrp udp with data')):
             daq = counts.get(f'drp_match_count {proc}')
             if key in counts and daq != counts[key]:     # the DAQ and psana2 agree on each DRP
@@ -1148,6 +1282,9 @@ def cmd_cycle(args):
     if ami:
         counts.update(ami.check(work, status[6], run if args.record else 0))
         ok &= counts.get('ami check') == 'PASS'
+    if (state.get('also') or state.get('fixed_rates') or state.get('bld')) and args.record and run:
+        counts.update(_per_drp_counts(work, state, status[6], run, counts))
+        ok &= counts.get('per-DRP checks') == 'PASS'
     want = ('simxpm NumL0Acc', 'TEB_WrtCt', 'psana2 events') if args.record and run else \
            ('simxpm NumL0Acc', 'TEB_EvtCt')
     values = [counts.get(k) for k in want]
@@ -1214,6 +1351,18 @@ def _run_counts(work, plat):
     out['simxpm NumL0Acc'] = None if isinstance(v, str) else int(v)
     v = pv_get(f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Inp')
     out['simxpm NumL0Inp'] = None if isinstance(v, str) else int(v)
+    for g in range(8):                  # every readout group that took L1Accepts
+        v = pv_get(f'{PVBASE}:XPM:{XPM}:PART:{g}:NumL0Acc')
+        if not isinstance(v, str) and int(v) and g != plat:
+            out[f'simxpm NumL0Acc group {g}'] = int(v)
+    if out['simxpm NumL0Acc'] is not None:
+        out[f'simxpm NumL0Acc group {plat}'] = out['simxpm NumL0Acc']
+    v = pv_get(f'{PVBASE}:XPM:{XPM}:SIM:LinkL1Acc')
+    try:
+        out['simxpm links'] = json.loads(str(v))
+    except ValueError:
+        out['simxpm links'] = f'unreadable: {v}'
+
     for port in prometheus_targets(work.path('prom')):
         for k, val in scrape(port, COUNTERS + PER_DRP_COUNTERS).items():
             name = k.split('{')[0]
@@ -1308,7 +1457,80 @@ class AmiRun:
         return out
 
 
-def _sysdrp_counts(work, state, experiment, run):
+def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
+    """Each PGP DRP's and drp_bld's L1Accepts: what simxpm sent its link (SIM:LinkL1Acc, read
+    after Disable) against what psana2 reads from its own stream, event by event
+    (xtc2_check for the --det and --also types, sysdrp_check --bld); and, with --fixed-rate,
+    each readout group's L1Accept count (simxpm NumL0Acc): groups at different rates differ."""
+    from psdaq.sim import xtc2_check
+    import glob
+    links = counts.get('simxpm links') or {}
+    files = sorted(glob.glob(os.path.join(xtcdir or work.path('data', INSTRUMENT, experiment, 'xtc'),
+                                          f'{experiment}-r{run:04d}-s*-c000.xtc2')))
+    out, problems = {}, []
+    pgp = [(f'{DETECTOR}_{i}', state['platform']) for i in range(state.get('segments', 1))] + \
+          [(a['alias'], a['group']) for a in state.get('also', ())]
+    for alias, group in pgp:
+        res = None
+        for path in files:              # its stream: the file in which it has data
+            try:
+                r = xtc2_check.check(path, alias, state['seed'])
+            except Exception:
+                continue
+            if r.get('with_data'):
+                res = r
+                break
+        daq = (links.get(alias) or {}).get('l1acc')
+        if res is None:
+            out[f'drp {alias}'] = f'group {group}: DAQ {daq}, psana2: no stream with its data'
+            problems.append(f'{alias}: no stream')
+            continue
+        good = res['pass'] and daq == res['events'] == res['with_data']
+        out[f'drp {alias}'] = (f'group {group}: DAQ (simxpm L1Accepts sent) {daq} psana2 events '
+                               f'{res["events"]} with data {res["with_data"]} per-event check '
+                               f'{"PASS" if res["pass"] else "FAIL " + str(res["problems"][:2])} '
+                               f'({os.path.basename(res["file"])})')
+        if not good:
+            problems.append(f'{alias}: DAQ {daq} psana2 {res["events"]}/{res["with_data"]} '
+                            f'check {res["pass"]}')
+    for alias, key, on in ((PVA_PROCS[0], 'pva', state.get('pva')), (UDP_PROCS[0], 'udp', state.get('udp')),
+                           (EPICS_PROCS[0], 'epics', state.get('epics')), (BLD_PROCS[0], 'bld', state.get('bld'))):
+        if not on:                      # each system DRP's stream holds every L1Accept it was sent
+            continue
+        daq, got = (links.get(alias) or {}).get('l1acc'), counts.get(f'sysdrp {key} events')
+        out[f'drp {alias}'] = f'group {state["platform"]}: DAQ (simxpm L1Accepts sent) {daq} psana2 events {got}'
+        if daq is None or daq != got:
+            problems.append(f'{alias}: DAQ {daq} psana2 {got}')
+    if state.get('bld'):                # sysdrp_check --bld ran in the cycle (_sysdrp_counts)
+        daq = (links.get(BLD_PROCS[0]) or {}).get('l1acc')
+        missed = counts.get(f'bld_miss_count {BLD_PROCS[0]}')
+        got, problem = counts.get('sysdrp bld with data'), counts.get('sysdrp bld problems', 0)
+        out[f'bld {BLD_PROCS[0]} data'] = (f'DAQ (simxpm L1Accepts sent) {daq} - '
+                                      f'bld_miss_count {missed} = '
+                                      f'{None if daq is None or missed is None else daq - missed}; psana2 '
+                                      f'{BLD_NAME} events {counts.get("sysdrp bld events")} with data {got}, '
+                                      f'{problem} with a wrong value')
+        if daq is None or missed is None or daq - missed != got or not got or problem:
+            problems.append(f'bld: DAQ {daq} - {missed} vs psana2 {got}, {problem} wrong')
+    fixed = {int(g): i for g, i in (state.get('fixed_rates') or {}).items()}
+    if fixed:
+        per_group = {g: counts.get(f'simxpm NumL0Acc group {g}') for g in sorted(fixed)}
+        out['readout groups'] = ', '.join(f'group {g} at {fixed_rate_label(i)}: {per_group[g]} L1Accepts'
+                                          for g, i in sorted(fixed.items()))
+        # each group's count against the fastest group's: their markers' ratio (nested markers:
+        # a group k times slower took every k-th L1Accept), within 10 %
+        fast = min(fixed, key=lambda g: (fixed[g], g))
+        for g, i in sorted(fixed.items()):
+            ratio = FIXED_RATE_DIV[i] / FIXED_RATE_DIV[fixed[fast]]
+            n, n0 = per_group[g], per_group[fast]
+            if not (n and n0 and abs(n0 / n - ratio) <= 0.1 * ratio):
+                problems.append(f'group {g}: {n} L1Accepts against group {fast}\'s {n0}, not 1/{ratio:g} '
+                                f'({fixed_rate_label(i)} vs {fixed_rate_label(fixed[fast])})')
+    out['per-DRP checks'] = 'PASS' if not problems else f'FAIL {problems[:3]}'
+    return out
+
+
+def _sysdrp_counts(work, state, experiment, run, bld=False):
     """psana2 over every stream of the run: what drp_pva and epicsArch recorded
     (psdaq.sim.sysdrp_check)."""
     argv = [sys.executable, '-m', 'psdaq.sim.sysdrp_check', '--dir',
@@ -1320,6 +1542,8 @@ def _sysdrp_counts(work, state, experiment, run):
         argv += ['--epics']
     if state.get('udp'):
         argv += ['--udp', UDP_PROCS[0].rsplit('_', 1)[0]]
+    if bld:
+        argv += ['--bld', BLD_NAME]
     r = subprocess.run(argv, capture_output=True, text=True, timeout=900)
     try:
         res = json.loads(r.stdout.strip().splitlines()[-1])
@@ -1362,6 +1586,81 @@ def select_all(dc):
 def zmq_rcvtimeo():
     import zmq
     return zmq.RCVTIMEO
+
+
+# --- two nodes (plan only) -----------------------------------------------------------------
+
+def multi_host_plan(host_a, host_b, platform=5, also=(), workdir='daq_sim_work', addr=None, nic='eth0'):
+    """One partition over two nodes: control, the TEB, simxpm and the stand-ins on host_a, the
+    --also DRPs on host_b (procmgr's host:), the --det DRP on host_a.  Returns {cnf, env,
+    endpoints, needs}.  Every endpoint is one of the two nodes (addr: {host: IP}); nothing listens
+    on loopback only, since the other node must reach it, and nothing else is addressed."""
+    addr = addr or {}
+    ip_a, ip_b = addr.get(host_a, host_a), addr.get(host_b, host_b)
+    P = ports(platform)
+    ep = f'ep_domain={nic},ep_provider=tcp'           # libfabric tcp over the nodes' NIC
+    data = os.path.join(workdir, 'data')
+    prom = os.path.join(workdir, 'prom')
+    cfg = f'http://{ip_a}:{P["configdb"]}/ws/'
+    lines = [f'# daq_sim up --hosts {host_a},{host_b} --dry-run: one partition over two nodes',
+             f"if not platform: platform = '{platform}'",
+             'procmgr_config = [',
+             f" {{ host:'{host_a}', id:'control', flags:'spu', cmd:'control -v -C {CONFIG_ALIAS} -P {INSTRUMENT}"
+             f" -x {XPM} -B {PVBASE} -X {ip_a} -t {TRIGGER} -S 1 -d {cfg}configDB --url http://{ip_a}:{P['lgbk']}/"
+             f" -r {os.path.join(workdir, 'activedet.json')} -V /dev/null' }},",
+             f" {{ host:'{host_a}', id:'teb0', flags:'spu', cmd:'teb -P {INSTRUMENT} -C {host_a} -k {ep} -M {prom}' }},",
+             f" {{ host:'{host_a}', id:'{DETECTOR}_0', flags:'spu', cmd:'drp -P {INSTRUMENT} -C {host_a} -D {DETECTOR}"
+             f" -d sim://{ip_a}:{P['frames']} -l 0x1 -o {data} -k {ep},{SIM_TYPES[DETECTOR]['kwargs'].format(length=64, seed=0x1234, work=workdir)} -M {prom}' }},"]
+    for a in also:
+        k = SIM_TYPES[a['det']]['kwargs'].format(length=64, seed=0x1234, work=workdir)
+        lines.append(f" {{ host:'{host_b}', id:'{a['alias']}', flags:'spu', cmd:'drp -P {INSTRUMENT} -C {host_a}"
+                     f" -D {a['det']} -d sim://{ip_a}:{P['frames']} -l 0x1 -o {data} -k {ep},{k} -M {prom}' }},")
+    lines.append(']')
+    env = {'EPICS_PVA_AUTO_ADDR_LIST': 'NO', 'EPICS_PVA_ADDR_LIST': f'{ip_a} {ip_b}',
+           'EPICS_CA_AUTO_ADDR_LIST': 'NO', 'EPICS_CA_ADDR_LIST': f'{ip_a} {ip_b}',
+           'EPICS_PVAS_INTF_ADDR_LIST': ip_a}
+    endpoints = {'simxpm frames': f'tcp://{ip_a}:{P["frames"]} (simxpm --frames, --allow-remote)',
+                 'simxpm PVA': f'{ip_a}:{os.environ.get("EPICS_PVA_SERVER_PORT", "15075")} (simxpm --bind {ip_a})',
+                 'control -X': f'tcp://{ip_a}:{pull_port()} (simxpm --pull)',
+                 'config DB': cfg, 'run DB': f'http://{ip_a}:{P["lgbk"]}/',
+                 'control ZMQ': f'{host_a}:{control_ports(platform)[0]}-{control_ports(platform)[-1]}',
+                 'TEB/DRP libfabric': f'{ep} on {ip_a} and {ip_b}'}
+    needs = [f"procmgr starts {host_b}'s processes through procServ on {host_b}: procmgrd/procServ "
+             f"reachable from {host_a} (ssh between the nodes, or the procServ started in a Slurm step "
+             f"on {host_b} of the job that holds it)",
+             'configdb_server and lgbk_server bound to the node address instead of 127.0.0.1, and simxpm '
+             '--bind/--frames/--pull on it with --allow-remote',
+             'preflight.sh: the EPICS address lists above (two nodes), not loopback only',
+             f"the nodes' NIC ({nic}) for libfabric tcp, and the DRP on {host_b} writing to a file "
+             "system both nodes share (data under the work dir)"]
+    return {'cnf': '\n'.join(lines) + '\n', 'env': env, 'endpoints': endpoints, 'needs': needs}
+
+
+def cmd_plan(args):
+    """up --hosts A,B --dry-run: print the two-node plan; start nothing."""
+    hosts = (args.hosts or '').split(',')
+    if len(hosts) != 2 or not all(hosts) or hosts[0] == hosts[1]:
+        raise Fail('--hosts HOST_A,HOST_B: two different nodes')
+    if not args.dry_run:
+        raise Fail('--hosts is a plan only for now: add --dry-run (RUNBOOK: two nodes)')
+    for h in hosts:
+        short = h.split('.')[0]
+        if re.match(r'(drp|daq|mon|ctl|ioc)-', short):
+            raise Fail(f'refusing {h}: it looks like a hutch or DAQ host')
+    also = parse_also(args.also or [], args.platform)
+    plan = multi_host_plan(hosts[0], hosts[1], args.platform, also, os.path.abspath(args.workdir))
+    print('# .cnf')
+    print(plan['cnf'], end='')
+    print('# environment (both nodes)')
+    for k, v in plan['env'].items():
+        print(f'export {k}="{v}"')
+    print('# endpoints')
+    for k, v in plan['endpoints'].items():
+        print(f'#   {k:<18} {v}')
+    print('# not done yet (needed to run it)')
+    for n in plan['needs']:
+        print(f'#   - {n}')
+    return 0
 
 
 # --- matrix --------------------------------------------------------------------------------
@@ -1410,6 +1709,19 @@ def main(argv=None):
     upopts.add_argument('--udp', action='store_true',
                         help='also run drp_udpencoder (encoder_0) on the encoder frames sim_udpencoder sends on '
                              'loopback UDP, paced by simxpm (sim_udpencoder -T sim://)')
+    upopts.add_argument('--also', action='append', metavar='TYPE[:GROUP]',
+                        help='one more DRP <TYPE>_0 of another simulated type, in readout group GROUP '
+                             '(default: the platform); repeatable')
+    upopts.add_argument('--fixed-rate', action='append', metavar='GROUP:INDEX',
+                        help="readout group GROUP's L1Accepts on pyxpm's fixed-rate marker INDEX (3: "
+                             '1.02 kHz, 4: 102 Hz, 5: 10.2 Hz, 6: 1.02 Hz; simxpm --fixed-rates); repeatable')
+    upopts.add_argument('--bld', action='store_true',
+                        help=f'also run drp_bld (bld_0) on simxpm\'s BLD source {BLD_PREFIX} (multicast on '
+                             '127.0.0.1, TTL 1), its group and port from the stand-in IOC (CA)')
+    upopts.add_argument('--hosts', default=None, metavar='HOST_A,HOST_B',
+                        help='with --dry-run: plan one partition over two nodes (control, the TEB and '
+                             'stand-ins on HOST_A, the --also DRPs on HOST_B)')
+    upopts.add_argument('--dry-run', action='store_true', help='print the plan (.cnf, environment); start nothing')
     upopts.add_argument('--gui', action='store_true',
                         help='also run the PyQt GUIs control_gui and groupca, offscreen, as the configs start them')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
@@ -1455,11 +1767,20 @@ def main(argv=None):
     coverage.add_arguments(cov)
     mx = sub.add_parser('matrix', help='the whole hardware-free matrix (for now: the coverage check)')
     coverage.add_arguments(mx)
+    from psdaq.sim import feature
+    feature.add_arguments(sub.add_parser('feature', parents=[common], help='run one system feature '
+                                         'end to end with its checks (psdaq.sim.feature)'))
     args = parser.parse_args(argv)
     if args.command == 'coverage':      # reads the checkout only: no DAQ env needed
         return coverage.run(args)
     if args.command == 'matrix':
         return cmd_matrix(args)
+    if args.command == 'up' and (args.dry_run or args.hosts):
+        try:                            # a plan only: no DAQ env needed
+            return cmd_plan(args)
+        except Fail as e:
+            print(f'daq_sim up: {e}', file=sys.stderr, flush=True)
+            return 1
     ensure_env(argv)
     try:
         old = Work(args.workdir).load() or {}
@@ -1467,6 +1788,8 @@ def main(argv=None):
         if args.command == 'e2e':
             from psdaq.webgui.e2e import cmd_e2e
             return cmd_e2e(args)
+        if args.command == 'feature':
+            return feature.cmd_feature(args)
         return {'up': cmd_up, 'down': cmd_down, 'status': cmd_status, 'cycle': cmd_cycle}[args.command](args)
     except Fail as e:
         print(f'daq_sim {args.command}: {e}', file=sys.stderr, flush=True)
