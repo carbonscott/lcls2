@@ -22,7 +22,9 @@
      preflight (preflight.sh); 'up' stops if the preflight does not pass,
   2. the config DB stand-in (configdb_server), seeded by configdb_seed,
   3. the run DB / eLog stand-in (lgbk_server),
-  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
+  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver), and the
+     stand-ins of the --det type's own device, if it has any (hsd: simhsdioc, the hsd's PVs and
+     IOC; jungfrau: simsls, the stand-in for the module's slsDetector servers, psdaq.sim.simsls),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
      with its config in the config DB, all in the partition's readout group; with --det TYPE
@@ -72,6 +74,8 @@ every state and count itself, prints E2E PASS or E2E FAIL and the exit code says
 
 Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
+  +4 simsls control (TCP) and trigger input (UDP), +5 simsls stop (TCP), +6 the jungfrau
+     module's data destination (UDP; the config's user.port), with --det jungfrau
 UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>).
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
@@ -130,6 +134,37 @@ SIM_TYPES = {
     # the timing BEB: tb_config reads the card's image name, then programs simxpm's PVs as ts does
     'tb':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
     'epixquad':  {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}'},
+    # the same EpixQuad DRP; its camera's SPI PROM answers the commands Top.start sends (rogue_dev).
+    # Its package's ePixViewer constructs a QApplication when ePixQuad is imported, so whatever
+    # imports epixquad1kfps_config (configdb_seed, the DRP) needs a display: offscreen here
+    'epixquad1kfps': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}',
+                      'env': {'QT_QPA_PLATFORM': 'offscreen'}},
+    # its store's default reads PLL tables and pixel maps from EPIXUHR_CONFIG_DIR: 'up' writes them
+    # (psdaq.sim.epixuhr_files); 4 ASICs of 48,384 B packed pixels per event
+    'epixUHR':   {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
+                  'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR')},
+    # the ePixHR 2x2: epixhr2x2_config imports lcls2_epix_hr_pcie and epix_hr_single_10k, which no
+    # psdaq.utils.enable_* module puts on the path, so PSDAQ_SIM_PYTHONPATH in the environment of
+    # 'up' (inherited by the drp through procmgr) names them (sim_path, RUNBOOK §3e and §3k); 'up'
+    # reports it and never sets it ('inherit').  Its ePixFpga package imports PyQt5's widgets:
+    # offscreen, as for epixquad1kfps.
+    # 2 nested EventBatchers of 146 rows of 384 uint16 per event (224,400 B)
+    'epixhr2x2': {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
+                  'env': {'QT_QPA_PLATFORM': 'offscreen'}, 'inherit': ('PSDAQ_SIM_PYTHONPATH',),
+                  'runbook': '§3k'},
+    # the timetool: tt_config builds lcls2_timetool's root, whose bundled surf does not work with
+    # this rogue; PSDAQ_SIM_PYTHONPATH in the environment of 'up' (inherited by the drp through
+    # procmgr) names a working one (sim_path, RUNBOOK §3e and §3l).  'up' reports it and never
+    # sets it ('inherit').
+    'tt':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}',
+                  'inherit': ('PSDAQ_SIM_PYTHONPATH',), 'runbook': '§3l'},
+    # the ePixUHR 3x2 panel: its store reads the same files; its C1100 card's management (CMS) is
+    # behind a firmware AXI-Lite proxy (rogue_dev emulates both); one 336 x 576 uint16 panel per
+    # event.  Its DRP's init (the readout system's Root) takes about 40 s here, longer than
+    # control's rollcall waits, so 'up' waits for it ('ready_s')
+    'epixuhr3x2': {'kwargs': 'sim_dma_size=0x80000,sim_dma_count=256,sim_seed={seed:#x}',
+                   'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR'),
+                   'ready_s': 180},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -141,6 +176,21 @@ SIM_TYPES = {
                     'frame': 'epixhremu-frame.xtc2'},
     'jungfrauemu': {'kwargs': 'sim_length=262144,sim_dma_size=0x101000,sim_dma_count=256'},
     'ts':          {'kwargs': 'sim_seed={seed:#x}'},
+    # the digitizer: hsd_config.py configures the card (rogue_dev) and, over PVA, the hsd's IOC,
+    # whose PVs simhsdioc serves for channels A and B (hsd_config disables both); MemPoolSim sends
+    # the hsd's raw and fex streams
+    'hsd': {'kwargs': f'hsd_epics_prefix={PVBASE}:HSD:1_SIM:A,sim_seed={{seed:#x}}',
+            'services': {'simhsdioc': ['-m', 'psdaq.sim.simhsdioc',
+                                       '-P', f'{PVBASE}:HSD:1_SIM:A', f'{PVBASE}:HSD:1_SIM:B']}},
+    # jungfrau: Drp::Jungfrau drives its module through sls::Detector at slsHosts, here simsls
+    # (psdaq.sim.simsls) on loopback; MemPoolSim triggers the module per L1Accept and frames the
+    # 128 UDP packets it sends to sim_udp_port (1 MiB per event), and the config DB entry points
+    # the module's data there (user.kcu_ip, user.port; 'sets', applied by configdb_seed --set)
+    'jungfrau':    {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=128,segNums=0,'
+                              'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
+                    'sls': True,
+                    'sets': ('user.kcu_ip=127.0.0.1', 'user.jungfrau_ip=127.0.0.1',
+                             'user.port={sls_data}')},
 }
 # drp_gpu -k settings per simulated detector type (up --drp drp_gpu --det).  drp_gpu -d sim://
 # (psdaq/drpGpu/MemPool.cc) copies what the drp's MemPoolSim makes of simxpm's frames into the
@@ -163,6 +213,13 @@ GPU_SIM_TYPES = {
     'epixuhrsim': {'kwargs': 'reducer=NoOpReducer,sim_dma_count=64,dmaBufSize=458752,'
                              'dmaBufCount=64,sim_ref={work}/epixuhrsim-ref.bin',
                    'ref': 'epixuhrsim-ref.bin'},
+    # Gpu::Jungfrau configures through Drp::Jungfrau, so its module is simsls as for drp (and
+    # the same config DB entry); its frame, the module's 128 UDP packets as MemPoolSim batches
+    # them (1055848 B), and the 32 B DMA frame fit dmaBufSize 0x120000
+    'jungfrau':   {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x110000,sim_dma_count=64,'
+                             'dmaBufSize=1179648,dmaBufCount=64,segNums=0,'
+                             'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
+                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets']},
 }
 
 
@@ -184,6 +241,7 @@ TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' 
 def ports(platform):
     base = 31000 + 10 * platform
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
+            'sls': base + 4, 'sls_stop': base + 5, 'sls_data': base + 6,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
             'bld': 31220 + platform,
@@ -210,6 +268,18 @@ def meb_tag(platform):
     """The MEB's shared-memory tag (monReqServer -t), which its clients name (shmemClient -p,
     psana shmem=)."""
     return f'{INSTRUMENT}sim{platform}'
+
+
+def sls_ports(P):
+    """The ports simsls (--det jungfrau) holds: control and stop (TCP), the trigger input and the
+    module data destination (UDP)."""
+    return [P['sls'], P['sls_stop']]
+
+
+def sls_tag(platform):
+    """SLSDETNAME for this platform's DRPs: sls::Detector's shared memory names carry it."""
+    return f'daq_sim_p{platform}'
+
 
 
 def control_ports(platform):
@@ -818,6 +888,9 @@ def cmd_up(args):
     want = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(args.platform)
     if getattr(args, 'webgui', False):
         want.append(P['webgui'])
+    sim_type = (GPU_SIM_TYPES if DRP == 'drp_gpu' else SIM_TYPES)[DETECTOR]
+    if sim_type.get('sls'):
+        want += sls_ports(P)
     if ami:
         want += ami_ports(args.platform)
     if udp and udp_busy(P['udp']):
@@ -825,6 +898,8 @@ def cmd_up(args):
     if bld and udp_busy(P['bld']):
         raise Fail(f'UDP port {P["bld"]} already in use')
     busy = [p for p in want if port_busy(p)]
+    if sim_type.get('sls'):
+        busy += [f'{p}/udp' for p in (P['sls'], P['sls_data']) if udp_busy(p)]
     if busy:
         raise Fail(f'ports already in use: {busy}')
     for d in ('logs', 'pmlogs', 'prom', os.path.join('data', INSTRUMENT)):
@@ -844,6 +919,10 @@ def cmd_up(args):
     env[TAG] = work.dir
     env['PYTHONUNBUFFERED'] = '1'
     os.environ[TAG] = work.dir          # procmgr and everything it starts inherit it
+    # where a BEB type's config script writes the YAML files it hands rogue (rogue_dev, "_scratch")
+    env['PSDAQ_SIM_TMPDIR'] = os.environ['PSDAQ_SIM_TMPDIR'] = work.path('tmp')
+    if sim_type.get('sls'):             # the DRP's sls::Detector shared memory, this platform's
+        env['SLSDETNAME'] = os.environ['SLSDETNAME'] = sls_tag(args.platform)
 
     state = {'workdir': work.dir, 'host': host, 'platform': args.platform, 'up_pid': os.getpid(),
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
@@ -854,10 +933,14 @@ def cmd_up(args):
              'also': also, 'fixed_rates': fixed, 'bld': bld, 'pvservers': pvservers,
              'tpr': tpr, 'two': two,
              'remote': ({f'{DETECTOR}_{i}': two['hosts'][1] for i in range(1, segments)} |
-                        {x['alias']: two['hosts'][1] for x in also}) if two else {}}
+                        {x['alias']: two['hosts'][1] for x in also}) if two else {},
+             'det_env': {k: os.environ.get(k) for k in sim_type.get('inherit', ())}}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
+    for k, v in state['det_env'].items():   # what the type's drp inherits; unset is reported
+        say(f'{DETECTOR}: {k}={v!r}' if v else
+            f'{DETECTOR}: {k} is not set (RUNBOOK {sim_type.get("runbook", "§3e")})')
 
     try:
         if not args.skip_preflight:
@@ -894,10 +977,21 @@ def cmd_up(args):
                            '--access-log', work.path('logs', 'configdb-access.jsonl')] +
                           (['--host', bind] if two else []), env)
         wait_listen(P['configdb'], 30, p, 'configdb_server', host=bind)
-        sim_type = (GPU_SIM_TYPES if DRP == 'drp_gpu' else SIM_TYPES)[DETECTOR]
+        env.update(sim_type.get('env', {}))     # what the type's own code needs to run here
+        os.environ.update(sim_type.get('env', {}))  # procmgr and the DRP inherit it
+        if sim_type.get('config_files'):    # files the type's store reads, at a path env names
+            mod, sub, var = sim_type['config_files']
+            r = subprocess.run([py, '-m', mod, work.path(sub)], env=env, capture_output=True,
+                               text=True, timeout=120)
+            if r.returncode != 0:
+                raise Fail(f'{mod} failed: {r.stderr.strip()[-400:]}')
+            env[var] = work.path(sub)
+            say(r.stdout.strip().splitlines()[-1] if r.stdout.strip() else f'{var}={env[var]}')
         det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
         if sim_type.get('det_yaml'):
             det_args += ['--det-yaml', sim_type['det_yaml'].format(**os.environ)]
+        for item in sim_type.get('sets', ()):
+            det_args += ['--set', item.format(**P)]
         seeds = [(DETECTOR, segm, det_args) for segm in range(segments)]
         for a in also:                  # each --also type: its own config, as for --det
             yaml = SIM_TYPES[a['det']].get('det_yaml')
@@ -953,6 +1047,23 @@ def cmd_up(args):
                 _wait_log(state['services'][name]['log'], 'ready', 30, p, name)
                 say(f'{name} pid {p.pid}: PVA {srv}/{bcast} on 127.0.0.1, stands in for {", ".join(S["programs"])}')
 
+        for name, argv in sim_type.get('services', {}).items():     # the type's device stand-ins
+            p = start_service(work, state, name, [py] + argv, env)
+            state.setdefault('type_services', []).append(name)
+            work.save(state)
+            end = time.monotonic() + 30
+            while f'{name}: ready' not in open(state['services'][name]['log']).read():
+                if p.poll() is not None or time.monotonic() > end:
+                    raise Fail(f'{name} did not start (logs/{name}.log)')
+                time.sleep(0.2)
+            say(f'{name} ready (logs/{name}.log)')
+        if sim_type.get('sls'):         # the module the DRP drives through sls::Detector
+            p = start_service(work, state, 'simsls',
+                              [py, '-m', 'psdaq.sim.simsls', '--port', str(P['sls']),
+                               '--seed', str(args.seed)], env)
+            wait_listen(P['sls'], 30, p, 'simsls control')
+            wait_listen(P['sls_stop'], 30, p, 'simsls stop')
+
         if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
             r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
                                 '--seed', str(args.seed)], env=env, capture_output=True, text=True,
@@ -998,18 +1109,24 @@ def cmd_up(args):
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       drp=DRP, env=f" env:'LD_LIBRARY_PATH={cuda_lib}'," if DRP == 'drp_gpu' and cuda_lib else '',
-                      simk=sim_type['kwargs'].format(length=args.length, seed=args.seed, work=work.dir))
+                      simk=sim_type['kwargs'].format(length=args.length, seed=args.seed, work=work.dir,
+                                                     **P))
+        cnf = CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
+                         xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
+                         slow=args.slow_update, configdb=cfg_url + 'configDB',
+                         lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
+                         segments=''.join(SEGMENT.format(segm=i, **common)
+                                          for i in range(1, segments)) + extra, **common)
+        if state['det_env']:            # after the two header lines: what the drp inherits from 'up'
+            line1, line2, rest = cnf.split('\n', 2)
+            cnf = line1 + '\n' + line2 + '\n' + ''.join(
+                f'# {DETECTOR}_* inherit {k}={v}\n' for k, v in state['det_env'].items() if v) + rest
         with open(work.path(state['cnf']), 'w') as f:
             if two:
                 f.write(two_host_cnf(two, args, cfg_url, extra_also=also, segments=segments, common=common,
                                      work=work))
             else:
-                f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
-                                   xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
-                                   slow=args.slow_update, configdb=cfg_url + 'configDB',
-                                   lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
-                                   segments=''.join(SEGMENT.format(segm=i, **common)
-                                                    for i in range(1, segments)) + extra, **common))
+                f.write(cnf)
         if gui:                         # daqstat's Slurm: simslurm's jobs for daq_sim.cnf's processes, shims on its PATH
             from psdaq.sim import simslurm
             slurm = work.path(SLURM_DIR)
@@ -1040,6 +1157,8 @@ def cmd_up(args):
         work.save(state)
         if gui:
             _wait_control_gui(work, 120)
+        if sim_type.get('ready_s'):
+            _wait_drps_ready(work, state, sim_type['ready_s'])
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
@@ -1272,6 +1391,28 @@ def _wait_ca(name, timeout, proc=None):
         if (proc is not None and proc.poll() is not None) or time.monotonic() > end:
             raise Fail(f'{name} does not answer over CA')
         time.sleep(0.5)
+def _wait_drps_ready(work, state, timeout):
+    """Wait until each DRP's log says 'Ready for transitions' (PGPDetectorApp, once its detector's
+    init has returned): control's rollcall finds only a DRP that is."""
+    import glob
+    end = time.monotonic() + timeout
+    pending = [i for i in procs(state) if i.startswith(DETECTOR + '_')]
+    while pending:
+        for alias in list(pending):
+            for log in glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')):
+                with open(log, errors='replace') as f:
+                    if 'Ready for transitions' in f.read():
+                        pending.remove(alias)
+                        say(f'{alias} ready for transitions ({os.path.relpath(log, work.dir)})')
+                        break
+        if not pending:
+            return
+        status, text = procmgr_status(state)
+        dead = [i for i in pending if status.get(i, ('?',))[0] != 'RUNNING']
+        if dead or time.monotonic() > end:
+            raise Fail(f'{", ".join(dead or pending)} not ready for transitions '
+                       f'{"(not RUNNING)" if dead else f"after {timeout} s"}\n{text}')
+        time.sleep(2)
 
 
 def _control_state(platform, timeout=5000):
@@ -1366,7 +1507,8 @@ def teardown(work, quiet=False):
     if state.get('hostd'):              # up --hosts: each other host's step, and what is left in it
         from psdaq.sim import twonode
         hostd_ok = twonode.stop_hostd(work, state, say)
-    for name in ('simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb'):
+    for name in ('simsls', 'simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb') + \
+            tuple(state.get('type_services', ())):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -1387,6 +1529,9 @@ def teardown(work, quiet=False):
             check.append(P['webgui'])
         if state.get('ami'):
             check += ami_ports(state['platform'])
+        if 'simsls' in state['services']:
+            check += sls_ports(P)
+            _free_sls_shm(state['platform'], quiet)
         busy = [p for p in check if port_busy(p)]
         if busy:
             ok = False
@@ -1399,6 +1544,24 @@ def teardown(work, quiet=False):
         work.save(state)
     say('down: ' + ('clean' if ok else 'NOT clean'))
     return ok
+
+
+def _free_sls_shm(platform, quiet):
+    """Remove the sls::Detector shared memory a DRP of this platform left (Drp::Jungfrau frees it
+    when it exits normally): only names carrying this platform's SLSDETNAME, owned by this user."""
+    shm = '/dev/shm'
+    tag = '_' + sls_tag(platform)
+    try:
+        names = os.listdir(shm)
+    except OSError:
+        return
+    for name in names:
+        path = os.path.join(shm, name)
+        if name.startswith('slsDetectorPackage_detector_') and tag in name and \
+                os.stat(path).st_uid == os.getuid():
+            if not quiet:
+                say(f'removing leftover sls shared memory {path}')
+            os.unlink(path)
 
 
 def cmd_down(args):

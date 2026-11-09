@@ -378,3 +378,127 @@ def test_the_camera_uart_answers_from_the_seed_file(tmp_path, monkeypatch):
             time.sleep(0.01)
         assert bytes(rx.got[0::4]) == want
         assert [w['cmd'] for w in sim.writes if w['store'] == 'uart'] == ['@ID?', '@MO1']
+
+
+def test_response_seed_answers_in_the_low_bits():
+    """{"response": v, "bits": n}: the low n bits read v whatever is written (a SPI PROM's
+    command register, whose low byte is the flash's answer), the rest what was written."""
+    sim = rogue_dev.install(DEV, seeds={'Top.Feb.Ctrl': {'response': 0, 'bits': 8}}, fault='')
+    with Top(DEV) as top:
+        top.Feb.Ctrl.set(0x80050001, verify=False)
+        assert top.Feb.Ctrl.get(read=True) == 0x80050000
+        assert sim.applied['Top.Feb.Ctrl'][2] == {'response': 0, 'bits': 8}
+
+
+def test_the_epixquad1kfps_prom_seed_loads():
+    seeds, path = rogue_dev.load_seeds('epixquad1kfps')
+    assert seeds['Top.CypressS25Fl.CmdReg'] == {'response': 0, 'bits': 8}
+    with pytest.raises(rogue_dev.SimDeviceError, match='bits'):
+        rogue_dev._seed_value('X.CmdReg', {'response': 0, 'bits': 40})
+
+
+def test_scratch_yaml_goes_under_PSDAQ_SIM_TMPDIR(tmp_path, monkeypatch):
+    """A seed file's "_scratch" prefixes: det_config.dictToYaml (what epixhr2x2_config writes its
+    settings with, for LoadConfig) writes such a file under $PSDAQ_SIM_TMPDIR; other paths, and
+    every path once uninstalled or with the variable unset, stay where the script says."""
+    from psdaq.configdb import det_config
+    path = tmp_path / 'seeds.json'
+    path.write_text(json.dumps({'_scratch': [str(tmp_path / 'fixed' / 'pfx')]}))
+    monkeypatch.setenv(rogue_dev.ENV_SEEDS, str(path))
+    monkeypatch.setenv(rogue_dev.ENV_TMPDIR, str(tmp_path / 'sim'))
+    (tmp_path / 'fixed').mkdir()
+    orig = det_config.dictToYaml
+
+    class Dev:
+        pass
+    args = ({'Part': {'A': 1}}, {'Part': {'A': 'UINT32'}}, ['Part'], Dev())
+    rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+    fn = det_config.dictToYaml(*args, str(tmp_path / 'fixed' / 'pfx'), 'MMCM', ('Top', 'App'))
+    assert fn == str(tmp_path / 'sim' / 'pfxMMCM.yml') and (tmp_path / 'sim' / 'pfxMMCM.yml').exists()
+    assert 'Part:' in (tmp_path / 'sim' / 'pfxMMCM.yml').read_text()
+    other = det_config.dictToYaml(*args, str(tmp_path / 'fixed' / 'other'), 'X', ('Top', 'App'))
+    assert other == str(tmp_path / 'fixed' / 'otherX.yml')
+    rogue_dev.uninstall()
+    assert det_config.dictToYaml is orig
+    monkeypatch.delenv(rogue_dev.ENV_TMPDIR)
+    rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+    assert det_config.dictToYaml is orig
+
+
+def test_the_epixhr2x2_seed_file_moves_its_yaml():
+    assert rogue_dev.load_scratch('epixhr2x2') == ['/tmp/epixhr']
+
+
+CMS_DRIVE = """
+import json, os, sys, traceback
+from psdaq.sim import rogue_dev
+dev = '%s'
+seed = {'Top.Cms.Status.HOST_STATUS2_REG': 1, 'Top.Cms.Status.REG_MAP_ID_REG': 0x74736574}
+if len(sys.argv) > 1:                                       # the answer seed this replaces
+    seed['Top.Cms.Mailbox.CONTROL_REG[5]'] = {'response': 0, 'bits': 1}
+sim = rogue_dev.install(dev, seeds=seed, fault='')
+import psdaq.utils.enable_epix_uhr3x2                       # sys.path for surf and axipcie
+import pyrogue as pr
+import rogue.hardware.axi
+import surf.axi
+import axipcie
+def fail(*args):                                            # rogue threads outlive an exception
+    traceback.print_exception(*args)
+    sys.stderr.flush()
+    os._exit(1)
+sys.excepthook = fail
+class Top(pr.Root):
+    # A C1100's card management as axipcie AxiPcieCore builds it: CmsSubsystem behind surf's
+    # AXI-Lite master proxy on the PCIe map, two QSFP cages
+    def __init__(self):
+        super().__init__(name='Top', pollEn=False, initRead=False, timeout=2.0)
+        self.mem = rogue.hardware.axi.AxiMemMap(dev)
+        self.add(surf.axi.AxiLiteMasterProxy(name='Bridge', memBase=self.mem, offset=0x70000))
+        self.add(axipcie.CmsSubsystem(name='Cms', offset=0x80000000, memBase=self.Bridge.proxy,
+                                      moduleType='QSFP', numCages=2))
+top = Top()
+top.start()                                                 # CmsSubsystem._start: reset, ready
+cms = top.Cms
+cms.QsfpLowSpeedIo[1].QSFP_LPMODE.set(1)                    # a mailbox write (op 0x0E), verified
+cms.Mailbox.HbmTempMonEnable.set(1)                         # shares CONTROL_REG[5]'s word
+top.ReadAll()
+res = {'lpmode': [cms.QsfpLowSpeedIo[i].QSFP_LPMODE.get(read=True) for i in (0, 1)],
+       'hbm': cms.Mailbox.HbmTempMonEnable.get(read=True),
+       'ctrl': cms.Mailbox.nodes['CONTROL_REG[5]'].get(read=True),
+       'requests': {'%%#x' %% k: v for k, v in sim.cms[0].requests.items()}}
+print('RESULT', json.dumps(res))
+sys.stdout.flush()
+os._exit(0)
+""" % DEV
+
+
+def _drive_cms(*args):
+    import subprocess
+    import sys
+    return subprocess.run([sys.executable, '-c', CMS_DRIVE] + list(args), capture_output=True,
+                          text=True, timeout=120)
+
+
+def test_the_cms_mailbox_answers_its_requests():
+    """A CmsSubsystem's mailbox requests (axipcie _CmsProxy) are answered by rogue_dev's
+    CmsFirmware: a QSFP cage's low-speed IO keeps what is written, per cage; CONTROL_REG[5]'s
+    write-verify passes, and so does a write of HbmTempMonEnable, in the same word."""
+    r = _drive_cms()
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode == 0, r.stderr[-3000:]
+    res = json.loads(r.stdout.split('RESULT ', 1)[1].splitlines()[0])
+    assert res['lpmode'] == [0, 1]
+    assert (res['hbm'], res['ctrl']) == (1, 0)
+    assert res['requests']['0xe'] == 1 and res['requests']['0xd'] >= 3
+
+
+def test_the_old_answer_seed_fails_the_request_bit_s_write_verify():
+    """What CmsFirmware replaces: with CONTROL_REG[5] seeded to read 0, the request's
+    write-verify fails (Verify error ... HbmTempMonEnable, the word's first variable) in the
+    mailbox's worker thread."""
+    r = _drive_cms('old-seed')
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode != 0
+    assert 'Verify error for block Top.Cms.Mailbox.HbmTempMonEnable' in r.stderr

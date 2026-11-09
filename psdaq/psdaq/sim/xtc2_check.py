@@ -31,6 +31,9 @@ the TDet words above, read as the type's uint16 pixels; the check computes, for 
 the words (pulseId, seq n, seed, the w[k] pattern) and the calibration the type's own GPU code
 applies to each pixel (GPU_TYPES), and compares every pixel.  The event's pulseId is the one,
 of the few ticks simxpm may add to its timestamp's, whose words match; it must rise.
+jungfrau's payload is the frame its module (psdaq.sim.simsls) sent, as for drp: event n holds
+frame n, pixel i = pattern(seed, n, i, 16), which Gpu::Jungfrau calibrates as (the low 14 bits -
+pedestal of the range in bits 14-15) x gain, with pedestals 0 and gains 1 (GPU_FRAME_TYPES).
 epixuhrsim makes its own frames on the GPU (SimDetector): --ref names the file it wrote at
 BeginRun (its 16 raw frames and calibration constants), and the n-th event must hold frame
 (n - 1) % 16 calibrated with them, every pixel; --self-test-offset K expects frame n - 1 + K.
@@ -48,7 +51,12 @@ import sys
 # BEB types: (raw image shape, pixel bit depth), as MemPoolSim's batcher table writes them
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
-               'epixquad': ((4, 352, 384), 14)}
+               'epixquad': ((4, 352, 384), 14), 'epixquad1kfps': ((4, 352, 384), 14),
+               'epixUHR': ((4, 168, 192), 12), 'epixhr2x2': ((288, 384), 16),
+               'epixuhr3x2': ((1, 336, 576), 12)}
+# BEB types whose config code records, besides the type's segment, a detector of the whole
+# device's configuration with no event data: {type: (its name, its config interface)}
+CONFIG_DETECTORS = {'epixhr2x2': ('epixhr2x2hw', 'epixhr2x2hw_config_2_0_0')}
 # GPU DRP types (drp_gpu -d sim://): {type: (image shape, calibration of a uint16 pixel)}, the
 # calibration as the type's GPU code applies it with no calibSerNo (pedestals 0, gains 1)
 GPU_TYPES = {
@@ -58,6 +66,12 @@ GPU_TYPES = {
     'epixuhremu': ((336, 576), lambda u: ((u >> 1) & 0x7ff).astype('float32')),
     # Gpu::EpixUHRsim: its own frames (--ref), gain in bit 0 and an 11-bit value in bits 1-11
     'epixuhrsim': ((336, 576), None),
+}
+# GPU DRP types whose payload is the frame a module stand-in sent (not TDet words): {type:
+# (image shape, bits of pattern(seed, n, i, bits), calibration of a uint16 pixel)}
+GPU_FRAME_TYPES = {
+    # Gpu::Jungfrau: the range in bits 14-15, the value in bits 0-13 (Jungfrau.hh)
+    'jungfrau': ((512, 1024), 16, lambda u: (u & 0x3fff).astype('float32')),
 }
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
@@ -288,6 +302,50 @@ def _jungfrauemu_event(det, evt, seed, n, offset=0, state=None):
     return True, problems
 
 
+JUNGFRAU_SHAPE = (1, 512, 1024)
+
+
+def _jungfrau_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one jungfrau event (Jungfrau::_event, jungfrau_raw_0_2_0).
+    The module stand-in (psdaq.sim.simsls) sends frame n of the run (Drp::Jungfrau sets its next
+    frame number to 1 at BeginRun) as 128 UDP packets whose pixel i is pattern(seed, n, i, 16),
+    14 data bits and 2 gain bits; the DRP puts the packets together by packet number.  Checks:
+    raw() is one 512 x 1024 panel equal to that pixel by pixel; frame_cnt == n (the DRP's own
+    check is frame number == its L1Accept count); the module's timestamp rises; numHotPixels ==
+    the count of pixels in gain 3 with 0x3fff - data > hotPixelThresh (Jungfrau::
+    _countNumHotPixels in dynamic gain), recomputed from the recorded pixels."""
+    import numpy as np
+    from psdaq.sim import pattern
+    raw = det.raw.raw(evt)
+    if raw is None:
+        return False, []
+    if raw.size != 512 * 1024:
+        return True, [f'raw shape {tuple(raw.shape)}, not {JUNGFRAU_SHAPE}']
+    raw = raw.reshape(JUNGFRAU_SHAPE)
+    problems = []
+    want = pattern.image(seed, n, JUNGFRAU_SHAPE, 16, offset)
+    same = raw == want
+    if not bool(same.all()):
+        bad = np.argwhere(~same)
+        i0 = tuple(int(x) for x in bad[0])
+        problems.append(f'{len(bad)} of {raw.size} pixels differ, first at {i0}: '
+                        f'{int(raw[i0]):#x} != {int(want[i0]):#x}')
+    seg = det.raw._segments(evt)[0]
+    if int(seg.frame_cnt) != n:
+        problems.append(f'frame_cnt {int(seg.frame_cnt)} != {n}')
+    ts, last = int(seg.timestamp), (state or {}).get('ts', -1)
+    if ts <= last:
+        problems.append(f'module timestamp {ts} not after {last}')
+    if state is not None:
+        state['ts'] = ts
+    v = raw.astype(np.int64)
+    hot = int(((((v >> 14) & 3) == 3) & ((0x3fff - (v & 0x3fff)) > int(seg.hotPixelThresh))).sum())
+    if int(seg.numHotPixels) != hot:
+        problems.append(f'numHotPixels {int(seg.numHotPixels)} != {hot} recomputed '
+                        f'(hotPixelThresh {int(seg.hotPixelThresh)})')
+    return True, problems
+
+
 def _hrencoder_event(det, evt, seed, n, offset=0, state=None):
     """(has data, [problems]) for one hrencoder event (MemPoolSim.cc hrencoderData,
     HREncoder.cc): value() is the position; error_cnt, missedTrig_cnt and latches too."""
@@ -304,7 +362,90 @@ def _hrencoder_event(det, evt, seed, n, offset=0, state=None):
     return True, [f'{k} {got[k]} != {w}' for k, w in want.items() if got[k] != w]
 
 
+HSD_RAW, HSD_LAYOUT = 1160, (-1, 20, -1, 12, -1)       # MemPoolSim.cc hsdMessage
+
+
+def hsd_expected(seed, n, offset=0):
+    """(raw waveform, [(start, peak samples)]) the simulated hsd sends in its n-th L1Accept, as
+    psana's hsd_raw_3_0_0 returns them: peak 1 without its 4 baseline words, at A + 4; peak 2 at
+    A + B + 20 (A, B the sums of the skip groups before them; HsdPython.hh next_peak)."""
+    import numpy as np
+    from psdaq.sim import pattern
+    p = lambda i0, k, bits: pattern.pattern(seed, n, np.arange(i0 + offset, i0 + offset + k), bits)
+    raw = p(0, HSD_RAW, 12).astype(np.uint16)
+    peaks, kept, skips, ns, width = [], 0, 0, 0, 0
+    for w in HSD_LAYOUT:
+        if w < 0:
+            ns += int(p(HSD_RAW + 32 + skips, 4, 6).sum())
+            skips += 4
+        else:
+            peaks.append([ns + width, p(HSD_RAW + kept, w, 15).astype(np.uint16)])
+            kept += w
+            width += w
+    peaks[0] = [peaks[0][0] + 4, peaks[0][1][4:]]
+    return raw, peaks
+
+
+def _hsd_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one hsd event (MemPoolSim.cc hsdMessage, Digitizer.cc): the
+    raw waveform of channel 0 (waveforms()) sample by sample, and every fex peak (peaks()) with
+    its start, through psana's own hsd interface (psana/psana/hsd/hsd.pyx)."""
+    import numpy as np
+    wfs, pks = det.raw.waveforms(evt), det.raw.peaks(evt)
+    if wfs is None and pks is None:
+        return False, []
+    raw, peaks = hsd_expected(seed, n, offset)
+    problems = []
+    wf = None if wfs is None else wfs.get(0, {}).get(0)
+    if wf is None or wf.shape != raw.shape:
+        problems.append(f'waveform shape {None if wf is None else wf.shape} != {raw.shape}')
+    elif not np.array_equal(wf, raw):
+        problems.append(f'{int((wf != raw).sum())} raw samples differ (first at '
+                        f'{int(np.argmax(wf != raw))})')
+    got = None if pks is None else pks.get(0, {}).get(0)
+    if got is None:
+        problems.append('no fex peaks')
+    else:
+        starts, arrays = got
+        if list(starts) != [p[0] for p in peaks]:
+            problems.append(f'peak starts {list(starts)} != {[p[0] for p in peaks]}')
+        elif not all(np.array_equal(a, p[1]) for a, p in zip(arrays, peaks)):
+            problems.append('fex peak samples differ')
+    return True, problems
+
+
+TT_PIXELS = 2048
+
+
+def _tt_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one tt event (MemPoolSim.cc ttData, TimeTool.cc): tt_raw_2_0_0
+    has one field, image, the camera's region of interest as uint8 (TimeTool::_event records
+    subframe 2 when its length is the config's ROI); every pixel vs pattern(seed, seq, i, 8),
+    through image() and through the segment _info() returns."""
+    import numpy as np
+    from psdaq.sim import pattern
+    image = det.raw.image(evt)
+    if image is None:
+        return False, []
+    want = pattern.image(seed, n, (TT_PIXELS,), 8, offset)
+    if image.dtype != np.uint8 or image.shape != want.shape:
+        return True, [f'image {image.dtype} {image.shape}, not uint8 {want.shape}']
+    problems = []
+    if not (image == want).all():
+        bad = np.flatnonzero(image != want)
+        problems.append(f'{len(bad)} of {image.size} pixels differ, first at {int(bad[0])}: '
+                        f'{int(image[bad[0]]):#x} != {int(want[bad[0]]):#x}')
+    seg = det.raw._info(evt)
+    if seg is None or not np.array_equal(np.asarray(seg.image), image):
+        problems.append('_info(evt).image differs from image(evt)')
+    return True, problems
+
+
 EVENT_TYPES = {
+    'hsd': (_hsd_event, f'the raw waveform ({HSD_RAW} samples, waveforms()) and the 2 fex peaks '
+                        '(peaks(): starts and samples) of hsd_raw_3_0_0 vs pattern'),
+    'tt': (_tt_event, f'every pixel of the {TT_PIXELS}-pixel uint8 region of interest '
+                      '(tt_raw_2_0_0 image(), and _info().image) vs pattern(seed, seq, i, 8)'),
     'hrencoder': (_hrencoder_event, 'value() (the position), error_cnt, missedTrig_cnt and '
                                     'latches (hrencoder_raw_0_1_0) vs pattern'),
     'ts': (_ts_event, 'every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, '
@@ -317,6 +458,9 @@ EVENT_TYPES = {
     'jungfrauemu': (_jungfrauemu_event, 'every TDet word of the 512 x 1024 panel '
                                         '(jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, '
                                         'pattern, pulseId; raw() shape and noise'),
+    'jungfrau': (_jungfrau_event, 'every pixel of the 512 x 1024 panel (jungfrau_raw_0_2_0.raw) '
+                                  'vs the frame the module stand-in sent, frame_cnt == event '
+                                  'number, module timestamp rising, numHotPixels recomputed'),
     'wave8': (_wave8_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample, integral, '
                             'baseline and fex value vs pattern'),
     'wave8he': (_wave8he_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample and '
@@ -382,6 +526,10 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
         r['run'] = run.runnum
         r['experiment'] = run.expt
         det = run.Detector(det_name)
+        kind = det_name.rsplit('_', 1)[0]
+        if kind in CONFIG_DETECTORS:
+            r['config_detector'], problems = _config_detector(run, det, *CONFIG_DETECTORS[kind])
+            r['problems'] += problems
         for evt in run.events():
             r['events'] += 1
             n = r['events']
@@ -413,7 +561,7 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     r['seq_gap_free'] = r['pattern_ok'] == n
     r['seeds'] = {seed if seed is not None else -1: r['seed_ok']}
     r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
-                     and (expect is None or n == expect))
+                     and (expect is None or n == expect) and r.get('config_detector', True) is not None)
     if expect is not None and n != expect:
         r['problems'].append(f'{n} events, expected {expect}')
     return r
@@ -426,6 +574,26 @@ def _segment_raw(det, evt, segment):
     return None if c is None else getattr(c, 'array_raw', None)
 
 
+def _config_detector(run, det, name, iface):
+    """(what was found or None, [problems]) for a type's configuration-only detector: psana gives
+    `name` through its interface class `iface`, with the device's whole configuration (user and
+    expert) in segment 0, and the type's own detector has its segment configs (asicPixelConfig)."""
+    try:
+        impl = run.Detector(name).config
+    except Exception as e:
+        return None, [f'no {name} detector: {str(e).splitlines()[0][:160]}']
+    if type(impl).__name__ != iface:
+        return None, [f'{name}: {type(impl).__name__}, not {iface}']
+    hw = impl._seg_configs()
+    if sorted(hw) != [0] or not all(hasattr(hw[0].config, k) for k in ('user', 'expert')):
+        return None, [f'{name}: segments {sorted(hw)}, segment 0 without user and expert']
+    own = det.raw._seg_configs()
+    if sorted(own) != [0] or not hasattr(own[0].config, 'asicPixelConfig'):
+        return None, [f'{det.raw._det_name}: segments {sorted(own)}, segment 0 without asicPixelConfig']
+    return (f'{name} segment 0 (user, expert) through {iface}; {det.raw._det_name} segment 0 '
+            f'asicPixelConfig {list(own[0].config.asicPixelConfig.shape)}'), []
+
+
 def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp',
           ref=None, segment=None):
     """Check det_name's data in one xtc2 file event by event (the dict the CLI prints as JSON).  segment
@@ -433,6 +601,8 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
     instead of det.raw.raw's, which is segment 0's."""
     kind = det_name.rsplit('_', 1)[0]
     if drp == 'drp_gpu':
+        if kind in GPU_FRAME_TYPES:
+            return check_gpu_frames(path, det_name, kind, seed, expect, max_report, offset)
         if kind not in GPU_TYPES:
             raise SystemExit(f'xtc2_check: no GPU DRP check for {kind!r}; one of {sorted(GPU_TYPES)}')
         if GPU_TYPES[kind][1] is None:
@@ -586,6 +756,59 @@ def check_gpu(path, det_name, kind, seed=None, expect=None, max_report=5, offset
     return r
 
 
+def check_gpu_frames(path, det_name, kind, seed=None, expect=None, max_report=5, offset=0):
+    """The per-event check of a GPU DRP type in GPU_FRAME_TYPES: event n's pixels are frame n
+    of its module stand-in, calibrated as the type's GPU code does; seed is required."""
+    os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
+    import numpy as np
+    from psana import DataSource
+    from psdaq.sim import pattern
+    shape, bits, calib = GPU_FRAME_TYPES[kind]
+    seed = 0x1234 if seed is None else seed
+    r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
+         'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
+         'first_seq': None, 'last_seq': None, 'seq_gap_free': None, 'problems': [],
+         'check': (f'every pixel of {det_name}.noOp.calib (drp_gpu: calibrated on the GPU, '
+                   f'NoOpReducer) vs frame n of the module stand-in, pattern(seed, n, i, {bits}), '
+                   f'calibrated' + (f', self-test offset {offset}' if offset else ''))}
+    ds = DataSource(files=[path], skip_calib_load='all')
+    for run in ds.runs():
+        r['run'] = run.runnum
+        r['experiment'] = run.expt
+        det = run.Detector(det_name)
+        for evt in run.events():
+            r['events'] += 1
+            n = r['events']
+            got = det.noOp.calib(evt)
+            if got is None:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: no {det_name} data')
+                continue
+            r['with_data'] += 1
+            r['shape'] = list(got.shape)
+            want = calib(pattern.image(seed, n, shape, bits, offset).astype(np.uint16))
+            problems = [f'shape {got.shape}, not {shape}'] if got.shape != shape else []
+            flat = np.ascontiguousarray(got).reshape(-1)
+            bad = int((flat != want.reshape(-1)).sum()) if flat.size == want.size else flat.size
+            if bad:
+                problems.append(f'{bad} of {want.size} pixels differ from frame {n}')
+            if problems:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: ' + '; '.join(problems))
+            else:
+                r['pattern_ok'] += 1
+                r['seed_ok'] += 1
+    n = r['events']
+    r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
+    r['seq_gap_free'] = r['pattern_ok'] == n
+    r['seeds'] = {seed: r['seed_ok']}
+    r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
+                     and (expect is None or n == expect))
+    if expect is not None and n != expect:
+        r['problems'].append(f'{n} events, expected {expect}')
+    return r
+
+
 def read_sim_ref(path):
     """(raw frames uint16[nEvents][nPixels], pedestals and gains float32[nRanges][nPixels])
     from the file EpixUHRsim writes at BeginRun with its sim_ref kwarg (EpixUHRsim.cu)."""
@@ -689,6 +912,8 @@ def main():
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
                   f'events matching {what}: {r["pattern_ok"]}')
             print(f'  check: {r["check"]}{"" if args.expect is None else f"; expected {args.expect} events"}')
+            if 'config_detector' in r:  # a configuration-only detector beside the type's segment
+                print(f'  config: {r["config_detector"]}')
         else:
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
                   f'w3 == seed {r["seed_ok"]} (seeds seen {{{", ".join(f"{s:#x}: {c}" for s, c in r["seeds"].items())}}}); '

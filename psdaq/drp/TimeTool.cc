@@ -49,9 +49,10 @@ unsigned TimeTool::_configure(XtcData::Xtc& xtc, const void* bufEnd, XtcData::Co
     m_namesLookup[m_evtNamesId] = NameIndex(eventNames);
 
     XtcData::DescData& descdata = configo.desc_shape();
-    std::string uarts("expert.ClinkFeb[0].ClinkTop.Ch[0].UartPiranha4.");
-    m_roiLen = descdata.get_value<uint32_t>((uarts+"ROI[1]").c_str()) -
-      descdata.get_value<uint32_t>((uarts+"ROI[0]").c_str()) + 1;
+    // the camera's ROI[0..1] under the names tt_config_store writes (an XtcData::Name has no '[')
+    std::string uarts("expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.");
+    m_roiLen = descdata.get_value<uint32_t>((uarts+"ROI1").c_str()) -
+      descdata.get_value<uint32_t>((uarts+"ROI0").c_str()) + 1;
 
     return 0;
 }

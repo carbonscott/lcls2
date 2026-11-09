@@ -1,5 +1,6 @@
 #include "MemPoolSim.hh"
 #include "EventBatcher.hh"
+#include "JungfrauData.hh"
 
 #include "psdaq/service/EbDgram.hh"
 #include "xtcdata/xtc/TransitionId.hh"
@@ -7,8 +8,13 @@
 
 #include <nlohmann/json.hpp>
 #include <zmq.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <poll.h>
 #include <sys/eventfd.h>
 #include <sys/prctl.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <cstdlib>
 #include <cstring>
@@ -313,6 +319,26 @@ static void piranha4Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     out.tail(2 * Piranha4Pixels, 2);
 }
 
+// tt (TimeTool::_event): subframe 2 is the camera's line of the timetool's region of interest,
+// one uint8 per pixel (tt_config_store's ClinkCh.DataMode 1, 8 bit), which the DRP records as
+// 'image' only if its length is the config's UartPiranha4.ROI1 - ROI0 + 1, 2048 (ROI 1..2048 in
+// tt_config_store) here; pixel i is pattern(seed, seq, i, 8).  The FEX results that the timetool
+// firmware sends in tdest 1 are left out: TimeTool::_event does not read them.
+static const unsigned TtPixels = 2048;
+
+static void ttData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint8_t> base = [] {
+        std::vector<uint8_t> v(TtPixels);
+        for (unsigned i = 0; i < TtPixels; ++i)  v[i] = uint8_t(MemPoolSim::mix(i));
+        return v;
+    }();
+    uint8_t  add = uint8_t(f.seq * 0x9e37u + seed);
+    uint8_t* d   = out.data();
+    for (unsigned i = 0; i < TtPixels; ++i)  d[i] = uint8_t(base[i] + add);
+    out.tail(TtPixels, 2);
+}
+
 // tb (TimingBEB::_event, TimingDef::createDataETM): the timing system's event timing message
 // in the last subframe (tdest 2, the lane's data channel), read with the TimingHeader of
 // subframe 0: {u64 pulseId (not recorded), u16 rate markers (fixed 0-9, AC 10-15), u8 AC
@@ -380,6 +406,283 @@ static void epixquadData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     out.timingCopy(3);
 }
 
+// epixUHR (EpixUHR::_event): 4 ASIC subframes (tdest 2-5, ASICs 0-3 of user.asic_enable 0xf), each
+// 168 x 192 pixels of 12 bits packed into 48,384 B as the ASIC's 8 serial lanes send them; the DRP
+// records them as they come and psana's epixuhr raw() (_descramble_raw_frame, with gain_msb)
+// unpacks them.  The framer runs that unpacking backwards: pixel (y, x) of ASIC q, flat index
+// q * 32256 + 192 y + x, is pattern(seed, seq, index, 12); its 12-bit word is that value rotated
+// left by one (gain_msb moves the word's bit 0 to bit 11); the word goes to column c = x / 12 of
+// the lane map (psana's _lane_map_uhr35kHzv2) at entry n = 12 (167 - y) + x % 12, slot
+// s = map[n] of the column pair 2c, 2c+1: 12-bit word (s / 2) of lane (2c + s % 2) / 4, place
+// (2c + s % 2) % 4; each lane packs 4 words (in reverse) into 6 bytes (in reverse), and byte j of
+// lane L's group k is byte 8 (6 k + j) + L of the subframe.
+static const unsigned UhrRows = 168, UhrCols = 192, UhrAsicBytes = UhrRows * UhrCols * 12 / 8;
+
+static std::vector<uint32_t> epixUHRSlots()     // image pixel (y, x) of an ASIC -> 4 k + place, lane
+{
+    int cm[72];                                 // cluster map: 2 columns of 3, the second reversed
+    for (int r = 0; r < 12; ++r)
+        for (int j = 0; j < 3; ++j) {
+            cm[r * 6 + j]     = r * 3 + j;
+            cm[r * 6 + 3 + j] = 36 + r * 3 + (2 - j);
+        }
+    int column[1008];
+    for (int cl = 0; cl < 14; ++cl)
+        for (int i = 0; i < 72; ++i)  column[cl * 72 + i] = 14 * cm[i] + cl;
+    int map[2016];
+    for (int r = 0; r < 168; ++r)
+        for (int j = 0; j < 12; ++j)
+            map[r * 12 + j] = j < 6 ? 2 * column[r * 6 + j] : 2 * column[r * 6 + j - 6] + 1;
+    std::vector<uint32_t> slot(UhrRows * UhrCols);
+    for (unsigned c = 0; c < 16; ++c)
+        for (unsigned n = 0; n < 2016; ++n) {
+            unsigned y = 167 - n / 12, x = c * 12 + n % 12;
+            unsigned s = map[n], k = s / 2, col = 2 * c + s % 2;
+            slot[y * UhrCols + x] = ((4 * k + col % 4) << 3) | (col / 4);
+        }
+    return slot;
+}
+
+static void epixUHRData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint32_t> slot = epixUHRSlots();
+    static const std::vector<PixelMap> asics = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t q = 0; q < 4; ++q)
+            v.emplace_back(UhrRows * UhrCols, 12, [q](size_t j) { return uint32_t(q * UhrRows * UhrCols + j); });
+        return v;
+    }();
+    std::vector<uint16_t> pix(UhrRows * UhrCols), words(4 * 1008 * 8);
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    for (unsigned q = 0; q < 4; ++q) {
+        asics[q].fill(pix.data(), seed, f.seq);
+        for (unsigned i = 0; i < pix.size(); ++i) {
+            uint16_t v = uint16_t(((pix[i] << 1) & 0xfff) | (pix[i] >> 11));    // gain_msb, inverted
+            words[(slot[i] >> 3) * 8 + (slot[i] & 7)] = v;                  // [4 k + place][lane]
+        }
+        uint8_t* d = out.data();
+        for (unsigned k = 0; k < 1008; ++k)
+            for (unsigned L = 0; L < 8; ++L) {
+                const uint16_t* w = &words[(4 * k) * 8 + L];
+                uint16_t t0 = w[3 * 8], t1 = w[2 * 8], t2 = w[1 * 8], t3 = w[0];
+                uint8_t x[6] = { uint8_t(t0 >> 4), uint8_t(((t0 & 0xf) << 4) | (t1 >> 8)), uint8_t(t1),
+                                 uint8_t(t2 >> 4), uint8_t(((t2 & 0xf) << 4) | (t3 >> 8)), uint8_t(t3) };
+                for (unsigned j = 0; j < 6; ++j)  d[8 * (6 * k + 5 - j) + L] = x[j];
+            }
+        out.tail(UhrAsicBytes, 2 + q);
+    }
+}
+
+// epixhr2x2 (EpixHR2x2::_event, getTimingHeader): the card's event builder nests the camera
+// board's.  Subframe 0 is an EventBatcher whose first subframe is the TimingHeader (fillBatcher,
+// timingBatch: getTimingHeader steps into it); subframes 3 and 4, ASICs 0/1 and 2/3, are each an
+// EventBatcher of {tdest 0: a copy of the TimingHeader, tdest 2: the ASIC pair's 146 rows of 384
+// uint16}.  The DRP (m_descramble false) drops the first and the last row of each and records
+// rows 1-144 of subframe 3's, then of subframe 4's, as raw (288, 384), as they come.  The framer
+// puts raw pixel i = 384 r + c there (r < 144 from ASICs 0/1, the rest from 2/3), 16 bits, and
+// indices past the image in the dropped rows; the first row starts with the data header.
+static const unsigned Hr2Rows = 144, Hr2Cols = 384, Hr2StreamRows = Hr2Rows + 2;
+static const unsigned Hr2StreamBytes = Hr2StreamRows * Hr2Cols * 2;
+// subframe 3 or 4: its header line, the TimingHeader copy and the rows, each subframe with its tail
+static const unsigned Hr2NestedBytes = 8 + _padded(32) + _padded(Hr2StreamBytes);
+
+static void epixhr2x2Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<PixelMap> pairs = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t p = 0; p < 2; ++p)
+            v.emplace_back(Hr2StreamRows * Hr2Cols, 16, [p](size_t j) {
+                uint32_t r = j / Hr2Cols, c = j % Hr2Cols;
+                if (r == 0 || r == Hr2StreamRows - 1)       // dropped: past the image
+                    return uint32_t(2 * Hr2Rows * Hr2Cols + (2 * p + (r ? 1 : 0)) * Hr2Cols + c);
+                return uint32_t((p * Hr2Rows + r - 1) * Hr2Cols + c);
+            });
+        return v;
+    }();
+    // The TimingHeader in subframe 0's EventBatcher: after the header line and its own
+    const uint8_t* th = out.buffer + 2 * EvtBatcherHeader::lineWidth(2);
+    for (unsigned p = 0; p < 2; ++p) {
+        uint8_t* nb = out.data();
+        memset(nb, 0, EvtBatcherHeader::lineWidth(2));
+        auto ebh = reinterpret_cast<EvtBatcherHeader*>(nb);
+        ebh->version        = 1;
+        ebh->width          = 2;
+        ebh->sequence_count = out.buffer[1];
+        MemPoolSim::Out in{nb, EvtBatcherHeader::lineWidth(2)};
+        memcpy(in.data(), th, sizeof(Pds::TimingHeader));
+        in.tail(sizeof(Pds::TimingHeader), 0);
+        pairs[p].fill(reinterpret_cast<uint16_t*>(in.data()), seed, f.seq);
+        _dataHeader(in.data(), f, seed);
+        in.tail(Hr2StreamBytes, 2);
+        out.tail(in.pos, 3 + p);
+    }
+}
+
+// jungfrau (Jungfrau::_event): a module sends each frame as JungfrauData::PacketNum UDP packets
+// to the card's UDP engine, at the destination Drp::Jungfrau programs through sls::Detector (the
+// config's user.kcu_ip and user.port), and the card's timing receiver triggers the module for
+// each L1Accept.  Here the module is psdaq/psdaq/sim/simsls.py, a stand-in for its slsDetector
+// servers, and this is the card's side:
+//   - for each L1Accept, a datagram to the module's trigger input (UDP to its control
+//     host:port, the drp's -k slsHosts, which must be a 127.x address),
+//   - the frame's packets, received on 127.0.0.1:<sim_udp_port> (the config's user.port),
+//   - written as the card's UdpFrameReorg and batcher do: subframe 2 is an EventBatcher of one
+//     subframe per packet, in descending packet number (BEBDetector::_subframes reads the tails
+//     back to front, so Jungfrau::_event sees packet 0 first), after subframe 1, a copy of the
+//     timing frame standing in for the detailed one.
+// A packet that has not arrived 200 ms after the last one (1 s for the first) is missing from
+// the frame, which Jungfrau::_event flags as MissingData; a frame with no packet at all gets one
+// empty subframe, so the event is recorded damaged instead of stalling the readout.  One module
+// (one lane) only.
+class UdpFront
+{
+public:
+    static constexpr unsigned PacketBytes = sizeof(JungfrauData::JungfrauPacket);
+    static constexpr unsigned Line        = 8;                          // EventBatcher width 2
+    static constexpr unsigned DataBytes   = Line + JungfrauData::PacketNum * (PacketBytes + Line);
+    static_assert(PacketBytes % Line == 0, "packets fill whole batcher lines");
+
+    UdpFront(const Parameters& para);
+    ~UdpFront();
+    size_t frame(uint8_t* dst);         // trigger, receive, write the inner batcher; its size
+private:
+    int                   m_fd;
+    sockaddr_in           m_module;
+    std::string           m_moduleStr;
+    std::vector<uint8_t>  m_packets;    // PacketNum x PacketBytes, by packet number
+    std::vector<uint8_t>  m_have;
+    std::vector<uint8_t>  m_rx;
+    uint64_t              m_frames, m_incomplete, m_dropped;
+};
+
+static bool _loopback(const in_addr& a) { return (ntohl(a.s_addr) >> 24) == 127; }
+
+UdpFront::UdpFront(const Parameters& para) :
+    m_fd(-1), m_packets(JungfrauData::PacketNum * PacketBytes), m_have(JungfrauData::PacketNum),
+    m_rx(PacketBytes + 1), m_frames(0), m_incomplete(0), m_dropped(0)
+{
+    if (__builtin_popcount(para.laneMask) != 1) {
+        logging::critical("MemPoolSim: %s on sim:// runs one module (one lane), not lane mask 0x%x",
+                          para.detType.c_str(), para.laneMask);
+        abort();
+    }
+    auto hosts = para.kwargs.find("slsHosts");
+    auto port  = para.kwargs.find("sim_udp_port");
+    if (hosts == para.kwargs.end() || port == para.kwargs.end()) {
+        logging::critical("MemPoolSim: %s on sim:// needs -k slsHosts=<127.x host>:<port> (the "
+                          "module stand-in, psdaq.sim.simsls) and sim_udp_port=<the config's user.port>",
+                          para.detType.c_str());
+        abort();
+    }
+    m_moduleStr = hosts->second;
+    auto colon = m_moduleStr.rfind(':');
+    addrinfo hints{}, *res = nullptr;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    if (colon == std::string::npos ||
+        getaddrinfo(m_moduleStr.substr(0, colon).c_str(), m_moduleStr.substr(colon + 1).c_str(),
+                    &hints, &res) != 0 || !res) {
+        logging::critical("MemPoolSim: slsHosts '%s' is not <host>:<port>", m_moduleStr.c_str());
+        abort();
+    }
+    memcpy(&m_module, res->ai_addr, sizeof(m_module));
+    freeaddrinfo(res);
+    if (!_loopback(m_module.sin_addr)) {
+        logging::critical("MemPoolSim: the module stand-in '%s' must be on loopback (127.x)",
+                          m_moduleStr.c_str());
+        abort();
+    }
+    m_fd = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
+    int rcvbuf = 16 << 20;
+    setsockopt(m_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(rcvbuf));
+    sockaddr_in local{};
+    local.sin_family = AF_INET;
+    local.sin_port   = htons(std::stoul(port->second, nullptr, 0));
+    inet_pton(AF_INET, "127.0.0.1", &local.sin_addr);
+    if (m_fd < 0 || bind(m_fd, (sockaddr*)&local, sizeof(local)) < 0) {
+        logging::critical("MemPoolSim: cannot bind the card's UDP port 127.0.0.1:%s: %m",
+                          port->second.c_str());
+        abort();
+    }
+    socklen_t len = sizeof(rcvbuf);
+    getsockopt(m_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, &len);
+    logging::info("MemPoolSim: %s module at %s (trigger: UDP there); its frames arrive on "
+                  "127.0.0.1:%s (receive buffer %d B)", para.detType.c_str(), m_moduleStr.c_str(),
+                  port->second.c_str(), rcvbuf);
+}
+
+UdpFront::~UdpFront()
+{
+    logging::info("MemPoolSim: %lu module frames, %lu incomplete, %lu stray packets dropped",
+                  m_frames, m_incomplete, m_dropped);
+    if (m_fd >= 0)  close(m_fd);
+}
+
+size_t UdpFront::frame(uint8_t* dst)
+{
+    while (recv(m_fd, m_rx.data(), m_rx.size(), MSG_DONTWAIT) > 0)  ++m_dropped;   // late packets
+
+    static const char trigger[] = "TRIG";
+    if (sendto(m_fd, trigger, 4, 0, (const sockaddr*)&m_module, sizeof(m_module)) != 4 &&
+        m_frames < 5)
+        logging::error("MemPoolSim: trigger to %s failed: %m", m_moduleStr.c_str());
+
+    std::fill(m_have.begin(), m_have.end(), 0);
+    unsigned n = 0;
+    uint64_t framenum = 0;
+    while (n < JungfrauData::PacketNum) {
+        pollfd p{m_fd, POLLIN, 0};
+        if (poll(&p, 1, n ? 200 : 1000) <= 0)  break;
+        ssize_t sz = recv(m_fd, m_rx.data(), m_rx.size(), 0);
+        if (sz != ssize_t(PacketBytes)) { ++m_dropped; continue; }
+        auto pkt = reinterpret_cast<const JungfrauData::JungfrauPacket*>(m_rx.data());
+        unsigned pn = pkt->header.packetnum;
+        if (n == 0)  framenum = pkt->header.framenum;
+        if (pkt->header.framenum != framenum || pn >= JungfrauData::PacketNum || m_have[pn]) {
+            ++m_dropped;
+            continue;
+        }
+        memcpy(&m_packets[size_t(pn) * PacketBytes], m_rx.data(), PacketBytes);
+        m_have[pn] = 1;
+        ++n;
+    }
+    ++m_frames;
+    if (n < JungfrauData::PacketNum && m_incomplete++ < 5)
+        logging::error("MemPoolSim: module %s sent %u of %zu packets of frame %lu",
+                       m_moduleStr.c_str(), n, JungfrauData::PacketNum, framenum);
+
+    memset(dst, 0, Line);
+    auto ebh = reinterpret_cast<EvtBatcherHeader*>(dst);
+    ebh->version = 1;
+    ebh->width   = 2;
+    MemPoolSim::Out in{dst, Line};
+    for (int pn = JungfrauData::PacketNum - 1; pn >= 0; --pn) {
+        if (!m_have[pn])  continue;
+        memcpy(in.data(), &m_packets[size_t(pn) * PacketBytes], PacketBytes);
+        in.tail(PacketBytes, uint8_t(pn));
+    }
+    if (n == 0) {                       // nothing came: one empty subframe
+        memset(in.data(), 0, Line);
+        in.tail(Line, 0);
+    }
+    return in.pos;
+}
+
+// epixuhr3x2 (EpixUHR3x2::_event): the panel subframe (tdest 3), 336 x 576 uint16 in row order, as
+// the firmware (v5.0.0 on) assembles the six ASICs (disabled ones zero-filled; user.asic_enable
+// enables all six here); psana's epixuhr3x2 raw() (raw alg 1.0.0) keeps each word's low 12 bits
+// (gain bit 0, 11 data bits).  Pixel i of the panel is pattern(seed, seq, i, 12).  Tdest 2 (the
+// detailed timing frame, unused by the DRP) carries a copy of the timing frame.
+static const unsigned Uhr3x2Rows = 336, Uhr3x2Cols = 576, Uhr3x2Bytes = 2 * Uhr3x2Rows * Uhr3x2Cols;
+
+static void epixuhr3x2Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap pixels(Uhr3x2Rows * Uhr3x2Cols, 12, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(2);
+    pixels.fill(reinterpret_cast<uint16_t*>(out.data()), seed, f.seq);
+    out.tail(Uhr3x2Bytes, 3);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
@@ -389,8 +692,16 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "epixm320", _padded(32) + 4 * _padded(2 * EpixMHdr + 2 * EpixMAsic), epixm320Data },
     { "opal",     _padded(32) + _padded(2 * OpalRows * OpalCols), opalData },
     { "piranha4", _padded(32) + _padded(2 * Piranha4Pixels), piranha4Data },
+    { "tt",       _padded(TtPixels), ttData },
     { "tb",       _padded(TbEtmBytes), tbData },
     { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
+    { "epixquad1kfps", 2 * _padded(32) + _padded(EquadBytes), epixquadData },  // the same EpixQuad DRP
+    { "epixUHR",  _padded(32) + 4 * _padded(UhrAsicBytes), epixUHRData },
+    // + 16: subframe 0 is an EventBatcher of the TimingHeader (its header line and tail)
+    { "epixhr2x2", 16 + 2 * _padded(Hr2NestedBytes), epixhr2x2Data, true },
+    // its data comes from the module's UDP stream (UdpFront above), not from a framer
+    { "jungfrau", _padded(32) + _padded(UdpFront::DataBytes), nullptr },
+    { "epixuhr3x2", _padded(32) + _padded(Uhr3x2Bytes), epixuhr3x2Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
@@ -440,8 +751,49 @@ static void timingMessage(uint8_t* out, const MemPoolSim::Frame& f, uint32_t see
     }
 }
 
+// hsd (Digitizer::event, psalg/digitizer/Stream.hh, psana/psana/hsd/HsdPython.hh): after the
+// TimingHeader, whose two opaque words are the hsd's event header (word 0: stream mask in bits
+// 20-23, here raw and fex; word 1: bit 31 the JESD link status, else the event is damaged), one
+// stream per bit of the mask, each a 16-byte StreamHeader {num_samples, stream_id << 24, 0, 0}
+// and its uint16 samples:
+//   raw (stream 0): HsdRawSamples samples, sample i = pattern(seed, seq, i, 12), the 12-bit ADC
+//     codes of the 1160 samples hsd_config.py's default gate (user.raw.gate_ns 200) asks for;
+//   fex (stream 1): HsdFexWords words of the sparsified stream: groups of 4 words with bit 15
+//     set are skips (their low 15 bits add up the samples skipped), the rest are kept samples.
+//     Skip A, peak 1 (4 baseline words, then 16 samples), skip B, peak 2 (12 samples), skip C.
+//     The k-th kept word is pattern(seed, seq, HsdRawSamples + k, 15) and word j of skip g is
+//     0x8000 | pattern(seed, seq, HsdRawSamples + 32 + 4 g + j, 6).  psana's hsd_raw_3_0_0
+//     peaks() then gives peak 1 at A + 4 (its baseline words dropped) and peak 2 at A + B + 20,
+//     A and B the skip groups' sums (psdaq/psdaq/sim/xtc2_check.py).
+static const unsigned HsdRawSamples = 1160, HsdFexWords = 44, HsdStreamHdr = 16;
+static const unsigned HsdMsgBytes   = 2 * HsdStreamHdr + 2 * (HsdRawSamples + HsdFexWords);
+
+static void hsdMessage(uint8_t* out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap raw(HsdRawSamples, 12, [](size_t j) { return uint32_t(j); });
+    uint32_t* h = reinterpret_cast<uint32_t*>(out);
+    h[0] = HsdRawSamples;  h[1] = 0u << 24;  h[2] = 0;  h[3] = 0;
+    raw.fill(reinterpret_cast<uint16_t*>(out + HsdStreamHdr), seed, f.seq);
+    out += HsdStreamHdr + 2 * HsdRawSamples;
+    h = reinterpret_cast<uint32_t*>(out);
+    h[0] = HsdFexWords;  h[1] = 1u << 24;  h[2] = 0;  h[3] = 0;
+    uint16_t* q = reinterpret_cast<uint16_t*>(out + HsdStreamHdr);
+    static const int layout[] = { -1, 20, -1, 12, -1 };     // -1: a skip group, else kept words
+    unsigned kept = 0, skips = 0;
+    for (int n : layout) {
+        if (n < 0) {
+            for (unsigned j = 0; j < 4; ++j, ++skips)
+                *q++ = uint16_t(0x8000 | MemPoolSim::pattern(seed, f.seq, HsdRawSamples + 32 + skips, 6));
+        } else {
+            for (int j = 0; j < n; ++j, ++kept)
+                *q++ = uint16_t(MemPoolSim::pattern(seed, f.seq, HsdRawSamples + kept, 15));
+        }
+    }
+}
+
 static const MemPoolSim::TDetMsg TDetMsgs[] = {
-    { "ts", TimingDataBytes, timingMessage },
+    { "ts",  TimingDataBytes, timingMessage, { 0, 0 } },
+    { "hsd", HsdMsgBytes,     hsdMessage,    { (1u << 24) | (0x3u << 20) | HsdRawSamples, 1u << 31 } },
 };
 
 const MemPoolSim::TDetMsg* MemPoolSim::tdetMsg(const std::string& detType)
@@ -469,10 +821,23 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     ebh->sequence_count = evtCounter & 0xff;
     Out out{buffer, lw};
 
-    // Subframe 0: the TimingHeader (getTimingHeader() returns its address)
-    size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
-    out.tail(th, 0);
-    if (!l1)  return out.pos;
+    // Subframe 0: the TimingHeader (getTimingHeader() returns its address), or an EventBatcher
+    // whose only subframe it is (timingBatch)
+    if (b.timingBatch) {
+        uint8_t* nb = out.data();
+        memset(nb, 0, lw);
+        auto neh = reinterpret_cast<EvtBatcherHeader*>(nb);
+        neh->version        = 1;
+        neh->width          = width;
+        neh->sequence_count = evtCounter & 0xff;
+        Out in{nb, lw};
+        in.tail(fill(in.data(), f, evtCounter, 0, 0, 0), 0);
+        out.tail(in.pos, 0);
+    } else {
+        size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
+        out.tail(th, 0);
+    }
+    if (!l1 || !b.data)  return out.pos;
 
     b.data(out, f, seed);
     return out.pos;
@@ -557,6 +922,8 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         }
         logging::info("MemPoolSim: %s data framed as EventBatcher subframes (up to %u B of data)",
                       para.detType.c_str(), m_batcher->dataBytes);
+        if (!m_batcher->data)
+            m_udp = std::make_unique<UdpFront>(para);
     }
     if (m_tdetMsg) {
         if (m_dmaSize < sizeof(Pds::TimingHeader) + m_tdetMsg->bytes + sizeof(uint32_t)) {
@@ -700,6 +1067,10 @@ int MemPoolSim::_send(void* socket, const std::string& type, const void* data, s
 // Turn each frame into DMA buffers, as the timing receiver and TDetSemi firmware would
 void MemPoolSim::_frames(const uint8_t* data, size_t size)
 {
+    if (m_udp) {
+        _udpFrames(data, size);
+        return;
+    }
     bool     connected = m_connected.load(std::memory_order_acquire);
     unsigned length    = m_length.load(std::memory_order_acquire);
     uint32_t seed      = m_seed.load(std::memory_order_acquire);
@@ -735,6 +1106,9 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
                                   tid == TransitionId::L1Accept, seed)
                     : fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, m_tdetMsg ? 0 : len, seed);
             if (m_tdetMsg && tid == TransitionId::L1Accept) {
+                auto th = reinterpret_cast<uint32_t*>(dmaBuffers[idx]);
+                th[6] = m_tdetMsg->opaque[0];
+                th[7] = m_tdetMsg->opaque[1];
                 m_tdetMsg->data((uint8_t*)dmaBuffers[idx] + sz, f, seed);
                 sz += m_tdetMsg->bytes;
             }
@@ -748,6 +1122,55 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
         }
     }
     if (nReady) {
+        uint64_t one = 1;
+        [[maybe_unused]] auto rc = write(m_efd, &one, sizeof(one));
+    }
+}
+
+// As _frames, for a front-end whose data arrives over UDP (UdpFront): the module is triggered
+// and its frame received outside m_simLock, so the readout is not held up meanwhile
+void MemPoolSim::_udpFrames(const uint8_t* data, size_t size)
+{
+    bool     connected = m_connected.load(std::memory_order_acquire);
+    unsigned lane      = __builtin_ffs(m_laneMask) - 1;
+
+    for (size_t offset = 0; offset + sizeof(Frame) <= size; offset += sizeof(Frame)) {
+        Frame f;
+        memcpy(&f, data + offset, sizeof(f));
+        if (m_credit)  --m_credit;
+        if (!connected)  continue;      // Like a disabled TriggerEventBuffer
+
+        auto tid = TransitionId::Value((f.pulseIdAndControl >> 56) & 0xf);
+        if (tid == TransitionId::ClearReadout) {
+            m_evtCounter = 0;           // The next event is number 1, as PgpReader expects
+            continue;
+        }
+        m_evtCounter = (m_evtCounter + 1) & EvtCtrMask;
+
+        uint32_t idx;
+        {
+            std::lock_guard<std::mutex> lock(m_simLock);
+            if (m_free.empty()) [[unlikely]] {
+                if (m_nOverruns++ < 5)
+                    logging::error("MemPoolSim: no free DMA buffer for %s (credit protocol violated)",
+                                   TransitionId::name(tid));
+                continue;
+            }
+            idx = m_free.back();
+            m_free.pop_back();
+        }
+        auto   buffer = (uint8_t*)dmaBuffers[idx];
+        size_t sz     = fillBatcher(buffer, *m_batcher, f, m_evtCounter, false, 0);
+        if (tid == TransitionId::L1Accept) {
+            Out out{buffer, sz};
+            out.timingCopy(1);          // the detailed timing frame; a copy stands in for it
+            out.tail(m_udp->frame(out.data()), 2);
+            sz = out.pos;
+        }
+        {
+            std::lock_guard<std::mutex> lock(m_simLock);
+            m_ready.push_back({int32_t(sz), idx, (lane << 8) | m_virtChan});
+        }
         uint64_t one = 1;
         [[maybe_unused]] auto rc = write(m_efd, &one, sizeof(one));
     }

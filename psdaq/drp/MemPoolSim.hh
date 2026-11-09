@@ -5,6 +5,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -32,10 +33,11 @@ namespace Drp {
 // The seed comes from the configuration database at Configure (see XpmDetector).
 // The timing system's DRP (-D ts) gets the timing message its TDet firmware sends instead of
 // these words: TimingData (TimingDef.hh) with the frame's pulseId and time (MemPoolSim.cc).
+// The digitizer's DRP (-D hsd, Digitizer) gets the hsd's raw and fex streams (MemPoolSim.cc).
 //
 // Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
 // DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
-// as subframe 0 and, for L1Accepts, the type's subframes.  The layout is chosen by detType
+// as subframe 0 (epixhr2x2: an EventBatcher holding it) and, for L1Accepts, the type's subframes.  The layout is chosen by detType
 // from a table in MemPoolSim.cc ('batcher' below); a BEB type not in it cannot run sim://.
 // Each data subframe starts with {w0 = pulseId lo, w1 = pulseId hi, w2 = seq, w3 = seed}
 // where the type has room for it.  Pixel i of the image the type's DRP builds (psana's raw
@@ -43,6 +45,12 @@ namespace Drp {
 // that reorders or offsets pixels wrongly fails psdaq/psdaq/sim/xtc2_check.py (pattern.py is
 // the same function in Python).  The framer writes each pixel where the detector's firmware
 // would, e.g. epix100's interleaved ASIC rows, so the DRP's own reordering is what is checked.
+//
+// jungfrau's data comes from its module instead (UdpFront, MemPoolSim.cc): for each L1Accept
+// the card triggers the module (psdaq/psdaq/sim/simsls.py, the stand-in for its slsDetector
+// servers) and frames the UDP packets the module sends back, as the card's UDP engine does.
+class UdpFront;
+
 class MemPoolSim : public MemPool
 {
 public:
@@ -73,15 +81,20 @@ public:
                                         //   TimingHeader's, tails included
         // Write the type's L1Accept subframes after the TimingHeader's (tdest 0)
         void      (*data)(Out& out, const Frame& f, uint32_t seed);
+        // Subframe 0 is itself an EventBatcher whose first subframe is the TimingHeader, for a
+        //   DRP whose getTimingHeader() steps into it (EpixHR2x2); 16 B more, in dataBytes
+        bool        timingBatch = false;
     };
     static const Batcher* batcher(const std::string& detType);
-    // An XpmDetector type whose TDet firmware sends a formatted message instead of the
-    // TDetSemi words above: 'bytes' of it after each L1Accept's TimingHeader (MemPoolSim.cc)
+    // A type whose front-end sends a formatted message instead of the TDetSemi words above:
+    // 'bytes' of it after each L1Accept's TimingHeader (MemPoolSim.cc), and 'opaque' in the
+    // TimingHeader's two opaque words (the hsd's event header: stream mask, JESD status)
     struct TDetMsg
     {
         const char* detType;
         unsigned    bytes;
         void      (*data)(uint8_t* out, const Frame& f, uint32_t seed);
+        uint32_t    opaque[2];
     };
     static const TDetMsg* tdetMsg(const std::string& detType);
     // The simulated value of pixel 'index' in event 'seq' (see above)
@@ -122,6 +135,7 @@ private:
     void _return(unsigned count, const uint32_t* indices);
     void _receiver();
     void _frames(const uint8_t* data, size_t size);
+    void _udpFrames(const uint8_t* data, size_t size);
     int  _send(void* socket, const std::string& type, const void* data, size_t size);
 private:
     struct Ready { int32_t size; uint32_t index; uint32_t dest; };
@@ -129,6 +143,7 @@ private:
     std::string             m_alias;
     const Batcher*          m_batcher;          // EventBatcher framing, or nullptr for TDet
     const TDetMsg*          m_tdetMsg;          // TDet message instead of TDetSemi words, or nullptr
+    std::unique_ptr<UdpFront> m_udp;            // a front-end that sends its data over UDP, or nullptr
     unsigned                m_nLanes;
     uint8_t                 m_laneMask;
     unsigned                m_virtChan;

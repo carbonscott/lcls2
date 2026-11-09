@@ -1,6 +1,6 @@
 // drp_sim_frame <detType> <seq> [<seed> [<words>]]: write one simulated L1Accept DMA buffer, as
 // MemPoolSim makes it for 'drp -D <detType> -d sim://', to stdout (for the framer's tests):
-// an EventBatcher buffer for a BEB type, the TimingHeader and TDet message for 'ts', or, given
+// an EventBatcher buffer for a BEB type, the TimingHeader and message for 'ts' and 'hsd', or, given
 // <words>, the TimingHeader and that many TDetSemi words (fakecam's sim_length) for another
 // type.  With PSDAQ_SIM_CORRUPT_SEQ=<seq> set, the buffer has the byte MemPoolSim inverts.
 #include "MemPoolSim.hh"
@@ -22,6 +22,11 @@ int main(int argc, char** argv)
     if (!b && !t && !words) {
         fprintf(stderr, "%s: no simulated EventBatcher layout or TDet message for detType '%s'\n",
                 argv[0], argv[1]);
+        return 1;
+    }
+    if (b && !b->data) {                        // jungfrau: its module sends the data (UdpFront)
+        fprintf(stderr, "%s: %s's data comes from its module over UDP (psdaq.sim.simsls), not "
+                "from a framer\n", argv[0], argv[1]);
         return 1;
     }
     Drp::MemPoolSim::Frame f{};
@@ -47,6 +52,8 @@ int main(int argc, char** argv)
     } else if (t) {                             // TimingHeader + the TDet message
         buffer.resize(32 + t->bytes);
         size = Drp::MemPoolSim::fill(buffer.data(), f, f.seq, 0, 0, seed);
+        reinterpret_cast<uint32_t*>(buffer.data())[6] = t->opaque[0];
+        reinterpret_cast<uint32_t*>(buffer.data())[7] = t->opaque[1];
         t->data(buffer.data() + size, f, seed);
         size += t->bytes;
     } else {                                    // TimingHeader + the TDetSemi words of lane 0

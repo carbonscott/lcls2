@@ -855,6 +855,13 @@ int main(int argc, char* argv[])
             if (kwargs.first == "sim_dma_count") continue;  // MemPoolSim
             if (kwargs.first == "sim_dma_size")  continue;  // MemPoolSim
             if (kwargs.first == "sim_ref")       continue;  // GPU DRP Simulator (EpixUHRsim)
+            if (kwargs.first == "sim_udp_port")  continue;  // MemPoolSim (jungfrau's module data)
+            // The module kwargs of Drp::Jungfrau, which Gpu::Jungfrau configures through.  A
+            // hardware drp_gpu still rejects them, as it did before this change.
+            if (para.detType == "jungfrau") {
+                if (kwargs.first == "segNums")   continue;
+                if (kwargs.first == "slsHosts")  continue;
+            }
         }
         logging::critical("Unrecognized kwarg '%s=%s'\n",
                           kwargs.first.c_str(), kwargs.second.c_str());

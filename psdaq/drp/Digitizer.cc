@@ -1,4 +1,5 @@
 #include "Digitizer.hh"
+#include "MemPoolSim.hh"
 #include "PythonConfigScanner.hh"
 #include "psdaq/service/EbDgram.hh"
 #include "xtcdata/xtc/VarDef.hh"
@@ -64,12 +65,26 @@ Digitizer::Digitizer(Parameters* para, MemPool* pool) :
     Detector    (para, pool),
     m_epics_name(para->kwargs["hsd_epics_prefix"]),
     m_strm_limit(1000000),
-    m_strm_limit_sem(Pds::Semaphore::FULL)
+    m_strm_limit_sem(Pds::Semaphore::FULL),
+    m_sim       (MemPoolSim::isSimDevice(para->device) ? pool->getAs<MemPoolSim>() : nullptr)
 {
     printf("*** found epics name %s\n",m_epics_name.c_str());
 
     if (para->kwargs.find("strm_limit")!=para->kwargs.end()) 
         m_strm_limit = std::stoul(const_cast<Parameters&>(*para).kwargs["strm_limit"]);
+
+    // With a simulated device, replace rogue's hardware transports before hsd_config builds its
+    // l2si_drp root, so the hsd's own config code runs against an emulated card
+    // (psdaq.sim.rogue_dev); its PVs are those of a simulated hsd IOC (psdaq.sim.simhsdioc)
+    if (m_sim) {
+        PyObject* sim = _check(PyImport_ImportModule("psdaq.sim.rogue_dev"));
+        Py_DECREF(_check(PyObject_CallMethod(sim, "install", "ssOOs", para->device.c_str(),
+                                             para->detType.c_str(), Py_None, Py_None,
+                                             m_epics_name.c_str())));
+        Py_DECREF(sim);
+        logging::info("Digitizer: hsd config runs against simulated device %s",
+                      para->device.c_str());
+    }
 
     //
     //  Initialize python calls
@@ -102,6 +117,13 @@ json Digitizer::connectionInfo(const nlohmann::json& msg)
     PyObject* mbytes = _check(PyObject_CallFunction(pFunc,"s", msg.dump().c_str()));
     unsigned paddr = PyLong_AsLong(PyDict_GetItemString(mbytes, "paddr"));
     Py_DECREF(mbytes);
+
+    if (m_sim) {                        // The timing link is simxpm's, not the IOC's PADDR_U
+        logging::info("Digitizer: simulated device, PADDR_U 0x%x; link id 0x%x from simxpm",
+                      paddr, m_sim->paddr());
+        paddr = m_sim->paddr();
+        return xpmInfo(paddr);
+    }
 
     // there is currently a failure mode where the register reads
     // back as zero or 0xffffffff (incorrectly). This is not the best
@@ -187,6 +209,19 @@ void Digitizer::connect(const json& connect_json, const std::string& collectionI
 {
   m_connect_json = connect_json.dump();
   m_readoutGroup = connect_json["body"]["drp"][collectionId]["det_info"]["readout"];
+
+  if (m_sim) {
+      auto it = m_para->kwargs.find("sim_seed");
+      uint32_t seed = it == m_para->kwargs.end() ? 0 : std::stoul(it->second, nullptr, 0);
+      m_sim->seed(seed);
+      m_sim->connect(m_readoutGroup, 0);
+      logging::info("Digitizer: sim payload seed 0x%x", seed);
+  }
+}
+
+void Digitizer::connectionShutdown()
+{
+    if (m_sim)  m_sim->disconnect();
 }
 
 unsigned Digitizer::configure(const std::string& config_alias, Xtc& xtc, const void* bufEnd)

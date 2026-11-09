@@ -35,6 +35,10 @@
     "status": "RUN",
     "note": "daq_sim up --det tb + cycle: tb_config.py against rogue_dev (the card image name, lcls2_pgp_pcie_apps DevRoot) and simxpm PVs, every field of the event timing message checked through ts_raw_2_1_0"
   },
+  "det:drp:tt": {
+    "status": "RUN",
+    "note": "daq_sim up --det tt + cycle, with PSDAQ_SIM_PYTHONPATH naming a rogue-6 surf of the release: tt_config.py against rogue_dev (TimeToolKcu1500Root: the KCU, the camera link FEB over SRPv3, the Piranha4 console), every pixel of the 2048-pixel uint8 region of interest checked through tt_raw_2_0_0; the store's AppLane settings (FIR, prescale, IIR, background) are skipped, as on hardware (RUNBOOK §3l)"
+  },
   "det:drp:epixquad": {
     "status": "RUN",
     "note": "daq_sim up --det epixquad + cycle: epixquad_config.py against rogue_dev (DevRoot and ePixQuad.Top over SRPv3), every pixel of the 4 elements (4, 352, 384) checked through epix10ka_raw_3_0_1"
@@ -47,9 +51,33 @@
     "status": "RUN",
     "note": "daq_sim up --det epixhremu + cycle: xpmdet_config.py against rogue_dev; the emulator replays the frame daq_sim writes from the seed, every pixel checked"
   },
+  "det:drp:jungfrau": {
+    "status": "RUN",
+    "note": "daq_sim up --det jungfrau + cycle: jungfrau_config.py against rogue_dev and Drp::Jungfrau's sls::Detector calls against simsls (the module's slsDetector servers, sls 9.0.0 protocol, loopback); the module's 128 UDP packets per frame, every pixel checked"
+  },
   "det:drp:jungfrauemu": {
     "status": "RUN",
     "note": "daq_sim up --det jungfrauemu + cycle: xpmdet_config.py against rogue_dev; one 512 x 1024 panel of TDet words per event, every word checked"
+  },
+  "det:drp:epixquad1kfps": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixquad1kfps + cycle: epixquad1kfps_config.py against rogue_dev (DevRoot, epix-quad-1kfps ePixQuad.Top with its SPI PROM answering), every pixel of the 4 elements checked through epix10ka_raw_3_0_1"
+  },
+  "det:drp:epixUHR": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixUHR + cycle: epixUHR_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 4 ASICs checked through epixuhr raw()'s descrambler"
+  },
+  "det:drp:epixhr2x2": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixhr2x2 + cycle, with PSDAQ_SIM_PYTHONPATH naming lcls2-epix-hr-pcie and epix-hr-single-10k of the release: epixhr2x2_config.py against rogue_dev (DevRoot, the ePixHr10kT camera board over SRPv3), every pixel of raw (288, 384) checked through epixhr2x2_raw_2_0_1, and the epixhr2x2hw configuration detector"
+  },
+  "det:drp:epixuhr3x2": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixuhr3x2 + cycle: epixuhr3x2_config.py against rogue_dev (the C1100 card, its AXI-Lite proxy and CMS mailbox, the front-end board over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 336 x 576 panel checked through epixuhr3x2 raw()"
+  },
+  "det:drp:hsd": {
+    "status": "RUN",
+    "note": "daq_sim up --det hsd + cycle: hsd_config.py against rogue_dev (l2si_drp DrpPgpIlvRoot) and, over PVA, simhsdioc (hsdpvs's PVs and what hsd134PVs does with them); every raw sample and fex peak checked through hsd_raw_3_0_0"
   },
   "det:drp:ts": {
     "status": "RUN",
@@ -66,6 +94,10 @@
   "det:drp_gpu:epixuhrsim": {
     "status": "RUN",
     "note": "daq_sim up --drp drp_gpu --det epixuhrsim + cycle: its SimDetector makes the frames and constants, simxpm times them; every pixel checked against the frames it wrote (sim_ref)"
+  },
+  "det:drp_gpu:jungfrau": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu --det jungfrau + cycle: Gpu::Jungfrau configures through Drp::Jungfrau (jungfrau_config.py against rogue_dev, sls::Detector against simsls); the module's 128 UDP packets per frame calibrated on the GPU, every pixel checked"
   },
   "prog:control": {
     "status": "RUN",

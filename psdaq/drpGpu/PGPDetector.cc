@@ -1034,8 +1034,11 @@ unsigned PGPDrp::unconfigure()
   //printf("*** PGPDrp::unconfigure 6\n");
   // Report anything the Readers found wrong with the sub-frame layout.  The
   // DRP_ebStatus metric carries this while running; this is the end-of-run word.
-  m_reader->checkBatcher();
-  m_reader->reportHistograms();
+  // A Reset after a Disconnect comes here a second time, with no reader left
+  if (m_reader) {
+    m_reader->checkBatcher();
+    m_reader->reportHistograms();
+  }
   m_reader.reset();
   //printf("*** PGPDrp::unconfigure 7\n");
 

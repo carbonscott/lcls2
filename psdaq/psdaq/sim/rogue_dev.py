@@ -29,7 +29,11 @@ what was last written (0 if never written), except:
           that advances f per second from the moment its root starts (a
           clock-cycle counter the script turns into a frequency, such as
           TimingFrameRx.TxClkCount for TDetTiming.refClockRate()); a value
-          {"string": text} is a string register's text (AxiVersion.ImageName).
+          {"string": text} is a string register's text (AxiVersion.ImageName); a
+          value {"response": v, "bits": n} makes the register's low n bits read v
+          whatever is written, the rest what was last written: a command register
+          whose low bits carry the device's answer (a SPI PROM's status byte, which
+          surf's CypressS25Fl.waitForFlashReady polls for its ready bit).
   fault   PSDAQ_SIM_ROGUE_FAULT='<register path>[=<value>]': that register
           reads back <value> (default all ones) whatever is written, so
           rogue's write-verify, or the config script's own check, fails
@@ -50,12 +54,25 @@ Two more parts of the device that some config scripts reach without rogue:
           traffic leaves the process.  A fault 'pv:<name>[=<value>]' makes that
           PV read back <value> (default 0).
 
+  proxy   a firmware AXI-Lite master the host drives through registers (surf AxiLiteMasterProxy:
+          Addr, Data, Rnw, then poll Done) does the access on a register store of its own; behind
+          one, a C1100 card's management (axipcie CmsSubsystem) answers its mailbox's requests
+          (CmsFirmware).
+
   UART    a camera behind a camera link FEB (cameralink_gateway: Opal, Piranha4) answers
           its serial commands, one character per 32-bit word on the lane's VC2 stream (surf
           ClinkSerialTx/ClinkSerialRx): the seed file's "_uart" {"dests": [stream dests],
           "replies": {command: reply}, "default": reply} is the camera's answer to each command
           (a reply ends with CR where the camera's does; "default", ACK by default, answers the
           rest).  The commands are recorded with the register writes.
+
+  scratch a config script that hands rogue its settings as YAML files written to a fixed
+          /tmp path (psdaq/configdb/det_config.dictToYaml, then the root's LoadConfig)
+          writes them under $PSDAQ_SIM_TMPDIR instead, when that is set (daq_sim up
+          sets it to its workdir's tmp/): the seed file's "_scratch" lists the path
+          prefixes moved, e.g. "/tmp/epixhr" (epixhr2x2_config) becomes
+          $PSDAQ_SIM_TMPDIR/epixhr.  Unset, or for a type without "_scratch", the files
+          go where the script says.
 
 Every register write is recorded (WRITES, and one JSON line per write to
 $PSDAQ_SIM_ROGUE_LOG if set) with the register paths it covers.
@@ -81,10 +98,13 @@ import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 
+from psdaq.sim import sim_path
+
 SIM_PREFIX = 'sim://'
 ENV_SEEDS = 'PSDAQ_SIM_ROGUE_SEEDS'
 ENV_FAULT = 'PSDAQ_SIM_ROGUE_FAULT'
 ENV_LOG = 'PSDAQ_SIM_ROGUE_LOG'
+ENV_TMPDIR = 'PSDAQ_SIM_TMPDIR'
 SEED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'seeds')
 
 log = logging.getLogger('psdaq.sim.rogue_dev')
@@ -149,8 +169,12 @@ class Store(object):
         self._pages = {}
         self._lock = threading.Lock()
         self._faults = []       # (var_addr, offsets, sizes, value, path)
+        self._responses = []    # (var_addr, offsets, sizes, value): bits a device answers in
         self._counters = []     # (var_addr, offsets, sizes, hz, t0): free-running counters
         self._vars = {}         # word address -> [(path, var_addr, offsets, sizes)]
+        self._hooks = {}        # word address -> fn(store): what a write there makes the device do
+        self._read_hooks = {}   # word address -> fn(store): run, under the lock, before a read there
+        self.proxy_of = None    # the store whose AXI-Lite master proxy this one is behind
 
     def _span(self, addr, size):
         while size > 0:
@@ -178,12 +202,17 @@ class Store(object):
         with self._lock:
             self.ntrans += 1
             self.last = ('R', addr, size)
+            for a in range(addr - (addr % 4), addr + size, 4):
+                if a in self._read_hooks:
+                    self._read_hooks[a](self)
             buf = self.raw_read(addr, size)
             if self._counters:
                 now = time.monotonic()
                 for (vaddr, offs, sizes, hz, t0) in self._counters:
                     count = int((now - t0) * hz) & ((1 << sum(sizes)) - 1)
                     _put_bits(buf, addr, vaddr, offs, sizes, count)
+            for (vaddr, offs, sizes, value) in self._responses:
+                _put_bits(buf, addr, vaddr, offs, sizes, value)
             for (vaddr, offs, sizes, value, path) in self._faults:
                 _put_bits(buf, addr, vaddr, offs, sizes, value)
             return buf
@@ -195,6 +224,9 @@ class Store(object):
             old = self.raw_read(addr, len(data))
             self.raw_write(addr, data)
         _SIM.record(self, addr, old, data)
+        for a in range(addr - (addr % 4), addr + len(data), 4):
+            if a in self._hooks:
+                self._hooks[a](self)
 
     def poke(self, var_addr, offsets, sizes, value):
         nbytes = (max(o + s for o, s in zip(offsets, sizes)) + 7) // 8
@@ -207,6 +239,10 @@ class Store(object):
         with self._lock:
             self._counters.append((var_addr, list(offsets), list(sizes), float(hz),
                                    time.monotonic()))
+
+    def add_response(self, var_addr, offset, size, value):
+        with self._lock:
+            self._responses.append((var_addr, [offset], [size], value))
 
     def add_fault(self, var_addr, offsets, sizes, value, path):
         with self._lock:
@@ -395,6 +431,77 @@ class SimXvc(object):
         pass
 
 
+class CmsFirmware(object):
+    """The card management firmware (AMD CMS, pg348) behind an axipcie CmsSubsystem, as the host
+    uses its mailbox (axipcie _CmsProxy._Mailbox): the host writes a request into MAILBOX and sets
+    CONTROL_REG[5]; the firmware answers in MAILBOX, sets HOST_MSG_ERR_REG (0: no error) and clears
+    CONTROL_REG[5].  The bit clears at the host's second read after the request: the first is
+    pyrogue's write-verify of the bit the host just set, which the card's MicroBlaze, slower than
+    one register access, has not cleared yet.  Each cage's module (a QSFP) keeps its low-speed IO
+    register and its I2C bytes: a read answers what was last written, 0 if never.  A request
+    whose opcode this does not model is answered with HOST_MSG_ERR_REG 1."""
+
+    LOW_SPEED_READ, LOW_SPEED_WRITE = 0x0D, 0x0E
+    I2C_BYTE_READ, I2C_BYTE_WRITE = 0x0F, 0x10
+    CARD_INFO = 0x04
+
+    def __init__(self, sim, cms):
+        mb = cms.Mailbox
+        ctrl = mb.nodes['CONTROL_REG[5]']
+        self.path = cms.path
+        self.store = sim._locate(ctrl, wait=0)      # the AXI-Lite bus the CMS is on
+        a = sim._var_addr(ctrl)
+        self.ctrl, self.bit = a - (a % 4), 1 << ((a % 4) * 8 + ctrl.bitOffset[0])
+        self.err = sim._var_addr(mb.HOST_MSG_ERR_REG)
+        self.box = sim._var_addr(mb.MAILBOX)
+        self.busy, self.reads = False, 0
+        self.requests = {}                          # opcode -> how many
+        self.low_speed = {}                         # cage -> low-speed IO register
+        self.i2c = {}                               # (cage, page, byte) -> value
+        self.store._hooks[self.ctrl] = self._on_write
+        self.store._read_hooks[self.ctrl] = self._on_read
+        log.info('rogue_dev: %s is a CMS mailbox on %s (CONTROL_REG @0x%x)', self.path,
+                 self.store.name, self.ctrl)
+
+    def _word(self, st, a):
+        return int.from_bytes(st.raw_read(a, 4), 'little')
+
+    def _put(self, st, a, v):
+        st.raw_write(a, (v & 0xffffffff).to_bytes(4, 'little'))
+
+    def _on_write(self, st):
+        with st._lock:
+            if self.busy or not self._word(st, self.ctrl) & self.bit:
+                return
+            self.busy, self.reads = True, 1
+            box = [self._word(st, self.box + 4 * i) for i in range(6)]
+            op = (box[0] >> 24) & 0xff
+            self.requests[op] = self.requests.get(op, 0) + 1
+            err = 0
+            if op == self.LOW_SPEED_READ:
+                self._put(st, self.box + 8, self.low_speed.get(box[1], 0))
+            elif op == self.LOW_SPEED_WRITE:
+                self.low_speed[box[1]] = box[2]
+            elif op == self.I2C_BYTE_READ:
+                self._put(st, self.box + 0x14, self.i2c.get((box[1], box[2], box[4]), 0))
+            elif op == self.I2C_BYTE_WRITE:
+                self.i2c[(box[1], box[2], box[4])] = box[5] & 0xff
+            elif op == self.CARD_INFO:
+                self._put(st, self.box, self.CARD_INFO << 24)    # an empty card information list
+            else:
+                err = 1
+            self._put(st, self.err, err)
+
+    def _on_read(self, st):         # under the store's lock
+        if not self.busy:
+            return
+        if self.reads:
+            self.reads -= 1
+            return
+        self._put(st, self.ctrl, self._word(st, self.ctrl) & ~self.bit)
+        self.busy = False
+
+
 PV_PREFIX = 'pv:'
 
 
@@ -438,6 +545,7 @@ class _Sim(object):
         self.writes = []
         self.uart = None        # {"dests": [...], "replies": {...}, "default": ...} or None
         self.uarts = []
+        self.cms = []           # CmsFirmware: the card management firmware of each CmsSubsystem
         self._logf = None
         self._orig = None
 
@@ -499,6 +607,9 @@ class _Sim(object):
             if hit or time.monotonic() >= end:
                 break
             time.sleep(0.05)
+        behind = [s for s in hit if s.proxy_of in hit]     # through an AXI-Lite master proxy
+        if behind:
+            hit = behind
         if len(hit) != 1:
             raise SimDeviceError('rogue_dev: cannot tell which simulated transport serves %s '
                                  '(%d answered)' % (var.path, len(hit)))
@@ -550,12 +661,24 @@ class _Sim(object):
             log.info('rogue_dev: root %s is not on a simulated transport; left alone', root.path)
             return
         self.roots.append(root)
+        for dev in root.deviceList:
+            if type(dev).__module__.endswith('_AxiLiteMasterProxy') and type(dev).__name__ == '_Regs':
+                self._axil_proxy(dev)
+        for dev in root.deviceList:     # after the proxies: a CMS is behind one
+            if type(dev).__module__.endswith('_CmsProxy') and type(dev).__name__ == 'CmsSubsystem':
+                self.cms.append(CmsFirmware(self, dev))
         pfx = root.path + '.'
         for path in [p for p in self.seeds if p.startswith(pfx)]:
             var = self._resolve(root, path, 'seed')
             value = self.seeds.pop(path)
             store = self._locate(var)
             addr = self._var_addr(var)
+            if isinstance(value, dict) and 'response' in value:     # the device's answer bits
+                store.add_response(addr, var.bitOffset[0], value['bits'], value['response'])
+                self.applied[path] = (store.name, addr, value)
+                log.info('seed %s @%s+0x%x: low %d bits read 0x%x', path, store.name, addr,
+                         value['bits'], value['response'])
+                continue
             if isinstance(value, dict):         # {"count_hz": f}: a free-running counter
                 store.add_counter(addr, var.bitOffset, var.bitSize, value['count_hz'])
                 self.applied[path] = (store.name, addr, value)
@@ -578,6 +701,29 @@ class _Sim(object):
             self.fault_applied = (path, store.name, addr, value)
             log.warning('FAULT %s @%s+0x%x reads back 0x%x', path, store.name, addr, value)
             _say('FAULT %s @%s+0x%x reads back 0x%x' % (path, store.name, addr, value))
+
+    def _axil_proxy(self, regs):
+        """Emulate a firmware AXI-Lite master proxy (surf AxiLiteMasterProxy): the host writes Addr
+        (and Data), then Rnw, and polls Done; the firmware does the access on its AXI-Lite bus and
+        sets Done (Resp 0), a read's data in Data.  The proxied bus is a register store of its own."""
+        rnw, done, addr, data = (regs.nodes[n] for n in ('Rnw', 'Done', 'Addr', 'Data'))
+        store = self._locate(addr, wait=0)
+        bus = Store('AxiLiteMasterProxy(%s)' % regs.path)
+        bus.proxy_of = store
+        self.stores.append(bus)
+        a_rnw, a_done = self._var_addr(rnw), self._var_addr(done)
+        a_addr, a_data = self._var_addr(addr), self._var_addr(data)
+
+        def kick(st):
+            word = lambda a: int.from_bytes(st.raw_read(a, 4), 'little')
+            target = word(a_addr)
+            if (word(a_rnw) >> rnw.bitOffset[0]) & 1:                  # Read
+                st.raw_write(a_data, bus.read(target, 4))
+            else:
+                bus.write(target, st.raw_read(a_data, 4))
+            st.poke(a_done, done.bitOffset, [3], 1)                    # Done 1, Resp 0 (OK)
+        store._hooks[a_rnw - (a_rnw % 4)] = kick
+        log.info('rogue_dev: %s is an AXI-Lite master proxy onto %s', regs.path, bus.name)
 
     def pending(self):
         out = sorted(self.seeds)
@@ -619,10 +765,15 @@ def _seed_value(k, v):
         return v                    # PV values keep their JSON type (float, list...)
     if isinstance(v, dict) and set(v) == {'string'}:     # a string register (pr.String)
         return int.from_bytes(str(v['string']).encode('ascii'), 'little')
+    if isinstance(v, dict) and set(v) == {'response', 'bits'}:   # a device's answer bits
+        if not 0 < int(v['bits']) <= 32:
+            raise SimDeviceError('rogue_dev: seed %r: "bits" is 1..32, not %r' % (k, v['bits']))
+        return {'response': _int(v['response']), 'bits': int(v['bits'])}
     if isinstance(v, dict):
         if set(v) != {'count_hz'} or float(v['count_hz']) <= 0:
             raise SimDeviceError('rogue_dev: seed %r: a dict seed is {"count_hz": <positive '
-                                 'rate>} or {"string": <text>}, not %r' % (k, v))
+                                 'rate>}, {"string": <text>} or {"response": <value>, "bits": '
+                                 '<n>}, not %r' % (k, v))
         return {'count_hz': float(v['count_hz'])}
     return _int(v)
 
@@ -658,6 +809,34 @@ def load_uart(det_type=None, path=None):
         return json.load(f).get('_uart')
 
 
+def load_scratch(det_type=None, path=None):
+    """The seed file's "_scratch" list (path prefixes of a config script's YAML files), or []."""
+    path = path or os.environ.get(ENV_SEEDS) or (
+        os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
+    if not path:
+        return []
+    with open(path) as f:
+        return list(json.load(f).get('_scratch', []))
+
+
+def _move_scratch(prefixes, tmpdir):
+    """det_config.dictToYaml writes a file whose path starts with one of prefixes under tmpdir.
+    Before the config module imports it (from psdaq.configdb.det_config import *)."""
+    from psdaq.configdb import det_config
+    write = det_config.dictToYaml
+
+    def dictToYaml(d, types, keys, dev, path, name, tree, ordering=None):
+        for pfx in prefixes:
+            if path.startswith(pfx):
+                os.makedirs(tmpdir, exist_ok=True)
+                path = os.path.join(tmpdir, os.path.basename(pfx)) + path[len(pfx):]
+                break
+        return write(d, types, keys, dev, path, name, tree, ordering)
+    det_config.dictToYaml = dictToYaml
+    _SIM._orig_yaml = write
+    log.info('rogue_dev: YAML files under %s go under %s', prefixes, tmpdir)
+
+
 def parse_fault(s):
     if not s:
         return None
@@ -690,11 +869,17 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
             raise SimDeviceError('rogue_dev: already installed for %r' % _SIM.dev)
         return _SIM
     _SIM.dev = dev
+    pinned = sim_path.pin()       # $PSDAQ_SIM_PYTHONPATH, before the config module imports
+    if pinned:
+        log.info('rogue_dev: packages in %s import from there first', pinned)
     if seeds is None:
         seeds, spath, sproc = load_seeds(det_type, extra=True)
         proc = proc if proc is not None else sproc
         log.info('rogue_dev: %d seeds from %s', len(seeds), spath)
         _SIM.uart = load_uart(det_type)
+        scratch = load_scratch(det_type)
+        if scratch and os.environ.get(ENV_TMPDIR):
+            _move_scratch(scratch, os.environ[ENV_TMPDIR])
     pvs = {k[len(PV_PREFIX):]: v for k, v in seeds.items() if k.startswith(PV_PREFIX)}
     _SIM.seeds = {k: v for k, v in seeds.items() if not k.startswith(PV_PREFIX)}
     _SIM.fault = parse_fault(fault if fault is not None else os.environ.get(ENV_FAULT))
@@ -784,6 +969,9 @@ def uninstall():
         rogue.protocols.xilinx.Xvc = _SIM._orig_xvc
     if getattr(_SIM, '_orig_open', None):
         builtins.open = _SIM._orig_open
+    if getattr(_SIM, '_orig_yaml', None):
+        from psdaq.configdb import det_config
+        det_config.dictToYaml = _SIM._orig_yaml
     if _SIM._logf:
         _SIM._logf.close()
     _SIM = _Sim()

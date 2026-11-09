@@ -78,6 +78,12 @@ def tt_connect(cl):
     d['paddr'] = rxId
     return d
 
+# called on alloc: BEBDetector::connectionInfo calls <det>_connectionInfo(root, alloc_json).
+# The one-argument tt_connect(cl) has not matched the DRP's two-argument call since 3b829abf4
+# (then <det>_connect; d6b1e7552 renamed the call to <det>_connectionInfo)
+def tt_connectionInfo(cl, alloc_json_str):
+    return tt_connect(cl)
+
 def user_to_expert(cl, cfg, full=False):
     global group
     global ocfg
@@ -106,9 +112,27 @@ def user_to_expert(cl, cfg, full=False):
 
     update_config_entry(cfg,ocfg,d)
 
+# The camera's ROI[i] and SAD[i] under the names tt_config_store wrote before 149eb4dee renamed
+# them ROI0, ROI1, SAD0, SAD1, SAD2 (an XtcData::Name may not hold '[' or ']', 2b0873c2c)
+old_uart_names = {'ROI[0]':'ROI0', 'ROI[1]':'ROI1', 'SAD[0]':'SAD0', 'SAD[1]':'SAD1', 'SAD[2]':'SAD2'}
+
 def config_expert(cl,cfg):
     global lane
     global chan
+
+    #  Refuse an entry with the old names before anything is set: ROI[0], SAD[0] and SAD[1] send
+    #  no serial command, so cl_poll would wait for a reply forever, and the drp could not
+    #  record those names anyway
+    try:
+        uart_cfg = cfg['expert']['ClinkFeb']['ClinkTop']['ClinkCh']['UartPiranha4']
+    except (KeyError, TypeError):
+        uart_cfg = {}
+    old = [k for k in uart_cfg if k in old_uart_names]
+    if old:
+        raise ValueError('tt_config: the config DB entry has expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.'
+                         '{:}, which tt_config_store now writes as {:} (an XtcData::Name may not hold '
+                         '"[" or "]"): write the entry again with tt_config_store.py, or rename those keys'
+                         .format(', '.join(old), ', '.join(old_uart_names[k] for k in old)))
 
     rogue_translate = {'ClinkFeb'          :'ClinkFeb[%d]'%lane,
                        'ClinkCh'           :'Ch[%d]'%chan,
@@ -116,7 +140,12 @@ def config_expert(cl,cfg):
                        'TrigCtrl'          :'TrigCtrl[%d]'%chan,
                        'PllConfig0'        :'PllConfig[0]',
                        'PllConfig1'        :'PllConfig[1]',
-                       'PllConfig2'        :'PllConfig[2]'}
+                       'PllConfig2'        :'PllConfig[2]',
+                       'ROI0'              :'ROI[0]',
+                       'ROI1'              :'ROI[1]',
+                       'SAD0'              :'SAD[0]',
+                       'SAD1'              :'SAD[1]',
+                       'SAD2'              :'SAD[2]'}
 
     uart = getattr(getattr(cl,'ClinkFeb[%d]'%lane).ClinkTop,'Ch[%d]'%chan).UartPiranha4
 
@@ -147,7 +176,7 @@ def config_expert(cl,cfg):
                 rogue_node.set(configdb_node)
 
             if 'Uart' in path:
-                if 'ROI[0]' in path or 'SAD[0]' in path or 'SAD[1]' in path:
+                if 'ROI0' in path or 'SAD0' in path or 'SAD1' in path:
                     # These don't cause the send of a serial command
                     pass
                 else:
