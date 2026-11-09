@@ -260,7 +260,7 @@ def test_config_rows_of_the_daq_sim_cnf(tmp_path, det):
     """The rows daq_sim cycle records come from the .cnf daq_sim up writes (up --det <type>)."""
     cnf = write_daq_sim_cnf(str(tmp_path / 'daq_sim.cnf'), det)
     assert sorted(coverage.config_rows(cnf)) == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:teb']
-    assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm']
+    assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm', 'prog:pykcuxpm']
 
 
 @pytest.mark.parametrize('det', ['fakecam', 'epix100'])
@@ -308,13 +308,15 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     rec = json.load(open(tmp_path / 'evidence' / names[0]))
     assert rec['sha'] == HEAD and rec['kind'] == 'cycle' and rec['run_id'] == 'tstx00001/r0001'
     assert rec['dirty'] is False
-    assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pyxpm', 'prog:teb']
+    assert rec['rows'] == [f'det:drp:{det}', 'prog:control', 'prog:drp', 'prog:pykcuxpm', 'prog:pyxpm',
+                           'prog:teb']
     assert sorted(rec['files']) == sorted(files + [work.path('daq_sim.cnf')])
     assert sorted(rec['content']) == sorted(rec['files'])
     assert rec['content'][xtc] == {'bytes': os.path.getsize(xtc),
                                    'sha256': hashlib.sha256(open(xtc, 'rb').read()).hexdigest()}
     entries = {r: {'status': 'RUN'} for r in rec['rows']}
-    entries['prog:pyxpm'] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))['prog:pyxpm']
+    for r in ('prog:pyxpm', 'prog:pykcuxpm'):          # STAND-IN simxpm in the tree's status file
+        entries[r] = json.load(open(os.path.join(REPO, coverage.STATUS_FILE)))[r]
     code, out = run_check(write_status(tmp_path / 'status.json', entries), tmp_path / 'evidence')
     for row in rec['rows']:
         line = line_of(out, row)
