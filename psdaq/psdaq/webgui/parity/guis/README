@@ -1,7 +1,10 @@
 Specs of the PyQt GUIs other than control_gui, one per file that constructs a QApplication (qapps.py).
 check_gui_parity.py reads them; see its docstring and ../../README.md ("Parity with the other PyQt GUIs").
 
-  <name>.json         {"file", "web", "backend", "walk": {...}, "mapping": {...}}  or  {"file", "na", "rule"}
+  <name>.json         {"file", "web", "backend", "walk": {...}, "mapping": {...}}  or  {"file", "na", "rule"[, "walk"]}
+                      rules: walk-tool, library-demo, no-window (the walk of the program's own entry, "walk", raises
+                      before QApplication.exec_); backend sim-daq or sim-device:<psdaq/sim module>, whose simulator
+                      "walk": {"devices": [...]} starts for the walk
 
 Only these hand-written specs live here.  The offscreen walks of the GUIs (qt_walk --gui, against the simulated DAQ)
 and the import probes (qt_walk --probe-import, rule library-demo) are run by check_gui_parity --run-walks

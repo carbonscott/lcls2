@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detector Protection Monitor</title>
+<link rel="stylesheet" href="/static/gui/gui.css">
+<style>
+  #win { width: 500px; border: 1px solid #888; padding: 8px; }
+  #info { font-family: Verdana, sans-serif; font-size: 12pt; text-align: center; }
+  .bar { width: 340px; height: 20px; border: 1px solid #666; margin: 12px auto; position: relative; }
+  .bar > div { height: 100%; background: #3a7; width: 0; }
+  .bar > span { position: absolute; left: 0; right: 0; top: 0; text-align: center; font-size: 12px; }
+  #dialog { border: 2px solid #c90; background: #fff8e0; padding: 10px; margin-top: 12px; width: 360px; }
+</style>
+</head>
+<body data-gui="detector_protection_monitor">
+<!-- web copy of psdaq/trigger/detector_protection_monitor.py (served by psdaq.webgui.dpm_api); data-parity = the
+     PyQt row ids.  The hidden main window and the tray icon (no counted widget) are not shown. -->
+<div id="win">
+  <h1 id="title">Detector Protection Monitor</h1>
+  <div id="info"></div>
+  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+       data-parity="MonitorProgressBar._pix_over_threshold_bar"><div id="fill"></div><span id="pct"></span></div>
+</div>
+<div id="dialog" role="alertdialog" hidden data-parity="MonitorMW.detector_protection_activated.msg_box">
+  <b id="dlg-title"></b> <span class="icon">&#9888;</span>
+  <p id="dlg-text"></p>
+  <button id="dlg-button"></button>
+</div>
+<div class="statusbar" id="statusbar"></div>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+let polls = 0;
+async function poll() {
+  try {
+    const st = await (await fetch('/api/dpm/status', { cache: 'no-store' })).json();
+    if (!st.ok) { $('statusbar').textContent = st.err_info; return; }
+    document.title = st.title; $('title').textContent = st.title; $('info').textContent = st.info;
+    const bar = document.querySelector('.bar');
+    if (st.progress === null) { $('fill').style.width = '0'; $('pct').textContent = ''; bar.removeAttribute('aria-valuenow'); }
+    else { $('fill').style.width = st.progress + '%'; $('pct').textContent = st.progress + '%';     // QProgressBar '%p%'
+           bar.setAttribute('aria-valuenow', st.progress); }
+    const d = $('dialog');
+    if (st.dialog) { d.hidden = false; d.dataset.n = st.dialog.n; $('dlg-title').textContent = st.dialog.title;
+                     $('dlg-text').textContent = st.dialog.text; $('dlg-button').textContent = st.dialog.button; }
+    else { d.hidden = true; }
+    document.body.dataset.connected = st.connected ? '1' : '0';
+    document.body.dataset.polls = ++polls;
+  } catch (e) { $('statusbar').textContent = 'status: ' + e; }
+}
+$('dlg-button').addEventListener('click', async () => {
+  $('dialog').hidden = true;
+  const r = await (await fetch('/api/dpm/dismiss', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                                       body: '{}' })).json();
+  if (!r.ok) $('statusbar').textContent = r.err_info;
+  poll();
+});
+document.body.dataset.ready = '1';
+poll(); setInterval(poll, 300);
+</script>
+</body>
+</html>

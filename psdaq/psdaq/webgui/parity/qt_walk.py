@@ -810,6 +810,7 @@ GUI_WALK_VERSION = 1
 GUI_COUNTED = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox', 'QSpinBox',
                'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser', 'QLabel', 'QTableWidget',
                'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget', 'QProgressBar', 'QMessageBox')
+PG_COUNTED = ('PlotItem', 'PlotWidget', 'ImageView')       # pyqtgraph: a plot panel (axes, curves, pan / zoom)
 GUI_SIGNALS = ('clicked', 'toggled', 'stateChanged', 'currentIndexChanged', 'activated', 'editingFinished',
                'returnPressed', 'textChanged', 'cellClicked', 'currentCellChanged', 'currentChanged')
 
@@ -822,6 +823,103 @@ def sim_params(sim_dir):
         raise SystemExit('qt_walk: no daq_sim state in %s' % sim_dir)
     return {'platform': st['platform'], 'cnf': os.path.join(st['workdir'], st['cnf']), 'workdir': st['workdir'],
             'pvbase': ds.PVBASE, 'xpm': ds.XPM, 'part': '%s:XPM:%d:PART:%d' % (ds.PVBASE, ds.XPM, st['platform'])}
+
+
+LOOPBACK_HOSTS = ('127.0.0.1', 'localhost', '::1', '[::1]', '0.0.0.0', '*')
+
+
+def _endpoint_host(ep):
+    """host of a zmq endpoint ('tcp://h:p'), '' for ipc:// and inproc://, None if unparsable."""
+    ep = str(ep)
+    if ep.startswith(('ipc://', 'inproc://')):
+        return ''
+    if '://' not in ep:
+        return None
+    rest = ep.split('://', 1)[1]
+    return rest.rsplit(':', 1)[0] if ':' in rest else rest
+
+
+REMOTE_SHELLS = ('ssh', 'scp', 'sftp', 'rsh', 'rlogin', 'slogin', 'autossh', 'mosh', 'telnet', 'rsync', 'pdsh')
+SLURM_CMDS = ('squeue', 'sacct', 'sinfo', 'sbatch', 'scancel', 'scontrol', 'srun', 'salloc', 'sattach', 'sstat')
+
+
+def guard_subprocess(OUT):
+    """The walked GUI may not start a remote shell (ssh, scp, ... to any host: datadev_monitor ssh-es to every
+    drp-srcf-cmp node) nor a Slurm command (daqstat's daqmgr Runner queries and submits jobs): such a
+    subprocess.Popen is recorded in OUT['calls'] (opener 'refused:subprocess') and raises PermissionError, which
+    the program sees as a failed command.  os.system / os.popen of a command line naming one are refused alike."""
+    import shlex
+    import subprocess as _sp
+    banned = set(REMOTE_SHELLS) | set(SLURM_CMDS)
+
+    def prog(args):
+        try:
+            argv = shlex.split(args) if isinstance(args, str) else [str(a) for a in args]
+        except ValueError:
+            argv = str(args).split()
+        return os.path.basename(argv[0]) if argv else '', argv
+    orig_init = _sp.Popen.__init__
+
+    def init(self, args, *a, **k):
+        name, argv = prog(args if not (k.get('shell') and isinstance(args, str)) else args)
+        if name in banned or (k.get('shell') and any(w in banned for w in str(args).replace(';', ' ').split())):
+            OUT['calls'].append({'opener': 'refused:subprocess', 'args': [' '.join(argv)[:200]]})
+            raise PermissionError('qt_walk: refused to start %r (no remote shell or Slurm command in a walk)' % name)
+        return orig_init(self, args, *a, **k)
+    _sp.Popen.__init__ = init
+    for fn in ('system', 'popen'):
+        orig = getattr(os, fn)
+
+        def f(cmd, *a, _orig=orig, _fn=fn, **k):
+            if any(w in banned for w in str(cmd).replace(';', ' ').split()):
+                OUT['calls'].append({'opener': 'refused:os.' + _fn, 'args': [str(cmd)[:200]]})
+                raise PermissionError('qt_walk: refused os.%s(%r)' % (_fn, cmd))
+            return _orig(cmd, *a, **k)
+        setattr(os, fn, f)
+
+
+def guard_network(OUT):
+    """The walked GUI may open TCP connections and ZMQ sockets only to this host: anything else is recorded in
+    OUT['calls'] (opener 'refused:...') and not made (a ZMQ connect is skipped; a TCP connect raises
+    ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none.
+    No remote shell or Slurm command starts either (guard_subprocess)."""
+    guard_subprocess(OUT)
+    import socket as _socket
+    orig_connect = _socket.socket.connect
+    orig_connect_ex = _socket.socket.connect_ex
+
+    def _ok(addr):
+        h = addr[0] if isinstance(addr, tuple) else None
+        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.')
+
+    def connect(self, addr):
+        if not _ok(addr):
+            OUT['calls'].append({'opener': 'refused:socket.connect', 'args': [str(addr)]})
+            raise ConnectionRefusedError('qt_walk: refused non-loopback connect to %s' % (addr,))
+        return orig_connect(self, addr)
+
+    def connect_ex(self, addr):
+        if not _ok(addr):
+            OUT['calls'].append({'opener': 'refused:socket.connect_ex', 'args': [str(addr)]})
+            return 111
+        return orig_connect_ex(self, addr)
+    _socket.socket.connect = connect
+    _socket.socket.connect_ex = connect_ex
+    try:
+        import zmq
+    except ImportError:
+        return
+    for meth in ('connect', 'bind'):
+        orig = getattr(zmq.Socket, meth)
+
+        def f(self, addr, *a, _orig=orig, _m=meth, **k):
+            h = _endpoint_host(addr)
+            if h is None or h == '' or h in LOOPBACK_HOSTS or h.startswith('127.'):
+                OUT['calls'].append({'opener': 'zmq.Socket.' + _m, 'args': [str(addr)]})
+                return _orig(self, addr, *a, **k)
+            OUT['calls'].append({'opener': 'refused:zmq.Socket.' + _m, 'args': [str(addr)]})
+            return None
+        setattr(zmq.Socket, meth, f)
 
 
 def run_gui_walk(spec_path, out_path, workdir, sim_dir):
@@ -851,6 +949,10 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     own, libs = gui_rows.own_and_libs(src, target)
     own_abs = {os.path.realpath(os.path.join(src, f)): f for f in own}
     params = sim_params(sim_dir) if sim_dir else {}
+    params['walkdir'] = W.get('walkdir') or workdir             # check_gui_parity.run_walks sets it per spec
+    params['psdaq'] = src                                       # this tree's psdaq package dir
+    if W.get('cwd'):                                            # e.g. seqplot: --seq paths relative to psdaq/seq
+        os.chdir(str(W['cwd']).format(**params))
     argv = [str(a).format(**params) for a in W.get('argv', [])]
     OUT = {'version': GUI_WALK_VERSION, 'kind': 'gui', 'file': target, 'src': src, 'own': own, 'libs': libs,
            'src_digest': gui_rows.files_digest(src, own), 'argv': argv, 'sim_daq': sim_dir, 'params': params,
@@ -909,7 +1011,9 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     LIVE = []
     parity_dir = os.path.realpath(HERE)
 
-    def construction_site():
+    def construction_site(obj=None):
+        """[own file, line, function] of the innermost own-file frame that calls the constructor (frames of obj's
+        own constructors, a local subclass's __init__, are skipped: its call site is the site), and the chain."""
         site, chain = None, []
         f = sys._getframe(2)
         while f is not None:
@@ -917,21 +1021,39 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
             if p.startswith(src + os.sep) and not p.startswith(parity_dir):
                 rel = os.path.relpath(p, src)
                 chain.append([rel, f.f_lineno, f.f_code.co_name])
-                if site is None and p in own_abs:
+                own_ctor = obj is not None and f.f_code.co_name == '__init__' and f.f_locals.get('self') is obj
+                if site is None and p in own_abs and not own_ctor:
                     site = [own_abs[p], f.f_lineno, f.f_code.co_name]
             f = f.f_back
         return site, chain[:8]
 
+    def record(self, name):
+        SEQ[0] += 1
+        self._pw_seq = SEQ[0]
+        self._pw_site, self._pw_chain = construction_site(self)
+        self._pw_writes = 0
+        self._pw_base = name
+        LIVE.append(self)
+
     def make_rec(name, base):
         def __init__(self, *a, **k):
             base.__init__(self, *a, **k)
-            SEQ[0] += 1
-            self._pw_seq = SEQ[0]
-            self._pw_site, self._pw_chain = construction_site()
-            self._pw_writes = 0
-            self._pw_base = name
-            LIVE.append(self)
-        ns = {'__init__': __init__}
+            record(self, name)
+
+        def __init_subclass__(cls, **kw):
+            # a subclass whose __init__ skips this one (super(QtWidgets.QLabel, self).__init__ in pvatable.PvField)
+            # is still recorded, after its own __init__
+            super(rec_cls[0], cls).__init_subclass__(**kw)
+            init = cls.__dict__.get('__init__')
+            if init is not None and not getattr(init, '_pw_wrapped', False):
+                def wrapped(self, *a, _init=init, **k):
+                    _init(self, *a, **k)
+                    if getattr(self, '_pw_seq', None) is None:
+                        record(self, name)
+                wrapped._pw_wrapped = True
+                cls.__init__ = wrapped
+        rec_cls = []
+        ns = {'__init__': __init__, '__init_subclass__': classmethod(__init_subclass__)}
         for m in ('setText', 'append', 'setHtml', 'setPlainText', 'insertPlainText'):
             if hasattr(base, m):
                 def w(self, *a, _m=m, **k):
@@ -949,9 +1071,34 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                 ns[m] = staticmethod(st)
             ns['exec_'] = lambda self: (OUT['calls'].append({'opener': 'QMessageBox.exec_', 'site': self._pw_site}),
                                         ORIG['QMessageBox'].Ok)[1]
-        return type(name, (base,), ns)
+        rec_cls.append(type(name, (base,), ns))
+        return rec_cls[0]
     for n in GUI_COUNTED:
         setattr(QtWidgets, n, make_rec(n, ORIG[n]))
+    PG = {}
+    try:                                      # pyqtgraph plots (seqplot, seq_epixhr): PlotItem (GraphicsLayout.addPlot),
+        import pyqtgraph as _pg               # PlotWidget, ImageView, recorded where they are made
+        for n in PG_COUNTED:
+            cls = getattr(_pg, n, None)
+            if cls is None:
+                continue
+            PG[n] = cls
+
+            def pg_init(self, *a, _orig=cls.__init__, _n=n, **k):
+                _orig(self, *a, **k)
+                if getattr(self, '_pw_seq', None) is not None:
+                    return
+                f = sys._getframe(1)                 # the PlotItem a PlotWidget / ImageView makes is part of it
+                while f is not None:
+                    o = f.f_locals.get('self')
+                    if f.f_code.co_name == '__init__' and o is not self and any(
+                            isinstance(o, PG[m]) for m in PG if m != 'PlotItem'):
+                        return
+                    f = f.f_back
+                record(self, _n)
+            cls.__init__ = pg_init
+    except ImportError:
+        pass
 
     # per-GUI stand-ins for calls the walk must not make for real (an xterm, a process restart)
     for spec_call in W.get('record_calls', []):        # 'module:Class.attr' or 'module:attr'
@@ -1011,15 +1158,39 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                     pass
         return None
 
+    def plot_info(x):
+        """A pyqtgraph plot: its left-axis label (the 'text'), title, x / y ranges, x link and every curve's data."""
+        pi = x.getPlotItem() if hasattr(x, 'getPlotItem') else (x.getView() if hasattr(x, 'getView') else x)
+        out = {'text': None, 'title': None, 'curves': []}
+        try:
+            out['text'] = pi.getAxis('left').labelText or None
+            out['title'] = pi.titleLabel.text or None
+            vr = pi.viewRange()
+            out['x_range'], out['y_range'] = [float(v) for v in vr[0]], [float(v) for v in vr[1]]
+            link = pi.getViewBox().linkedView(0)
+            out['x_linked'] = link is not None
+            for c in pi.listDataItems():
+                xd, yd = c.getData()
+                out['curves'].append({'x': [float(v) for v in (xd if xd is not None else [])][:5000],
+                                      'y': [float(v) for v in (yd if yd is not None else [])][:5000],
+                                      'n': 0 if xd is None else len(xd), 'symbol': c.opts.get('symbol'),
+                                      'pen': str(c.opts.get('pen'))[:60]})
+        except Exception as ex:
+            out['plot_error'] = repr(ex)
+        return out
+
     def collect():
         OUT['instances'] = []
         for x in list(LIVE):
             try:
                 if sip.isdeleted(x):
                     continue
+                win = x.window() if not (x._pw_base in PG and hasattr(x, 'scene')) else None
+                if win is None and x._pw_base in PG and x.scene() is not None and x.scene().views():
+                    win = x.scene().views()[0].window()
                 rec = {'seq': x._pw_seq, 'cls': type(x).__name__, 'base': x._pw_base, 'site': x._pw_site,
                        'chain': x._pw_chain, 'pv': find_pv(x), 'text': text_of(x), 'enabled': x.isEnabled(),
-                       'visible': x.isVisible(), 'window_visible': x.window().isVisible(),
+                       'visible': x.isVisible(), 'window_visible': bool(win is not None and win.isVisible()),
                        'writes': x._pw_writes, 'receivers': signals(x), 'object_name': x.objectName()}
                 if isinstance(x, QtWidgets.QAbstractButton):
                     rec['checkable'] = x.isCheckable()
@@ -1039,6 +1210,8 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                     rec['cells'] = [[(x.item(r, c).text() if x.item(r, c) else None) for c in range(x.columnCount())]
                                     for r in range(min(x.rowCount(), 40))]
                     rec['edit_triggers'] = int(x.editTriggers())
+                if x._pw_base in PG:
+                    rec.update(plot_info(x))
                 rec['texts'] = getattr(x, '_pw_texts', [])
                 OUT['instances'].append(rec)
             except Exception as ex:
@@ -1095,6 +1268,12 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                         pump(0.1)
                 elif step.startswith('pump:'):
                     pump(float(step.split(':', 1)[1]))
+                elif step.startswith('click:'):           # click every enabled QPushButton with this text
+                    want = step.split(':', 1)[1]
+                    for x in [x for x in list(LIVE) if isinstance(x, ORIG['QPushButton']) and not sip.isdeleted(x)]:
+                        if x.text() == want and x.isEnabled():
+                            x.click()
+                            pump(0.2)
                 snapshot(step)
             except Exception as ex:
                 OUT['notes'].append('drive %s: %s' % (step, traceback.format_exc()[-600:]))
@@ -1108,20 +1287,34 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     QtWidgets.QApplication.exec_ = lambda self: drive(self)
     QtWidgets.QApplication.exec = lambda self: drive(self)
     path = os.path.join(src, target)
+    guard_network(OUT)
+    entry = W.get('entry', 'main')
     try:
-        if target.endswith('.py'):
-            mod = importlib.import_module('psdaq.' + target[:-3].replace('/', '.'))
+        if entry == '__main__':                 # a script with no main(): its __main__ block (partca-sum.py)
+            import runpy
+            runpy.run_path(path, run_name='__main__')
         else:
-            loader = importlib.machinery.SourceFileLoader('psdaq_gui_' + os.path.basename(target), path)
-            specm = importlib.util.spec_from_loader(loader.name, loader)
-            mod = importlib.util.module_from_spec(specm)
-            loader.exec_module(mod)
-        getattr(mod, W.get('entry', 'main'))()
+            if target.endswith('.py'):
+                mod = importlib.import_module('psdaq.' + target[:-3].replace('/', '.'))
+            else:
+                loader = importlib.machinery.SourceFileLoader('psdaq_gui_' + os.path.basename(target), path)
+                specm = importlib.util.spec_from_loader(loader.name, loader)
+                mod = importlib.util.module_from_spec(specm)
+                loader.exec_module(mod)
+            getattr(mod, entry)()
         OUT['notes'].append('entry returned without calling QApplication.exec_')
     except SystemExit as ex:
         OUT['notes'].append('entry raised SystemExit(%s) before exec_' % ex.code)
-    except Exception:
+    except Exception as ex:
         OUT['notes'].append('entry failed: %s' % traceback.format_exc()[-1500:])
+        tb = ex.__traceback__
+        own_frames = []
+        while tb is not None:
+            p_ = os.path.realpath(tb.tb_frame.f_code.co_filename)
+            if p_ in own_abs:
+                own_frames.append([own_abs[p_], tb.tb_lineno, tb.tb_frame.f_code.co_name])
+            tb = tb.tb_next
+        OUT['entry_error'] = {'type': type(ex).__name__, 'message': str(ex)[:300], 'own_frames': own_frames}
     if APP[0] is None:
         app = QtWidgets.QApplication.instance()
         if app is not None:
