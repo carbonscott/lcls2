@@ -26,6 +26,7 @@ Everything in `psdaq/psdaq/sim/`:
 | `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` and `daq_sim matrix` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
+| `../../drpGpu/MemPool.cc` (`drp_gpu -d sim://`) | The GPU DRP's simulated device: `MemPoolSim`'s frames copied into the GPU's DMA buffers (§3h). |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
 | `../webgui/e2e.py`, `../webgui/e2e_browser.py` | `daq_sim e2e`: the checks (DAQ env), and the headless-browser driver (Playwright venv). |
@@ -601,6 +602,96 @@ tb `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].Trig
 rogue's write-verify), epixquad `Top.SystemRegs.TrigEn=0` (write-verify when `_checkADCs` switches
 to external triggers).
 
+## 3h. The GPU DRP: `daq_sim up --drp drp_gpu`
+
+`drp_gpu` (psdaq/drpGpu) registers five types: fakecam, epixuhremu, epixuhrsim, epixuhr3x2 and
+jungfrau. With `-d sim://<simxpm>` it runs without the PGP card. It needs a GPU, so run step A
+in a step that holds one, on a GPU allocation (`--gres=gpu:<type>:1`); step B needs none.
+
+**Build.** meson builds drpGpu only when `nvcc` is on PATH, and takes the toolkit from
+`CUDA_ROOT` (passed as `custom_cuda_path`), else `/usr/local/cuda`. The toolkit must be one the
+node's driver runs: `nvidia-smi` prints the newest CUDA it supports. CUDA 13 gives the DRP's
+stages their SMs through the runtime's green contexts, as in production; CUDA 12.5 to 12.9 does
+the same through the driver API (`psdaq/drpGpu/GreenCtxCompat.hh`). A node whose driver predates
+CUDA 13 (e.g. 575, which runs CUDA 12.9 and refuses CUDA 13's forward-compatibility library with
+`system has unsupported display driver / cuda driver combination`) needs a 12.x toolkit. Where
+the node has none, conda-forge's will do, in a directory of your own:
+```bash
+CUDA=<dir>/cuda-12.9
+conda create -y -p $CUDA --override-channels -c conda-forge cuda-version=12.9 cuda-nvcc \
+      cuda-cudart-dev cuda-cccl cuda-nvtx-dev libcufile-dev cuda-driver-dev cuda-profiler-api
+# the layout meson expects of a toolkit: its version, lib64, and include/cccl (CUDA 13's place
+# for the CCCL headers, which a 12.x toolkit keeps in include itself)
+echo "{\"cuda\": {\"name\": \"CUDA SDK\", \"version\": \"12.9\"}}" > $CUDA/version.json
+ln -s targets/x86_64-linux/lib $CUDA/lib64
+ln -s . $CUDA/targets/x86_64-linux/include/cccl
+# the GPU subprojects (lc, pfpl, sleek) are git wraps: fetch them where there is internet
+(cd $ROOT/lcls2 && source ./setup_env_daq.sh && meson subprojects download lc pfpl sleek)
+srun --jobid=$JOB --ntasks=1 --cpus-per-task=16 --mem=64G --gres=gpu:<type>:1 \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && export CUDA_ROOT=$CUDA PATH=\$PATH:$CUDA/bin && \
+              ./build_all.sh -d -j 16; echo BUILD_EXIT=\$?"
+```
+It ends with `BUILD_EXIT=0`, and `install/bin/drp_gpu` and `install/lib/lib*_gpu.so` exist.
+
+**Run.**
+```bash
+# step A, in a step that holds a GPU; --cuda-lib when the loader does not find libcudart itself
+nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=16 --mem=64G --gres=gpu:<type>:1 \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && \
+              daq_sim up -w $WD --drp drp_gpu --det epixuhremu --cuda-lib $CUDA/targets/x86_64-linux/lib" \
+     > $ROOT/daq_sim_up.log 2>&1 &
+# step B, as in §3: it records evidence for det:drp_gpu:epixuhremu and prog:drp_gpu
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=8 --mem=16G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
+```
+procServ resets `LD_LIBRARY_PATH`, so `--cuda-lib` (or `$DAQ_SIM_CUDA_LIB`) becomes the
+`env:` of the drp_gpu entry of `daq_sim.cnf`. The step's GPU is the one drp_gpu uses.
+
+**What runs.** `drp_gpu -D <type> -d sim://...` (`psdaq/drpGpu/MemPool.cc`):
+- `MemPoolGpu` takes the simulator mode's memory (registers in pinned host memory, DMA buffers
+  on the GPU) and creates the drp's `MemPoolSim` on it, which receives simxpm's timing frames
+  and lays each out as the type's firmware would (§3f). A thread does what GpuAsyncCore does:
+  it waits until the GPU has re-armed the next DMA buffer in turn, copies the frame in after the
+  32 B DMA frame, waits for the copy and only then writes the size word the Reader polls. The
+  index restarts at each Configure frame, as the Reader's does.
+- The type's configuration is the CPU class `Gpu::<type>` wraps, as under `drp -d sim://`: the
+  XpmDetector and BEBDetector classes reach the same `MemPoolSim` (`MemPool::sim()`), so their
+  config scripts run against `rogue_dev` and their link is simxpm's.
+- The GPU's Reader, calibration, TrgInpGen, NoOpReducer and recorder run unchanged. The file
+  holds each event's calibrated pixels as the NoOpReducer recorded them: psana reads them as
+  `<type>_noOp_0_0_0.calib` (float32, `psana/psana/detector/drpgpu.py`).
+- `xtc2_check --drp drp_gpu` compares every pixel of every event (the `--self-test-offset 1`
+  run must FAIL).
+
+| type | config code run | device payload | psana check |
+|---|---|---|---|
+| fakecam | `xpmdet_config` (as `drp -D fakecam`) | the TDetSemi words of `MemPoolSim::fill`, `sim_length` words = 2 x that many uint16 pixels | `fakecam_noOp_0_0_0.calib`: each pixel's low 14 bits (`Gpu::AreaDetector`, pedestals 0, gains 1) vs the words of seed, seq n and the event's pulseId |
+| epixuhremu | `epixuhremu_configTiming` (link down: `ConfigLclsTimingV2()`), then `xpmdet_config` | TDetSemi words, 96768 = one 336 x 576 uint16 panel, as the emulator firmware (a TDet block) sends | `epixuhremu_noOp_0_0_0.calib` (336, 576): bits 1-11 of each pixel (gain in bit 0; no calibSerNo: pedestals 0, gains 1) vs the words |
+| epixuhrsim | its `SimDetector` (no config script): 16 random frames and calibration constants on the GPU; simxpm's frames time them | frame n % 16 after the TimingHeader | `epixuhrsim_noOp_0_0_0.calib` vs frame (n - 1) % 16 calibrated with the constants it writes at BeginRun (`sim_ref` kwarg, `--ref`) |
+
+The pulseId of each fakecam/epixuhremu event is the one, of the few ticks simxpm may add to its
+timestamp's, whose first words match; it must rise.
+
+Fault runs: fakecam and epixuhremu configure nothing at Configure (as the XpmDetector types of
+§3f). `TDetSemi.Length_0` is written only at Connect (`xpmdet_connect`), so
+`PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0` makes Connect fail, and the
+drp_gpu log names it (`rogue_dev: FAULT ...TDetSemi.Length_0`, then `Verify error for block
+DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 ... Got: 0xff, Exp: 0x00` for epixuhremu, `Exp: 0x40`
+for fakecam, `**** python error`). A register that `xpmdet_connectionInfo` writes fails earlier:
+a fault on `TDetSemi.Enable_0` fails Allocate. rogue's verify error names the 32-bit block, which
+`Enable_0` shares with `Length_0`. epixuhrsim has no registers.
+
+**Not running yet:**
+- **epixuhr3x2:** `Gpu::EpixUHR3x2` configures through `Drp::EpixUHR3x2`, whose constructor
+  builds its rogue root itself (`_init_data_path_or_emu()`) instead of through
+  `BEBDetector::_init()`, so `rogue_dev` is never installed and `epixuhr3x2_init` opens the device
+  file: `rogue.GeneralError: AxiStreamDma::openShared: General Error: Failed to open device
+  file: sim://127.0.0.1:31099` (drp_gpu started by hand on that device). Past that it needs
+  what `drp -D epixuhr3x2` needs (§3e).
+- **jungfrau:** `Gpu::Jungfrau` configures through `Drp::Jungfrau`, which drives the modules
+  through `sls::Detector`: `<C> Must specify a hostname/ip of the jungfrau control interface for
+  each segment! Check cnf.`, and there is no stand-in for the slsDetector server (§3e).
+
 ## 4. Read the file back with psana2
 ```bash
 F=$WD/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2      # run 1; see the fileReport line of cycle
@@ -689,6 +780,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
   the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and
   inhibit settings `ts_config` writes but does not act on them.
+- **GPU DRP.** One GPU DRP, its own step's GPU, the NoOpReducer only; the payload is copied into
+  the GPU's buffers by a host thread at the simxpm rate, not DMAed by a card, so the GPU DRP's
+  rate limits (33 kHz on hardware) are not exercised. Built with CUDA 12 the stages get the
+  same SMs as with CUDA 13, split by the driver API in groups of the Reader's size.
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
   each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector

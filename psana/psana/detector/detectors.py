@@ -24,4 +24,5 @@ from .jungfrauemu           import *
 #from .epixhremu             import *
 from .generic               import *
 from .epixuhr3x2            import *
+from .drpgpu                import *
 #from .pv_det      import * # until the version of detector with panel id is available

@@ -1,5 +1,7 @@
 #include "AreaDetector.hh"
 
+#include <vector>
+
 #include "ReaderKernels.cuh"
 
 #include "psdaq/service/EbDgram.hh"
@@ -68,11 +70,22 @@ AreaDetector::AreaDetector(Parameters& para, MemPoolGpu& pool) :
 
   // Set up buffers
   pool.createCalibBuffers(m_nPixels);
+
+  // The calibration constants: PedGainCalib dereferences both for every pixel, so null
+  // pointers here made the first L1Accept fault (cudaErrorIllegalAddress)
+  const size_t nConsts{(size_t(1) << rangeBits()) * m_nPixels};
+  std::vector<float> ones(nConsts, 1.0f);
+  chkError(cudaMalloc(&m_peds_d,  nConsts * sizeof(*m_peds_d)));
+  chkError(cudaMalloc(&m_gains_d, nConsts * sizeof(*m_gains_d)));
+  chkError(cudaMemset(m_peds_d, 0, nConsts * sizeof(*m_peds_d)));
+  chkError(cudaMemcpy(m_gains_d, ones.data(), nConsts * sizeof(*m_gains_d), cudaMemcpyDefault));
 }
 
 AreaDetector::~AreaDetector()
 {
   auto pool = m_pool->getAs<MemPoolGpu>();
+  if (m_gains_d)  chkError(cudaFree(m_gains_d));
+  if (m_peds_d)   chkError(cudaFree(m_peds_d));
   pool->destroyCalibBuffers();
 }
 

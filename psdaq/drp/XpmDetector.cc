@@ -25,7 +25,7 @@ static PyObject* _check(PyObject* obj) {
 XpmDetector::XpmDetector(Parameters* para, MemPool* pool, unsigned len) :
     Detector(para, pool),
     m_xmodule(nullptr),
-    m_sim(MemPoolSim::isSimDevice(para->device) ? pool->getAs<MemPoolSim>() : nullptr),
+    m_sim(pool->sim()),
     m_length(len)
 {
     // With a simulated device, xpmdet_config programs an emulated timing receiver (the

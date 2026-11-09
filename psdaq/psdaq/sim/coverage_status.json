@@ -55,6 +55,18 @@
     "status": "RUN",
     "note": "daq_sim up --det ts + cycle: xpmdet_config.py against rogue_dev and ts_config.py/ts_connect.py against simxpm's PVs; every TimingData field checked through ts_raw_2_1_0"
   },
+  "det:drp_gpu:fakecam": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu --det fakecam + cycle: drp_gpu -D fakecam -d sim:// (MemPoolGpu feeds the GPU DMA buffers from MemPoolSim) configures through xpmdet_config.py against rogue_dev; every pixel the GPU calibrated (fakecam_noOp_0_0_0.calib) checked"
+  },
+  "det:drp_gpu:epixuhremu": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu --det epixuhremu + cycle: epixuhremu_config.py (epixuhremu_configTiming) and xpmdet_config.py against rogue_dev; every pixel of the 336 x 576 panel the GPU calibrated checked against the TDet words"
+  },
+  "det:drp_gpu:epixuhrsim": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu --det epixuhrsim + cycle: its SimDetector makes the frames and constants, simxpm times them; every pixel checked against the frames it wrote (sim_ref)"
+  },
   "prog:control": {
     "status": "RUN",
     "note": "daq_sim cycle: control.py in normal mode, started by procmgr"
@@ -62,6 +74,10 @@
   "prog:drp": {
     "status": "RUN",
     "note": "daq_sim cycle"
+  },
+  "prog:drp_gpu": {
+    "status": "RUN",
+    "note": "daq_sim up --drp drp_gpu + cycle, in a step that holds a GPU"
   },
   "prog:teb": {
     "status": "RUN",

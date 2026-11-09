@@ -798,6 +798,44 @@ void PGPDrp::_setupGreenContexts(MemPoolGpu& memPool)
   auto gpu_device_index{memPool.context().deviceNo()};
   chkError(cudaSetDevice(gpu_device_index));
 
+#ifdef DRPGPU_DRIVER_GREEN_CONTEXTS
+  // Built with CUDA 12 (see GreenCtxCompat.hh): the same partition through the driver API.
+  // cuDevSmResourceSplitByCount() makes groups of one size and its remainder cannot be
+  // split again, so the SMs are split once into groups of the Reader's size: the Reader
+  // gets one, TrgInpGen one, the Reducer enough for its 40, the recorder the remainder.
+  {
+    CUdevice const dev{memPool.context().device()};
+    CUdevResource all{};
+    chkFatal(cuDeviceGetDevResource(dev, &all, CU_DEV_RESOURCE_TYPE_SM));
+    cudaDeviceProp prop;
+    chkError(cudaGetDeviceProperties(&prop, gpu_device_index));
+    const unsigned readerSMs{prop.maxThreadsPerMultiProcessor == 1536 ? 6u : 8u};
+    const unsigned reducerGroups{(40u + readerSMs - 1) / readerSMs};
+    unsigned nGroups{2 + reducerGroups};
+    std::vector<CUdevResource> groups(nGroups);
+    CUdevResource rest{};
+    chkFatal(cuDevSmResourceSplitByCount(groups.data(), &nGroups, &all, &rest, 0, readerSMs));
+    if (nGroups != groups.size()) {
+      logging::critical("Green contexts need %zu groups of %u SMs, but the GPU's %u SMs make %u",
+                        groups.size(), readerSMs, all.sm.smCount, nGroups);
+      abort();
+    }
+    logging::warning("Built with CUDA %d.%d: green contexts through the driver API, %u SMs "
+                     "in groups of %u", CUDART_VERSION / 1000, (CUDART_VERSION % 1000) / 10,
+                     all.sm.smCount, groups[0].sm.smCount);
+    struct { CUdevResource* res; unsigned n; } const parts[]{
+      {&groups[0], 1}, {&groups[1], 1}, {&groups[2], reducerGroups}, {&rest, 1}};
+    for (unsigned i = 0; i < 4; ++i) {  // Reader, TrgInpGen, Reducer, recorder
+      CUdevResourceDesc desc;
+      chkFatal(cuDevResourceGenerateDesc(&desc, parts[i].res, parts[i].n));
+      chkFatal(cuGreenCtxCreate(&m_green_ctx[i], desc, dev, CU_GREEN_CTX_DEFAULT_STREAM));
+      CUdevResource got{};
+      chkError(cuGreenCtxGetDevResource(m_green_ctx[i], &got, CU_DEV_RESOURCE_TYPE_SM));
+      logging::info("Final SM resources for context %u: %u SMs", i, got.sm.smCount);
+    }
+  }
+#else
+
   // Determine all available GPU SM resources
   cudaDevResource initial_SM_resources = {};
   chkError(cudaDeviceGetDevResource(gpu_device_index,        // GPU device
@@ -874,6 +912,7 @@ void PGPDrp::_setupGreenContexts(MemPoolGpu& memPool)
     logging::info("  - Min. SM partition size: %d SMs", final_SM_resources.sm.minSmPartitionSize);
     logging::info("  - SM co-scheduled alignment: %d SMs", final_SM_resources.sm.smCoscheduledAlignment);
   }
+#endif
 }
 
 std::string PGPDrp::configure(const json& msg)

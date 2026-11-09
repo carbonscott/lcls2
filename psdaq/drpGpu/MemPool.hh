@@ -6,12 +6,15 @@
 #include <vector>
 #include <thread>
 #include <atomic>
+#include <functional>
+#include <mutex>
 
 #include <cuda_runtime.h>
 #include <cuda/std/atomic>
 #include <nvtx3/nvtx3.hpp>
 
 #include "drp/drp.hh"
+#include "drp/MemPoolSim.hh"          // The source behind a simulated device (-d sim://)
 
 // NVTX provides the ability to annotate code and structures for the purpose of
 // making traces in the Nsight Systems profiler more easily identifiable.  It
@@ -184,7 +187,8 @@ struct DetPanel
   uint8_t**             dmaBuffers_d;   // Device array of dmaCount dptrs
   std::string           name;
 
-  DetPanel(std::string& device) : datadev(device.c_str()), name(device) {}
+  DetPanel(const std::string& device) : datadev(device.c_str()), name(device) {}
+  DetPanel(const std::string& path, const std::string& device) : datadev(path.c_str()), name(device) {}
 };
 
 class MemPoolGpu : public Drp::MemPool
@@ -196,6 +200,15 @@ public:
 public:   // Virtuals
   int fd() const override { return m_panel->datadev.fd(); }
   int setMaskBytes(uint8_t laneMask, unsigned virtChan) override;
+  // With a simulated device (-d sim://<simxpm>), the drp's MemPoolSim receives simxpm's
+  // timing frames and lays each one out as the type's firmware would; _simFeeder() copies
+  // them into the GPU's DMA buffers as GpuAsyncCore would DMA them.  nullptr with hardware.
+  Drp::MemPoolSim* sim() override { return m_sim.get(); }
+  // A detector that makes its own L1Accept payload on the GPU (SimDetector) hands it to the
+  // simulated device here: the n-th L1Accept since Configure gets what fn(n, &data_d)
+  // returns, data_d pointing to device memory, after simxpm's TimingHeader.  Empty: none.
+  using SimPayload = std::function<size_t(uint32_t l1, uint8_t** data_d)>;
+  void simPayload(SimPayload fn) { std::lock_guard<std::mutex> lock(m_simLock); m_simPayload = fn; }
 private:  // Virtuals
   ssize_t _freeDma(unsigned count, uint32_t* indices) override { return 0; /* Nothing to do */ }
 public:
@@ -282,9 +295,15 @@ public:
 private:
   int  _gpuMapFpgaMem(int fd, CUdeviceptr& buffer, uint64_t offset, size_t size, int write);
   void _gpuUnmapFpgaMem(CUdeviceptr& buffer);
+  void _simFeeder();
 private:
   CudaContext                  m_context;
   std::shared_ptr<DetPanel>    m_panel;
+  std::unique_ptr<Drp::MemPoolSim> m_sim;            // -d sim:// only
+  std::thread                  m_simThread;          // Runs _simFeeder()
+  std::atomic<bool>            m_simTerminate{false};
+  std::mutex                   m_simLock;            // Guards m_simPayload
+  SimPayload                   m_simPayload;
   bool                         m_setMaskBytesDone;
   size_t                       m_hostWrtBufsSize;
   uint32_t*                    m_hostWrtBufs;        // [nBuffers * nElements]

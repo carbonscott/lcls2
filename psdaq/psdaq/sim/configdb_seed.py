@@ -9,8 +9,8 @@ hardware-free DAQ needs to Configure:
                                persistValue must be 0xdeadbeef, the value
                                libtmoTeb writes for an event to be recorded.
   <inst>/<alias>/<det>         detType 'fakecam': the simulated detector (also for
-                               --det-type cspad, epixhremu, jungfrauemu, which have no
-                               config script of their own); or, with --det-type <type>,
+                               --det-type cspad, epixhremu, jungfrauemu, epixuhremu, which
+                               have no config script of their own); or, with --det-type <type>,
                                that type's own default config
                                (psdaq.configdb.<type>_config_store, or with --det-yaml
                                a firmware YAML through yaml_config_store_example, as a
@@ -53,7 +53,7 @@ def trigger_cdict(name, segm=0, script='tebMonRouter.py'):
 
 def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024, det_type='fakecam'):
     """The config of an XpmDetector type with no config script of its own (fakecam, and with
-    det_type cspad, epixhremu or jungfrauemu): only XpmDetector's sim_seed reads it."""
+    det_type cspad, epixhremu, jungfrauemu or epixuhremu): only XpmDetector's sim_seed reads it."""
     top = cdict()
     top.setAlg(det_type, [0, 0, 1])
     top.set('help:RO', '-- user --\nsim_seed : value mixed into the simulated payload'
@@ -66,7 +66,7 @@ def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024, det_type='fake
 
 # XpmDetector types with no <type>_config.py: their DRP configures through xpmdet_config only,
 # and their config DB entry holds what fakecam's does
-XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu')
+XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu', 'epixuhremu', 'epixuhrsim')
 # Stores whose default config is a function other than <type>_cdict(): ts_config_store's
 # __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument), and so does
 # epixuhr3x2_config_store's

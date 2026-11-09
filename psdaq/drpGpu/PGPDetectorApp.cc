@@ -849,6 +849,13 @@ int main(int argc, char* argv[])
         if (kwargs.first == "sim_l1_delay")   continue;  // GPU DRP Simulator
         if (kwargs.first == "sim_su_rate")    continue;  // GPU DRP Simulator
         if (kwargs.first == "sim_l1_verify")  continue;  // GPU DRP Simulator
+        // Only with a simulated device (-d sim://...): a hardware DRP still rejects these
+        if (para.device.rfind("sim://", 0) == 0) {
+            if (kwargs.first == "sim_seed")      continue;  // XpmDetector
+            if (kwargs.first == "sim_dma_count") continue;  // MemPoolSim
+            if (kwargs.first == "sim_dma_size")  continue;  // MemPoolSim
+            if (kwargs.first == "sim_ref")       continue;  // GPU DRP Simulator (EpixUHRsim)
+        }
         logging::critical("Unrecognized kwarg '%s=%s'\n",
                           kwargs.first.c_str(), kwargs.second.c_str());
         return 1;
