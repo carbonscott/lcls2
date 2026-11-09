@@ -34,7 +34,8 @@ import time
 GRAPH = 'graph'                         # ami's default graph name (ami.client Defaults.GraphName)
 ROWS, NROWS, PIXSUM, COUNT = 'ami_rows', 'ami_rows_count', 'ami_pixsum', 'ami_count'
 PIXEL = (0, 8)                          # raw[lane 0, uint16 word 8]: low half of payload word 4
-MAX_ROWS = 1000000
+MAX_ROWS = 4096                         # rows each RollingBuffer keeps: more than the events AMI
+                                        # sees in a cycle; it resends them all every heartbeat
 
 
 def comm_addr(addr):
