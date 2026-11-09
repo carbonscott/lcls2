@@ -428,8 +428,8 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
 `wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), `epixquad1kfps`,
-`epixUHR` (§3i), `jungfrau` (§3j), the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`,
-`ts` (§3f), and the digitizer `hsd` (§3i).
+`epixUHR` (§3i), `jungfrau` (§3j), `epixhr2x2` (§3k), the XpmDetector types `cspad`, `epixhremu`,
+`jungfrauemu`, `ts` (§3f), and the digitizer `hsd` (§3i).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -502,9 +502,8 @@ export PSDAQ_SIM_PYTHONPATH="$H/python:$H/submodules/surf/python:$H/submodules/a
 QT_QPA_PLATFORM=offscreen python -B -m psdaq.sim.rogue_drive --type epixhr2x2
 ```
 
-Neither has a DRP run yet: `MemPoolSim` has no framer for either (`TimeTool::_event` takes
-subframe 2, `EpixHR2x2::_event` its ASIC frames), and `daq_sim` does not pass the variable for
-them. On hardware the same surf error stops `tt_init`, and before this change both types also
+epixhr2x2 runs in a DAQ with it (§3k). tt has no DRP run yet: `MemPoolSim` has no framer for it
+(`TimeTool::_event` takes subframe 2), and `daq_sim` does not pass the variable for it. On hardware the same surf error stops `tt_init`, and before this change both types also
 lacked the `<type>_connectionInfo` that `BEBDetector::connectionInfo` calls (d6b1e7552 merged
 `<det>_connect` into it; these two kept `tt_connect` and `epixhr2x2_connect`).
 
@@ -522,9 +521,6 @@ lacked the `<type>_connectionInfo` that `BEBDetector::connectionInfo` calls (d6b
   each a mailbox request through the proxy, about 9500 in a row on one worker thread, and the
   last ones pass rogue's 1 s transaction timeout (`Timeout waiting for register transaction ...
   QsfpLowSpeedIo[0].QSFP_INT_L`). Its data framer and psana check are not written.
-- **epixhr2x2:** with `PSDAQ_SIM_PYTHONPATH` (above), every entry point of `epixhr2x2_config.py`
-  returns against `rogue_dev`; without it, the import fails (`ModuleNotFoundError: No module named
-  'lcls2_epix_hr_pcie'`), on hardware too. No DRP run yet: `MemPoolSim` has no framer for it.
 
 ## 3f. XpmDetector types: fakecam, cspad, epixhremu, jungfrauemu, ts
 
@@ -824,6 +820,68 @@ and `daq_sim down` removes any that is left.
 back `<value>` (default: what was set, plus 1). `exptime=20000` makes Configure fail with
 `<E> Failed readback check of exposure time for module 0: 0.000020 [0.000010]`. A DAC fault
 (e.g. `vb_ds`) is only logged: `Drp::Jungfrau` ignores `_configueDAC`'s result.
+
+## 3k. The ePixHR 2x2: `daq_sim up --det epixhr2x2`
+
+```bash
+# as §3e, with --det epixhr2x2 and, in up's environment, PSDAQ_SIM_PYTHONPATH (§3e) naming the
+# two packages epixhr2x2_config.py imports; up reports it and never sets it
+H='$SUBMODULEDIR/lcls2-epix-hr-pcie/firmware'; E='$SUBMODULEDIR/epix-hr-single-10k'
+export PSDAQ_SIM_PYTHONPATH="$H/python:$H/submodules/surf/python:$H/submodules/axi-pcie-core/python:$H/submodules/lcls2-pgp-fw-lib/python:$H/submodules/lcls-timing-core/python:$H/submodules/l2si-core/python:$E/firmware/python:$E/software/scripts:$E/firmware/submodules/epix-hr-core/python"
+nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim up -w $WD --det epixhr2x2" > $ROOT/daq_sim_up.log 2>&1 &
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
+```
+`drp -D epixhr2x2 -d sim://` runs `epixhr2x2_config.py`, unmodified, against `rogue_dev` (§3e).
+`up` logs `epixhr2x2: PSDAQ_SIM_PYTHONPATH=...`, writes it as a comment into `daq_sim.cnf`, and
+passes the drp `QT_QPA_PLATFORM=offscreen` (the camera's `ePixFpga` package imports PyQt5's
+widgets), as for epixquad1kfps.
+
+| DRP step | `epixhr2x2_config` entry point | the simulated device |
+|---|---|---|
+| start | `epixhr2x2_init`: `lcls2_epix_hr_pcie.DevRoot` on the PCIe map, the camera board `ePixHr10kT` (`epix_hr_core.SysReg`, `ePixFpga.EpixHR10kT`) over SRPv3, `ConfigLclsTimingV2`, `InitHSADC` | `seeds/epixhr2x2.json`: `FpgaVersion` 0x03040000 (`DevRoot.FwVersionLock`), `MmcmLocked` 3 and `RxLinkUp` 1 (what `LockProc` waits for) |
+| Alloc | `epixhr2x2_connectionInfo` (99cc4db8d): `TxId`, the camera's `RxId` | `RxId` reads 0; the link id the DRP reports is simxpm's |
+| Configure | `epixhr2x2_config`: the event builders' `Bypass`, `Timeout` and `Blowoff`; the camera's settings written as YAML files that `fnInitAsicScript` loads (MMCM, power, register control, the 4 ASICs, SSP, packet and trigger registers); gain mode 0's uniform pixel map into each ASIC; `_start` | registers keep what is written |
+| Enable, Disable | `epixhr2x2_enable` (the camera's timing trigger, `SetTimingTrigger`), `epixhr2x2_disable` (its body is commented out) | |
+| Unconfigure | `epixhr2x2_unconfig` (`StopRun` of the camera and the card) | |
+
+**The YAML files.** `config_expert` writes them as `/tmp/epixhr<part>.yml` (`det_config.dictToYaml`)
+and removes them after `fnInitAsicScript`. Under `daq_sim` they go under `$WD/tmp/` instead: the
+seed file's `"_scratch": ["/tmp/epixhr"]` moves that prefix to `$PSDAQ_SIM_TMPDIR`, which `up` sets
+to `$WD/tmp`, so two DAQs on one node do not share them. Not moved: the pixel-map CSVs gain mode 5 (Map) writes as
+`/tmp/epixhrPixelMap<i>.csv`, and the `/tmp/Hr10kTAsic<i>.*` files of `readPixelMaps` (off). The
+default config uses neither.
+
+**Config DB.** `epixhr2x2_config_store`'s config, with the detType its `__main__` gives the entry,
+`epixhr2x2hw` (`configdb_seed.STORE_DETTYPE`). The config script records that whole config as
+detector `epixhr2x2hw`, segment 0 (psana: `epixhr2x2hw_config_2_0_0`), and its own segment
+config (`asicPixelConfig`, `trbit`) as detector `epixhr2x2`, segment 0.
+
+**The data, per L1Accept** (`MemPoolSim.cc`, `sim_dma_size=0x40000`). The card's event builder
+nests the camera board's:
+
+| subframe | what `EpixHR2x2` reads there |
+|---|---|
+| 0 | an EventBatcher whose first subframe is the TimingHeader: `getTimingHeader` steps into it |
+| 3 | ASICs 0 and 1: an EventBatcher of {tdest 0: a copy of the TimingHeader, tdest 2: 146 rows of 384 uint16} |
+| 4 | ASICs 2 and 3: the same |
+
+`EpixHR2x2::_event` drops the first and the last row of each and records rows 1-144 of subframe
+3's, then of subframe 4's, as `raw` (288, 384), the words as they come. Pixel i of `raw` is
+`pattern(seed, n, i, 16)`. The dropped rows carry indices past the image, and the first starts
+with the data header. `xtc2_check` checks every pixel of `epixhr2x2_raw_2_0_1`'s `raw` in every
+event, and that the Configure has both detectors: `epixhr2x2hw` segment 0 (user, expert) through
+`epixhr2x2hw_config_2_0_0`, and `epixhr2x2` segment 0's `asicPixelConfig`.
+
+**Fault.** `PSDAQ_SIM_ROGUE_FAULT=DevRoot.DevPcie.Application.EventBuilder.Timeout` in `up`'s
+environment fails Configure: rogue's write-verify names the register.
+
+**Without `PSDAQ_SIM_PYTHONPATH`** `up` logs `epixhr2x2: PSDAQ_SIM_PYTHONPATH is not set (RUNBOOK
+§3k)` and fails before it starts a DRP: `configdb_seed` imports `epixhr2x2_config` for the store's
+config, and the import fails (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`,
+`logs/seed.log`). A `drp -D epixhr2x2 -d sim://` started without it stops at start with the same
+error, as the base commit's drp does, under `sim://` and with `/dev/datadev_0`.
 
 ## 4. Read the file back with psana2
 ```bash
