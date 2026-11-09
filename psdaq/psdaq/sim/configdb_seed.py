@@ -35,6 +35,8 @@ import runpy
 import sys
 import types
 
+from psdaq.sim import sim_path
+
 from psdaq.configdb.configdb import configdb
 from psdaq.configdb.typed_json import cdict
 
@@ -183,7 +185,9 @@ def type_cdict(det_type, name, segm=0, yaml=None):
     """The type's own config: <type>_config_store.<type>_cdict(), the config its
     write_to_daq_config_db writes (when it has no <type>_cdict), or with a rogue YAML file
     yaml_config_store_example.<type>_cdict(yaml)."""
-    # The type's config module sets up sys.path for its firmware packages (psdaq.utils.enable_*)
+    # The type's config module sets up sys.path for its firmware packages (psdaq.utils.enable_*);
+    # $PSDAQ_SIM_PYTHONPATH (psdaq.sim.sim_path) goes first
+    sim_path.pin()
     importlib.import_module('psdaq.configdb.%s_config' % det_type)
     if yaml:
         import pyrogue

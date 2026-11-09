@@ -1,0 +1,15 @@
+{
+ "_comment": "The simulated timetool (drp -D tt) for psdaq.sim.rogue_dev: the KCU's TimeToolKcu1500 (AxiMemMap) and the Piranha4 camera behind the camera link FEB on PGP lane 0 (SRPv3 on VC0, the serial port on VC2) of lcls2_timetool.TimeToolKcu1500Root, which psdaq/configdb/tt_config.py builds. Keys are pyrogue register paths; values are what the hardware reports. The lcls2-timetool package bundles a surf that does not work with rogue 6; run with PSDAQ_SIM_PYTHONPATH naming a rogue-6 surf (RUNBOOK).",
+ "TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.PgpMon[0].RxRemLinkReady": 1,
+ "_RxRemLinkReady": "the FEB's PGP2b link is up: tt_connect's 'PGP Link is down' check",
+ "TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id; the DRP takes the link id simxpm assigns, not this one",
+ "_uart": {
+  "dests": ["0x2"],
+  "replies": {
+   "gcp": "Model #:\tP4_CM_02K10D_00_R\r\nSerial #:\t00000001\r\nBiST:\tGood\r\nCPA:\t0 4095 0\r\nUSER>"
+  },
+  "default": "OK\r\nUSER>",
+  "_comment": "the Piranha4's serial console as in piranha4.json: tt_config's cl_poll waits for each command's answer; every command gets 'OK' and the 'USER>' prompt"
+ }
+}

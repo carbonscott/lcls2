@@ -78,6 +78,11 @@ def tt_connect(cl):
     d['paddr'] = rxId
     return d
 
+# called on alloc: BEBDetector::connectionInfo calls <det>_connectionInfo (d6b1e7552 merged
+# <det>_connect into it; this type kept only tt_connect)
+def tt_connectionInfo(cl, alloc_json_str):
+    return tt_connect(cl)
+
 def user_to_expert(cl, cfg, full=False):
     global group
     global ocfg

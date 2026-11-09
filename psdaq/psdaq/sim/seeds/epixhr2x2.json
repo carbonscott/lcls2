@@ -1,0 +1,9 @@
+{
+ "_comment": "The simulated ePixHR 2x2 (drp -D epixhr2x2) for psdaq.sim.rogue_dev: the KCU's lcls2_epix_hr_pcie.DevRoot (AxiMemMap) and the camera board ePixHr10kT (SRPv3 on VC0) that psdaq/configdb/epixhr2x2_config.py builds. Keys are pyrogue register paths; values are what the hardware reports. epixhr2x2_config imports lcls2_epix_hr_pcie and epix_hr_single_10k without an enable_* module; run with PSDAQ_SIM_PYTHONPATH naming their python directories (RUNBOOK).",
+ "DevRoot.DevPcie.AxiPcieCore.AxiVersion.FpgaVersion": "0x03040000",
+ "_FpgaVersion": "lcls2_epix_hr_pcie.DevRoot.FwVersionLock: DevRoot.start raises on any other value",
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked": 3,
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp": 1,
+ "_Locked": "what the timing receiver reports once its clocks and link are up: ConfigLclsTimingV2's LockProc waits for MmcmLocked == 3 and RxLinkUp == 1",
+ "_RxId": "no RxId seed: epixhr2x2_connect reads the camera board RxId, and a read of the camera board TriggerEventManager reaches no simulated transport (rogue_dev cannot place a seed there), so it reads 0; under sim:// BEBDetector takes the link id simxpm assigns instead (BEBDetector.cc m_sim->paddr())"
+}

@@ -85,6 +85,8 @@ import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 
+from psdaq.sim import sim_path
+
 SIM_PREFIX = 'sim://'
 ENV_SEEDS = 'PSDAQ_SIM_ROGUE_SEEDS'
 ENV_FAULT = 'PSDAQ_SIM_ROGUE_FAULT'
@@ -746,6 +748,9 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
             raise SimDeviceError('rogue_dev: already installed for %r' % _SIM.dev)
         return _SIM
     _SIM.dev = dev
+    pinned = sim_path.pin()       # $PSDAQ_SIM_PYTHONPATH, before the config module imports
+    if pinned:
+        log.info('rogue_dev: packages in %s import from there first', pinned)
     if seeds is None:
         seeds, spath, sproc = load_seeds(det_type, extra=True)
         proc = proc if proc is not None else sproc
