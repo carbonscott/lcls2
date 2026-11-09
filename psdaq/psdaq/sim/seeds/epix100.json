@@ -1,0 +1,13 @@
+{
+  "_comment": "Status registers that psdaq/configdb/epix100_config.py and the firmware roots it builds (lcls2_epix_hr_pcie.DevRoot, ePixFpga.Epix100a) poll, preset for psdaq.sim.rogue_dev. Keys are pyrogue register paths; values are what the hardware reports.",
+  "DevRoot.DevPcie.AxiPcieCore.AxiVersion.FpgaVersion": "0x03040000",
+  "DevRoot.DevPcie.AxiPcieCore.AxiVersion.DMA_SIZE_G": 1,
+  "DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked": 3,
+  "DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp": 1,
+  "DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[0].TxClkFreqRaw": 119000000,
+  "DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[1].TxClkFreqRaw": 185714286,
+  "DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0x00000001",
+  "ePixBoard.ePix100aFPGA.AxiVersion.FpgaVersion": "0xEA020009",
+  "ePixBoard.ePix100aFPGA.EpixFpgaRegisters.BaseClock": 129687500,
+  "_BaseClock": "Hz; 129.6875 MHz per the comment at epix100_config.py DaqTriggerDelay (11905 ticks = 91.7975 us) and the RW/Us pairs in ePix100a_asics_0123.yml"
+}
