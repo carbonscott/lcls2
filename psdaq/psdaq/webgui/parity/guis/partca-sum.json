@@ -1,0 +1,11 @@
+{
+ "file": "cas/partca-sum.py",
+ "na": "not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, \"L0Delay\"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown",
+ "rule": "no-window",
+ "walk": {
+  "argv": [],
+  "entry": "__main__",
+  "pump": 1,
+  "timeout": 60
+ }
+}

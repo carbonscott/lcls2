@@ -1,0 +1,1774 @@
+{
+ "file": "cas/tprca.py",
+ "title": "tprca (a TPR's input and readout channels: the PVs of cas/tprcas.py, served by the simulator simtpr)",
+ "web": "/gui/tprca",
+ "backend": "sim-device:simtpr",
+ "walk": {
+  "argv": [
+   "{pvbase}:TPR"
+  ],
+  "devices": [
+   {
+    "module": "simtpr",
+    "args": [
+     "-P",
+     "{pvbase}:TPR"
+    ]
+   }
+  ],
+  "pump": 4,
+  "timeout": 90,
+  "drive": [
+   "tabs",
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH0:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH0:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH1:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH1:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH2:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH2:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH3:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH3:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH4:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH4:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH5:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH5:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH6:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH6:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH7:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH7:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH8:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH8:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH9:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH9:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH10:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH10:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH11:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH11:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH12:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH12:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH13:FRATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@1[DAQ:SIM:TPR:CH13:FRATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH0:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH0:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH1:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH1:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH2:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH2:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH3:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH3:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH4:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH4:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH5:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH5:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH6:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH6:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH7:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH7:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH8:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH8:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH9:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH9:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH10:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH10:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH11:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH11:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH12:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH12:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH13:ARATE]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@2[DAQ:SIM:TPR:CH13:ARATE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH0:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH0:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH1:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH1:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH2:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH2:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH3:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH3:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH4:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH4:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH5:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH5:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH6:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH6:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH7:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH7:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH8:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH8:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH9:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH9:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH10:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH10:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH11:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH11:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH12:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH12:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH13:ATS]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@3[DAQ:SIM:TPR:CH13:ATS]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH0:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH0:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH1:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH1:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH2:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH2:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH3:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH3:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH4:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH4:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH5:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH5:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH6:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH6:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH7:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH7:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH8:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH8:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH9:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH9:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH10:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH10:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH11:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH11:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH12:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH12:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH13:SEQIDX]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@4[DAQ:SIM:TPR:CH13:SEQIDX]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH0:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH0:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH1:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH1:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH2:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH2:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH3:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH3:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH4:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH4:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH5:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH5:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH6:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH6:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH7:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH7:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH8:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH8:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH9:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH9:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH10:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH10:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH11:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH11:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH12:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH12:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH13:SEQBIT]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@5[DAQ:SIM:TPR:CH13:SEQBIT]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH0:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH0:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH1:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH1:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH2:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH2:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH3:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH3:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH4:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH4:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH5:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH5:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH6:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH6:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH7:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH7:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH8:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH8:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH9:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH9:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH10:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH10:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH11:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH11:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH12:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH12:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH13:XPART]": {
+   "web": "[data-parity~=\"PvEvtTab.PvEditCmb@6[DAQ:SIM:TPR:CH13:XPART]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH0:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH0:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH1:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH1:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH2:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH2:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH3:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH3:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH4:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH4:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH5:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH5:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH6:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH6:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH7:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH7:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH8:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH8:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH9:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH9:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH10:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH10:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH11:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH11:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH12:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH12:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditEvt.evtcmb[DAQ:SIM:TPR:CH13:RSEL]": {
+   "web": "[data-parity~=\"PvEditEvt.evtcmb[DAQ:SIM:TPR:CH13:RSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH0:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH1:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH2:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH3:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH4:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH5:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH6:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH7:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH8:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH9:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH10:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH11:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH12:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#0": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#0\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#1": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#1\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#2": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#2\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#3": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#3\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#4": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#4\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#5": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#5\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#6": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#6\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#7": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#7\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#8": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#8\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#9": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#9\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#10": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#10\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#11": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#11\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#12": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#12\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#13": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#13\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#14": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#14\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#15": {
+   "web": "[data-parity~=\"PvDstTab.chkB[DAQ:SIM:TPR:CH13:DESTNS]#15\"]",
+   "test": "test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH0:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH0:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH1:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH1:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH2:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH2:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH3:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH3:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH4:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH4:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH5:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH5:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH6:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH6:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH7:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH7:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH8:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH8:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH9:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH9:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH10:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH10:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH11:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH11:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH12:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH12:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvEditDst.selcmb[DAQ:SIM:TPR:CH13:DSTSEL]": {
+   "web": "[data-parity~=\"PvEditDst.selcmb[DAQ:SIM:TPR:CH13:DSTSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "PvRowDbl.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:235 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowDbl.qedit": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:240 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowInt.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:245 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowInt.qedit": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:250 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowCmb.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:255 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowCmb.qedit": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:260 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowMod.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:265 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowMod.qedit": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:270 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowEvt.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:275 is in a def never called; the walk shows the line never ran"
+  },
+  "PvRowDst.qlabel": {
+   "na": "tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:285 is in a def never called; the walk shows the line never ran"
+  },
+  "Ui_MainWindow.tw.tab[Input]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[Input]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH0]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH1]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH2]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH2]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH3]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH4]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH4]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH5]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH5]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH6]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH6]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH7]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH7]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH8]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH8]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH9]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH9]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH10]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH10]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH11]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH11]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH12]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH12]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.tw.tab[CH13]": {
+   "web": "[data-parity~=\"Ui_MainWindow.tw.tab[CH13]\"]",
+   "test": "test_gui_tprca.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@1[DAQ:SIM:TPR:ACCSEL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@1[DAQ:SIM:TPR:ACCSEL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvCmb[DAQ:SIM:TPR:LINKSTATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvCmb[DAQ:SIM:TPR:LINKSTATE]\"]",
+   "test": "test_gui_tprca.py::test_displays_follow_simtpr[chromium]"
+  },
+  "Ui_MainWindow.PvInt[DAQ:SIM:TPR:RXERRS]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvInt[DAQ:SIM:TPR:RXERRS]\"]",
+   "test": "test_gui_tprca.py::test_displays_follow_simtpr[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@2[DAQ:SIM:TPR:RXPOL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@2[DAQ:SIM:TPR:RXPOL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvDbl@1[DAQ:SIM:TPR:FRAMERATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvDbl@1[DAQ:SIM:TPR:FRAMERATE]\"]",
+   "test": "test_gui_tprca.py::test_displays_follow_simtpr[chromium]"
+  },
+  "Ui_MainWindow.PvDbl@2[DAQ:SIM:TPR:RXCLKRATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvDbl@2[DAQ:SIM:TPR:RXCLKRATE]\"]",
+   "test": "test_gui_tprca.py::test_displays_follow_simtpr[chromium]"
+  },
+  "Ui_MainWindow.PvEditInt@1[DAQ:SIM:TPR:IRQENA]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditInt@1[DAQ:SIM:TPR:IRQENA]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditInt@2[DAQ:SIM:TPR:EVTCNT]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditInt@2[DAQ:SIM:TPR:EVTCNT]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH0:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH0:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH1:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH1:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH2:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH2:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH3:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH3:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH4:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH4:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH5:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH5:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH6:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH6:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH7:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH7:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH8:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH8:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH9:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH9:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH10:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH10:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH11:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH11:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH12:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH12:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH13:RATE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@1[DAQ:SIM:TPR:CH13:RATE]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH0:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH0:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH1:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH1:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH2:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH2:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH3:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH3:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH4:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH4:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH5:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH5:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH6:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH6:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH7:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH7:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH8:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH8:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH9:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH9:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH10:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH10:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH11:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH11:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH12:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH12:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH13:MODE]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@3[DAQ:SIM:TPR:CH13:MODE]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH0:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH0:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH1:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH1:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH2:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH2:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH3:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH3:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH4:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH4:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH5:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH5:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH6:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH6:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH7:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH7:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH8:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH8:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH9:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH9:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH10:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH10:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH11:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH11:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH12:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH12:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH13:DELAY]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@2[DAQ:SIM:TPR:CH13:DELAY]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH0:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH0:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH1:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH1:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH2:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH2:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH3:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH3:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH4:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH4:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH5:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH5:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH6:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH6:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH7:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH7:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH8:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH8:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH9:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH9:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH10:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH10:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH11:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH11:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH12:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH12:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  },
+  "Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH13:WIDTH]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditDbl@3[DAQ:SIM:TPR:CH13:WIDTH]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH0:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH0:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH1:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH1:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH2:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH2:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH3:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH3:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH4:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH4:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH5:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH5:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH6:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH6:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH7:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH7:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH8:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH8:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH9:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH9:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH10:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH10:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH11:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH11:POL]\"]",
+   "test": "test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH12:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH12:POL]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  },
+  "Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH13:POL]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditCmb@4[DAQ:SIM:TPR:CH13:POL]\"]",
+   "test": "test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]"
+  }
+ }
+}

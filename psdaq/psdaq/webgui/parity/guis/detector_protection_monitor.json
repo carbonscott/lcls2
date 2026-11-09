@@ -1,0 +1,19 @@
+{
+ "file": "trigger/detector_protection_monitor.py",
+ "title": "detector_protection_monitor (hot-pixel protection: BLOCKED, NPIX, NPIX_OT, ADU over Channel Access, served by the simulator simdetprot)",
+ "web": "/gui/detector_protection_monitor",
+ "backend": "sim-device:simdetprot",
+ "walk": {
+  "argv": ["-b", "{pvbase}:JF16M:BLOCKER", "-d", "Jungfrau"],
+  "devices": [{"module": "simdetprot", "args": ["-P", "{pvbase}:JF16M:BLOCKER", "--trip-after", "8"]}],
+  "pump": 10,
+  "timeout": 90,
+  "drive": ["pump:1"]
+ },
+ "mapping": {
+  "MonitorProgressBar._pix_over_threshold_bar": {"web": "[data-parity~=\"MonitorProgressBar._pix_over_threshold_bar\"]",
+   "test": "test_gui_detector_protection_monitor.py::test_bar_shows_hot_pixels_as_percent_of_the_trip_count[chromium]"},
+  "MonitorMW.detector_protection_activated.msg_box": {"web": "[data-parity~=\"MonitorMW.detector_protection_activated.msg_box\"]",
+   "test": "test_gui_detector_protection_monitor.py::test_a_trip_opens_the_dialog_and_dismiss_reopens_it[chromium]"}
+ }
+}

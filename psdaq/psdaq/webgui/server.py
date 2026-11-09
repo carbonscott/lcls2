@@ -36,7 +36,9 @@ from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_lo
 # Extension modules add API routes without editing this file. Each one defines
 # register(app, get_routes, post_routes): get_routes maps a path to
 # fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
-EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api')
+EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api',
+               'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api', 'psdaq.webgui.daqstat_api',
+               'psdaq.webgui.plots_api')
 
 
 def load_extensions(app, names=EXT_MODULES):
@@ -475,6 +477,23 @@ def build_parser():
                    help="/gui/<NAME>: web copy of a pvedit GUI with the PyQt program's arguments, e.g. "
                         "'groupca:DAQ:SIM 0 5' (repeatable; PVs through one PV Access client, needs a "
                         "loopback-only EPICS_PVA env, as --events-source pva)")
+    p.add_argument('--dpm', default=None, metavar='ARGS',
+                   help="/gui/detector_protection_monitor: web copy of trigger/detector_protection_monitor.py with the "
+                        "PyQt program's arguments, e.g. '-b DAQ:SIM:JF16M:BLOCKER -d Jungfrau' (Channel Access, "
+                        "loopback EPICS_CA_* env only)")
+    p.add_argument('--seqplot', default=None, metavar='ARGS',
+                   help="/gui/seqplot: web copy of seq/seqplot.py with the PyQt program's arguments, e.g. "
+                        "'--seq 0:10k.py --time 0 0.0001'")
+    p.add_argument('--seq-epixhr', default=None, metavar='ARGS',
+                   help="/gui/seq_epixhr: web copy of seq/seq_epixhr.py --plot (with --test: no XPM write)")
+    p.add_argument('--seq-dir', default=None, help='where relative --seq scripts are read (default psdaq/seq)')
+    p.add_argument('--daqstat-cnf', default=None, help='/gui/daqstat: the daqmgr .cnf whose jobs it shows (as daqstat <cnf>)')
+    p.add_argument('--daqstat-slurm', default=None, metavar='STATE',
+                   help='/gui/daqstat: the psdaq.sim.simslurm state file that answers its Slurm commands (required)')
+    p.add_argument('--daqstat-interval', type=float, default=5.0, help='/gui/daqstat: query interval [s] (daqstat -i)')
+    p.add_argument('--datadev-sim', default=None, metavar='ROOT',
+                   help='/gui/datadev_monitor: web copy of cas/datadev_monitor.py on the simulated nodes of a '
+                        'psdaq.sim.simdatadev root (it never starts ssh)')
     p.add_argument('--print-config', action='store_true', help='print every endpoint as JSON and exit')
     p.add_argument('-l', '--loglevel', default='INFO')
     return p
