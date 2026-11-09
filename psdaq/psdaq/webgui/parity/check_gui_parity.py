@@ -8,8 +8,10 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
       {"file", "web": "<path the web GUI serves>", "backend": "sim-daq" | "sim-device:<stand-in>",
        "walk": {"argv": [...], "pump", "drive", "record_calls", "variants": [{"argv": ...}, ...]},
        "mapping": {"<row id>": {"web": "<CSS selector>", "test": "<pytest node id>[chromium]"} | {"na": "<reason>"}}}
-      Rows: gui_rows.make_rows from the source sites and the saved offscreen walk
-      (parity/guis/<name>.walk.json, written by --run-walks from qt_walk --gui against the simulated DAQ).
+      Rows: gui_rows.make_rows from the source sites and the offscreen walk of the running program
+      (qt_walk --gui against the simulated DAQ), run by --run-walks, as check_parity --run-walk does for
+      the control GUI.  No walk is kept in the tree: --run-walks writes <name>.walk.json to --walks DIR
+      (default a new temporary dir) and checks with it; --walks DIR alone reads an earlier run's files.
       check_parity.check counts them exactly as for the control GUI: M = mapped rows whose
       headless-browser test passed in a --junit file, is tagged with the row (junit `parity`) and
       recorded the spec's backend and nothing else; K = "na" rows the enumerator flags (main-block,
@@ -23,16 +25,16 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
       walk-tool:    every construction is in a function that sets QT_QPA_PLATFORM=offscreen and the file has
                     no entry point (the parity walk itself);
       library-demo: every construction is under `if __name__ == '__main__':`, the file has no entry point,
-                    other psdaq files import it, and the run-time probe (parity/guis/<name>.probe.json,
-                    qt_walk --probe-import) shows importing it constructs no QApplication.
+                    other psdaq files import it, and the run-time probe (qt_walk --probe-import, run by
+                    --run-walks into <name>.probe.json) shows importing it constructs no QApplication.
 A file with no spec is a GUI program without a web version: FAIL (its source rows are counted).
 
 Output: one line per file `file | web path or N/A reason | N/M/K | PASS|FAIL`, then the rows that keep
 each failing GUI from passing; exit 0 only if every file passes.
 
-Usage:
-    python -m psdaq.webgui.parity.check_gui_parity [--src DIR] [--junit FILE ...] [--only NAME] [--details]
-    python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD [--only NAME]   # DAQ env, PyQt5
+Usage (DAQ env, PyQt5; $WD the work dir of a running daq_sim up):
+    python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --junit FILE [--only NAME] [--details]
+    python -m psdaq.webgui.parity.check_gui_parity --walks DIR --junit FILE      # the walks an earlier --run-walks wrote
 """
 
 import argparse
@@ -63,16 +65,16 @@ def load_specs(d=GUIS_DIR):
     return out
 
 
-def walk_path(spec, d=GUIS_DIR):
+def walk_path(spec, d):
     return os.path.join(d, spec['_name'] + '.walk.json')
 
 
-def probe_path(spec, d=GUIS_DIR):
+def probe_path(spec, d):
     return os.path.join(d, spec['_name'] + '.probe.json')
 
 
-def check_na(e, spec, d=GUIS_DIR):
-    """(ok, why) for a not-a-GUI-program spec."""
+def check_na(e, spec, d=None):
+    """(ok, why) for a not-a-GUI-program spec; d: the dir --run-walks wrote the walks and probes to (None: none)."""
     reason, rule = spec.get('na'), spec.get('rule')
     if not isinstance(reason, str) or not reason.strip() or '\n' in reason:
         return False, 'na reason must be a non-empty one-line string'
@@ -93,9 +95,9 @@ def check_na(e, spec, d=GUIS_DIR):
             return False, 'construction(s) at line(s) %s outside the __main__ block' % bad
         if not e.get('imported_by'):
             return False, 'no other psdaq file imports it: not a library'
-        p = probe_path(spec, d)
-        if not os.path.isfile(p):
-            return False, 'no run-time import probe %s (run --run-walks)' % os.path.relpath(p, HERE)
+        p = probe_path(spec, d) if d else None
+        if not p or not os.path.isfile(p):
+            return False, 'no run-time import probe %s.probe.json (run with --run-walks)' % spec['_name']
         with open(p) as f:
             pr = json.load(f)
         mod = qapps._module_name(e['file'])
@@ -113,20 +115,20 @@ def campaign_simulators(src):
     return sorted(n[:-3] for n in os.listdir(d) if n.endswith('.py') and n != '__init__.py') if os.path.isdir(d) else []
 
 
-def check_gui(src, e, spec, results, d=GUIS_DIR):
-    """(rep, srcinfo, walk, note) for a GUI program spec."""
+def check_gui(src, e, spec, results, d=None):
+    """(rep, srcinfo, walk, rows) for a GUI program spec; d: the dir --run-walks wrote the walks to (None: none)."""
     srcinfo = gui_rows.source_sites(src, e['file'])
-    wp = walk_path(spec, d)
+    wp = walk_path(spec, d) if d else None
     walk = None
     note = ''
-    if os.path.isfile(wp):
+    if wp and os.path.isfile(wp):
         with open(wp) as f:
             walk = json.load(f)
         if walk.get('src_digest') != srcinfo['digest']:
             note = 'walk %s is of other source (%s, the tree has %s)' % (os.path.basename(wp), walk.get('src_digest'),
                                                                         srcinfo['digest'])
     else:
-        note = 'no walk %s (run --run-walks)' % os.path.basename(wp)
+        note = 'no walk %s.walk.json (run with --run-walks)' % spec['_name']
     rows = gui_rows.make_rows(srcinfo, walk)
     backend = spec.get('backend', 'sim-daq')
     if backend.startswith('sim-device:') and backend.split(':', 1)[1] not in campaign_simulators(src):
@@ -139,7 +141,11 @@ def check_gui(src, e, spec, results, d=GUIS_DIR):
     return rep, srcinfo, walk, rows
 
 
-def run_walks(src, specs, files, sim_dir, only=None, python=sys.executable, d=GUIS_DIR):
+def run_walks(src, specs, files, sim_dir, d, only=None, python=sys.executable, log=sys.stderr):
+    """Run, now, the offscreen walk (qt_walk --gui, every variant, merged) of each GUI program spec against the
+    simulated DAQ of sim_dir, and the import probe of each library-demo spec, with `python` (PyQt5); write
+    <name>.walk.json / <name>.probe.json to d.  One progress line per walk to log."""
+    os.makedirs(d, exist_ok=True)
     for e in files:
         spec = specs.get(e['file'])
         if spec is None or (only and spec['_name'] != only):
@@ -150,14 +156,17 @@ def run_walks(src, specs, files, sim_dir, only=None, python=sys.executable, d=GU
             cmd = [python, '-m', 'psdaq.webgui.parity.qt_walk', '--probe-import', qapps._module_name(e['file']),
                    '--out', probe_path(spec, d)]
             p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=120)
-            print(p.stdout.strip().splitlines()[-1] if p.stdout.strip() else 'probe exit %d' % p.returncode)
+            log.write('%s: %s\n' % (spec['_name'], p.stdout.strip().splitlines()[-1] if p.stdout.strip()
+                                     else 'probe exit %d' % p.returncode))
+            log.flush()
             continue
         if 'walk' not in spec:
             continue
         walks = []
         variants = [{}] + spec['walk'].get('variants', [])
         for i, var in enumerate(variants):
-            tmp = tempfile.mkdtemp(prefix='gui-walk-')
+            tmp = os.path.join(d, 'runs', '%s-%d' % (spec['_name'], i))
+            os.makedirs(tmp, exist_ok=True)
             vspec = dict(spec)
             vspec['walk'] = dict(spec['walk'], **var)
             vspec.pop('_path', None)
@@ -170,8 +179,9 @@ def run_walks(src, specs, files, sim_dir, only=None, python=sys.executable, d=GU
             p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                                timeout=float(vspec['walk'].get('timeout', 90)) + 60)
             lines = [ln for ln in p.stdout.splitlines() if ln.startswith('qt_walk')]
-            print('%s variant %d %s: %s' % (spec['_name'], i, vspec['walk'].get('argv'), lines[-1] if lines else
-                                            'exit %d: %s' % (p.returncode, p.stdout[-800:])))
+            log.write('%s variant %d %s: %s\n' % (spec['_name'], i, vspec['walk'].get('argv'), lines[-1] if lines else
+                                                'exit %d: %s' % (p.returncode, p.stdout[-800:])))
+            log.flush()
             if not os.path.isfile(out):
                 raise SystemExit('check_gui_parity: walk of %s failed' % spec['_name'])
             with open(out) as f:
@@ -179,7 +189,6 @@ def run_walks(src, specs, files, sim_dir, only=None, python=sys.executable, d=GU
         merged = gui_rows.merge_walks(walks)
         with open(walk_path(spec, d), 'w') as f:
             json.dump(merged, f, indent=0, sort_keys=True)
-        print('%s: walk saved to %s' % (spec['_name'], walk_path(spec, d)))
 
 
 def main(argv=None):
@@ -189,19 +198,29 @@ def main(argv=None):
     ap.add_argument('--guis', default=GUIS_DIR, help='spec dir (default %(default)s)')
     ap.add_argument('--only', help='one spec name (e.g. procstat)')
     ap.add_argument('--details', action='store_true', help='print each GUI program\'s full parity report')
-    ap.add_argument('--run-walks', action='store_true', help='run the offscreen walks / import probes (PyQt5) and save')
+    ap.add_argument('--run-walks', action='store_true',
+                    help='run the offscreen walks and import probes now (PyQt5, against --sim-daq), then check')
+    ap.add_argument('--walks', metavar='DIR', help='where --run-walks writes the walks and probes (default: a new '
+                                                   'temporary dir); without --run-walks, read them from there')
+    ap.add_argument('--walk-python', default=sys.executable, help='interpreter with PyQt5 for --run-walks')
     ap.add_argument('--sim-daq', default=os.environ.get('WEBGUI_SIM_DAQ'), help='daq_sim work dir for --run-walks')
     a = ap.parse_args(argv)
     src = os.path.abspath(a.src)
     text_only = []
     files = qapps.scan(src, text_only)
     specs = load_specs(a.guis)
+    results = check_parity.load_junit(a.junit) if a.junit else None
+    walks = a.walks
     if a.run_walks:
         if not a.sim_daq:
             raise SystemExit('check_gui_parity: --run-walks needs --sim-daq (or $WEBGUI_SIM_DAQ)')
-        run_walks(src, specs, files, a.sim_daq, a.only, d=a.guis)
-        return 0
-    results = check_parity.load_junit(a.junit) if a.junit else None
+        walks = walks or tempfile.mkdtemp(prefix='gui-walks-')
+        run_walks(src, specs, files, a.sim_daq, walks, a.only, python=a.walk_python)
+        walks_note = '%s (run now against the simulated DAQ %s)' % (walks, a.sim_daq)
+    elif walks:
+        walks_note = '%s (read; not run now)' % walks
+    else:
+        walks_note = '(none: no GUI program can pass; run with --run-walks)'
     lines, details, ok_all = [], [], True
     n_pass = 0
     for e in files:
@@ -222,12 +241,12 @@ def main(argv=None):
             ok_all = False
             continue
         if 'na' in spec:
-            ok, why = check_na(e, spec, a.guis)
+            ok, why = check_na(e, spec, walks)
             lines.append('%s | N/A: %s [%s] | -/-/- | %s' % (e['file'], spec['na'], why, 'PASS' if ok else 'FAIL'))
             ok_all = ok_all and ok
             n_pass += ok
             continue
-        rep, srcinfo, walk, rows = check_gui(src, e, spec, results, a.guis)
+        rep, srcinfo, walk, rows = check_gui(src, e, spec, results, walks)
         ok = rep['ok']
         n_pass += ok
         ok_all = ok_all and ok
@@ -246,6 +265,7 @@ def main(argv=None):
                 f_, spec['_name']))
             ok_all = False
     print('check_gui_parity: src=%s junit=%s' % (src, ','.join(a.junit) or '(none)'))
+    print('walks: %s' % walks_note)
     print('%d psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)' % len(files))
     for t in text_only:
         print('  (not listed: %s has "QApplication(" only in %s; its syntax tree constructs none)' % (

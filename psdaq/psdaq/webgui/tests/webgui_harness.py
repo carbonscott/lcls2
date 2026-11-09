@@ -349,6 +349,25 @@ def check_simxpm_source(name):
     return check
 
 
+_WALKS = {}
+
+
+def gui_walks():
+    """The directory holding this tree's offscreen walks of the other PyQt GUIs and their import probes, run once
+    per session by check_gui_parity.run_walks (qt_walk --gui with SERVER_PYTHON, PyQt5 offscreen, against the
+    simulated DAQ of WEBGUI_SIM_DAQ); no walk is kept in the tree.  None without WEBGUI_SIM_DAQ."""
+    if sim_daq() is None:
+        return None
+    if 'dir' not in _WALKS:
+        from psdaq.webgui.parity import check_gui_parity, qapps
+        src = qapps.default_src()
+        d = tempfile.mkdtemp(prefix='gui-walks-')
+        check_gui_parity.run_walks(src, check_gui_parity.load_specs(), qapps.scan(src), SIM_DAQ_DIR, d,
+                                   python=SERVER_PYTHON, log=sys.stdout)
+        _WALKS['dir'] = d
+    return _WALKS['dir']
+
+
 def pva(op, items, timeout=30):
     """PV Access from the test, independent of the server under test: op 'get' (items = PV names) -> {pv: value},
     op 'put' (items = [[pv, value], ...]).  Runs the DAQ env's python (p4p) with this process's loopback-only

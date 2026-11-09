@@ -116,9 +116,10 @@ def _reveal(page, rid):
 
 
 def _walk_rows():
-    from psdaq.webgui.parity import gui_rows
+    from psdaq.webgui.parity import check_gui_parity, gui_rows
     src = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(G.__file__))))
-    with open(os.path.join(src, 'webgui', 'parity', 'guis', 'groupca.walk.json')) as f:
+    spec = next(s for s in check_gui_parity.load_specs().values() if s['_name'] == 'groupca')
+    with open(check_gui_parity.walk_path(spec, H.gui_walks())) as f:     # the PyQt groupca's walk, run this session
         walk = json.load(f)
     rows = gui_rows.make_rows(gui_rows.source_sites(src, 'cas/groupca.py'), walk)
     inst = {x['seq']: x for x in walk['instances']}
