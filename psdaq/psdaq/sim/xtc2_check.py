@@ -73,8 +73,51 @@ def _wave8_event(det, evt, seed, n, offset=0):
     return True, problems
 
 
-EVENT_TYPES = {'wave8': (_wave8_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each '
-                                       'sample, integral, baseline and fex value vs pattern')}
+def _wave8he_event(det, evt, seed, n, offset=0):
+    """(has data, [problems]) for one wave8he event (MemPoolSim.cc wave8heData, Wave8HE.cc)."""
+    import numpy as np
+    from psdaq.sim import pattern
+    raws = [getattr(det.raw, 'raw_%d' % ch)(evt) for ch in range(8)]
+    names = (['peakPos_%d' % i for i in range(8)] + ['peakVal_%d' % i for i in range(8)] +
+             ['base_%d' % i for i in range(8)] + ['integral_%d' % i for i in range(8)] +
+             ['posPeakX', 'posPeakY', 'posIntegralX', 'posIntegralY'])
+    fex = {k: getattr(det.fex, k)(evt) for k in names}
+    if any(r is None for r in raws) or any(v is None for v in fex.values()):
+        return False, []
+    problems = []
+    N = WAVE8_SAMPLES
+    for ch, raw in enumerate(raws):
+        want = pattern.pattern(seed, n, np.arange(ch * N, (ch + 1) * N) + offset, 16)
+        if raw.shape != (N,) or not (raw == want).all():
+            bad = int((raw != want).sum()) if raw.shape == (N,) else raw.size
+            problems.append(f'raw_{ch}: {bad} of {N} samples differ (shape {raw.shape})')
+    base = 8 * N + offset
+
+    def p(i, bits):
+        return int(pattern.pattern(seed, n, base + i, bits))
+
+    def s24(v):                         # the DRP's 24-bit sign extension, then / 4
+        return np.float32((v - (1 << 24) if v & (1 << 23) else v) / 4.0)
+    want = {'posPeakX': np.float32(p(24, 20) / 1024.), 'posPeakY': np.float32(p(25, 20) / 1024.),
+            'posIntegralX': np.float32(p(40, 20) / 1024.),
+            'posIntegralY': np.float32(p(41, 20) / 1024.)}
+    for i in range(8):
+        want['peakPos_%d' % i] = p(i, 8)
+        want['peakVal_%d' % i] = s24(p(8 + i, 24))
+        want['base_%d' % i] = s24(p(16 + i, 24))
+        want['integral_%d' % i] = s24(p(32 + i, 24))
+    for k, w in want.items():
+        if fex[k] != w:
+            problems.append(f'fex.{k} {fex[k]!r} != {w!r}')
+    return True, problems
+
+
+EVENT_TYPES = {
+    'wave8': (_wave8_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample, integral, '
+                            'baseline and fex value vs pattern'),
+    'wave8he': (_wave8he_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample and '
+                                'each peak/baseline/integral/position fex value vs pattern'),
+}
 
 
 def check_events(path, det_name, kind, seed=None, expect=None, max_report=5, offset=0):

@@ -96,6 +96,18 @@ def _store_cdict(mod, det_type, name, segm):
     return _StoreCapture.top
 
 
+# Types with no <type>_config_store in the tree: the store whose config they take, and the
+# keys their config script reads that it lacks.  wave8he shares wave8_common with wave8;
+# wave8he_config.user_to_expert derives the HLS counts and scales from these region bounds
+# (the values wave8he_config records as its defaults).
+BORROWED_STORES = {
+    'wave8he': ('wave8', [('expert.HlsProcessor.BaselineBeg', 20, 'UINT8'),
+                          ('expert.HlsProcessor.BaselineEnd', 52, 'UINT8'),
+                          ('expert.HlsProcessor.SignalBeg', 100, 'UINT8'),
+                          ('expert.HlsProcessor.SignalEnd', 114, 'UINT8')]),
+}
+
+
 def type_cdict(det_type, name, segm=0, yaml=None):
     """The type's own config: <type>_config_store.<type>_cdict(), the config its
     write_to_daq_config_db writes (when it has no <type>_cdict), or with a rogue YAML file
@@ -107,11 +119,16 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         mod = importlib.import_module('psdaq.configdb.yaml_config_store_example')
         top = getattr(mod, '%s_cdict' % det_type)(pyrogue.yamlToData(fName=yaml))
     else:
-        mod = importlib.import_module('psdaq.configdb.%s_config_store' % det_type)
-        if hasattr(mod, '%s_cdict' % det_type):
-            top = getattr(mod, '%s_cdict' % det_type)()
+        store, extra = BORROWED_STORES.get(det_type, (det_type, []))
+        if store != det_type:
+            importlib.import_module('psdaq.configdb.%s_config' % store)
+        mod = importlib.import_module('psdaq.configdb.%s_config_store' % store)
+        if hasattr(mod, '%s_cdict' % store):
+            top = getattr(mod, '%s_cdict' % store)()
         else:
-            top = _store_cdict(mod, det_type, name, segm)
+            top = _store_cdict(mod, store, name, segm)
+        for key, value, typ in extra:
+            top.set(key, value, typ)
     top.setInfo(det_type, name, segm, 'sim-%s' % det_type, 'Seeded by psdaq.sim.configdb_seed')
     return top
 

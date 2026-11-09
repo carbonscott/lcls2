@@ -140,3 +140,30 @@ def test_wave8_frame_layout():
     assert inten == float(pattern.pattern(SEED, seq, 8 * N + 16, 20))
     assert x == int(pattern.pattern(SEED, seq, 8 * N + 17, 20)) / 1024.
     assert y == int(pattern.pattern(SEED, seq, 8 * N + 18, 20)) / 1024.
+
+
+def test_wave8he_frame_layout():
+    """Wave8HE::_event reads subframes 2..9 as raw_0..7, 0x0C as W8HE::PeakStream and 0x0D as
+    W8HE::IntegralStream (24-bit values packed, little-endian)."""
+    seq, N = 11, 256
+    data, order = subframes(frame('wave8he', seq))
+    assert order == [0, 1] + list(range(2, 10)) + [0x0c, 0x0d]
+    for ch in range(8):
+        raw = np.frombuffer(data[2 + ch], dtype=np.uint16)
+        assert (raw == pattern.pattern(SEED, seq, np.arange(ch * N, (ch + 1) * N), 16)).all()
+    n = 8 * N
+
+    def p(i, bits):
+        return int(pattern.pattern(SEED, seq, n + i, bits))
+
+    def u24(b, i):
+        return b[3 * i] | (b[3 * i + 1] << 8) | (b[3 * i + 2] << 16)
+    peak, integ = data[0x0c], data[0x0d]
+    assert (len(peak), len(integ)) == (64, 32)
+    words = struct.unpack_from('<8I', peak, 0)
+    for i in range(8):
+        assert words[i] >> 24 == p(i, 8) and words[i] & 0xffffff == p(8 + i, 24)
+        assert u24(peak[32:56], i) == p(16 + i, 24)
+        assert u24(integ[:24], i) == p(32 + i, 24)
+    assert struct.unpack_from('<2f', peak, 56) == (p(24, 20) / 1024., p(25, 20) / 1024.)
+    assert struct.unpack_from('<2f', integ, 24) == (p(40, 20) / 1024., p(41, 20) / 1024.)

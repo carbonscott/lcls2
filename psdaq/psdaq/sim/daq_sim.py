@@ -89,6 +89,8 @@ SIM_TYPES = {
     # wave8 is configured through its front-end's IOC; rogue_dev serves its PVs in process
     'wave8':   {'kwargs': 'sim_dma_size=0x2000,sim_dma_count=1024,sim_seed={seed:#x},'
                           'epics_prefix=SIM:W8:00'},
+    'wave8he': {'kwargs': 'sim_dma_size=0x2000,sim_dma_count=1024,sim_seed={seed:#x},'
+                          'epics_prefix=SIM:W8HE:00'},
 }
 
 

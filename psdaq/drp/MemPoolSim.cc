@@ -187,10 +187,49 @@ static void wave8Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t
     out.tail(32, 11);
 }
 
+// wave8he (Wave8HE::_event reads subframes 2..9 as raw waveforms, 0x0C as W8HE::PeakStream,
+// 0x0D as W8HE::IntegralStream): 8 waveforms of Wave8Samples uint16 (the firmware's 255
+// samples padded to 512 B), then the 64 B peak stream {8 x [peakPos:8|peakVal:24], 8 packed
+// 24-bit baselines, float posX, posY} and the 32 B integral stream {8 packed 24-bit
+// integrals, float posX, posY}.  Indices continue after the samples as for wave8.
+static void _put24(uint8_t* p, uint32_t v) { p[0] = v & 0xff;  p[1] = (v >> 8) & 0xff;  p[2] = (v >> 16) & 0xff; }
+
+static void wave8heData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap samples(8 * Wave8Samples, 16, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(1);                  // auxiliary timing header
+    std::vector<uint16_t> raw(8 * Wave8Samples);
+    samples.fill(raw.data(), seed, f.seq);
+    for (unsigned ch = 0; ch < 8; ++ch) {
+        memcpy(out.data(), raw.data() + ch * Wave8Samples, Wave8Samples * sizeof(uint16_t));
+        out.tail(Wave8Samples * sizeof(uint16_t), 2 + ch);
+    }
+    const uint32_t n = 8 * Wave8Samples;
+    auto p = [&](unsigned i, unsigned bits) { return MemPoolSim::pattern(seed, f.seq, n + i, bits); };
+    uint8_t* d = out.data();                                    // W8HE::PeakStream
+    memset(d, 0, 64);
+    for (unsigned i = 0; i < 8; ++i) {
+        uint32_t word = (p(i, 8) << 24) | p(8 + i, 24);
+        memcpy(d + 4 * i, &word, 4);
+        _put24(d + 32 + 3 * i, p(16 + i, 24));
+    }
+    float pos[2] = { float(p(24, 20)) / 1024.f, float(p(25, 20)) / 1024.f };
+    memcpy(d + 56, pos, sizeof(pos));
+    out.tail(64, 0x0c);
+    d = out.data();                                             // W8HE::IntegralStream
+    memset(d, 0, 32);
+    for (unsigned i = 0; i < 8; ++i)
+        _put24(d + 3 * i, p(32 + i, 24));
+    float ipos[2] = { float(p(40, 20)) / 1024.f, float(p(41, 20)) / 1024.f };
+    memcpy(d + 24, ipos, sizeof(ipos));
+    out.tail(32, 0x0d);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
     { "wave8",   _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(56) + _padded(32), wave8Data },
+    { "wave8he", _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(64) + _padded(32), wave8heData },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
