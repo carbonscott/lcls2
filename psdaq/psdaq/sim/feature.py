@@ -25,10 +25,12 @@ b  A scan: psdaq/psdaq/cas/generic_timing_scan.py, the facility's config scan sc
    BeginStep with the step's values and readout_count, Enable, simxpm's StepDone after
    readout_count L1Accepts, Disable, EndStep) over epix100_0:user.start_ns at 700000, 710000 and
    720000 ns (--linear 700000 730000 10000), --events L1Accepts per step, against the simulated
-   DAQ (up --det epix100 --rate 100); epix100's own epix100_config.py applies each step's value
-   (epix100_update).  Checks: psana2 reads 3 steps whose step_value are those values (and whose
-   step_docstring names them), each with --events events; epix100's DAQ count equals psana2's
-   and every event passes the per-pixel check.
+   DAQ (up --det tb --also epix100 --rate 100).  epix100's own epix100_config.py applies each
+   step's value (epix100_update); the step values are recorded, as at the hutches, by the timing
+   DRP (TimingBEB, whose scanEnabled() is true; Epix100's is false).  Checks: psana2 reads 3
+   steps in tb's stream whose step_value are those values and whose step_docstring names them;
+   each DRP has --events events in every step, its DAQ count equals psana2's and every event
+   passes its per-event check; epix100_update applied the 3 values, in order.
 e  System DRPs: drp_pva, drp_bld, drp_udpencoder and epicsArch recording from simulated sources
    in the same run as the PGP DRP fakecam_0 (up --pva --epics --udp --bld --rate 100), one cycle.
    Checks: psana2 reads each one's data event by event (sysdrp_check), drp_bld's from simxpm's
@@ -59,6 +61,7 @@ from psdaq.sim import daq_sim as ds
 
 BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'e': ('bld-seed',)}
 SCAN_VALUES = (700000., 710000., 720000.)        # --linear 700000 730000 10000
+SCAN_DET = 'epix100'                             # generic_timing_scan --detname epix100_0
 DROP_L1 = 10
 TRANSITION_RE = re.compile(r'^(\S+ \S+) simxpm INFO ((ClearReadout|Configure|Unconfigure|BeginRun|EndRun|'
                            r'BeginStep|EndStep|Enable|Disable) rog 0x[0-9a-f]+ pulseId \S+ time \S+ to \d+ link\(s\)'
@@ -70,7 +73,7 @@ def up_options(feature, platform):
     g2 = (platform + 1) % 8
     return {'a': ['--det', 'hrencoder', '--also', f'epix100:{g2}', '--also', f'wave8:{g2}',
                   '--fixed-rate', f'{platform}:3', '--fixed-rate', f'{g2}:4'],
-            'b': ['--det', 'epix100', '--rate', '100'],
+            'b': ['--det', 'tb', '--also', SCAN_DET, '--rate', '100'],
             'e': ['--pva', '--epics', '--udp', '--bld', '--rate', '100']}[feature]
 
 
@@ -97,9 +100,10 @@ def head():
                                           .splitlines() if l.strip()])
 
 
-def run_echo(argv, prefix, timeout):
+def run_echo(argv, prefix, timeout, env=None):
     """Run argv, echoing each output line with a prefix; return its exit code."""
-    p = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+    p = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
+                         env=env)
     timer = threading.Timer(timeout, p.kill)
     timer.start()
     try:
@@ -214,41 +218,74 @@ def broken_copy(work, experiment, run, alias, drop=DROP_L1):
     return dst
 
 
-def scan_steps(path, det_name='epix100'):
-    """[(step_value, step_docstring, events, events with det data)] of the run in one stream file."""
+def scan_steps(path, det_name):
+    """[(step_value, step_docstring, events, events with det_name's data)] of the run in one
+    stream file; the values are None in a stream that does not record them."""
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     from psana import DataSource
     out = []
     ds_ = DataSource(files=[path], skip_calib_load='all')
     for run in ds_.runs():
-        sv, sd = run.Detector('step_value'), run.Detector('step_docstring')
+        sv = run.Detector('step_value', accept_missing=True)
+        sd = run.Detector('step_docstring', accept_missing=True)
+        has = 'step_value' in run.dsparms.configinfo_dict
         det = run.Detector(det_name)
         for step in run.steps():
             n = k = 0
             for evt in step.events():
                 n += 1
                 k += det.raw.raw(evt) is not None
-            out.append((sv(step), sd(step), n, k))
+            out.append((sv(step) if has else None, sd(step) if has else None, n, k))
     return out
 
 
 def check_b(work, state, rec, breakage=None):
-    """Feature b's verdict: steps, values, per-step counts, DAQ == psana2, per-event check."""
+    """Feature b's verdict: the recorder's steps and step values (TimingBEB records them, as the
+    timing system does at the hutches), each DRP's events per step, DAQ == psana2, the per-event
+    checks, and the scanned detector's config code applying each step's value."""
     from psdaq.sim import xtc2_check
     counts, problems = dict(rec['counts']), []
     experiment, run = rec.get('experiment'), rec.get('run')
     want = [v + (1 if breakage == 'expect-values' else 0) for v in SCAN_VALUES]
     events = rec.get('events_per_step')
-    alias, name = f'{state["det"]}_0', state['det']
     files = sorted(glob.glob(work.path('data', ds.INSTRUMENT, experiment or 'none', 'xtc',
                                        f'{experiment}-r{run or 0:04d}-s*-c000.xtc2')))
     if not files:
         return counts, [f'no xtc2 file of run {run}']
-    path = files[0]
-    steps = scan_steps(path, name)
-    counts['psana2 steps'] = len(steps)
+    links = counts.get('simxpm links')
+    links = links if isinstance(links, dict) else {}
+    recorded = None
+    for name in [state['det']] + [a['det'] for a in state.get('also', ())]:
+        res = path = None
+        for f in files:                 # its stream: the file in which it has data
+            try:
+                r = xtc2_check.check(f, name, state['seed'])
+            except Exception:
+                continue
+            if r.get('with_data'):
+                res, path = r, f
+                break
+        daq = (links.get(f'{name}_0') or {}).get('l1acc')
+        if res is None:
+            problems.append(f'{name}_0: no stream with its data (DAQ {daq})')
+            continue
+        steps = scan_steps(path, name)
+        counts[f'drp {name}_0'] = (f'DAQ (simxpm L1Accepts sent) {daq} psana2 events {res["events"]} with data '
+                                   f'{res["with_data"]} per step {[s[2] for s in steps]} per-event check '
+                                   f'{"PASS" if res["pass"] else "FAIL " + str(res["problems"][:2])} '
+                                   f'({os.path.basename(path)})')
+        if not (res['pass'] and daq == res['events'] == res['with_data'] == sum(s[2] for s in steps)):
+            problems.append(f'{name}_0: DAQ {daq}, psana2 {res["events"]}/{res["with_data"]}, check {res["pass"]}')
+        if events and any(n != events or k != n for _, _, n, k in steps):
+            problems.append(f'{name}_0: events per step {[(s[2], s[3]) for s in steps]}, want {events} each')
+        if steps and steps[0][0] is not None:
+            recorded = (name, steps)
+    if recorded is None:
+        return counts, problems + ['no stream records step_value']
+    name, steps = recorded
+    counts['psana2 steps'] = f'{len(steps)} (step_value and step_docstring in {name}_0\'s stream)'
     for i, (v, doc, n, k) in enumerate(steps):
-        counts[f'step {i + 1}'] = f'step_value {v} docstring {doc} events {n} with {alias} data {k}'
+        counts[f'step {i + 1}'] = f'step_value {v} step_docstring {doc} events {n}'
     values = [s[0] for s in steps]
     if len(steps) < 3:
         problems.append(f'{len(steps)} steps (want >= 3)')
@@ -259,20 +296,25 @@ def check_b(work, state, rec, breakage=None):
             d = json.loads(doc) if doc else {}
         except ValueError:
             d = {}
-        if float(d.get('step', -1)) != v:
+        if v is None or float(d.get('step', -1)) != v:
             problems.append(f'step {i + 1}: docstring {doc!r} does not name step {v}')
-        if events and (n != events or k != n):
-            problems.append(f'step {i + 1}: {n} events, {k} with data (want {events})')
-    r = xtc2_check.check(path, name, state['seed'])
-    daq = ((counts.get('simxpm links') or {}).get(alias) or {}).get('l1acc')
-    counts[f'drp {alias}'] = (f'group {state["platform"]}: DAQ (simxpm L1Accepts sent) {daq} psana2 events '
-                              f'{r["events"]} with data {r["with_data"]} per-event check '
-                              f'{"PASS" if r["pass"] else "FAIL " + str(r["problems"][:2])} ({os.path.basename(path)})')
-    if not (r['pass'] and daq == r['events'] == r['with_data'] == sum(s[2] for s in steps)):
-        problems.append(f'{alias}: DAQ {daq}, psana2 {r["events"]}/{r["with_data"]}, check {r["pass"]}')
+    applied = scan_applied(work, SCAN_DET)
+    counts[f'{SCAN_DET}_update start_ns'] = applied
+    if [float(a) for a in applied] != list(SCAN_VALUES):
+        problems.append(f'{SCAN_DET}_config applied start_ns {applied}, the scan set {list(SCAN_VALUES)}')
     if counts.get('scan exit') != 0:
         problems.append(f'scan script exit {counts.get("scan exit")}')
     return counts, problems
+
+
+def scan_applied(work, det):
+    """The start_ns values the scanned detector's config code applied, step by step, from its
+    DRP's log (epix100_config.epix100_update prints each)."""
+    logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{det}_0.log')), key=os.path.getmtime)
+    if not logs:
+        return []
+    with open(logs[-1], errors='replace') as f:
+        return [int(m.group(1)) for m in re.finditer(r'\*\*\*%s_update start_ns: (\d+)' % det, f.read())]
 
 
 # --- feature b's drive: the facility's scan script against the simulated DAQ ----------------
@@ -284,7 +326,7 @@ def drive_scan(work, events, timeout):
     state = work.load()
     plat = state['platform']
     dc = DaqControl(host='localhost', platform=plat, timeout=timeout * 1000)
-    msgs, rows, stop = [], [], threading.Event()
+    msgs, rows, stop, last = [], [], threading.Event(), [None]
 
     def monitor():
         mon = DaqControl(host='localhost', platform=plat, timeout=1000)
@@ -294,9 +336,13 @@ def drive_scan(work, events, timeout):
                 m = mon.front_sub.recv_json()
             except Exception:
                 continue
-            key, body = m.get('header', {}).get('key'), m.get('body', {})
-            if key == 'transition':
-                print(f'{ds.now()} [transition] {body.get("transition")} -> state {body.get("state")}', flush=True)
+            key, body = m.get('header', {}).get('key'), m.get('body', {}) or {}
+            if key == 'status':             # control's status after each transition
+                now = (body.get('transition'), body.get('state'))
+                if now != last[0]:
+                    last[0] = now
+                    rows.append((ds.now(), ds.now(), f'[{now[0]}]', now[1], None))
+                    print(f'{ds.now()} [status] transition {now[0]} -> state {now[1]}', flush=True)
             elif key in ('step', 'error', 'fileReport'):
                 text = body.get('err_info', body.get('path', json.dumps(body)[:160]))
                 msgs.append((ds.now(), key, text))
@@ -323,11 +369,11 @@ def drive_scan(work, events, timeout):
     rc = None
     if ok:
         argv = [sys.executable, '-m', 'psdaq.cas.generic_timing_scan', '-p', str(plat), '-C', 'localhost',
-                '--detname', f'{state["det"]}_0', '--scantype', 'timing', '--events', str(events),
+                '--detname', f'{SCAN_DET}_0', '--scantype', 'timing', '--events', str(events),
                 '--record', '1', '--config', ds.CONFIG_ALIAS, '-t', str(timeout * 1000),
                 '--linear', '700000', '730000', '10000']
         print(f'{ds.now()} scan: {" ".join(argv[1:])}', flush=True)
-        rc = run_echo(argv, '  scan| ', timeout=600)
+        rc = run_echo(argv, '  scan| ', timeout=600, env=dict(os.environ, PYTHONUNBUFFERED='1'))
         print(f'{ds.now()} scan exit {rc}', flush=True)
     counts = ds._run_counts(work, plat)     # at connected: simxpm's and the DRPs' counters
     status = dc.getStatus()
