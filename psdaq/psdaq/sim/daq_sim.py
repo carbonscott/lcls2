@@ -318,9 +318,11 @@ SEGMENT = ''' {{ id:'{det}_{segm}', flags:'spu',
 '''
 # --meb: the monitoring event builder (rix.cnf's meb_cmd: -d distributes events over -q queues)
 # and a shmemClient on its second queue (as lab3-hsd134_cg.cnf); -v prints every datagram's time.
+# Its POSIX message queues hold -n messages, which must not exceed fs.mqueue.msg_max (10 on S3DF
+# milano nodes; XtcMonitorServer.cc _openQueue), so -n 8 rather than the hutches' 64.
 MEB_PROCS = ('meb0', 'shmc0')
 MEB = ''' {{ id:'meb0', flags:'spu',
-   cmd:'monReqServer{v} -P {instr} -C localhost -k {ep} -M {prom} -d -n 16 -q 2 -t {tag}' }},
+   cmd:'monReqServer{v} -P {instr} -C localhost -k {ep} -M {prom} -d -n 8 -q 2 -t {tag}' }},
  {{ id:'shmc0', flags:'s', cmd:'shmemClient -p {tag} -i 1 -v -R' }},
 '''
 # --ami: AMI as ami.cnf runs it (manager, global collector, a node collector and a worker that

@@ -520,7 +520,7 @@ its evidence record lists their logs.
 
 | option | adds (procmgr id: program) | simulated source | what `cycle` checks |
 |---|---|---|---|
-| `--meb` | `meb0`: `monReqServer -d -n 16 -q 2 -t tstsim<p>`; `shmc0`: `shmemClient -p tstsim<p> -i 1 -v -R` | the TEB's events | `MEB_EvtCt` (events the MEB served), shmemClient's L1Accept lines |
+| `--meb` | `meb0`: `monReqServer -d -n 8 -q 2 -t tstsim<p>`; `shmc0`: `shmemClient -p tstsim<p> -i 1 -v -R` | the TEB's events | `MEB_EvtCt` (events the MEB served), shmemClient's L1Accept lines |
 | `--ami` (implies `--meb`) | `ami-manager`, `ami-global`, `ami-node_0`, `ami-worker_0` (`psana://shmem=tstsim<p>`), `ami-client` (offscreen) | the MEB | `psdaq.sim.ami_check`: a graph that keeps every event's timestamp, seq and one fakecam pixel, fetched from the manager and compared with psana2 event by event |
 | `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every event holds the image, the image is `camera_image(seed, seq)` and its seq is fakecam's seq in the same event |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIocPVA -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (PVA, 1234.5) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` never decreases |
@@ -635,7 +635,8 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
   the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and
   inhibit settings `ts_config` writes but does not act on them.
-- **MEB and AMI.** One MEB with 16 buffers and two queues: AMI's worker reads queue 0 and
+- **MEB and AMI.** One MEB with 8 buffers (its message queues may not exceed
+  `fs.mqueue.msg_max`, 10 on milano nodes) and two queues: AMI's worker reads queue 0 and
   shmemClient queue 1, and each sees the events the MEB had a free buffer for, not every event.
   AMI's node and global collectors bind their upstream port on `*`, as they do in production;
   every other AMI port is on 127.0.0.1. The AMI programs never see the run's file or BeginRun
