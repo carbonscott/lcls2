@@ -161,5 +161,7 @@ def test_walk_refuses_other_hosts(walks):
 def test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable():
     rows = {r['id']: r for r in gui_rows.make_rows(gui_rows.source_sites(SRC, 'cas/deadca.py'), None)}
     assert rows['PvEvtTab.PvEditCmb@1']['reach'] == 'def-unreachable'      # used by PvEditEvt, named only by LblEditEvt
-    assert rows['LblEditEvt.PvInput']['reach'] == 'def-unreachable'
+    assert rows['PvInput.label']['reach'] == 'def-unreachable'             # in deadca's own PvInput class
+    assert 'LblEditEvt.PvInput' not in rows      # a call to that class (a plain object; pvedit's PvInput is a widget
+                                                 # builder of the same name) is not a site: the sites inside it are
     assert rows['Ui_MainWindow.PvDblArrayW']['reach'] == 'not-built'        # setupUi's, reachable (no walk given)
