@@ -1,0 +1,17 @@
+build (CUDA 12.9) on sdfada013, Slurm job 43970564 step 46, wt-gpu-r695 HEAD 4bde760d1, local changes 0, 2026-11-09 08:31:07 PST
+nvcc on PATH: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc
+BUILD_EXIT=0 in 274 s; log build-wt-gpu-r695.log
+Program nvcc found: YES (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc)
+Cuda compiler for the host machine: nvcc (nvcc 12.9.86
+drp: install/bin/drp   drp_gpu: install/bin/drp_gpu   GPU libs (install/lib/*_gpu.so): 8
+build (CUDA none) on sdfada013, Slurm job 43970564 step 46, wt-nb45 HEAD 5b1f5587d, local changes 0, 2026-11-09 08:35:45 PST
+nvcc on PATH: none
+BUILD_EXIT=0 in 139 s; log build-wt-nb45.log
+Program nvcc found: NO
+drp: install/bin/drp   drp_gpu: No such file or directory   GPU libs (install/lib/*_gpu.so): 0
+build (CUDA none) on sdfada013, Slurm job 43970564 step 46, wt-nh45 HEAD f75f08197, local changes 0, 2026-11-09 08:38:09 PST
+nvcc on PATH: none
+BUILD_EXIT=0 in 141 s; log build-wt-nh45.log
+Program nvcc found: NO
+drp: install/bin/drp   drp_gpu: No such file or directory   GPU libs (install/lib/*_gpu.so): 0
+PREBUILD_DONE

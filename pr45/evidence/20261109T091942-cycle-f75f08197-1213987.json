@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/daq_sim.cnf": {
+   "bytes": 1339,
+   "sha256": "5f128845d2b6460053db6453c59016551fcaddb72d787e81bc5bf15c66032a06"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 726516,
+   "sha256": "efe224adcd4860ffb9bb7d54c0498b3e6140e6a39fa10c0f5a73bae2076fd64c"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/configdb.log": {
+   "bytes": 513,
+   "sha256": "14d5ae51e1a0a483bdbb9254e96024eb326da1e58a9c804c8aa43c7c6250e426"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/cycle.jsonl": {
+   "bytes": 2337,
+   "sha256": "96fc7e21d18e7f0f3e47ba53670180c1dd863eed3c2d632eb527a3e60517a515"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/lgbk.log": {
+   "bytes": 1212,
+   "sha256": "73af50e1e39596dcf98f8fb973c45f10f05435243cdd17282b8dd162adc88fcd"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/simxpm.log": {
+   "bytes": 2664,
+   "sha256": "ce0002e2b4497abb7cb7b9174cf448bb0e3b25716f77d81be0ce6f179d263f04"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:control.log": {
+   "bytes": 73735,
+   "sha256": "4f0946c6fefa16a4a6cb2070baba4bc59c2ff2f3b92cabdec52827da19fa8b9b"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:fakecam_0.log": {
+   "bytes": 90497,
+   "sha256": "f2066c3fa50ab50f961b3b68170b4574c8a5177bc5a4f526faadbf21252f208e"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:teb0.log": {
+   "bytes": 9578,
+   "sha256": "11033235dff70b4c191c3628f4c7446cdb16b54fa1140ff1de00be4501b43da6"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 726468,
+  "TEB_EvtCt": 1217,
+  "TEB_TrCt": 6,
+  "TEB_WrtCt": 1217,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1217,
+  "psana2 seeds": {
+   "0x1234": 1217
+  },
+  "psana2 seq": "1..1217",
+  "psana2 with data": 1217,
+  "simxpm NumL0Acc": 1217,
+  "simxpm NumL0Inp": 1217,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (726516 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:19:42-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/pmlogs/2026/11/09_09:19:10_sdfada013:fakecam_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp_gpu:fakecam",
+  "prog:control",
+  "prog:drp_gpu",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:19:16.185-08:00"
+}

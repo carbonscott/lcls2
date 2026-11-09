@@ -1,0 +1,38 @@
+2026-11-09T09:31:46.988-08:00 start state: reset
+2026-11-09T09:31:46.988-08:00 setRecord(True) -> OK
+2026-11-09T09:31:55.007-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T09:31:55.007-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-09T09:31:55.350-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-09T09:31:55.355-08:00 setState allocated    -> allocated    OK
+2026-11-09T09:31:55.766-08:00 setState connected    -> connected    OK
+2026-11-09T09:31:58.311-08:00 setState configured   -> configured   OK
+2026-11-09T09:31:59.402-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-09T09:31:59.413-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-09T09:31:59.417-08:00 setState starting     -> starting     OK
+2026-11-09T09:31:59.420-08:00 setState paused       -> paused       OK
+2026-11-09T09:31:59.422-08:00 setState running      -> running      OK
+2026-11-09T09:31:59.422-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-09T09:32:32.677-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 66 (wanted >= 1000)
+2026-11-09T09:32:38.685-08:00 [error] fakecam_0 did not respond to disable
+2026-11-09T09:32:38.685-08:00 [error] teb0 did not respond to disable
+2026-11-09T09:32:38.685-08:00 [error] 2 client did not respond to disable
+2026-11-09T09:32:38.685-08:00 [error] disable failed to change state
+2026-11-09T09:32:38.685-08:00 setState paused       -> running      FAIL
+2026-11-09T09:32:42.175-08:00 final state running (start reset)
+transitions (request -> read back):
+  2026-11-09T09:31:46.988-08:00 -> 2026-11-09T09:31:55.007-08:00  unallocated  unallocated  
+  2026-11-09T09:31:55.007-08:00 -> 2026-11-09T09:31:55.355-08:00  allocated    allocated    
+  2026-11-09T09:31:55.355-08:00 -> 2026-11-09T09:31:55.766-08:00  connected    connected    
+  2026-11-09T09:31:55.766-08:00 -> 2026-11-09T09:31:58.311-08:00  configured   configured   
+  2026-11-09T09:31:58.311-08:00 -> 2026-11-09T09:31:59.417-08:00  starting     starting     
+  2026-11-09T09:31:59.417-08:00 -> 2026-11-09T09:31:59.420-08:00  paused       paused       
+  2026-11-09T09:31:59.420-08:00 -> 2026-11-09T09:31:59.422-08:00  running      running      
+  2026-11-09T09:32:32.677-08:00 -> 2026-11-09T09:32:38.685-08:00  paused       running      
+counts:
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-695-wt-gpu-r695/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (0 B)
+  psana2 checks          xtc2_check failed: File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu-r695/install/lib/python3.9/site-packages/psana/psexp/singlefile_ds.py", line 56, in _setup_run
+    self.logger.exception(f"Failed to set up run for file: {file}")
+AttributeError: 'Logger' object has no attribute 'exception'
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: False
+2026-11-09T09:32:42.184-08:00 4 error message(s) on the status stream
+2026-11-09T09:32:42.184-08:00 cycle FAIL

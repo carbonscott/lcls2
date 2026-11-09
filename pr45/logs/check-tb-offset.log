@@ -1,0 +1,13 @@
+[sdfada013:1272854] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/1771896832/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:1272854] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-tb/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector tb raw shape None
+  L1Accept events 1887; with tb data 1887; events matching the pattern of seed 0x1234: 0
+  check: the event timing message (TimingDef::createDataETM, ts_raw_2_1_0) vs pattern: rate markers, time slot, beam, sequence values and event codes, the rest 0; timestamp == the event's, pulseId rising, self-test offset 1
+  problem: event 1: fixedRates [0, 0, 0, 0, 0, 0] != [0, 1, 0, 1, 0, 1]; acRates [1, 0, 1, 0, 0, 0] != [0, 0, 1, 0, 1, 1]; timeSlot [6] != [0]
+  problem: event 2: fixedRates [1, 0, 0, 1, 0, 0] != [1, 1, 1, 0, 0, 1]; acRates [0, 0, 1, 1, 1, 1] != [1, 1, 0, 0, 1, 0]; timeSlot [5] != [7]
+  problem: event 3: fixedRates [0, 0, 0, 1, 1, 1] != [0, 1, 1, 1, 0, 0]; acRates [1, 1, 0, 1, 1, 1] != [0, 1, 1, 0, 1, 0]; timeSlot [4] != [6]
+  problem: event 4: fixedRates [1, 0, 1, 0, 1, 1] != [0, 0, 0, 0, 0, 0]; acRates [0, 1, 1, 1, 1, 0] != [0, 0, 0, 0, 1, 0]; timeSlot [3] != [5]
+  problem: event 5: fixedRates [0, 0, 1, 1, 1, 0] != [1, 0, 0, 0, 1, 1]; acRates [0, 0, 0, 1, 1, 0] != [1, 0, 1, 0, 0, 1]; timeSlot [2] != [4]
+  FAIL

@@ -1,0 +1,25 @@
+== wt-nh45 head=f75f08197 dirty=0 nocuda build
+-- programs: <wt>/install/bin/drp /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python 
+-- drp_gpu: not built (no nvcc, so meson skips psdaq/drpGpu)
+-- drp -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp[PID]: <W> 13 hot threads (10 of them workers) exceed N granted CPUs, so the workers are left unpinned.  Consider cores: N
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp -P tst -p 7 -C localhost -D wave8 -d /dev/datadev_0 -u wave8_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp[PID]: <W> 13 hot threads (10 of them workers) exceed N granted CPUs, so the workers are left unpinned.  Consider cores: N
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- python pyprobe.py fakecam epixhremu epix100 (files the CPU DRP recorded at this PR's head)
+psana.detector.detectors: 217 names; with "noOp": ['epixuhremu_noOp_0_0_0', 'epixuhrsim_noOp_0_0_0', 'fakecam_noOp_0_0_0']
+fakecam: fakecam (fakecam_raw_2_0_0) 400 of 400 events with raw, sha1 1846775cd9049ea8
+epixhremu: epixhremu (epixhremu_raw_0_0_1) 400 of 400 events with raw, sha1 c968847bba2272f1
+epix100: epix100 (epix100_raw_2_0_1) 400 of 400 events with raw, sha1 619184eabf6cd51f
+rc=0

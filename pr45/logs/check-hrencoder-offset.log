@@ -1,0 +1,13 @@
+[sdfada013:1293728] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/960036864/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:1293728] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 2857; with hrencoder data 2857; events matching the pattern of seed 0x1234: 0
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern, self-test offset 1
+  problem: event 1: value 45163 != 1678594537; error_cnt 233 != 15; missedTrig_cnt 15 != 94
+  problem: event 2: value 85666 != 1678635040; error_cnt 32 != 70; missedTrig_cnt 70 != 149
+  problem: event 3: value 126169 != 1678675543; error_cnt 87 != 125; missedTrig_cnt 125 != 204
+  problem: event 4: value 166672 != 1678716046; error_cnt 142 != 180; missedTrig_cnt 180 != 3
+  problem: event 5: value 207175 != 1678756549; error_cnt 197 != 235; missedTrig_cnt 235 != 58
+  FAIL

@@ -1,0 +1,6 @@
+2026-11-09T09:41:13.162-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-09T09:41:18.488-08:00 daq_sim: stopping simxpm pid 1277032: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-09T09:41:18.588-08:00 daq_sim: stopping lgbk pid 1277030: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-09T09:41:18.889-08:00 daq_sim: stopping configdb pid 1276650: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-09T09:41:19.904-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-09T09:41:19.913-08:00 daq_sim: down: clean

@@ -1,0 +1,2 @@
+wt-gpu-r695 HEAD 4bde760d1, local changes 0, 2026-11-09 09:44:43 PST, Slurm step 125: ninja: no work to do.; nvcc in its meson log: Program nvcc found: YES (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc)
+wt-gpu-base HEAD 1cd736f07, local changes 0, 2026-11-09 09:44:49 PST, Slurm step 125: ninja: no work to do.; nvcc in its meson log: Program nvcc found: YES (/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc)

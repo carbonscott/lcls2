@@ -1,0 +1,200 @@
+# ID:      jungfrauemu_0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: drp -P tst -C localhost -D jungfrauemu -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data -k ep_domain=lo,ep_provider=tcp,sim_length=262144,sim_dma_size=0x101000,sim_dma_count=256 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/prom -u jungfrauemu_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_09:43:51_sdfada013:jungfrauemu_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp)
+@@@ The PID of new child "2026/11/09_09:43:51_sdfada013:jungfrauemu_0.log" is: 1284071
+@@@ @@@ @@@ @@@ @@@
+tst-drp[1284071]: <I> logging configured
+tst-drp[1284071]: <W> SMT is on: the 12 granted CPUs are only 6 physical cores, so any hot thread past the first 6 shares a core
+tst-drp[1284071]: <W> 13 hot threads (10 of them workers) exceed 12 granted CPUs, so the workers are left unpinned.  Consider cores: 13
+tst-drp[1284071]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[1284071]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[1284071]: <I> dmaCount 256,  dmaSize 1052672
+tst-drp[1284071]: <I> Allocated 1.3 GB pebble for 128 transitions of 8388608 B and 256 L1Accepts of 1052672 B
+tst-drp[1284071]: <I> nL1Buffers 256,  pebble buffer size 1052672 B
+tst-drp[1284071]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[1284071]: <I> MemPoolSim: simxpm registered jungfrauemu_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[1284071]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+tst-drp[1284071]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[1284071]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst
+tst-drp[1284071]: <I> Output dir: ready
+tst-drp[1284071]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[1284071]: <I> BufferedFileWriterMT is starting with process ID 1284112
+tst-drp[1284071]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[1284071]: <I> Ready for transitions
+tst-drp[1284071]: <I> received key = rollcall @ Mon Nov  9 09:43:57 2026
+tst-drp[1284071]: <I> received key = alloc @ Mon Nov  9 09:43:58 2026
+tst-drp[1284071]: <I> Using requested interface lo, address 127.0.0.1
+WARNING:root:xpmdet IS the barrier supervisor for sim://127.0.0.1:31052, 0 worker(s) besides the supervisor
+WARNING:root:FidCount  : 0
+WARNING:root:RxRstCount: 0
+WARNING:root:RxDecErrs : 0
+WARNING:root:RxDspErrs : 0
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1284071]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1284071]: <I> received key = connect @ Mon Nov  9 09:43:58 2026
+tst-drp[1284071]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[1284071]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[1284071]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[1284071]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[1284071]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[1284071]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[1284071]: <I> Outbound link with TEB ID  0 at 127.0.0.1:46563 connected
+tst-drp[1284071]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[1284071]: <I> MemPoolSim: readout group 5, 262144 payload words per lane
+tst-drp[1284071]: <I> received key = configure @ Mon Nov  9 09:43:59 2026
+tst-drp[1284071]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[1284071]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 4 64 entry batches of 40 B
+tst-drp[1284071]: <I> Outbound link with TEB ID  0, 0x558c7d1a1000 : 0x558c7d1a3800 (00002800), configured in    0 ms
+tst-drp[1284071]: <I> Allocated 0.0 GB region for 256 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[1284071]: <I> Inbound  link with TEB ID  0, 0x558c7d1a5000 : 0x558c7d1a7800 (00002800), configured in    0 ms
+tst-drp[1284071]: <I> JungfrauEmulator configure
+tst-drp[1284071]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/jungfrauemu_0
+Configuring detector segment: 0
+tst-drp[1284071]: <I> 
+tst-drp[1284071]: <I> Parameters of Contributor ID 0 (127.0.0.1:46233):
+tst-drp[1284071]: <I>   CPU allocation: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp[1284071]: <I>   Instrument:                   tst
+tst-drp[1284071]: <I>   Partition:                    5
+tst-drp[1284071]: <I>   Alias (detName, detSeg):      jungfrauemu_0 ('jungfrauemu', 0)
+tst-drp[1284071]: <I>   Readout group receipient:     0x20
+tst-drp[1284071]: <I>   Readout group contractor:     0x20
+tst-drp[1284071]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp[1284071]: <I>   Number of MEBs:               0
+tst-drp[1284071]: <I>   Batching state:               Enabled
+tst-drp[1284071]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp[1284071]: <I>   Batch pool depth:             0x00000004 = 4
+tst-drp[1284071]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp[1284071]: <I>   # of TEB contrib.   buffers:  0x00000100 = 256
+tst-drp[1284071]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp[1284071]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp[1284071]: <I>   Max  MEB L1Accept      size:  0x00101000 = 1052672
+tst-drp[1284071]: <I>   Max  MEB transition    size:  0x00800000 = 8388608
+tst-drp[1284071]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp[1284071]: <I> 
+tst-drp[1284071]: <I> TEB Receiver thread is starting with process ID 1284211
+tst-drp[1284071]: <I> Worker 0 is starting with process ID 1284212
+tst-drp[1284071]: <I> Worker 2 is starting with process ID 1284214
+tst-drp[1284071]: <I> TEBreceiver: pinned to CPU 4
+tst-drp[1284071]: <I> Worker 1 is starting with process ID 1284213
+tst-drp[1284071]: <I> Worker 3 is starting with process ID 1284215
+tst-drp[1284071]: <I> Worker 4 is starting with process ID 1284216
+tst-drp[1284071]: <I> Worker 6 is starting with process ID 1284218
+tst-drp[1284071]: <I> Worker 5 is starting with process ID 1284217
+tst-drp[1284071]: <I> Worker 7 is starting with process ID 1284219
+tst-drp[1284071]: <I> Worker 8 is starting with process ID 1284220
+tst-drp[1284071]: <I> Worker 9 is starting with process ID 1284221
+tst-drp[1284071]: <I> PGP reader is starting with process ID 1284222
+tst-drp[1284071]: <I> PGPreader: pinned to CPU 5
+tst-drp[1284071]: <I> PGPDrp: 45 threads (13 of them ours and hot) in 12 granted CPUs
+tst-drp[1284071]: <W> PGPDrp: 13 hot threads in 12 CPUs: they will timeshare.  Consider cores: 13
+tst-drp[1284071]: <I> Collector is starting with process ID 1284223
+tst-drp[1284071]: <I> Collector: pinned to CPU 6
+tst-drp[1284071]: <I> PGPReader  saw    Configure @ 1163094240.462991803 (0473330e5aa6c1)
+tst-drp[1284071]: <I> TebCtrb   sent    Configure @ 1163094240.462991803 (0473330e5aa6c1) to TEB ID 0 @   0x561703f20000 (00000000 + 0 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw    Configure @ 1163094240.462991803 (0473330e5aa6c1)
+tst-drp[1284071]: <I> received key = beginrun @ Mon Nov  9 09:44:00 2026
+Opening file /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp[1284071]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp[1284071]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp[1284071]: <I> JungfrauEmulator beginrun
+tst-drp[1284071]: <I> PGPReader  saw     BeginRun @ 1163094241.574661625 (0473330e6ceb40)
+tst-drp[1284071]: <I> TebCtrb   sent     BeginRun @ 1163094241.574661625 (0473330e6ceb40) to TEB ID 0 @   0x561703f20028 (00000000 + 1 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw     BeginRun @ 1163094241.574661625 (0473330e6ceb40)
+tst-drp[1284071]: <I> received key = beginstep @ Mon Nov  9 09:44:01 2026
+tst-drp[1284071]: <I> PGPReader  saw    BeginStep @ 1163094241.593399541 (0473330e6d3a13)
+tst-drp[1284071]: <I> TebCtrb   sent    BeginStep @ 1163094241.593399541 (0473330e6d3a13) to TEB ID 0 @   0x561703f20050 (00000000 + 2 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw    BeginStep @ 1163094241.593399541 (0473330e6d3a13)
+tst-drp[1284071]: <I> received key = enable @ Mon Nov  9 09:44:01 2026
+tst-drp[1284071]: <I> PGPReader  saw       Enable @ 1163094241.595079703 (0473330e6d4125)
+tst-drp[1284071]: <I> TebCtrb   sent       Enable @ 1163094241.595079703 (0473330e6d4125) to TEB ID 0 @   0x561703f20078 (00000000 + 3 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw       Enable @ 1163094241.595079703 (0473330e6d4125)
+tst-drp[1284071]: <I> received key = disable @ Mon Nov  9 09:44:03 2026
+tst-drp[1284071]: <I> PGPReader  saw      Disable @ 1163094243.466352333 (0473330e8c0115)
+tst-drp[1284071]: <I> TebCtrb   sent      Disable @ 1163094243.466352333 (0473330e8c0115) to TEB ID 0 @   0x561703f20d70 (00000000 + 86 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw      Disable @ 1163094243.466352333 (0473330e8c0115)
+tst-drp[1284071]: <I> received key = endstep @ Mon Nov  9 09:44:04 2026
+tst-drp[1284071]: <I> PGPReader  saw      EndStep @ 1163094244.518784329 (0473330e9d4c62)
+tst-drp[1284071]: <I> TebCtrb   sent      EndStep @ 1163094244.518784329 (0473330e9d4c62) to TEB ID 0 @   0x561703f20d98 (00000000 + 87 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw      EndStep @ 1163094244.518784329 (0473330e9d4c62)
+tst-drp[1284071]: <I> received key = endrun @ Mon Nov  9 09:44:04 2026
+tst-drp[1284071]: <I> PGPReader  saw       EndRun @ 1163094244.525621488 (0473330e9d6925)
+tst-drp[1284071]: <I> TebCtrb   sent       EndRun @ 1163094244.525621488 (0473330e9d6925) to TEB ID 0 @   0x561703f20dc0 (00000000 + 88 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw       EndRun @ 1163094244.525621488 (0473330e9d6925)
+tst-drp[1284071]: <I> received key = unconfigure @ Mon Nov  9 09:44:04 2026
+tst-drp[1284071]: <I> PGPReader  saw  Unconfigure @ 1163094244.527956469 (0473330e9d72f8)
+tst-drp[1284071]: <I> TebCtrb   sent  Unconfigure @ 1163094244.527956469 (0473330e9d72f8) to TEB ID 0 @   0x561703f20de8 (00000000 + 89 * 00000028)
+tst-drp[1284071]: <I> TebRcvr    saw  Unconfigure @ 1163094244.527956469 (0473330e9d72f8)
+tst-drp[1284071]: <I> received key = disconnect @ Mon Nov  9 09:44:04 2026
+EbLfClient 0 disconnected on far side
+tst-drp[1284071]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x558c7d1a1000  size 10240  maxBatchSize 2560  maxEntrySize 40
+tst-drp[1284071]: <I> Shutting down workers
+tst-drp[1284071]: <I> Worker 0 is exiting
+tst-drp[1284071]: <I> Worker 1 is exiting
+tst-drp[1284071]: <I> Worker 2 is exiting
+tst-drp[1284071]: <I> Worker 3 is exiting
+tst-drp[1284071]: <I> Worker 4 is exiting
+tst-drp[1284071]: <I> Worker 5 is exiting
+tst-drp[1284071]: <I> Worker 6 is exiting
+tst-drp[1284071]: <I> Worker 7 is exiting
+tst-drp[1284071]: <I> Worker 8 is exiting
+tst-drp[1284071]: <I> Worker 9 is exiting
+tst-drp[1284071]: <I> Worker threads finished
+tst-drp[1284071]: <I> Collector is exiting
+tst-drp[1284071]: <I> PGPReader is exiting
+tst-drp[1284071]: <I> PGPReader thread finished
+tst-drp[1284071]: <I> Collector thread finished
+tst-drp[1284071]: <I> received key = dealloc @ Mon Nov  9 09:44:04 2026
+tst-drp[1284071]: <I> received key = reset @ Mon Nov  9 09:44:04 2026
+^Ctst-drp[1284071]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2
+@@@ Current time: Mon Nov  9 09:44:33 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1284071. The process was killed by signal 6

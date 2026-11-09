@@ -1,0 +1,13 @@
+[sdfada013:1277999] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/452067328/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:1277999] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 1892; with fakecam data 1892; w3 == seed 1892 (seeds seen {0x1234: 1892}); payload pattern ok 0; w0/w1 pulseId rising and == timestamp clock 1892/1892
+  seq (w2) 1..1892 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+  problem: event 5: payload pattern broken
+  FAIL

@@ -1,0 +1,19 @@
+2026-11-09T09:39:19.117-08:00 daq_sim: up on sdfada013 (job 43970564 step 121), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad
+2026-11-09T09:39:19.117-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T09:39:41.584-08:00 daq_sim: preflight rc=0: 09:39:41 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T09:39:46.038-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-09T09:39:46.039-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T09:39:46.039-08:00 daq_sim: config DB seeded: tst/BEAM/epixquad_0 key=2 written
+2026-11-09T09:39:47.861-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T09:39:53.429-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfada013 (Slurm job 43970564)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixquad_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/daq_sim.cnf  pids {'control': 1274070, 'teb0': 1274071, 'epixquad_0': 1274072}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad

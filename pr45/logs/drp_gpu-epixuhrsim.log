@@ -1,0 +1,341 @@
+# ID:      epixuhrsim_0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: drp_gpu -P tst -C localhost -D epixuhrsim -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/data -k ep_domain=lo,ep_provider=tcp,reducer=NoOpReducer,sim_dma_count=64,dmaBufSize=458752,dmaBufCount=64,sim_ref=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/epixuhrsim-ref.bin -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/prom -u epixuhrsim_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_09:29:41_sdfada013:epixuhrsim_0.log"
+@@@    (as /bin/env)
+@@@ The PID of new child "2026/11/09_09:29:41_sdfada013:epixuhrsim_0.log" is: 1242521
+@@@ @@@ @@@ @@@ @@@
+tst-drp_gpu[1242521]: <I> logging configured
+tst-drp_gpu[1242521]: <W> SMT is on: the 12 granted CPUs are only 6 physical cores, so any hot thread past the first 6 shares a core
+tst-drp_gpu[1242521]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[1242521]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[1242521]: <I> Global memory: 45457 MB
+tst-drp_gpu[1242521]: <I> MemPoolGpu: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp_gpu[1242521]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[1242521]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[1242521]: <I> GPU Device Attributes:
+tst-drp_gpu[1242521]: <I>   Unified addressing: 1
+tst-drp_gpu[1242521]: <I>   Concurrent kernels: 1
+tst-drp_gpu[1242521]: <I>   Compute preemption: 1
+tst-drp_gpu[1242521]: <I>   Can map host memory: 1
+tst-drp_gpu[1242521]: <I>   Number of multiprocessors: 142
+tst-drp_gpu[1242521]: <I>   Max threads per multiprocessor: 1536
+tst-drp_gpu[1242521]: <I>   Max blocks per multiprocessor: 24
+tst-drp_gpu[1242521]: <I>   Max threads per block: 1024
+tst-drp_gpu[1242521]: <I> NULL PGP device 'sim://127.0.0.1:31052' opened
+tst-drp_gpu[1242521]: <I> DMA buffer[0] dptr 0x7efe3ae10000, size 458752, free list[0] 0x7efe8c126300
+tst-drp_gpu[1242521]: <I> DMA buffer[1] dptr 0x7efe3ae90000, size 458752, free list[1] 0x7efe8c126304
+tst-drp_gpu[1242521]: <I> DMA buffer[2] dptr 0x7efe3af10000, size 458752, free list[2] 0x7efe8c126308
+tst-drp_gpu[1242521]: <I> DMA buffer[3] dptr 0x7efe3b000000, size 458752, free list[3] 0x7efe8c12630c
+tst-drp_gpu[1242521]: <I> DMA buffer[4] dptr 0x7efe3b090000, size 458752, free list[4] 0x7efe8c126310
+tst-drp_gpu[1242521]: <I> DMA buffer[5] dptr 0x7efe3b110000, size 458752, free list[5] 0x7efe8c126314
+tst-drp_gpu[1242521]: <I> DMA buffer[6] dptr 0x7efe3b200000, size 458752, free list[6] 0x7efe8c126318
+tst-drp_gpu[1242521]: <I> DMA buffer[7] dptr 0x7efe3b290000, size 458752, free list[7] 0x7efe8c12631c
+tst-drp_gpu[1242521]: <I> DMA buffer[8] dptr 0x7efe3b310000, size 458752, free list[8] 0x7efe8c126320
+tst-drp_gpu[1242521]: <I> DMA buffer[9] dptr 0x7efe3b400000, size 458752, free list[9] 0x7efe8c126324
+tst-drp_gpu[1242521]: <I> DMA buffer[10] dptr 0x7efe3b490000, size 458752, free list[10] 0x7efe8c126328
+tst-drp_gpu[1242521]: <I> DMA buffer[11] dptr 0x7efe3b510000, size 458752, free list[11] 0x7efe8c12632c
+tst-drp_gpu[1242521]: <I> DMA buffer[12] dptr 0x7efe3b600000, size 458752, free list[12] 0x7efe8c126330
+tst-drp_gpu[1242521]: <I> DMA buffer[13] dptr 0x7efe3b690000, size 458752, free list[13] 0x7efe8c126334
+tst-drp_gpu[1242521]: <I> DMA buffer[14] dptr 0x7efe3b710000, size 458752, free list[14] 0x7efe8c126338
+tst-drp_gpu[1242521]: <I> DMA buffer[15] dptr 0x7efe3b800000, size 458752, free list[15] 0x7efe8c12633c
+tst-drp_gpu[1242521]: <I> DMA buffer[16] dptr 0x7efe3b890000, size 458752, free list[16] 0x7efe8c126340
+tst-drp_gpu[1242521]: <I> DMA buffer[17] dptr 0x7efe3b910000, size 458752, free list[17] 0x7efe8c126344
+tst-drp_gpu[1242521]: <I> DMA buffer[18] dptr 0x7efe3ba00000, size 458752, free list[18] 0x7efe8c126348
+tst-drp_gpu[1242521]: <I> DMA buffer[19] dptr 0x7efe3ba90000, size 458752, free list[19] 0x7efe8c12634c
+tst-drp_gpu[1242521]: <I> DMA buffer[20] dptr 0x7efe3bb10000, size 458752, free list[20] 0x7efe8c126350
+tst-drp_gpu[1242521]: <I> DMA buffer[21] dptr 0x7efe3bc00000, size 458752, free list[21] 0x7efe8c126354
+tst-drp_gpu[1242521]: <I> DMA buffer[22] dptr 0x7efe3bc90000, size 458752, free list[22] 0x7efe8c126358
+tst-drp_gpu[1242521]: <I> DMA buffer[23] dptr 0x7efe3bd10000, size 458752, free list[23] 0x7efe8c12635c
+tst-drp_gpu[1242521]: <I> DMA buffer[24] dptr 0x7efe3be00000, size 458752, free list[24] 0x7efe8c126360
+tst-drp_gpu[1242521]: <I> DMA buffer[25] dptr 0x7efe3be90000, size 458752, free list[25] 0x7efe8c126364
+tst-drp_gpu[1242521]: <I> DMA buffer[26] dptr 0x7efe3bf10000, size 458752, free list[26] 0x7efe8c126368
+tst-drp_gpu[1242521]: <I> DMA buffer[27] dptr 0x7efe40a00000, size 458752, free list[27] 0x7efe8c12636c
+tst-drp_gpu[1242521]: <I> DMA buffer[28] dptr 0x7efe40a90000, size 458752, free list[28] 0x7efe8c126370
+tst-drp_gpu[1242521]: <I> DMA buffer[29] dptr 0x7efe40b10000, size 458752, free list[29] 0x7efe8c126374
+tst-drp_gpu[1242521]: <I> DMA buffer[30] dptr 0x7efe40c00000, size 458752, free list[30] 0x7efe8c126378
+tst-drp_gpu[1242521]: <I> DMA buffer[31] dptr 0x7efe40c90000, size 458752, free list[31] 0x7efe8c12637c
+tst-drp_gpu[1242521]: <I> DMA buffer[32] dptr 0x7efe40d10000, size 458752, free list[32] 0x7efe8c126380
+tst-drp_gpu[1242521]: <I> DMA buffer[33] dptr 0x7efe40e00000, size 458752, free list[33] 0x7efe8c126384
+tst-drp_gpu[1242521]: <I> DMA buffer[34] dptr 0x7efe40e90000, size 458752, free list[34] 0x7efe8c126388
+tst-drp_gpu[1242521]: <I> DMA buffer[35] dptr 0x7efe40f10000, size 458752, free list[35] 0x7efe8c12638c
+tst-drp_gpu[1242521]: <I> DMA buffer[36] dptr 0x7efe41000000, size 458752, free list[36] 0x7efe8c126390
+tst-drp_gpu[1242521]: <I> DMA buffer[37] dptr 0x7efe41090000, size 458752, free list[37] 0x7efe8c126394
+tst-drp_gpu[1242521]: <I> DMA buffer[38] dptr 0x7efe41110000, size 458752, free list[38] 0x7efe8c126398
+tst-drp_gpu[1242521]: <I> DMA buffer[39] dptr 0x7efe41200000, size 458752, free list[39] 0x7efe8c12639c
+tst-drp_gpu[1242521]: <I> DMA buffer[40] dptr 0x7efe41290000, size 458752, free list[40] 0x7efe8c1263a0
+tst-drp_gpu[1242521]: <I> DMA buffer[41] dptr 0x7efe41310000, size 458752, free list[41] 0x7efe8c1263a4
+tst-drp_gpu[1242521]: <I> DMA buffer[42] dptr 0x7efe41400000, size 458752, free list[42] 0x7efe8c1263a8
+tst-drp_gpu[1242521]: <I> DMA buffer[43] dptr 0x7efe41490000, size 458752, free list[43] 0x7efe8c1263ac
+tst-drp_gpu[1242521]: <I> DMA buffer[44] dptr 0x7efe41510000, size 458752, free list[44] 0x7efe8c1263b0
+tst-drp_gpu[1242521]: <I> DMA buffer[45] dptr 0x7efe41600000, size 458752, free list[45] 0x7efe8c1263b4
+tst-drp_gpu[1242521]: <I> DMA buffer[46] dptr 0x7efe41690000, size 458752, free list[46] 0x7efe8c1263b8
+tst-drp_gpu[1242521]: <I> DMA buffer[47] dptr 0x7efe41710000, size 458752, free list[47] 0x7efe8c1263bc
+tst-drp_gpu[1242521]: <I> DMA buffer[48] dptr 0x7efe41800000, size 458752, free list[48] 0x7efe8c1263c0
+tst-drp_gpu[1242521]: <I> DMA buffer[49] dptr 0x7efe41890000, size 458752, free list[49] 0x7efe8c1263c4
+tst-drp_gpu[1242521]: <I> DMA buffer[50] dptr 0x7efe41910000, size 458752, free list[50] 0x7efe8c1263c8
+tst-drp_gpu[1242521]: <I> DMA buffer[51] dptr 0x7efe41a00000, size 458752, free list[51] 0x7efe8c1263cc
+tst-drp_gpu[1242521]: <I> DMA buffer[52] dptr 0x7efe41a90000, size 458752, free list[52] 0x7efe8c1263d0
+tst-drp_gpu[1242521]: <I> DMA buffer[53] dptr 0x7efe41b10000, size 458752, free list[53] 0x7efe8c1263d4
+tst-drp_gpu[1242521]: <I> DMA buffer[54] dptr 0x7efe41c00000, size 458752, free list[54] 0x7efe8c1263d8
+tst-drp_gpu[1242521]: <I> DMA buffer[55] dptr 0x7efe41c90000, size 458752, free list[55] 0x7efe8c1263dc
+tst-drp_gpu[1242521]: <I> DMA buffer[56] dptr 0x7efe41d10000, size 458752, free list[56] 0x7efe8c1263e0
+tst-drp_gpu[1242521]: <I> DMA buffer[57] dptr 0x7efe41e00000, size 458752, free list[57] 0x7efe8c1263e4
+tst-drp_gpu[1242521]: <I> DMA buffer[58] dptr 0x7efe41e90000, size 458752, free list[58] 0x7efe8c1263e8
+tst-drp_gpu[1242521]: <I> DMA buffer[59] dptr 0x7efe41f10000, size 458752, free list[59] 0x7efe8c1263ec
+tst-drp_gpu[1242521]: <I> DMA buffer[60] dptr 0x7efe24000000, size 458752, free list[60] 0x7efe8c1263f0
+tst-drp_gpu[1242521]: <I> DMA buffer[61] dptr 0x7efe24090000, size 458752, free list[61] 0x7efe8c1263f4
+tst-drp_gpu[1242521]: <I> DMA buffer[62] dptr 0x7efe24110000, size 458752, free list[62] 0x7efe8c1263f8
+tst-drp_gpu[1242521]: <I> DMA buffer[63] dptr 0x7efe24200000, size 458752, free list[63] 0x7efe8c1263fc
+tst-drp_gpu[1242521]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp_gpu[1242521]: <I> dmaCount 64,  dmaSize 65536
+tst-drp_gpu[1242521]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 65536 B
+tst-drp_gpu[1242521]: <I> nL1Buffers 64,  pebble buffer size 65536 B
+tst-drp_gpu[1242521]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[1242521]: <I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 458752 B
+tst-drp_gpu[1242521]: <I> dmaCount 64,  dmaSize 458752
+tst-drp_gpu[1242521]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 458752 B
+tst-drp_gpu[1242521]: <I> MemPoolSim: simxpm registered epixuhrsim_0 as XPM 0 link 0
+tst-drp_gpu[1242521]: <I> nL1Buffers 64,  pebble buffer size 458752 B
+tst-drp_gpu[1242521]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[1242521]: <I> Simulated DMA thread is starting with process ID 1242577
+*** SimDetector::ctor: this 0x55bdc48fe5c0, len 100, l1Delay 1000000
+tst-drp_gpu[1242521]: <I> Calibration buffers: 0x7efdf0000000 : 0x7efdf2e83000, size 64 * 774144 B
+*** Number of pixels generated for each of 2 gain ranges:
+    1549967    1546609  total 3096576
+   0.500542   0.499458  total 1.000000
+
+tst-drp_gpu[1242521]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp_gpu[1242521]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/data/tst
+tst-drp_gpu[1242521]: <I> Output dir: ready
+tst-drp_gpu[1242521]: <W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+tst-drp_gpu[1242521]: <I> Final SM resources for context 0: 6 SMs
+tst-drp_gpu[1242521]: <I> Final SM resources for context 1: 6 SMs
+tst-drp_gpu[1242521]: <I> Final SM resources for context 2: 42 SMs
+tst-drp_gpu[1242521]: <I> Final SM resources for context 3: 88 SMs
+tst-drp_gpu[1242521]: <I> Ready for transitions
+tst-drp_gpu[1242521]: <I> received key = rollcall @ Mon Nov  9 09:29:47 2026
+tst-drp_gpu[1242521]: <I> received key = alloc @ Mon Nov  9 09:29:48 2026
+tst-drp_gpu[1242521]: <I> Using requested interface lo, address 127.0.0.1
+tst-drp_gpu[1242521]: <I> SimDetector: timing from simxpm through sim://127.0.0.1:31052
+tst-drp_gpu[1242521]: <I> received key = connect @ Mon Nov  9 09:29:48 2026
+tst-drp_gpu[1242521]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp_gpu[1242521]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp_gpu[1242521]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp_gpu[1242521]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp_gpu[1242521]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp_gpu[1242521]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp_gpu[1242521]: <I> Outbound link with TEB ID  0 at 127.0.0.1:39855 connected
+tst-drp_gpu[1242521]: <I> Inbound  link with TEB ID  0 connected
+tst-drp_gpu[1242521]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp_gpu[1242521]: <I> received key = configure @ Mon Nov  9 09:29:48 2026
+tst-drp_gpu[1242521]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp_gpu[1242521]: <I> Trigger loaded from libtmoTeb_gpu.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 1 64 entry batches of 40 B
+tst-drp_gpu[1242521]: <I> Outbound link with TEB ID  0, 0x55bdc51f9000 : 0x55bdc51f9a00 (00000a00), configured in    0 ms
+tst-drp_gpu[1242521]: <I> Allocated 0.0 GB region for 64 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp_gpu[1242521]: <I> Inbound  link with TEB ID  0, 0x55bdc51fb000 : 0x55bdc51fba00 (00000a00), configured in    0 ms
+tst-drp_gpu[1242521]: <I> Configuring 1 Reader streams
+tst-drp_gpu[1242521]: <I> Detector payload is not AxiStream Batcher formatted
+tst-drp_gpu[1242521]: <I> Host write buffers: 0x7efe8c11c000 : 0x7efe8c11cdc8, size 64 * 56 B
+tst-drp_gpu[1242521]: <I> Reader: hostWrtBufs: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1242521]: <I> Reader: pebbleQueue head: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1242521]: <I> Reader: pebbleQueue tail: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1242521]: <I> TrgInpGen: queue head: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1242521]: <I> TrgInpGen: queue tail: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1242521]: <I> Loaded reducer library 'libNoOpReducer.so' for 10 workers
+tst-drp_gpu[1242521]: <I> Reduce buffers: [base 0x7efdd4000000] 0x7efdd4000050 : 0x7efdd6e84400, size 64 * (80 + 0 + 774144) B
+tst-drp_gpu[1242521]: <I> Transition buffers: 0x7efdc4000000 : 0x7efdd3e00000, size 128 * 2097152 B
+tst-drp_gpu[1242521]: <I> NoOpReducer::configure(configure_json, connect_json, collection_id)
+tst-drp_gpu[1242521]: <I> Gpu::EpixUHRsim configure: this 0x55bdc48cecb0, &det 0x55bdc48ced20, det 0x55bdc48fe5c0
+tst-drp_gpu[1242521]: <I> Gpu::EpixUHRsim configure: xtc size 1572
+tst-drp_gpu[1242521]: <I> 
+tst-drp_gpu[1242521]: <I> Parameters of Contributor ID 0 (127.0.0.1:40027):
+tst-drp_gpu[1242521]: <I>   CPU allocation: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp_gpu[1242521]: <I>   Instrument:                   tst
+tst-drp_gpu[1242521]: <I>   Partition:                    5
+tst-drp_gpu[1242521]: <I>   Alias (detName, detSeg):      epixuhrsim_0 ('epixuhrsim', 0)
+tst-drp_gpu[1242521]: <I>   Readout group receipient:     0x20
+tst-drp_gpu[1242521]: <I>   Readout group contractor:     0x20
+tst-drp_gpu[1242521]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp_gpu[1242521]: <I>   Number of MEBs:               0
+tst-drp_gpu[1242521]: <I>   Batching state:               Enabled
+tst-drp_gpu[1242521]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp_gpu[1242521]: <I>   Batch pool depth:             0x00000001 = 1
+tst-drp_gpu[1242521]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp_gpu[1242521]: <I>   # of TEB contrib.   buffers:  0x00000040 = 64
+tst-drp_gpu[1242521]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp_gpu[1242521]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp_gpu[1242521]: <I>   Max  MEB L1Accept      size:  0x00070000 = 458752
+tst-drp_gpu[1242521]: <I>   Max  MEB transition    size:  0x00200000 = 2097152
+tst-drp_gpu[1242521]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp_gpu[1242521]: <I> 
+tst-drp_gpu[1242521]: <I> TEB Receiver thread is starting with process ID 1242593
+tst-drp_gpu[1242521]: <I> TEBreceiver: pinned to CPU 4
+tst-drp_gpu[1242521]: <I> GPU threads per SM: 1536, blocks per SM: 24, blocks 144 * threads 64 = 9216 total threads, SMs 6.0, elements per thread: 21.0
+tst-drp_gpu[1242521]: <I> NoOpReducer::configure(xtc, bufEnd)
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+tst-drp_gpu[1242521]: <I> Collector is starting with process ID 1242594
+tst-drp_gpu[1242521]: <I> Collector: pinned to CPU 5
+tst-drp_gpu[1242521]: <I> TrgInpGen receiver is starting with process ID 1242595
+tst-drp_gpu[1242521]: <I> TigRcvr: pinned to CPU 6
+tst-drp_gpu[1242521]: <I> Allocated 0.0 GB for 1 buffers of 774224 B in BufferedFileWriter
+tst-drp_gpu[1242521]: <I> Starting 1 Reader(s)
+tst-drp_gpu[1242521]: <I> Recorder is starting with process ID 1242773
+tst-drp_gpu[1242521]: <I> Recorder: pinned to CPU 7
+tst-drp_gpu[1242521]: <I> Starting TrgInpGen
+tst-drp_gpu[1242521]: <I> Starting 10 Reducer(s)
+tst-drp_gpu[1242521]: <I> PGPDrp: 29 threads (4 of them ours and hot) in 12 granted CPUs
+tst-drp_gpu[1242521]: <I> PGPReader  saw    Configure @ 1163093395.724992861 (047332d821756c)
+tst-drp_gpu[1242521]: <I> Collector  saw    Configure @ 1163093395.724992861 (047332d821756c)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent    Configure @ 1163093395.724992861 (047332d821756c) to TEB ID 0 @   0x556b1f55c000 (00000000 + 0 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw    Configure @ 1163093395.724992861 (047332d821756c)
+tst-drp_gpu[1242521]: <I> Recorder   saw    Configure @ 1163093395.724992861 (047332d821756c)
+tst-drp_gpu[1242521]: <I> received key = beginrun @ Mon Nov  9 09:29:55 2026
+Opening file /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp_gpu[1242521]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp_gpu[1242521]: <I> cuFile properties:
+tst-drp_gpu[1242521]: <I>    Major version:            0
+tst-drp_gpu[1242521]: <I>    Minor version:            0
+tst-drp_gpu[1242521]: <I>    Poll thresh size:         4
+tst-drp_gpu[1242521]: <I>    Max dir. IO size:         1024
+tst-drp_gpu[1242521]: <I>    Driver status flags:    0x000
+tst-drp_gpu[1242521]: <I>      Lustre supported:       No
+tst-drp_gpu[1242521]: <I>      Wekafs supported:       No
+tst-drp_gpu[1242521]: <I>      NFS supported:          No
+tst-drp_gpu[1242521]: <I>      NVMe supported:         No
+tst-drp_gpu[1242521]: <I>    Driver control flags:   0x02
+tst-drp_gpu[1242521]: <I>      Use poll mode:          False
+tst-drp_gpu[1242521]: <I>      Allow compat mode:      Enabled
+tst-drp_gpu[1242521]: <I>    Feature flags:          0x07
+tst-drp_gpu[1242521]: <I>      Streams supported:      Yes
+tst-drp_gpu[1242521]: <I>      Batch IO supported:     Yes
+tst-drp_gpu[1242521]: <I>      Dyn. routing supported: Yes
+tst-drp_gpu[1242521]: <I>      Parallel IO supported:  No
+tst-drp_gpu[1242521]: <I>    Max device cache size:    131072
+tst-drp_gpu[1242521]: <I>    Per buffer cache size:    0
+tst-drp_gpu[1242521]: <I>    Max pinned memory size:   4294967292
+tst-drp_gpu[1242521]: <I>    Max batch IO size:        128
+tst-drp_gpu[1242521]: <I>    Max batch IO timeout ms:  5
+tst-drp_gpu[1242521]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp_gpu[1242521]: <I> EpixUHRsim: wrote its 16 raw frames and calibration constants to /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhrsim/epixuhrsim-ref.bin
+tst-drp_gpu[1242521]: <I> PGPReader  saw     BeginRun @ 1163093396.887742005 (047332d83490cb)
+tst-drp_gpu[1242521]: <I> Collector  saw     BeginRun @ 1163093396.887742005 (047332d83490cb)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent     BeginRun @ 1163093396.887742005 (047332d83490cb) to TEB ID 0 @   0x556b1f55c028 (00000000 + 1 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw     BeginRun @ 1163093396.887742005 (047332d83490cb)
+tst-drp_gpu[1242521]: <I> Recorder   saw     BeginRun @ 1163093396.887742005 (047332d83490cb)
+tst-drp_gpu[1242521]: <I> received key = beginstep @ Mon Nov  9 09:29:56 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw    BeginStep @ 1163093396.906710631 (047332d834e097)
+tst-drp_gpu[1242521]: <I> Collector  saw    BeginStep @ 1163093396.906710631 (047332d834e097)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent    BeginStep @ 1163093396.906710631 (047332d834e097) to TEB ID 0 @   0x556b1f55c050 (00000000 + 2 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw    BeginStep @ 1163093396.906710631 (047332d834e097)
+tst-drp_gpu[1242521]: <I> Recorder   saw    BeginStep @ 1163093396.906710631 (047332d834e097)
+tst-drp_gpu[1242521]: <I> received key = enable @ Mon Nov  9 09:29:56 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw       Enable @ 1163093396.909146574 (047332d834ead6)
+tst-drp_gpu[1242521]: <I> Collector  saw       Enable @ 1163093396.909146574 (047332d834ead6)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent       Enable @ 1163093396.909146574 (047332d834ead6) to TEB ID 0 @   0x556b1f55c078 (00000000 + 3 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw       Enable @ 1163093396.909146574 (047332d834ead6)
+tst-drp_gpu[1242521]: <I> Recorder   saw       Enable @ 1163093396.909146574 (047332d834ead6)
+tst-drp_gpu[1242521]: <I> received key = disable @ Mon Nov  9 09:29:58 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw      Disable @ 1163093398.770462847 (047332d85380e5)
+tst-drp_gpu[1242521]: <I> Collector  saw      Disable @ 1163093398.770462847 (047332d85380e5)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent      Disable @ 1163093398.770462847 (047332d85380e5) to TEB ID 0 @   0x556b1f55c1e0 (00000000 + 12 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw      Disable @ 1163093398.770462847 (047332d85380e5)
+tst-drp_gpu[1242521]: <I> Recorder   saw      Disable @ 1163093398.770462847 (047332d85380e5)
+tst-drp_gpu[1242521]: <I> received key = endstep @ Mon Nov  9 09:29:59 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw      EndStep @ 1163093399.825371126 (047332d864d69d)
+tst-drp_gpu[1242521]: <I> Collector  saw      EndStep @ 1163093399.825371126 (047332d864d69d)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent      EndStep @ 1163093399.825371126 (047332d864d69d) to TEB ID 0 @   0x556b1f55c208 (00000000 + 13 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw      EndStep @ 1163093399.825371126 (047332d864d69d)
+tst-drp_gpu[1242521]: <I> Recorder   saw      EndStep @ 1163093399.825371126 (047332d864d69d)
+tst-drp_gpu[1242521]: <I> received key = endrun @ Mon Nov  9 09:29:59 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw       EndRun @ 1163093399.835121617 (047332d864ffa1)
+tst-drp_gpu[1242521]: <I> Collector  saw       EndRun @ 1163093399.835121617 (047332d864ffa1)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent       EndRun @ 1163093399.835121617 (047332d864ffa1) to TEB ID 0 @   0x556b1f55c230 (00000000 + 14 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw       EndRun @ 1163093399.835121617 (047332d864ffa1)
+tst-drp_gpu[1242521]: <I> Recorder   saw       EndRun @ 1163093399.835121617 (047332d864ffa1)
+tst-drp_gpu[1242521]: <I> received key = unconfigure @ Mon Nov  9 09:29:59 2026
+tst-drp_gpu[1242521]: <I> PGPReader  saw  Unconfigure @ 1163093399.837060554 (047332d86507c9)
+tst-drp_gpu[1242521]: <I> Collector  saw  Unconfigure @ 1163093399.837060554 (047332d86507c9)
+tst-drp_gpu[1242521]: <I> TebCtrb   sent  Unconfigure @ 1163093399.837060554 (047332d86507c9) to TEB ID 0 @   0x556b1f55c258 (00000000 + 15 * 00000028)
+tst-drp_gpu[1242521]: <I> TebRcvr    saw  Unconfigure @ 1163093399.837060554 (047332d86507c9)
+tst-drp_gpu[1242521]: <I> Recorder   saw  Unconfigure @ 1163093399.837060554 (047332d86507c9)
+tst-drp_gpu[1242521]: <I> received key = disconnect @ Mon Nov  9 09:30:00 2026
+tst-drp_gpu[1242521]: <I> PGPDrp::unconfigure: Shutting down
+tst-drp_gpu[1242521]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x55bdc51f9000  size 2560  maxBatchSize 2560  maxEntrySize 40
+tst-drp_gpu[1242521]: <I> TrgInpGen receiver is exiting
+*** TebRcvr::recorder: No item from recordQueue
+tst-drp_gpu[1242521]: <I> TrgInpGen receiver thread finished
+tst-drp_gpu[1242521]: <I> Recorder thread is exiting
+tst-drp_gpu[1242521]: <I> Collector is exiting
+tst-drp_gpu[1242521]: <I> Recorder thread finished
+tst-drp_gpu[1242521]: <I> Collector thread finished
+tst-drp_gpu[1242521]: <I> received key = dealloc @ Mon Nov  9 09:30:04 2026
+tst-drp_gpu[1242521]: <I> received key = reset @ Mon Nov  9 09:30:04 2026
+tst-drp_gpu[1242521]: <I> PGPDrp::unconfigure: Shutting down
+epixuhrsim_0[1242521]: <C> FATAL: Segmentation Fault - stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10508)[0x7efe8c226508]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10585)[0x7efe8c226585]
+/lib64/libc.so.6(+0x3ebf0)[0x7efe8643ebf0]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x2c941)[0x55bdc2dc2941]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x2825c)[0x55bdc2dbe25c]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x10b0e)[0x55bdc2da6b0e]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(_ZN13CollectionApp3runEv+0x7a4)[0x7efe8c22c7a4]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0xf7f1)[0x55bdc2da57f1]
+/lib64/libc.so.6(+0x295d0)[0x7efe864295d0]
+/lib64/libc.so.6(__libc_start_main+0x80)[0x7efe86429680]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x10712)[0x55bdc2da6712]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 09:30:04 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1242521. Normal exit status = 1

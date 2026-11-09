@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/daq_sim.cnf": {
+   "bytes": 1181,
+   "sha256": "6637d83c56302e8e33206831a864e114da8fb4c458763d8cf3e640c8d3d9d72c"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 2075327100,
+   "sha256": "8a7f454b18b6fdadb73957c2cb293274b71fd349894bc625818d4e778c43777b"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/configdb.log": {
+   "bytes": 515,
+   "sha256": "db0b5306620e7843336f81ca018b7c072762ce9dc23591e6e954669dcf78f5ef"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/cycle.jsonl": {
+   "bytes": 2346,
+   "sha256": "ea667f17dff311958c392720e6ae4b9f3c20d07f857f70652f5c1b4680d43311"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/lgbk.log": {
+   "bytes": 1214,
+   "sha256": "8133eadfc5e12aded517a96bee6e098351a573625eb5107d924a461542e7f7cf"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/simxpm.log": {
+   "bytes": 2748,
+   "sha256": "f80cfe913027770b1f6b7f467298340a6b9b3be09b61c028628a713f2aa7adb9"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:control.log": {
+   "bytes": 69833,
+   "sha256": "7c9e41f3462d4cfc748bef9ac83b0a26d938868a6fe928b9254a8a1b34ce2749"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:epixquad_0.log": {
+   "bytes": 244951,
+   "sha256": "0d0e5bf4ac1870dc18b2dc0eff09ad0adbc1bae713e7782795f00f1de96ef10a"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:teb0.log": {
+   "bytes": 9178,
+   "sha256": "97ef2a31ed4642684099b751713b6e08a82ec935e1d63de13665163ee86790e0"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 2075327052,
+  "TEB_EvtCt": 1895,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1895,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1895,
+  "psana2 seeds": {
+   "0x1234": 1895
+  },
+  "psana2 seq": "1..1895",
+  "psana2 with data": 1895,
+  "simxpm NumL0Acc": 1895,
+  "simxpm NumL0Inp": 1895,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (2075327100 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:40:12-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/pmlogs/2026/11/09_09:39:48_sdfada013:epixquad_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:epixquad",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:39:53.911-08:00"
+}

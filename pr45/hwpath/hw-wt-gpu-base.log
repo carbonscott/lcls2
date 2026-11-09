@@ -1,0 +1,72 @@
+== wt-gpu-base head=1cd736f07 dirty=0 cuda build
+-- programs: <wt>/install/bin/drp <wt>/install/bin/drp_gpu /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python 
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhremu -d /dev/datadev_0 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752
+tst-drp_gpu[PID]: <I> logging configured
+tst-drp_gpu[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[PID]: <I> Global memory: 45457 MB
+tst-drp_gpu[PID]: <I> MemPoolGpu: granted CPUS
+tst-drp_gpu[PID]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[PID]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp_gpu -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752
+tst-drp_gpu[PID]: <I> logging configured
+tst-drp_gpu[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[PID]: <I> Global memory: 45457 MB
+tst-drp_gpu[PID]: <I> MemPoolGpu: granted CPUS
+tst-drp_gpu[PID]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[PID]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhremu -d /dev/datadev_0 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752,sim_dma_size=0x60000
+tst-drp_gpu[PID]: <I> logging configured
+tst-drp_gpu[PID]: <C> Unrecognized kwarg 'sim_dma_size=0x60000'
+rc=1
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhrsim -d /dev/null -u epixuhrsim_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752,pebbleBufCount=64
+tst-drp_gpu[PID]: <I> logging configured
+tst-drp_gpu[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[PID]: <I> Global memory: 45457 MB
+tst-drp_gpu[PID]: <I> MemPoolGpu: granted CPUS
+tst-drp_gpu[PID]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[PID]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[PID]: <I> NULL PGP device '/dev/null' opened
+tst-drp_gpu[PID]: <I> Output dir: n/a
+tst-drp_gpu[PID]: <W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+tst-drp_gpu[PID]: <I> Final SM resources for context 0: 6 SMs
+tst-drp_gpu[PID]: <I> Final SM resources for context 1: 6 SMs
+tst-drp_gpu[PID]: <I> Final SM resources for context 2: 42 SMs
+tst-drp_gpu[PID]: <I> Final SM resources for context 3: 88 SMs
+tst-drp_gpu[PID]: <I> Ready for transitions
+tst-drp_gpu[PID]: <W> Shutting down on TERM signal
+*** SimDetector::ctor: this 0xADDR, len 100, l1Delay 1000000
+rc=124
+-- drp -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp[PID]: <W> 13 hot threads (10 of them workers) exceed N granted CPUs, so the workers are left unpinned.  Consider cores: N
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp -P tst -p 7 -C localhost -D wave8 -d /dev/datadev_0 -u wave8_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the N granted CPUs are N cores, so past N shares a core
+tst-drp[PID]: <W> 13 hot threads (10 of them workers) exceed N granted CPUs, so the workers are left unpinned.  Consider cores: N
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- python pyprobe.py fakecam epixhremu epix100 (files the CPU DRP recorded at this PR's head)
+psana.detector.detectors: 214 names; with "noOp": []
+fakecam: fakecam (fakecam_raw_2_0_0) 400 of 400 events with raw, sha1 1846775cd9049ea8
+epixhremu: epixhremu (epixhremu_raw_0_0_1) 400 of 400 events with raw, sha1 c968847bba2272f1
+epix100: epix100 (epix100_raw_2_0_1) 400 of 400 events with raw, sha1 619184eabf6cd51f
+rc=0

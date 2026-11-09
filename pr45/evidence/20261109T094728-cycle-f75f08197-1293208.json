@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/daq_sim.cnf": {
+   "bytes": 1187,
+   "sha256": "62a6ed4cc5794cb8e07e35359629b191f5866209fdfcadac4f52a19df67fd576"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 202936,
+   "sha256": "1b130b4efa0501f95fbc52e0e46deb05cc30c40807e543b104efe3abb6a223fc"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/configdb.log": {
+   "bytes": 517,
+   "sha256": "ef48187f5e9b9b1dfc4212f5c8bec4ea6c565bd075d1292e6853504fe5f80729"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/cycle.jsonl": {
+   "bytes": 2339,
+   "sha256": "580a2c44c937305b060137acbec4f098aa48d3aa3d788501e70401f5ec34af3a"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/lgbk.log": {
+   "bytes": 1216,
+   "sha256": "3338afceaadc20ae26495c35829ee0ffa860d193e214f86f2d97be0d09816f98"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/simxpm.log": {
+   "bytes": 2753,
+   "sha256": "8967ac9420ba9f9d6890c4e70ca6c3b30a9676805118293911e653f0f4ab903c"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:control.log": {
+   "bytes": 68716,
+   "sha256": "12cde4f53149df6da8ba00a6be96e1fd45944d67511799fc0b2f260dbffa86b5"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:hrencoder_0.log": {
+   "bytes": 14194,
+   "sha256": "81dc81bc05327b5042293918b9514579bb17231a7c4351ccd57369da8d3e4005"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:teb0.log": {
+   "bytes": 9035,
+   "sha256": "72ba30411d975800288f5658b05a754676b95527cc0efbd303b5602eb1cbb3f8"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 202888,
+  "TEB_EvtCt": 2857,
+  "TEB_TrCt": 8,
+  "TEB_WrtCt": 2857,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2857,
+  "psana2 seeds": {
+   "0x1234": 2857
+  },
+  "psana2 seq": "1..2857",
+  "psana2 with data": 2857,
+  "simxpm NumL0Acc": 2857,
+  "simxpm NumL0Inp": 2857,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (202936 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:47:28-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-hrencoder/pmlogs/2026/11/09_09:47:09_sdfada013:hrencoder_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:hrencoder",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:47:15.535-08:00"
+}

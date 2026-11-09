@@ -1,0 +1,18 @@
+2026-11-09T09:45:39.112-08:00 daq_sim: up on sdfada013 (job 43970564 step 121), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts
+2026-11-09T09:45:39.112-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T09:46:01.422-08:00 daq_sim: preflight rc=0: 09:46:01 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T09:46:03.314-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T09:46:03.314-08:00 daq_sim: config DB seeded: tst/BEAM/ts_0 key=2 written
+2026-11-09T09:46:04.947-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T09:46:10.430-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfada013 (Slurm job 43970564)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, ts_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts/daq_sim.cnf  pids {'control': 1290138, 'teb0': 1290139, 'ts_0': 1290140}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-ts

@@ -1,0 +1,501 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T17:01:25+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 bash --rcfile $R/logs/proof45/rc.sh -i
+cwang31@sdfiana025:wt-gpu$ hostname; date '+%F %T %Z'; echo "S=$S"; echo "SG=$SG"
+sdfiana025
+2026-11-09 09:01:27 PST
+S=srun --jobid=43970564 --overlap --ntasks=1 --cpus-per-task=12 --mem=48G
+SG=srun --jobid=43970564 --overlap --ntasks=1 --cpus-per-task=12 --mem=48G --gres=gpu:l40s:1
+cwang31@sdfiana025:wt-gpu$ # every node command below is its own Slurm step on sdfada013 ($S; $SG also holds the node's GPU); each DAQ up..down holds the node lock
+cwang31@sdfiana025:wt-gpu$ git fetch -q origin && git merge origin/agentify; git rev-parse HEAD; git log -1 --format='%s' | cut -c1-138; echo "local changes: $(git status --short --untracked-files=no | wc -l)"
+Already up to date.
+f75f081970d4e069cd784b77c9b474422abd1581
+docs: the GPU DRP in the runbook and the changelog; drp_gpu rows RUN
+local changes: 0
+cwang31@sdfiana025:wt-gpu$ git log --format='%h %s' 5b1f5587d..HEAD | cut -c1-138
+f75f08197 docs: the GPU DRP in the runbook and the changelog; drp_gpu rows RUN
+ec6641806 tests: drp_gpu's hardware-free path
+9c4517286 sim: drp_gpu -D epixuhrsim -d sim://: its SimDetector's frames, timed by simxpm
+6cc7f3e95 sim: daq_sim up --drp drp_gpu; xtc2_check checks what the GPU recorded
+8185e474f sim: drp_gpu -d sim:// feeds the GPU's DMA buffers from the drp's MemPoolSim
+695b1b2ee drpGpu AreaDetector: pedestals 0 and gains 1 instead of null pointers
+1cd736f07 drpGpu: build and run with a CUDA 12 toolkit
+cwang31@sdfiana025:wt-gpu$ git diff --stat 5b1f5587d HEAD | tail -1; git diff --stat=138 5b1f5587d HEAD -- psdaq/drp psdaq/drpGpu psana | cut -c1-138
+ 26 files changed, 850 insertions(+), 40 deletions(-)
+ psana/psana/detector/detectors.py |   1 +
+ psana/psana/detector/drpgpu.py    |  46 +++++++++++++++++++++++++++++++++
+ psdaq/drp/BEBDetector.cc          |   2 +-
+ psdaq/drp/MemPoolSim.hh           |   2 ++
+ psdaq/drp/XpmDetector.cc          |   2 +-
+ psdaq/drp/drp.hh                  |   5 ++++
+ psdaq/drpGpu/AreaDetector.cu      |  13 ++++++++++
+ psdaq/drpGpu/AreaDetector.hh      |   8 ++++--
+ psdaq/drpGpu/EpixUHRsim.cu        |  33 ++++++++++++++++++++++++
+ psdaq/drpGpu/GreenCtxCompat.hh    |  65 +++++++++++++++++++++++++++++++++++++++++++++++
+ psdaq/drpGpu/MemPool.cc           | 134 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ psdaq/drpGpu/MemPool.hh           |  21 ++++++++++++++-
+ psdaq/drpGpu/PGPDetector.cc       |  39 ++++++++++++++++++++++++++++
+ psdaq/drpGpu/PGPDetectorApp.cc    |   7 +++++
+ psdaq/drpGpu/SimDetector.cc       |  22 +++++++++++++++-
+ psdaq/drpGpu/SimDetector.hh       |   2 ++
+ psdaq/drpGpu/gpuUtils.hh          |   1 +
+ psdaq/drpGpu/meson.build          |   5 +++-
+ 18 files changed, 398 insertions(+), 10 deletions(-)
+cwang31@sdfiana025:wt-gpu$ # The node has no CUDA toolkit; the builds use conda-forge's 12.9 and 13.3, installed in the project's scratch (a GPU step, for nvidia-smi)
+cwang31@sdfiana025:wt-gpu$ $SG bash $L/toolkit.sh
+toolkit on sdfada013, Slurm job 43970564 step 92, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:01:42 PST
+GPU: NVIDIA L40S, 575.57.08; driver runs up to CUDA Version: 12.9
+nvcc on PATH: none; /usr/local/cuda: No such file or directory
+nvcc in the DAQ env daq_20250402_r9: No such file or directory
+cuda-12.9: release 12.9, V12.9.86, conda-forge/linux-64/cuda-nvcc-12.9.86-hcdd1206_6.conda
+  for meson (RUNBOOK 3h): added version.json ("version": "12.9.86"), lib64 -> targets/x86_64-linux/lib; include/cccl -> . (added)
+cuda-13.3: release 13.3, V13.3.73, conda-forge/linux-64/cuda-nvcc-13.3.73-hcdd1206_1.conda
+  for meson (RUNBOOK 3h): added version.json ("version": "13.3.73"), lib64 -> targets/x86_64-linux/lib; include/cccl (the toolkit's own)
+cwang31@sdfiana025:wt-gpu$ # GreenCtxCompat.hh (1cd736f07), preprocessed under each toolkit: with CUDA 12.9 it maps the green contexts onto the driver API; with 13.3 it adds nothing
+cwang31@sdfiana025:wt-gpu$ $S bash $L/compat.sh
+cuda-12.9: GreenCtxCompat.hh changes 31 non-blank lines of the preprocessed cuda.h + cuda_runtime.h; DRPGPU_DRIVER_GREEN_CONTEXTS / CUDART_VERSION: DEFINED 12090 
+cuda-13.3: GreenCtxCompat.hh changes 0 non-blank lines of the preprocessed cuda.h + cuda_runtime.h; DRPGPU_DRIVER_GREEN_CONTEXTS / CUDART_VERSION: NOT_DEFINED 13030 
+cwang31@sdfiana025:wt-gpu$ export P=$L/take1; mkdir -p $P/ev; echo "records in $P/ev: $(ls -A $P/ev | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)"
+records in /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/ev: 0; work dirs in /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1: 0
+cwang31@sdfiana025:wt-gpu$ # Build at this HEAD, fresh (build_all.sh -f -d): CUDA 12.9 here (the runs below use it), then CUDA 13.3 in wt-gpu-cuda13 at the same HEAD
+cwang31@sdfiana025:wt-gpu$ $S bash $L/build.sh wt-gpu 12.9
+build (CUDA 12.9) on sdfada013, Slurm job 43970564 step 94, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:02:15 PST
+nvcc on PATH: $R/work/gpu1/cuda-12.9/bin/nvcc
+BUILD_EXIT=0 in 247 s; log build-wt-gpu.log
+Program nvcc found: YES ($R/work/gpu1/cuda-12.9/bin/nvcc)
+Cuda compiler for the host machine: nvcc (nvcc 12.9.86
+drp: install/bin/drp   drp_gpu: install/bin/drp_gpu   GPU libs (install/lib/*_gpu.so): 8
+cwang31@sdfiana025:wt-gpu$ git -C $R/wt-gpu-cuda13 rev-parse --short HEAD; echo "wt-gpu-cuda13 local changes: $(git -C $R/wt-gpu-cuda13 status --short --untracked-files=no | wc -l)"
+f75f08197
+wt-gpu-cuda13 local changes: 0
+cwang31@sdfiana025:wt-gpu$ $S bash $L/build.sh wt-gpu-cuda13 13.3
+build (CUDA 13.3) on sdfada013, Slurm job 43970564 step 98, wt-gpu-cuda13 HEAD f75f08197, local changes 0, 2026-11-09 09:06:33 PST
+nvcc on PATH: $R/work/gpu1/cuda-13.3/bin/nvcc
+BUILD_EXIT=0 in 199 s; log build-wt-gpu-cuda13.log
+Program nvcc found: YES ($R/work/gpu1/cuda-13.3/bin/nvcc)
+Cuda compiler for the host machine: nvcc (nvcc 13.3.73
+drp: install/bin/drp   drp_gpu: install/bin/drp_gpu   GPU libs (install/lib/*_gpu.so): 8
+cwang31@sdfiana025:wt-gpu$ # CUDA 13.3 compiles only: this node's driver (575) runs CUDA 12.9 at most, so every run below uses the 12.9 build
+cwang31@sdfiana025:wt-gpu$ # At the base 5b1f5587d (worktree wt-nb45) drpGpu does not configure on this node with either toolkit: its meson.build hard-codes /usr/local/cuda
+cwang31@sdfiana025:wt-gpu$ git -C $R/wt-nb45 log -1 --format='wt-nb45 %h %s' | cut -c1-138; echo "wt-nb45 local changes: $(git -C $R/wt-nb45 status --short --untracked-files=no | wc -l)"
+wt-nb45 5b1f5587d Merge PR #39: sim: opal, piranha4, tb and epixquad configure through their own config code
+wt-nb45 local changes: 0
+cwang31@sdfiana025:wt-gpu$ for v in 12.9 13.3; do $S bash $L/basemeson.sh wt-nb45 $v; done
+meson setup (CUDA 12.9) on sdfada013, Slurm job 43970564 step 99, wt-nb45 HEAD 5b1f5587d, local changes 0, 2026-11-09 09:10:02 PST
+SETUP_EXIT=1
+Program nvcc found: YES ($R/work/gpu1/cuda-12.9/bin/nvcc)
+psdaq/drpGpu/meson.build:22:15: ERROR: Include dir /usr/local/cuda/targets/x86_64-linux/include does not exist.
+meson setup (CUDA 13.3) on sdfada013, Slurm job 43970564 step 101, wt-nb45 HEAD 5b1f5587d, local changes 0, 2026-11-09 09:10:35 PST
+SETUP_EXIT=1
+Program nvcc found: YES ($R/work/gpu1/cuda-13.3/bin/nvcc)
+psdaq/drpGpu/meson.build:22:15: ERROR: Include dir /usr/local/cuda/targets/x86_64-linux/include does not exist.
+cwang31@sdfiana025:wt-gpu$ # The CI (Test DAQ) builds with ./build_all.sh -d and no nvcc, so meson skips psdaq/drpGpu; the same fresh build at base (wt-nb45) and at this HEAD (wt-nh45)
+cwang31@sdfiana025:wt-gpu$ grep -n 'build_all' .github/workflows/run_daq_tests.yaml | cut -c1-138; git -C $R/wt-nh45 rev-parse --short HEAD
+40:          # build_all.sh now requires ENV_TYPE to be set before it will run
+44:          # -d is kept here: in the current build_all.sh, -d turns the DAQ
+47:          ./build_all.sh -d
+f75f08197
+cwang31@sdfiana025:wt-gpu$ $S bash $L/build.sh wt-nb45 none
+build (CUDA none) on sdfada013, Slurm job 43970564 step 102, wt-nb45 HEAD 5b1f5587d, local changes 0, 2026-11-09 09:11:02 PST
+nvcc on PATH: none
+BUILD_EXIT=0 in 197 s; log build-wt-nb45.log
+Program nvcc found: NO
+drp: install/bin/drp   drp_gpu: No such file or directory   GPU libs (install/lib/*_gpu.so): 0
+cwang31@sdfiana025:wt-gpu$ $S bash $L/build.sh wt-nh45 none
+build (CUDA none) on sdfada013, Slurm job 43970564 step 103, wt-nh45 HEAD f75f08197, local changes 0, 2026-11-09 09:14:27 PST
+nvcc on PATH: none
+BUILD_EXIT=0 in 149 s; log build-wt-nh45.log
+Program nvcc found: NO
+drp: install/bin/drp   drp_gpu: No such file or directory   GPU libs (install/lib/*_gpu.so): 0
+cwang31@sdfiana025:wt-gpu$ $S bash $L/nocuda.sh wt-nb45 wt-nh45
+wt-nb45: 5b1f5587d, Program nvcc found: NO, drpGpu targets: 1
+  638 targets, 546 build commands
+wt-nh45: f75f08197, Program nvcc found: NO, drpGpu targets: 1
+  638 targets, 546 build commands
+TARGETS_DIFF_EXIT=0
+COMMANDS_DIFF_EXIT=0
+cwang31@sdfiana025:wt-gpu$ grep -n -E '^if |^endif' psdaq/drpGpu/meson.build; git diff -U0 5b1f5587d HEAD -- psdaq/drpGpu/meson.build | grep '^@@'; git diff --stat 5b1f5587d HEAD -- '*meson.build' meson_options.txt build_all.sh
+2:if cuda_compiler.found()
+438:endif
+@@ -20 +20,2 @@ if cuda_compiler.found()
+@@ -39,0 +41 @@ cuda_inc_dir = include_directories([
+@@ -84,0 +87 @@ cuda_inc_dir = include_directories([
+ psdaq/drpGpu/meson.build | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+cwang31@sdfiana025:wt-gpu$ # The sim unit tests at this HEAD (one step, node lock)
+cwang31@sdfiana025:wt-gpu$ $S bash $L/pytest.sh
+pytest on sdfada013, Slurm job 43970564 step 106, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:17:10 PST
+9 files: test_sim_configdb test_sim_configdb_seed_store test_sim_coverage test_sim_drpgpu test_sim_framer test_sim_lgbk test_sim_rogue_dev
+PYTEST_EXIT=0
+134 passed in 66.69s (0:01:06)
+cwang31@sdfiana025:wt-gpu$ # Each GPU type on a fresh simulated DAQ in one GPU step: up --det <type> --drp drp_gpu, cycle --events 1000, down; its drp_gpu log;
+cwang31@sdfiana025:wt-gpu$ # xtc2_check --drp drp_gpu on the file (every pixel of every event: as written must PASS, --self-test-offset 1 must FAIL)
+cwang31@sdfiana025:wt-gpu$ # fakecam: Gpu::AreaDetector, configured by xpmdet_config as drp -D fakecam is; then a fault run: TDetSemi.Length_0 reads back wrong
+cwang31@sdfiana025:wt-gpu$ $SG bash $L/gpurun.sh fakecam $P DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0
+fakecam (drp_gpu) on sdfada013, Slurm job 43970564 step 107, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:18:29 PST
+the step's GPU: 0, NVIDIA L40S, GPU-e52abe08-3e8e-0e64-80e0-533a631004fe
+node lock held from 09:18:44: up, cycle, down
+UP_EXIT=0
+daq_sim: preflight rc=0: 09:19:07 PREFLIGHT PASS  (logs/preflight.log)
+daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1217
+  TEB_WrtCt              1217
+  DRP_Damage             0
+  psana2 events          1217
+  psana2 with data       1217
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+evidence 20261109T091942-cycle-f75f08197-1213987: det:drp_gpu:fakecam prog:control prog:drp_gpu prog:pyxpm prog:teb
+cycle PASS
+DOWN_EXIT=0
+2026-11-09T09:19:49.875-08:00 daq_sim: down: clean
+-- fakecam drp_gpu log:
+# CMDLINE: drp_gpu -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o wd-gpu-fakecam/data -k reducer=NoOpReducer,sim_length
+<I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+<I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 131072 B
+<I> MemPoolSim: simxpm registered fakecam_0 as XPM 0 link 0
+<I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+<W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+<I> Final SM resources for context 0: 6 SMs
+<I> Final SM resources for context 1: 6 SMs
+<I> Final SM resources for context 2: 42 SMs
+<I> Final SM resources for context 3: 88 SMs
+<I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+<I> Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det fakecam --seed 0x1234 
+  experiment tstx00001 run 1 detector fakecam raw shape [128]
+  L1Accept events 1217; with fakecam data 1217; events matching the pattern of seed 0x1234: 1217
+  check: every pixel of fakecam.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, seq
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det fakecam --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector fakecam raw shape [128]
+  L1Accept events 1217; with fakecam data 1217; events matching the pattern of seed 0x1234: 0
+  check: every pixel of fakecam.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, seq
+  problem: event 1: 60 of 128 pixels differ
+  problem: event 2: 60 of 128 pixels differ
+  FAIL
+rc=1
+-- fakecam fault run: PSDAQ_SIM_ROGUE_FAULT='DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0'; evidence records before it: 1
+UP_EXIT=0
+CYCLE_EXIT=1
+setState allocated    -> allocated    OK
+[error] fakecam_0 did not respond to connect
+[error] 1 client did not respond to connect
+setState connected    -> allocated    FAIL
+cycle FAIL
+DOWN_EXIT=0
+2026-11-09T09:22:47.576-08:00 daq_sim: down: clean
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 @AxiMemMap(sim://127.0.0.1:31052)+0xa00000 reads back 0x7fffff
+      4 Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0
+      1 xpmdet_config.py", line 244, in xpmdet_connect
+evidence records after the fault run: 1
+GPURUN_DONE fakecam 09:22:47
+cwang31@sdfiana025:wt-gpu$ # epixuhremu: Gpu::EpixUHRemu, configured by epixuhremu_configTiming and xpmdet_config; the same fault run
+cwang31@sdfiana025:wt-gpu$ $SG bash $L/gpurun.sh epixuhremu $P DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0
+epixuhremu (drp_gpu) on sdfada013, Slurm job 43970564 step 111, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:22:54 PST
+the step's GPU: 0, NVIDIA L40S, GPU-e52abe08-3e8e-0e64-80e0-533a631004fe
+node lock held from 09:22:57: up, cycle, down
+UP_EXIT=0
+daq_sim: preflight rc=0: 09:23:20 PREFLIGHT PASS  (logs/preflight.log)
+daq_sim: config DB seeded: tst/BEAM/epixuhremu_0 key=2 written
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1859
+  TEB_WrtCt              1859
+  DRP_Damage             0
+  psana2 events          1859
+  psana2 with data       1859
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+evidence 20261109T092402-cycle-f75f08197-1226263: det:drp_gpu:epixuhremu prog:control prog:drp_gpu prog:pyxpm prog:teb
+cycle PASS
+DOWN_EXIT=0
+2026-11-09T09:24:09.606-08:00 daq_sim: down: clean
+-- epixuhremu drp_gpu log:
+# CMDLINE: drp_gpu -P tst -C localhost -D epixuhremu -d sim://127.0.0.1:31052 -l 0x1 -o wd-gpu-epixuhremu/data -k reducer=NoOpReducer,sim_
+<I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+<I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 458752 B
+<I> MemPoolSim: simxpm registered epixuhremu_0 as XPM 0 link 0
+<I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+<W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+<I> Final SM resources for context 0: 6 SMs
+<I> Final SM resources for context 1: 6 SMs
+<I> Final SM resources for context 2: 42 SMs
+<I> Final SM resources for context 3: 88 SMs
+WARNING:root:epixuhremu: timing link is down, calling ConfigLclsTimingV2()
+ERROR:root:epixuhremu: timing link is still down after ConfigLclsTimingV2(); check the fibre and the XPM
+<I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+<I> Sim payload seed 4660 (0x00001234) from configdb BEAM/epixuhremu_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det epixuhremu --seed 0x1234 
+  experiment tstx00001 run 1 detector epixuhremu raw shape [336, 576]
+  L1Accept events 1859; with epixuhremu data 1859; events matching the pattern of seed 0x1234: 1859
+  check: every pixel of epixuhremu.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, 
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det epixuhremu --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixuhremu raw shape [336, 576]
+  L1Accept events 1859; with epixuhremu data 1859; events matching the pattern of seed 0x1234: 0
+  check: every pixel of epixuhremu.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, 
+  problem: event 1: 48383 of 193536 pixels differ
+  problem: event 2: 48383 of 193536 pixels differ
+  FAIL
+rc=1
+-- epixuhremu fault run: PSDAQ_SIM_ROGUE_FAULT='DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0'; evidence records before it: 2
+UP_EXIT=0
+CYCLE_EXIT=1
+setState allocated    -> allocated    OK
+[error] epixuhremu_0 did not respond to connect
+[error] 1 client did not respond to connect
+setState connected    -> allocated    FAIL
+cycle FAIL
+DOWN_EXIT=0
+2026-11-09T09:27:39.737-08:00 daq_sim: down: clean
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 @AxiMemMap(sim://127.0.0.1:31052)+0xa00000 reads back 0x7fffff
+      4 Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0
+      1 xpmdet_config.py", line 244, in xpmdet_connect
+evidence records after the fault run: 2
+GPURUN_DONE epixuhremu 09:27:39
+cwang31@sdfiana025:wt-gpu$ # epixuhrsim: Gpu::EpixUHRsim, its SimDetector's 16 frames timed by simxpm; checked against the frames and constants it writes (sim_ref)
+cwang31@sdfiana025:wt-gpu$ $SG bash $L/gpurun.sh epixuhrsim $P
+epixuhrsim (drp_gpu) on sdfada013, Slurm job 43970564 step 114, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:27:46 PST
+the step's GPU: 0, NVIDIA L40S, GPU-e52abe08-3e8e-0e64-80e0-533a631004fe
+node lock held from 09:29:15: up, cycle, down
+UP_EXIT=0
+daq_sim: preflight rc=0: 09:29:38 PREFLIGHT PASS  (logs/preflight.log)
+daq_sim: config DB seeded: tst/BEAM/epixuhrsim_0 key=2 written
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1861
+  TEB_WrtCt              1861
+  DRP_Damage             0
+  psana2 events          1861
+  psana2 with data       1861
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+evidence 20261109T093009-cycle-f75f08197-1242563: det:drp_gpu:epixuhrsim prog:control prog:drp_gpu prog:pyxpm prog:teb
+cycle PASS
+DOWN_EXIT=0
+2026-11-09T09:30:16.865-08:00 daq_sim: down: clean
+-- epixuhrsim drp_gpu log:
+# CMDLINE: drp_gpu -P tst -C localhost -D epixuhrsim -d sim://127.0.0.1:31052 -l 0x1 -o wd-gpu-epixuhrsim/data -k reducer=NoOpReducer,sim_
+<I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+<I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 458752 B
+<I> MemPoolSim: simxpm registered epixuhrsim_0 as XPM 0 link 0
+<W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+<I> Final SM resources for context 0: 6 SMs
+<I> Final SM resources for context 1: 6 SMs
+<I> Final SM resources for context 2: 42 SMs
+<I> Final SM resources for context 3: 88 SMs
+<I> SimDetector: timing from simxpm through sim://127.0.0.1:31052
+<I> EpixUHRsim: wrote its 16 raw frames and calibration constants to wd-gpu-epixuhrsim/epixuhrsim-ref.bin
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det epixuhrsim --seed 0x1234 --ref epixuhrsim-ref.bin 
+  experiment tstx00001 run 1 detector epixuhrsim raw shape [336, 576]
+  L1Accept events 1861; with epixuhrsim data 1861; events matching the check: 1861
+  check: every pixel of epixuhrsim.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs frame (n-1) % 16 of epixuhrsim-ref.bin cali
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det epixuhrsim --seed 0x1234 --ref epixuhrsim-ref.bin --self-test-offset 1
+  experiment tstx00001 run 1 detector epixuhrsim raw shape [336, 576]
+  L1Accept events 1861; with epixuhrsim data 1861; events matching the check: 0
+  check: every pixel of epixuhrsim.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs frame (n-1) % 16 of epixuhrsim-ref.bin cali
+  problem: event 1: 193500 of 193536 pixels differ from frame 1
+  problem: event 2: 193476 of 193536 pixels differ from frame 2
+  FAIL
+rc=1
+GPURUN_DONE epixuhrsim 09:30:23
+cwang31@sdfiana025:wt-gpu$ # 695b1b2ee (AreaDetector: pedestals 0 and gains 1, not null pointers): the same command at a base without it and at this HEAD.
+cwang31@sdfiana025:wt-gpu$ # Base: wt-gpu-r695 = this HEAD with 695b1b2ee reverted (4bde760d1, detached, not on any branch), built with CUDA 12.9 before the recording
+cwang31@sdfiana025:wt-gpu$ git -C $R/wt-gpu-r695 log -2 --format='%h %s' | cut -c1-138; git -C $R/wt-gpu-r695 diff --stat HEAD~1 HEAD | tail -1; echo "local changes: $(git -C $R/wt-gpu-r695 status --short --untracked-files=no | wc -l)"
+4bde760d1 Revert "drpGpu AreaDetector: pedestals 0 and gains 1 instead of null pointers"
+f75f08197 docs: the GPU DRP in the runbook and the changelog; drp_gpu rows RUN
+ 2 files changed, 2 insertions(+), 19 deletions(-)
+local changes: 0
+cwang31@sdfiana025:wt-gpu$ grep -E '^build|^nvcc on|^BUILD_EXIT' $L/prebuild.log | grep -A2 wt-gpu-r695 | sed "s#$R#\$R#g" | cut -c1-138; ninja -C $R/wt-gpu-r695/builddir -n | tail -1
+build (CUDA 12.9) on sdfada013, Slurm job 43970564 step 46, wt-gpu-r695 HEAD 4bde760d1, local changes 0, 2026-11-09 08:31:07 PST
+nvcc on PATH: $R/work/gpu1/cuda-12.9/bin/nvcc
+BUILD_EXIT=0 in 274 s; log build-wt-gpu-r695.log
+build (CUDA none) on sdfada013, Slurm job 43970564 step 46, wt-nb45 HEAD 5b1f5587d, local changes 0, 2026-11-09 08:35:45 PST
+nvcc on PATH: none
+bash: ninja: command not found
+cwang31@sdfiana025:wt-gpu$ for w in wt-gpu-r695 wt-gpu; do $SG bash $L/fix695.sh $w $P; done
+fakecam (drp_gpu) on sdfada013, Slurm job 43970564 step 116, wt-gpu-r695 HEAD 4bde760d1, local changes 0, 2026-11-09 09:30:35 PST
+  4bde760d1 Revert "drpGpu AreaDetector: pedestals 0 and gains 1 instead of null pointers"
+  AreaDetector.hh:23:  float const* pedestals_d() const override { return nullptr; };
+  AreaDetector.hh:24:  float const* gains_d()     const override { return nullptr; };
+UP_EXIT=0
+CYCLE_EXIT=1
+DAQ:SIM:XPM:0:PART:5:NumL0Acc = 66 (wanted >= 1000)
+[error] fakecam_0 did not respond to disable
+[error] teb0 did not respond to disable
+[error] 2 client did not respond to disable
+  xtc2 file              wd-695-wt-gpu-r695/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (0 B)
+cycle FAIL
+  status:   simxpm     PART:5:NumL0Acc = 66.0
+DOWN_EXIT=0
+2026-11-09T09:32:50.179-08:00 daq_sim: down: clean
+drp_gpu log: 1 lines with a cudaError, 1 of them cudaErrorIllegalAddress:
+<I> GPU threads per SM: 1536, blocks per SM: 24, blocks 144 * threads 64 = 9216 total threads, SMs 6.0, elements per thread: 0.0
+<I> Recorder   saw       Enable
+<E> ../psdaq/drpGpu/MemPool.cc:567:  cudaErrorIllegalAddress (700): 'an illegal memory access was encountered'
+@@@ Received a sigChild for process 1248944. The process was killed by signal 6
+FIX695_DONE wt-gpu-r695 09:32:50
+fakecam (drp_gpu) on sdfada013, Slurm job 43970564 step 118, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:32:54 PST
+  f75f08197 docs: the GPU DRP in the runbook and the changelog; drp_gpu rows RUN
+  AreaDetector.hh:25:  float const* pedestals_d() const override { return m_peds_d; };
+  AreaDetector.hh:26:  float const* gains_d()     const override { return m_gains_d; };
+UP_EXIT=0
+CYCLE_EXIT=0
+DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1375 (wanted >= 1000)
+  simxpm NumL0Acc        1941
+  TEB_WrtCt              1941
+  DRP_Damage             0
+  xtc2 file              wd-695-wt-gpu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1155148 B)
+  psana2 events          1941
+cycle PASS
+  status:   simxpm     PART:5:NumL0Acc = 1941.0
+DOWN_EXIT=0
+2026-11-09T09:34:17.101-08:00 daq_sim: down: clean
+drp_gpu log: 0 lines with a cudaError, 0 of them cudaErrorIllegalAddress:
+<I> GPU threads per SM: 1536, blocks per SM: 24, blocks 144 * threads 64 = 9216 total threads, SMs 6.0, elements per thread: 0.0
+<I> Recorder   saw       Enable
+FIX695_DONE wt-gpu 09:34:17
+cwang31@sdfiana025:wt-gpu$ # The CPU DRP's 14 types of PRs #34, #36 and #39 at this HEAD (XpmDetector and BEBDetector now reach MemPoolSim through MemPool::sim()):
+cwang31@sdfiana025:wt-gpu$ # one step, each type on a fresh DAQ under the node lock: up --det <type>, cycle --events 1000, down, then xtc2_check as written and with the offset
+cwang31@sdfiana025:wt-gpu$ $S bash $L/cputypes.sh $P opal piranha4 tb epixquad fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he
+the CPU DRP's types on sdfada013, Slurm job 43970564 step 121, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:34:25 PST
+opal: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1884, TEB_WrtCt 1884, psana2 1884, with data 1884, Damage 0
+   record 20261109T093520-cycle-f75f08197-1261469; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 1048345 of 1048576 pix
+piranha4: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1930, TEB_WrtCt 1930, psana2 1930, with data 1930, Damage 0
+   record 20261109T093802-cycle-f75f08197-1269560; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 2048 of 2048 pixels di
+tb: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1887, TEB_WrtCt 1887, psana2 1887, with data 1887, Damage 0
+   record 20261109T093901-cycle-f75f08197-1272045; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: fixedRates [0, 0, 0, 0
+epixquad: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1895, TEB_WrtCt 1895, psana2 1895, with data 1895, Damage 0
+   record 20261109T094012-cycle-f75f08197-1274645; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 540640 of 540672 pixel
+fakecam: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1892, TEB_WrtCt 1892, psana2 1892, with data 1892, Damage 0
+   record 20261109T094112-cycle-f75f08197-1277367; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: payload pattern broken
+cspad: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1875, TEB_WrtCt 1875, psana2 1875, with data 1875, Damage 0
+   record 20261109T094211-cycle-f75f08197-1279831; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: payload pattern broken
+epixhremu: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1921, TEB_WrtCt 1921, psana2 1921, with data 1921, Damage 0
+   record 20261109T094311-cycle-f75f08197-1281799; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 110592 of 110592 pixel
+jungfrauemu: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1871, TEB_WrtCt 1871, psana2 1871, with data 1871, Damage 0
+   record 20261109T094432-cycle-f75f08197-1284118; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 262140 of 262140 paylo
+ts: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1848, TEB_WrtCt 1848, psana2 1848, with data 1848, Damage 0
+   record 20261109T094623-cycle-f75f08197-1290680; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: fixedRates [1, 0, 0, 0
+hrencoder: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 2857, TEB_WrtCt 2857, psana2 2857, with data 2857, Damage 0
+   record 20261109T094728-cycle-f75f08197-1293208; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: value 45163 != 1678594
+epixm320: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1936, TEB_WrtCt 1936, psana2 1936, with data 1936, Damage 0
+   record 20261109T094842-cycle-f75f08197-1295649; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 294906 of 294912 pixel
+epix100: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 2973, TEB_WrtCt 2973, psana2 2973, with data 2973, Damage 0
+   record 20261109T094953-cycle-f75f08197-1298439; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: 540640 of 540672 pixel
+wave8: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 2881, TEB_WrtCt 2881, psana2 2881, with data 2881, Damage 0
+   record 20261109T095108-cycle-f75f08197-1301545; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: raw_0: 256 of 256 samp
+wave8he: up 0, cycle 0 PASS, down 0 clean; NumL0Acc 1894, TEB_WrtCt 1894, psana2 1894, with data 1894, Damage 0
+   record 20261109T095218-cycle-f75f08197-1304605; xtc2_check: PASS rc=0; --self-test-offset 1: FAIL rc=1, event 1: raw_0: 256 of 256 samp
+CPUTYPES_DONE 09:52:34
+cwang31@sdfiana025:wt-gpu$ # daq_sim coverage at this HEAD over the 17 records (3 drp_gpu, 14 drp)
+cwang31@sdfiana025:wt-gpu$ $S bash $L/cov.sh $P
+coverage on sdfada013, Slurm job 43970564 step 126, wt-gpu HEAD f75f08197, local changes 0, 2026-11-09 09:52:40 PST
+records in ev: 17
+COVERAGE_EXIT=1
+95 lines in cov.txt
+cwang31@sdfiana025:wt-gpu$ grep -E '^det:drp_gpu:|^prog:(control|drp|drp_gpu|teb|pyxpm) ' $P/cov.txt | cut -c1-138
+det:drp_gpu:fakecam            RUN       evidence 20261109T091942-cycle-f75f08197-1213987
+det:drp_gpu:epixuhremu         RUN       evidence 20261109T092402-cycle-f75f08197-1226263
+det:drp_gpu:epixuhrsim         RUN       evidence 20261109T093009-cycle-f75f08197-1242563
+det:drp_gpu:epixuhr3x2         UNPROVEN  no status entry
+det:drp_gpu:jungfrau           UNPROVEN  no status entry
+prog:control                   RUN       evidence 20261109T095218-cycle-f75f08197-1304605 (+16 more)
+prog:drp                       RUN       evidence 20261109T095218-cycle-f75f08197-1304605 (+13 more)
+prog:drp_gpu                   RUN       evidence 20261109T093009-cycle-f75f08197-1242563 (+2 more)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:teb                       RUN       evidence 20261109T095218-cycle-f75f08197-1304605 (+16 more)
+cwang31@sdfiana025:wt-gpu$ echo "det rows RUN: $(grep -cE '^det:[a-z_]+:[A-Za-z0-9]+ +RUN +evidence' $P/cov.txt)"; grep -E '^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138
+det rows RUN: 17
+78 rows, 21 run, 1 stand-in, 3 N/A, 53 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 21 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 53 unproven row(s)
+cwang31@sdfiana025:wt-gpu$ # Negatives: (1) the drp_gpu fakecam record left out, the CPU drp's fakecam record kept: det:drp_gpu:fakecam must drop;
+cwang31@sdfiana025:wt-gpu$ # (2) also a copy of that drp record with its rows renamed to det:drp_gpu:fakecam and prog:drp_gpu: a drp record must not prove a drp_gpu row
+cwang31@sdfiana025:wt-gpu$ $S bash $L/neg.sh $P
+left out 20261109T091942-cycle-f75f08197-1213987.json: det:drp_gpu:fakecam prog:control prog:drp_gpu prog:pyxpm prog:teb
+kept 20261109T094112-cycle-f75f08197-1277367.json: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+ev-forged also holds forged-20261109T094112-cycle-f75f08197-1277367.json: det:drp_gpu:fakecam prog:control prog:drp_gpu prog:pyxpm prog:te
+records: 16 in ev-no-gpu-fakecam, 17 in ev-forged
+COVERAGE_EXIT=1 (no-gpu-fakecam)
+COVERAGE_EXIT=1 (forged)
+cwang31@sdfiana025:wt-gpu$ for t in no-gpu-fakecam forged; do echo "== cov-$t.txt"; grep -E '^det:drp(_gpu)?:fakecam |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-$t.txt | sed "s#$P/##g" | fold -w 138; done
+== cov-no-gpu-fakecam.txt
+det:drp:fakecam                RUN       evidence 20261109T094112-cycle-f75f08197-1277367
+det:drp_gpu:fakecam            RUN       NO VALID EVIDENCE at HEAD f75f08197
+78 rows, 20 run, 1 stand-in, 3 N/A, 53 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 53 unproven row(s)
+  det:drp_gpu:fakecam: RUN row without valid evidence at HEAD f75f08197
+== cov-forged.txt
+det:drp:fakecam                RUN       evidence 20261109T094112-cycle-f75f08197-1277367
+det:drp_gpu:fakecam            RUN       NO VALID EVIDENCE at HEAD f75f08197; rejected forged-20261109T094112-cycle-f75f08197-1277367: no 
+listed log runs drp_gpu -D fakecam and names the run of wd-drp-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (its path or 
+BeginRun time 1163094065.900966505)
+78 rows, 20 run, 1 stand-in, 3 N/A, 53 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 53 unproven row(s)
+  det:drp_gpu:fakecam: RUN row without valid evidence at HEAD f75f08197
+cwang31@sdfiana025:wt-gpu$ # The hardware path (no sim:// device) of what this PR changes, from base and head builds, the same commands (hwpath.sh), GPU step, node lock.
+cwang31@sdfiana025:wt-gpu$ # (a) drp_gpu and drp from the CUDA 12.9 builds of 1cd736f07 (wt-gpu-base: this PR's first commit, the oldest drpGpu that builds here) and this HEAD
+cwang31@sdfiana025:wt-gpu$ git -C $R/wt-gpu-base log -1 --format='wt-gpu-base %h %s' | cut -c1-138; echo "local changes: $(git -C $R/wt-gpu-base status --short --untracked-files=no | wc -l)"; ninja -C $R/wt-gpu-base/builddir -n | tail -1
+wt-gpu-base 1cd736f07 drpGpu: build and run with a CUDA 12 toolkit
+local changes: 0
+bash: ninja: command not found
+cwang31@sdfiana025:wt-gpu$ $SG bash $L/hwrun.sh $P wt-gpu-base wt-gpu cuda
+== wt-gpu-base head=1cd736f07 dirty=0 cuda build
+== wt-gpu head=f75f08197 dirty=0 cuda build
+HWPATH_DIFF_EXIT=1 (wt-gpu-base vs wt-gpu; 72 lines each)
+cwang31@sdfiana025:wt-gpu$ grep -E '^-- |^rc=' $P/hw-wt-gpu.log | cut -c1-138
+-- programs: <wt>/install/bin/drp <wt>/install/bin/drp_gpu /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python 
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhremu -d /dev/datadev_0 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=45875
+rc=134
+-- drp_gpu -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752
+rc=134
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhremu -d /dev/datadev_0 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=45875
+rc=1
+-- drp_gpu -P tst -p 7 -C localhost -D epixuhrsim -d /dev/null -u epixuhrsim_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752,peb
+rc=124
+-- drp -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0
+rc=134
+-- drp -P tst -p 7 -C localhost -D wave8 -d /dev/datadev_0 -u wave8_0
+rc=134
+-- python pyprobe.py fakecam epixhremu epix100 (files the CPU DRP recorded at this PR's head)
+rc=0
+cwang31@sdfiana025:wt-gpu$ grep -A9 -E '^-- drp_gpu .*epixuhrsim' $P/hw-wt-gpu.log | grep -E 'Built with|SM resources|Ready|rc=' | cut -c1-138
+cwang31@sdfiana025:wt-gpu$ # (b) drp and psana from the no-CUDA builds (as CI builds) of base 5b1f5587d (wt-nb45) and this HEAD (wt-nh45)
+cwang31@sdfiana025:wt-gpu$ $S bash $L/hwrun.sh $P wt-nb45 wt-nh45 nocuda
+== wt-nb45 head=5b1f5587d dirty=0 nocuda build
+== wt-nh45 head=f75f08197 dirty=0 nocuda build
+HWPATH_DIFF_EXIT=1 (wt-nb45 vs wt-nh45; 25 lines each)
+cwang31@sdfiana025:wt-gpu$ cat $P/hw-diff-nocuda.txt | cut -c1-138; grep -E '^-- |^rc=|^(fakecam|epixhremu|epix100): ' $P/hw-wt-nh45.log | cut -c1-138
+20c20
+< psana.detector.detectors: 214 names; with "noOp": []
+---
+> psana.detector.detectors: 217 names; with "noOp": ['epixuhremu_noOp_0_0_0', 'epixuhrsim_noOp_0_0_0', 'fakecam_noOp_0_0_0']
+-- programs: <wt>/install/bin/drp /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python 
+-- drp_gpu: not built (no nvcc, so meson skips psdaq/drpGpu)
+-- drp -P tst -p 7 -C localhost -D fakecam -d /dev/datadev_0 -u fakecam_0
+rc=134
+-- drp -P tst -p 7 -C localhost -D wave8 -d /dev/datadev_0 -u wave8_0
+rc=134
+-- python pyprobe.py fakecam epixhremu epix100 (files the CPU DRP recorded at this PR's head)
+fakecam: fakecam (fakecam_raw_2_0_0) 400 of 400 events with raw, sha1 1846775cd9049ea8
+epixhremu: epixhremu (epixhremu_raw_0_0_1) 400 of 400 events with raw, sha1 c968847bba2272f1
+epix100: epix100 (epix100_raw_2_0_1) 400 of 400 events with raw, sha1 619184eabf6cd51f
+rc=0
+cwang31@sdfiana025:wt-gpu$ echo "local changes: $(git status --short --untracked-files=no | wc -l)"; git rev-parse HEAD; date '+%F %T %Z'
+local changes: 0
+f75f081970d4e069cd784b77c9b474422abd1581
+2026-11-09 09:56:44 PST
+cwang31@sdfiana025:wt-gpu$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

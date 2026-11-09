@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/daq_sim.cnf": {
+   "bytes": 1204,
+   "sha256": "1e940c1474e01f6a43d116c27307edebd4d0f00cff237993d6fac4ddc40abfe8"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1962041452,
+   "sha256": "2c5d9ef8bb6f2aeb5c54dd47d40321750bf80da8e8aa946de97d143125054a76"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/configdb.log": {
+   "bytes": 521,
+   "sha256": "17aabe017eb7acf12e5782dc91d3e04f5026ce8f7983bade574f2fee7f2c6d30"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/cycle.jsonl": {
+   "bytes": 2349,
+   "sha256": "bf8b5b149a868481122258d45a2f535440fd87248646df9fa285ce6f07e610a4"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/lgbk.log": {
+   "bytes": 1220,
+   "sha256": "200a5caaaca72d92983a07e0231061c551d84d17057e3779f75ecd3e26352907"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/simxpm.log": {
+   "bytes": 2763,
+   "sha256": "339e73c964f6941b997babab26da23ff982b48c2f967d834dbc37abe710be9f5"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:control.log": {
+   "bytes": 66861,
+   "sha256": "90c5c1598e2159c7bd8ade44305c664695eef5e5ce1a0e7aaffa5d649d1f0dda"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:jungfrauemu_0.log": {
+   "bytes": 13704,
+   "sha256": "83c119a6007f09540c8bca73b42434a6a972e9325b4ef091be37eebc603bca84"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:teb0.log": {
+   "bytes": 8955,
+   "sha256": "bfdda1a4ca287f17a997b05cfeae46bf5f92c1a524ffd19d7aab2cc7428f3d55"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1962041404,
+  "TEB_EvtCt": 1871,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1871,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1871,
+  "psana2 seeds": {
+   "0x1234": 1871
+  },
+  "psana2 seq": "1..1871",
+  "psana2 with data": 1871,
+  "simxpm NumL0Acc": 1871,
+  "simxpm NumL0Inp": 1871,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1962041452 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:44:32-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-jungfrauemu/pmlogs/2026/11/09_09:43:51_sdfada013:jungfrauemu_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:jungfrauemu",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:43:56.891-08:00"
+}

@@ -1,0 +1,8 @@
+[sdfada013:1280296] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/1190264832/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:1280296] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 1875; with cspad data 1875; w3 == seed 1875 (seeds seen {0x1234: 1875}); payload pattern ok 1875; w0/w1 pulseId rising and == timestamp clock 1875/1875
+  seq (w2) 1..1875 gap-free from 1: True
+  PASS

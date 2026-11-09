@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/daq_sim.cnf": {
+   "bytes": 1180,
+   "sha256": "22cbd48bf7bb518f115f8236448b7c0edfb0ade3cc843d31f780f51b68e224af"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 8116296,
+   "sha256": "6fffa006c6b929d0a5dbc4f0f21ca9c7666f920af09c725aed7c460a4ae2aec7"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/configdb.log": {
+   "bytes": 515,
+   "sha256": "c297c0a46cdc8cdae4719bfb162723ffb952a3e8ffda5ce4005049704af2f715"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/cycle.jsonl": {
+   "bytes": 2340,
+   "sha256": "e9f8bc93d28b950514b7ecd46ca5077736ec43f455e1321146345ed81944e8a7"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/lgbk.log": {
+   "bytes": 1214,
+   "sha256": "c9e9fbc3be3e5093ab1babc243c33782c170e10920841f2bcc0829a2ede314f9"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/simxpm.log": {
+   "bytes": 2748,
+   "sha256": "5daa9c0e88984916843c337cdae302c54b042fb505827ae019f8e5ab02d78072"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:control.log": {
+   "bytes": 65900,
+   "sha256": "3b1acdf3b3ce16a0a77fe8aee109d7940861d59b44c7cb2af11cc5375a97f2a4"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:piranha4_0.log": {
+   "bytes": 19504,
+   "sha256": "0a96a9a8f0b823ffe728c3af6e09902924b2765e087de21b6aac5ecdee6aebaf"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:teb0.log": {
+   "bytes": 8960,
+   "sha256": "6ed706e6fa46ab4a542d15d388ac587cc3ee943cd0cc9a598a8749aa66bb1164"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 8116248,
+  "TEB_EvtCt": 1930,
+  "TEB_TrCt": 6,
+  "TEB_WrtCt": 1930,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1930,
+  "psana2 seeds": {
+   "0x1234": 1930
+  },
+  "psana2 seq": "1..1930",
+  "psana2 with data": 1930,
+  "simxpm NumL0Acc": 1930,
+  "simxpm NumL0Inp": 1930,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (8116296 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:38:02-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-piranha4/pmlogs/2026/11/09_09:37:42_sdfada013:piranha4_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:piranha4",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:37:48.217-08:00"
+}

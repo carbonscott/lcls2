@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/daq_sim.cnf": {
+   "bytes": 1180,
+   "sha256": "90276b24b1e2949f677d571e2869dbc51d2f981308061eca8e62fddb1982315d"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1143260985,
+   "sha256": "52683ad98e8dd744f4209b5c7320ddac325d28de029bf736a814daf691d9c3b9"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/configdb.log": {
+   "bytes": 515,
+   "sha256": "1596e4ab09c251f41f88058137aaa15a042a45623e9e0cc78a5ad4011c458d62"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/cycle.jsonl": {
+   "bytes": 2346,
+   "sha256": "fdf231ec46f6c7469f31e79ddf1ff528617b04c2a19b3cf6fd83f724d79e2d09"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/lgbk.log": {
+   "bytes": 1214,
+   "sha256": "c848df7c7dc4d1637a193024286cdea446bcc889727957d9a484f5f3b7074654"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/simxpm.log": {
+   "bytes": 2748,
+   "sha256": "8d9acedc88f97c51e96d05fe8e3a41148e957b465966674dccd0713ff037edac"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:control.log": {
+   "bytes": 70722,
+   "sha256": "68dee8ef6afee1493fecda1140ced008465a02faff408002c7c87928904f1fdd"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:epixm320_0.log": {
+   "bytes": 18737,
+   "sha256": "997c4000a429ab6a8fa7f6a7d78c9bf2f3b3daf5a762b8b5ad66032cc3d9c8a1"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:teb0.log": {
+   "bytes": 9252,
+   "sha256": "f168f1b4360b0e06e64eae271102ed212e480359f0e9f2efbeccc2b2c501306c"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1143260937,
+  "TEB_EvtCt": 1936,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1936,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1936,
+  "psana2 seeds": {
+   "0x1234": 1936
+  },
+  "psana2 seq": "1..1936",
+  "psana2 with data": 1936,
+  "simxpm NumL0Acc": 1936,
+  "simxpm NumL0Inp": 1936,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1143260985 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:48:42-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixm320/pmlogs/2026/11/09_09:48:12_sdfada013:epixm320_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:epixm320",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:48:17.641-08:00"
+}

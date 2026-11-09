@@ -1,0 +1,13 @@
+[sdfada013:1275895] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/2187526144/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:1275895] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epixquad raw shape [4, 352, 384]
+  L1Accept events 1895; with epixquad data 1895; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x2947 != 0xac5
+  FAIL

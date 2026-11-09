@@ -1,0 +1,14 @@
+== t3
+event 1: 384 of 193536 pixels differ, indices 163520..182847 (not one block, not to the end), recorded there: [0.] (expected e.g. [1695. 1139.])
+event 2: 6142 of 193536 pixels differ, indices 169408..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1250. 1139.])
+event 3: 2304 of 193536 pixels differ, indices 157504..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [ 861. 1139.])
+event 4: 10204 of 193536 pixels differ, indices 151040..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1826. 1139.])
+event 5: 576 of 193536 pixels differ, indices 185024..192959 (not one block, not to the end), recorded there: [0.] (expected e.g. [ 623. 1140.])
+event 6: 8094 of 193536 pixels differ, indices 173504..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [ 330. 1139.])
+== t2
+event 1: 8190 of 193536 pixels differ, indices 169216..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1084. 1532.])
+event 2: 5598 of 193536 pixels differ, indices 177152..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1189. 1532.])
+event 3: 27766 of 193536 pixels differ, indices 151168..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1377. 1532.])
+event 4: 7006 of 193536 pixels differ, indices 169856..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [ 441. 1532.])
+event 5: 2144 of 193536 pixels differ, indices 187136..193535 (not one block, to the end), recorded there: [0.] (expected e.g. [1202. 1532.])
+event 6: 2588 of 193536 pixels differ, indices 176704..193343 (not one block, not to the end), recorded there: [0.] (expected e.g. [1180. 1532.])

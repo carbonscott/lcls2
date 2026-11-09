@@ -1,0 +1,260 @@
+# ID:      opal_0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: drp -P tst -C localhost -D opal -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x201000,sim_dma_count=128,sim_seed=0x1234 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/prom -u opal_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_09:34:53_sdfada013:opal_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp)
+@@@ The PID of new child "2026/11/09_09:34:53_sdfada013:opal_0.log" is: 1261343
+@@@ @@@ @@@ @@@ @@@
+tst-drp[1261343]: <I> logging configured
+tst-drp[1261343]: <W> SMT is on: the 12 granted CPUs are only 6 physical cores, so any hot thread past the first 6 shares a core
+tst-drp[1261343]: <W> 13 hot threads (10 of them workers) exceed 12 granted CPUs, so the workers are left unpinned.  Consider cores: 13
+tst-drp[1261343]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[1261343]: <I> MemPoolSim: opal data framed as EventBatcher subframes (up to 2097200 B of data)
+tst-drp[1261343]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[1261343]: <I> dmaCount 128,  dmaSize 2101248
+tst-drp[1261343]: <I> Allocated 1.3 GB pebble for 128 transitions of 8388608 B and 128 L1Accepts of 2101248 B
+tst-drp[1261343]: <I> nL1Buffers 128,  pebble buffer size 2101248 B
+tst-drp[1261343]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[1261343]: <I> MemPoolSim: simxpm registered opal_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[1261343]: <I> BEBDetector: opal config runs against simulated device sim://127.0.0.1:31052
+opal_init (i2c setup:186M))
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @ID?
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @BS?
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: OPAL-1000m/Q S/N:00000001
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: 1.20;1.20;1.20
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+WARNING:root:opal_init_feb None None
+tst-drp[1261343]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[1261343]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/data/tst
+tst-drp[1261343]: <I> Output dir: ready
+tst-drp[1261343]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[1261343]: <I> BufferedFileWriterMT is starting with process ID 1261463
+tst-drp[1261343]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[1261343]: <I> Ready for transitions
+tst-drp[1261343]: <I> received key = rollcall @ Mon Nov  9 09:34:59 2026
+tst-drp[1261343]: <I> received key = alloc @ Mon Nov  9 09:35:00 2026
+tst-drp[1261343]: <I> Using requested interface lo, address 127.0.0.1
+opal_connectionInfo
+camlink supervisor: True nworkers: 0
+ConfigLclsTimingV2()
+WARNING:root:FidCount  : 0
+WARNING:root:RxRstCount: 0
+WARNING:root:RxDecErrs : 0
+WARNING:root:RxDspErrs : 0
+check clock rate: 185.714286
+rxId ff000000
+ClinkDev.StopRun() executed
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @ID?
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: OPAL-1000m/Q S/N:00000001
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+opalid OPAL-1000m/Q S/N:00000001
+*** BebDetector: paddr is ff000000 = 4278190080
+tst-drp[1261343]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[1261343]: <I> received key = connect @ Mon Nov  9 09:35:04 2026
+tst-drp[1261343]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[1261343]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[1261343]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[1261343]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[1261343]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[1261343]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[1261343]: <I> Outbound link with TEB ID  0 at 127.0.0.1:37353 connected
+tst-drp[1261343]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[1261343]: <I> BEBDetector connect
+tst-drp[1261343]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[1261343]: <I> BEBDetector: sim payload seed 0x1234
+tst-drp[1261343]: <I> received key = configure @ Mon Nov  9 09:35:04 2026
+tst-drp[1261343]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[1261343]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 2 64 entry batches of 40 B
+tst-drp[1261343]: <I> Outbound link with TEB ID  0, 0x56532166c000 : 0x56532166d400 (00001400), configured in    0 ms
+tst-drp[1261343]: <I> Allocated 0.0 GB region for 128 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[1261343]: <I> Inbound  link with TEB ID  0, 0x56532166f000 : 0x565321670400 (00001400), configured in    0 ms
+opal_config
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @BS?
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: 1.20;1.20;1.20
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+Inverted polarity
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @CCE0;1
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @MO1
+group 5  partitionDelay 0  rawStart 92000  triggerDelay 17085
+[expert.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer.TriggerDelay] : 17085
+[expert.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer.Partition] : 5
+[expert.ClinkFeb.TrigCtrl.TrigPulseWidth] : 10.0
+[expert.ClinkFeb.ClinkTop.ClinkCh.UartOpal1000.BL] : 32
+[expert.ClinkFeb.ClinkTop.ClinkCh.UartOpal1000.VBIN] : 0
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @BL32
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @GA100
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @VBIN0
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @VR1
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @MI0
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @OR12
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @TP0
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @DPE0
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @OVL1
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @OFS1
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: SendString: @WB100;100;100
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: Got ACK Response
+ClinkDev.StartRun() executed
+ClinkDevRoot.ClinkPcie.AxiPcieCore.AxiVersion count reset called
+ClinkDevRoot.ClinkFeb[0].AxiVersion count reset called
+tst-drp[1261343]: <I> 
+tst-drp[1261343]: <I> Parameters of Contributor ID 0 (127.0.0.1:38193):
+tst-drp[1261343]: <I>   CPU allocation: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp[1261343]: <I>   Instrument:                   tst
+tst-drp[1261343]: <I>   Partition:                    5
+tst-drp[1261343]: <I>   Alias (detName, detSeg):      opal_0 ('opal', 0)
+tst-drp[1261343]: <I>   Readout group receipient:     0x20
+tst-drp[1261343]: <I>   Readout group contractor:     0x20
+tst-drp[1261343]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp[1261343]: <I>   Number of MEBs:               0
+tst-drp[1261343]: <I>   Batching state:               Enabled
+tst-drp[1261343]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp[1261343]: <I>   Batch pool depth:             0x00000002 = 2
+tst-drp[1261343]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp[1261343]: <I>   # of TEB contrib.   buffers:  0x00000080 = 128
+tst-drp[1261343]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp[1261343]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp[1261343]: <I>   Max  MEB L1Accept      size:  0x00201000 = 2101248
+tst-drp[1261343]: <I>   Max  MEB transition    size:  0x00800000 = 8388608
+tst-drp[1261343]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp[1261343]: <I> 
+tst-drp[1261343]: <I> TEB Receiver thread is starting with process ID 1261833
+tst-drp[1261343]: <I> Worker 0 is starting with process ID 1261834
+tst-drp[1261343]: <I> TEBreceiver: pinned to CPU 4
+tst-drp[1261343]: <I> Worker 1 is starting with process ID 1261835
+tst-drp[1261343]: <I> Worker 3 is starting with process ID 1261837
+tst-drp[1261343]: <I> Worker 4 is starting with process ID 1261838
+tst-drp[1261343]: <I> Worker 2 is starting with process ID 1261836
+tst-drp[1261343]: <I> Worker 5 is starting with process ID 1261839
+tst-drp[1261343]: <I> Worker 6 is starting with process ID 1261840
+tst-drp[1261343]: <I> Worker 7 is starting with process ID 1261841
+tst-drp[1261343]: <I> Worker 8 is starting with process ID 1261842
+tst-drp[1261343]: <I> Worker 9 is starting with process ID 1261843
+tst-drp[1261343]: <I> PGP reader is starting with process ID 1261844
+tst-drp[1261343]: <I> Collector is starting with process ID 1261845
+tst-drp[1261343]: <I> PGPreader: pinned to CPU 5
+tst-drp[1261343]: <I> Collector: pinned to CPU 6
+tst-drp[1261343]: <I> PGPDrp: 49 threads (13 of them ours and hot) in 12 granted CPUs
+tst-drp[1261343]: <W> PGPDrp: 13 hot threads in 12 CPUs: they will timeshare.  Consider cores: 13
+tst-drp[1261343]: <I> PGPReader  saw    Configure @ 1163093706.051890785 (047332ec0ceb22)
+tst-drp[1261343]: <I> TebCtrb   sent    Configure @ 1163093706.051890785 (047332ec0ceb22) to TEB ID 0 @   0x55772444a000 (00000000 + 0 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw    Configure @ 1163093706.051890785 (047332ec0ceb22)
+tst-drp[1261343]: <I> received key = beginrun @ Mon Nov  9 09:35:06 2026
+Opening file /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp[1261343]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp[1261343]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-opal/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp[1261343]: <I> PGPReader  saw     BeginRun @ 1163093707.178116732 (047332ec1f6cdd)
+tst-drp[1261343]: <I> TebCtrb   sent     BeginRun @ 1163093707.178116732 (047332ec1f6cdd) to TEB ID 0 @   0x55772444a028 (00000000 + 1 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw     BeginRun @ 1163093707.178116732 (047332ec1f6cdd)
+tst-drp[1261343]: <I> received key = beginstep @ Mon Nov  9 09:35:07 2026
+tst-drp[1261343]: <I> PGPReader  saw    BeginStep @ 1163093707.205247784 (047332ec1fdeff)
+tst-drp[1261343]: <I> TebCtrb   sent    BeginStep @ 1163093707.205247784 (047332ec1fdeff) to TEB ID 0 @   0x55772444a050 (00000000 + 2 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw    BeginStep @ 1163093707.205247784 (047332ec1fdeff)
+tst-drp[1261343]: <I> received key = enable @ Mon Nov  9 09:35:07 2026
+tst-drp[1261343]: <I> PGPReader  saw       Enable @ 1163093707.208906383 (047332ec1fee63)
+tst-drp[1261343]: <I> TebCtrb   sent       Enable @ 1163093707.208906383 (047332ec1fee63) to TEB ID 0 @   0x55772444a078 (00000000 + 3 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw       Enable @ 1163093707.208906383 (047332ec1fee63)
+tst-drp[1261343]: <I> received key = disable @ Mon Nov  9 09:35:09 2026
+tst-drp[1261343]: <I> PGPReader  saw      Disable @ 1163093709.104106511 (047332ec3f12fb)
+tst-drp[1261343]: <I> TebCtrb   sent      Disable @ 1163093709.104106511 (047332ec3f12fb) to TEB ID 0 @   0x55772444af50 (00000000 + 98 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw      Disable @ 1163093709.104106511 (047332ec3f12fb)
+tst-drp[1261343]: <I> received key = endstep @ Mon Nov  9 09:35:10 2026
+tst-drp[1261343]: <I> PGPReader  saw      EndStep @ 1163093710.155335137 (047332ec505937)
+tst-drp[1261343]: <I> TebCtrb   sent      EndStep @ 1163093710.155335137 (047332ec505937) to TEB ID 0 @   0x55772444af78 (00000000 + 99 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw      EndStep @ 1163093710.155335137 (047332ec505937)
+tst-drp[1261343]: <I> received key = endrun @ Mon Nov  9 09:35:10 2026
+tst-drp[1261343]: <I> PGPReader  saw       EndRun @ 1163093710.165110277 (047332ec508257)
+tst-drp[1261343]: <I> TebCtrb   sent       EndRun @ 1163093710.165110277 (047332ec508257) to TEB ID 0 @   0x55772444afa0 (00000000 + 100 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw       EndRun @ 1163093710.165110277 (047332ec508257)
+tst-drp[1261343]: <I> received key = unconfigure @ Mon Nov  9 09:35:10 2026
+tst-drp[1261343]: <I> PGPReader  saw  Unconfigure @ 1163093710.170333247 (047332ec50984f)
+tst-drp[1261343]: <I> TebCtrb   sent  Unconfigure @ 1163093710.170333247 (047332ec50984f) to TEB ID 0 @   0x55772444afc8 (00000000 + 101 * 00000028)
+tst-drp[1261343]: <I> TebRcvr    saw  Unconfigure @ 1163093710.170333247 (047332ec50984f)
+tst-drp[1261343]: <I> received key = disconnect @ Mon Nov  9 09:35:10 2026
+EbLfClient 0 disconnected on far side
+tst-drp[1261343]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x56532166c000  size 5120  maxBatchSize 2560  maxEntrySize 40
+tst-drp[1261343]: <I> Shutting down workers
+tst-drp[1261343]: <I> Worker 0 is exiting
+tst-drp[1261343]: <I> Worker 1 is exiting
+tst-drp[1261343]: <I> Worker 2 is exiting
+tst-drp[1261343]: <I> Worker 3 is exiting
+tst-drp[1261343]: <I> Worker 4 is exiting
+tst-drp[1261343]: <I> Worker 5 is exiting
+tst-drp[1261343]: <I> Worker 6 is exiting
+tst-drp[1261343]: <I> Worker 7 is exiting
+tst-drp[1261343]: <I> Worker 8 is exiting
+tst-drp[1261343]: <I> Worker 9 is exiting
+tst-drp[1261343]: <I> Worker threads finished
+tst-drp[1261343]: <I> Collector is exiting
+tst-drp[1261343]: <I> PGPReader is exiting
+tst-drp[1261343]: <I> PGPReader thread finished
+tst-drp[1261343]: <I> Collector thread finished
+opal_unconfig
+ClinkDev.StopRun() executed
+tst-drp[1261343]: <I> received key = dealloc @ Mon Nov  9 09:35:10 2026
+tst-drp[1261343]: <I> received key = reset @ Mon Nov  9 09:35:10 2026
+opal_unconfig
+ClinkDev.StopRun() executed
+^Ctst-drp[1261343]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2
+@@@ Current time: Mon Nov  9 09:35:21 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1261343. The process was killed by signal 6

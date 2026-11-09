@@ -1,0 +1,640 @@
+Building analysis software
+Building DAQ software
+Installation directory: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/install
+force_clean
+The Meson build system
+Version: 1.8.4
+Source dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45
+Build dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/builddir
+Build type: native build
+Project name: lcls
+Project version: 4.3.0
+C++ compiler for the host machine: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/x86_64-conda-linux-gnu-c++ (gcc 13.3.0 "x86_64-conda-linux-gnu-c++ (conda-forge gcc 13.3.0-1) 13.3.0")
+C++ linker for the host machine: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/x86_64-conda-linux-gnu-c++ ld.bfd 2.43
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program gcc-ar found: YES (/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/gcc-ar)
+Program python3 found: YES (/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3.9)
+Found pkg-config: YES (/usr/bin/pkg-config) 1.7.3
+Run-time dependency python found: YES 3.9
+Library rt found: YES
+Library curl found: YES
+Run-time dependency threads found: YES
+Run-time dependency python found: YES 3.9
+Run-time dependency OpenMP found: YES 4.5
+Library Resort64c_x64 found: YES
+Program nvcc found: NO
+Dependency threads found: YES unknown (cached)
+Found CMake: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/cmake (3.31.2)
+Run-time dependency nlohmann_json found: YES 3.11.3
+Library zmq found: YES
+Library dl found: YES
+Library rt found: YES
+Library prometheus-cpp-core found: YES
+Library prometheus-cpp-pull found: YES
+Library Com found: YES
+Library ca found: YES
+Library pvaClient found: YES
+Library pvAccessCA found: YES
+Library pvData found: YES
+Library pvAccess found: YES
+Library rogue-core found: YES
+Program nvcc found: NO
+Library fabric found: YES
+Library SlsDetector found: YES
+Build targets in project: 136
+
+lcls 4.3.0
+
+  User defined options
+    build_daq         : true
+    buildtype         : debugoptimized
+    conda_prefix      : /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+    epics_base        : /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/epics
+    epics_host_arch   : linux-x86_64
+    prefix            : /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/install
+    python.bytecompile: -1
+
+Found ninja-1.13.2 at /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/ninja
+ninja: Entering directory `/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/builddir'
+[1/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_Level.cc.o
+[2/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_TransitionId.cc.o
+[3/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_TypeId.cc.o
+[4/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_XtcIterator.cc.o
+[5/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_XtcFileIterator.cc.o
+[6/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_TimeStamp.cc.o
+[7/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_SegGeometry.cc.o
+[8/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_ShapesData.cc.o
+[9/546] Compiling C++ object psalg/psalg/utils/libutils.so.p/src_DirFileIterator.cc.o
+[10/546] Compiling C++ object psalg/psalg/utils/libutils.so.p/src_Logger.cc.o
+[11/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_DataIter.cc.o
+[12/546] Compiling C++ object psalg/psalg/utils/libutils.so.p/src_trim.cc.o
+[13/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_NamesIter.cc.o
+[14/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_ConfigIter.cc.o
+[15/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_Smd.cc.o
+[16/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/SysClk.cc.o
+[17/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_SegGeometryCspad2x1V1.cc.o
+[18/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_SegGeometryEpix100V1.cc.o
+[19/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Semaphore.cc.o
+[20/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Pool.cc.o
+[21/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/SemLock.cc.o
+[22/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Lock.cc.o
+[23/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/TaskObject.cc.o
+[24/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Histogram.cc.o
+[25/546] Compiling C++ object xtcdata/xtcdata/xtc/libxtc.so.p/src_XtcUpdateIter.cc.o
+[26/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_SegGeometryEpix10kaV1.cc.o
+[27/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_SegGeometryMatrixV1.cc.o
+[28/546] Linking target psalg/psalg/utils/libutils.so
+[29/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_GeometryObject.cc.o
+[30/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Dl.cc.o
+[31/546] Generating symbol file psalg/psalg/utils/libutils.so.p/libutils.so.symbols
+[32/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/GenericPool.cc.o
+[33/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Timer.cc.o
+[34/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Task.cc.o
+[35/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsDBTypes.cc.o
+[36/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/GenericPoolW.cc.o
+[37/546] Compiling C++ object psalg/psalg/geometry/libgeometry.so.p/src_GeometryAccess.cc.o
+[38/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsTypes.cc.o
+[39/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Affinity.cc.o
+[40/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/IpcUtils.cc.o
+[41/546] Linking target xtcdata/xtcdata/xtc/libxtc.so
+[42/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_AreaDetectorTypes.cc.o
+[43/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_ArrayIO.cc.o
+[44/546] Generating symbol file xtcdata/xtcdata/xtc/libxtc.so.p/libxtc.so.symbols
+[45/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsDBWeb.cc.o
+[46/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsDBStore.cc.o
+[47/546] Compiling C++ object psdaq/psdaq/service/libservice.so.p/Json2Xtc.cc.o
+[48/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibPars.cc.o
+[49/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsDB.cc.o
+[50/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsEpix100a.cc.o
+[51/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_Query.cc.o
+[52/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_CalibParsStore.cc.o
+[53/546] Compiling C++ object psalg/psalg/digitizer/libdigitizer.so.p/src_Stream.cc.o
+[54/546] Linking target psalg/psalg/geometry/libgeometry.so
+[55/546] Compiling C++ object psalg/psalg/calib/libcalib.so.p/src_MDBWebUtils.cc.o
+[56/546] Compiling C++ object psdaq/psdaq/eb/libutilities.so.p/src_utilities.cc.o
+[57/546] Compiling C++ object psdaq/psdaq/eb/libutilities.so.p/src_Endpoint.cc.o
+[58/546] Compiling C++ object psalg/psalg/digitizer/libdigitizer.so.p/src_Hsd.cc.o
+[59/546] Generating symbol file psalg/psalg/geometry/libgeometry.so.p/libgeometry.so.symbols
+[60/546] Compiling C++ object psdaq/psdaq/service/libexporter.so.p/MetricExporter.cc.o
+[61/546] Linking target psdaq/psdaq/service/libservice.so
+[62/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_DetectorTypes.cc.o
+[63/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_Detector.cc.o
+[64/546] Compiling C++ object psdaq/psdaq/eb/libutilities.so.p/src_EbLfLink.cc.o
+[65/546] Compiling C++ object psdaq/psdaq/eb/libutilities.so.p/src_EbLfClient.cc.o
+[66/546] Generating symbol file psdaq/psdaq/service/libservice.so.p/libservice.so.symbols
+[67/546] Compiling C++ object psdaq/psdaq/eb/libutilities.so.p/src_EbLfServer.cc.o
+[68/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_UtilsConfig.cc.o
+[69/546] Linking target psdaq/psdaq/service/libexporter.so
+[70/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_FFT.cc.o
+[71/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_DetectorStore.cc.o
+[72/546] Linking target psalg/psalg/calib/libcalib.so
+[73/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetector.cc.o
+[74/546] Linking target psdaq/psdaq/eb/libutilities.so
+[75/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetectorJungfrau.cc.o
+[76/546] Generating symbol file psdaq/psdaq/service/libexporter.so.p/libexporter.so.symbols
+[77/546] Generating symbol file psalg/psalg/calib/libcalib.so.p/libcalib.so.symbols
+[78/546] Compiling C++ object psdaq/psdaq/service/libcollection.so.p/kwargs.cc.o
+[79/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetectorEpix100a.cc.o
+[80/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/RingBuffer.cc.o
+[81/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetectorPnccd.cc.o
+[82/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetectorOpal.cc.o
+[83/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/AxiVersion.cc.o
+[84/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/Reg64.cc.o
+[85/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/TriggerEventManager.cc.o
+[86/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/RegProxy.cc.o
+[87/546] Compiling C++ object psalg/psalg/detector/libdetector.so.p/src_AreaDetectorStore.cc.o
+[88/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/TprCore.cc.o
+[89/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/GthEyeScan.cc.o
+[90/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/HexFile.cc.o
+[91/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/McsFile.cc.o
+[92/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/Xvc.cc.o
+[93/546] Compiling C++ object psdaq/psdaq/mmhw/libmmhw.so.p/Reg.cc.o
+[94/546] Generating symbol file psdaq/psdaq/eb/libutilities.so.p/libutilities.so.symbols
+[95/546] Compiling C++ object psdaq/psdaq/service/libcollection.so.p/range.cc.o
+[96/546] Linking target psalg/psalg/digitizer/libdigitizer.so
+[97/546] Compiling C++ object psdaq/psdaq/eb/libcontributor.so.p/src_CubeConfigDgram.cc.o
+[98/546] Compiling C++ object psdaq/psdaq/epicstools/libepicstools.so.p/MonTracker.cc.o
+[99/546] Compiling C++ object psdaq/psdaq/epicstools/libepicstools.so.p/EpicsProviders.cc.o
+[100/546] Compiling C++ object psdaq/psdaq/eb/libcontributor.so.p/src_BatchManager.cc.o
+[101/546] Compiling C++ object psalg/psalg/shmem/libshmemsrv.so.p/src_XtcMonitorMsg.cc.o
+[102/546] Compiling C++ object psdaq/psdaq/epicstools/libepicstools.so.p/PvServer.cc.o
+[103/546] Generating symbol file psalg/psalg/digitizer/libdigitizer.so.p/libdigitizer.so.symbols
+[104/546] Compiling C++ object psalg/psalg/shmem/libshmemsrv.so.p/src_ProcInfo.cc.o
+[105/546] Compiling C++ object psdaq/psdaq/service/libcollection.so.p/Collection.cc.o
+[106/546] Compiling C++ object psdaq/psdaq/eb/libcontributor.so.p/src_TebContributor.cc.o
+[107/546] Compiling C++ object psdaq/psdaq/eb/libcontributor.so.p/src_MebContributor.cc.o
+[108/546] Linking target psdaq/psdaq/mmhw/libmmhw.so
+[109/546] Compiling C++ object psalg/psalg/shmem/libshmemcli.so.p/src_XtcMonitorMsg.cc.o
+[110/546] Compiling C++ object psdaq/psdaq/eb/libcontributor.so.p/src_EbCtrbInBase.cc.o
+[111/546] Compiling C++ object psalg/psalg/shmem/libshmemsrv.so.p/src_TransitionCache.cc.o
+[112/546] Compiling C++ object psdaq/psdaq/epicstools/libepicstools.so.p/EpicsPVA.cc.o
+[113/546] Compiling C++ object psdaq/psdaq/epicstools/libepicstools.so.p/PvMonitorBase.cc.o
+[114/546] Generating symbol file psdaq/psdaq/mmhw/libmmhw.so.p/libmmhw.so.symbols
+[115/546] Compiling C++ object psdaq/psdaq/bld/libbld.so.p/Server.cc.o
+[116/546] Compiling C++ object psdaq/psdaq/bld/libbld.so.p/HpsEventIterator.cc.o
+[117/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libkcu.so.p/GthEyeScan.cc.o
+[118/546] Compiling C++ object psdaq/psdaq/bld/libbld.so.p/Client.cc.o
+[119/546] Linking target psalg/psalg/detector/libdetector.so
+[120/546] Compiling C++ object psalg/psalg/shmem/libshmemsrv.so.p/src_XtcMonitorServer.cc.o
+[121/546] Compiling C++ object psalg/psalg/shmem/libshmemsrv.so.p/src_XtcRunSet.cc.o
+[122/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libkcu.so.p/Reg.cc.o
+[123/546] Compiling C++ object psalg/psalg/libpsalg.so.p/calib_src_ArrayIO.cc.o
+[124/546] Linking target psdaq/psdaq/eb/libcontributor.so
+[125/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_AdcCore.cc.o
+[126/546] Generating symbol file psalg/psalg/detector/libdetector.so.p/libdetector.so.symbols
+[127/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_AdcSync.cc.o
+[128/546] Compiling C++ object psalg/psalg/shmem/libshmemcli.so.p/src_ShmemClient.cc.o
+[129/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Adt7411.cc.o
+[130/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libkcu.so.p/Client.cc.o
+[131/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_FmcCore.cc.o
+[132/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_FexCfg.cc.o
+[133/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_ClkSynth.cc.o
+[134/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Histogram.cc.o
+[135/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_FmcSpi.cc.o
+[136/546] Linking target psdaq/psdaq/service/libcollection.so
+[137/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_I2cSwitch.cc.o
+[138/546] Compiling C++ object psdaq/psdaq/tpr/libtpr.so.p/Module.cc.o
+[139/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Jesd204b.cc.o
+[140/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_LocalCpld.cc.o
+[141/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Mmcm.cc.o
+[142/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libkcu.so.p/Si570.cc.o
+[143/546] Compiling C++ object psdaq/psdaq/tpr/libtpr.so.p/Client.cc.o
+[144/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Pgp3.cc.o
+[145/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_PhyCore.cc.o
+[146/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Pgp2b.cc.o
+[147/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_PvDef.cc.o
+[148/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_QABase.cc.o
+[149/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Tps2481.cc.o
+[150/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_OptFmc.cc.o
+[151/546] Linking target psdaq/psdaq/epicstools/libepicstools.so
+[152/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Ad7291.cc.o
+[153/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_ChipAdcReg.cc.o
+[154/546] Generating symbol file psdaq/psdaq/service/libcollection.so.p/libcollection.so.symbols
+[155/546] Compiling C++ object psdaq/psdaq/app/libapp.so.p/AppUtils.cc.o
+[156/546] Generating symbol file psdaq/psdaq/epicstools/libepicstools.so.p/libepicstools.so.symbols
+[157/546] Generating symbol file psdaq/psdaq/eb/libcontributor.so.p/libcontributor.so.symbols
+[158/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_ModuleBase.cc.o
+[159/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Fmc134Ctrl.cc.o
+[160/546] Compiling C++ object psdaq/psdaq/trigger/libtrigger.so.p/src_BldTebData.cc.o
+[161/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Module134.cc.o
+[162/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Module126.cc.o
+[163/546] Compiling C++ object psdaq/psdaq/eb/libeventBuilder.so.p/src_EbEpoch.cc.o
+[164/546] Compiling C++ object psdaq/psdaq/eb/libeventBuilder.so.p/src_EventBuilder.cc.o
+[165/546] Compiling C++ object psdaq/psdaq/eb/libeventBuilder.so.p/src_BatchManager.cc.o
+[166/546] Compiling C++ object psdaq/psdaq/eb/libeventBuilder.so.p/src_EbEvent.cc.o
+[167/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/TTFex.cc.o
+[168/546] Compiling C++ object psdaq/psdaq/trigger/libtrigger.so.p/src_utilities.cc.o
+[169/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_Level.cc.o
+[170/546] Compiling C++ object psdaq/psdaq/hsd/libhsd.so.p/src_Fmc134Cpld.cc.o
+[171/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_DataIter.cc.o
+[172/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/Si570.cc.o
+[173/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_ConfigIter.cc.o
+[174/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_TransitionId.cc.o
+[175/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_TypeId.cc.o
+[176/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_TimeStamp.cc.o
+[177/546] Compiling C++ object psdaq/psdaq/eb/libeventBuilder.so.p/src_EbAppBase.cc.o
+[178/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_ShapesData.cc.o
+[179/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_NamesIter.cc.o
+[180/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_XtcIterator.cc.o
+[181/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_XtcFileIterator.cc.o
+[182/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_Smd.cc.o
+[183/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/PythonConfigScanner.cc.o
+[184/546] Linking target psalg/psalg/shmem/libshmemcli.so
+[185/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/FileWriter.cc.o
+[186/546] Linking target psalg/psalg/shmem/libshmemsrv.so
+[187/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/BEBDetector.cc.o
+[188/546] Compiling C++ object xtcdata/xtcdata/xtc/libstaticXtc.a.p/src_XtcUpdateIter.cc.o
+[189/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/XpmDetector.cc.o
+[190/546] Linking target psalg/psalg/libpsalg.so
+[191/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/peakFinder/peakfinder8.pyx
+[192/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/MemPoolSim.cc.o
+[193/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/constFracDiscrim/constFracDiscrim.pyx
+[194/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/shmem/shmem.pyx
+[195/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/src/dgramchunk.pyx
+[196/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/quadanode.pyx
+[197/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/peakFinder/psalg_ext.pyx
+[198/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/dgramlite.pyx
+[199/546] Linking target psdaq/psdaq/bld/libbld.so
+[200/546] Compiling C++ object psdaq/drp/libdrpbase.so.p/DrpBase.cc.o
+[201/546] Linking target psdaq/psdaq/pgp/kcu1500/app/libkcu.so
+[202/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libstaticKcu.a.p/GthEyeScan.cc.o
+[203/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libstaticKcu.a.p/Reg.cc.o
+[204/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/pycalgos/utilsdetector_ext.pyx
+[205/546] Linking target psdaq/psdaq/tpr/libtpr.so
+[206/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libstaticKcu.a.p/Si570.cc.o
+[207/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/libstaticKcu.a.p/Client.cc.o
+[208/546] Linking target psdaq/psdaq/app/libapp.so
+[209/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psalg/psalg/utils/dgramCreate.pyx
+[210/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/hexanode/hexanode_ext.pyx
+[211/546] Linking target psdaq/psdaq/trigger/libtrigger.so
+[212/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/eventbuilder.pyx
+[213/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/pycalgos/NDArray_ext.pyx
+[214/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/peakFinder/peakFinder_ext.pyx
+[215/546] Linking target psdaq/psdaq/hsd/libhsd.so
+[216/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/CubeConfigDgram.pyx
+[217/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/smdreader.pyx
+[218/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/BldTebData.pyx
+[219/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/parallelreader.pyx
+[220/546] Linking target psdaq/psdaq/eb/libeventBuilder.so
+[221/546] Linking static target xtcdata/xtcdata/xtc/libstaticXtc.a
+[222/546] Linking target psdaq/drp/libdrpbase.so
+[223/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/CubeResultDgram.pyx
+[224/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/dgramedit.pyx
+[225/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/EbDgram.pyx
+[226/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/WindowResultDgram.pyx
+[227/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psana/psana/hsd/hsd.pyx
+[228/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/HrEncoderTebData.pyx
+[229/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/Piranha4TTTebData.pyx
+[230/546] Compiling C++ object xtcdata/xtcdata/app/hsdduplicate.p/hsdduplicate.cc.o
+[231/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/TimingTebData.pyx
+[232/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/ResultDgram.pyx
+[233/546] Compiling Cython source /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq/psdaq/trigger/TmoTebData.pyx
+[234/546] Compiling C++ object xtcdata/xtcdata/app/xtcsave.p/xtcsave.cc.o
+[235/546] Compiling C++ object xtcdata/xtcdata/app/xtcreader.p/xtcreader.cc.o
+[236/546] Compiling C++ object xtcdata/xtcdata/app/jungfrau.p/jungfrau.cc.o
+[237/546] Generating symbol file psalg/psalg/shmem/libshmemcli.so.p/libshmemcli.so.symbols
+[238/546] Compiling C++ object xtcdata/xtcdata/app/randomaccess.p/randomaccess.cc.o
+[239/546] Generating symbol file psalg/psalg/shmem/libshmemsrv.so.p/libshmemsrv.so.symbols
+[240/546] Compiling C++ object psalg/psalg/shmem/shmemClient.p/src_shmemClientApp.cc.o
+[241/546] Compiling C++ object xtcdata/xtcdata/app/amiwriter.p/amiwriter.cc.o
+[242/546] Compiling C++ object psalg/psalg/shmem/shmemWriter.p/src_shmemWriter.cc.o
+[243/546] Compiling C++ object xtcdata/xtcdata/app/xtcwriter.p/xtcwriter.cc.o
+[244/546] Generating symbol file psalg/psalg/libpsalg.so.p/libpsalg.so.symbols
+[245/546] Compiling C++ object xtcdata/xtcdata/app/smdwriter.p/smdwriter.cc.o
+[246/546] Compiling C++ object xtcdata/xtcdata/app/xtcupdate.p/xtcupdate.cc.o
+[247/546] Compiling C++ object psalg/psalg/shmem/shmemServer.p/src_shmemServer.cc.o
+[248/546] Compiling C++ object psana/container.cpython-39-x86_64-linux-gnu.so.p/src_container.cc.o
+[249/546] Compiling C++ object psalg/psalg/test_fft.p/tests_test_FFT.cc.o
+[250/546] Compiling C++ object psalg/psalg/hsd_valid.p/tests_hsd_valid.cc.o
+[251/546] Compiling C++ object psana/peakfinder8.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_peakfinder8.cc.o
+[252/546] Compiling C++ object psana/dgram.cpython-39-x86_64-linux-gnu.so.p/src_dgram.cc.o
+In file included from /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/core/include/numpy/ndarraytypes.h:1929,
+                 from /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/core/include/numpy/ndarrayobject.h:12,
+                 from /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/core/include/numpy/arrayobject.h:5,
+                 from ../psana/src/dgram.cc:14:
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:17:2: warning: #warning "Using deprecated NumPy API, disable it with " "#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-Wcpp]
+   17 | #warning "Using deprecated NumPy API, disable it with " \
+      |  ^~~~~~~
+[253/546] Compiling C++ object psana/peakFinder_ext.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_LocalExtrema.cc.o
+[254/546] Compiling C++ object psana/psalg_ext.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_PeakFinderAlgosLCLS1.cc.o
+[255/546] Compiling C++ object psana/shmem.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_shmem_shmem.pyx.cpp.o
+[256/546] Compiling C++ object psalg/psalg/datareader.p/app_datareader.cc.o
+[257/546] Compiling C++ object psalg/psalg/utils/dgramCreate.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psalg_psalg_utils_dgramCreate.pyx.cpp.o
+[258/546] Compiling C++ object psana/psalg_ext.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_LocalExtrema.cc.o
+[259/546] Compiling C++ object psana/peakFinder_ext.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_PeakFinderAlgos.cc.o
+[260/546] Compiling C++ object psana/constFracDiscrim.cpython-39-x86_64-linux-gnu.so.p/psana_constFracDiscrim_src_ConstFracDiscrim.cc.o
+[261/546] Compiling C++ object psana/peakfinder8.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_peakFinder_peakfinder8.pyx.cpp.o
+[262/546] Compiling C++ object psana/constFracDiscrim.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_constFracDiscrim_constFracDiscrim.pyx.cpp.o
+[263/546] Compiling C++ object psana/peakfinder8.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_LocalExtrema.cc.o
+[264/546] Compiling C++ object psana/quadanode.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_quadanode.pyx.cpp.o
+[265/546] Compiling C++ object psana/dgramlite.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_dgramlite.pyx.cpp.o
+[266/546] Compiling C++ object psana/dgramchunk.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_src_dgramchunk.pyx.cpp.o
+[267/546] Compiling C++ object psana/eventbuilder.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_eventbuilder.pyx.cpp.o
+[268/546] Compiling C++ object psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so.p/psana_hexanode_src_cfib.cc.o
+[269/546] Compiling C++ object psana/parallelreader.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_parallelreader.pyx.cpp.o
+[270/546] Compiling C++ object psana/ndarray.cpython-39-x86_64-linux-gnu.so.p/psana_peakFinder_src_WFAlgos.cc.o
+[271/546] Compiling C++ object psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so.p/psana_hexanode_src_SortUtils.cc.o
+[272/546] Compiling C++ object psana/smdreader.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_smdreader.pyx.cpp.o
+[273/546] Compiling C++ object psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so.p/psana_hexanode_src_wrap_resort64c.cc.o
+[274/546] Compiling C++ object psana/hsd.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_hsd_hsd.pyx.cpp.o
+[275/546] Compiling C++ object psdaq/psdaq/mmhw/mmxvc.p/mmxvc.cc.o
+[276/546] Compiling C++ object psdaq/psdaq/mmhw/mmregtest.p/mmregtest.cc.o
+[277/546] Compiling C++ object psana/utilsdetector_ext.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_pycalgos_utilsdetector_ext.pyx.cpp.o
+[278/546] Compiling C++ object psana/peakFinder_ext.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_peakFinder_peakFinder_ext.pyx.cpp.o
+[279/546] Compiling C++ object psana/utilsdetector_ext.cpython-39-x86_64-linux-gnu.so.p/psana_pycalgos_UtilsDetector.cc.o
+[280/546] Linking static target psdaq/psdaq/pgp/kcu1500/app/libstaticKcu.a
+[281/546] Compiling C++ object psana/psalg_ext.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_peakFinder_psalg_ext.pyx.cpp.o
+[282/546] Compiling C++ object psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so.p/psana_hexanode_src_LMF_IO.cc.o
+[283/546] Generating symbol file psdaq/psdaq/pgp/kcu1500/app/libkcu.so.p/libkcu.so.symbols
+[284/546] Generating symbol file psdaq/psdaq/bld/libbld.so.p/libbld.so.symbols
+[285/546] Compiling C++ object psana/dgramedit.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_dgramedit.pyx.cpp.o
+[286/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuHist.p/xHist.cpp.o
+[287/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuSimValid.p/xSimValid.cpp.o
+[288/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuSim.p/xSim.cpp.o
+[289/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuPgpStatus.p/xPgpStatus.cpp.o
+[290/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuStatus.p/xStatus.cpp.o
+[291/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuReg.p/xReg.cpp.o
+[292/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuLoopTest.p/xLoopTest.cpp.o
+[293/546] Compiling C++ object psana/ndarray.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_pycalgos_NDArray_ext.pyx.cpp.o
+[294/546] Compiling C++ object psdaq/psdaq/epicstools/monExample.p/monExample.cc.o
+[295/546] Compiling C++ object psdaq/psdaq/epicstools/tstPvMon.p/tstPvMon.cc.o
+[296/546] Generating symbol file psdaq/psdaq/tpr/libtpr.so.p/libtpr.so.symbols
+[297/546] Generating symbol file psdaq/psdaq/app/libapp.so.p/libapp.so.symbols
+[298/546] Compiling C++ object psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psana_psana_hexanode_hexanode_ext.pyx.cpp.o
+[299/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuRead.p/xRead.cpp.o
+[300/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuDmaStatus.p/xDmaStatus.cpp.o
+[301/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuReadBulk.p/xReadBulk.cpp.o
+[302/546] Compiling C++ object psdaq/psdaq/pgp/kcu1500/app/kcuMargin.p/xMargin.cpp.o
+[303/546] Compiling C++ object psdaq/psdaq/app/tprtrig.p/tprtrig.cc.o
+[304/546] Compiling C++ object psdaq/psdaq/app/tprsh.p/tprsh.cc.o
+[305/546] Compiling C++ object psdaq/psdaq/app/lclsBldServer.p/lclsBldServer.cc.o
+[306/546] Compiling C++ object psdaq/psdaq/app/tprutil.p/tprutil.cc.o
+[307/546] Compiling C++ object psdaq/psdaq/app/xcasttest.p/xcasttest.cc.o
+[308/546] Compiling C++ object psdaq/psdaq/app/hpsBldServer.p/hpsBldServer.cc.o
+[309/546] Compiling C++ object psdaq/psdaq/hsd/mempeek.p/src_mempeek.cc.o
+[310/546] Generating symbol file psdaq/psdaq/hsd/libhsd.so.p/libhsd.so.symbols
+[311/546] Compiling C++ object psdaq/psdaq/hsd/hsd_eyescan.p/src_hsd_eyescan.cc.o
+[312/546] Compiling C++ object psdaq/psdaq/app/pvcam.p/pvcam.cc.o
+[313/546] Compiling C++ object psdaq/psdaq/app/tprioc.p/tprca.cc.o
+[314/546] Compiling C++ object psdaq/psdaq/app/json2xtc.p/json2xtc.cc.o
+[315/546] Compiling C++ object psdaq/psdaq/app/hpsBldClient.p/hpsBldClient.cc.o
+[316/546] Compiling C++ object psdaq/psdaq/app/hpsBldCopy.p/hpsBldCopy.cc.o
+[317/546] Compiling C++ object psdaq/psdaq/hsd/hsd_sim.p/src_hsd_sim.cc.o
+[318/546] Compiling C++ object psdaq/psdaq/app/pgpca.p/pgpca.cc.o
+[319/546] Compiling C++ object psdaq/psdaq/app/bldpayload.p/bldpayload.cc.o
+[320/546] Compiling C++ object psdaq/psdaq/hsd/hsdRead.p/.._.._.._psalg_psalg_digitizer_src_Stream.cc.o
+[321/546] Generating symbol file psdaq/psdaq/trigger/libtrigger.so.p/libtrigger.so.symbols
+[322/546] Compiling C++ object psdaq/psdaq/hsd/hsd134PVs.p/src_PVCtrlsBase.cc.o
+[323/546] Compiling C++ object psdaq/psdaq/hsd/hsd134PVs.p/src_PV134Ctrls.cc.o
+[324/546] Compiling C++ object psdaq/psdaq/app/sim_udpencoder.p/sim_udpencoder.cc.o
+[325/546] Compiling C++ object psdaq/psdaq/hsd/hsd134PVs.p/src_PV134Stats.cc.o
+[326/546] Compiling C++ object psdaq/psdaq/hsd/hsd126PVs.p/src_PV126Ctrls.cc.o
+[327/546] Compiling C++ object psdaq/psdaq/hsd/hsd126PVs.p/src_PVCtrlsBase.cc.o
+[328/546] Compiling C++ object psdaq/psdaq/hsd/hsd126PVs.p/src_hsd126PVs.cc.o
+[329/546] Compiling C++ object psdaq/psdaq/hsd/hsd126PVs.p/src_PV126Stats.cc.o
+[330/546] Compiling C++ object psdaq/psdaq/hsd/hsdRead.p/src_hsdRead.cc.o
+[331/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperTeb.so.p/src_mfxTripperPrimitive.cc.o
+[332/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperEvSelectTeb.so.p/src_mfxTripperPrimitive.cc.o
+[333/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperTeb.so.p/src_mfxTripperTeb.cc.o
+[334/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperTeb.so.p/src_mfxTripperPrimitive_jungfrau.cc.o
+[335/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTrigger.so.p/src_TriggerPrimitiveExample_xpphsd.cc.o
+[336/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTrigger.so.p/src_TriggerPrimitiveExample_bld.cc.o
+[337/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTrigger.so.p/src_TriggerPrimitiveExample_cam.cc.o
+[338/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperEvSelectTeb.so.p/src_mfxTripperEvSelectTeb.cc.o
+[339/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperEvSelectTeb.so.p/src_mfxTripperPrimitive_jungfrau.cc.o
+[340/546] Compiling C++ object psdaq/psdaq/trigger/libmfxTripperEvSelectTeb.so.p/src_mfxTripperPrimitive_timing.cc.o
+[341/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTrigger.so.p/src_TriggerExample.cc.o
+[342/546] Compiling C++ object psdaq/psdaq/hsd/hsd134PVs.p/src_hsd134PVs.cc.o
+[343/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTeb.so.p/src_tmoTebPrimitive_cpu.cc.o
+[344/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTeb.so.p/src_tmoTeb.cc.o
+[345/546] Compiling C++ object psdaq/psdaq/trigger/libtmoTeb.so.p/src_tmoTebPrimitive.cc.o
+[346/546] Generating symbol file psdaq/psdaq/eb/libeventBuilder.so.p/libeventBuilder.so.symbols
+[347/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_tmoTebPrimitive_cpu.cc.o
+[348/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_bldTebPrimitive.cc.o
+[349/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_tmoTebPrimitive.cc.o
+[350/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_hrEncoderTebPrimitive.cc.o
+[351/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_timingTebPrimitive.cc.o
+[352/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_piranha4TebPrimitive.cc.o
+[353/546] Generating symbol file psdaq/drp/libdrpbase.so.p/libdrpbase.so.symbols
+[354/546] Compiling C++ object psdaq/psdaq/trigger/libcalibTrigger.so.p/src_calibTriggerPrimitive_cpu.cc.o
+[355/546] Compiling C++ object psdaq/psdaq/trigger/libtstTebPy.so.p/src_tebPyTrigger.cc.o
+[356/546] Compiling C++ object psdaq/psdaq/eb/tstEbLfLink.p/src_tstEbLfLink.cc.o
+[357/546] Compiling C++ object psdaq/psdaq/eb/tstClocks.p/src_tstClocks.cc.o
+[358/546] Compiling C++ object psdaq/psdaq/trigger/libcalibTrigger.so.p/src_calibTriggerDrp.cc.o
+[359/546] Compiling C++ object psdaq/psdaq/trigger/libcalibTrigger.so.p/src_calibTriggerTeb.cc.o
+[360/546] Compiling C++ object psdaq/drp/drp.p/CubeResult.cc.o
+[361/546] Compiling C++ object psdaq/drp/drp.p/CubeData.cc.o
+[362/546] Compiling C++ object psdaq/drp/drp.p/AreaDetector.cc.o
+[363/546] Compiling C++ object psdaq/psdaq/monreq/monReqServer.p/monReqServer.cc.o
+[364/546] Compiling C++ object psdaq/psdaq/eb/teb.p/src_teb.cc.o
+[365/546] Compiling C++ object psdaq/drp/drp.p/EpixHR2x2.cc.o
+[366/546] Compiling C++ object psdaq/drp/drp.p/EpixHRemu.cc.o
+[367/546] Compiling C++ object psdaq/drp/drp.p/EpixUHR.cc.o
+[368/546] Compiling C++ object psdaq/drp/drp.p/EpixM320.cc.o
+[369/546] Compiling C++ object psdaq/drp/drp.p/Digitizer.cc.o
+[370/546] Compiling C++ object psdaq/drp/drp.p/JungfrauDetectorId.cc.o
+[371/546] Compiling C++ object psdaq/drp/drp.p/CubeTebReceiver.cc.o
+[372/546] Compiling C++ object psdaq/drp/drp.p/Epix100.cc.o
+[373/546] Compiling C++ object psdaq/drp/drp.p/EpixUHR3x2.cc.o
+[374/546] Compiling C++ object psdaq/drp/drp.p/TimingDef.cc.o
+[375/546] Compiling C++ object psdaq/drp/drp.p/EpixQuad.cc.o
+[376/546] Compiling C++ object psdaq/drp/drp.p/JungfrauEmulator.cc.o
+[377/546] Compiling C++ object psdaq/drp/drp.p/Jungfrau.cc.o
+[378/546] Compiling C++ object psdaq/drp/drp.p/TimeTool.cc.o
+[379/546] Compiling C++ object psdaq/drp/drp.p/OpalTTFex.cc.o
+[380/546] Compiling C++ object psdaq/drp/drp.p/TimingBEB.cc.o
+[381/546] Compiling C++ object psdaq/drp/drp.p/HREncoder.cc.o
+[382/546] Compiling C++ object psdaq/drp/drp.p/Wave8.cc.o
+[383/546] Compiling C++ object psdaq/drp/drp.p/Wave8HE.cc.o
+[384/546] Compiling C++ object psdaq/drp/drp.p/TimingSystem.cc.o
+[385/546] Compiling C++ object psdaq/drp/drp.p/Piranha4TTFex.cc.o
+[386/546] Compiling C++ object psdaq/drp/drp.p/Opal.cc.o
+[387/546] Compiling C++ object psdaq/drp/drp_bld.p/CubeResult.cc.o
+[388/546] Compiling C++ object psdaq/drp/drp.p/Piranha4.cc.o
+[389/546] Compiling C++ object psdaq/drp/drp_bld.p/BldNames.cc.o
+[390/546] Compiling C++ object psdaq/drp/drp_bld.p/CubeData.cc.o
+[391/546] Compiling C++ object psdaq/drp/drp.p/TebReceiver.cc.o
+[392/546] Compiling C++ object psdaq/drp/drp.p/drp.cc.o
+[393/546] Compiling C++ object psdaq/drp/drp.p/PGPDetectorApp.cc.o
+[394/546] Compiling C++ object psdaq/drp/drp.p/PGPDetector.cc.o
+[395/546] Compiling C++ object psdaq/drp/drp_bld.p/TebReceiver.cc.o
+[396/546] Compiling C++ object psdaq/drp/configdb_obj_2xtc.p/configdb_obj_2xtc.cc.o
+[397/546] Compiling C++ object psdaq/drp/drp_bld.p/CubeTebReceiver.cc.o
+[398/546] Compiling C++ object psdaq/drp/pgpread.p/pgpread.cc.o
+[399/546] Compiling C++ object psdaq/drp/drp_pva.p/TebReceiver.cc.o
+[400/546] Compiling C++ object psdaq/drp/drp_udpencoder.p/TebReceiver.cc.o
+[401/546] Compiling C++ object psdaq/drp/tpr_trigger.p/TprTrigger.cc.o
+[402/546] Compiling C++ object psdaq/drp/pgpread_timetool.p/AxiBatcherParser.cc.o
+[403/546] Compiling C++ object psdaq/drp/pgpread_jungfrau.p/pgpread_jungfrau.cc.o
+[404/546] Compiling C++ object psdaq/drp/drp_sim_frame.p/simFrame.cc.o
+[405/546] Compiling C++ object psdaq/drp/pgpread_epixM320mon.p/pgpread_epixM320mon.cc.o
+[406/546] Compiling C++ object psdaq/drp/AxiBatcherParserTest.p/AxiBatcherParserTest.cc.o
+[407/546] Compiling C++ object psdaq/drp/drp_bld.p/BldDetector.cc.o
+[408/546] Compiling C++ object psdaq/drp/ePixMDescTest.p/ePixMDescTest.cc.o
+[409/546] Compiling C++ object psdaq/drp/pgpread_timetool.p/pgpread_timetool.cc.o
+[410/546] Compiling C++ object psdaq/drp/opaltt_test.p/opaltt_test.cc.o
+[411/546] Compiling C++ object psdaq/drp/AxiBatcherParserTest.p/AxiBatcherParser.cc.o
+[412/546] Compiling C++ object psdaq/drp/drp_validate.p/validate.cc.o
+[413/546] Compiling C++ object psdaq/drp/jungfrauTest.p/JungfrauDetectorId.cc.o
+[414/546] Compiling C++ object psdaq/drp/drp_pva.p/PvaDetector.cc.o
+[415/546] Compiling C++ object psdaq/drp/fileWriteTest.p/fileWriteTest.cc.o
+[416/546] Compiling C++ object psdaq/drp/drp_groupsync.p/groupsync.cc.o
+[417/546] Compiling C++ object psdaq/drp/jungfrauSim.p/jungfrauSim.cc.o
+[418/546] Compiling C++ object psdaq/drp/jungfrauTest.p/jungfrauTest.cc.o
+[419/546] Compiling C++ object psdaq/epicsArch/epicsArchVerify.p/epicsArchVerify.cc.o
+[420/546] Compiling C++ object psdaq/epicsArch/epicsArch.p/EpicsMonitorPv.cc.o
+[421/546] Compiling C++ object psdaq/epicsArch/epicsArch.p/EpicsArchMonitor.cc.o
+[422/546] Compiling C++ object psdaq/epicsArch/epicsArch.p/PvConfigFile.cc.o
+[423/546] Compiling C++ object psdaq/BldTebData.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_BldTebData.pyx.cpp.o
+[424/546] Compiling C++ object psdaq/epicsArch/epicsArchVerify.p/PvConfigFile.cc.o
+[425/546] Compiling C++ object psdaq/HrEncoderTebData.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_HrEncoderTebData.pyx.cpp.o
+[426/546] Compiling C++ object psdaq/CubeConfigDgram.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_CubeConfigDgram.pyx.cpp.o
+[427/546] Compiling C++ object psdaq/EbDgram.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_EbDgram.pyx.cpp.o
+[428/546] Compiling C++ object psdaq/CubeResultDgram.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_CubeResultDgram.pyx.cpp.o
+[429/546] Compiling C++ object psdaq/WindowResultDgram.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_WindowResultDgram.pyx.cpp.o
+[430/546] Compiling C++ object psdaq/epicsArch/epicsArch.p/.._drp_TebReceiver.cc.o
+[431/546] Compiling C++ object psdaq/Piranha4TTTebData.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_Piranha4TTTebData.pyx.cpp.o
+[432/546] Compiling C++ object psdaq/TimingTebData.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_TimingTebData.pyx.cpp.o
+[433/546] Compiling C++ object psdaq/TmoTebData.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_TmoTebData.pyx.cpp.o
+[434/546] Linking target xtcdata/xtcdata/app/xtcsave
+[435/546] Linking target xtcdata/xtcdata/app/hsdduplicate
+[436/546] Linking target xtcdata/xtcdata/app/randomaccess
+[437/546] Linking target xtcdata/xtcdata/app/jungfrau
+[438/546] Linking target xtcdata/xtcdata/app/xtcreader
+[439/546] Linking target psalg/psalg/shmem/shmemClient
+[440/546] Linking target psalg/psalg/shmem/shmemWriter
+[441/546] Linking target xtcdata/xtcdata/app/amiwriter
+[442/546] Linking target psalg/psalg/shmem/shmemServer
+[443/546] Linking target xtcdata/xtcdata/app/smdwriter
+[444/546] Linking target xtcdata/xtcdata/app/xtcupdate
+[445/546] Linking target psalg/psalg/hsd_valid
+[446/546] Linking target psana/container.cpython-39-x86_64-linux-gnu.so
+[447/546] Linking target psalg/psalg/test_fft
+[448/546] Linking target xtcdata/xtcdata/app/xtcwriter
+[449/546] Compiling C++ object psdaq/ResultDgram.cpython-39-x86_64-linux-gnu.so.p/meson-generated_psdaq_psdaq_trigger_ResultDgram.pyx.cpp.o
+[450/546] Linking target psana/dgram.cpython-39-x86_64-linux-gnu.so
+[451/546] Compiling C++ object psdaq/epicsArch/epicsArch.p/epicsArch.cc.o
+[452/546] Compiling C++ object psdaq/drp/drp_udpencoder.p/UdpEncoder.cc.o
+[453/546] Linking target psalg/psalg/datareader
+[454/546] Linking target psana/shmem.cpython-39-x86_64-linux-gnu.so
+[455/546] Linking target psana/constFracDiscrim.cpython-39-x86_64-linux-gnu.so
+[456/546] Linking target psana/dgramlite.cpython-39-x86_64-linux-gnu.so
+[457/546] Linking target psana/peakfinder8.cpython-39-x86_64-linux-gnu.so
+[458/546] Linking target psana/quadanode.cpython-39-x86_64-linux-gnu.so
+[459/546] Linking target psana/dgramchunk.cpython-39-x86_64-linux-gnu.so
+[460/546] Linking target psdaq/psdaq/mmhw/mmregtest
+[461/546] Linking target psana/smdreader.cpython-39-x86_64-linux-gnu.so
+[462/546] Linking target psana/utilsdetector_ext.cpython-39-x86_64-linux-gnu.so
+[463/546] Linking target psdaq/psdaq/mmhw/mmxvc
+[464/546] Linking target psalg/psalg/utils/dgramCreate.cpython-39-x86_64-linux-gnu.so
+[465/546] Linking target psana/dgramedit.cpython-39-x86_64-linux-gnu.so
+[466/546] Linking target psana/parallelreader.cpython-39-x86_64-linux-gnu.so
+[467/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuHist
+[468/546] Linking target psana/psalg_ext.cpython-39-x86_64-linux-gnu.so
+[469/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuStatus
+[470/546] Linking target psana/eventbuilder.cpython-39-x86_64-linux-gnu.so
+[471/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuPgpStatus
+[472/546] Linking target psdaq/psdaq/epicstools/tstPvMon
+[473/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuSim
+[474/546] Linking target psana/peakFinder_ext.cpython-39-x86_64-linux-gnu.so
+[475/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuLoopTest
+[476/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuReg
+[477/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuRead
+[478/546] Linking target psdaq/psdaq/epicstools/monExample
+[479/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuReadBulk
+[480/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuSimValid
+[481/546] Linking target psana/hsd.cpython-39-x86_64-linux-gnu.so
+[482/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuDmaStatus
+[483/546] Linking target psdaq/psdaq/pgp/kcu1500/app/kcuMargin
+[484/546] Linking target psdaq/psdaq/app/hpsBldServer
+[485/546] Linking target psdaq/psdaq/app/tprtrig
+[486/546] Linking target psdaq/psdaq/app/lclsBldServer
+[487/546] Linking target psana/ndarray.cpython-39-x86_64-linux-gnu.so
+[488/546] Linking target psdaq/psdaq/app/tprsh
+[489/546] Linking target psdaq/psdaq/app/tprutil
+[490/546] Linking target psdaq/psdaq/app/hpsBldCopy
+[491/546] Linking target psana/hexanode_ext.cpython-39-x86_64-linux-gnu.so
+[492/546] Linking target psdaq/psdaq/app/pgpca
+[493/546] Linking target psdaq/psdaq/app/xcasttest
+[494/546] Linking target psdaq/psdaq/app/hpsBldClient
+[495/546] Linking target psdaq/psdaq/hsd/mempeek
+[496/546] Linking target psdaq/psdaq/app/json2xtc
+[497/546] Linking target psdaq/psdaq/app/sim_udpencoder
+[498/546] Linking target psdaq/psdaq/app/pvcam
+[499/546] Linking target psdaq/psdaq/hsd/hsd_eyescan
+[500/546] Linking target psdaq/psdaq/hsd/hsd_sim
+[501/546] Linking target psdaq/psdaq/app/bldpayload
+[502/546] Linking target psdaq/psdaq/app/tprioc
+[503/546] Linking target psdaq/psdaq/trigger/libcalibTrigger.so
+[504/546] Linking target psdaq/psdaq/trigger/libtmoTeb.so
+[505/546] Linking target psdaq/psdaq/hsd/hsdRead
+[506/546] Linking target psdaq/psdaq/trigger/libmfxTripperTeb.so
+[507/546] Linking target psdaq/psdaq/trigger/libmfxTripperEvSelectTeb.so
+[508/546] Linking target psdaq/psdaq/trigger/libtmoTrigger.so
+[509/546] Linking target psdaq/psdaq/eb/tstClocks
+[510/546] Linking target psdaq/psdaq/hsd/hsd126PVs
+[511/546] Linking target psdaq/psdaq/eb/tstEbLfLink
+[512/546] Linking target psdaq/drp/configdb_obj_2xtc
+[513/546] Linking target psdaq/drp/pgpread
+[514/546] Linking target psdaq/psdaq/hsd/hsd134PVs
+[515/546] Linking target psdaq/drp/drp_sim_frame
+[516/546] Linking target psdaq/drp/tpr_trigger
+[517/546] Linking target psdaq/drp/pgpread_epixM320mon
+[518/546] Linking target psdaq/drp/pgpread_jungfrau
+[519/546] Linking target psdaq/psdaq/trigger/libtstTebPy.so
+[520/546] Linking target psdaq/drp/opaltt_test
+[521/546] Linking target psdaq/drp/drp_validate
+[522/546] Linking target psdaq/psdaq/eb/teb
+[523/546] Linking target psdaq/drp/pgpread_timetool
+[524/546] Linking target psdaq/drp/AxiBatcherParserTest
+[525/546] Linking target psdaq/drp/fileWriteTest
+[526/546] Linking target psdaq/drp/jungfrauSim
+[527/546] Linking target psdaq/drp/ePixMDescTest
+[528/546] Linking target psdaq/drp/drp_groupsync
+[529/546] Linking target psdaq/psdaq/monreq/monReqServer
+[530/546] Linking target psdaq/drp/drp_pva
+[531/546] Linking target psdaq/drp/drp_udpencoder
+[532/546] Linking target psdaq/CubeResultDgram.cpython-39-x86_64-linux-gnu.so
+[533/546] Linking target psdaq/CubeConfigDgram.cpython-39-x86_64-linux-gnu.so
+[534/546] Linking target psdaq/BldTebData.cpython-39-x86_64-linux-gnu.so
+[535/546] Linking target psdaq/WindowResultDgram.cpython-39-x86_64-linux-gnu.so
+[536/546] Linking target psdaq/drp/drp
+[537/546] Linking target psdaq/drp/jungfrauTest
+[538/546] Linking target psdaq/EbDgram.cpython-39-x86_64-linux-gnu.so
+[539/546] Linking target psdaq/HrEncoderTebData.cpython-39-x86_64-linux-gnu.so
+[540/546] Linking target psdaq/drp/drp_bld
+[541/546] Linking target psdaq/Piranha4TTTebData.cpython-39-x86_64-linux-gnu.so
+[542/546] Linking target psdaq/epicsArch/epicsArchVerify
+[543/546] Linking target psdaq/TmoTebData.cpython-39-x86_64-linux-gnu.so
+[544/546] Linking target psdaq/ResultDgram.cpython-39-x86_64-linux-gnu.so
+[545/546] Linking target psdaq/TimingTebData.cpython-39-x86_64-linux-gnu.so
+[546/546] Linking target psdaq/epicsArch/epicsArch
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/ninja -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/builddir -j 12
+Skipping RPATH fixing
+Skipping RPATH fixing
+Skipping RPATH fixing
+Skipping RPATH fixing
+Skipping RPATH fixing
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 49ms
+   Building psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45
+      Built psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45
+Prepared 1 package in 3.90s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 8.20s
+ + psana==4.3.4 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45)
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 19ms
+   Building psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq
+      Built psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq
+Prepared 1 package in 1.21s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 461ms
+ + psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45/psdaq)

@@ -1,0 +1,180 @@
+=== session on sdfada013 job 43970564 step 15 at 2026-11-09T07:32:54-08:00; HEAD 5b1f5587d49d9ff5abc19ea9de40d859be6b20ba dirty 14
+0, GPU-e52abe08-3e8e-0e64-80e0-533a631004fe, NVIDIA L40S
+=== daq_sim up -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3 --det epixuhremu --drp drp_gpu  --detach
+2026-11-09T07:33:06.857-08:00 daq_sim: up on sdfada013 (job 43970564 step 15), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3
+2026-11-09T07:33:06.857-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T07:33:29.519-08:00 daq_sim: preflight rc=0: 07:33:29 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T07:33:30.829-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T07:33:30.829-08:00 daq_sim: config DB seeded: tst/BEAM/epixuhremu_0 key=2 written
+2026-11-09T07:33:32.651-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T07:33:38.565-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfada013 (Slurm job 43970564)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixuhremu_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/daq_sim.cnf  pids {'control': 847359, 'teb0': 847360, 'epixuhremu_0': 847361}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3 --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3
+=== up exit 0
+=== daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3 --events 1000
+2026-11-09T07:33:39.472-08:00 start state: reset
+2026-11-09T07:33:39.473-08:00 setRecord(True) -> OK
+2026-11-09T07:33:40.478-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T07:33:40.479-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-09T07:33:43.871-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-09T07:33:43.881-08:00 setState allocated    -> allocated    OK
+2026-11-09T07:33:44.301-08:00 setState connected    -> connected    OK
+2026-11-09T07:33:47.288-08:00 setState configured   -> configured   OK
+2026-11-09T07:33:47.371-08:00 [warning] epixuhremu_0: no calibSerNo kwarg: using pedestals of 0 and gains of 1
+2026-11-09T07:33:48.374-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-09T07:33:48.384-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-09T07:33:48.388-08:00 setState starting     -> starting     OK
+2026-11-09T07:33:48.391-08:00 setState paused       -> paused       OK
+2026-11-09T07:33:48.393-08:00 setState running      -> running      OK
+2026-11-09T07:33:48.393-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-09T07:33:50.405-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1281 (wanted >= 1000)
+2026-11-09T07:33:50.409-08:00 setState paused       -> paused       OK
+2026-11-09T07:33:51.475-08:00 counts after Disable: {'simxpm NumL0Acc': 2015, 'simxpm NumL0Inp': 2015, 'TEB_EvtCt': 2015, 'TEB_TrCt': 7, 'TEB_WrtCt': 2015, 'DRP_Damage': 0, 'DRP_RecordSize': 1560068960, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-09T07:33:51.478-08:00 setState starting     -> starting     OK
+2026-11-09T07:33:51.486-08:00 setState configured   -> configured   OK
+2026-11-09T07:33:51.758-08:00 setState connected    -> connected    OK
+2026-11-09T07:34:08.843-08:00 setState allocated    -> allocated    OK
+2026-11-09T07:34:08.875-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T07:34:08.876-08:00 setState reset        -> reset        OK
+2026-11-09T07:34:13.570-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-09T07:33:39.473-08:00 -> 2026-11-09T07:33:40.478-08:00  unallocated  unallocated  
+  2026-11-09T07:33:40.479-08:00 -> 2026-11-09T07:33:43.881-08:00  allocated    allocated    
+  2026-11-09T07:33:43.881-08:00 -> 2026-11-09T07:33:44.301-08:00  connected    connected    
+  2026-11-09T07:33:44.301-08:00 -> 2026-11-09T07:33:47.288-08:00  configured   configured   
+  2026-11-09T07:33:47.289-08:00 -> 2026-11-09T07:33:48.388-08:00  starting     starting     
+  2026-11-09T07:33:48.389-08:00 -> 2026-11-09T07:33:48.391-08:00  paused       paused       
+  2026-11-09T07:33:48.391-08:00 -> 2026-11-09T07:33:48.393-08:00  running      running      
+  2026-11-09T07:33:50.406-08:00 -> 2026-11-09T07:33:50.409-08:00  paused       paused       
+  2026-11-09T07:33:51.475-08:00 -> 2026-11-09T07:33:51.478-08:00  starting     starting     
+  2026-11-09T07:33:51.478-08:00 -> 2026-11-09T07:33:51.486-08:00  configured   configured   
+  2026-11-09T07:33:51.486-08:00 -> 2026-11-09T07:33:51.758-08:00  connected    connected    
+  2026-11-09T07:33:51.758-08:00 -> 2026-11-09T07:34:08.843-08:00  allocated    allocated    
+  2026-11-09T07:34:08.843-08:00 -> 2026-11-09T07:34:08.875-08:00  unallocated  unallocated  
+  2026-11-09T07:34:08.875-08:00 -> 2026-11-09T07:34:08.876-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        2015
+  simxpm NumL0Inp        2015
+  TEB_EvtCt              2015
+  TEB_TrCt               7
+  TEB_WrtCt              2015
+  DRP_Damage             0
+  DRP_RecordSize         1560068960
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1560069008 B)
+  psana2 events          2015
+  psana2 with data       2015
+  psana2 checks          FAIL ['event 1: 384 of 193536 pixels differ', 'event 2: 6142 of 193536 pixels differ', 'event 3: 2304 of 193536 pixels differ']
+  psana2 seq             1..2015
+  psana2 seeds           {'0x1234': 44}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: False
+2026-11-09T07:34:13.575-08:00 cycle FAIL
+CYCLE_EXIT=1
+workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3  host sdfada013  platform 5  started 2026-11-09T07:33:06.855-08:00
+  configdb   pid 847128   alive
+  lgbk       pid 847305   alive
+  simxpm     pid 847323   alive
+  control    pid 847359   RUNNING
+  teb0       pid 847360   RUNNING
+  epixuhremu_0 pid -        SHUTDOWN
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 07:34:14 2026 2015.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 07:34:14 2026 2015.0
+=== xtc2_check self-test: --self-test-offset 1 must FAIL
+[sdfada013:848755] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada013.18262/jf.0/4033478656/shared_mem_cuda_pool.sdfada013 could be created.
+[sdfada013:848755] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epixuhremu raw shape [336, 576]
+  L1Accept events 2015; with epixuhremu data 2015; events matching the pattern of seed 0x1234: 0
+  check: every pixel of epixuhremu.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, seq n, pulseId, self-test offset 1
+  problem: event 1: 48671 of 193536 pixels differ
+  problem: event 2: 52988 of 193536 pixels differ
+  problem: event 3: 50111 of 193536 pixels differ
+  problem: event 4: 56035 of 193536 pixels differ
+  problem: event 5: 48815 of 193536 pixels differ
+  FAIL
+SELFTEST_EXIT=1
+=== drp_gpu log tail
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3/pmlogs/2026/11/09_07:33:33_sdfada013:epixuhremu_0.log
+tst-drp_gpu[847361]: <I> TebCtrb   sent       Enable @ 1163086428.392097819 (04733118e677c1) to TEB ID 0 @   0x559dfa7ed078 (00000000 + 3 * 00000028)
+tst-drp_gpu[847361]: <I> TebRcvr    saw       Enable @ 1163086428.392097819 (04733118e677c1)
+tst-drp_gpu[847361]: <I> Recorder   saw       Enable @ 1163086428.392097819 (04733118e677c1)
+tst-drp_gpu[847361]: <I> received key = disable @ Mon Nov  9 07:33:50 2026
+tst-drp_gpu[847361]: <I> PGPReader  saw      Disable @ 1163086430.406972473 (047331190793ca)
+tst-drp_gpu[847361]: <I> Collector  saw      Disable @ 1163086430.406972473 (047331190793ca)
+tst-drp_gpu[847361]: <I> TebCtrb   sent      Disable @ 1163086430.406972473 (047331190793ca) to TEB ID 0 @   0x559dfa7ed5f0 (00000000 + 38 * 00000028)
+tst-drp_gpu[847361]: <I> TebRcvr    saw      Disable @ 1163086430.406972473 (047331190793ca)
+tst-drp_gpu[847361]: <I> Recorder   saw      Disable @ 1163086430.406972473 (047331190793ca)
+tst-drp_gpu[847361]: <I> received key = endstep @ Mon Nov  9 07:33:51 2026
+tst-drp_gpu[847361]: <I> PGPReader  saw      EndStep @ 1163086431.476357740 (04733119192668)
+tst-drp_gpu[847361]: <I> Collector  saw      EndStep @ 1163086431.476357740 (04733119192668)
+tst-drp_gpu[847361]: <I> TebCtrb   sent      EndStep @ 1163086431.476357740 (04733119192668) to TEB ID 0 @   0x559dfa7ed618 (00000000 + 39 * 00000028)
+tst-drp_gpu[847361]: <I> TebRcvr    saw      EndStep @ 1163086431.476357740 (04733119192668)
+tst-drp_gpu[847361]: <I> Recorder   saw      EndStep @ 1163086431.476357740 (04733119192668)
+tst-drp_gpu[847361]: <I> received key = endrun @ Mon Nov  9 07:33:51 2026
+tst-drp_gpu[847361]: <I> PGPReader  saw       EndRun @ 1163086431.484870564 (04733119194a38)
+tst-drp_gpu[847361]: <I> Collector  saw       EndRun @ 1163086431.484870564 (04733119194a38)
+tst-drp_gpu[847361]: <I> TebCtrb   sent       EndRun @ 1163086431.484870564 (04733119194a38) to TEB ID 0 @   0x559dfa7ed640 (00000000 + 40 * 00000028)
+tst-drp_gpu[847361]: <I> TebRcvr    saw       EndRun @ 1163086431.484870564 (04733119194a38)
+tst-drp_gpu[847361]: <I> Recorder   saw       EndRun @ 1163086431.484870564 (04733119194a38)
+tst-drp_gpu[847361]: <I> received key = unconfigure @ Mon Nov  9 07:33:51 2026
+tst-drp_gpu[847361]: <I> PGPReader  saw  Unconfigure @ 1163086431.487120094 (047331191953ae)
+tst-drp_gpu[847361]: <I> Collector  saw  Unconfigure @ 1163086431.487120094 (047331191953ae)
+tst-drp_gpu[847361]: <I> TebCtrb   sent  Unconfigure @ 1163086431.487120094 (047331191953ae) to TEB ID 0 @   0x559dfa7ed668 (00000000 + 41 * 00000028)
+tst-drp_gpu[847361]: <I> TebRcvr    saw  Unconfigure @ 1163086431.487120094 (047331191953ae)
+tst-drp_gpu[847361]: <I> Recorder   saw  Unconfigure @ 1163086431.487120094 (047331191953ae)
+tst-drp_gpu[847361]: <I> received key = disconnect @ Mon Nov  9 07:33:51 2026
+tst-drp_gpu[847361]: <I> PGPDrp::unconfigure: Shutting down
+tst-drp_gpu[847361]: <I> TEB Receiver thread finished
+BatchManager dump:
+  Region base 0x564443073000  size 2560  maxBatchSize 2560  maxEntrySize 40
+tst-drp_gpu[847361]: <I> TrgInpGen receiver is exiting
+*** TebRcvr::recorder: No item from recordQueue
+tst-drp_gpu[847361]: <I> Recorder thread is exiting
+tst-drp_gpu[847361]: <I> TrgInpGen receiver thread finished
+tst-drp_gpu[847361]: <I> Recorder thread finished
+tst-drp_gpu[847361]: <I> Collector is exiting
+tst-drp_gpu[847361]: <I> Collector thread finished
+tst-drp_gpu[847361]: <I> received key = dealloc @ Mon Nov  9 07:34:08 2026
+tst-drp_gpu[847361]: <I> received key = reset @ Mon Nov  9 07:34:08 2026
+tst-drp_gpu[847361]: <I> PGPDrp::unconfigure: Shutting down
+epixuhremu_0[847361]: <C> FATAL: Segmentation Fault - stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10508)[0x7f122b426508]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10585)[0x7f122b426585]
+/lib64/libc.so.6(+0x3ebf0)[0x7f122563ebf0]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x2c391)[0x56443e84a391]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x27cac)[0x56443e845cac]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x1070e)[0x56443e82e70e]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(_ZN13CollectionApp3runEv+0x7a4)[0x7f122b42c7a4]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0xf3a5)[0x56443e82d3a5]
+/lib64/libc.so.6(+0x295d0)[0x7f12256295d0]
+/lib64/libc.so.6(__libc_start_main+0x80)[0x7f1225629680]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x10312)[0x56443e82e312]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 07:34:09 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 847361. Normal exit status = 1
+=== daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/t3
+2026-11-09T07:34:20.441-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-09T07:34:25.816-08:00 daq_sim: stopping simxpm pid 847323: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-09T07:34:25.917-08:00 daq_sim: stopping lgbk pid 847305: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-09T07:34:26.117-08:00 daq_sim: stopping configdb pid 847128: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-09T07:34:27.132-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-09T07:34:27.144-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+=== end 2026-11-09T07:34:27-08:00

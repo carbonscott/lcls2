@@ -1,0 +1,1571 @@
+# ID:      fakecam_0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: drp_gpu -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data -k ep_domain=lo,ep_provider=tcp,reducer=NoOpReducer,sim_length=64,sim_dma_count=64,dmaBufSize=131072,dmaBufCount=64 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/prom -u fakecam_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_09:19:10_sdfada013:fakecam_0.log"
+@@@    (as /bin/env)
+@@@ The PID of new child "2026/11/09_09:19:10_sdfada013:fakecam_0.log" is: 1213415
+@@@ @@@ @@@ @@@ @@@
+tst-drp_gpu[1213415]: <I> logging configured
+tst-drp_gpu[1213415]: <W> SMT is on: the 12 granted CPUs are only 6 physical cores, so any hot thread past the first 6 shares a core
+tst-drp_gpu[1213415]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[1213415]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[1213415]: <I> Global memory: 45457 MB
+tst-drp_gpu[1213415]: <I> MemPoolGpu: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp_gpu[1213415]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[1213415]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[1213415]: <I> GPU Device Attributes:
+tst-drp_gpu[1213415]: <I>   Unified addressing: 1
+tst-drp_gpu[1213415]: <I>   Concurrent kernels: 1
+tst-drp_gpu[1213415]: <I>   Compute preemption: 1
+tst-drp_gpu[1213415]: <I>   Can map host memory: 1
+tst-drp_gpu[1213415]: <I>   Number of multiprocessors: 142
+tst-drp_gpu[1213415]: <I>   Max threads per multiprocessor: 1536
+tst-drp_gpu[1213415]: <I>   Max blocks per multiprocessor: 24
+tst-drp_gpu[1213415]: <I>   Max threads per block: 1024
+tst-drp_gpu[1213415]: <I> NULL PGP device 'sim://127.0.0.1:31052' opened
+tst-drp_gpu[1213415]: <I> DMA buffer[0] dptr 0x7f263ae10000, size 131072, free list[0] 0x7f268bc57300
+tst-drp_gpu[1213415]: <I> DMA buffer[1] dptr 0x7f263ae40000, size 131072, free list[1] 0x7f268bc57304
+tst-drp_gpu[1213415]: <I> DMA buffer[2] dptr 0x7f263ae70000, size 131072, free list[2] 0x7f268bc57308
+tst-drp_gpu[1213415]: <I> DMA buffer[3] dptr 0x7f263aea0000, size 131072, free list[3] 0x7f268bc5730c
+tst-drp_gpu[1213415]: <I> DMA buffer[4] dptr 0x7f263aed0000, size 131072, free list[4] 0x7f268bc57310
+tst-drp_gpu[1213415]: <I> DMA buffer[5] dptr 0x7f263af00000, size 131072, free list[5] 0x7f268bc57314
+tst-drp_gpu[1213415]: <I> DMA buffer[6] dptr 0x7f263af30000, size 131072, free list[6] 0x7f268bc57318
+tst-drp_gpu[1213415]: <I> DMA buffer[7] dptr 0x7f263af60000, size 131072, free list[7] 0x7f268bc5731c
+tst-drp_gpu[1213415]: <I> DMA buffer[8] dptr 0x7f263af90000, size 131072, free list[8] 0x7f268bc57320
+tst-drp_gpu[1213415]: <I> DMA buffer[9] dptr 0x7f263afc0000, size 131072, free list[9] 0x7f268bc57324
+tst-drp_gpu[1213415]: <I> DMA buffer[10] dptr 0x7f263b000000, size 131072, free list[10] 0x7f268bc57328
+tst-drp_gpu[1213415]: <I> DMA buffer[11] dptr 0x7f263b040000, size 131072, free list[11] 0x7f268bc5732c
+tst-drp_gpu[1213415]: <I> DMA buffer[12] dptr 0x7f263b070000, size 131072, free list[12] 0x7f268bc57330
+tst-drp_gpu[1213415]: <I> DMA buffer[13] dptr 0x7f263b0a0000, size 131072, free list[13] 0x7f268bc57334
+tst-drp_gpu[1213415]: <I> DMA buffer[14] dptr 0x7f263b0d0000, size 131072, free list[14] 0x7f268bc57338
+tst-drp_gpu[1213415]: <I> DMA buffer[15] dptr 0x7f263b100000, size 131072, free list[15] 0x7f268bc5733c
+tst-drp_gpu[1213415]: <I> DMA buffer[16] dptr 0x7f263b130000, size 131072, free list[16] 0x7f268bc57340
+tst-drp_gpu[1213415]: <I> DMA buffer[17] dptr 0x7f263b160000, size 131072, free list[17] 0x7f268bc57344
+tst-drp_gpu[1213415]: <I> DMA buffer[18] dptr 0x7f263b190000, size 131072, free list[18] 0x7f268bc57348
+tst-drp_gpu[1213415]: <I> DMA buffer[19] dptr 0x7f263b1c0000, size 131072, free list[19] 0x7f268bc5734c
+tst-drp_gpu[1213415]: <I> DMA buffer[20] dptr 0x7f263b200000, size 131072, free list[20] 0x7f268bc57350
+tst-drp_gpu[1213415]: <I> DMA buffer[21] dptr 0x7f263b240000, size 131072, free list[21] 0x7f268bc57354
+tst-drp_gpu[1213415]: <I> DMA buffer[22] dptr 0x7f263b270000, size 131072, free list[22] 0x7f268bc57358
+tst-drp_gpu[1213415]: <I> DMA buffer[23] dptr 0x7f263b2a0000, size 131072, free list[23] 0x7f268bc5735c
+tst-drp_gpu[1213415]: <I> DMA buffer[24] dptr 0x7f263b2d0000, size 131072, free list[24] 0x7f268bc57360
+tst-drp_gpu[1213415]: <I> DMA buffer[25] dptr 0x7f263b300000, size 131072, free list[25] 0x7f268bc57364
+tst-drp_gpu[1213415]: <I> DMA buffer[26] dptr 0x7f263b330000, size 131072, free list[26] 0x7f268bc57368
+tst-drp_gpu[1213415]: <I> DMA buffer[27] dptr 0x7f263b360000, size 131072, free list[27] 0x7f268bc5736c
+tst-drp_gpu[1213415]: <I> DMA buffer[28] dptr 0x7f263b390000, size 131072, free list[28] 0x7f268bc57370
+tst-drp_gpu[1213415]: <I> DMA buffer[29] dptr 0x7f263b3c0000, size 131072, free list[29] 0x7f268bc57374
+tst-drp_gpu[1213415]: <I> DMA buffer[30] dptr 0x7f263b400000, size 131072, free list[30] 0x7f268bc57378
+tst-drp_gpu[1213415]: <I> DMA buffer[31] dptr 0x7f263b440000, size 131072, free list[31] 0x7f268bc5737c
+tst-drp_gpu[1213415]: <I> DMA buffer[32] dptr 0x7f263b470000, size 131072, free list[32] 0x7f268bc57380
+tst-drp_gpu[1213415]: <I> DMA buffer[33] dptr 0x7f263b4a0000, size 131072, free list[33] 0x7f268bc57384
+tst-drp_gpu[1213415]: <I> DMA buffer[34] dptr 0x7f263b4d0000, size 131072, free list[34] 0x7f268bc57388
+tst-drp_gpu[1213415]: <I> DMA buffer[35] dptr 0x7f263b500000, size 131072, free list[35] 0x7f268bc5738c
+tst-drp_gpu[1213415]: <I> DMA buffer[36] dptr 0x7f263b530000, size 131072, free list[36] 0x7f268bc57390
+tst-drp_gpu[1213415]: <I> DMA buffer[37] dptr 0x7f263b560000, size 131072, free list[37] 0x7f268bc57394
+tst-drp_gpu[1213415]: <I> DMA buffer[38] dptr 0x7f263b590000, size 131072, free list[38] 0x7f268bc57398
+tst-drp_gpu[1213415]: <I> DMA buffer[39] dptr 0x7f263b5c0000, size 131072, free list[39] 0x7f268bc5739c
+tst-drp_gpu[1213415]: <I> DMA buffer[40] dptr 0x7f263b600000, size 131072, free list[40] 0x7f268bc573a0
+tst-drp_gpu[1213415]: <I> DMA buffer[41] dptr 0x7f263b640000, size 131072, free list[41] 0x7f268bc573a4
+tst-drp_gpu[1213415]: <I> DMA buffer[42] dptr 0x7f263b670000, size 131072, free list[42] 0x7f268bc573a8
+tst-drp_gpu[1213415]: <I> DMA buffer[43] dptr 0x7f263b6a0000, size 131072, free list[43] 0x7f268bc573ac
+tst-drp_gpu[1213415]: <I> DMA buffer[44] dptr 0x7f263b6d0000, size 131072, free list[44] 0x7f268bc573b0
+tst-drp_gpu[1213415]: <I> DMA buffer[45] dptr 0x7f263b700000, size 131072, free list[45] 0x7f268bc573b4
+tst-drp_gpu[1213415]: <I> DMA buffer[46] dptr 0x7f263b730000, size 131072, free list[46] 0x7f268bc573b8
+tst-drp_gpu[1213415]: <I> DMA buffer[47] dptr 0x7f263b760000, size 131072, free list[47] 0x7f268bc573bc
+tst-drp_gpu[1213415]: <I> DMA buffer[48] dptr 0x7f263b790000, size 131072, free list[48] 0x7f268bc573c0
+tst-drp_gpu[1213415]: <I> DMA buffer[49] dptr 0x7f263b7c0000, size 131072, free list[49] 0x7f268bc573c4
+tst-drp_gpu[1213415]: <I> DMA buffer[50] dptr 0x7f263b800000, size 131072, free list[50] 0x7f268bc573c8
+tst-drp_gpu[1213415]: <I> DMA buffer[51] dptr 0x7f263b840000, size 131072, free list[51] 0x7f268bc573cc
+tst-drp_gpu[1213415]: <I> DMA buffer[52] dptr 0x7f263b870000, size 131072, free list[52] 0x7f268bc573d0
+tst-drp_gpu[1213415]: <I> DMA buffer[53] dptr 0x7f263b8a0000, size 131072, free list[53] 0x7f268bc573d4
+tst-drp_gpu[1213415]: <I> DMA buffer[54] dptr 0x7f263b8d0000, size 131072, free list[54] 0x7f268bc573d8
+tst-drp_gpu[1213415]: <I> DMA buffer[55] dptr 0x7f263b900000, size 131072, free list[55] 0x7f268bc573dc
+tst-drp_gpu[1213415]: <I> DMA buffer[56] dptr 0x7f263b930000, size 131072, free list[56] 0x7f268bc573e0
+tst-drp_gpu[1213415]: <I> DMA buffer[57] dptr 0x7f263b960000, size 131072, free list[57] 0x7f268bc573e4
+tst-drp_gpu[1213415]: <I> DMA buffer[58] dptr 0x7f263b990000, size 131072, free list[58] 0x7f268bc573e8
+tst-drp_gpu[1213415]: <I> DMA buffer[59] dptr 0x7f263b9c0000, size 131072, free list[59] 0x7f268bc573ec
+tst-drp_gpu[1213415]: <I> DMA buffer[60] dptr 0x7f263ba00000, size 131072, free list[60] 0x7f268bc573f0
+tst-drp_gpu[1213415]: <I> DMA buffer[61] dptr 0x7f263ba40000, size 131072, free list[61] 0x7f268bc573f4
+tst-drp_gpu[1213415]: <I> DMA buffer[62] dptr 0x7f263ba70000, size 131072, free list[62] 0x7f268bc573f8
+tst-drp_gpu[1213415]: <I> DMA buffer[63] dptr 0x7f263baa0000, size 131072, free list[63] 0x7f268bc573fc
+tst-drp_gpu[1213415]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp_gpu[1213415]: <I> dmaCount 64,  dmaSize 65536
+tst-drp_gpu[1213415]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 65536 B
+tst-drp_gpu[1213415]: <I> nL1Buffers 64,  pebble buffer size 65536 B
+tst-drp_gpu[1213415]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[1213415]: <I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 131072 B
+tst-drp_gpu[1213415]: <I> dmaCount 64,  dmaSize 131072
+tst-drp_gpu[1213415]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 131072 B
+tst-drp_gpu[1213415]: <I> nL1Buffers 64,  pebble buffer size 131072 B
+tst-drp_gpu[1213415]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[1213415]: <I> Simulated DMA thread is starting with process ID 1214047
+tst-drp_gpu[1213415]: <I> MemPoolSim: simxpm registered fakecam_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp_gpu[1213415]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+tst-drp_gpu[1213415]: <I> Calibration buffers: 0x7f263afe1800 : 0x7f263afe9600, size 64 * 512 B
+tst-drp_gpu[1213415]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp_gpu[1213415]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst
+tst-drp_gpu[1213415]: <I> Output dir: ready
+tst-drp_gpu[1213415]: <W> Built with CUDA 12.9: green contexts through the driver API, 142 SMs in groups of 6
+tst-drp_gpu[1213415]: <I> Final SM resources for context 0: 6 SMs
+tst-drp_gpu[1213415]: <I> Final SM resources for context 1: 6 SMs
+tst-drp_gpu[1213415]: <I> Final SM resources for context 2: 42 SMs
+tst-drp_gpu[1213415]: <I> Final SM resources for context 3: 88 SMs
+tst-drp_gpu[1213415]: <I> Ready for transitions
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = rollcall @ Mon Nov  9 09:19:24 2026
+tst-drp_gpu[1213415]: <I> received key = alloc @ Mon Nov  9 09:19:25 2026
+tst-drp_gpu[1213415]: <I> Using requested interface lo, address 127.0.0.1
+WARNING:root:xpmdet IS the barrier supervisor for sim://127.0.0.1:31052, 0 worker(s) besides the supervisor
+WARNING:root:FidCount  : 0
+WARNING:root:RxRstCount: 0
+WARNING:root:RxDecErrs : 0
+WARNING:root:RxDspErrs : 0
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp_gpu[1213415]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp_gpu[1213415]: <I> received key = connect @ Mon Nov  9 09:19:26 2026
+tst-drp_gpu[1213415]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp_gpu[1213415]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp_gpu[1213415]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp_gpu[1213415]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp_gpu[1213415]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp_gpu[1213415]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp_gpu[1213415]: <I> Outbound link with TEB ID  0 at 127.0.0.1:38547 connected
+tst-drp_gpu[1213415]: <I> Inbound  link with TEB ID  0 connected
+tst-drp_gpu[1213415]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp_gpu[1213415]: <I> received key = configure @ Mon Nov  9 09:19:26 2026
+tst-drp_gpu[1213415]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp_gpu[1213415]: <I> Trigger loaded from libtmoTeb_gpu.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 1 64 entry batches of 40 B
+tst-drp_gpu[1213415]: <I> Outbound link with TEB ID  0, 0x561b36f06000 : 0x561b36f06a00 (00000a00), configured in    0 ms
+tst-drp_gpu[1213415]: <I> Allocated 0.0 GB region for 64 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp_gpu[1213415]: <I> Inbound  link with TEB ID  0, 0x561b36f08000 : 0x561b36f08a00 (00000a00), configured in    0 ms
+tst-drp_gpu[1213415]: <I> Configuring 1 Reader streams
+tst-drp_gpu[1213415]: <I> Detector payload is not AxiStream Batcher formatted
+tst-drp_gpu[1213415]: <I> Host write buffers: 0x7f268bc4d000 : 0x7f268bc4ddc8, size 64 * 56 B
+tst-drp_gpu[1213415]: <I> Reader: hostWrtBufs: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1213415]: <I> Reader: pebbleQueue head: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1213415]: <I> Reader: pebbleQueue tail: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1213415]: <I> TrgInpGen: queue head: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1213415]: <I> TrgInpGen: queue tail: all 1 pages on the GPU's NUMA node 1
+tst-drp_gpu[1213415]: <I> Loaded reducer library 'libNoOpReducer.so' for 10 workers
+tst-drp_gpu[1213415]: <I> Reduce buffers: [base 0x7f263afef600] 0x7f263afef650 : 0x7f263aff8800, size 64 * (80 + 0 + 512) B
+tst-drp_gpu[1213415]: <I> Transition buffers: 0x7f2590000000 : 0x7f259fe00000, size 128 * 2097152 B
+tst-drp_gpu[1213415]: <I> NoOpReducer::configure(configure_json, connect_json, collection_id)
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector configure
+tst-drp_gpu[1213415]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0
+tst-drp_gpu[1213415]: <I> 
+tst-drp_gpu[1213415]: <I> Parameters of Contributor ID 0 (127.0.0.1:41301):
+tst-drp_gpu[1213415]: <I>   CPU allocation: granted 12 CPUs on NUMA node 0: 4,5,6,7,8,9,52,53,54,55,56,57
+tst-drp_gpu[1213415]: <I>   Instrument:                   tst
+tst-drp_gpu[1213415]: <I>   Partition:                    5
+tst-drp_gpu[1213415]: <I>   Alias (detName, detSeg):      fakecam_0 ('fakecam', 0)
+tst-drp_gpu[1213415]: <I>   Readout group receipient:     0x20
+tst-drp_gpu[1213415]: <I>   Readout group contractor:     0x20
+tst-drp_gpu[1213415]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp_gpu[1213415]: <I>   Number of MEBs:               0
+tst-drp_gpu[1213415]: <I>   Batching state:               Enabled
+tst-drp_gpu[1213415]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp_gpu[1213415]: <I>   Batch pool depth:             0x00000001 = 1
+tst-drp_gpu[1213415]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp_gpu[1213415]: <I>   # of TEB contrib.   buffers:  0x00000040 = 64
+tst-drp_gpu[1213415]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp_gpu[1213415]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp_gpu[1213415]: <I>   Max  MEB L1Accept      size:  0x00020000 = 131072
+tst-drp_gpu[1213415]: <I>   Max  MEB transition    size:  0x00200000 = 2097152
+tst-drp_gpu[1213415]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp_gpu[1213415]: <I> 
+tst-drp_gpu[1213415]: <I> TEB Receiver thread is starting with process ID 1214235
+tst-drp_gpu[1213415]: <I> TEBreceiver: pinned to CPU 4
+tst-drp_gpu[1213415]: <I> GPU threads per SM: 1536, blocks per SM: 24, blocks 144 * threads 64 = 9216 total threads, SMs 6.0, elements per thread: 0.0
+tst-drp_gpu[1213415]: <I> NoOpReducer::configure(xtc, bufEnd)
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+*** NoOpReducer blocks 480 * threads 64 = 30720 threads
+tst-drp_gpu[1213415]: <I> Collector is starting with process ID 1214236
+tst-drp_gpu[1213415]: <I> Collector: pinned to CPU 5
+tst-drp_gpu[1213415]: <I> TrgInpGen receiver is starting with process ID 1214237
+tst-drp_gpu[1213415]: <I> TigRcvr: pinned to CPU 6
+tst-drp_gpu[1213415]: <I> Allocated 0.0 GB for 1 buffers of 592 B in BufferedFileWriter
+tst-drp_gpu[1213415]: <I> Starting 1 Reader(s)
+tst-drp_gpu[1213415]: <I> Recorder is starting with process ID 1214847
+tst-drp_gpu[1213415]: <I> Recorder: pinned to CPU 7
+tst-drp_gpu[1213415]: <I> Starting TrgInpGen
+tst-drp_gpu[1213415]: <I> Starting 10 Reducer(s)
+tst-drp_gpu[1213415]: <I> PGPDrp: 40 threads (4 of them ours and hot) in 12 granted CPUs
+tst-drp_gpu[1213415]: <I> PGPReader  saw    Configure @ 1163092775.333012487 (047332b04ed764)
+tst-drp_gpu[1213415]: <I> Collector  saw    Configure @ 1163092775.333012487 (047332b04ed764)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent    Configure @ 1163092775.333012487 (047332b04ed764) to TEB ID 0 @   0x55fca5792000 (00000000 + 0 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw    Configure @ 1163092775.333012487 (047332b04ed764)
+tst-drp_gpu[1213415]: <I> Recorder   saw    Configure @ 1163092775.333012487 (047332b04ed764)
+tst-drp_gpu[1213415]: <I> received key = beginrun @ Mon Nov  9 09:19:35 2026
+Opening file /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp_gpu[1213415]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp_gpu[1213415]: <I> cuFile properties:
+tst-drp_gpu[1213415]: <I>    Major version:            0
+tst-drp_gpu[1213415]: <I>    Minor version:            0
+tst-drp_gpu[1213415]: <I>    Poll thresh size:         4
+tst-drp_gpu[1213415]: <I>    Max dir. IO size:         1024
+tst-drp_gpu[1213415]: <I>    Driver status flags:    0x000
+tst-drp_gpu[1213415]: <I>      Lustre supported:       No
+tst-drp_gpu[1213415]: <I>      Wekafs supported:       No
+tst-drp_gpu[1213415]: <I>      NFS supported:          No
+tst-drp_gpu[1213415]: <I>      NVMe supported:         No
+tst-drp_gpu[1213415]: <I>    Driver control flags:   0x02
+tst-drp_gpu[1213415]: <I>      Use poll mode:          False
+tst-drp_gpu[1213415]: <I>      Allow compat mode:      Enabled
+tst-drp_gpu[1213415]: <I>    Feature flags:          0x07
+tst-drp_gpu[1213415]: <I>      Streams supported:      Yes
+tst-drp_gpu[1213415]: <I>      Batch IO supported:     Yes
+tst-drp_gpu[1213415]: <I>      Dyn. routing supported: Yes
+tst-drp_gpu[1213415]: <I>      Parallel IO supported:  No
+tst-drp_gpu[1213415]: <I>    Max device cache size:    131072
+tst-drp_gpu[1213415]: <I>    Per buffer cache size:    0
+tst-drp_gpu[1213415]: <I>    Max pinned memory size:   4294967292
+tst-drp_gpu[1213415]: <I>    Max batch IO size:        128
+tst-drp_gpu[1213415]: <I>    Max batch IO timeout ms:  5
+tst-drp_gpu[1213415]: <I> Opening file '/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-fakecam/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp_gpu[1213415]: <I> PGPReader  saw     BeginRun @ 1163092776.482932174 (047332b061bccb)
+tst-drp_gpu[1213415]: <I> Collector  saw     BeginRun @ 1163092776.482932174 (047332b061bccb)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent     BeginRun @ 1163092776.482932174 (047332b061bccb) to TEB ID 0 @   0x55fca5792028 (00000000 + 1 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw     BeginRun @ 1163092776.482932174 (047332b061bccb)
+tst-drp_gpu[1213415]: <I> Recorder   saw     BeginRun @ 1163092776.482932174 (047332b061bccb)
+tst-drp_gpu[1213415]: <I> received key = beginstep @ Mon Nov  9 09:19:36 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw    BeginStep @ 1163092776.502228859 (047332b0620df8)
+tst-drp_gpu[1213415]: <I> Collector  saw    BeginStep @ 1163092776.502228859 (047332b0620df8)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent    BeginStep @ 1163092776.502228859 (047332b0620df8) to TEB ID 0 @   0x55fca5792050 (00000000 + 2 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw    BeginStep @ 1163092776.502228859 (047332b0620df8)
+tst-drp_gpu[1213415]: <I> Recorder   saw    BeginStep @ 1163092776.502228859 (047332b0620df8)
+tst-drp_gpu[1213415]: <I> received key = enable @ Mon Nov  9 09:19:36 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw       Enable @ 1163092776.504253057 (047332b062167c)
+tst-drp_gpu[1213415]: <I> Collector  saw       Enable @ 1163092776.504253057 (047332b062167c)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent       Enable @ 1163092776.504253057 (047332b062167c) to TEB ID 0 @   0x55fca5792078 (00000000 + 3 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw       Enable @ 1163092776.504253057 (047332b062167c)
+tst-drp_gpu[1213415]: <I> Recorder   saw       Enable @ 1163092776.504253057 (047332b062167c)
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> Gpu::AreaDetector event
+tst-drp_gpu[1213415]: <I> received key = disable @ Mon Nov  9 09:19:37 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw      Disable @ 1163092777.721597912 (047332b0761787)
+tst-drp_gpu[1213415]: <I> Collector  saw      Disable @ 1163092777.721597912 (047332b0761787)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent      Disable @ 1163092777.721597912 (047332b0761787) to TEB ID 0 @   0x55fca5792118 (00000000 + 7 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw      Disable @ 1163092777.721597912 (047332b0761787)
+tst-drp_gpu[1213415]: <I> Recorder   saw      Disable @ 1163092777.721597912 (047332b0761787)
+tst-drp_gpu[1213415]: <I> received key = endstep @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw      EndStep @ 1163092778.791227563 (047332b087ab2c)
+tst-drp_gpu[1213415]: <I> Collector  saw      EndStep @ 1163092778.791227563 (047332b087ab2c)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent      EndStep @ 1163092778.791227563 (047332b087ab2c) to TEB ID 0 @   0x55fca5792140 (00000000 + 8 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw      EndStep @ 1163092778.791227563 (047332b087ab2c)
+tst-drp_gpu[1213415]: <I> Recorder   saw      EndStep @ 1163092778.791227563 (047332b087ab2c)
+tst-drp_gpu[1213415]: <I> received key = endrun @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw       EndRun @ 1163092778.798176809 (047332b087c868)
+tst-drp_gpu[1213415]: <I> Collector  saw       EndRun @ 1163092778.798176809 (047332b087c868)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent       EndRun @ 1163092778.798176809 (047332b087c868) to TEB ID 0 @   0x55fca5792168 (00000000 + 9 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw       EndRun @ 1163092778.798176809 (047332b087c868)
+tst-drp_gpu[1213415]: <I> Recorder   saw       EndRun @ 1163092778.798176809 (047332b087c868)
+tst-drp_gpu[1213415]: <I> received key = unconfigure @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> PGPReader  saw  Unconfigure @ 1163092778.799918292 (047332b087cfbb)
+tst-drp_gpu[1213415]: <I> Collector  saw  Unconfigure @ 1163092778.799918292 (047332b087cfbb)
+tst-drp_gpu[1213415]: <I> TebCtrb   sent  Unconfigure @ 1163092778.799918292 (047332b087cfbb) to TEB ID 0 @   0x55fca5792190 (00000000 + 10 * 00000028)
+tst-drp_gpu[1213415]: <I> TebRcvr    saw  Unconfigure @ 1163092778.799918292 (047332b087cfbb)
+tst-drp_gpu[1213415]: <I> Recorder   saw  Unconfigure @ 1163092778.799918292 (047332b087cfbb)
+tst-drp_gpu[1213415]: <I> received key = disconnect @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> PGPDrp::unconfigure: Shutting down
+tst-drp_gpu[1213415]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x561b36f06000  size 2560  maxBatchSize 2560  maxEntrySize 40
+tst-drp_gpu[1213415]: <I> TrgInpGen receiver is exiting
+*** TebRcvr::recorder: No item from recordQueue
+tst-drp_gpu[1213415]: <I> TrgInpGen receiver thread finished
+tst-drp_gpu[1213415]: <I> Recorder thread is exiting
+tst-drp_gpu[1213415]: <I> Collector is exiting
+tst-drp_gpu[1213415]: <I> Recorder thread finished
+tst-drp_gpu[1213415]: <I> Collector thread finished
+tst-drp_gpu[1213415]: <I> received key = dealloc @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> received key = reset @ Mon Nov  9 09:19:38 2026
+tst-drp_gpu[1213415]: <I> PGPDrp::unconfigure: Shutting down
+fakecam_0[1213415]: <C> FATAL: Segmentation Fault - stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10508)[0x7f268bd57508]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(+0x10585)[0x7f268bd57585]
+/lib64/libc.so.6(+0x3ebf0)[0x7f2685e3ebf0]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x2c941)[0x561b33cc7941]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x2825c)[0x561b33cc325c]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x10b0e)[0x561b33cabb0e]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/lib/libcollection.so(_ZN13CollectionApp3runEv+0x7a4)[0x7f268bd5d7a4]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0xf7f1)[0x561b33caa7f1]
+/lib64/libc.so.6(+0x295d0)[0x7f2685e295d0]
+/lib64/libc.so.6(__libc_start_main+0x80)[0x7f2685e29680]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gpu/install/bin/drp_gpu(+0x10712)[0x561b33cab712]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 09:19:38 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1213415. Normal exit status = 1

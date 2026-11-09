@@ -1,0 +1,49 @@
+The Meson build system
+Version: 1.8.4
+Source dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-nb45
+Build dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/setup-wt-nb45-12.9
+Build type: native build
+Project name: lcls
+Project version: 4.3.0
+C++ compiler for the host machine: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/x86_64-conda-linux-gnu-c++ (gcc 13.3.0 "x86_64-conda-linux-gnu-c++ (conda-forge gcc 13.3.0-1) 13.3.0")
+C++ linker for the host machine: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/x86_64-conda-linux-gnu-c++ ld.bfd 2.43
+Cython compiler for the host machine: cython (cython 3.0.11)
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program gcc-ar found: YES (/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/gcc-ar)
+Program python3 found: YES (/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3.9)
+Found pkg-config: YES (/usr/bin/pkg-config) 1.7.3
+Run-time dependency python found: YES 3.9
+Library rt found: YES
+Library curl found: YES
+Run-time dependency threads found: YES
+Run-time dependency python found: YES 3.9
+Run-time dependency OpenMP found: YES 4.5
+Library Resort64c_x64 found: YES
+Program nvcc found: YES (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc)
+Cuda compiler for the host machine: nvcc (nvcc 12.9.86
+Build cuda_12.9.r12.9/compiler.36037853_0)
+Cuda linker for the host machine: nvcc nvlink 12.9.86
+Build cuda_12.9.r12.9/compiler.36037853_0
+Dependency threads found: YES unknown (cached)
+Found CMake: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/cmake (3.31.2)
+Run-time dependency nlohmann_json found: YES 3.11.3
+Library zmq found: YES
+Library dl found: YES
+Library rt found: YES
+Library prometheus-cpp-core found: YES
+Library prometheus-cpp-pull found: YES
+Library Com found: YES
+Library ca found: YES
+Library pvaClient found: YES
+Library pvAccessCA found: YES
+Library pvData found: YES
+Library pvAccess found: YES
+Library rogue-core found: YES
+Program nvcc found: YES (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc)
+Library fabric found: YES
+Library SlsDetector found: YES
+
+psdaq/drpGpu/meson.build:22:15: ERROR: Include dir /usr/local/cuda/targets/x86_64-linux/include does not exist.
+
+A full log can be found at /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/setup-wt-nb45-12.9/meson-logs/meson-log.txt

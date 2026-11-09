@@ -1,0 +1,4 @@
+20c20
+< psana.detector.detectors: 214 names; with "noOp": []
+---
+> psana.detector.detectors: 217 names; with "noOp": ['epixuhremu_noOp_0_0_0', 'epixuhrsim_noOp_0_0_0', 'fakecam_noOp_0_0_0']

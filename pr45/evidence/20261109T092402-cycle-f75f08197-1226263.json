@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/daq_sim.cnf": {
+   "bytes": 1384,
+   "sha256": "84004f03fd19eb80daa7c4eddb0babd5e3c837f084715c63b81ee3751f60e144"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1439290040,
+   "sha256": "2412fb26e6d550c4bc1a49dd4bbe422b0db680133c7d7b06ededebfb79978939"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/configdb.log": {
+   "bytes": 519,
+   "sha256": "b36f8c1c14bb297a5a04af69749a23c522393a24081066833eba68ac6444b7ce"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/cycle.jsonl": {
+   "bytes": 2468,
+   "sha256": "9cef92cdfbf84a982aeb3bb953335320d3bac227f56cdaae0f9452c1b1a26dd5"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/lgbk.log": {
+   "bytes": 1218,
+   "sha256": "b13a4c42b191b8424e1ba9bde91bddcab6a46e924be213d2d7d73b7da9979801"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/simxpm.log": {
+   "bytes": 2676,
+   "sha256": "ac4ef46696888ba21367fa44bda9eeff822fc5147a9b6b1cede258f4641b2198"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:control.log": {
+   "bytes": 66228,
+   "sha256": "13d9678b84ca125bc571fe3c9d0d91812b107305888ddeaa0217fd36f3c2d1c8"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:epixuhremu_0.log": {
+   "bytes": 28475,
+   "sha256": "aefc0eaf668acf8bbc0abe772b1493c56fe577326969bfd8af6f8329613e20a6"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:teb0.log": {
+   "bytes": 8950,
+   "sha256": "df37b7941a311807ff7ceb829feb0f1e388d37a86e795f9d5202bf49d83a2c0d"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1439289992,
+  "TEB_EvtCt": 1859,
+  "TEB_TrCt": 6,
+  "TEB_WrtCt": 1859,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1859,
+  "psana2 seeds": {
+   "0x1234": 1859
+  },
+  "psana2 seq": "1..1859",
+  "psana2 with data": 1859,
+  "simxpm NumL0Acc": 1859,
+  "simxpm NumL0Inp": 1859,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1439290040 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:24:02-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-gpu-epixuhremu/pmlogs/2026/11/09_09:23:23_sdfada013:epixuhremu_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp_gpu:epixuhremu",
+  "prog:control",
+  "prog:drp_gpu",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:23:29.388-08:00"
+}

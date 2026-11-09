@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/daq_sim.cnf": {
+   "bytes": 1118,
+   "sha256": "3a38ef8a203460f72728b64a588ff5e33751f791867fe1d7cad0452e8acc9d5d"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 784422,
+   "sha256": "11a790c5432b3be2ca6cee37a9a63db2f8e3e0bafc627c2ca8736a2ff9c704be"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/configdb.log": {
+   "bytes": 509,
+   "sha256": "137845a00d5783ee6a75a6800167336538785a08ad0b532e744d50cd395e4d04"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/cycle.jsonl": {
+   "bytes": 2335,
+   "sha256": "eaeb91c500943394e137369efa3a072401e9f59acae61a088729385572bc3848"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/lgbk.log": {
+   "bytes": 1208,
+   "sha256": "6f956ed932ca5f389c4ae852592a66c2b76459dddfe1a7fca6f9109d4c033eb9"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/simxpm.log": {
+   "bytes": 2733,
+   "sha256": "f61132441076a92195a875254501e466061b734a40e1d32b26dd4dba4c72abe6"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:control.log": {
+   "bytes": 66594,
+   "sha256": "8194ad580e85059fa395cc946492c4d40a27847c13638f04d8a7cd4aa835e068"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:cspad_0.log": {
+   "bytes": 13489,
+   "sha256": "0fcd92596b23fa5d825259f46ee6618100cc5ff79b95bfe8857f590d50d2ea22"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:teb0.log": {
+   "bytes": 8957,
+   "sha256": "2d8e52fbfb89002ae6ac95978a593129ec4a4e3122ace3c34f6534df09844b88"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 784374,
+  "TEB_EvtCt": 1875,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1875,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1875,
+  "psana2 seeds": {
+   "0x1234": 1875
+  },
+  "psana2 seq": "1..1875",
+  "psana2 with data": 1875,
+  "simxpm NumL0Acc": 1875,
+  "simxpm NumL0Inp": 1875,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (784422 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T09:42:11-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof45/take1/wd-drp-cspad/pmlogs/2026/11/09_09:41:54_sdfada013:cspad_0.log"
+ ],
+ "host": "sdfada013",
+ "job_id": "43970564",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:cspad",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "f75f081970d4e069cd784b77c9b474422abd1581",
+ "started": "2026-11-09T09:42:00.447-08:00"
+}
