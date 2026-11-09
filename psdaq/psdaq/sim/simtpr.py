@@ -8,7 +8,9 @@ initial values.  Writes are stored, as in tprcas.  Unlike tprcas, the link is up
 FRAMERATE / RXCLKRATE / EVTCNT post a locked LCLS-II timing link (928571.4 Hz frames, 185.7 MHz, EVTCNT += frames)
 and each enabled channel's RATE the frame rate of its fixed-rate selection (MODE != 0, RSEL 0: FRATE index into
 psdaq.configdb.tsdef.fixedRates).  <prefix>:SIM:PID is this process's pid (simtpr only: a client can tell the
-simulator from a TPR).
+simulator from a TPR).  EVTCNT starts at a random count, so its values differ from run to run, and every value it
+serves goes to the served-value log when daq_sim names one (psdaq.sim.served_log: coverage checks the GUI witness's
+reads against it).
 
 The PVA server binds the loopback interface unless told otherwise (--bind, --allow-remote), like simxpm.
 
@@ -18,12 +20,15 @@ The PVA server binds the loopback interface unless told otherwise (--bind, --all
 import argparse
 import logging
 import os
+import random
 import threading
 import time
 
 from p4p.nt import NTScalar
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
+
+from psdaq.sim.served_log import ServedLog
 
 FRAME_RATE = 1300e6 / 1400.                 # LCLS-II timing frames [Hz] (929 kHz)
 RXCLK_MHZ = 185.71
@@ -56,6 +61,7 @@ class _Store:
         pv.post(v)
         with self.sim.lock:
             self.sim.values[self.name] = v['value']
+        self.sim.served(self.name, v['value'])
         op.done()
 
 
@@ -66,6 +72,7 @@ class SimTpr:
         self.pvs, self.values = {}, {}
         self.lock = threading.Lock()
         self.stop = threading.Event()
+        self.served = ServedLog('simtpr')
         for suffix, (t, v) in tprcas_pvdb().items():
             self._add(prefix + suffix, t, v)
         self._add(prefix + ':SIM:PID', 'i', os.getpid())
@@ -76,19 +83,21 @@ class SimTpr:
         self.provider.add(name, pv)
         self.pvs[name] = (pv, nt)
         self.values[name] = v
+        self.served(name, v)
 
     def post(self, name, v):
         pv, nt = self.pvs[name]
         pv.post(nt.wrap(v, timestamp=time.time()))
         with self.lock:
             self.values[name] = v
+        self.served(name, v)
 
     def run(self):
         from psdaq.configdb.tsdef import fixedRates
         hz = {i: _rate_hz(r) for i, r in enumerate(fixedRates)}
         P = self.prefix
         self.post(P + ':LINKSTATE', 1)
-        evt = 0
+        evt = int(FRAME_RATE) * random.randrange(1000, 100000)     # a count of its own each run
         while not self.stop.wait(1.0):
             evt += int(FRAME_RATE)
             self.post(P + ':FRAMERATE', round(FRAME_RATE, 1))

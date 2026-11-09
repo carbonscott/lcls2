@@ -89,25 +89,36 @@ def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
     """An xtc2 file as a DRP writes a run: a Configure with the runinfo Names and one Names per
     detector (detType, detName); a BeginRun at BEGINRUN with the runinfo (experiment, run
     number); `events` L1Accepts, each with a ShapesData of every detector in with_data (default:
-    all); an EndRun."""
+    all); an EndRun 1 s after the last L1Accept.  A detector named fakecam holds, as the DRP
+    writes it, a uint32 'value' and a uint16 'array_raw' of 1 x 9 words, its seq (words 4, 5) the
+    L1Accept's number and its pixel (word 8) 7, as ami_check reads them (RAW_SEQ_PIXEL); any other
+    a uint32 'value'."""
     path = str(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     expt, run = run_id.split('/r')
     srcs, cfg = {}, [names(RUNINFO_SRC, 'runinfo', 'runinfo', 'runinfo', [('expt', 10, 1), ('runnum', 2, 0)])]
     for i, (dettype, detname) in enumerate(dets):
         srcs[detname] = 0x100 + i       # NamesId(1, i)
-        cfg.append(names(srcs[detname], dettype, detname, 'raw', [('value', 2, 0)]))
+        cfg.append(names(srcs[detname], dettype, detname, 'raw',
+                         [('value', 2, 0), ('array_raw', 1, 2)] if detname == 'fakecam' else [('value', 2, 0)]))
     e = expt.encode() + b'\0'
     e += b'\0' * (-len(e) % 4)
-    l1 = b''.join(shapes_data(srcs[d], [], struct.pack('<I', 7))
-                  for d in (srcs if with_data is None else with_data))
+
+    def l1(k):
+        return b''.join(shapes_data(srcs[d], [(1, 9, 0, 0, 0)], struct.pack('<I9H', 7, 0, 0, 0, 0, k & 0xffff, k >> 16,
+                                                                            0, 0, RAW_SEQ_PIXEL[1]))
+                        if d == 'fakecam' else shapes_data(srcs[d], [], struct.pack('<I', 7))
+                        for d in (srcs if with_data is None else with_data))
     with open(path, 'wb') as f:
         f.write(dgram(2, b''.join(cfg)))
         f.write(dgram(4, shapes_data(RUNINFO_SRC, [(len(e), 0, 0, 0, 0)], e + struct.pack('<I', int(run))),
                       stamp=BEGINRUN[0] << 32 | BEGINRUN[1]))
-        f.write(b''.join(dgram(12, l1, stamp=l1_stamp(k)) for k in range(events)))
-        f.write(dgram(5, b''))
+        f.write(b''.join(dgram(12, l1(k), stamp=l1_stamp(k)) for k in range(events)))
+        f.write(dgram(5, b'', stamp=l1_stamp(events) + (1 << 32)))
     return path
+
+
+RAW_SEQ_PIXEL = ('the L1Accept\'s number', 7)
 
 
 def l1_stamp(k):
@@ -116,6 +127,7 @@ def l1_stamp(k):
 
 
 L1_FIRST, L1_LAST = coverage.stamp_seconds(l1_stamp(0)), coverage.stamp_seconds(l1_stamp(999))
+BEGINRUN_S, ENDRUN_S = BEGINRUN[0] + BEGINRUN[1] * 1e-9, coverage.stamp_seconds(l1_stamp(1000)) + 1
 
 
 def write_log(path, cmd, *lines):
@@ -843,6 +855,12 @@ AMI_FORGERIES = {
                   'its log of ami-client gives pid 4000, not one of the ami-client processes that served '
                   'the check (4100)'),
     'log-without-pid': (drop_pid_line, 'its log of ami-client gives no pid'),
+    # re-derived from the xtc2 file (the run's fakecam raw array: seq k, pixel 7)
+    'values-edited': (lambda w, f: w.update(matches=[[m[0], m[1] + 7, m[2] ^ 0xff] for m in w['matches']]),
+                      'gives seq 7 pixel 248, the run\'s xtc2 file holds seq 0 pixel 7 there'),
+    'one-pixel-edited': (lambda w, f: w['matches'][2].__setitem__(2, 8),
+                         'gives seq 2 pixel 8, the run\'s xtc2 file holds seq 2 pixel 7 there'),
+    'other-detector': (lambda w, f: w.update(det='cspad'), 'the run\'s files hold no cspad raw array at that L1Accept'),
 }
 
 
@@ -932,28 +950,67 @@ def test_a_relative_path_counts_only_when_it_resolves_to_the_hashed_file(tmp_pat
 PARTITION = 'DAQ:SIM:XPM:0:PART:5'
 
 
+PID_LINE = '@@@ The PID of new child "x:prog.log" is: 4321'    # procServ's line in a procmgr log
+
+
+def table(start, end, rows):
+    return {'walk': '/w/logs/witness/procstat.walk.json', 'exit': 0, 'start': start, 'end': end, 'problems': [],
+            'reads': [{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows]}
+
+
+def procstat_entry(rows=(('x', 'RUNNING'),), before=None, after=None):
+    """procstat's entry ('kind': 'procmgr') as cycle writes it: its table while Running, and the tables it read
+    in Configured before the BeginRun and after the EndRun (rows: [(procmgr id, status)]; write_log's id is x)."""
+    e = dict(table(L1_FIRST + 1, L1_FIRST + 5, rows), kind='procmgr', **{'pass': True})
+    e['before'] = table(BEGINRUN_S - 9, BEGINRUN_S - 1, rows if before is None else before)
+    e['after'] = table(ENDRUN_S + 1, ENDRUN_S + 9, rows if after is None else after)
+    return e
+
+
 def gui_witness(xtc2, progs, run_id=RUN_ID, section='programs', **entry):
     """A gui_witness as daq_sim cycle writes it: for each program (a GUI it ran offscreen, or a
-    stand-in whose PVs it read) the span of its reads and the values of the partition's PVs."""
+    stand-in whose PVs it read) the span of its reads and the values of the partition's PVs; a
+    'programs' witness also holds procstat's tables (procstat_entry)."""
     e = {'pass': True, 'problems': [], 'start': L1_FIRST + 1, 'end': L1_FIRST + 5,
          'reads': [{'name': PARTITION + ':NumL0Acc', 'values': ['100', '250', '400']}]}
     e.update(entry)
-    return {'witness': 'gui_witness', 'run_id': run_id, 'xtc2': [xtc2], 'partition': PARTITION,
-            section: {p: dict(e) for p in progs}}
+    w = {'witness': 'gui_witness', 'run_id': run_id, 'xtc2': [xtc2], 'partition': PARTITION,
+         section: {p: dict(e) for p in progs}}
+    if section == 'programs' and 'procstat' not in progs:
+        w['programs']['procstat'] = procstat_entry()
+    return w
+
+
+# what simxpm served while the witness's reads ran (L1_FIRST + 1 to + 5): NumL0Acc 100, 250, 400
+XPM_SERVED = [(L1_FIRST + 0.5, PARTITION + ':NumL0Acc', 100.), (L1_FIRST + 2, PARTITION + ':NumL0Acc', 250.),
+              (L1_FIRST + 4, PARTITION + ':NumL0Acc', 400.)]
+
+
+def served_file(d, program, posts):
+    """A served-value log as a stand-in writes it (psdaq.sim.served_log); posts [(EPICS-epoch s, pv, value)]."""
+    p = os.path.join(str(d), f'{program}.served.jsonl')
+    os.makedirs(str(d), exist_ok=True)
+    with open(p, 'w') as f:
+        f.write(json.dumps({'served_log': program, 'pid': 4321}) + '\n')
+        for t, pv, v in posts:
+            f.write(json.dumps({'t': t + coverage.EPICS_EPOCH, 'pv': pv, 'v': v}) + '\n')
+    return p
 
 
 def witness_run(tmp_path, row='prog:groupca', cmd='groupca DAQ:SIM 0 5', stand_in=None, mutate=None,
-                listed=True):
+                listed=True, served=XPM_SERVED, pid_lines=1):
     """(exit code, line) of a record for one program row whose log never names the run: the run's
-    xtc2 file, the program's (or stand-in's) log and a gui_witness for it."""
+    xtc2 file, the program's (or stand-in's) procmgr log (pid_lines: procServ's pid lines in it), a
+    gui_witness for it and simxpm's served-value log (served; None: not listed)."""
     d = tmp_path / 'wd'
     xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
-    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree')
+    log = write_log(d / 'prog.log', cmd, 'Adding DAQ:SIM:XPM:0 to deadtime tree', *[PID_LINE] * pid_lines)
     prog = stand_in or row.split(':', 1)[1]
     w = gui_witness(xtc, [prog], section='servers' if stand_in else 'programs')
     if mutate:
         mutate(w, w['servers' if stand_in else 'programs'][prog])
     files = [xtc, log] + ([write_witness(d / 'gui_witness.json', w)] if listed else [])
+    files += [served_file(d, 'simxpm', served)] if served is not None else []
     entry = {'status': 'STAND-IN', 'stand_in': stand_in, 'interface': 'its PVs'} if stand_in else {'status': 'RUN'}
     status = write_status(tmp_path / 'status.json', {row: entry})
     record([row], files, tmp_path / 'evidence')
@@ -989,6 +1046,35 @@ GUI_FORGERIES = {
                         'shows groupca read no live value under DAQ:SIM:XPM:0:PART:5'),
     'stand-in-section': (dict(mutate=lambda w, e: w.update(servers=w.pop('programs'))),
                          'has no programs entry for groupca'),
+    # the procmgr instance must run through the run (procstat's tables before, while and after it)
+    'killed-before-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(
+        rows=[('x', 'SHUTDOWN')], before=[('x', 'SHUTDOWN')], after=[('x', 'SHUTDOWN')]))),
+        'procstat\'s table before the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
+    'died-in-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(after=[('x', 'SHUTDOWN')]))),
+                        'procstat\'s table after the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
+    'not-in-the-table': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(before=[('y', 'RUNNING')]))),
+                         'procstat\'s table before the run shows procmgr\'s x not at all, not RUNNING'),
+    'no-procstat': (dict(mutate=lambda w, e: w['programs'].pop('procstat')), 'has no procstat table'),
+    'no-before-table': (dict(mutate=lambda w, e: w['programs']['procstat'].pop('before')),
+                        'its procstat entry holds no table read before the run'),
+    'before-table-in-the-run': (dict(mutate=lambda w, e: w['programs']['procstat']['before'].update(
+        start=BEGINRUN_S - 1, end=BEGINRUN_S + 2)), 'not before the run\'s BeginRun'),
+    'after-table-in-the-run': (dict(mutate=lambda w, e: w['programs']['procstat']['after'].update(
+        start=ENDRUN_S - 2)), 'not after the run\'s EndRun'),
+    'restarted': (dict(pid_lines=2), 'names 2 child pids'),
+    'no-pid-line': (dict(pid_lines=0), 'names 0 child pids'),
+    # the values must be ones simxpm served while groupca read
+    'fabricated-values': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':NumL0Acc',
+                                                                    'values': ['1', '2', '3']}])),
+                          'its groupca entry shows \'1\' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm did not '
+                          'serve while groupca read'),
+    'values-of-another-time': (dict(mutate=lambda w, e: e.update(start=L1_FIRST + 6, end=L1_FIRST + 9)),
+                               'its groupca entry shows \'100\' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm '
+                               'did not serve while groupca read'),
+    'no-served-log': (dict(served=None), 'the record lists no served-value log'),
+    'unserved-pv-only': (dict(mutate=lambda w, e: e.update(reads=[{'name': PARTITION + ':Bogus', 'values': ['1', '2']}])),
+                         'shows groupca read no live value of a PV a served-value log holds (live reads of PVs no '
+                         'log holds: DAQ:SIM:XPM:0:PART:5:Bogus)'),
 }
 
 
@@ -1010,10 +1096,10 @@ def procstat_run(tmp_path, rows_shown):
                            ('fakecam_0', 'drp -P tst -D fakecam', f"Opening file '{xtc}'"),
                            ('procstat', 'procstat -p 5 -i 1 /w/daq_sim.cnf', 'Refreshing')):
         p = d / f'{pid}.log'
-        p.write_text(f'# ID:      {pid}\n# PLATFORM:5\n# CMDLINE: {cmd}\n{line}\n')
+        p.write_text(f'# ID:      {pid}\n# PLATFORM:5\n# CMDLINE: {cmd}\n{line}\n{PID_LINE}\n')
         logs.append(str(p))
-    w = gui_witness(xtc, ['procstat'], kind='procmgr',
-                    reads=[{'name': f'procmgr:{i}', 'values': [st]} for i, st in rows_shown])
+    w = gui_witness(xtc, ['procstat'])
+    w['programs']['procstat'] = procstat_entry(rows=rows_shown)
     status = write_status(tmp_path / 'status.json', {'prog:procstat': {'status': 'RUN'}})
     record(['prog:procstat'], [xtc] + logs + [write_witness(d / 'gui_witness.json', w)], tmp_path / 'evidence')
     code, out = run_check(status, tmp_path / 'evidence')
@@ -1076,6 +1162,8 @@ def test_a_monitor_is_run_when_a_gauge_of_the_partition_changed_during_the_run(t
 
 HSD = 'DAQ:SIM:HSD:1_DA'
 SIMHSD_CMD = f'python -m psdaq.sim.simhsd -P {HSD}:A {HSD}:B'
+HSD_SERVED = [(L1_FIRST + 0.5, f'{HSD}:A:MONTIMING', {'timframecnt': 1043, 'trigcntsum': [5, 6]}),
+              (L1_FIRST + 3, f'{HSD}:A:MONTIMING', {'timframecnt': 1971, 'trigcntsum': [5, 6]})]
 
 
 def r4_run(tmp_path, si_cmd=SIMHSD_CMD, mutate=None, row='prog:hsdpva', gui_cmd=f'hsdpva {HSD}:A {HSD}:B'):
@@ -1084,9 +1172,10 @@ def r4_run(tmp_path, si_cmd=SIMHSD_CMD, mutate=None, row='prog:hsdpva', gui_cmd=
     names the stand-in and holds the GUI's reads, one per widget."""
     d = tmp_path / 'wd'
     xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
-    files = [xtc, write_log(d / 'gui.log', gui_cmd, 'hsdpva: tabs built')]
+    files = [xtc, write_log(d / 'gui.log', gui_cmd, 'hsdpva: tabs built', PID_LINE)]
     if si_cmd:
         files.append(write_log(d / 'simhsd.log', si_cmd, 'simhsd: ready'))
+    files.append(served_file(d, 'simhsd', HSD_SERVED))
     prog = row.split(':', 1)[1]
     w = gui_witness(xtc, [prog], stand_in='simhsd', prefix=HSD,
                     reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLineEdit#12', 'values': ['-', '1043', '1971']},
@@ -1130,6 +1219,11 @@ R4_FORGERIES = {
     'after-the-run': (dict(mutate=lambda w, e: e.update(end=L1_LAST + 0.5)), 'not within the run\'s L1Accepts'),
     'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['walk exited 1']})), 'says hsdpva failed'),
     'no-stand-in-named': (dict(mutate=lambda w, e: e.update(stand_in='')), 'its hsdpva entry names no stand-in'),
+    'fabricated-values': (dict(mutate=lambda w, e: e.update(reads=[{'name': f'{HSD}:A:MONTIMING', 'widget': 'QLabel#3',
+                                                                     'values': ['x', '11', '12']}])),
+                          'its hsdpva entry shows \'11\' for DAQ:SIM:HSD:1_DA:A:MONTIMING, a value simhsd did not serve'),
+    'killed-before-the-run': (dict(mutate=lambda w, e: w['programs'].update(procstat=procstat_entry(
+        before=[('x', 'SHUTDOWN')]))), 'procstat\'s table before the run shows procmgr\'s x SHUTDOWN, not RUNNING'),
 }
 
 
@@ -1144,6 +1238,37 @@ def test_r4_entry_without_stand_in_is_judged_on_the_partition(tmp_path):
     """Without 'stand_in' the entry is an R2 one: a stand-in's PV does not count for it."""
     code, line = r4_run(tmp_path, mutate=lambda w, e: e.pop('stand_in'))
     assert code == 1 and 'shows hsdpva read no live value under DAQ:SIM:XPM:0:PART:5' in line
+
+
+def test_shown_numbers_read_a_widget_text_to_its_last_digit():
+    assert coverage.shown_numbers('1,097 (0x449)') == [(1097., 1.)]
+    (x, unit), = coverage.shown_numbers('928.6164kHz')
+    assert x == pytest.approx(928616.4) and unit == pytest.approx(0.1)
+    assert [x for x, _ in coverage.shown_numbers(' 156.25 156.26MHz')] == [pytest.approx(156.25e6), pytest.approx(156.26e6)]
+    (x, unit), = coverage.shown_numbers('3.43571e+07')
+    assert x == 34357100 and unit == pytest.approx(100.)
+    (x, unit), = coverage.shown_numbers('99.99996185302734')     # a float32 shown in full
+    assert coverage.shows(x, unit, 99.99996234) and not coverage.shows(x, unit, 99.9999)
+    assert coverage.shows(99., 1., 99.998)                          # cut (pvant)
+    assert coverage.shows(2., 1., 1.6) and coverage.shows(2., 1., 2.4) and not coverage.shows(2., 1., 1.4)
+    assert not coverage.shows(1., 1., 0.) and not coverage.shows(0., 1., 1.) and coverage.shows(0., 1., 0.4)
+    assert not coverage.shows(99., 1., 100.)
+    assert coverage.shown_numbers('-') == [] and coverage.shown_numbers('RUNNING') == []
+
+
+def test_a_served_value_log_is_read_as_the_stand_ins_write_it(tmp_path, monkeypatch):
+    from psdaq.sim import served_log
+    path = tmp_path / 'simx.served.jsonl'
+    monkeypatch.setenv(served_log.ENV, str(path))
+    log = served_log.ServedLog('simx')
+    log('P:A', 1.5)
+    log('P:A', 1.5)                     # the same value again: not logged
+    log('P:B', {'f': [1, 2], 'g': 3})
+    log('P:A', 2.5)
+    prog, pvs = coverage.served_log(path.read_text())
+    assert prog == 'simx' and [v for _, v in pvs['P:A']] == [1.5, 2.5] and pvs['P:B'][0][1] == {'f': [1, 2], 'g': 3}
+    monkeypatch.delenv(served_log.ENV)
+    served_log.ServedLog('simx')('P:A', 1)          # no log named: nothing written, no error
 
 
 def test_changed_texts_skip_the_first_text_and_keep_units():

@@ -88,7 +88,7 @@ import sys
 import threading
 import time
 
-from psdaq.sim import coverage
+from psdaq.sim import coverage, served_log
 
 SIMDIR = os.path.dirname(os.path.abspath(__file__))
 SIM_ENV = os.path.join(SIMDIR, 'sim_env.sh')
@@ -635,6 +635,8 @@ def log_header(argv):
 
 def start_service(work, state, name, argv, env):
     log = work.path('logs', name + '.log')
+    # a PV-server stand-in logs every value it serves there (psdaq.sim.served_log); coverage reads it
+    env = dict(env, **{served_log.ENV: work.path('logs', name + '.served.jsonl')})
     with open(log, 'ab') as out:
         out.write(log_header(argv).encode())
         out.flush()
@@ -1355,11 +1357,16 @@ def cmd_cycle(args):
     i0 = STATES.index(start)
     ami = AmiRun(state) if state.get('ami') else None
     counts = {}
+    # procstat's table before BeginRun and after EndRun: coverage counts a GUI or monitor row only if procmgr's
+    # instance of it was RUNNING from before the run to after it (GuiWitness, gui_witness.snapshot_entry)
+    tables = {} if state.get('gui') and 'procstat' in procs(state) else None
     for target in STATES[i0 + 1:]:
         if not go(target):
             break
         if target == 'unallocated':
             select_all(dc)
+        if target == 'configured' and tables is not None:
+            tables['before'] = procstat_table(work, 'before')
         if target == 'starting' and ami:    # AMI learns its sources from the run (BeginRun)
             ok &= ami.add()
     count = None
@@ -1367,6 +1374,8 @@ def cmd_cycle(args):
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
           f'experiment {status[6]} run {status[7]}', flush=True)
     witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers')) else None
+    if witness:
+        witness.tables = tables
     shot = None
     if ok and getattr(args, 'ami_shot', None):
         if ami:
@@ -1405,6 +1414,8 @@ def cmd_cycle(args):
                 counts.update(_run_counts(work, plat))
                 if ami:
                     ami.fetch(work)
+            if prev == 'starting' and target == 'configured' and tables is not None:     # after EndRun
+                tables['after'] = procstat_table(work, 'after')
             prev = target
     if count is not None and 'simxpm NumL0Acc' not in counts:
         counts.update(_run_counts(work, plat))      # the way down failed before Disable's counts
@@ -1499,6 +1510,8 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
         files += [work.path('logs', w) for w in ('ami_check.json', 'gui_witness.json', 'ami-shot/ami-client.log')
                   if os.path.isfile(work.path('logs', w))]       # the checks' witnesses of the run
         files += [s['log'] for s in state.get('services', {}).values()]
+        files += [p for p in (s['log'][:-len('.log')] + '.served.jsonl' for s in state.get('services', {}).values())
+                  if os.path.isfile(p)]  # what the stand-ins served (psdaq.sim.served_log)
         for proc in procs(state):       # the newest procmgr log of each process
             logs = glob.glob(work.path('pmlogs', '*', '*', f'*:{proc}.log'))
             files += sorted(logs, key=os.path.getmtime)[-1:]
@@ -1631,7 +1644,7 @@ class AmiRun:
             served = [dict(p, when='fetch') for p in self.served] + \
                      [dict(p, when='running') for p in self.served_running]
             json.dump(dict(res, witness='ami_check', run_id=f'{experiment}/r{run:04d}', xtc2=files,
-                           addr=self.addr, served_by=served), f, indent=1)
+                           addr=self.addr, served_by=served, det=DETECTOR), f, indent=1)
         out = {k: res[k] for k in ('ami rows', 'ami events', 'ami matched', 'ami pixsum',
                                    'psana2 pixsum (same events)', 'ami seq range')}
         out['ami served by'] = ' '.join(sorted({coverage.resolve(a['cmdline'])[0] or '?' for p in served
@@ -1712,6 +1725,22 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
                                 f'({fixed_rate_label(i)} vs {fixed_rate_label(fixed[fast])})')
     out['per-DRP checks'] = 'PASS' if not problems else f'FAIL {problems[:3]}'
     return out
+
+
+def procstat_table(work, label):
+    """Walk procstat offscreen once, now, for its table of procmgr's processes (gui_witness.snapshot_entry's
+    inputs: walk path, exit code, Unix start and end)."""
+    from psdaq.sim import gui_witness
+    env = dict(os.environ, **{TAG: work.dir})
+    p, walk, log, t0 = gui_witness.start(work.dir, 'procstat', work.path('logs', 'witness'), env, label=label, pumps=1)
+    try:
+        code = p.wait(90)
+    except subprocess.TimeoutExpired:
+        p.kill()
+        code = p.wait(10)
+    t1 = time.time()
+    print(f'{now()} GUI witness: procstat table {label} the run, walk exit {code}', flush=True)
+    return walk, code, t0, t1
 
 
 class GuiWitness:
@@ -1796,6 +1825,9 @@ class GuiWitness:
         prefix = self.params['part']
         programs = {name: self.gw.entry(name, walk, p.returncode, t0, t1, prefix, self.params)
                     for name, (p, walk, log, t0, t1) in self.walks.items()}
+        if 'procstat' in programs:      # its tables before BeginRun and after EndRun (cmd_cycle)
+            for label, table in (getattr(self, 'tables', None) or {}).items():
+                programs['procstat'][label] = self.gw.snapshot_entry(*table)
         for name, res in self.monitors.items():
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
                                                    res.get('reads', []), prefix, self.params)

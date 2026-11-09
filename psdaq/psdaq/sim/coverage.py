@@ -41,7 +41,9 @@ A witness is a listed JSON log a check of the cycle wrote, {"witness": <kind>, "
 listed .xtc2 files.  Rows that need one:
   prog:ami-*         always (AMI's logs never name a run): an 'ami_check' witness that PASSed,
                      with 'matches' [[timestamp, seq, pixel], ...], at least one, every timestamp
-                     an L1Accept of the run's file; and 'served_by' [{pid, cmdline, ancestors}], the
+                     an L1Accept of the run's file whose detector ('det', default fakecam) raw
+                     array holds that seq and pixel (coverage reads them in the file itself, as
+                     ami_check reads them with psana2); and 'served_by' [{pid, cmdline, ancestors}], the
                      processes that held AMI's ports during the check, one of them or of their
                      ancestors the row's program with the pid its log gives (procServ's 'The PID
                      of new child ... is: N', or daq_sim's '# PID: N')
@@ -63,6 +65,19 @@ listed .xtc2 files.  Rows that need one:
                      widget's first text (which may be the text it was built with) of a PV under
                      a prefix the stand-in serves (the -P of the stand-in's own log, which the
                      record must list)
+                     Every 'programs' entry (a GUI or monitor) also needs procmgr's own instance of
+                     the program to have run through the run: the record must list its procmgr log
+                     ('# ID:', one 'The PID of new child' line: procServ never restarted it), and
+                     procstat's entry of the same witness must show that id RUNNING in its table
+                     'before' (read in Configured, ending before the run's BeginRun), in its table
+                     while Running and in its table 'after' (read after the run's EndRun).
+                     The values a GUI, monitor or client read are checked against what the PVs'
+                     servers logged they served (psdaq.sim.served_log, logs the stand-ins write
+                     and the record lists): a read of a PV no such log holds does not count, and a
+                     read that counts as live must show only values its server served while the
+                     entry read (from its last post before 'start' to 'end', 2 s either side),
+                     within the precision the text shows (rounded or cut at its last digit, scaled by
+                     a k/M/G unit at its end)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -107,7 +122,10 @@ DGRAM = struct.Struct('<QI IHHI')
 TRANSITION_SIZE = 12                    # TimeStamp + env: the bytes before the root Xtc
 XTC = struct.Struct('<IHHI')
 XTC_SIZE = XTC.size
-CONFIGURE, BEGINRUN, L1ACCEPT, UNUSED_11 = 2, 4, 12, 11      # xtcdata/xtc/TransitionId.hh
+CONFIGURE, BEGINRUN, ENDRUN, L1ACCEPT, UNUSED_11 = 2, 4, 5, 12, 11      # xtcdata/xtc/TransitionId.hh
+UINT16 = 1                                                   # Name::DataType
+RAW_WORDS = 9                           # ami_check's seq (raw[0, 4] | raw[0, 5] << 16) and pixel (raw[0, 8])
+RAW_ITEMS = ('array_raw', 'raw')        # the item psana2's det.raw.raw() returns (fakecam: 'array_raw')
 PARENT, SHAPESDATA, SHAPES, DATA, NAMES = range(5)           # xtcdata/xtc/TypeId.hh
 SRC_VALUE = 0x0fffffff                  # Src.hh: the NamesId, without the level bits
 # xtcdata/xtc/ShapesData.hh: a Names Xtc holds a NameInfo (numArrays, detType, detName, detId,
@@ -622,6 +640,38 @@ def _values(read, off, extent, items, where):
     return out
 
 
+def _raw_words(read, off, extent, items, where):
+    """(seq, pixel) of the uint16 rank-2 item 'array_raw' (or 'raw') of the ShapesData Xtc at off, as ami_check
+    reads them with psana2 (raw[0, 4] | raw[0, 5] << 16, raw[0, 8]); None if its first row is shorter."""
+    shapes, data = None, None
+    for o, _, typ, ext in _xtcs(read, off + XTC_SIZE, off + extent, where):
+        if typ == SHAPES:
+            shapes = read(o + XTC_SIZE, ext - XTC_SIZE)
+        elif typ == DATA:
+            data = (o + XTC_SIZE, ext - XTC_SIZE)
+    if data is None:
+        return None
+    pos, k = 0, 0
+    for name, typ, rank in items:
+        if typ >= len(ELEMENT):
+            return None
+        size, dims = ELEMENT[typ][0], ()
+        if rank:
+            if shapes is None or len(shapes) < SHAPE.size * (k + 1):
+                return None
+            dims = SHAPE.unpack_from(shapes, SHAPE.size * k)[:rank]
+            for dim in dims:
+                size *= dim
+            k += 1
+        if name in RAW_ITEMS and (typ, rank) == (UINT16, 2):
+            if dims[0] < 1 or dims[1] < RAW_WORDS or pos + 2 * RAW_WORDS > data[1]:
+                return None
+            w = struct.unpack('<%dH' % RAW_WORDS, read(data[0] + pos, 2 * RAW_WORDS))
+            return w[4] | w[5] << 16, w[8]
+        pos += size
+    return None
+
+
 def xtc2_content(path):
     """Read an xtc2 file as psana2's reader walks it; returns (problem, content).
 
@@ -633,13 +683,17 @@ def xtc2_content(path):
       run        '<experiment>/r<run number, 4 digits>' from the first BeginRun's runinfo
                  (as DrpBase::runInfoData writes it), or None
       beginrun   that BeginRun's time, 'sec.nsec' with 9 digits of ns, or None
+      endrun     the time of the first EndRun after it, the same way, or None
       l1accepts  the number of L1Accepts
       l1_with    {detType or detName: L1Accepts holding a ShapesData of that detector}
       l1_stamps  the set of the L1Accepts' timestamps (sec << 32 | nsec, as psana2's
-                 evt.timestamp), and l1_first, l1_last the smallest and largest, or None"""
+                 evt.timestamp), and l1_first, l1_last the smallest and largest, or None
+      raw        {detName: {timestamp: (seq, pixel)}} for each detector whose Names (alg 'raw') hold
+                 a uint16 rank-2 item 'array_raw' (or 'raw'), the array psana2's det.raw.raw() gives:
+                 ami_check's seq (raw[0, 4] | raw[0, 5] << 16) and pixel (raw[0, 8]) of each L1Accept"""
     size = os.path.getsize(path)
-    c = {'types': set(), 'run': None, 'beginrun': None, 'l1accepts': 0, 'l1_with': {},
-         'l1_stamps': set(), 'l1_first': None, 'l1_last': None}
+    c = {'types': set(), 'run': None, 'beginrun': None, 'endrun': None, 'l1accepts': 0, 'l1_with': {},
+         'l1_stamps': set(), 'l1_first': None, 'l1_last': None, 'raw': {}}
     dets, items = {}, {}                 # NamesId -> (detType, detName, segment, alg), its items
     off = n = 0
     with open(path, 'rb') as f:
@@ -663,6 +717,8 @@ def xtc2_content(path):
                     return f'datagram {n} at byte {off}: extent {extent} does not fit the file ({size} B)', c
                 where = f'datagram {n} at byte {off}'
                 start, end = off + DGRAM.size, off + TRANSITION_SIZE + extent
+                if service == ENDRUN and c['beginrun'] is not None and c['endrun'] is None:
+                    c['endrun'] = f'{stamp >> 32}.{stamp & 0xffffffff:09d}'
                 if service in (CONFIGURE, BEGINRUN, L1ACCEPT):
                     if service != L1ACCEPT or end - start <= READ_WHOLE:
                         buf = read_file(start, end - start)
@@ -692,6 +748,10 @@ def xtc2_content(path):
                         for o, src, typ, ext in xtcs:
                             if typ == SHAPESDATA and src in dets:
                                 held.update(dets[src][:2])
+                                if dets[src][3] == 'raw' and any((n, UINT16, 2) in items[src] for n in RAW_ITEMS):
+                                    w = _raw_words(read, o, ext, items[src], where)
+                                    if w is not None:
+                                        c['raw'].setdefault(dets[src][1], {})[stamp] = w
                         for t in held:
                             c['l1_with'][t] = c['l1_with'].get(t, 0) + 1
                 off = end
@@ -795,11 +855,18 @@ def ami_witness_problem(prog, w, run_id, mine, runs, logs):
     if not isinstance(matches, list) or not matches:
         return 'lists no per-event match of AMI with psana2 (matches)'
     stamps = set().union(*(runs[f]['l1_stamps'] for f in mine))
+    det = w.get('det') or 'fakecam'
     for m in matches:
         if not (isinstance(m, list) and len(m) == 3 and all(isinstance(x, int) for x in m)):
             return f'match {str(m)[:60]} is not [timestamp, seq, pixel]'
         if m[0] not in stamps:
             return f'match timestamp {m[0]:#x} is no L1Accept of the run\'s files'
+        held = [runs[f]['raw'][det][m[0]] for f in mine if m[0] in runs[f]['raw'].get(det, {})]
+        if not held:
+            return f'match {m[0]:#x}: the run\'s files hold no {det} raw array at that L1Accept to check it against'
+        if (m[1], m[2]) not in held:
+            return (f'match {m[0]:#x} gives seq {m[1]} pixel {m[2]}, the run\'s xtc2 file holds seq {held[0][0]} '
+                    f'pixel {held[0][1]} there')
     served = [s for s in w.get('served_by') or [] if isinstance(s, dict)]
     procs = [p for s in served for p in [s] + [a for a in s.get('ancestors') or [] if isinstance(a, dict)]]
     pids = {p.get('pid') for p in procs if isinstance(p.get('cmdline'), str) and resolve(p['cmdline'])[0] == prog}
@@ -830,7 +897,210 @@ def pv_prefixes(args):
     return out
 
 
-def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=()):
+def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=(), own=(),
+                         served=None):
+    """Why a gui_witness does not show prog read live values of the run, or None: entry_problem, then, for a
+    'programs' entry (a GUI or monitor), procmgr_span_problem (own: the texts of prog's logs in the record), and
+    for an entry with PV values, served_problem (served: served_logs of the record)."""
+    p = entry_problem(prog, w, run_id, mine, runs, section, run_ids, row_prog, logs)
+    if p:
+        return p
+    e = w[section][prog]
+    if section == 'programs':
+        p = procmgr_span_problem(prog, w, own, runs, mine)
+        if p:
+            return p
+    if e.get('kind') != 'procmgr':
+        return served_problem(prog, e, section, served or {}, w.get('partition'))
+    return None
+
+
+def procmgr_span_problem(prog, w, own, runs, mine):
+    """Why procstat's tables in the witness do not show procmgr's own instance of prog (the '# ID:' of its
+    procmgr log, own: the texts of prog's logs in the record) RUNNING from before the run's BeginRun to after
+    its EndRun, or None.  The instance must be one: its log names one child pid (procServ's 'The PID of new
+    child ... is: N'; a restart writes another).  The tables: procstat's entry's 'before' (its walk ended
+    before the BeginRun time), the entry itself (read while Running) and 'after' (its walk started after the
+    EndRun time), each listing the id RUNNING."""
+    ids = sorted({m.group(1) for m in (LOG_ID.search(t) for t in own) if m})
+    if not ids:
+        return (f'the record lists no procmgr log (# ID:) of {prog}, so no table can show procmgr\'s instance of '
+                f'it ran through the run')
+    for t in own:
+        m = LOG_ID.search(t)
+        n = len(CHILD_PID.findall(t)) if m else 1
+        if n != 1:
+            return (f'its procmgr log of {prog} ({m.group(1)}) names {n} child pids ("The PID of new child"), '
+                    f'not one instance of it that ran through the run')
+    ps = (w.get('programs') or {}).get('procstat')
+    if not (isinstance(ps, dict) and ps.get('kind') == 'procmgr'):
+        return (f'has no procstat table (a programs entry of kind procmgr) to show procmgr\'s {ids[0]} RUNNING '
+                f'from before the run to after it')
+    b = [float(runs[f]['beginrun']) for f in mine if runs[f]['beginrun']]
+    x = [float(runs[f]['endrun']) for f in mine if runs[f].get('endrun')]
+    if not (b and x):
+        return 'the run\'s xtc2 files give no BeginRun or no EndRun time to place procstat\'s tables against'
+    begin, endrun = min(b), max(x)
+    for label in ('before', 'while Running', 'after'):
+        t = ps if label == 'while Running' else ps.get(label)
+        if not isinstance(t, dict):
+            return f'its procstat entry holds no table read {label} the run ({label!r})'
+        s, e = t.get('start'), t.get('end')
+        if not (isinstance(s, (int, float)) and isinstance(e, (int, float))):
+            return f'procstat\'s table {label} the run gives no start and end'
+        if label != 'while Running' and t.get('exit') != 0:
+            return f'procstat\'s walk {label} the run exited {t.get("exit")}'
+        if label == 'before' and not e <= begin:
+            return (f'procstat\'s table "before" was read from {s:.3f} to {e:.3f}, not before the run\'s BeginRun '
+                    f'({begin:.3f}, EPICS-epoch seconds)')
+        if label == 'after' and not s >= endrun:
+            return (f'procstat\'s table "after" was read from {s:.3f} to {e:.3f}, not after the run\'s EndRun '
+                    f'({endrun:.3f}, EPICS-epoch seconds)')
+        if label == 'while Running' and not begin <= s <= e <= endrun:
+            return f'procstat\'s table while Running was read from {s:.3f} to {e:.3f}, not within the run'
+        shown = {str(r.get('name'))[len('procmgr:'):]: (r['values'][-1:] or ['?'])[0]
+                 for r in t.get('reads') or [] if isinstance(r, dict) and str(r.get('name', '')).startswith('procmgr:')
+                 and isinstance(r.get('values'), list)}
+        for i in ids:
+            if shown.get(i) != 'RUNNING':
+                return (f'procstat\'s table {label} the run shows procmgr\'s {i} '
+                        f'{shown[i] if i in shown else "not at all"}, not RUNNING')
+    return None
+
+
+SERVED_SLACK = 2.0                      # s either side of a read's span, for the served-value check
+SHOWN_NUMBER = re.compile(r'0[xX][0-9a-fA-F]+|[-+]?(?:\d[\d,]*(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?')
+SHOWN_UNIT = re.compile(r'\d\s*([kMG])[A-Za-z]+$')
+UNIT_SCALE = {'k': 1e3, 'M': 1e6, 'G': 1e9}
+
+
+def served_log(text):
+    """(program, {pv: [(Unix time, value)]}) of a served-value log (psdaq.sim.served_log), or None if the text is
+    not one.  A line cut off where the record's hash ends is skipped."""
+    first, _, rest = text.partition('\n')
+    try:
+        head = json.loads(first)
+    except ValueError:
+        return None
+    if not (isinstance(head, dict) and isinstance(head.get('served_log'), str)):
+        return None
+    pvs = {}
+    for line in rest.splitlines():
+        try:
+            d = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(d, dict) and isinstance(d.get('pv'), str) and isinstance(d.get('t'), (int, float)):
+            pvs.setdefault(d['pv'], []).append((d['t'], d.get('v')))
+    for posts in pvs.values():
+        posts.sort(key=lambda p: p[0])
+    return head['served_log'], pvs
+
+
+def shown_numbers(text):
+    """[(value, unit)] of the numbers a widget's text shows, unit the value of its last digit: a parenthesized
+    part is left out ('1,097 (0x449)'), and a k/M/G unit at the text's end scales them all ('928.6164kHz',
+    ' 156.25 156.25MHz')."""
+    import decimal
+    s = re.sub(r'\([^)]*\)', ' ', str(text)).strip()
+    m = SHOWN_UNIT.search(s)
+    scale = UNIT_SCALE[m.group(1)] if m else 1.
+    out = []
+    for tok in SHOWN_NUMBER.findall(s):
+        if tok[:2].lower() == '0x':
+            out.append((float(int(tok, 16)), 1.))
+            continue
+        try:
+            d = decimal.Decimal(tok.replace(',', ''))
+        except decimal.InvalidOperation:
+            continue
+        out.append((float(d) * scale, 10. ** d.as_tuple().exponent * scale))
+    return out
+
+
+def shows(x, unit, served):
+    """True if a text's number x (its last digit worth unit) shows the served number: rounded (within half a
+    unit) or cut toward zero (pvant shows 99.998 as '99'), to 3 parts in 10^7 (a float32 PV holds what the
+    server posted to 2^-24: partca shows L1Rate's float32 in full)."""
+    eps = 3e-7 * max(abs(x), abs(served)) + 1e-12
+    d = served - x
+    if abs(d) <= unit / 2 + eps:
+        return True
+    if x > 0:
+        return -eps <= d < unit
+    if x < 0:
+        return -unit < d <= eps
+    return abs(served) < unit
+
+
+def _numbers_in(v, field=None):
+    """Every number a served value holds (a structure's fields, a list's elements), or its field `field`'s."""
+    if field is not None:
+        v = v.get(field) if isinstance(v, dict) else None
+    out, stack = [], [v]
+    while stack:
+        x = stack.pop()
+        if isinstance(x, (bool, int, float)):
+            out.append(float(x))
+        elif isinstance(x, (list, tuple)):
+            stack.extend(x)
+        elif isinstance(x, dict):
+            stack.extend(x.values())
+    return out
+
+
+def served_problem(prog, e, section, served, partition):
+    """Why the values of a witness entry's live reads are not ones their PVs' servers logged they served
+    while the entry read, or None.  served: {program: {pv: [(t, value)]}} (served_logs).  A read is live as
+    entry_problem counts it (R4: 2 or more changed texts; else 2 or more numbers, under the entry's prefix); a
+    live read of a PV no log holds does not count, and one at least must be of a PV a log holds, every number
+    it shows a value served from the last post before 'start' to 'end' (SERVED_SLACK either side)."""
+    r4 = section == 'programs' and 'stand_in' in e
+    prefix = e.get('prefix') if section == 'servers' else partition
+    lo, hi = e['start'] + EPICS_EPOCH - SERVED_SLACK, e['end'] + EPICS_EPOCH + SERVED_SLACK
+    live, unheld = 0, []
+    for r in e.get('reads') or []:
+        if not (isinstance(r, dict) and isinstance(r.get('values'), list)):
+            continue
+        name = str(r.get('name', ''))
+        if r4:
+            counted = sorted(changed_texts(r['values']))
+            if len(counted) < 2:
+                continue
+        else:
+            if not (isinstance(prefix, str) and name.startswith(prefix)) or len(numbers(r['values'])) < 2:
+                continue
+            counted = [v for v in r['values'] if numbers([v])]
+        pv, field = name, None
+        if not any(pv in pvs for pvs in served.values()) and '.' in name:
+            pv, field = name.rsplit('.', 1)          # a 'servers' read of a structure's field
+        holders = sorted(p for p, pvs in served.items() if pv in pvs)
+        if not holders:
+            unheld.append(name)
+            continue
+        cands = []
+        for p in holders:
+            posts = served[p][pv]
+            before = [v for t, v in posts if t < lo][-1:]
+            for v in before + [v for t, v in posts if lo <= t <= hi]:
+                cands.extend(_numbers_in(v, field))
+        for text in counted:
+            for x, unit in shown_numbers(text):
+                if not any(shows(x, unit, c) for c in cands):
+                    return (f'its {prog} entry shows {str(text).strip()!r} for {name}, a value '
+                            f'{"/".join(holders)} did not serve while {prog} read ({e["start"]:.3f} to '
+                            f'{e["end"]:.3f}, EPICS-epoch seconds; its served-value log)')
+        live += 1
+    if not live:
+        if not served:
+            return (f'the record lists no served-value log (psdaq.sim.served_log) to check {prog}\'s reads '
+                    f'against')
+        return (f'shows {prog} read no live value of a PV a served-value log holds'
+                + (f' (live reads of PVs no log holds: {", ".join(unheld[:3])})' if unheld else ''))
+    return None
+
+
+def entry_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=()):
     """Why a gui_witness does not show prog read live values of the run (its 'programs' or, for a
     stand-in, 'servers' entry), or None (module doc).  run_ids: the procmgr ids of the record's
     logs that name the run, which a 'procmgr' entry (procstat's table) must show RUNNING.  A
@@ -1048,7 +1318,17 @@ def row_problem(rid, entry, rec, cache=None):
         kind = 'gui_witness'
         section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs)
+        served = {}
+        for (f, size), t in zip(named, texts):
+            s = _cached(cache, ('served', f, size), lambda t=t: served_log(t))
+            if s:
+                for pv, posts in s[1].items():
+                    served.setdefault(s[0], {}).setdefault(pv, []).extend(posts)
+        for pvs in served.values():
+            for posts in pvs.values():
+                posts.sort(key=lambda p: p[0])
+        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs,
+                                    ran, served)
                for w in witnesses if w['witness'] == kind]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '

@@ -7,7 +7,9 @@ also counts: once a second every statistics array (Us*, dUs*, Ds*, dDs*, UsLinkO
 the slot, the PV and the element and advance with time, the link-up masks (BpLinkUp, UsLinkUp, DsLinkUp) and
 QpllLock / TimLinkUp report a locked board, and the timing reference (TimRefClk 185.7 MHz, TimFrRate 928.6 kHz) and
 MonClkRate are set.  UsLinkPartition<i> and UsLinkFwdMask<i> keep what a client puts (dtica's allocation checkboxes).
-<prefix>:SIM:PID is this process's pid (simdti only: a client can tell the simulator from a DTI IOC).
+<prefix>:SIM:PID is this process's pid (simdti only: a client can tell the simulator from a DTI IOC).  The count n
+the values advance with starts at a random second, so they differ from run to run, and every value it serves goes to
+the served-value log when daq_sim names one (psdaq.sim.served_log: coverage checks the GUI witness's reads against it).
 
 The PVA server binds the loopback interface unless told otherwise (--bind, --allow-remote), like simxpm.
 
@@ -17,12 +19,15 @@ The PVA server binds the loopback interface unless told otherwise (--bind, --all
 import argparse
 import logging
 import os
+import random
 import sys
 import threading
 
 from p4p.nt import NTScalar
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
+
+from psdaq.sim.served_log import ServedLog
 
 STATIC = ('UsLinkPartition', 'UsLinkFwdMask', 'UsLinkTagEn', 'UsLinkL1En', 'UsLinkTrigDelay', 'UsLinkFwdMode',
           'UsLinkDataSrc', 'UsLinkDataType', 'UsLinkLabel', 'ModuleInit', 'CountClear', 'CountUpdate', 'BpTxInterval',
@@ -66,12 +71,19 @@ class SimDti:
         self.pid = SharedPV(initial=NTScalar('i').wrap(os.getpid()))
         self.provider.add(self.pfx + 'SIM:PID', self.pid)
         self.stop = threading.Event()
+        self.served = ServedLog('simdti')
+        for name, pv in self.pvs.items():
+            try:
+                self.served(self.pfx + name, pv.current())
+            except Exception:
+                pass                    # a PV opened without a value
 
     def _post(self, name, val):
         pv = self.pvs[name]
         v = pv.current()
         v['value'] = val
         pv.post(v)
+        self.served(self.pfx + name, val)
 
     def tick(self, n):
         for k, name in enumerate(sorted(self.pvdb)):
@@ -102,7 +114,7 @@ class SimDti:
             self._post(name, val)
 
     def run(self):
-        n = 0
+        n = random.randrange(100, 1000)        # a count of its own each run
         self.tick(n)
         while not self.stop.wait(1.0):
             n += 1

@@ -10,7 +10,9 @@ MONRAWBUF / MONFEXBUF report free buffers (freesz 2048 - n, freeevt 16 - n for a
 field of the other monitoring structures (MONTRIG, MONRAWDET, MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD and the rest
 of MONTIMING / MONPGP) gets its own value, pattern(chip, field, element), so a display of the wrong field or element
 shows a wrong number (float32 fields get values float32 cannot hold exactly).
-<prefix>:SIM:PID is this process's pid (simhsd only: a client can tell the simulator from an HSD).
+<prefix>:SIM:PID is this process's pid (simhsd only: a client can tell the simulator from an HSD).  The counts start
+at a random second n, so their values differ from run to run, and every value it serves goes to the served-value log
+when daq_sim names one (psdaq.sim.served_log: coverage checks the GUI witness's reads against it).
 
 The PVA server binds the loopback interface unless told otherwise (--bind, --allow-remote), like simxpm.
 
@@ -20,12 +22,15 @@ The PVA server binds the loopback interface unless told otherwise (--bind, --all
 import argparse
 import logging
 import os
+import random
 import threading
 import time
 
 from p4p.nt import NTScalar
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
+
+from psdaq.sim.served_log import ServedLog
 
 FRAMES_PER_S = 928571
 TRIG_HZ = 1000
@@ -42,11 +47,29 @@ def pattern(chip, field, element, floating):
     return (chip + 1) * 1000 + field * 16 + element + 1
 
 
+class _Named:
+    """The provider ChipServer adds its PVs to, keeping each PV's name for the served-value log."""
+    def __init__(self, provider):
+        self.provider, self.names = provider, {}
+
+    def add(self, name, pv):
+        self.provider.add(name, pv)
+        self.names[id(pv)] = (name, pv)
+
+
 class SimHsd:
     def __init__(self, prefixes, start=True):
         from psdaq.cas.hsdpvs import ChipServer
         self.provider = StaticProvider('simhsd')
-        self.chips = [ChipServer(self.provider, p, start) for p in prefixes]
+        named = _Named(self.provider)
+        self.chips = [ChipServer(named, p, start) for p in prefixes]
+        self.names = named.names
+        self.served = ServedLog('simhsd')
+        for name, pv in self.names.values():
+            try:
+                self.served(name, pv.current())
+            except Exception:
+                pass                    # a PV opened without a value
         self.prefixes = list(prefixes)
         self.pids = []
         for p in prefixes:
@@ -66,7 +89,11 @@ class SimHsd:
                         v[name] = [pattern(ci, fi, j, floating) for j in range(len(val))]
                     else:
                         v[name] = pattern(ci, fi, 0, floating)
-                pv.post(v)
+                self.post(pv, v)
+
+    def post(self, pv, v):
+        pv.post(v)
+        self.served(self.names.get(id(pv), ('?',))[0], v)
 
     def run(self):
         n = 0
@@ -75,7 +102,8 @@ class SimHsd:
             for pv, val in ((c.ready, 1), (c.fwBuild, 'simhsd (psdaq/psdaq/sim/simhsd.py)')):
                 v = pv.current()                       # post() takes only the exact type the PV was opened with
                 v['value'] = val
-                pv.post(v)
+                self.post(pv, v)
+        n = random.randrange(1000, 100000)     # a count of its own each run
         while not self.stop.wait(1.0):
             n += 1
             for c in self.chips:
@@ -84,17 +112,17 @@ class SimHsd:
                 v['trigcntsum'] = n * TRIG_HZ
                 v['trigcntrate'] = TRIG_HZ
                 v['hdrcount'] = n * TRIG_HZ
-                c.monTiming.post(v)
+                self.post(c.monTiming, v)
                 v = c.monPgp.current()
                 v['loclinkrdy'] = v['remlinkrdy'] = [1] * 4
                 v['txcnt'] = v['rxcnt'] = [TRIG_HZ] * 4
                 v['txcntsum'] = v['rxcntsum'] = [n * TRIG_HZ] * 4
-                c.monPgp.post(v)
+                self.post(c.monPgp, v)
                 for b in (c.monRawBuf, c.monFexBuf):
                     v = b.current()
                     v['freesz'] = 2048 - (n % 8)
                     v['freeevt'] = 16 - (n % 4)
-                    b.post(v)
+                    self.post(b, v)
 
 
 def main():

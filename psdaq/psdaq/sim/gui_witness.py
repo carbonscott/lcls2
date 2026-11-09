@@ -18,7 +18,13 @@ shows after each pump.  witness() turns the walks into the witness 'daq_sim cove
 
 A program passes if its walk exited 0 and at least one widget bound to a PV under the partition
 prefix showed 2 or more distinct numbers.  Coverage also checks that [start, end] lies within the
-run's L1Accepts, so the values were read while the run ran.
+run's L1Accepts, so the values were read while the run ran, and that the values are ones the PV's
+server logged it served then (psdaq.sim.served_log).
+
+procstat's entry ("kind": "procmgr") also holds "before" and "after": procstat's table read once
+more by cycle in Configured before BeginRun and after EndRun (snapshot_entry: "walk", "exit",
+"start", "end", "reads").  Coverage counts a GUI or monitor row only if procmgr's own instance of
+it is RUNNING in all three tables, so the program ran from before the run to after it.
 
 A GUI whose PVs come from a device stand-in (R4: hsdpva on simhsd, tprca on simtpr, dtica on simdti,
 started by 'daq_sim up --pvservers') walks with a PVA client that searches only that stand-in's ports;
@@ -116,21 +122,22 @@ def witnessed(gui=True, pvservers=False):
     return [n for n, w in WITNESS.items() if gui and (pvservers or not w.get('server'))]
 
 
-def spec(name, params):
+def spec(name, params, pumps=PUMPS):
     """The qt_walk --gui spec of a passive walk of GUI `name`."""
     return {'file': WITNESS[name]['file'], 'web': None, 'backend': 'sim-daq',
             'walk': {'argv': WITNESS[name]['argv'], 'pump': 3, 'timeout': 60,
-                     'drive': ['pump:1'] * PUMPS, 'record_calls': WITNESS[name].get('record_calls', [])}}
+                     'drive': ['pump:1'] * pumps, 'record_calls': WITNESS[name].get('record_calls', [])}}
 
 
-def start(workdir, name, outdir, env=None):
+def start(workdir, name, outdir, env=None, label=None, pumps=PUMPS):
     """Start the passive walk of GUI `name` against the simulated DAQ in workdir; returns
-    (Popen, walk path, log path, Unix start time)."""
+    (Popen, walk path, log path, Unix start time).  label names its files (default: name)."""
     os.makedirs(outdir, exist_ok=True)
-    sp, walk = os.path.join(outdir, f'{name}.spec.json'), os.path.join(outdir, f'{name}.walk.json')
-    log = os.path.join(outdir, f'{name}.walk.log')
+    tag = name if label is None else f'{name}-{label}'
+    sp, walk = os.path.join(outdir, f'{tag}.spec.json'), os.path.join(outdir, f'{tag}.walk.json')
+    log = os.path.join(outdir, f'{tag}.walk.log')
     with open(sp, 'w') as f:
-        json.dump(spec(name, {}), f, indent=1)
+        json.dump(spec(name, {}, pumps), f, indent=1)
     cmd = [sys.executable, '-m', 'psdaq.webgui.parity.qt_walk', '--gui', sp, '--sim-daq', workdir, '--out', walk]
     env = dict(env or os.environ, QT_QPA_PLATFORM='offscreen')
     t0 = time.time()
@@ -149,6 +156,21 @@ def table_reads(walk):
             if len(row) >= 2 and row[0]:
                 out.append({'name': f'procmgr:{row[0]}', 'values': [str(row[1] or '').strip()]})
     return out
+
+
+def snapshot_entry(walk_path, code, t0, t1):
+    """procstat's table read once (cycle: in Configured, before BeginRun or after EndRun): its walk, exit code,
+    start and end (EPICS-epoch seconds, the walk's process) and its rows, as table_reads gives them."""
+    e = {'walk': walk_path, 'exit': code, 'start': round(t0 - EPICS_EPOCH, 3), 'end': round(t1 - EPICS_EPOCH, 3),
+         'reads': [], 'problems': []}
+    try:
+        with open(walk_path) as f:
+            e['reads'] = table_reads(json.load(f))
+    except (OSError, ValueError) as ex:
+        e['problems'].append(f'no walk result: {ex}')
+    if code != 0:
+        e['problems'].append(f'walk exited {code}')
+    return e
 
 
 def reads(walk):

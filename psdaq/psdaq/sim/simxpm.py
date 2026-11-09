@@ -69,6 +69,8 @@ from p4p.nt import NTNDArray, NTScalar, NTTable
 from p4p.server import Server, StaticProvider
 from p4p.server.thread import SharedPV
 
+from psdaq.sim.served_log import ServedLog
+
 POSIX_TIME_AT_EPICS_EPOCH = 631152000
 NUM_GROUPS = 8
 NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
@@ -280,6 +282,7 @@ class _Put:
         value = op.value()
         value['timeStamp.secondsPastEpoch'], value['timeStamp.nanoseconds'] = divmod(time.time_ns(), 1000000000)
         pv.post(value)
+        self._sim.served(getattr(self, 'name', '?'), value)
         if self._command:
             self._sim.command(self._command, self._arg, value['value'])
         op.done()
@@ -321,6 +324,7 @@ class SimXpm:
 
         self.provider = StaticProvider('simxpm')
         self.pvs = {}
+        self.served = ServedLog('simxpm')       # every value served, when daq_sim names a log (psdaq.sim.served_log)
         self._make_pvs()
         self.camera = CameraPV(camera, self.provider, camera_seed) if camera else None
         self.bld = BldSource(bld, self.provider, bld_dest, bld_seed) if bld else None
@@ -330,16 +334,22 @@ class SimXpm:
     def _add_table(self, name, columns, rows):
         """An NTTable PV as pyxpm pvhandler.addPVT makes it: columns [(label, 'i')], rows [{label: value}]."""
         nt = NTTable(columns)
-        pv = SharedPV(initial=nt.wrap(rows), handler=_Put(self))
+        handler = _Put(self)
+        handler.name = name
+        pv = SharedPV(initial=nt.wrap(rows), handler=handler)
         self.provider.add(name, pv)
         self.pvs[name] = (pv, nt)
+        self.served(name, rows)
         return pv
 
     def _add(self, name, ntype, initial, handler=None):
         nt = NTScalar(ntype)
-        pv = SharedPV(initial=nt.wrap(initial, timestamp=time.time()), handler=handler or _Put(self))
+        handler = handler or _Put(self)
+        handler.name = name
+        pv = SharedPV(initial=nt.wrap(initial, timestamp=time.time()), handler=handler)
         self.provider.add(name, pv)
         self.pvs[name] = (pv, nt)
+        self.served(name, initial)
         return pv
 
     def _make_pvs(self):
@@ -415,6 +425,7 @@ class SimXpm:
 
     def _post(self, name, value):
         pv, nt = self.pvs[name]
+        self.served(name, value)
         if isinstance(nt, NTTable):
             pv.post(nt.wrap(value))
             return
