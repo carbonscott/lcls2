@@ -838,10 +838,51 @@ def _endpoint_host(ep):
     return rest.rsplit(':', 1)[0] if ':' in rest else rest
 
 
+REMOTE_SHELLS = ('ssh', 'scp', 'sftp', 'rsh', 'rlogin', 'slogin', 'autossh', 'mosh', 'telnet', 'rsync', 'pdsh')
+SLURM_CMDS = ('squeue', 'sacct', 'sinfo', 'sbatch', 'scancel', 'scontrol', 'srun', 'salloc', 'sattach', 'sstat')
+
+
+def guard_subprocess(OUT):
+    """The walked GUI may not start a remote shell (ssh, scp, ... to any host: datadev_monitor ssh-es to every
+    drp-srcf-cmp node) nor a Slurm command (daqstat's daqmgr Runner queries and submits jobs): such a
+    subprocess.Popen is recorded in OUT['calls'] (opener 'refused:subprocess') and raises PermissionError, which
+    the program sees as a failed command.  os.system / os.popen of a command line naming one are refused alike."""
+    import shlex
+    import subprocess as _sp
+    banned = set(REMOTE_SHELLS) | set(SLURM_CMDS)
+
+    def prog(args):
+        try:
+            argv = shlex.split(args) if isinstance(args, str) else [str(a) for a in args]
+        except ValueError:
+            argv = str(args).split()
+        return os.path.basename(argv[0]) if argv else '', argv
+    orig_init = _sp.Popen.__init__
+
+    def init(self, args, *a, **k):
+        name, argv = prog(args if not (k.get('shell') and isinstance(args, str)) else args)
+        if name in banned or (k.get('shell') and any(w in banned for w in str(args).replace(';', ' ').split())):
+            OUT['calls'].append({'opener': 'refused:subprocess', 'args': [' '.join(argv)[:200]]})
+            raise PermissionError('qt_walk: refused to start %r (no remote shell or Slurm command in a walk)' % name)
+        return orig_init(self, args, *a, **k)
+    _sp.Popen.__init__ = init
+    for fn in ('system', 'popen'):
+        orig = getattr(os, fn)
+
+        def f(cmd, *a, _orig=orig, _fn=fn, **k):
+            if any(w in banned for w in str(cmd).replace(';', ' ').split()):
+                OUT['calls'].append({'opener': 'refused:os.' + _fn, 'args': [str(cmd)[:200]]})
+                raise PermissionError('qt_walk: refused os.%s(%r)' % (_fn, cmd))
+            return _orig(cmd, *a, **k)
+        setattr(os, fn, f)
+
+
 def guard_network(OUT):
     """The walked GUI may open TCP connections and ZMQ sockets only to this host: anything else is recorded in
     OUT['calls'] (opener 'refused:...') and not made (a ZMQ connect is skipped; a TCP connect raises
-    ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none."""
+    ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none.
+    No remote shell or Slurm command starts either (guard_subprocess)."""
+    guard_subprocess(OUT)
     import socket as _socket
     orig_connect = _socket.socket.connect
     orig_connect_ex = _socket.socket.connect_ex
@@ -1172,6 +1213,12 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                         pump(0.1)
                 elif step.startswith('pump:'):
                     pump(float(step.split(':', 1)[1]))
+                elif step.startswith('click:'):           # click every enabled QPushButton with this text
+                    want = step.split(':', 1)[1]
+                    for x in [x for x in list(LIVE) if isinstance(x, ORIG['QPushButton']) and not sip.isdeleted(x)]:
+                        if x.text() == want and x.isEnabled():
+                            x.click()
+                            pump(0.2)
                 snapshot(step)
             except Exception as ex:
                 OUT['notes'].append('drive %s: %s' % (step, traceback.format_exc()[-600:]))
