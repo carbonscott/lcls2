@@ -154,5 +154,9 @@
   "prog:procstat": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2): procmgr runs procstat -p <platform> -i 1 <workdir>/daq_sim.cnf offscreen; while the run is Running cycle runs its main() once more offscreen through qt_walk, and logs/gui_witness.json names the run and the table it showed, every process whose procmgr log names the run (teb0, fakecam_0, ...) RUNNING, read within the run's L1Accepts"
+  },
+  "prog:partca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs partca DAQ:SIM:XPM:0:PART:<platform> offscreen (lab3-cam.cnf: partca DAQ:LAB2:PART:<platform>) on simxpm's partition PVs; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run and the partition PVs it showed changing (NumL0Inp, NumL1, RunTime, rates), read within the run's L1Accepts"
   }
 }

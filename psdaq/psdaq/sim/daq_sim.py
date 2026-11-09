@@ -389,15 +389,19 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # --gui: PyQt GUIs as the configs start them, offscreen: control_gui (asc.cnf: control_gui -H
 # localhost -p <p>) on the config DB stand-in, which at its default log level (DEBUG) logs every
 # status message control publishes (the run's fileReport with its path relative to the data dir);
-# and on simxpm's PVs groupca (asc.cnf: groupca DAQ:ASC 0 0) and pvant (lab3-wave8.cnf: pvant
-# --bases ... --fields ..., here the partition's L0 counters).  Those two never log a run: cycle
-# runs each once more, offscreen, while the run is Running and keeps what it shows
-# (psdaq.sim.gui_witness), as the witness 'daq_sim coverage' reads.
-GUI_PROCS = ('control_gui', 'groupca', 'pvant', 'procstat', 'pvrtmon_0')
+# on simxpm's PVs groupca (asc.cnf: groupca DAQ:ASC 0 0), partca (lab3-cam.cnf: partca
+# DAQ:LAB2:PART:<p>) and pvant (lab3-wave8.cnf: pvant --bases ... --fields ..., here the
+# partition's L0 counters); procstat on procmgr's table; and epics_exporter (pvrtmon_0) on the
+# XPM's partition PVs.  None of them logs a run: cycle runs each GUI once more, offscreen, while
+# the run is Running, scrapes the exporter, and keeps what they show (psdaq.sim.gui_witness), as
+# the witness 'daq_sim coverage' reads.
+GUI_PROCS = ('control_gui', 'groupca', 'partca', 'pvant', 'procstat', 'pvrtmon_0')
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'groupca {groupca}' }},
+ {{ id:'partca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
+   cmd:'partca {partca}' }},
  {{ id:'pvant', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'pvant {pvant}' }},
  {{ id:'procstat', flags:'s', env:'QT_QPA_PLATFORM=offscreen',

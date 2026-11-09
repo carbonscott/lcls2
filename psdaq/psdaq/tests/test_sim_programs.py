@@ -34,7 +34,7 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
+            'prog:control_gui', 'prog:groupca', 'prog:partca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
             'prog:drp_udpencoder',
             'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
