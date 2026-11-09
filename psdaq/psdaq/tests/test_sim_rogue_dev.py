@@ -300,3 +300,81 @@ def test_xpmdet_fault_makes_connect_name_the_register():
         pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     assert r.returncode != 0
     assert 'Verify error' in r.stderr and 'TDetSemi' in r.stderr, r.stderr[-3000:]
+
+
+# --- camera link cameras: a seed may enable a device, name a string register or a root
+# whose name starts with '_'; the camera's serial port answers from the seed file ----------
+
+class Linked(pr.Root):
+    """A KCU map with a link-ready bit and a front-end board enabled by it (enableDeps), as
+    cameralink_gateway.ClinkDevRoot enables its FEB on the PGP link."""
+    def __init__(self, dev):
+        super().__init__(name='Lnk', pollEn=False, initRead=True, timeout=2.0)
+        self.mem = rogue.hardware.axi.AxiMemMap(dev)
+        self.dma = rogue.hardware.axi.AxiStreamDma(dev, 0x0, True)
+        self.srp = rogue.protocols.srp.SrpV3()
+        pr.streamConnectBiDir(self.dma, self.srp)
+        self.add(Regs(name='Pcie', memBase=self.mem, offset=0x1000))
+        self.Pcie.add(pr.RemoteVariable(name='LinkReady', offset=0xc, bitSize=1, mode='RO'))
+        self.add(Regs(name='Feb', memBase=self.srp, offset=0x2000,
+                      enableDeps=[self.Pcie.LinkReady]))
+
+
+def test_a_seed_on_a_device_its_link_seed_enables():
+    seeds = {'Lnk.Pcie.LinkReady': 1, 'Lnk.Feb.Version': 0x08020000}
+    sim = rogue_dev.install(DEV, seeds=seeds, fault='')
+    with Linked(DEV) as top:
+        assert top.Feb.Version.get(read=True) == 0x08020000
+        assert sim.pending() == []
+
+
+def test_string_seeds_and_underscore_roots(tmp_path, monkeypatch):
+    path = tmp_path / 'seeds.json'
+    path.write_text(json.dumps({'_comment': 'ignored', '_Top.Pcie.Version': {'string': 'AB'},
+                                'Top.Pcie.Ctrl': {'string': 'Lcls'}}))
+    monkeypatch.setenv(rogue_dev.ENV_SEEDS, str(path))
+    seeds, _ = rogue_dev.load_seeds('nosuchtype')
+    assert seeds == {'_Top.Pcie.Version': 0x4241, 'Top.Pcie.Ctrl': int.from_bytes(b'Lcls', 'little')}
+
+
+class Serial(pr.Root):
+    """A camera's serial port on lane 0 VC2, as surf's ClinkSerialTx/Rx use it."""
+    def __init__(self, dev):
+        super().__init__(name='Ser', pollEn=False, initRead=False, timeout=2.0)
+        self.dma = rogue.hardware.axi.AxiStreamDma(dev, 0x2, True)
+
+
+class Collect(rogue.interfaces.stream.Slave):
+    def __init__(self):
+        super().__init__()
+        self.got = bytearray()
+
+    def _acceptFrame(self, frame):
+        ba = bytearray(frame.getPayload())
+        frame.read(ba, 0)
+        self.got += ba
+
+
+def test_the_camera_uart_answers_from_the_seed_file(tmp_path, monkeypatch):
+    import time
+    import rogue.interfaces.stream
+    path = tmp_path / 'seeds.json'
+    path.write_text(json.dumps({'_uart': {'dests': ['0x2'], 'replies': {'@ID?': 'OPAL-1000m\r\x06'},
+                                          'default': '\x06'}}))
+    monkeypatch.setenv(rogue_dev.ENV_SEEDS, str(path))
+    sim = rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+    with Serial(DEV) as top:
+        rx, tx = Collect(), rogue.interfaces.stream.Master()
+        pr.streamConnect(top.dma, rx)
+        pr.streamConnect(tx, top.dma)
+        for cmd in ('@ID?', '@MO1'):
+            ba = rogue_dev.SimUart.words(cmd + '\r')
+            frame = tx._reqFrame(len(ba), True)
+            frame.write(ba, 0)
+            tx._sendFrame(frame)
+        want = b'OPAL-1000m\r\x06' + b'\x06'               # the two replies, one character per word
+        t0 = time.monotonic()
+        while len(rx.got) < 4 * len(want) and time.monotonic() - t0 < 5:
+            time.sleep(0.01)
+        assert bytes(rx.got[0::4]) == want
+        assert [w['cmd'] for w in sim.writes if w['store'] == 'uart'] == ['@ID?', '@MO1']

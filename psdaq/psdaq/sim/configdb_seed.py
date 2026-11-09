@@ -68,8 +68,9 @@ def fakecam_cdict(name, segm=0, sim_seed=0x1234, sim_length=1024, det_type='fake
 # and their config DB entry holds what fakecam's does
 XPMDET_TYPES = ('fakecam', 'cspad', 'epixhremu', 'jungfrauemu')
 # Stores whose default config is a function other than <type>_cdict(): ts_config_store's
-# __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument)
-STORE_CDICT = {'ts': 'beam_cdict'}
+# __main__ writes beam_cdict() for the BEAM alias (after tsdef.set_instrument), and so does
+# epixuhr3x2_config_store's
+STORE_CDICT = {'ts': 'beam_cdict', 'epixuhr3x2': 'beam_cdict'}
 # Stores whose <type>_cdict() takes the firmware project's config directory, as their __main__
 # passes --dir + '/software/config'
 STORE_DIR = {'epixm320': 'epix-hr-m-320k/software/config'}
@@ -117,10 +118,25 @@ def _store_cdict(mod, det_type, name, segm):
 # wave8he_config.user_to_expert derives the HLS counts and scales from these region bounds
 # (the values wave8he_config records as its defaults).
 BORROWED_STORES = {
+    # tb (TimingBEB) records the timing system's message as ts does, and tb_config.apply_config
+    # reads ts_config_store's BEAM config (user.LINAC, user.SC.group<N>, expert.group<N>)
+    'tb': ('ts', []),
+    # epixquad1kfps reads epixquad_config_store's config (user.pixel_map_raw)
+    'epixquad1kfps': ('epixquad', []),
     'wave8he': ('wave8', [('expert.HlsProcessor.BaselineBeg', 20, 'UINT8'),
                           ('expert.HlsProcessor.BaselineEnd', 52, 'UINT8'),
                           ('expert.HlsProcessor.SignalBeg', 100, 'UINT8'),
                           ('expert.HlsProcessor.SignalEnd', 114, 'UINT8')]),
+}
+
+
+# Types whose own store lacks a key their config script reads: (key, value, type or None for an
+# array).  epixquad_config reads user.pixel_map, the per-ASIC gain map (16 x 178 x 192), which
+# epixquad_config_store no longer writes (it writes user.pixel_map_raw, the (4, 352, 384) raw
+# view epixquad1kfps_config reads); with the store's map all zeros, both views are all zeros.
+STORE_KEYS = {
+    'epixquad': [('user.pixel_map', lambda: __import__('numpy').zeros((16, 178, 192), 'uint8'),
+                  None)],
 }
 
 
@@ -135,7 +151,7 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         mod = importlib.import_module('psdaq.configdb.yaml_config_store_example')
         top = getattr(mod, '%s_cdict' % det_type)(pyrogue.yamlToData(fName=yaml))
     else:
-        store, extra = BORROWED_STORES.get(det_type, (det_type, []))
+        store, extra = BORROWED_STORES.get(det_type, (det_type, STORE_KEYS.get(det_type, [])))
         if store != det_type:
             importlib.import_module('psdaq.configdb.%s_config' % store)
         mod = importlib.import_module('psdaq.configdb.%s_config_store' % store)
@@ -151,7 +167,10 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         else:
             top = _store_cdict(mod, store, name, segm)
         for key, value, typ in extra:
-            top.set(key, value, typ)
+            if typ is None:
+                top.set(key, value())
+            else:
+                top.set(key, value, typ)
     top.setInfo(det_type, name, segm, 'sim-%s' % det_type, 'Seeded by psdaq.sim.configdb_seed')
     return top
 
