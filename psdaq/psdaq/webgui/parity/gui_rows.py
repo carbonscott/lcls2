@@ -584,7 +584,8 @@ def make_rows(srcinfo, walk):
                     out.append(('column', '%s.col[%s]' % (stem, c), c, x))
                 if x.get('receivers', {}).get('cellClicked'):
                     out.append(('click', '%s.cellClicked' % stem, 'cell click', x))
-                if x.get('receivers', {}).get('itemSelectionChanged'):      # a tree whose selection the program uses
+                if k == 'QTreeWidget' and x.get('receivers', {}).get('itemSelectionChanged'):   # a tree whose selection
+                    #                                                                                 the program uses
                     out.append(('click', '%s.select' % stem, 'item selection', x))
                 continue
             out.append((k, None, None if k == 'message' else _qual(x), x))   # a dialog's text is what it says now
