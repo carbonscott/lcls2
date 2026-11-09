@@ -27,8 +27,8 @@ Everything in `psdaq/psdaq/sim/`:
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
 | `matrix.py` | `daq_sim matrix` (§3k): the whole matrix in one command, every detector type, the system features and coverage, with an exit code that is the verdict. |
-| `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3g). |
-| `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3g). |
+| `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3h). |
+| `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3h). |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
 | `../webgui/e2e.py`, `../webgui/e2e_browser.py` | `daq_sim e2e`: the checks (DAQ env), and the headless-browser driver (Playwright venv). |
@@ -421,7 +421,7 @@ A record proves a row only if all of these hold, and the row's line names the fi
     the ami-client processes that served the check`, `its log of ami-client gives no pid`). The
     program's own log is required too. The procmgr `ami-client` loads no graph, so it holds none
     of AMI's ports; the ami-client row is proven by the one `cycle --ami-shot` runs.
-  - a GUI or monitor whose log does not name the run (R2; groupca, pvant, procstat, epics_exporter): a
+  - a GUI or monitor whose log does not name the run (R2; groupca, partca, pvant, procstat, epics_exporter): a
     `gui_witness` (`logs/gui_witness.json`) whose `programs` entry for it passed, whose `start`
     and `end` (EPICS-epoch seconds, the walk's process) lie between the run file's first and last
     L1Accept (`read from ... to ..., not within the run's L1Accepts`), and that shows at least one
@@ -431,9 +431,13 @@ A record proves a row only if all of these hold, and the row's line names the fi
     partition's processes (ID, status): its entry (`"kind": "procmgr"`) must show RUNNING every
     process whose procmgr log (`# ID:`) in the record names the run (`shows procstat did not list
     fakecam_0 RUNNING`).
-  - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the same, from
-    the witness's `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs
-    while the run ran; a `programs` entry does not count).
+  - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the witness's
+    `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs while the run
+    ran; a `programs` entry does not count): it passed, ran within the run's L1Accepts, read a
+    PV under its own `prefix` with 2 or more distinct numbers, and its `interfaces` entry for the
+    row's program gives `defined`, the PV names the program's source defines (more than 0), and
+    `missing`, those the stand-in does not serve, empty (`simhsd does not serve 2 of the 40 PVs
+    hsdpvs defines, e.g. ...`).
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
@@ -652,7 +656,8 @@ its evidence record lists their logs.
 | `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every recorded image is `camera_image(seed, seq)` with fakecam's seq of the same L1Accept, and drp_pva's `drp_match_count` equals the L1Accepts that have an image |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIoc -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (CA, 1234.5); simxpm's `DAQ:SIM:XPM:0:PART:<p>:NumL0Acc` (PVA) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` and `sim_l0acc` never decrease, `sim_l0acc` stays within the run's L1Accepts |
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
-| `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime` | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing |
+| `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B` and `simtpr -P DAQ:SIM:TPR`, each on PVA ports of its own (31300 + 10 p + 0..3: simxpm stays the only server on the node's search port) | the stand-ins of `hsdpvs` and `tprcas` (R3) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the table `tprcas.main()` builds) and reads its monitoring counters (`MONTIMING`, `EVTCNT`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs` and `prog:tprcas` from |
+| `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime` | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
 does (MemPoolSim); without it they open the PGP card as before. The MEB does not unlink its
@@ -670,7 +675,7 @@ Prometheus exporters from 31180 + 2 p. The UDP port is 31200 + p.
 ```bash
 # step A (WD as in §2)
 daq_sim up -w $WD --ami --ami-src /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526 \
-    --pva --epics --udp --gui --rate 100 --detach
+    --pva --epics --udp --gui --pvservers --rate 100 --detach
 # step B: a cycle; besides the fakecam counts it prints the MEB, AMI and system DRP counts
 daq_sim cycle -w $WD --events 1000
 daq_sim down -w $WD
@@ -691,7 +696,7 @@ Disable, the MEB's served-event count `MEB_EvtCt`. The client's PVA server takes
 daq_sim cycle -w $WD --events 1000 --ami-shot $WD/ami.png
 ```
 
-## 3i. System features: `daq_sim feature a|b|e`
+## 3i. System features: `daq_sim feature a|b|c|d|e`
 
 Each feature is one command, run inside a Slurm step on the node as in §2. It brings the DAQ up
 (`up --detach` with the feature's options), drives one run, takes the DAQ down (always, unless
@@ -706,6 +711,8 @@ L1Accepts simxpm sent its link, `SIM:LinkL1Acc`) against psana2's events in its 
 daq_sim feature a -w $WD       # readout groups at different rates
 daq_sim feature b -w $WD       # a 3-step scan through generic_timing_scan.py
 daq_sim feature e -w $WD       # drp_pva, drp_bld, drp_udpencoder, epicsArch with a PGP DRP
+daq_sim feature c -w $WD       # the MEB serving AMI; AMI's GUI shows the camera ($DAQ_SIM_AMI_SRC or --ami-src)
+daq_sim feature d --hosts nodeA,nodeB     # two nodes: NOT AVAILABLE unless both are hosts of this job
 daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail (no DAQ)
 ```
 
@@ -714,6 +721,8 @@ daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail 
 | a | `--det hrencoder --also epix100:<p+1> --also wave8:<p+1> --fixed-rate <p>:3 --fixed-rate <p+1>:4` | one cycle of `--events` (1000) L1Accepts of group p | hrencoder_0 (group p, 1.02 kHz marker), epix100_0 and wave8_0 (group p+1, 102 Hz): each DRP's DAQ count == psana2's events in its stream == events with its data, each passing the type's per-event check (`xtc2_check`); each group took its marker's share (group p+1 1/10 of group p's, within 10 %) |
 | b | `--det tb --also epix100 --rate 100` | `python -m psdaq.cas.generic_timing_scan -p <p> -C localhost --detname epix100_0 --scantype timing --events <N> --record 1 --config BEAM --linear 700000 730000 10000`, from connected | psana2 reads 3 steps in tb's stream, `step_value` 700000, 710000, 720000 and a `step_docstring` naming each; each DRP has `--events` (200) L1Accepts in every step, all with data; each DRP's DAQ count == psana2's; every event passes its per-event check; `epix100_update` applied 700000, 710000, 720000 in order (its DRP's log) |
 | e | `--pva --epics --udp --bld --rate 100` | one cycle | sysdrp_check reads drp_pva's, drp_udpencoder's, epicsArch's and drp_bld's data event by event; each system DRP's DAQ count == psana2's events in its stream; drp_bld's L1Accepts less its `bld_miss_count` == psana2's events with BLD data |
+| c | `--ami --rate 100` (`--ami-src` passed on; §3h) | one cycle with `--ami-shot <WD>/ami-shot.png` | fakecam_0's DAQ count == psana2's events in its stream == events with its data, each passing the per-event check; the MEB served events (`MEB_EvtCt` > 0 and at least the events AMI kept); every event AMI computed from the MEB matches psana2's event with the same timestamp (`ami_check`: seq and pixel, at least 100 events, AMI's pixel sum == psana2's over them); a second `ami-client` showed the camera image while Running (the screenshot path is in the report) |
+| d | `--det hrencoder --also epix100:<p>`, over `--hosts A,B` | none yet | NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (`SLURM_JOB_NODELIST`, expanded by `scontrol show hostnames`); with two, it prints the plan (§3j) and fails: `up --hosts` runs a plan only |
 
 The step values are recorded by the timing DRP, as at the hutches: `TimingBEB::scanEnabled()`
 (tb) and `TimingSystem::scanEnabled()` (ts) are true, `Epix100::scanEnabled()` is false, so a scan
@@ -754,8 +763,12 @@ What each feature adds to `up` (usable on its own):
 
 Breaks (`--check-only --break KIND`, on a broken copy of the recorded run; the run's files stay
 as they are): `a`: `drop-l1` cuts the last 10 L1Accepts off epix100_0's stream, `same-rate`
-expects both groups at one rate; `b`: `expect-values` expects each step value + 1; `e`:
-`bld-seed` expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1.
+expects both groups at one rate; `b`: `expect-values` expects each step value + 1; `c`:
+`ami-tamper` flips one bit of one event's pixel in a copy of the result fetched from AMI
+(`logs/ami_check.rows.json`), which `ami_check` then finds against psana2; `e`: `bld-seed`
+expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1.
+`--check-only` without a break re-runs the checks on the recorded files (for c, `ami_check`
+again on the fetched result).
 
 ## 3j. Two nodes (a plan): `daq_sim up --hosts A,B --dry-run`
 
@@ -956,7 +969,11 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   `logger.debug('list2d\n', list2d)`, whose formatting raises `TypeError` in `QWLoggerStd`'s
   filter. `up --gui` therefore waits until control_gui polls control (its log's first
   `CGWMain.on_zmq_poll`) before it returns, so the cycle selects the partition after.
-- **GUI witnesses.** The witness of groupca, pvant and procstat is a second instance of each GUI,
+- **Walk network guard.** The parity walk (`qt_walk`) refuses every connection to another host;
+  a connect to this host's own name or addresses (`qt_walk.THIS_HOST`) is let through, since
+  procstat's procmgr reaches the local procServ ports through the host's name (refused, every
+  process showed `NO CONNECT`).
+- **GUI witnesses.** The witness of groupca, partca, pvant and procstat is a second instance of each GUI,
   run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
   `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. xpmpva is
   not run: at startup it reads `<xpm>:Us:RxAlign` and `<xpm>:Cu:RxAlign`, which this simxpm does

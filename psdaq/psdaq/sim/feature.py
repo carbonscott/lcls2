@@ -1,7 +1,8 @@
 """daq_sim feature: one hardware-free run per system feature, end to end, with its own checks.
 
-    daq_sim feature a|b|e [-w WORKDIR] [-p PLATFORM] [--events N] [--keep-up]
-    daq_sim feature a|b|e -w WORKDIR --check-only [--break KIND]
+    daq_sim feature a|b|c|e [-w WORKDIR] [-p PLATFORM] [--events N] [--keep-up] [--ami-src DIR]
+    daq_sim feature a|b|c|e -w WORKDIR --check-only [--break KIND]
+    daq_sim feature d --hosts HOST_A,HOST_B
 
 Each feature brings the DAQ up on this node (daq_sim up --detach), drives one run, takes the DAQ
 down (always, unless --keep-up) and prints a report: the Slurm job and step, the host, the
@@ -35,6 +36,19 @@ e  System DRPs: drp_pva, drp_bld, drp_udpencoder and epicsArch recording from si
    in the same run as the PGP DRP fakecam_0 (up --pva --epics --udp --bld --rate 100), one cycle.
    Checks: psana2 reads each one's data event by event (sysdrp_check), drp_bld's from simxpm's
    BLD source over loopback multicast; each DRP's DAQ count equals psana2's events in its stream.
+c  The MEB serving events to AMI, AMI showing live detector data: up --ami (the MEB, a
+   shmemClient, ami-manager, ami-global, ami-node, an ami-worker on the MEB and ami-client,
+   offscreen; --ami-src or $DAQ_SIM_AMI_SRC) --rate 100, one cycle with --ami-shot
+   <WORKDIR>/ami-shot.png.  Checks: fakecam_0's DAQ count (the L1Accepts simxpm sent its link)
+   equals psana2's events in its stream, all with data and passing the per-event check; the MEB
+   served events (MEB_EvtCt > 0, at least the events AMI kept); every event AMI computed from the
+   MEB matches psana2's event of the same timestamp (psdaq.sim.ami_check: seq and pixel, at
+   least 100 events, AMI's sum of the pixel equal to psana2's); a second ami-client, AMI's own
+   GUI, showed the camera image while the run was Running (the screenshot, ami_shot).
+d  Two nodes: one partition over two hosts of this Slurm job's allocation (daq_sim up --hosts
+   A,B).  NOT AVAILABLE unless --hosts names two different hosts of the job's allocation
+   (SLURM_JOB_NODELIST); given two, it prints the plan (up --hosts --dry-run) and fails: up
+   --hosts runs a plan only (RUNBOOK: two nodes lists what running it needs).
 
 --check-only re-runs a feature's checks on the run already recorded in WORKDIR (no DAQ).
 --break KIND makes a check fail on purpose (with --check-only; the recorded files stay as they
@@ -42,6 +56,7 @@ are, a broken copy is checked):
   a: drop-l1        cut the last 10 L1Accepts off a copy of epix100_0's stream file
      same-rate      expect both readout groups at the same rate
   b: expect-values  expect the step values + 1
+  c: ami-tamper     change the pixel of one event in a copy of the result fetched from AMI
   e: bld-seed       expect the BLD values of seq + 1
 """
 
@@ -59,8 +74,14 @@ import time
 
 from psdaq.sim import daq_sim as ds
 
-FEATURES = ('a', 'b', 'e')                       # the features this module runs (daq_sim matrix reads it)
-BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'e': ('bld-seed',)}
+# The contract's system features (a)-(e); daq_sim matrix runs each one this names
+FEATURES = {'a': 'readout groups at different rates',
+            'b': 'a scan through generic_timing_scan.py',
+            'c': 'the MEB serving events to AMI, AMI showing live detector data',
+            'd': 'two nodes (--hosts: two hosts of this Slurm job)',
+            'e': 'drp_pva, drp_bld, drp_udpencoder and epicsArch with a PGP DRP'}
+BREAKS = {'a': ('drop-l1', 'same-rate'), 'b': ('expect-values',), 'c': ('ami-tamper',), 'd': (),
+          'e': ('bld-seed',)}
 SCAN_VALUES = (700000., 710000., 720000.)        # --linear 700000 730000 10000
 SCAN_DET = 'epix100'                             # generic_timing_scan --detname epix100_0
 DROP_L1 = 10
@@ -75,12 +96,13 @@ def up_options(feature, platform):
     return {'a': ['--det', 'hrencoder', '--also', f'epix100:{g2}', '--also', f'wave8:{g2}',
                   '--fixed-rate', f'{platform}:3', '--fixed-rate', f'{g2}:4'],
             'b': ['--det', 'tb', '--also', SCAN_DET, '--rate', '100'],
+            'c': ['--ami', '--rate', '100'],
+            'd': ['--det', 'hrencoder', '--also', f'epix100:{platform}'],
             'e': ['--pva', '--epics', '--udp', '--bld', '--rate', '100']}[feature]
 
 
 def add_arguments(p):
-    p.add_argument('feature', choices=FEATURES, help='a: readout groups at different rates; '
-                   'b: a scan; e: drp_pva, drp_bld, drp_udpencoder and epicsArch with a PGP DRP')
+    p.add_argument('feature', choices=FEATURES, help='; '.join(f'{x}: {d}' for x, d in FEATURES.items()))
     p.add_argument('-p', '--platform', type=int, default=5, choices=range(8))
     p.add_argument('--events', type=int, default=None,
                    help='L1Accepts of the cycle (a, e: default 1000), or per scan step (b: default 200)')
@@ -90,6 +112,10 @@ def add_arguments(p):
                    help='with --check-only: make a check fail on purpose (module doc)')
     p.add_argument('--keep-up', action='store_true', help='leave the DAQ up at the end')
     p.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+    p.add_argument('--ami-src', default=None, help='c: AMI source tree for up --ami (default: up\'s, '
+                   '$DAQ_SIM_AMI_SRC, else ami-* on PATH)')
+    p.add_argument('--hosts', default=None, metavar='HOST_A,HOST_B',
+                   help='d: two hosts of this Slurm job\'s allocation')
 
 
 def head():
@@ -196,6 +222,116 @@ def check_e(work, state, rec, breakage=None):
         if counts.get(k) != 'PASS':
             problems.append(f'{k}: {counts.get(k)}')
     return counts, problems
+
+
+def ami_recheck(work, state, experiment, run, tamper=False):
+    """ami_check again on the result the cycle fetched from AMI (logs/ami_check.rows.json)
+    against the run's file; with tamper, on a copy in which one event's pixel is off by one."""
+    from psdaq.sim import ami_check
+    try:
+        with open(work.path('logs', 'ami_check.rows.json')) as f:
+            result = json.load(f)
+    except (OSError, ValueError) as e:
+        return {'ami check': f'FAIL no result fetched from AMI in {work.dir}: {e}'}
+    if tamper and result.get('rows'):
+        i = len(result['rows']) // 2
+        ts, seq, pix = result['rows'][i]
+        result['rows'] = [r if r[0] != ts else [ts, seq, pix ^ 1] for r in result['rows']]
+        print(f'{ds.now()} --break ami-tamper: AMI\'s row for timestamp {ts:#x} (seq {seq}) gets pixel {pix ^ 1}, '
+              f'AMI computed {pix} (in a copy; logs/ami_check.rows.json stays as it is)', flush=True)
+    files = sorted(glob.glob(work.path('data', ds.INSTRUMENT, experiment or 'none', 'xtc',
+                                       f'{experiment}-r{run or 0:04d}-s*-c000.xtc2')))
+    if not files:
+        return {'ami check': f'FAIL no xtc2 file of run {run}'}
+    res = ami_check.check(result, files, state['det'])
+    out = {k: res[k] for k in ('ami rows', 'ami events', 'ami matched', 'ami pixsum',
+                               'psana2 pixsum (same events)', 'ami seq range')}
+    out['ami check'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
+    return out
+
+
+def check_c(work, state, rec, breakage=None, recompute=False):
+    """Feature c's verdict: fakecam_0's DAQ count == psana2's (per event), the MEB served
+    events, every event AMI computed from them matches psana2's (ami_check; with recompute,
+    checked again from the files) and AMI's own GUI showed the camera image while Running."""
+    counts, problems = dict(rec['counts']), []
+    experiment, run = rec.get('experiment'), rec.get('run')
+    if breakage or recompute:
+        counts.update(ami_recheck(work, state, experiment, run, tamper=breakage == 'ami-tamper'))
+    if experiment and run:
+        counts.update(ds._per_drp_counts(work, state, experiment, run, counts))
+    if not state.get('ami') or not state.get('meb'):
+        problems.append('the DAQ ran without the MEB and AMI (up --ami)')
+    if counts.get('per-DRP checks') != 'PASS':
+        problems.append(f'per-DRP checks: {counts.get("per-DRP checks")}')
+    meb, kept = counts.get('MEB_EvtCt'), counts.get('ami events')
+    if not isinstance(meb, int) or meb <= 0:
+        problems.append(f'MEB_EvtCt {meb}: the MEB served no event')
+    elif isinstance(kept, int) and kept > meb:
+        problems.append(f'AMI kept {kept} events, more than the MEB served ({meb})')
+    if counts.get('ami check') != 'PASS':
+        problems.append(f'ami check: {counts.get("ami check")}')
+    shot = str(counts.get('ami shot'))
+    png = shot.split()[1].rstrip(':') if shot.startswith('PASS ') else None
+    counts['ami screenshot'] = png if png and os.path.isfile(png) else f'none ({shot[:200]})'
+    if not (png and os.path.isfile(png) and os.path.getsize(png) > 0):
+        problems.append(f'ami shot: {shot[:200]}')
+    return counts, problems
+
+
+def allocated_hosts():
+    """The short names of the hosts of this Slurm job's allocation (SLURM_JOB_NODELIST,
+    expanded by scontrol); [] outside a job."""
+    nodelist = os.environ.get('SLURM_JOB_NODELIST') or os.environ.get('SLURM_NODELIST')
+    if not nodelist:
+        return []
+    try:
+        r = subprocess.run(['scontrol', 'show', 'hostnames', nodelist], capture_output=True, text=True,
+                           timeout=30)
+        names = r.stdout.split() if r.returncode == 0 else []
+    except (OSError, subprocess.SubprocessError):
+        names = []
+    if not names and '[' not in nodelist:
+        names = nodelist.split(',')
+    return [n.split('.')[0] for n in names if n]
+
+
+def unavailable(feature, hosts=None):
+    """Why feature cannot run here, or None.  Only d has a condition: --hosts must name two
+    different hosts of this Slurm job's allocation."""
+    if feature != 'd':
+        return None
+    job, have = os.environ.get('SLURM_JOB_ID'), allocated_hosts()
+    where = f'job {job} holds {",".join(have) or "no host"}' if job else 'not inside a Slurm job'
+    names = [h for h in (hosts or '').split(',') if h]
+    if len(names) != 2 or names[0] == names[1]:
+        return (f'two nodes needs --hosts HOST_A,HOST_B, two different hosts of this Slurm job\'s '
+                f'allocation ({where}); given: {hosts or "none"}')
+    missing = [h for h in names if h.split('.')[0] not in have]
+    if missing:
+        return f'{",".join(missing)} not in this Slurm job\'s allocation ({where})'
+    return None
+
+
+def feature_d(args, work, started):
+    """Feature d: NOT AVAILABLE unless --hosts names two hosts of this job's allocation; given
+    two, the plan of one partition over them, and FAIL: up --hosts runs a plan only."""
+    hosts = getattr(args, 'hosts', None)
+    why = unavailable('d', hosts)
+    sha, dirty = head()
+    print('---- FEATURE d report', flush=True)
+    print(f'job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")} host '
+          f'{socket.gethostname()} HEAD {sha} (files changed: {dirty}) hosts {hosts or "none"} '
+          f'allocated {",".join(allocated_hosts()) or "none"}', flush=True)
+    if why:
+        print(f'FEATURE d NOT AVAILABLE: {why}', flush=True)
+        return 1
+    rc = run_echo(daq_sim('up', '-w', work.dir, '-p', str(args.platform), '--hosts', hosts, '--dry-run',
+                          *up_options('d', args.platform)), '  plan| ', timeout=120)
+    print(f'  problem: the two-node run is not done: daq_sim up --hosts runs a plan only (plan exit {rc}; '
+          f'RUNBOOK: two nodes lists what running it needs)', flush=True)
+    print('FEATURE d FAIL', flush=True)
+    return 1
 
 
 def broken_copy(work, experiment, run, alias, drop=DROP_L1):
@@ -418,7 +554,8 @@ def report(feature, work, state, rec, counts, problems, started):
     for k, v in counts.items():
         if k == 'simxpm links' or k.startswith(('drp ', 'bld ', 'step ', 'readout groups', 'per-DRP', 'psana2', 'sysdrp',
                                                  'system DRP', 'simxpm NumL0Acc', 'TEB_', 'drp_match',
-                                                 'bld_miss', 'scan exit', f'{SCAN_DET}_update')):
+                                                 'bld_miss', 'scan exit', f'{SCAN_DET}_update', 'MEB_EvtCt',
+                                                 'shmemClient', 'ami ')):
             print(f'  {k:<26} {v}', flush=True)
     for p in problems:
         print(f'  problem: {p}', flush=True)
@@ -439,10 +576,15 @@ def cmd_feature(args):
         raise ds.Fail(f'--break {args.breakage} is not one of feature {feature}\'s {BREAKS[feature]}')
     if args.breakage and not args.check_only:
         raise ds.Fail('--break needs --check-only (it breaks a copy of a recorded run)')
+    if feature == 'd':
+        return feature_d(args, work, started)
     events = args.events or (200 if feature == 'b' else 1000)
+    ami_src = getattr(args, 'ami_src', None)
     if not args.check_only:
         rc = run_echo(daq_sim('up', '-w', work.dir, '--detach', '-p', str(args.platform),
-                              *up_options(feature, args.platform)), '  up| ', timeout=600)
+                              *up_options(feature, args.platform),
+                              *(['--ami-src', ami_src] if feature == 'c' and ami_src else [])),
+                      '  up| ', timeout=600)
         try:
             if rc != 0:
                 print(f'{ds.now()} up exit {rc}', flush=True)
@@ -450,8 +592,9 @@ def cmd_feature(args):
             if feature == 'b':
                 drive_scan(work, events, args.timeout)
             else:
+                shot = ['--ami-shot', work.path('ami-shot.png')] if feature == 'c' else []
                 rc = run_echo(daq_sim('cycle', '-w', work.dir, '--events', str(events),
-                                      '--timeout', str(args.timeout)), '  cycle| ', timeout=1800)
+                                      '--timeout', str(args.timeout), *shot), '  cycle| ', timeout=1800)
                 print(f'{ds.now()} cycle exit {rc}', flush=True)
         finally:
             if not args.keep_up:
@@ -478,7 +621,13 @@ def cmd_feature(args):
         path = rec['counts'].get('xtc2 file', '') if m else ''
         mm = re.search(r'/(\w+)-r(\d{4})-s\d+-c000\.xtc2', path)
         rec['experiment'], rec['run'] = (mm.group(1), int(mm.group(2))) if mm else (None, None)
-        if not args.check_only and rc != 0:
+        if feature == 'c':
+            counts, problems = check_c(work, state, rec, args.breakage, recompute=args.check_only)
+            if not args.check_only and rc != 0:
+                problems.append(f'cycle exit {rc}')
+            elif not args.breakage and not rec.get('ok'):
+                problems.append('the cycle failed')
+        elif not args.check_only and rc != 0:
             counts, problems = rec['counts'], [f'cycle exit {rc}']
         else:
             if feature == 'a':

@@ -1,0 +1,76 @@
+{
+ "file": "cas/pvatable.py",
+ "title": "pvatable (a grid of structure PV fields: --fields down, --bases across; the HSD PVs of cas/hsdpvs.py, served by the simulator simhsd)",
+ "web": "/gui/pvatable",
+ "backend": "sim-device:simhsd",
+ "walk": {
+  "argv": [
+   "--bases",
+   "{pvbase}:HSD:1_DA:A",
+   "{pvbase}:HSD:1_DA:B",
+   "--fields",
+   "MONTIMING.trigcntsum",
+   "MONTIMING.timframecnt",
+   "MONPGP.txcntsum",
+   "MONPGP.rxcnt[2]",
+   "MONRAWBUF.freesz"
+  ],
+  "devices": [
+   {
+    "module": "simhsd",
+    "args": [
+     "-P",
+     "{pvbase}:HSD:1_DA:A",
+     "{pvbase}:HSD:1_DA:B"
+    ]
+   }
+  ],
+  "pump": 4,
+  "timeout": 90,
+  "drive": [
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "PvScalarTable.PvField#0": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#0\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#1": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#1\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#2": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#2\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#3": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#3\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#4": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#4\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#5": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#5\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#6": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#6\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#7": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#7\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#8": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#8\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  },
+  "PvScalarTable.PvField#9": {
+   "web": "[data-parity~=\"PvScalarTable.PvField#9\"]",
+   "test": "test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]"
+  }
+ }
+}

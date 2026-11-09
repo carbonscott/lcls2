@@ -1,0 +1,354 @@
+{
+ "file": "cas/partca.py",
+ "title": "partca (one readout group's trigger, transitions, message, inhibits and counters)",
+ "web": "/gui/partca",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "{part}"
+  ],
+  "pump": 4,
+  "timeout": 90,
+  "drive": [
+   "pump:1"
+  ]
+ },
+ "mapping": {
+  "Ui_MainWindow.PvCheckBox[DAQ:SIM:XPM:0:PART:5:Master]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvCheckBox[DAQ:SIM:XPM:0:PART:5:Master]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select]\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate]\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACRate]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACRate]\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#0": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#0\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#1": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#1\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#2": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#2\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#3": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#3\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#4": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#4\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#5": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot]#5\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_EventCode]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_EventCode]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_Sequence]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_Sequence]\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#0": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#0\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#1": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#1\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#2": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#2\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#3": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#3\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#4": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#4\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#5": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#5\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#6": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#6\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#7": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#7\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#8": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#8\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#9": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#9\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#10": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#10\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#11": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#11\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#12": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#12\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#13": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#13\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#14": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#14\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#15": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#15\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#16": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#16\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#17": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditEvt[DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit]#17\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@1[DAQ:SIM:XPM:0:PART:5:L0Delay]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@1[DAQ:SIM:XPM:0:PART:5:L0Delay]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect]\"]",
+   "test": "test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#0": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#0\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#1": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#1\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#2": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#2\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#3": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#3\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#4": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#4\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#5": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#5\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#6": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#6\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#7": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#7\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#8": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#8\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#9": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#9\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#10": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#10\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#11": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#11\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#12": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#12\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#13": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#13\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#14": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#14\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#15": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditDst[DAQ:SIM:XPM:0:PART:5:DstSelect_Mask]#15\"]",
+   "test": "test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblCheckBox@1[DAQ:SIM:XPM:0:PART:5:Run]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblCheckBox@1[DAQ:SIM:XPM:0:PART:5:Run]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.PvPushButton@1[DAQ:SIM:XPM:0:PART:5:MsgConfig]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvPushButton@1[DAQ:SIM:XPM:0:PART:5:MsgConfig]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvEditInt@1[DAQ:SIM:XPM:0:PART:5:MsgConfigKey]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditInt@1[DAQ:SIM:XPM:0:PART:5:MsgConfigKey]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.PvPushButton@2[DAQ:SIM:XPM:0:PART:5:MsgEnable]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvPushButton@2[DAQ:SIM:XPM:0:PART:5:MsgEnable]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvPushButton@3[DAQ:SIM:XPM:0:PART:5:MsgDisable]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvPushButton@3[DAQ:SIM:XPM:0:PART:5:MsgDisable]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvPushButton@4[DAQ:SIM:XPM:0:PART:5:MsgClear]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvPushButton@4[DAQ:SIM:XPM:0:PART:5:MsgClear]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvPushButton@5[DAQ:SIM:XPM:0:PART:5:MsgInsert]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvPushButton@5[DAQ:SIM:XPM:0:PART:5:MsgInsert]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvEditInt@2[DAQ:SIM:XPM:0:PART:5:MsgHeader]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditInt@2[DAQ:SIM:XPM:0:PART:5:MsgHeader]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.PvEditInt@3[DAQ:SIM:XPM:0:PART:5:MsgPayload]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvEditInt@3[DAQ:SIM:XPM:0:PART:5:MsgPayload]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable0]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable1]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable2]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable2]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblCheckBox@2[DAQ:SIM:XPM:0:PART:5:InhEnable3]\"]",
+   "test": "test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval0]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval1]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval2]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval2]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@2[DAQ:SIM:XPM:0:PART:5:InhInterval3]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit0]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit1]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit2]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit2]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.LblEditInt@3[DAQ:SIM:XPM:0:PART:5:InhLimit3]\"]",
+   "test": "test_gui_partca.py::test_int_fields_write_their_pvs[chromium]"
+  },
+  "Ui_MainWindow.b[DAQ:SIM:XPM:0:PART:5:ResetL0]": {
+   "web": "[data-parity~=\"Ui_MainWindow.b[DAQ:SIM:XPM:0:PART:5:ResetL0]\"]",
+   "test": "test_gui_partca.py::test_buttons_put_1_then_0[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@1[DAQ:SIM:XPM:0:PART:5:L0InpRate]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@1[DAQ:SIM:XPM:0:PART:5:L0InpRate]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@2[DAQ:SIM:XPM:0:PART:5:L0AccRate]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@2[DAQ:SIM:XPM:0:PART:5:L0AccRate]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@3[DAQ:SIM:XPM:0:PART:5:L1Rate]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@3[DAQ:SIM:XPM:0:PART:5:L1Rate]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@4[DAQ:SIM:XPM:0:PART:5:RunTime]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@4[DAQ:SIM:XPM:0:PART:5:RunTime]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@5[DAQ:SIM:XPM:0:PART:5:NumL0Inp]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@5[DAQ:SIM:XPM:0:PART:5:NumL0Inp]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@6[DAQ:SIM:XPM:0:PART:5:NumL0Acc]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@6[DAQ:SIM:XPM:0:PART:5:NumL0Acc]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@7[DAQ:SIM:XPM:0:PART:5:NumL1]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@7[DAQ:SIM:XPM:0:PART:5:NumL1]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@8[DAQ:SIM:XPM:0:PART:5:DeadFrac]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@8[DAQ:SIM:XPM:0:PART:5:DeadFrac]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.PvLabel@9[DAQ:SIM:XPM:0:PART:5:DeadTime]": {
+   "web": "[data-parity~=\"Ui_MainWindow.PvLabel@9[DAQ:SIM:XPM:0:PART:5:DeadTime]\"]",
+   "test": "test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]"
+  },
+  "Ui_MainWindow.collectionWidget[Auto connect]": {
+   "web": "[data-parity~=\"Ui_MainWindow.collectionWidget[Auto connect]\"]",
+   "test": "test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]"
+  },
+  "Ui_MainWindow.collectionWidget[Reset]": {
+   "web": "[data-parity~=\"Ui_MainWindow.collectionWidget[Reset]\"]",
+   "test": "test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]"
+  },
+  "Ui_MainWindow.collectionWidget#0": {
+   "web": "[data-parity~=\"Ui_MainWindow.collectionWidget#0\"]",
+   "test": "test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]"
+  },
+  "Ui_MainWindow.collectionWidget#1": {
+   "web": "[data-parity~=\"Ui_MainWindow.collectionWidget#1\"]",
+   "test": "test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]"
+  },
+  "Ui_MainWindow.collectionWidget#2": {
+   "web": "[data-parity~=\"Ui_MainWindow.collectionWidget#2\"]",
+   "test": "test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]"
+  }
+ }
+}

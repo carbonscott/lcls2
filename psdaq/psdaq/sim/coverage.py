@@ -53,7 +53,10 @@ listed .xtc2 files.  Rows that need one:
                      EPICS-epoch seconds, between the file's first and last L1Accept) and read at
                      least one value under the witness's 'partition' prefix that changed (2 or
                      more distinct numbers); for procstat ('kind': 'procmgr'), its table instead
-                     lists every process whose procmgr log ('# ID:') names the run, RUNNING
+                     lists every process whose procmgr log ('# ID:') names the run, RUNNING; a
+                     'servers' entry reads under its own 'prefix' (the stand-in's PVs) and must
+                     give the row program's 'interfaces' entry: 'defined' (PV names its source
+                     defines, > 0) and 'missing' (those the stand-in does not serve) empty
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -809,10 +812,13 @@ def ami_witness_problem(prog, w, run_id, mine, runs, logs):
 LOG_ID = re.compile(r'^# ID:[ \t]*(\S+)', re.M)        # procmgr heads each process's log with its id
 
 
-def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=()):
+def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None):
     """Why a gui_witness does not show prog read live values of the run (its 'programs' or, for a
     stand-in, 'servers' entry), or None (module doc).  run_ids: the procmgr ids of the record's
-    logs that name the run, which a 'procmgr' entry (procstat's table) must show RUNNING."""
+    logs that name the run, which a 'procmgr' entry (procstat's table) must show RUNNING.  A
+    'servers' entry (a stand-in's PVs, read by a client of the cycle) reads under its own
+    'prefix' and must hold the row program's interface: {'interfaces': {row_prog: {'defined': n,
+    'missing': [...]}}}, the PV names the program's source defines, every one served."""
     p = _witness_run(w, run_id, mine)
     if p:
         return p
@@ -841,8 +847,19 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=()):
             return (f'shows {prog} did not list {", ".join(missing)} RUNNING (processes whose logs name the run)')
         return None
     prefix = w.get('partition')
+    if section == 'servers':
+        prefix = e.get('prefix')
+        itf = (e.get('interfaces') or {}).get(row_prog)
+        if not isinstance(itf, dict):
+            return f'its {prog} entry shows no interface of {row_prog} (PV names its source defines vs served)'
+        if not (isinstance(itf.get('defined'), int) and itf['defined'] > 0):
+            return f'its {prog} entry gives no PV name {row_prog}\'s source defines'
+        if itf.get('missing') != []:
+            missing = itf.get('missing') if isinstance(itf.get('missing'), list) else ['?']
+            return (f'{prog} does not serve {len(missing)} of the {itf["defined"]} PVs {row_prog} defines, '
+                    f'e.g. {", ".join(map(str, missing[:3]))}')
     if not (isinstance(prefix, str) and prefix):
-        return 'gives no partition prefix'
+        return 'gives no partition prefix' if section != 'servers' else f'its {prog} entry gives no prefix'
     live = [r for r in e.get('reads') or [] if isinstance(r, dict) and str(r.get('name', '')).startswith(prefix)
             and isinstance(r.get('values'), list) and len(numbers(r['values'])) >= 2]
     if not live:
@@ -987,8 +1004,8 @@ def row_problem(rid, entry, rec, cache=None):
         kind = 'gui_witness'
         section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids) for w in witnesses
-               if w['witness'] == kind]
+        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1])
+               for w in witnesses if w['witness'] == kind]
         if not why:
             return (f'its log of {prog} names neither the run\'s xtc2 file {mine[0]} (nor that path '
                     f'relative to the data dir {data_dir}) nor its BeginRun time '

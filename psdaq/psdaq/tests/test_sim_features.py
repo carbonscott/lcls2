@@ -1,7 +1,8 @@
 """System features of the hardware-free DAQ without a DAQ: simxpm's readout groups at different
 rates (--fixed-rates) and per-link seq and counts, its BLD source (--bld) over loopback multicast,
-daq_sim's --also/--fixed-rate/--bld plumbing, the two-node plan (up --hosts A,B --dry-run) and the
-feature command's argument checks."""
+daq_sim's --also/--fixed-rate/--bld plumbing, the two-node plan (up --hosts A,B --dry-run), the
+feature command's argument checks, feature c's checks on a recorded result (ami_check again,
+--break ami-tamper) and feature d's refusal unless two hosts of the job are given."""
 
 import json
 import socket
@@ -275,3 +276,100 @@ def test_scan_step_value_takes_numpy_numbers():
         m.update(value)
         assert m.position == 4.
 
+
+
+def test_features_c_and_d_have_entries():
+    from psdaq.sim import feature
+    assert list(feature.FEATURES) == ['a', 'b', 'c', 'd', 'e']
+    assert feature.up_options('c', 5) == ['--ami', '--rate', '100']
+    assert feature.up_options('d', 5) == ['--det', 'hrencoder', '--also', 'epix100:5']
+    assert feature.BREAKS['c'] == ('ami-tamper',) and feature.BREAKS['d'] == ()
+    assert feature.unavailable('a') is None and feature.unavailable('c') is None
+
+
+def test_feature_d_not_available_unless_two_allocated_hosts(monkeypatch, tmp_path, capsys):
+    from psdaq.sim import feature
+    import argparse
+    import subprocess
+    for k in ('SLURM_JOB_ID', 'SLURM_JOB_NODELIST', 'SLURM_NODELIST'):
+        monkeypatch.delenv(k, raising=False)
+    assert feature.allocated_hosts() == []
+    why = feature.unavailable('d', 'nodeA,nodeB')
+    assert 'not in this Slurm job' in why and 'not inside a Slurm job' in why
+
+    def no_scontrol(*a, **k):
+        raise OSError('no scontrol')
+    monkeypatch.setattr(subprocess, 'run', no_scontrol)
+    monkeypatch.setenv('SLURM_JOB_ID', '42')
+    monkeypatch.setenv('SLURM_JOB_NODELIST', 'nodeA.example,nodeB')
+    assert feature.allocated_hosts() == ['nodeA', 'nodeB']
+    monkeypatch.setenv('SLURM_JOB_NODELIST', 'node[1-2]')           # needs scontrol to expand
+    assert feature.allocated_hosts() == []
+    monkeypatch.undo()
+
+    monkeypatch.setattr(feature, 'allocated_hosts', lambda: ['nodeA'])
+    monkeypatch.setenv('SLURM_JOB_ID', '42')
+    for hosts in (None, '', 'nodeA', 'nodeA,nodeA', 'nodeA,nodeB,nodeC'):
+        why = feature.unavailable('d', hosts)
+        assert why.startswith('two nodes needs --hosts HOST_A,HOST_B') and 'job 42 holds nodeA' in why
+    assert feature.unavailable('d', 'nodeA,nodeB') == 'nodeB not in this Slurm job\'s allocation (job 42 holds nodeA)'
+    args = argparse.Namespace(feature='d', workdir=str(tmp_path), breakage=None, check_only=False, events=None,
+                              platform=5, keep_up=False, timeout=60, hosts=None)
+    assert feature.cmd_feature(args) == 1
+    out = capsys.readouterr().out
+    assert 'FEATURE d NOT AVAILABLE: two nodes needs --hosts' in out and 'FEATURE d FAIL' not in out
+    args.breakage, args.check_only = 'ami-tamper', True
+    with pytest.raises(daq_sim.Fail):
+        feature.cmd_feature(args)
+
+    monkeypatch.setattr(feature, 'allocated_hosts', lambda: ['nodeA', 'nodeB'])
+    assert feature.unavailable('d', 'nodeA,nodeB') is None
+    args.breakage, args.check_only, args.hosts = None, False, 'nodeA,nodeB'
+    assert feature.cmd_feature(args) == 1                       # the plan, then FAIL: a plan only
+    out = capsys.readouterr().out
+    assert "plan| " in out and "host:'nodeB', id:'epix100_0'" in out and 'FEATURE d FAIL' in out
+    assert 'NOT AVAILABLE' not in out
+
+
+def _ami_result(n=120, ts0=1 << 40):
+    rows = [[ts0 + i, 100 + i, (7 * i) % 65536] for i in range(n)]
+    return {'rows': rows + rows[:5], 'count': n, 'pixsum': sum(r[2] for r in rows)}, \
+        {r[0]: (r[1], r[2]) for r in rows}
+
+
+def test_feature_c_checks(monkeypatch, tmp_path):
+    from psdaq.sim import feature, ami_check
+    work = daq_sim.Work(str(tmp_path))
+    xtc = tmp_path / 'data' / daq_sim.INSTRUMENT / 'tstx00001' / 'xtc'
+    xtc.mkdir(parents=True)
+    (xtc / 'tstx00001-r0003-s000-c000.xtc2').write_bytes(b'x')
+    (tmp_path / 'logs').mkdir()
+    result, events = _ami_result()
+    (tmp_path / 'logs' / 'ami_check.rows.json').write_text(json.dumps(result))
+    monkeypatch.setattr(ami_check, 'psana_events', lambda path, det='fakecam': events)
+    png = tmp_path / 'ami-shot.png'
+    png.write_bytes(b'png')
+    monkeypatch.setattr(daq_sim, '_per_drp_counts', lambda *a, **k: {
+        'drp fakecam_0': 'group 5: DAQ 4000 psana2 events 4000', 'per-DRP checks': 'PASS'})
+    state = {'det': 'fakecam', 'meb': True, 'ami': True, 'platform': 5}
+    rec = {'experiment': 'tstx00001', 'run': 3, 'ok': True,
+           'counts': {'MEB_EvtCt': 4000, 'ami check': 'PASS', 'ami events': 120,
+                      'ami shot': f'PASS {png}: window "fakecam:raw:raw" of ami-client pid 1, 30+ colours'}}
+
+    counts, problems = feature.check_c(work, state, rec)
+    assert problems == [] and counts['ami screenshot'] == str(png)
+    counts, problems = feature.check_c(work, state, rec, recompute=True)      # --check-only
+    assert problems == [] and counts['ami check'] == 'PASS' and counts['ami matched'] == 120
+    counts, problems = feature.check_c(work, state, rec, breakage='ami-tamper')
+    assert counts['ami check'].startswith('FAIL') and any(p.startswith('ami check: FAIL') for p in problems)
+    assert json.loads((tmp_path / 'logs' / 'ami_check.rows.json').read_text()) == result   # file untouched
+
+    for change, words in ((('MEB_EvtCt', 0), 'the MEB served no event'),
+                          (('MEB_EvtCt', 100), 'more than the MEB served'),
+                          (('ami shot', 'FAIL no grab'), 'ami shot: FAIL no grab'),
+                          (('ami check', 'FAIL x'), 'ami check: FAIL x')):
+        bad = dict(rec, counts=dict(rec['counts'], **dict([change])))
+        assert any(words in p for p in feature.check_c(work, state, bad)[1]), change
+    assert 'up --ami' in ' '.join(feature.check_c(work, dict(state, ami=False), rec)[1])
+    png.unlink()
+    assert any(p.startswith('ami shot: PASS') for p in feature.check_c(work, state, rec)[1])

@@ -34,7 +34,7 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
-            'prog:control_gui', 'prog:groupca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
+            'prog:control_gui', 'prog:groupca', 'prog:partca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
             'prog:drp_udpencoder',
             'prog:sim_udpencoder']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
@@ -54,8 +54,10 @@ def test_extra_entries_stay_on_loopback(tmp_path):
     assert '-T sim://127.0.0.1:' in udp
     assert f'psana://shmem={daq_sim.meb_tag(5)}' in extra and f'-t {daq_sim.meb_tag(5)}' in extra
     assert daq_sim.ami_ports(5) == list(range(31150, 31160))
-    others = {k: v for k, v in daq_sim.ports(5).items() if not k.startswith('ami')}
+    others = {k: v for k, v in daq_sim.ports(5).items() if not k.startswith('ami') and isinstance(v, int)}
     assert not set(daq_sim.ami_ports(5)) & set(others.values())
+    servers = [p for pair in daq_sim.ports(5)['pvservers'].values() for p in pair]
+    assert len(set(servers)) == len(servers) and not set(servers) & (set(daq_sim.ami_ports(5)) | set(others.values()))
 
 
 def test_procs_and_activedet(tmp_path):
@@ -299,7 +301,8 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
     params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
     for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
-        assert f"cmd:'{name} {' '.join(gui_witness.argv(name, params))}'" in extra, name
+        cmd = 'python -m psdaq.cas.partca' if name == 'partca' else name   # no partca console script
+        assert f"cmd:'{cmd} {' '.join(gui_witness.argv(name, params))}'" in extra, name
     assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
 
 
@@ -345,3 +348,37 @@ def test_procstat_witness_reads_its_table(tmp_path):
     assert e['reads'] == [{'name': 'procmgr:control', 'values': ['RUNNING']},
                           {'name': 'procmgr:fakecam_0', 'values': ['SHUTDOWN']}]
     assert gui_witness.spec('procstat', params)['walk']['record_calls'][0].endswith('spawnConsole')
+
+
+def test_stand_in_interfaces_come_from_the_programs_own_source():
+    """hsdpvs's names from its ChipServer, tprcas's from the table its main() builds."""
+    from psdaq.sim import gui_witness
+    hsd = gui_witness.interface('hsdpvs', ['-P', 'X:HSD:A', 'X:HSD:B'])
+    assert 'X:HSD:A:MONTIMING' in hsd and 'X:HSD:B:CONFIG' in hsd and len(hsd) == 2 * len([n for n in hsd if n.startswith('X:HSD:A:')])
+    tpr = gui_witness.interface('tprcas', ['-P', 'X:TPR'])
+    assert 'X:TPR:EVTCNT' in tpr and 'X:TPR:CH0:DELAY' in tpr and all(n.startswith('X:TPR:') for n in tpr)
+
+
+def test_server_entry_reads_the_interface_and_live_pvs():
+    """Every defined name got from the stand-in (a failed get is 'missing'), and the live PVs read until
+    `seconds` pass; a stand-in that serves all and counts passes."""
+    from psdaq.sim import gui_witness
+
+    class Ctx:
+        def __init__(self, missing=()):
+            self.n, self.missing = 0, set(missing)
+
+        def get(self, names, timeout=None, throw=True):
+            if isinstance(names, list):
+                return [TimeoutError() if n in self.missing else 1 for n in names]
+            self.n += 1
+            return self.n
+    params = {'pvbase': 'X'}
+    args = ['-P', 'X:TPR']
+    names = gui_witness.interface('tprcas', args)
+    e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02, prepared=(args, {'tprcas': names}, Ctx()))
+    assert e['pass'] and e['interfaces']['tprcas'] == {'defined': len(names), 'served': len(names), 'missing': []}
+    assert e['prefix'] == 'X:TPR' and e['live'] == ['X:TPR:EVTCNT']
+    e = gui_witness.server_entry('simtpr', params, 0, 0.05, period=0.02,
+                                 prepared=(args, {'tprcas': names}, Ctx(missing=['X:TPR:CH3:RATE'])))
+    assert not e['pass'] and e['interfaces']['tprcas']['missing'] == ['X:TPR:CH3:RATE']

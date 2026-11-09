@@ -1031,16 +1031,32 @@ def test_procstat_is_run_when_its_table_showed_the_runs_processes_running(tmp_pa
     assert code == 1 and 'shows procstat did not list fakecam_0 RUNNING' in line
 
 
+def server_entry(w, e, missing=()):
+    """Make a 'programs'-shaped entry the 'servers' entry of simxpm standing in for pykcuxpm: its
+    own prefix and the interface of pykcuxpm."""
+    e.update(prefix='DAQ:SIM:XPM:0', interfaces={'pykcuxpm': {'defined': 3, 'served': 3 - len(missing),
+                                                              'missing': list(missing)}})
+
+
 def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
     """R3: a STAND-IN row whose stand-in's log never names the run needs a 'servers' entry: a
-    client of the cycle read the stand-in's PVs while the run ran; a 'programs' entry is not one."""
+    client of the cycle read the stand-in's PVs while the run ran, and the entry shows the row
+    program's PV names all served; a 'programs' entry is not one."""
     kw = dict(row='prog:pykcuxpm', cmd='python -m psdaq.sim.simxpm -P DAQ:SIM', stand_in='simxpm')
-    code, line = witness_run(tmp_path / 'a', **kw)
+    code, line = witness_run(tmp_path / 'a', mutate=server_entry, **kw)
     assert 'stand-in simxpm (its PVs); evidence ' in line and 'NO VALID' not in line
-    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: w.update(programs=w.pop('servers')), **kw)
+    code, line = witness_run(tmp_path / 'b', mutate=lambda w, e: (server_entry(w, e), w.update(programs=w.pop('servers'))),
+                             **kw)
     assert code == 1 and 'has no servers entry for simxpm' in line
-    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: e.update(end=L1_LAST + 1), **kw)
+    code, line = witness_run(tmp_path / 'c', mutate=lambda w, e: (server_entry(w, e), e.update(end=L1_LAST + 1)), **kw)
     assert code == 1 and 'not within the run\'s L1Accepts' in line
+    code, line = witness_run(tmp_path / 'd', **kw)                        # no interface
+    assert code == 1 and 'its simxpm entry shows no interface of pykcuxpm' in line
+    code, line = witness_run(tmp_path / 'e', mutate=lambda w, e: server_entry(w, e, ['DAQ:SIM:XPM:0:XTPG:CuDelay']), **kw)
+    assert code == 1 and 'simxpm does not serve 1 of the 3 PVs pykcuxpm defines, e.g. DAQ:SIM:XPM:0:XTPG:CuDelay' in line
+    code, line = witness_run(tmp_path / 'f', mutate=lambda w, e: (server_entry(w, e), e.update(prefix='DAQ:SIM:HSD')),
+                             **kw)                                        # its reads are not under its prefix
+    assert code == 1 and 'shows simxpm read no live value under DAQ:SIM:HSD' in line
 
 
 # --- the commands --------------------------------------------------------------------------

@@ -103,3 +103,24 @@ def require_loopback_pva_env(environ, what='PVA client'):
         if environ.get(key):
             conf[key] = environ[key].strip()
     return conf
+
+
+def require_loopback_ca_env(environ, what='CA client'):
+    """Check the EPICS Channel Access client environment before libca starts (pyepics reads it from os.environ).
+
+    Accepted only when EPICS_CA_AUTO_ADDR_LIST is NO, EPICS_CA_ADDR_LIST is non-empty and every entry is a loopback
+    IP literal, and every EPICS_CA_NAME_SERVERS entry (if any) is loopback.  Returns the EPICS_CA_* settings."""
+    auto = (environ.get('EPICS_CA_AUTO_ADDR_LIST') or '').strip()
+    if auto.upper() != 'NO':
+        raise NonLoopbackError('%s: EPICS_CA_AUTO_ADDR_LIST=%r; refusing (must be NO, or CA searches broadcast beyond '
+                               'this host)' % (what, auto))
+    addrs = (environ.get('EPICS_CA_ADDR_LIST') or '').split()
+    if not addrs:
+        raise NonLoopbackError('%s: EPICS_CA_ADDR_LIST is empty; refusing (must list loopback addresses only)' % what)
+    for key, entries in (('EPICS_CA_ADDR_LIST', addrs),
+                         ('EPICS_CA_NAME_SERVERS', (environ.get('EPICS_CA_NAME_SERVERS') or '').split())):
+        for e in entries:
+            if _is_loopback_literal(_addr_host(e)) is not True:
+                raise NonLoopbackError('%s: %s entry %r is not a loopback IP literal; refusing' % (what, key, e))
+    return {k: environ[k] for k in ('EPICS_CA_AUTO_ADDR_LIST', 'EPICS_CA_ADDR_LIST', 'EPICS_CA_NAME_SERVERS',
+                                    'EPICS_CA_SERVER_PORT', 'EPICS_CA_REPEATER_PORT') if environ.get(k) is not None}
