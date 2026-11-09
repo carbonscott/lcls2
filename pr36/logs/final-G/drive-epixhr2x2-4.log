@@ -1,0 +1,30 @@
+=== STEP configdb
+configdb: http://127.0.0.1:46777/ws/ tst/BEAM/epixhr2x2_0 (key, written): (1, True)
+=== STEP install rogue_dev(sim://epixhr2x2)
+seeds: 7 fault: None
+=== STEP import psdaq.configdb.epixhr2x2_config
+=== STEP epixhr2x2_init
+WARNING:root:epixhr2x2_init
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves ePixHr10kT.EpixHR.MMCMRegisters.CLKOUT0PhaseMux (0 answered)
+Start: Started zmqServer on ports 9103-9105
+    To start a gui: python -m pyrogue gui --server='localhost:9103'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9103)
+ConfigLclsTimingV2()
+=== FAILED in epixhr2x2_init
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_drive.py", line 124, in main
+    root = f('init')(detname, dev, 1, None, args.timebase, 0)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/configdb/epixhr2x2_config.py", line 314, in epixhr2x2_init
+    cbase.__enter__()
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 170, in __enter__
+    self.start()
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 408, in start
+    pr.Device._start(self)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_dev.py", line 670, in _start
+    _SIM.attach(self)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_dev.py", line 501, in attach
+    store = self._locate(var)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_dev.py", line 446, in _locate
+    raise SimDeviceError('rogue_dev: cannot tell which simulated transport serves %s '
+psdaq.sim.rogue_dev.SimDeviceError: rogue_dev: cannot tell which simulated transport serves ePixHr10kT.EpixHR.TriggerEventManager.XpmMessageAligner.RxId (0 answered)
+srun: error: sdfmilan048: task 0: Exited with exit code 1

@@ -1,0 +1,15 @@
+final at cb5b519bf21cb75e90d79c8c7921a34b195ad73e dirty=0 2026-11-08T19:36:55-08:00
+BUILD_EXIT=0
+Sun Nov  8 07:37:24 PM PST 2026
+fakecam done 2026-11-08T19:40:06-08:00
+cspad done 2026-11-08T19:42:49-08:00
+epixhremu done 2026-11-08T19:45:43-08:00
+jungfrauemu done 2026-11-08T19:50:23-08:00
+ts done 2026-11-08T19:53:14-08:00
+hrencoder done 2026-11-08T19:56:49-08:00
+epixm320 done 2026-11-08T20:00:44-08:00
+epix100 done 2026-11-08T20:04:39-08:00
+wave8 done 2026-11-08T20:08:27-08:00
+wave8he done 2026-11-08T20:12:11-08:00
+fakecam --segments 2 done 2026-11-08T20:13:23-08:00
+FINAL_DONE

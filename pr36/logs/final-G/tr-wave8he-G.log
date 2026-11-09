@@ -1,0 +1,183 @@
+host=sdfmilan048 head=cb5b519bf dirty=0 date=2026-11-08T20:08:32-08:00 job=43839059 step=239
+== up --det wave8he 
+2026-11-08T20:08:33.189-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 239), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G
+2026-11-08T20:08:33.189-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T20:08:55.913-08:00 daq_sim: preflight rc=0: 20:08:55 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:09:02.052-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T20:09:02.052-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T20:09:02.052-08:00 daq_sim: config DB seeded: tst/BEAM/wave8he_0 key=2 written
+2026-11-08T20:09:03.878-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T20:09:09.551-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, wave8he_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/daq_sim.cnf  pids {'control': 1439430, 'teb0': 1439431, 'wave8he_0': 1439432}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G
+UP_EXIT=0
+== cycle
+2026-11-08T20:09:10.850-08:00 start state: reset
+2026-11-08T20:09:10.851-08:00 setRecord(True) -> OK
+2026-11-08T20:09:12.857-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:09:12.859-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T20:09:15.008-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T20:09:15.013-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:09:16.626-08:00 setState connected    -> connected    OK
+2026-11-08T20:09:17.919-08:00 setState configured   -> configured   OK
+2026-11-08T20:09:18.988-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T20:09:18.997-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T20:09:19.003-08:00 setState starting     -> starting     OK
+2026-11-08T20:09:19.005-08:00 setState paused       -> paused       OK
+2026-11-08T20:09:19.008-08:00 setState running      -> running      OK
+2026-11-08T20:09:19.009-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T20:09:20.963-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1881 (wanted >= 1000)
+2026-11-08T20:09:20.969-08:00 setState paused       -> paused       OK
+2026-11-08T20:09:22.022-08:00 counts after Disable: {'simxpm NumL0Acc': 1958, 'simxpm NumL0Inp': 1958, 'TEB_EvtCt': 1958, 'TEB_TrCt': 7, 'TEB_WrtCt': 1958, 'DRP_Damage': 0, 'DRP_RecordSize': 8867528, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-08T20:09:22.025-08:00 setState starting     -> starting     OK
+2026-11-08T20:09:22.034-08:00 setState configured   -> configured   OK
+2026-11-08T20:09:22.038-08:00 setState connected    -> connected    OK
+2026-11-08T20:09:24.144-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:09:24.191-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:09:24.193-08:00 setState reset        -> reset        OK
+2026-11-08T20:09:30.405-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-08T20:09:10.851-08:00 -> 2026-11-08T20:09:12.857-08:00  unallocated  unallocated  
+  2026-11-08T20:09:12.859-08:00 -> 2026-11-08T20:09:15.013-08:00  allocated    allocated    
+  2026-11-08T20:09:15.013-08:00 -> 2026-11-08T20:09:16.626-08:00  connected    connected    
+  2026-11-08T20:09:16.626-08:00 -> 2026-11-08T20:09:17.919-08:00  configured   configured   
+  2026-11-08T20:09:17.919-08:00 -> 2026-11-08T20:09:19.003-08:00  starting     starting     
+  2026-11-08T20:09:19.003-08:00 -> 2026-11-08T20:09:19.005-08:00  paused       paused       
+  2026-11-08T20:09:19.005-08:00 -> 2026-11-08T20:09:19.008-08:00  running      running      
+  2026-11-08T20:09:20.963-08:00 -> 2026-11-08T20:09:20.969-08:00  paused       paused       
+  2026-11-08T20:09:22.022-08:00 -> 2026-11-08T20:09:22.025-08:00  starting     starting     
+  2026-11-08T20:09:22.025-08:00 -> 2026-11-08T20:09:22.034-08:00  configured   configured   
+  2026-11-08T20:09:22.034-08:00 -> 2026-11-08T20:09:22.038-08:00  connected    connected    
+  2026-11-08T20:09:22.038-08:00 -> 2026-11-08T20:09:24.144-08:00  allocated    allocated    
+  2026-11-08T20:09:24.144-08:00 -> 2026-11-08T20:09:24.191-08:00  unallocated  unallocated  
+  2026-11-08T20:09:24.191-08:00 -> 2026-11-08T20:09:24.193-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        1958
+  simxpm NumL0Inp        1958
+  TEB_EvtCt              1958
+  TEB_TrCt               7
+  TEB_WrtCt              1958
+  DRP_Damage             0
+  DRP_RecordSize         8867528
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (8867576 B)
+  psana2 events          1958
+  psana2 with data       1958
+  psana2 checks          PASS
+  psana2 seq             1..1958
+  psana2 seeds           {'0x1234': 1958}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:09:30.639-08:00 evidence 20261108T200930-cycle-cb5b519bf-1439467: det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:09:30.639-08:00 cycle PASS
+CYCLE_EXIT=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 1958; with wave8he data 1958; events matching the pattern of seed 0x1234: 1958
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern
+  PASS
+rc=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 1958; with wave8he data 1958; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  problem: event 5: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 samples differ (shape (256,))
+  FAIL
+rc=1
+== down
+2026-11-08T20:09:43.324-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T20:09:48.700-08:00 daq_sim: stopping simxpm pid 1439394: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T20:09:48.800-08:00 daq_sim: stopping lgbk pid 1439392: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T20:09:49.101-08:00 daq_sim: stopping configdb pid 1439204: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T20:09:49.719-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T20:09:49.727-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== FAULT up --det wave8he PSDAQ_SIM_ROGUE_FAULT=pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0
+2026-11-08T20:09:50.531-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 239), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault
+2026-11-08T20:09:50.531-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T20:10:13.353-08:00 daq_sim: preflight rc=0: 20:10:13 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:10:19.777-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T20:10:19.777-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T20:10:19.777-08:00 daq_sim: config DB seeded: tst/BEAM/wave8he_0 key=2 written
+2026-11-08T20:10:21.607-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T20:10:27.176-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, wave8he_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/daq_sim.cnf  pids {'control': 1442204, 'teb0': 1442205, 'wave8he_0': 1442206}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault
+UP_EXIT=0
+== FAULT cycle
+2026-11-08T20:10:28.422-08:00 start state: reset
+2026-11-08T20:10:28.423-08:00 setRecord(True) -> OK
+2026-11-08T20:10:30.428-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:10:30.429-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T20:10:32.582-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T20:10:32.588-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:10:33.638-08:00 setState connected    -> connected    OK
+ERROR:root:getState(tcp://localhost:30005) timeout (60.0 sec)
+2026-11-08T20:11:33.699-08:00 setState configured   -> error        FAIL
+2026-11-08T20:11:33.719-08:00 [error] wave8he_0 did not respond to configure
+2026-11-08T20:11:33.719-08:00 [error] 1 client did not respond to configure
+2026-11-08T20:11:33.719-08:00 [error] configure failed to change state
+2026-11-08T20:11:33.720-08:00 status: transition connect state connected recording True experiment tstx00001 run 0
+2026-11-08T20:12:03.754-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T20:12:03.754-08:00 [error] wave8he_0 did not respond to disconnect
+2026-11-08T20:12:03.754-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T20:12:03.754-08:00 [error] disconnect failed to change state
+2026-11-08T20:12:03.755-08:00 setState allocated    -> connected    FAIL
+2026-11-08T20:12:04.256-08:00 final state connected (start reset)
+transitions (request -> read back):
+  2026-11-08T20:10:28.423-08:00 -> 2026-11-08T20:10:30.428-08:00  unallocated  unallocated  
+  2026-11-08T20:10:30.429-08:00 -> 2026-11-08T20:10:32.588-08:00  allocated    allocated    
+  2026-11-08T20:10:32.588-08:00 -> 2026-11-08T20:10:33.638-08:00  connected    connected    
+  2026-11-08T20:10:33.638-08:00 -> 2026-11-08T20:11:33.699-08:00  configured   error        
+  2026-11-08T20:11:33.720-08:00 -> 2026-11-08T20:12:03.755-08:00  allocated    connected    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T20:12:04.263-08:00 7 error message(s) on the status stream
+2026-11-08T20:12:04.263-08:00 cycle FAIL
+CYCLE_EXIT=1
+== FAULT drp log lines naming the fault
+# CMDLINE: drp -P tst -C localhost -D wave8he -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x2000,sim_dma_count=1024,sim_seed=0x1234,epics_prefix=SIM:W8HE:00 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/prom -u wave8he_0 -p 5
+rogue_dev: FAULT PV SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay reads back 0
+tst-drp[1442206]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-wave8he-G-fault/data/tst
+Traceback (most recent call last):
+    raise ValueError('TriggerDelay(ns) too small')
+ValueError: TriggerDelay(ns) too small
+tst-drp[1442206]: <C> **** python error
+@@@ Received a sigChild for process 1442206. The process was killed by signal 6
+== FAULT down
+2026-11-08T20:12:05.017-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T20:12:10.393-08:00 daq_sim: stopping simxpm pid 1442164: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T20:12:10.493-08:00 daq_sim: stopping lgbk pid 1442020: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T20:12:10.694-08:00 daq_sim: stopping configdb pid 1441624: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T20:12:11.312-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T20:12:11.318-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

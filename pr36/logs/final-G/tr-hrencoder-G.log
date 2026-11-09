@@ -1,0 +1,187 @@
+host=sdfmilan048 head=cb5b519bf dirty=0 date=2026-11-08T19:53:19-08:00 job=43839059 step=235
+== up --det hrencoder 
+2026-11-08T19:53:20.487-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 235), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G
+2026-11-08T19:53:20.487-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:53:43.699-08:00 daq_sim: preflight rc=0: 19:53:43 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:53:49.308-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T19:53:49.308-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:53:49.308-08:00 daq_sim: config DB seeded: tst/BEAM/hrencoder_0 key=2 written
+2026-11-08T19:53:51.136-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:53:57.074-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, hrencoder_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/daq_sim.cnf  pids {'control': 1408397, 'teb0': 1408398, 'hrencoder_0': 1408399}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G
+UP_EXIT=0
+== cycle
+2026-11-08T19:53:58.669-08:00 start state: reset
+2026-11-08T19:53:58.670-08:00 setRecord(True) -> OK
+2026-11-08T19:54:00.674-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:54:00.675-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:54:00.825-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:54:00.829-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:54:02.310-08:00 setState connected    -> connected    OK
+2026-11-08T19:54:03.500-08:00 setState configured   -> configured   OK
+2026-11-08T19:54:04.578-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T19:54:04.588-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T19:54:04.594-08:00 setState starting     -> starting     OK
+2026-11-08T19:54:04.597-08:00 setState paused       -> paused       OK
+2026-11-08T19:54:04.600-08:00 setState running      -> running      OK
+2026-11-08T19:54:04.601-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T19:54:06.647-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1679 (wanted >= 1000)
+2026-11-08T19:54:06.651-08:00 setState paused       -> paused       OK
+2026-11-08T19:54:07.715-08:00 counts after Disable: {'simxpm NumL0Acc': 2051, 'simxpm NumL0Inp': 2051, 'TEB_EvtCt': 2051, 'TEB_TrCt': 7, 'TEB_WrtCt': 2051, 'DRP_Damage': 0, 'DRP_RecordSize': 148862, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-08T19:54:07.720-08:00 setState starting     -> starting     OK
+2026-11-08T19:54:07.729-08:00 setState configured   -> configured   OK
+2026-11-08T19:54:07.732-08:00 setState connected    -> connected    OK
+2026-11-08T19:54:07.868-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:54:07.918-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:54:07.919-08:00 setState reset        -> reset        OK
+2026-11-08T19:54:12.693-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-08T19:53:58.670-08:00 -> 2026-11-08T19:54:00.674-08:00  unallocated  unallocated  
+  2026-11-08T19:54:00.675-08:00 -> 2026-11-08T19:54:00.829-08:00  allocated    allocated    
+  2026-11-08T19:54:00.829-08:00 -> 2026-11-08T19:54:02.310-08:00  connected    connected    
+  2026-11-08T19:54:02.310-08:00 -> 2026-11-08T19:54:03.500-08:00  configured   configured   
+  2026-11-08T19:54:03.500-08:00 -> 2026-11-08T19:54:04.594-08:00  starting     starting     
+  2026-11-08T19:54:04.594-08:00 -> 2026-11-08T19:54:04.597-08:00  paused       paused       
+  2026-11-08T19:54:04.597-08:00 -> 2026-11-08T19:54:04.600-08:00  running      running      
+  2026-11-08T19:54:06.648-08:00 -> 2026-11-08T19:54:06.651-08:00  paused       paused       
+  2026-11-08T19:54:07.715-08:00 -> 2026-11-08T19:54:07.720-08:00  starting     starting     
+  2026-11-08T19:54:07.720-08:00 -> 2026-11-08T19:54:07.729-08:00  configured   configured   
+  2026-11-08T19:54:07.729-08:00 -> 2026-11-08T19:54:07.732-08:00  connected    connected    
+  2026-11-08T19:54:07.732-08:00 -> 2026-11-08T19:54:07.868-08:00  allocated    allocated    
+  2026-11-08T19:54:07.868-08:00 -> 2026-11-08T19:54:07.918-08:00  unallocated  unallocated  
+  2026-11-08T19:54:07.918-08:00 -> 2026-11-08T19:54:07.919-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        2051
+  simxpm NumL0Inp        2051
+  TEB_EvtCt              2051
+  TEB_TrCt               7
+  TEB_WrtCt              2051
+  DRP_Damage             0
+  DRP_RecordSize         148862
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (148910 B)
+  psana2 events          2051
+  psana2 with data       2051
+  psana2 checks          PASS
+  psana2 seq             1..2051
+  psana2 seeds           {'0x1234': 2051}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T19:54:12.931-08:00 evidence 20261108T195412-cycle-cb5b519bf-1408435: det:drp:hrencoder prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T19:54:12.931-08:00 cycle PASS
+CYCLE_EXIT=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 2051; with hrencoder data 2051; events matching the pattern of seed 0x1234: 2051
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern
+  PASS
+rc=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 2051; with hrencoder data 2051; events matching the pattern of seed 0x1234: 0
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern, self-test offset 1
+  problem: event 1: value 45163 != 1678594537; error_cnt 233 != 15; missedTrig_cnt 15 != 94
+  problem: event 2: value 85666 != 1678635040; error_cnt 32 != 70; missedTrig_cnt 70 != 149
+  problem: event 3: value 126169 != 1678675543; error_cnt 87 != 125; missedTrig_cnt 125 != 204
+  problem: event 4: value 166672 != 1678716046; error_cnt 142 != 180; missedTrig_cnt 180 != 3
+  problem: event 5: value 207175 != 1678756549; error_cnt 197 != 235; missedTrig_cnt 235 != 58
+  FAIL
+rc=1
+== down
+2026-11-08T19:54:22.735-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T19:54:28.208-08:00 daq_sim: stopping simxpm pid 1408217: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T19:54:28.308-08:00 daq_sim: stopping lgbk pid 1408215: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T19:54:28.809-08:00 daq_sim: stopping configdb pid 1408183: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T19:54:29.427-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T19:54:29.445-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== FAULT up --det hrencoder PSDAQ_SIM_ROGUE_FAULT=Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay
+2026-11-08T19:54:30.437-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 235), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault
+2026-11-08T19:54:30.437-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:54:53.708-08:00 daq_sim: preflight rc=0: 19:54:53 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:54:59.440-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T19:54:59.440-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:54:59.440-08:00 daq_sim: config DB seeded: tst/BEAM/hrencoder_0 key=2 written
+2026-11-08T19:55:01.267-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:55:07.105-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, hrencoder_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/daq_sim.cnf  pids {'control': 1410670, 'teb0': 1410671, 'hrencoder_0': 1410672}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault
+UP_EXIT=0
+== FAULT cycle
+2026-11-08T19:55:08.427-08:00 start state: reset
+2026-11-08T19:55:08.428-08:00 setRecord(True) -> OK
+2026-11-08T19:55:10.432-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:55:10.433-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:55:10.585-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:55:10.588-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:55:11.599-08:00 setState connected    -> connected    OK
+ERROR:root:getState(tcp://localhost:30005) timeout (60.0 sec)
+2026-11-08T19:56:11.660-08:00 setState configured   -> error        FAIL
+2026-11-08T19:56:11.672-08:00 [error] hrencoder_0 did not respond to configure
+2026-11-08T19:56:11.672-08:00 [error] 1 client did not respond to configure
+2026-11-08T19:56:11.672-08:00 [error] configure failed to change state
+2026-11-08T19:56:11.673-08:00 status: transition connect state connected recording True experiment tstx00001 run 0
+2026-11-08T19:56:41.707-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T19:56:41.707-08:00 [error] hrencoder_0 did not respond to disconnect
+2026-11-08T19:56:41.707-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T19:56:41.707-08:00 [error] disconnect failed to change state
+2026-11-08T19:56:41.707-08:00 setState allocated    -> connected    FAIL
+2026-11-08T19:56:42.209-08:00 final state connected (start reset)
+transitions (request -> read back):
+  2026-11-08T19:55:08.429-08:00 -> 2026-11-08T19:55:10.432-08:00  unallocated  unallocated  
+  2026-11-08T19:55:10.433-08:00 -> 2026-11-08T19:55:10.588-08:00  allocated    allocated    
+  2026-11-08T19:55:10.588-08:00 -> 2026-11-08T19:55:11.599-08:00  connected    connected    
+  2026-11-08T19:55:11.599-08:00 -> 2026-11-08T19:56:11.660-08:00  configured   error        
+  2026-11-08T19:56:11.673-08:00 -> 2026-11-08T19:56:41.707-08:00  allocated    connected    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T19:56:42.214-08:00 7 error message(s) on the status stream
+2026-11-08T19:56:42.214-08:00 cycle FAIL
+CYCLE_EXIT=1
+== FAULT drp log lines naming the fault
+# CMDLINE: drp -P tst -C localhost -D hrencoder -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x1000,sim_dma_count=1024,sim_seed=0x1234 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/prom -u hrencoder_0 -p 5
+WARNING:psdaq.sim.rogue_dev:FAULT Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x8014900c reads back 0xffffffff
+rogue_dev: FAULT Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x8014900c reads back 0xffffffff
+tst-drp[1410672]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-hrencoder-G-fault/data/tst
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8014900c. Byte: 0. Got: 0xff, Exp: 0xba, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8014900c. Byte: 0. Got: 0xff, Exp: 0xba, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Error setting value '19642' to variable 'Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8014900c. Byte: 0. Got: 0xff, Exp: 0xba, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8014900c. Byte: 0. Got: 0xff, Exp: 0xba, Mask: 0xff
+tst-drp[1410672]: <C> **** python error
+@@@ Received a sigChild for process 1410672. The process was killed by signal 6
+== FAULT down
+2026-11-08T19:56:42.996-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T19:56:48.372-08:00 daq_sim: stopping simxpm pid 1410450: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T19:56:48.472-08:00 daq_sim: stopping lgbk pid 1410448: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T19:56:48.873-08:00 daq_sim: stopping configdb pid 1410424: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T19:56:49.792-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T19:56:49.802-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

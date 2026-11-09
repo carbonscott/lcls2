@@ -1,0 +1,25 @@
+=== STEP configdb
+=== FAILED in configdb
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_drive.py", line 108, in main
+    args.segm), seed_type(url, args.inst, args.alias, t, detname, args.segm, args.yaml),
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_drive.py", line 59, in seed_type
+    top = type_cdict(det_type, detname, segm, yaml)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/configdb_seed.py", line 128, in type_cdict
+    importlib.import_module('psdaq.configdb.%s_config' % det_type)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/configdb/epixhr2x2_config.py", line 12, in <module>
+    import epix_hr_single_10k
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-hr-single-10k/firmware/python/epix_hr_single_10k/__init__.py", line 21, in <module>
+    from epix_hr_single_10k._RootLCLSIITiming     import *
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-hr-single-10k/firmware/python/epix_hr_single_10k/_RootLCLSIITiming.py", line 1, in <module>
+    import setupLibPaths
+ModuleNotFoundError: No module named 'setupLibPaths'
+srun: error: sdfmilan048: task 0: Exited with exit code 1

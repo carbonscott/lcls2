@@ -1,0 +1,195 @@
+host=sdfmilan048 head=cb5b519bf dirty=0 date=2026-11-08T19:56:54-08:00 job=43839059 step=236
+== up --det epixm320 
+2026-11-08T19:56:55.683-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 236), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G
+2026-11-08T19:56:55.683-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:57:18.602-08:00 daq_sim: preflight rc=0: 19:57:18 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:57:24.430-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T19:57:24.430-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:57:24.430-08:00 daq_sim: config DB seeded: tst/BEAM/epixm320_0 key=2 written
+2026-11-08T19:57:26.257-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:57:31.959-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixm320_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/daq_sim.cnf  pids {'control': 1415703, 'teb0': 1415704, 'epixm320_0': 1415705}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G
+UP_EXIT=0
+== cycle
+2026-11-08T19:57:33.398-08:00 start state: reset
+2026-11-08T19:57:33.399-08:00 setRecord(True) -> OK
+2026-11-08T19:57:39.406-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:57:39.407-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:57:39.571-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:57:39.574-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:57:40.857-08:00 setState connected    -> connected    OK
+2026-11-08T19:57:49.974-08:00 setState configured   -> configured   OK
+2026-11-08T19:57:51.067-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T19:57:51.078-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T19:57:51.084-08:00 setState starting     -> starting     OK
+2026-11-08T19:57:51.087-08:00 setState paused       -> paused       OK
+2026-11-08T19:57:51.093-08:00 setState running      -> running      OK
+2026-11-08T19:57:51.094-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T19:57:53.069-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1273 (wanted >= 1000)
+2026-11-08T19:57:53.073-08:00 setState paused       -> paused       OK
+2026-11-08T19:57:54.119-08:00 counts after Disable: {'simxpm NumL0Acc': 1979, 'simxpm NumL0Inp': 1979, 'TEB_EvtCt': 1979, 'TEB_TrCt': 7, 'TEB_WrtCt': 1979, 'DRP_Damage': 0, 'DRP_RecordSize': 1168645041, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-08T19:57:54.122-08:00 setState starting     -> starting     OK
+2026-11-08T19:57:54.131-08:00 setState configured   -> configured   OK
+2026-11-08T19:57:54.154-08:00 setState connected    -> connected    OK
+2026-11-08T19:57:54.269-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:57:54.316-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:57:54.318-08:00 setState reset        -> reset        OK
+2026-11-08T19:58:00.748-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-08T19:57:33.399-08:00 -> 2026-11-08T19:57:39.406-08:00  unallocated  unallocated  
+  2026-11-08T19:57:39.407-08:00 -> 2026-11-08T19:57:39.574-08:00  allocated    allocated    
+  2026-11-08T19:57:39.575-08:00 -> 2026-11-08T19:57:40.857-08:00  connected    connected    
+  2026-11-08T19:57:40.857-08:00 -> 2026-11-08T19:57:49.974-08:00  configured   configured   
+  2026-11-08T19:57:49.974-08:00 -> 2026-11-08T19:57:51.084-08:00  starting     starting     
+  2026-11-08T19:57:51.084-08:00 -> 2026-11-08T19:57:51.087-08:00  paused       paused       
+  2026-11-08T19:57:51.087-08:00 -> 2026-11-08T19:57:51.093-08:00  running      running      
+  2026-11-08T19:57:53.069-08:00 -> 2026-11-08T19:57:53.073-08:00  paused       paused       
+  2026-11-08T19:57:54.119-08:00 -> 2026-11-08T19:57:54.122-08:00  starting     starting     
+  2026-11-08T19:57:54.122-08:00 -> 2026-11-08T19:57:54.131-08:00  configured   configured   
+  2026-11-08T19:57:54.131-08:00 -> 2026-11-08T19:57:54.154-08:00  connected    connected    
+  2026-11-08T19:57:54.154-08:00 -> 2026-11-08T19:57:54.269-08:00  allocated    allocated    
+  2026-11-08T19:57:54.269-08:00 -> 2026-11-08T19:57:54.316-08:00  unallocated  unallocated  
+  2026-11-08T19:57:54.316-08:00 -> 2026-11-08T19:57:54.318-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        1979
+  simxpm NumL0Inp        1979
+  TEB_EvtCt              1979
+  TEB_TrCt               7
+  TEB_WrtCt              1979
+  DRP_Damage             0
+  DRP_RecordSize         1168645041
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1168645089 B)
+  psana2 events          1979
+  psana2 with data       1979
+  psana2 checks          PASS
+  psana2 seq             1..1979
+  psana2 seeds           {'0x1234': 1979}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T19:58:00.981-08:00 evidence 20261108T195800-cycle-cb5b519bf-1415917: det:drp:epixm320 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T19:58:00.981-08:00 cycle PASS
+CYCLE_EXIT=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1979; with epixm320 data 1979; events matching the pattern of seed 0x1234: 1979
+  check: per pixel, pattern(seed, seq, i, 15)
+  PASS
+rc=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1979; with epixm320 data 1979; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 15), self-test offset 1
+  problem: event 1: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x306b != 0x51e9
+  problem: event 2: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x4ea2 != 0x7020
+  problem: event 3: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x6cd9 != 0xe57
+  problem: event 4: 294906 of 294912 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x2947 != 0x4ac5
+  FAIL
+rc=1
+== down
+2026-11-08T19:58:13.044-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T19:58:18.420-08:00 daq_sim: stopping simxpm pid 1415667: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T19:58:18.521-08:00 daq_sim: stopping lgbk pid 1415665: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T19:58:18.721-08:00 daq_sim: stopping configdb pid 1415498: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T19:58:19.540-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T19:58:19.547-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== FAULT up --det epixm320 PSDAQ_SIM_ROGUE_FAULT=Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay
+2026-11-08T19:58:20.289-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 236), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault
+2026-11-08T19:58:20.289-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:58:43.103-08:00 daq_sim: preflight rc=0: 19:58:43 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:58:49.270-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T19:58:49.270-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:58:49.270-08:00 daq_sim: config DB seeded: tst/BEAM/epixm320_0 key=2 written
+2026-11-08T19:58:51.094-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:58:56.718-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixm320_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/daq_sim.cnf  pids {'control': 1418643, 'teb0': 1418644, 'epixm320_0': 1418645}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault
+UP_EXIT=0
+== FAULT cycle
+2026-11-08T19:58:57.974-08:00 start state: reset
+2026-11-08T19:58:57.975-08:00 setRecord(True) -> OK
+2026-11-08T19:59:02.982-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:59:02.983-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:59:03.131-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:59:03.134-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:59:04.153-08:00 setState connected    -> connected    OK
+ERROR:root:getState(tcp://localhost:30005) timeout (60.0 sec)
+2026-11-08T20:00:04.214-08:00 setState configured   -> error        FAIL
+2026-11-08T20:00:04.229-08:00 [error] epixm320_0 did not respond to configure
+2026-11-08T20:00:04.229-08:00 [error] 1 client did not respond to configure
+2026-11-08T20:00:04.230-08:00 [error] configure failed to change state
+2026-11-08T20:00:04.230-08:00 status: transition connect state connected recording True experiment tstx00001 run 0
+2026-11-08T20:00:34.265-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T20:00:34.265-08:00 [error] epixm320_0 did not respond to disconnect
+2026-11-08T20:00:34.265-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T20:00:34.266-08:00 [error] disconnect failed to change state
+2026-11-08T20:00:34.266-08:00 setState allocated    -> connected    FAIL
+2026-11-08T20:00:34.767-08:00 final state connected (start reset)
+transitions (request -> read back):
+  2026-11-08T19:58:57.975-08:00 -> 2026-11-08T19:59:02.982-08:00  unallocated  unallocated  
+  2026-11-08T19:59:02.983-08:00 -> 2026-11-08T19:59:03.134-08:00  allocated    allocated    
+  2026-11-08T19:59:03.134-08:00 -> 2026-11-08T19:59:04.153-08:00  connected    connected    
+  2026-11-08T19:59:04.153-08:00 -> 2026-11-08T20:00:04.214-08:00  configured   error        
+  2026-11-08T20:00:04.230-08:00 -> 2026-11-08T20:00:34.266-08:00  allocated    connected    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T20:00:34.774-08:00 7 error message(s) on the status stream
+2026-11-08T20:00:34.774-08:00 cycle FAIL
+CYCLE_EXIT=1
+== FAULT drp log lines naming the fault
+# CMDLINE: drp -P tst -C localhost -D epixm320 -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0xa0000,sim_dma_count=256,sim_seed=0x1234 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/prom -u epixm320_0 -p 5
+WARNING:psdaq.sim.rogue_dev:FAULT Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x500)+0x8904900c reads back 0xffffffff
+rogue_dev: FAULT Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x500)+0x8904900c reads back 0xffffffff
+tst-drp[1418645]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-epixm320-G-fault/data/tst
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Error setting value '20010' to variable 'Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Error setting value '20010' to variable 'Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Error setting value '20010' to variable 'Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay:Error setting value '20010' to variable 'Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8904900c. Byte: 0. Got: 0xff, Exp: 0x2a, Mask: 0xff
+== FAULT down
+2026-11-08T20:00:36.793-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T20:00:42.621-08:00 daq_sim: stopping simxpm pid 1418462: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T20:00:42.721-08:00 daq_sim: stopping lgbk pid 1418460: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T20:00:43.323-08:00 daq_sim: stopping configdb pid 1418052: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T20:00:44.343-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T20:00:44.351-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

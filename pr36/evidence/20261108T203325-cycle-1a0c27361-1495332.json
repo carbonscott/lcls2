@@ -1,0 +1,49 @@
+{
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 865932,
+  "TEB_EvtCt": 2072,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2072,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2072,
+  "psana2 seeds": {
+   "0x1234": 2072
+  },
+  "psana2 seq": "1..2072",
+  "psana2 with data": 2072,
+  "simxpm NumL0Acc": 2072,
+  "simxpm NumL0Inp": 2072,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (865980 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-08T20:33:25-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/pmlogs/2026/11/08_20:33:03_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/pmlogs/2026/11/08_20:33:03_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/pmlogs/2026/11/08_20:33:03_sdfmilan048:cspad_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:cspad",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "1a0c273619a292247c30cb7a20e8365c34e0f56c",
+ "started": "2026-11-08T20:33:11.053-08:00"
+}

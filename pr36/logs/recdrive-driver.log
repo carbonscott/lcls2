@@ -1,0 +1,105 @@
+04:29:52 step 0 ok 1.0s: date -Is; hostname   # this machine: the exe.dev VM
+04:29:54 step 1 ok 1.7s: ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty bash
+04:29:55 step 2 ok 1.5s: hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /de
+04:29:57 step 3 ok 1.5s: cd $R/wt-xpm && git rev-parse HEAD && git log --format='%h %s' ec06569d9..HEAD | cut -c1-138 && echo
+04:29:58 step 4 ok 1.8s: git diff --stat 0d04b2ab8 HEAD | tail -1; echo "files this PR changes under psdaq/psdaq/configdb (th
+04:30:05 step 5 ok 6.4s: source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo "DAQ env $CONDA_D
+04:30:06 step 6 ok 1.5s: # The build is this HEAD's (build_all.sh at this HEAD in Slurm step 248): ninja has nothing to do, a
+04:30:11 step 7 ok 4.3s: grep -E '^host=|BUILD_EXIT' $Q/build.log | cut -c1-138; ninja -n -C builddir | tail -1; for d in psd
+04:30:12 step 8 ok 1.3s: # (a) unit tests: coverage, rogue_dev, the framer, config DB seeding, simxpm, the XpmDetector types
+04:31:16 step 9 ok 63.7s: python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py psdaq/psdaq/tests/tes
+04:31:18 step 10 ok 2.1s: # (b) each type on a fresh DAQ: daq_sim up --det <type> --detach, cycle --events 1000, its DRP's log
+04:31:20 step 11 ok 1.9s: export P=$Q/take1 DAQ_SIM_EVIDENCE=$Q/take1/ev; mkdir -p $DAQ_SIM_EVIDENCE; echo "records in $DAQ_SI
+04:31:21 step 12 ok 1.4s: # fakecam: XpmDetector; its DRP now runs xpmdet_config against an emulated TDet receiver (it skipped
+04:31:56 step 13 ok 34.7s: T=fakecam; daq_sim up -w $P/wd-fakecam --det $T --detach > $P/up-fakecam.log 2>&1; echo UP_EXIT=$?; 
+04:32:12 step 14 ok 16.1s: daq_sim cycle -w $P/wd-fakecam --events 1000 > $P/cycle-fakecam.log 2>&1; echo CYCLE_EXIT=$?; grep -
+04:32:14 step 15 ok 2.0s: grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready
+04:32:24 step 16 ok 10.4s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam.log); for a in '' '--self-test-offset 1'; do ech
+04:32:33 step 17 ok 8.3s: daq_sim down -w $P/wd-fakecam > $P/down-fakecam.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fakecam
+04:32:34 step 18 ok 1.3s: # cspad: XpmDetector (an AreaDetector, as fakecam), xpmdet_config only; psana reads it as cspad_raw_
+04:33:08 step 19 ok 34.6s: T=cspad; daq_sim up -w $P/wd-cspad --det $T --detach > $P/up-cspad.log 2>&1; echo UP_EXIT=$?; grep -
+04:33:25 step 20 ok 16.3s: daq_sim cycle -w $P/wd-cspad --events 1000 > $P/cycle-cspad.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^
+04:33:27 step 21 ok 2.0s: grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready
+04:33:37 step 22 ok 10.4s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-cspad.log); for a in '' '--self-test-offset 1'; do echo 
+04:33:45 step 23 ok 8.3s: daq_sim down -w $P/wd-cspad > $P/down-cspad.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-cspad.log |
+04:33:47 step 24 ok 1.3s: # epixhremu: XpmDetector, xpmdet_config only; the emulator replays the frame up writes from the seed
+04:34:24 step 25 ok 37.5s: T=epixhremu; daq_sim up -w $P/wd-epixhremu --det $T --detach > $P/up-epixhremu.log 2>&1; echo UP_EXI
+04:34:42 step 26 ok 17.9s: daq_sim cycle -w $P/wd-epixhremu --events 1000 > $P/cycle-epixhremu.log 2>&1; echo CYCLE_EXIT=$?; gr
+04:34:44 step 27 ok 2.0s: grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready
+04:34:56 step 28 ok 12.0s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixhremu.log); for a in '' '--self-test-offset 1'; do e
+04:35:05 step 29 ok 8.4s: daq_sim down -w $P/wd-epixhremu > $P/down-epixhremu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epi
+04:35:06 step 30 ok 1.2s: # jungfrauemu: XpmDetector, xpmdet_config only; one 512 x 1024 panel of TDet words per event
+04:35:40 step 31 ok 34.6s: T=jungfrauemu; daq_sim up -w $P/wd-jungfrauemu --det $T --detach > $P/up-jungfrauemu.log 2>&1; echo 
+04:36:44 step 32 ok 63.4s: daq_sim cycle -w $P/wd-jungfrauemu --events 1000 > $P/cycle-jungfrauemu.log 2>&1; echo CYCLE_EXIT=$?
+04:36:46 step 33 ok 2.0s: grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready
+04:38:25 step 34 ok 98.9s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-jungfrauemu.log); for a in '' '--self-test-offset 1'; do
+04:38:33 step 35 ok 8.2s: daq_sim down -w $P/wd-jungfrauemu > $P/down-jungfrauemu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down
+04:38:34 step 36 ok 1.4s: # ts: XpmDetector, xpmdet_config and its own ts_config (ts_connect at Connect, ts_config at Configur
+04:39:09 step 37 ok 35.1s: T=ts; daq_sim up -w $P/wd-ts --det $T --detach > $P/up-ts.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLI
+04:39:27 step 38 ok 18.1s: daq_sim cycle -w $P/wd-ts --events 1000 > $P/cycle-ts.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (sim
+04:39:29 step 39 ok 1.9s: grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready
+04:39:44 step 40 ok 15.1s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-ts.log); for a in '' '--self-test-offset 1'; do echo "==
+04:39:53 step 41 ok 8.5s: daq_sim down -w $P/wd-ts > $P/down-ts.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-ts.log | cut -c1-
+04:39:54 step 42 ok 1.2s: # hrencoder: BEB, its own hrencoder_config (the KCU and the encoder board over SRPv3, on rogue_dev)
+04:40:34 step 43 ok 39.4s: T=hrencoder; daq_sim up -w $P/wd-hrencoder --det $T --detach > $P/up-hrencoder.log 2>&1; echo UP_EXI
+04:40:49 step 44 ok 15.1s: daq_sim cycle -w $P/wd-hrencoder --events 1000 > $P/cycle-hrencoder.log 2>&1; echo CYCLE_EXIT=$?; gr
+04:40:51 step 45 ok 2.1s: grep -h -E 'BEBDetector: .*config runs|^hrencoder_(init|connect|config)$|^ConfigLclsTimingV2\(\)$|St
+04:41:01 step 46 ok 10.4s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-hrencoder.log); for a in '' '--self-test-offset 1'; do e
+04:41:09 step 47 ok 8.1s: daq_sim down -w $P/wd-hrencoder > $P/down-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-hre
+04:41:11 step 48 ok 1.3s: # epixm320: BEB, its own epixm320_config (the KCU and the camera over SRPv3, its fnInitAsicScript)
+04:41:49 step 49 ok 38.4s: T=epixm320; daq_sim up -w $P/wd-epixm320 --det $T --detach > $P/up-epixm320.log 2>&1; echo UP_EXIT=$
+04:42:16 step 50 ok 27.2s: daq_sim cycle -w $P/wd-epixm320 --events 1000 > $P/cycle-epixm320.log 2>&1; echo CYCLE_EXIT=$?; grep
+04:42:19 step 51 ok 2.2s: grep -h -E 'BEBDetector: .*config runs|rxId .* found|link id .* from simxpm|sim payload seed|Init AS
+04:42:31 step 52 ok 12.5s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixm320.log); for a in '' '--self-test-offset 1'; do ec
+04:42:39 step 53 ok 7.6s: daq_sim down -w $P/wd-epixm320 > $P/down-epixm320.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epixm
+04:42:39 step 54 ok 0.8s: # epix100 (from PR #34, regression)
+04:43:19 step 55 ok 39.4s: T=epix100; daq_sim up -w $P/wd-epix100 --det $T --detach > $P/up-epix100.log 2>&1; echo UP_EXIT=$?; 
+04:43:39 step 56 ok 20.3s: daq_sim cycle -w $P/wd-epix100 --events 1000 > $P/cycle-epix100.log 2>&1; echo CYCLE_EXIT=$?; grep -
+04:43:41 step 57 ok 1.6s: grep -h -E 'config runs against|FpgaVersion|check clock rate|Loading camera|sim payload seed' $P/wd-
+04:43:58 step 58 ok 16.9s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epix100.log); for a in '' '--self-test-offset 1'; do ech
+04:44:06 step 59 ok 8.6s: daq_sim down -w $P/wd-epix100 > $P/down-epix100.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epix100
+04:44:07 step 60 ok 0.9s: # wave8 (from PR #34, regression)
+04:44:48 step 61 ok 40.7s: T=wave8; daq_sim up -w $P/wd-wave8 --det $T --detach > $P/up-wave8.log 2>&1; echo UP_EXIT=$?; grep -
+04:45:09 step 62 ok 21.8s: daq_sim cycle -w $P/wd-wave8 --events 1000 > $P/cycle-wave8.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^
+04:45:11 step 63 ok 1.4s: grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8/pmlogs/*/*/*
+04:45:24 step 64 ok 13.5s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8.log); for a in '' '--self-test-offset 1'; do echo 
+04:45:33 step 65 ok 8.6s: daq_sim down -w $P/wd-wave8 > $P/down-wave8.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8.log |
+04:45:34 step 66 ok 0.8s: # wave8he (from PR #34, regression)
+04:46:16 step 67 ok 41.8s: T=wave8he; daq_sim up -w $P/wd-wave8he --det $T --detach > $P/up-wave8he.log 2>&1; echo UP_EXIT=$?; 
+04:46:35 step 68 ok 19.8s: daq_sim cycle -w $P/wd-wave8he --events 1000 > $P/cycle-wave8he.log 2>&1; echo CYCLE_EXIT=$?; grep -
+04:46:37 step 69 ok 1.4s: grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8he/pmlogs/*/*
+04:46:50 step 70 ok 13.3s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8he.log); for a in '' '--self-test-offset 1'; do ech
+04:46:58 step 71 ok 8.1s: daq_sim down -w $P/wd-wave8he > $P/down-wave8he.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8he
+04:47:00 step 72 ok 1.6s: # (c) fakecam --segments 2: two DRPs, segments 0 and 1 of one detector, each running xpmdet_config; 
+04:47:36 step 73 ok 36.0s: T=fakecam; daq_sim up -w $P/wd-fakecam-seg2 --det $T --segments 2 --detach > $P/up-fakecam-seg2.log 
+04:47:37 step 74 ok 0.9s: grep -o "pids {.*}" $P/up-fakecam-seg2.log
+04:47:57 step 75 ok 20.2s: daq_sim cycle -w $P/wd-fakecam-seg2 --events 1000 > $P/cycle-fakecam-seg2.log 2>&1; echo CYCLE_EXIT=
+04:47:59 step 76 ok 1.9s: for s in 0 1; do grep -h -E 'XpmDetector:|barrier|<I> Opening file .*-c000.xtc2' $P/wd-fakecam-seg2/
+04:48:09 step 77 ok 10.7s: F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam-seg2.log); for a in '' '--self-test-offset 1'; d
+04:48:18 step 78 ok 8.7s: daq_sim down -w $P/wd-fakecam-seg2 > $P/down-fakecam-seg2.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/do
+04:48:20 step 79 ok 1.4s: # (d) a fault per config path. xpmdet_config: TDetSemi.Length_0 reads back wrong, so Connect (xpmdet
+04:48:21 step 80 ok 1.1s: echo "evidence records before the fault runs: $(ls $DAQ_SIM_EVIDENCE | wc -l)"
+04:48:56 step 81 ok 35.3s: T=fakecam; PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 daq_sim up -w $P/wd-f
+04:49:50 step 82 ok 54.4s: daq_sim cycle -w $P/wd-fault-xpmdet --events 1000 > $P/cycle-fault-xpmdet.log 2>&1; echo CYCLE_EXIT=
+04:49:52 step 83 ok 1.8s: grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\*\*\*\* python error|killed by signal 
+04:50:00 step 84 ok 8.2s: daq_sim down -w $P/wd-fault-xpmdet > $P/down-fault-xpmdet.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/do
+04:50:02 step 85 ok 1.4s: # hrencoder_config: its trigger delay register reads back wrong, so Configure (config_expert's write
+04:50:41 step 86 ok 38.7s: T=hrencoder; PSDAQ_SIM_ROGUE_FAULT='Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Trig
+04:52:15 step 87 ok 94.7s: daq_sim cycle -w $P/wd-fault-hrencoder --events 1000 > $P/cycle-fault-hrencoder.log 2>&1; echo CYCLE
+04:52:17 step 88 ok 1.8s: grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\*\*\*\* python error|killed by signal 
+04:52:26 step 89 ok 8.8s: daq_sim down -w $P/wd-fault-hrencoder > $P/down-fault-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1
+04:52:27 step 90 ok 1.2s: # (e) daq_sim coverage at this head with this shell's 11 records: the det rows, then the summary
+04:52:29 step 91 ok 2.1s: daq_sim coverage > $P/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/cov.txt; sed -n '/^row /,/^det:drp_
+04:52:31 step 92 ok 1.7s: grep -E '^evidence:|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.tx
+04:52:32 step 93 ok 1.2s: # 61 rows UNPROVEN is expected at this PR (no run for them yet), so the check ends FAIL, exit 1
+04:52:33 step 94 ok 1.2s: # (f) a RUN row whose record is gone: a copy of the evidence dir without the ts record
+04:52:34 step 95 ok 1.1s: python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-removed det:drp:ts remove | cut -c1-138
+04:52:37 step 96 ok 2.7s: daq_sim coverage --evidence $P/ev-removed > $P/cov-removed.txt; echo COVERAGE_EXIT=$?; grep -E '^evi
+04:52:38 step 97 ok 1.4s: # (g) the hardware path, no sim:// device: the same commands from base wt-cov (2d9593bc5) and from t
+04:52:41 step 98 ok 2.4s: git -C $R/wt-cov log -1 --format='base %H %s' | cut -c1-138; echo "base local changes: $(git -C $R/w
+04:54:18 step 99 ok 97.1s: TYPES='fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he epixhr2x2'; f
+04:54:20 step 100 ok 1.5s: diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-xpm.log); echo HWPATH_DIFF_EXIT=$?; wc -l 
+04:54:21 step 101 ok 1.1s: sed -n '/^-- fakecam python/,/^-- cspad python/p' $P/hw-wt-xpm.log | cut -c1-138
+04:54:22 step 102 ok 1.2s: sed -n '/^-- hrencoder python/,/^-- epixm320 python/p' $P/hw-wt-xpm.log | cut -c1-138
+04:54:23 step 103 ok 1.1s: echo "checkout local changes: $(git status --short | wc -l)"; date '+%F %T %Z'; exit
+end status 0

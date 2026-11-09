@@ -1,0 +1,128 @@
+host=sdfmilan048 head=cb5b519bf dirty=0 date=2026-11-08T20:12:16-08:00 job=43839059 step=240
+== up --det fakecam --segments 2
+2026-11-08T20:12:17.820-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 240), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2
+2026-11-08T20:12:17.820-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T20:12:40.846-08:00 daq_sim: preflight rc=0: 20:12:40 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:12:42.170-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T20:12:42.170-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+2026-11-08T20:12:43.016-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=2 unchanged
+2026-11-08T20:12:43.016-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_1 key=3 written
+2026-11-08T20:12:45.045-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T20:12:50.836-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/daq_sim.cnf  pids {'control': 1446905, 'teb0': 1446906, 'fakecam_0': 1446907, 'fakecam_1': 1446908}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2 --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2
+UP_EXIT=0
+== cycle
+2026-11-08T20:12:52.114-08:00 start state: reset
+2026-11-08T20:12:52.115-08:00 setRecord(True) -> OK
+2026-11-08T20:12:53.119-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:12:53.120-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T20:12:54.550-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T20:12:54.557-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:12:55.858-08:00 setState connected    -> connected    OK
+2026-11-08T20:12:57.340-08:00 setState configured   -> configured   OK
+2026-11-08T20:12:57.415-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T20:12:57.420-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T20:12:58.430-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s001-c000.xtc2
+2026-11-08T20:12:58.439-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s001-c000.smd.xtc2
+2026-11-08T20:12:58.445-08:00 setState starting     -> starting     OK
+2026-11-08T20:12:58.450-08:00 setState paused       -> paused       OK
+2026-11-08T20:12:58.456-08:00 setState running      -> running      OK
+2026-11-08T20:12:58.456-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T20:13:00.387-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1676 (wanted >= 1000)
+2026-11-08T20:13:00.396-08:00 setState paused       -> paused       OK
+2026-11-08T20:13:01.456-08:00 counts after Disable: {'simxpm NumL0Acc': 1937, 'simxpm NumL0Inp': 1937, 'TEB_EvtCt': 1937, 'TEB_TrCt': 7, 'TEB_WrtCt': 1937, 'DRP_Damage': 0, 'DRP_RecordSize': 810042, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-08T20:13:01.460-08:00 setState starting     -> starting     OK
+2026-11-08T20:13:01.469-08:00 setState configured   -> configured   OK
+2026-11-08T20:13:01.472-08:00 setState connected    -> connected    OK
+2026-11-08T20:13:01.511-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:13:01.560-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:13:01.561-08:00 setState reset        -> reset        OK
+2026-11-08T20:13:09.080-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-08T20:12:52.115-08:00 -> 2026-11-08T20:12:53.119-08:00  unallocated  unallocated  
+  2026-11-08T20:12:53.120-08:00 -> 2026-11-08T20:12:54.557-08:00  allocated    allocated    
+  2026-11-08T20:12:54.557-08:00 -> 2026-11-08T20:12:55.858-08:00  connected    connected    
+  2026-11-08T20:12:55.858-08:00 -> 2026-11-08T20:12:57.340-08:00  configured   configured   
+  2026-11-08T20:12:57.340-08:00 -> 2026-11-08T20:12:58.445-08:00  starting     starting     
+  2026-11-08T20:12:58.445-08:00 -> 2026-11-08T20:12:58.450-08:00  paused       paused       
+  2026-11-08T20:12:58.450-08:00 -> 2026-11-08T20:12:58.456-08:00  running      running      
+  2026-11-08T20:13:00.387-08:00 -> 2026-11-08T20:13:00.396-08:00  paused       paused       
+  2026-11-08T20:13:01.456-08:00 -> 2026-11-08T20:13:01.460-08:00  starting     starting     
+  2026-11-08T20:13:01.460-08:00 -> 2026-11-08T20:13:01.469-08:00  configured   configured   
+  2026-11-08T20:13:01.469-08:00 -> 2026-11-08T20:13:01.472-08:00  connected    connected    
+  2026-11-08T20:13:01.472-08:00 -> 2026-11-08T20:13:01.511-08:00  allocated    allocated    
+  2026-11-08T20:13:01.511-08:00 -> 2026-11-08T20:13:01.560-08:00  unallocated  unallocated  
+  2026-11-08T20:13:01.560-08:00 -> 2026-11-08T20:13:01.561-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        1937
+  simxpm NumL0Inp        1937
+  TEB_EvtCt              1937
+  TEB_TrCt               7
+  TEB_WrtCt              1937
+  DRP_Damage             0
+  DRP_RecordSize         810042
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/data/tst/tstx00001/xtc/tstx00001-r0001-s001-c000.xtc2 (810090 B)
+  psana2 events          1937
+  psana2 with data       1937
+  psana2 checks          PASS
+  psana2 seq             1..1937
+  psana2 seeds           {'0x1234': 1937}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:13:09.306-08:00 evidence 20261108T201309-cycle-cb5b519bf-1447131: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:13:09.306-08:00 cycle PASS
+CYCLE_EXIT=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 459, in <module>
+    sys.exit(main())
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 434, in main
+    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 371, in check
+    raw = det.raw.raw(evt)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psana/detector/test_detectors.py", line 124, in raw
+    if segs[0] is None: return None
+KeyError: 0
+rc=1
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-fakecam-G-seg2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 --self-test-offset 1
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 459, in <module>
+    sys.exit(main())
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 434, in main
+    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/xtc2_check.py", line 371, in check
+    raw = det.raw.raw(evt)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psana/detector/test_detectors.py", line 124, in raw
+    if segs[0] is None: return None
+KeyError: 0
+rc=1
+== down
+2026-11-08T20:13:16.636-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T20:13:22.061-08:00 daq_sim: stopping simxpm pid 1446860: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T20:13:22.162-08:00 daq_sim: stopping lgbk pid 1446858: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T20:13:22.562-08:00 daq_sim: stopping configdb pid 1446831: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T20:13:23.379-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T20:13:23.386-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

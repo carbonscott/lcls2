@@ -1,0 +1,17 @@
+host=sdfmilan048 head=1a0c27361 dirty=0 date=2026-11-08T20:54:54-08:00 job=43839059 step=250
+$ drp -P tst -C 127.0.0.1 -D epixhr2x2 -d sim://127.0.0.1:31099 -l 0x1 -o /tmp/xpm-epixhr2x2-tRX3 -u epixhr2x2_0 -p 7
+tst-drp[1539993]: <I> Simulated PGP device 'sim://127.0.0.1:31099': timing frames from tcp://127.0.0.1:31099
+tst-drp[1539993]: <I> dmaCount 1024,  dmaSize 65536
+tst-drp[1539993]: <I> Allocated 1.1 GB pebble for 128 transitions of 8388608 B and 1024 L1Accepts of 65536 B
+tst-drp[1539993]: <I> nL1Buffers 1024,  pebble buffer size 65536 B
+tst-drp[1539993]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/rogue_dev.py", line 619, in install
+    seeds, spath, sproc = load_seeds(det_type, extra=True)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/rogue_dev.py", line 578, in load_seeds
+    with open(path) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/lib/python3.9/site-packages/psdaq/sim/seeds/epixhr2x2.json'
+tst-drp[1539993]: <C> **** python error
+timeout: the monitored command dumped core
+rc=134

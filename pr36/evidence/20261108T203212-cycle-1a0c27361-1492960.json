@@ -1,0 +1,49 @@
+{
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 840678,
+  "TEB_EvtCt": 2011,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2011,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2011,
+  "psana2 seeds": {
+   "0x1234": 2011
+  },
+  "psana2 seq": "1..2011",
+  "psana2 with data": 2011,
+  "simxpm NumL0Acc": 2011,
+  "simxpm NumL0Inp": 2011,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (840726 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-08T20:32:12-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/pmlogs/2026/11/08_20:31:50_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/pmlogs/2026/11/08_20:31:50_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/pmlogs/2026/11/08_20:31:50_sdfmilan048:fakecam_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:fakecam",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "1a0c273619a292247c30cb7a20e8365c34e0f56c",
+ "started": "2026-11-08T20:31:58.263-08:00"
+}

@@ -1,0 +1,181 @@
+host=sdfmilan048 head=cb5b519bf dirty=0 date=2026-11-08T19:40:12-08:00 job=43839059 step=231
+== up --det cspad 
+2026-11-08T19:40:12.825-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 231), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G
+2026-11-08T19:40:12.825-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:40:35.837-08:00 daq_sim: preflight rc=0: 19:40:35 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:40:37.433-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:40:37.433-08:00 daq_sim: config DB seeded: tst/BEAM/cspad_0 key=2 written
+2026-11-08T19:40:39.255-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:40:44.999-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, cspad_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/daq_sim.cnf  pids {'control': 1377455, 'teb0': 1377456, 'cspad_0': 1377436}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G
+UP_EXIT=0
+== cycle
+2026-11-08T19:40:46.344-08:00 start state: reset
+2026-11-08T19:40:46.345-08:00 setRecord(True) -> OK
+2026-11-08T19:40:47.348-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:40:47.349-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:40:47.727-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:40:47.733-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:40:49.182-08:00 setState connected    -> connected    OK
+2026-11-08T19:40:50.568-08:00 setState configured   -> configured   OK
+2026-11-08T19:40:51.641-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T19:40:51.652-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T19:40:51.658-08:00 setState starting     -> starting     OK
+2026-11-08T19:40:51.660-08:00 setState paused       -> paused       OK
+2026-11-08T19:40:51.663-08:00 setState running      -> running      OK
+2026-11-08T19:40:51.664-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T19:40:53.608-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1779 (wanted >= 1000)
+2026-11-08T19:40:53.611-08:00 setState paused       -> paused       OK
+2026-11-08T19:40:54.671-08:00 counts after Disable: {'simxpm NumL0Acc': 1948, 'simxpm NumL0Inp': 1948, 'TEB_EvtCt': 1948, 'TEB_TrCt': 7, 'TEB_WrtCt': 1948, 'DRP_Damage': 0, 'DRP_RecordSize': 814596, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-08T19:40:54.674-08:00 setState starting     -> starting     OK
+2026-11-08T19:40:54.685-08:00 setState configured   -> configured   OK
+2026-11-08T19:40:54.687-08:00 setState connected    -> connected    OK
+2026-11-08T19:40:54.724-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:40:54.774-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:40:54.775-08:00 setState reset        -> reset        OK
+2026-11-08T19:40:59.472-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-08T19:40:46.345-08:00 -> 2026-11-08T19:40:47.348-08:00  unallocated  unallocated  
+  2026-11-08T19:40:47.349-08:00 -> 2026-11-08T19:40:47.733-08:00  allocated    allocated    
+  2026-11-08T19:40:47.733-08:00 -> 2026-11-08T19:40:49.182-08:00  connected    connected    
+  2026-11-08T19:40:49.182-08:00 -> 2026-11-08T19:40:50.568-08:00  configured   configured   
+  2026-11-08T19:40:50.568-08:00 -> 2026-11-08T19:40:51.658-08:00  starting     starting     
+  2026-11-08T19:40:51.658-08:00 -> 2026-11-08T19:40:51.660-08:00  paused       paused       
+  2026-11-08T19:40:51.660-08:00 -> 2026-11-08T19:40:51.663-08:00  running      running      
+  2026-11-08T19:40:53.608-08:00 -> 2026-11-08T19:40:53.611-08:00  paused       paused       
+  2026-11-08T19:40:54.671-08:00 -> 2026-11-08T19:40:54.674-08:00  starting     starting     
+  2026-11-08T19:40:54.674-08:00 -> 2026-11-08T19:40:54.685-08:00  configured   configured   
+  2026-11-08T19:40:54.685-08:00 -> 2026-11-08T19:40:54.687-08:00  connected    connected    
+  2026-11-08T19:40:54.687-08:00 -> 2026-11-08T19:40:54.724-08:00  allocated    allocated    
+  2026-11-08T19:40:54.724-08:00 -> 2026-11-08T19:40:54.774-08:00  unallocated  unallocated  
+  2026-11-08T19:40:54.774-08:00 -> 2026-11-08T19:40:54.775-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        1948
+  simxpm NumL0Inp        1948
+  TEB_EvtCt              1948
+  TEB_TrCt               7
+  TEB_WrtCt              1948
+  DRP_Damage             0
+  DRP_RecordSize         814596
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (814644 B)
+  psana2 events          1948
+  psana2 with data       1948
+  psana2 checks          PASS
+  psana2 seq             1..1948
+  psana2 seeds           {'0x1234': 1948}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T19:40:59.702-08:00 evidence 20261108T194059-cycle-cb5b519bf-1377512: det:drp:cspad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T19:40:59.702-08:00 cycle PASS
+CYCLE_EXIT=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 1948; with cspad data 1948; w3 == seed 1948 (seeds seen {0x1234: 1948}); payload pattern ok 1948; w0/w1 pulseId rising and == timestamp clock 1948/1948
+  seq (w2) 1..1948 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 1948; with cspad data 1948; w3 == seed 1948 (seeds seen {0x1234: 1948}); payload pattern ok 0; w0/w1 pulseId rising and == timestamp clock 1948/1948
+  seq (w2) 1..1948 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+  problem: event 5: payload pattern broken
+  FAIL
+rc=1
+== down
+2026-11-08T19:41:08.917-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T19:41:14.293-08:00 daq_sim: stopping simxpm pid 1377254: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T19:41:14.393-08:00 daq_sim: stopping lgbk pid 1377252: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T19:41:14.794-08:00 daq_sim: stopping configdb pid 1377224: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T19:41:15.612-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T19:41:15.620-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== FAULT up --det cspad PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0
+2026-11-08T19:41:16.387-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 231), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault
+2026-11-08T19:41:16.387-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T19:41:39.154-08:00 daq_sim: preflight rc=0: 19:41:39 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T19:41:40.755-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T19:41:40.755-08:00 daq_sim: config DB seeded: tst/BEAM/cspad_0 key=2 written
+2026-11-08T19:41:42.980-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T19:41:48.754-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, cspad_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/daq_sim.cnf  pids {'control': 1381883, 'teb0': 1381884, 'cspad_0': 1381885}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault
+UP_EXIT=0
+== FAULT cycle
+2026-11-08T19:41:50.080-08:00 start state: reset
+2026-11-08T19:41:50.082-08:00 setRecord(True) -> OK
+2026-11-08T19:41:51.085-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T19:41:51.086-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T19:41:51.478-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T19:41:51.483-08:00 setState allocated    -> allocated    OK
+2026-11-08T19:42:11.540-08:00 [error] cspad_0 did not respond to connect
+2026-11-08T19:42:11.540-08:00 [error] 1 client did not respond to connect
+2026-11-08T19:42:11.540-08:00 [error] connect failed to change state
+2026-11-08T19:42:11.541-08:00 setState connected    -> allocated    FAIL
+2026-11-08T19:42:11.541-08:00 status: transition alloc state allocated recording True experiment tstx00001 run 0
+2026-11-08T19:42:41.576-08:00 [error] cspad_0 did not respond to dealloc
+2026-11-08T19:42:41.576-08:00 [error] 1 client did not respond to dealloc
+2026-11-08T19:42:41.576-08:00 [error] dealloc failed to change state
+2026-11-08T19:42:41.576-08:00 setState unallocated  -> allocated    FAIL
+2026-11-08T19:42:42.077-08:00 final state allocated (start reset)
+transitions (request -> read back):
+  2026-11-08T19:41:50.082-08:00 -> 2026-11-08T19:41:51.085-08:00  unallocated  unallocated  
+  2026-11-08T19:41:51.086-08:00 -> 2026-11-08T19:41:51.483-08:00  allocated    allocated    
+  2026-11-08T19:41:51.483-08:00 -> 2026-11-08T19:42:11.541-08:00  connected    allocated    
+  2026-11-08T19:42:11.542-08:00 -> 2026-11-08T19:42:41.576-08:00  unallocated  allocated    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T19:42:42.085-08:00 6 error message(s) on the status stream
+2026-11-08T19:42:42.085-08:00 cycle FAIL
+CYCLE_EXIT=1
+== FAULT drp log lines naming the fault
+# CMDLINE: drp -P tst -C localhost -D cspad -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/data -k ep_domain=lo,ep_provider=tcp,sim_length=64 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/prom -u cspad_0 -p 5
+WARNING:psdaq.sim.rogue_dev:FAULT DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 @AxiMemMap(sim://127.0.0.1:31052)+0xa00000 reads back 0x7fffff
+rogue_dev: FAULT DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 @AxiMemMap(sim://127.0.0.1:31052)+0xa00000 reads back 0x7fffff
+tst-drp[1381885]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/xpm/wd-cspad-G-fault/data/tst
+ERROR:pyrogue.Variable.RemoteVariable.DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0:Block::checkTransaction: General Error: Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 with address 0x00a00000. Byte: 0. Got: 0xff, Exp: 0x40, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 with address 0x00a00000. Byte: 0. Got: 0xff, Exp: 0x40, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0:Error setting value '64' to variable 'DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0' with type UInt23. Exception=Block::checkTransaction: General Error: Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 with address 0x00a00000. Byte: 0. Got: 0xff, Exp: 0x40, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 with address 0x00a00000. Byte: 0. Got: 0xff, Exp: 0x40, Mask: 0xff
+tst-drp[1381885]: <C> **** python error
+@@@ Received a sigChild for process 1381885. The process was killed by signal 6
+== FAULT down
+2026-11-08T19:42:43.054-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T19:42:48.531-08:00 daq_sim: stopping simxpm pid 1381734: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T19:42:48.631-08:00 daq_sim: stopping lgbk pid 1381694: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T19:42:48.932-08:00 daq_sim: stopping configdb pid 1381481: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T19:42:49.850-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T19:42:49.858-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

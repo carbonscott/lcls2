@@ -1,0 +1,427 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty bash --rcfile $R/redo/p36/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan048",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $R/wt-xpm && git rev-parse HEAD && git log --format='%h %s' ec06569d9..HEAD | cut -c1-138 && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "git diff --stat 0d04b2ab8 HEAD | tail -1; echo \"files this PR changes under psdaq/psdaq/configdb (the types' config code): $(git diff --name-only 0d04b2ab8 HEAD -- psdaq/psdaq/configdb | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "# The build is this HEAD's (build_all.sh at this HEAD in Slurm step 248): ninja has nothing to do, and the installed python is the checkout's"
+ },
+ {
+  "send": "grep -E '^host=|BUILD_EXIT' $Q/build.log | cut -c1-138; ninja -n -C builddir | tail -1; for d in psdaq/sim psdaq/configdb psana/detector; do diff -rq -x __pycache__ ${d%%/*}/$d install/lib/python3.9/site-packages/$d && echo \"installed $d == checkout\"; done"
+ },
+ {
+  "send": "# (a) unit tests: coverage, rogue_dev, the framer, config DB seeding, simxpm, the XpmDetector types"
+ },
+ {
+  "send": "python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py psdaq/psdaq/tests/test_sim_rogue_dev.py psdaq/psdaq/tests/test_sim_framer.py psdaq/psdaq/tests/test_sim_configdb_seed_store.py psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py psdaq/psdaq/tests/test_sim_xpmdet_types.py 2>&1 | grep -E ' (passed|failed|error)'",
+  "timeout": 900
+ },
+ {
+  "send": "# (b) each type on a fresh DAQ: daq_sim up --det <type> --detach, cycle --events 1000, its DRP's log lines, the per-event check (as written: PASS; --self-test-offset 1: must FAIL), down. New work dirs, a new, empty evidence dir"
+ },
+ {
+  "send": "export P=$Q/take1 DAQ_SIM_EVIDENCE=$Q/take1/ev; mkdir -p $DAQ_SIM_EVIDENCE; echo \"records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)\""
+ },
+ {
+  "send": "# fakecam: XpmDetector; its DRP now runs xpmdet_config against an emulated TDet receiver (it skipped it under sim:// before)"
+ },
+ {
+  "send": "T=fakecam; daq_sim up -w $P/wd-fakecam --det $T --detach > $P/up-fakecam.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-fakecam.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-fakecam --events 1000 > $P/cycle-fakecam.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-fakecam.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-fakecam/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-fakecam > $P/down-fakecam.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fakecam.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# cspad: XpmDetector (an AreaDetector, as fakecam), xpmdet_config only; psana reads it as cspad_raw_2_0_0"
+ },
+ {
+  "send": "T=cspad; daq_sim up -w $P/wd-cspad --det $T --detach > $P/up-cspad.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-cspad.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-cspad --events 1000 > $P/cycle-cspad.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-cspad.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-cspad/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-cspad.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-cspad > $P/down-cspad.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-cspad.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# epixhremu: XpmDetector, xpmdet_config only; the emulator replays the frame up writes from the seed"
+ },
+ {
+  "send": "T=epixhremu; daq_sim up -w $P/wd-epixhremu --det $T --detach > $P/up-epixhremu.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-epixhremu.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-epixhremu --events 1000 > $P/cycle-epixhremu.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epixhremu.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-epixhremu/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixhremu.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-epixhremu > $P/down-epixhremu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epixhremu.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# jungfrauemu: XpmDetector, xpmdet_config only; one 512 x 1024 panel of TDet words per event"
+ },
+ {
+  "send": "T=jungfrauemu; daq_sim up -w $P/wd-jungfrauemu --det $T --detach > $P/up-jungfrauemu.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-jungfrauemu.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-jungfrauemu --events 1000 > $P/cycle-jungfrauemu.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-jungfrauemu.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-jungfrauemu/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-jungfrauemu.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-jungfrauemu > $P/down-jungfrauemu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-jungfrauemu.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# ts: XpmDetector, xpmdet_config and its own ts_config (ts_connect at Connect, ts_config at Configure) on simxpm's PVs"
+ },
+ {
+  "send": "T=ts; daq_sim up -w $P/wd-ts --det $T --detach > $P/up-ts.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-ts.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-ts --events 1000 > $P/cycle-ts.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-ts.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-ts/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-ts.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-ts > $P/down-ts.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-ts.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# hrencoder: BEB, its own hrencoder_config (the KCU and the encoder board over SRPv3, on rogue_dev)"
+ },
+ {
+  "send": "T=hrencoder; daq_sim up -w $P/wd-hrencoder --det $T --detach > $P/up-hrencoder.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-hrencoder.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-hrencoder --events 1000 > $P/cycle-hrencoder.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-hrencoder.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'BEBDetector: .*config runs|^hrencoder_(init|connect|config)$|^ConfigLclsTimingV2\\(\\)$|StopRun|StartRun|delay_clks|link id .* from simxpm|sim payload seed|rogue_dev' $P/wd-hrencoder/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-hrencoder.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-hrencoder > $P/down-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-hrencoder.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# epixm320: BEB, its own epixm320_config (the KCU and the camera over SRPv3, its fnInitAsicScript)"
+ },
+ {
+  "send": "T=epixm320; daq_sim up -w $P/wd-epixm320 --det $T --detach > $P/up-epixm320.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-epixm320.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-epixm320 --events 1000 > $P/cycle-epixm320.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epixm320.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'BEBDetector: .*config runs|rxId .* found|link id .* from simxpm|sim payload seed|Init ASIC script|Initialization routine|Triggers sent|lane adjustment|config_expert complete|rogue_dev' $P/wd-epixm320/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixm320.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-epixm320 > $P/down-epixm320.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epixm320.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# epix100 (from PR #34, regression)"
+ },
+ {
+  "send": "T=epix100; daq_sim up -w $P/wd-epix100 --det $T --detach > $P/up-epix100.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-epix100.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-epix100 --events 1000 > $P/cycle-epix100.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epix100.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|FpgaVersion|check clock rate|Loading camera|sim payload seed' $P/wd-epix100/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epix100.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-epix100 > $P/down-epix100.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epix100.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# wave8 (from PR #34, regression)"
+ },
+ {
+  "send": "T=wave8; daq_sim up -w $P/wd-wave8 --det $T --detach > $P/up-wave8.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-wave8.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-wave8 --events 1000 > $P/cycle-wave8.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-wave8.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-wave8 > $P/down-wave8.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# wave8he (from PR #34, regression)"
+ },
+ {
+  "send": "T=wave8he; daq_sim up -w $P/wd-wave8he --det $T --detach > $P/up-wave8he.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.| frame \\(' $P/up-wave8he.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-wave8he --events 1000 > $P/cycle-wave8he.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-wave8he.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8he/pmlogs/*/*/*:${T}_0.log | cut -c1-138"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8he.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-wave8he > $P/down-wave8he.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8he.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (c) fakecam --segments 2: two DRPs, segments 0 and 1 of one detector, each running xpmdet_config; the check reads the file the cycle names (segment 0's)"
+ },
+ {
+  "send": "T=fakecam; daq_sim up -w $P/wd-fakecam-seg2 --det $T --segments 2 --detach > $P/up-fakecam-seg2.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/up-fakecam-seg2.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "grep -o \"pids {.*}\" $P/up-fakecam-seg2.log"
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-fakecam-seg2 --events 1000 > $P/cycle-fakecam-seg2.log 2>&1; echo CYCLE_EXIT=$?; grep -E '\\[fileReport\\] .*/tstx|^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-fakecam-seg2.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "for s in 0 1; do grep -h -E 'XpmDetector:|barrier|<I> Opening file .*-c000.xtc2' $P/wd-fakecam-seg2/pmlogs/*/*/*:fakecam_$s.log | sed \"s#^#fakecam_$s: #; s#'/sdf/.*/xtc/#'.../xtc/#\" | cut -c1-138; done"
+ },
+ {
+  "send": "F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam-seg2.log); for a in '' '--self-test-offset 1'; do echo \"== xtc2_check $(basename $F) --det $T --seed 0x1234 $a\"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done",
+  "expect": "^rc=\\d+\\s*$[\\s\\S]*^rc=\\d+\\s*$",
+  "timeout": 900
+ },
+ {
+  "send": "daq_sim down -w $P/wd-fakecam-seg2 > $P/down-fakecam-seg2.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fakecam-seg2.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (d) a fault per config path. xpmdet_config: TDetSemi.Length_0 reads back wrong, so Connect (xpmdet_connect) must fail and name it"
+ },
+ {
+  "send": "echo \"evidence records before the fault runs: $(ls $DAQ_SIM_EVIDENCE | wc -l)\""
+ },
+ {
+  "send": "T=fakecam; PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 daq_sim up -w $P/wd-fault-xpmdet --det $T --detach > $P/up-fault-xpmdet.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/up-fault-xpmdet.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-fault-xpmdet --events 1000 > $P/cycle-fault-xpmdet.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\\[error\\]|cycle (PASS|FAIL)' $P/cycle-fault-xpmdet.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 500
+ },
+ {
+  "send": "grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\\*\\*\\*\\* python error|killed by signal [0-9]+' $P/wd-fault-xpmdet/pmlogs/*/*/*:${T}_0.log | sort | uniq -c | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-fault-xpmdet > $P/down-fault-xpmdet.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault-xpmdet.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# hrencoder_config: its trigger delay register reads back wrong, so Configure (config_expert's write-verify) must fail and name it"
+ },
+ {
+  "send": "T=hrencoder; PSDAQ_SIM_ROGUE_FAULT='Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' daq_sim up -w $P/wd-fault-hrencoder --det $T --detach > $P/up-fault-hrencoder.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\\.' $P/up-fault-hrencoder.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "daq_sim cycle -w $P/wd-fault-hrencoder --events 1000 > $P/cycle-fault-hrencoder.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\\[error\\]|cycle (PASS|FAIL)' $P/cycle-fault-hrencoder.log | cut -c1-138",
+  "expect": "CYCLE_EXIT=\\d+",
+  "timeout": 500
+ },
+ {
+  "send": "grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\\*\\*\\*\\* python error|killed by signal [0-9]+' $P/wd-fault-hrencoder/pmlogs/*/*/*:${T}_0.log | sort | uniq -c | cut -c1-138"
+ },
+ {
+  "send": "daq_sim down -w $P/wd-fault-hrencoder > $P/down-fault-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault-hrencoder.log | cut -c1-138; echo \"evidence records after the fault runs: $(ls $DAQ_SIM_EVIDENCE | wc -l)\"",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (e) daq_sim coverage at this head with this shell's 11 records: the det rows, then the summary"
+ },
+ {
+  "send": "daq_sim coverage > $P/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/cov.txt; sed -n '/^row /,/^det:drp_gpu:jungfrau /p' $P/cov.txt | cut -c1-138",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "grep -E '^evidence:|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138; echo \"UNPROVEN rows: $(grep -c ' UNPROVEN ' $P/cov.txt)\""
+ },
+ {
+  "send": "# 61 rows UNPROVEN is expected at this PR (no run for them yet), so the check ends FAIL, exit 1"
+ },
+ {
+  "send": "# (f) a RUN row whose record is gone: a copy of the evidence dir without the ts record"
+ },
+ {
+  "send": "python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-removed det:drp:ts remove | cut -c1-138"
+ },
+ {
+  "send": "daq_sim coverage --evidence $P/ev-removed > $P/cov-removed.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|ts|hrencoder) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-removed.txt | cut -c1-138",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# (g) the hardware path, no sim:// device: the same commands from base wt-cov (2d9593bc5) and from this head, then diffed"
+ },
+ {
+  "send": "git -C $R/wt-cov log -1 --format='base %H %s' | cut -c1-138; echo \"base local changes: $(git -C $R/wt-cov status --short | wc -l); files under psdaq/drp and psdaq/psdaq/configdb that differ 2d9593bc5..HEAD: $(git diff --name-only 2d9593bc5 HEAD -- psdaq/drp psdaq/psdaq/configdb | wc -l)\""
+ },
+ {
+  "send": "TYPES='fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he epixhr2x2'; for w in wt-cov wt-xpm; do bash $R/logs/xpm/hwpath.sh $w $TYPES > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done",
+  "expect": "^== wt-xpm head=",
+  "timeout": 900
+ },
+ {
+  "send": "diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-xpm.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-xpm.log | head -2",
+  "expect": "HWPATH_DIFF_EXIT=\\d+",
+  "timeout": 60
+ },
+ {
+  "send": "sed -n '/^-- fakecam python/,/^-- cspad python/p' $P/hw-wt-xpm.log | cut -c1-138"
+ },
+ {
+  "send": "sed -n '/^-- hrencoder python/,/^-- epixm320 python/p' $P/hw-wt-xpm.log | cut -c1-138"
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

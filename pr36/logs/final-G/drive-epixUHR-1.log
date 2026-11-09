@@ -1,0 +1,21 @@
+=== STEP configdb
+=== FAILED in configdb
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_drive.py", line 108, in main
+    args.segm), seed_type(url, args.inst, args.alias, t, detname, args.segm, args.yaml),
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/rogue_drive.py", line 59, in seed_type
+    top = type_cdict(det_type, detname, segm, yaml)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/sim/configdb_seed.py", line 143, in type_cdict
+    top = getattr(mod, '%s_cdict' % store)()
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/psdaq/psdaq/configdb/epixUHR_config_store.py", line 85, in epixUHR_cdict
+    top.set(base+'_temp250',    np.loadtxt(pathPll+'PLLConfig_Si5345_temp_250.csv',                  dtype='uint16', delimiter=',', skiprows=1, converters=conv))
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/lib/npyio.py", line 1373, in loadtxt
+    arr = _read(fname, dtype=dtype, comment=comment, delimiter=delimiter,
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/lib/npyio.py", line 992, in _read
+    fh = np.lib._datasource.open(fname, 'rt', encoding=encoding)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/lib/_datasource.py", line 193, in open
+    return ds.open(path, mode, encoding=encoding, newline=newline)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/lib/_datasource.py", line 533, in open
+    raise FileNotFoundError(f"{path} not found.")
+FileNotFoundError: /cds/home/p/psrel/EpixUHR/pll/PLLConfig_Si5345_temp_250.csv not found.
+srun: error: sdfmilan048: task 0: Exited with exit code 1

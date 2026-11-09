@@ -1,0 +1,25 @@
+2026-11-08T20:48:58.763-08:00 start state: reset
+2026-11-08T20:48:58.764-08:00 setRecord(True) -> OK
+2026-11-08T20:48:59.770-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:48:59.771-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T20:49:00.178-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T20:49:00.182-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:49:20.240-08:00 [error] fakecam_0 did not respond to connect
+2026-11-08T20:49:20.240-08:00 [error] 1 client did not respond to connect
+2026-11-08T20:49:20.241-08:00 [error] connect failed to change state
+2026-11-08T20:49:20.241-08:00 setState connected    -> allocated    FAIL
+2026-11-08T20:49:20.242-08:00 status: transition alloc state allocated recording True experiment tstx00001 run 0
+2026-11-08T20:49:50.272-08:00 [error] fakecam_0 did not respond to dealloc
+2026-11-08T20:49:50.272-08:00 [error] 1 client did not respond to dealloc
+2026-11-08T20:49:50.273-08:00 [error] dealloc failed to change state
+2026-11-08T20:49:50.273-08:00 setState unallocated  -> allocated    FAIL
+2026-11-08T20:49:50.774-08:00 final state allocated (start reset)
+transitions (request -> read back):
+  2026-11-08T20:48:58.764-08:00 -> 2026-11-08T20:48:59.770-08:00  unallocated  unallocated  
+  2026-11-08T20:48:59.771-08:00 -> 2026-11-08T20:49:00.182-08:00  allocated    allocated    
+  2026-11-08T20:49:00.182-08:00 -> 2026-11-08T20:49:20.241-08:00  connected    allocated    
+  2026-11-08T20:49:20.242-08:00 -> 2026-11-08T20:49:50.273-08:00  unallocated  allocated    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T20:49:50.780-08:00 6 error message(s) on the status stream
+2026-11-08T20:49:50.780-08:00 cycle FAIL

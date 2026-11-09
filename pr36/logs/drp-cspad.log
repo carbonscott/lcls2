@@ -1,0 +1,205 @@
+# ID:      cspad_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D cspad -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data -k ep_domain=lo,ep_provider=tcp,sim_length=64 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/prom -u cspad_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/08_20:33:03_sdfmilan048:cspad_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-xpm/install/bin/drp)
+@@@ The PID of new child "2026/11/08_20:33:03_sdfmilan048:cspad_0.log" is: 1495136
+@@@ @@@ @@@ @@@ @@@
+tst-drp[1495136]: <I> logging configured
+tst-drp[1495136]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[1495136]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[1495136]: <I> dmaCount 1024,  dmaSize 65536
+tst-drp[1495136]: <I> Allocated 1.1 GB pebble for 128 transitions of 8388608 B and 1024 L1Accepts of 65536 B
+tst-drp[1495136]: <I> nL1Buffers 1024,  pebble buffer size 65536 B
+tst-drp[1495136]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[1495136]: <I> MemPoolSim: simxpm registered cspad_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[1495136]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+tst-drp[1495136]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[1495136]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst
+tst-drp[1495136]: <I> Output dir: ready
+tst-drp[1495136]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[1495136]: <I> BufferedFileWriterMT is starting with process ID 1495179
+tst-drp[1495136]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[1495136]: <I> Ready for transitions
+tst-drp[1495136]: <I> received key = rollcall @ Sun Nov  8 20:33:11 2026
+tst-drp[1495136]: <I> received key = alloc @ Sun Nov  8 20:33:12 2026
+tst-drp[1495136]: <I> Using requested interface lo, address 127.0.0.1
+WARNING:root:xpmdet IS the barrier supervisor for sim://127.0.0.1:31052, 0 worker(s) besides the supervisor
+WARNING:root:FidCount  : 0
+WARNING:root:RxRstCount: 0
+WARNING:root:RxDecErrs : 0
+WARNING:root:RxDspErrs : 0
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1495136]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1495136]: <I> received key = connect @ Sun Nov  8 20:33:13 2026
+tst-drp[1495136]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[1495136]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[1495136]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[1495136]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[1495136]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[1495136]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[1495136]: <I> Outbound link with TEB ID  0 at 127.0.0.1:35573 connected
+tst-drp[1495136]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[1495136]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[1495136]: <I> received key = configure @ Sun Nov  8 20:33:14 2026
+tst-drp[1495136]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[1495136]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 16 64 entry batches of 40 B
+tst-drp[1495136]: <I> Outbound link with TEB ID  0, 0x55c0ad50f000 : 0x55c0ad519000 (0000a000), configured in    0 ms
+tst-drp[1495136]: <I> Allocated 0.0 GB region for 1024 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[1495136]: <I> Inbound  link with TEB ID  0, 0x55c0ad51a000 : 0x55c0ad524000 (0000a000), configured in    0 ms
+tst-drp[1495136]: <I> AreaDetector configure
+tst-drp[1495136]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/cspad_0
+tst-drp[1495136]: <I> 
+tst-drp[1495136]: <I> Parameters of Contributor ID 0 (127.0.0.1:41823):
+tst-drp[1495136]: <I>   CPU allocation: granted 16 CPUs on NUMA node 0: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+tst-drp[1495136]: <I>   Instrument:                   tst
+tst-drp[1495136]: <I>   Partition:                    5
+tst-drp[1495136]: <I>   Alias (detName, detSeg):      cspad_0 ('cspad', 0)
+tst-drp[1495136]: <I>   Readout group receipient:     0x20
+tst-drp[1495136]: <I>   Readout group contractor:     0x20
+tst-drp[1495136]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp[1495136]: <I>   Number of MEBs:               0
+tst-drp[1495136]: <I>   Batching state:               Enabled
+tst-drp[1495136]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp[1495136]: <I>   Batch pool depth:             0x00000010 = 16
+tst-drp[1495136]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp[1495136]: <I>   # of TEB contrib.   buffers:  0x00000400 = 1024
+tst-drp[1495136]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp[1495136]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp[1495136]: <I>   Max  MEB L1Accept      size:  0x00010000 = 65536
+tst-drp[1495136]: <I>   Max  MEB transition    size:  0x00800000 = 8388608
+tst-drp[1495136]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp[1495136]: <I> 
+tst-drp[1495136]: <I> TEB Receiver thread is starting with process ID 1495354
+tst-drp[1495136]: <I> Worker 0 is starting with process ID 1495355
+tst-drp[1495136]: <I> Worker 1 is starting with process ID 1495356
+tst-drp[1495136]: <I> Worker 5 is starting with process ID 1495360
+tst-drp[1495136]: <I> TEBreceiver: pinned to CPU 0
+tst-drp[1495136]: <I> Worker 6 is starting with process ID 1495361
+tst-drp[1495136]: <I> Worker 8 is starting with process ID 1495363
+tst-drp[1495136]: <I> Worker 4 is starting with process ID 1495359
+tst-drp[1495136]: <I> Worker 2 is starting with process ID 1495357
+tst-drp[1495136]: <I> drp/Worker1: pinned to CPU 2
+tst-drp[1495136]: <I> drp/Worker2: pinned to CPU 7
+tst-drp[1495136]: <I> Worker 3 is starting with process ID 1495358
+tst-drp[1495136]: <I> drp/Worker5: pinned to CPU 3
+tst-drp[1495136]: <I> drp/Worker4: pinned to CPU 6
+tst-drp[1495136]: <I> drp/Worker0: pinned to CPU 1
+tst-drp[1495136]: <I> drp/Worker6: pinned to CPU 4
+tst-drp[1495136]: <I> Worker 9 is starting with process ID 1495364
+tst-drp[1495136]: <I> PGP reader is starting with process ID 1495365
+tst-drp[1495136]: <I> drp/Worker8: pinned to CPU 5
+tst-drp[1495136]: <I> Collector is starting with process ID 1495366
+tst-drp[1495136]: <I> PGPDrp: 45 threads (13 of them ours and hot) in 16 granted CPUs
+tst-drp[1495136]: <I> drp/Worker3: pinned to CPU 8
+tst-drp[1495136]: <I> Collector: pinned to CPU 11
+tst-drp[1495136]: <I> Worker 7 is starting with process ID 1495362
+tst-drp[1495136]: <I> drp/Worker9: pinned to CPU 9
+tst-drp[1495136]: <I> drp/Worker7: pinned to CPU 12
+tst-drp[1495136]: <I> PGPreader: pinned to CPU 10
+tst-drp[1495136]: <I> PGPReader  saw    Configure @ 1163046795.591548242 (04732728e2ce36)
+tst-drp[1495136]: <I> TebCtrb   sent    Configure @ 1163046795.591548242 (04732728e2ce36) to TEB ID 0 @   0x55629501f000 (00000000 + 0 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw    Configure @ 1163046795.591548242 (04732728e2ce36)
+tst-drp[1495136]: <I> received key = beginrun @ Sun Nov  8 20:33:15 2026
+Opening file /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp[1495136]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp[1495136]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp[1495136]: <I> AreaDetector beginrun
+tst-drp[1495136]: <I> PGPReader  saw     BeginRun @ 1163046796.717394184 (04732728f54e58)
+tst-drp[1495136]: <I> TebCtrb   sent     BeginRun @ 1163046796.717394184 (04732728f54e58) to TEB ID 0 @   0x55629501f028 (00000000 + 1 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw     BeginRun @ 1163046796.717394184 (04732728f54e58)
+tst-drp[1495136]: <I> received key = beginstep @ Sun Nov  8 20:33:16 2026
+tst-drp[1495136]: <I> PGPReader  saw    BeginStep @ 1163046796.736032304 (04732728f59cc0)
+tst-drp[1495136]: <I> TebCtrb   sent    BeginStep @ 1163046796.736032304 (04732728f59cc0) to TEB ID 0 @   0x55629501f050 (00000000 + 2 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw    BeginStep @ 1163046796.736032304 (04732728f59cc0)
+tst-drp[1495136]: <I> received key = enable @ Sun Nov  8 20:33:16 2026
+tst-drp[1495136]: <I> PGPReader  saw       Enable @ 1163046796.741799090 (04732728f5b502)
+tst-drp[1495136]: <I> TebCtrb   sent       Enable @ 1163046796.741799090 (04732728f5b502) to TEB ID 0 @   0x55629501f078 (00000000 + 3 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw       Enable @ 1163046796.741799090 (04732728f5b502)
+tst-drp[1495136]: <I> received key = disable @ Sun Nov  8 20:33:18 2026
+tst-drp[1495136]: <I> PGPReader  saw      Disable @ 1163046798.814427293 (0473272917c3ff)
+tst-drp[1495136]: <I> TebCtrb   sent      Disable @ 1163046798.814427293 (0473272917c3ff) to TEB ID 0 @   0x55629501f4d8 (00000000 + 31 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw      Disable @ 1163046798.814427293 (0473272917c3ff)
+tst-drp[1495136]: <I> received key = endstep @ Sun Nov  8 20:33:19 2026
+tst-drp[1495136]: <I> PGPReader  saw      EndStep @ 1163046799.881028978 (04732729294ae7)
+tst-drp[1495136]: <I> TebCtrb   sent      EndStep @ 1163046799.881028978 (04732729294ae7) to TEB ID 0 @   0x55629501f500 (00000000 + 32 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw      EndStep @ 1163046799.881028978 (04732729294ae7)
+tst-drp[1495136]: <I> received key = endrun @ Sun Nov  8 20:33:19 2026
+tst-drp[1495136]: <I> PGPReader  saw       EndRun @ 1163046799.893992184 (0473272929816f)
+tst-drp[1495136]: <I> TebCtrb   sent       EndRun @ 1163046799.893992184 (0473272929816f) to TEB ID 0 @   0x55629501f528 (00000000 + 33 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw       EndRun @ 1163046799.893992184 (0473272929816f)
+tst-drp[1495136]: <I> received key = unconfigure @ Sun Nov  8 20:33:19 2026
+tst-drp[1495136]: <I> PGPReader  saw  Unconfigure @ 1163046799.896841541 (04732729298d6c)
+tst-drp[1495136]: <I> TebCtrb   sent  Unconfigure @ 1163046799.896841541 (04732729298d6c) to TEB ID 0 @   0x55629501f550 (00000000 + 34 * 00000028)
+tst-drp[1495136]: <I> TebRcvr    saw  Unconfigure @ 1163046799.896841541 (04732729298d6c)
+tst-drp[1495136]: <I> received key = disconnect @ Sun Nov  8 20:33:19 2026
+tst-drp[1495136]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x55c0ad50f000  size 40960  maxBatchSize 2560  maxEntrySize 40
+tst-drp[1495136]: <I> Shutting down workers
+tst-drp[1495136]: <I> Worker 0 is exiting
+tst-drp[1495136]: <I> Worker 1 is exiting
+tst-drp[1495136]: <I> PGPReader is exiting
+tst-drp[1495136]: <I> Worker 2 is exiting
+tst-drp[1495136]: <I> Worker 3 is exiting
+tst-drp[1495136]: <I> Worker 4 is exiting
+tst-drp[1495136]: <I> Worker 5 is exiting
+tst-drp[1495136]: <I> Worker 6 is exiting
+tst-drp[1495136]: <I> Worker 7 is exiting
+tst-drp[1495136]: <I> Worker 8 is exiting
+tst-drp[1495136]: <I> Worker 9 is exiting
+tst-drp[1495136]: <I> Worker threads finished
+tst-drp[1495136]: <I> PGPReader thread finished
+tst-drp[1495136]: <I> Collector is exiting
+tst-drp[1495136]: <I> Collector thread finished
+tst-drp[1495136]: <I> received key = dealloc @ Sun Nov  8 20:33:20 2026
+tst-drp[1495136]: <I> received key = reset @ Sun Nov  8 20:33:20 2026
+^Ctst-drp[1495136]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2
+@@@ Current time: Sun Nov  8 20:33:39 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1495136. The process was killed by signal 6

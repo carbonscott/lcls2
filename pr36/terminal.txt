@@ -1,0 +1,735 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T04:29:51+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty bash --rcfile $R/redo/p36/node_rc.sh -i
+cwang31@sdfmilan048:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan048
+2026-11-08 20:29:54 PST
+Slurm job 43839059 step 249
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan048:agentify-lcls2$ cd $R/wt-xpm && git rev-parse HEAD && git log --format='%h %s' ec06569d9..HEAD | cut -c1-138 && echo "local changes: $(git status --short | wc -l)"
+1a0c273619a292247c30cb7a20e8365c34e0f56c
+1a0c27361 Merge remote-tracking branch 'origin/agentify' into pr/xpm
+0d04b2ab8 Merge PR #34: sim: BEB detectors configure through their own config code on an emulated device
+cb5b519bf docs: epixm320 in the runbook and the changelog, RUN; epixhr2x2 and epixUHR findings
+6d292619c sim: epixm320 configures through its own config code
+81db4d4a9 docs: XpmDetector types and hrencoder in the runbook and the changelog; cspad, epixhremu, jungfrauemu, ts, hrencoder RUN
+0487316cd sim: XpmDetector types configure through xpmdet_config; cspad, epixhremu, jungfrauemu, ts and hrencoder run
+local changes: 0
+cwang31@sdfmilan048:wt-xpm$ git diff --stat 0d04b2ab8 HEAD | tail -1; echo "files this PR changes under psdaq/psdaq/configdb (the types' config code): $(git diff --name-only 0d04b2ab8 HEAD -- psdaq/psdaq/configdb | wc -l)"
+ 22 files changed, 988 insertions(+), 52 deletions(-)
+files this PR changes under psdaq/psdaq/configdb (the types' config code): 0
+cwang31@sdfmilan048:wt-xpm$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # The build is this HEAD's (build_all.sh at this HEAD in Slurm step 248): ninja has nothing to do, and the installed python is the checkout's
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -E '^host=|BUILD_EXIT' $Q/build.log | cut -c1-138; ninja -n -C builddir | tail -1; for d in psdaq/sim psdaq/configdb psana/detector; do diff -rq -x __pycache__ ${d%%/*}/$d install/lib/python3.9/site-packages/$d && echo "installed $d == checkout"; done
+host=sdfmilan048 head=1a0c273619a292247c30cb7a20e8365c34e0f56c dirty=0 date=2026-11-08T20:26:12-08:00 job=43839059 step=248
+BUILD_EXIT=0
+ninja: no work to do.
+installed psdaq/sim == checkout
+installed psdaq/configdb == checkout
+installed psana/detector == checkout
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (a) unit tests: coverage, rogue_dev, the framer, config DB seeding, simxpm, the XpmDetector types
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ python -m pytest -q -p no:cacheprovider psdaq/psdaq/tests/test_sim_coverage.py psdaq/psdaq/tests/test_sim_rogue_dev.py psdaq/psdaq/tests/test_sim_framer.py psdaq/psdaq/tests/test_sim_configdb_seed_store.py psdaq/psdaq/tests/test_sim_configdb.py psdaq/psdaq/tests/test_sim_lgbk.py psdaq/psdaq/tests/test_simxpm.py psdaq/psdaq/tests/test_sim_xpmdet_types.py 2>&1 | grep -E ' (passed|failed|error)'
+81 passed in 58.37s
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (b) each type on a fresh DAQ: daq_sim up --det <type> --detach, cycle --events 1000, its DRP's log lines, the per-event check (as written: PASS; --self-test-offset 1: must FAIL), down. New work dirs, a new, empty evidence dir
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ export P=$Q/take1 DAQ_SIM_EVIDENCE=$Q/take1/ev; mkdir -p $DAQ_SIM_EVIDENCE; echo "records in $DAQ_SIM_EVIDENCE: $(ls -A $DAQ_SIM_EVIDENCE | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)"
+records in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/ev: 0; work dirs in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1: 0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # fakecam: XpmDetector; its DRP now runs xpmdet_config against an emulated TDet receiver (it skipped it under sim:// before)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=fakecam; daq_sim up -w $P/wd-fakecam --det $T --detach > $P/up-fakecam.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-fakecam.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:31:46.686-08:00 daq_sim: preflight rc=0: 20:31:46 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:31:55.928-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-fakecam --events 1000 > $P/cycle-fakecam.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-fakecam.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2011
+  TEB_WrtCt              2011
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/data/tst/tstx00001/xtc/
+  psana2 events          2011
+  psana2 with data       2011
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:32:12.127-08:00 evidence 20261108T203212-cycle-1a0c27361-1492960: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:32:12.127-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-fakecam/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1492912]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1492912]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1492912]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[1492912]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2011; with fakecam data 2011; w3 == seed 2011 (seeds seen {0x1234: 2011}); payload pattern ok 2011; w0/w1 pulseId rising
+  seq (w2) 1..2011 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2011; with fakecam data 2011; w3 == seed 2011 (seeds seen {0x1234: 2011}); payload pattern ok 0; w0/w1 pulseId rising an
+  seq (w2) 1..2011 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+  problem: event 5: payload pattern broken
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-fakecam > $P/down-fakecam.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fakecam.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:32:32.988-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # cspad: XpmDetector (an AreaDetector, as fakecam), xpmdet_config only; psana reads it as cspad_raw_2_0_0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=cspad; daq_sim up -w $P/wd-cspad --det $T --detach > $P/up-cspad.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-cspad.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:32:58.989-08:00 daq_sim: preflight rc=0: 20:32:58 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:33:08.858-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-cspad --events 1000 > $P/cycle-cspad.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-cspad.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2072
+  TEB_WrtCt              2072
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/ts
+  psana2 events          2072
+  psana2 with data       2072
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:33:25.129-08:00 evidence 20261108T203325-cycle-1a0c27361-1495332: det:drp:cspad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:33:25.129-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-cspad/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1495136]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1495136]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1495136]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[1495136]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/cspad_0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-cspad.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2072; with cspad data 2072; w3 == seed 2072 (seeds seen {0x1234: 2072}); payload pattern ok 2072; w0/w1 pulseId rising a
+  seq (w2) 1..2072 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2072; with cspad data 2072; w3 == seed 2072 (seeds seen {0x1234: 2072}); payload pattern ok 0; w0/w1 pulseId rising and 
+  seq (w2) 1..2072 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+  problem: event 5: payload pattern broken
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-cspad > $P/down-cspad.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-cspad.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:33:45.734-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # epixhremu: XpmDetector, xpmdet_config only; the emulator replays the frame up writes from the seed
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=epixhremu; daq_sim up -w $P/wd-epixhremu --det $T --detach > $P/up-epixhremu.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-epixhremu.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:34:11.920-08:00 daq_sim: preflight rc=0: 20:34:11 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:34:18.357-08:00 daq_sim: epixhremu frame (288, 384) from seed 0x1234 written to /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/
+2026-11-08T20:34:24.560-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-epixhremu --events 1000 > $P/cycle-epixhremu.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epixhremu.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2274
+  TEB_WrtCt              2274
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/data/tst/tstx00001/xt
+  psana2 events          2274
+  psana2 with data       2274
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:34:42.592-08:00 evidence 20261108T203442-cycle-1a0c27361-1497917: det:drp:epixhremu prog:control prog:drp prog:pyxpm prog:te
+2026-11-08T20:34:42.592-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-epixhremu/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1497349]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1497349]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1497349]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[1497349]: <I> EpixHRemu configure
+tst-drp[1497349]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/epixhremu_0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixhremu.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/data/tst/tstx00001/xtc/tstx00001-r
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 2274; with epixhremu data 2274; events matching the pattern of seed 0x1234: 2274
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/data/tst/tstx00001/xtc/tstx00001-r
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 2274; with epixhremu data 2274; events matching the pattern of seed 0x1234: 0
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote, self-test offset 1
+  problem: event 1: 110592 of 110592 pixels differ
+  problem: event 2: 110592 of 110592 pixels differ
+  problem: event 3: 110592 of 110592 pixels differ
+  problem: event 4: 110592 of 110592 pixels differ
+  problem: event 5: 110592 of 110592 pixels differ
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-epixhremu > $P/down-epixhremu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epixhremu.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:35:04.914-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # jungfrauemu: XpmDetector, xpmdet_config only; one 512 x 1024 panel of TDet words per event
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=jungfrauemu; daq_sim up -w $P/wd-jungfrauemu --det $T --detach > $P/up-jungfrauemu.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-jungfrauemu.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:35:31.405-08:00 daq_sim: preflight rc=0: 20:35:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:35:40.714-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-jungfrauemu --events 1000 > $P/cycle-jungfrauemu.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-jungfrauemu.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2178
+  TEB_WrtCt              2178
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-jungfrauemu/data/tst/tstx00001/
+  psana2 events          2178
+  psana2 with data       2178
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:36:44.181-08:00 evidence 20261108T203644-cycle-1a0c27361-1500561: det:drp:jungfrauemu prog:control prog:drp prog:pyxpm prog:
+2026-11-08T20:36:44.181-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-jungfrauemu/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1500360]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1500360]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1500360]: <I> MemPoolSim: readout group 5, 262144 payload words per lane
+tst-drp[1500360]: <I> JungfrauEmulator configure
+tst-drp[1500360]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/jungfrauemu_0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-jungfrauemu.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-jungfrauemu/data/tst/tstx00001/xtc/tstx00001
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 2178; with jungfrauemu data 2178; events matching the pattern of seed 0x1234: 2178
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-jungfrauemu/data/tst/tstx00001/xtc/tstx00001
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 2178; with jungfrauemu data 2178; events matching the pattern of seed 0x1234: 0
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  problem: event 1: 262140 of 262140 payload words differ
+  problem: event 2: 262140 of 262140 payload words differ
+  problem: event 3: 262140 of 262140 payload words differ
+  problem: event 4: 262140 of 262140 payload words differ
+  problem: event 5: 262140 of 262140 payload words differ
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-jungfrauemu > $P/down-jungfrauemu.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-jungfrauemu.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:38:33.116-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # ts: XpmDetector, xpmdet_config and its own ts_config (ts_connect at Connect, ts_config at Configure) on simxpm's PVs
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=ts; daq_sim up -w $P/wd-ts --det $T --detach > $P/up-ts.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-ts.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:39:00.021-08:00 daq_sim: preflight rc=0: 20:38:59 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:39:09.576-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-ts --events 1000 > $P/cycle-ts.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-ts.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2141
+  TEB_WrtCt              2141
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-ts/data/tst/tstx00001/xtc/tstx0
+  psana2 events          2141
+  psana2 with data       2141
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:39:27.632-08:00 evidence 20261108T203927-cycle-1a0c27361-1506959: det:drp:ts prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:39:27.632-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'XpmDetector:|XPM remote link id|MemPoolSim: (readout group|ts data)|payload seed|rxready|RxLink locked|link enables|(EpixHRemu|JungfrauEmulator) configure' $P/wd-ts/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1506762]: <I> MemPoolSim: ts data is its TDet firmware's 153 B message
+tst-drp[1506762]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[1506762]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[1506762]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+*** rxready ['DAQ:SIM:XPM:0:LinkRxReady0'] : [1]
+RxLink locked after 1 tries
+*** setting xpm link enables ['DAQ:SIM:XPM:0:LinkGroupMask0'] [32]
+tst-drp[1506762]: <I> Sim payload seed 4660 (0x00001234) from kwarg sim_seed
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-ts.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-ts/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 2141; with ts data 2141; events matching the pattern of seed 0x1234: 2141
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-ts/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 2141; with ts data 2141; events matching the pattern of seed 0x1234: 0
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  problem: event 1: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [4]... != [0]...
+  problem: event 2: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [3]... != [7]...
+  problem: event 3: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [2]... != [6]...
+  problem: event 4: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [1]... != [5]...
+  problem: event 5: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [0]... != [4]...
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-ts > $P/down-ts.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-ts.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:39:53.337-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # hrencoder: BEB, its own hrencoder_config (the KCU and the encoder board over SRPv3, on rogue_dev)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=hrencoder; daq_sim up -w $P/wd-hrencoder --det $T --detach > $P/up-hrencoder.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-hrencoder.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:40:19.744-08:00 daq_sim: preflight rc=0: 20:40:19 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:40:34.086-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-hrencoder --events 1000 > $P/cycle-hrencoder.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-hrencoder.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2121
+  TEB_WrtCt              2121
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-hrencoder/data/tst/tstx00001/xt
+  psana2 events          2121
+  psana2 with data       2121
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:40:49.151-08:00 evidence 20261108T204049-cycle-1a0c27361-1509684: det:drp:hrencoder prog:control prog:drp prog:pyxpm prog:te
+2026-11-08T20:40:49.151-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'BEBDetector: .*config runs|^hrencoder_(init|connect|config)$|^ConfigLclsTimingV2\(\)$|StopRun|StartRun|delay_clks|link id .* from simxpm|sim payload seed|rogue_dev' $P/wd-hrencoder/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1509451]: <I> BEBDetector: hrencoder config runs against simulated device sim://127.0.0.1:31052
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Root.App.Fmc.Position (0 answered)
+ClinkDev.StopRun() executed
+tst-drp[1509451]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[1509451]: <I> BEBDetector: sim payload seed 0x1234
+group: 5		delay_ns: 105765		delay_clks: 19642
+ClinkDev.StartRun() executed
+ClinkDev.StopRun() executed
+ClinkDev.StopRun() executed
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-hrencoder.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 2121; with hrencoder data 2121; events matching the pattern of seed 0x1234: 2121
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 2121; with hrencoder data 2121; events matching the pattern of seed 0x1234: 0
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern, self-test offset 1
+  problem: event 1: value 45163 != 1678594537; error_cnt 233 != 15; missedTrig_cnt 15 != 94
+  problem: event 2: value 85666 != 1678635040; error_cnt 32 != 70; missedTrig_cnt 70 != 149
+  problem: event 3: value 126169 != 1678675543; error_cnt 87 != 125; missedTrig_cnt 125 != 204
+  problem: event 4: value 166672 != 1678716046; error_cnt 142 != 180; missedTrig_cnt 180 != 3
+  problem: event 5: value 207175 != 1678756549; error_cnt 197 != 235; missedTrig_cnt 235 != 58
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-hrencoder > $P/down-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-hrencoder.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:41:09.680-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # epixm320: BEB, its own epixm320_config (the KCU and the camera over SRPv3, its fnInitAsicScript)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=epixm320; daq_sim up -w $P/wd-epixm320 --det $T --detach > $P/up-epixm320.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-epixm320.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:41:35.872-08:00 daq_sim: preflight rc=0: 20:41:35 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:41:49.597-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-epixm320 --events 1000 > $P/cycle-epixm320.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epixm320.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2029
+  TEB_WrtCt              2029
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixm320/data/tst/tstx00001/xtc
+  psana2 events          2029
+  psana2 with data       2029
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:42:16.620-08:00 evidence 20261108T204216-cycle-1a0c27361-1512454: det:drp:epixm320 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:42:16.620-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'BEBDetector: .*config runs|rxId .* found|link id .* from simxpm|sim payload seed|Init ASIC script|Initialization routine|Triggers sent|lane adjustment|config_expert complete|rogue_dev' $P/wd-epixm320/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1512251]: <I> BEBDetector: epixm320 config runs against simulated device sim://127.0.0.1:31052
+rxId ff000000 found after 0s
+tst-drp[1512251]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[1512251]: <I> BEBDetector: sim payload seed 0x1234
+Init ASIC script started
+Initialization routine completed.
+Triggers sent: 2500
+ASIC lane adjustment completed unsuccessfully
+WARNING:root:config_expert complete
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epixm320.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 2029; with epixm320 data 2029; events matching the pattern of seed 0x1234: 2029
+  check: per pixel, pattern(seed, seq, i, 15)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 2029; with epixm320 data 2029; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 15), self-test offset 1
+  problem: event 1: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x306b != 0x51e9
+  problem: event 2: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x4ea2 != 0x7020
+  problem: event 3: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x6cd9 != 0xe57
+  problem: event 4: 294906 of 294912 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x2947 != 0x4ac5
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-epixm320 > $P/down-epixm320.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epixm320.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:42:39.020-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # epix100 (from PR #34, regression)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=epix100; daq_sim up -w $P/wd-epix100 --det $T --detach > $P/up-epix100.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-epix100.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:43:05.149-08:00 daq_sim: preflight rc=0: 20:43:05 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:43:19.291-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-epix100 --events 1000 > $P/cycle-epix100.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-epix100.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2220
+  TEB_WrtCt              2220
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epix100/data/tst/tstx00001/xtc/
+  psana2 events          2220
+  psana2 with data       2220
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:43:39.378-08:00 evidence 20261108T204339-cycle-1a0c27361-1515365: det:drp:epix100 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:43:39.378-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'config runs against|FpgaVersion|check clock rate|Loading camera|sim payload seed' $P/wd-epix100/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1514798]: <I> BEBDetector: epix100 config runs against simulated device sim://127.0.0.1:31052
+KCU FpgaVersion 0x3040000
+CAM FpgaVersion 0xea020009
+check clock rate: 185.714286
+tst-drp[1514798]: <I> BEBDetector: sim payload seed 0x1234
+*** Loading camera configuration from /tmp/epix100_cfg.yaml
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-epix100.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2220; with epix100 data 2220; events matching the pattern of seed 0x1234: 2220
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2220; with epix100 data 2220; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 540640 of 540672 pixels differ, first at (0, 0): 0x2947 != 0xac5
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-epix100 > $P/down-epix100.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-epix100.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:44:06.360-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # wave8 (from PR #34, regression)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=wave8; daq_sim up -w $P/wd-wave8 --det $T --detach > $P/up-wave8.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-wave8.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:44:33.210-08:00 daq_sim: preflight rc=0: 20:44:33 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:44:48.104-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-wave8 --events 1000 > $P/cycle-wave8.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-wave8.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2219
+  TEB_WrtCt              2219
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8/data/tst/tstx00001/xtc/ts
+  psana2 events          2219
+  psana2 with data       2219
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:45:09.744-08:00 evidence 20261108T204509-cycle-1a0c27361-1517849: det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:45:09.744-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1517790]: <I> BEBDetector: wave8 config runs against simulated device sim://127.0.0.1:31052
+wave8_connect returning {'paddr': 1}
+tst-drp[1517790]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8:00', 0: 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2219; with wave8 data 2219; events matching the pattern of seed 0x1234: 2219
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2219; with wave8 data 2219; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 5: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-wave8 > $P/down-wave8.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:45:33.201-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # wave8he (from PR #34, regression)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=wave8he; daq_sim up -w $P/wd-wave8he --det $T --detach > $P/up-wave8he.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.| frame \(' $P/up-wave8he.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:46:00.165-08:00 daq_sim: preflight rc=0: 20:46:00 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:46:15.977-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-wave8he --events 1000 > $P/cycle-wave8he.log 2>&1; echo CYCLE_EXIT=$?; grep -E '^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-wave8he.log | cut -c1-138
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1339
+  TEB_WrtCt              1339
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8he/data/tst/tstx00001/xtc/
+  psana2 events          1339
+  psana2 with data       1339
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:46:35.740-08:00 evidence 20261108T204635-cycle-1a0c27361-1520761: det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:46:35.740-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -E 'config runs against|_connect returning|sim payload seed|^base ' $P/wd-wave8he/pmlogs/*/*/*:${T}_0.log | cut -c1-138
+tst-drp[1520722]: <I> BEBDetector: wave8he config runs against simulated device sim://127.0.0.1:31052
+wave8he_connect returning {'paddr': 1}
+tst-drp[1520722]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8HE:00', 'lane': 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-wave8he.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 1339; with wave8he data 1339; events matching the pattern of seed 0x1234: 1339
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r00
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 1339; with wave8he data 1339; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 5: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-wave8he > $P/down-wave8he.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-wave8he.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:46:58.592-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (c) fakecam --segments 2: two DRPs, segments 0 and 1 of one detector, each running xpmdet_config; the check reads the file the cycle names (segment 0's)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=fakecam; daq_sim up -w $P/wd-fakecam-seg2 --det $T --segments 2 --detach > $P/up-fakecam-seg2.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/up-fakecam-seg2.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:47:25.806-08:00 daq_sim: preflight rc=0: 20:47:25 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:47:36.095-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -o "pids {.*}" $P/up-fakecam-seg2.log
+pids {'control': 1523504, 'teb0': 1523503, 'fakecam_0': 1523501, 'fakecam_1': 1523500}
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-fakecam-seg2 --events 1000 > $P/cycle-fakecam-seg2.log 2>&1; echo CYCLE_EXIT=$?; grep -E '\[fileReport\] .*/tstx|^  (simxpm NumL0Acc|TEB_WrtCt|xtc2 file|psana2 (events|with data|checks)|equal) |evidence |cycle (PASS|FAIL)' $P/cycle-fakecam-seg2.log | cut -c1-138
+CYCLE_EXIT=0
+2026-11-08T20:47:44.412-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s001-c000.xtc2
+2026-11-08T20:47:44.417-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s001-c000.smd.xtc2
+2026-11-08T20:47:45.427-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T20:47:45.438-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  simxpm NumL0Acc        2203
+  TEB_WrtCt              2203
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam-seg2/data/tst/tstx00001
+  psana2 events          2203
+  psana2 with data       2203
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T20:47:57.221-08:00 evidence 20261108T204757-cycle-1a0c27361-1523582: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T20:47:57.221-08:00 cycle PASS
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ for s in 0 1; do grep -h -E 'XpmDetector:|barrier|<I> Opening file .*-c000.xtc2' $P/wd-fakecam-seg2/pmlogs/*/*/*:fakecam_$s.log | sed "s#^#fakecam_$s: #; s#'/sdf/.*/xtc/#'.../xtc/#" | cut -c1-138; done
+fakecam_0: tst-drp[1523501]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+fakecam_0: WARNING:root:xpmdet is NOT the barrier supervisor for sim://127.0.0.1:31052, 1 worker(s) besides the supervisor
+fakecam_0: tst-drp[1523501]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x1 from simxpm
+fakecam_0: tst-drp[1523501]: <I> Opening file '.../xtc/tstx00001-r0001-s001-c000.xtc2'
+fakecam_1: tst-drp[1523500]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+fakecam_1: WARNING:root:xpmdet IS the barrier supervisor for sim://127.0.0.1:31052, 1 worker(s) besides the supervisor
+fakecam_1: tst-drp[1523500]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+fakecam_1: tst-drp[1523500]: <I> Opening file '.../xtc/tstx00001-r0001-s000-c000.xtc2'
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ F=$(awk '/^  xtc2 file/{print $3}' $P/cycle-fakecam-seg2.log); for a in '' '--self-test-offset 1'; do echo "== xtc2_check $(basename $F) --det $T --seed 0x1234 $a"; python -m psdaq.sim.xtc2_check $F --det $T --seed 0x1234 $a 2>&1 | grep -v '^Rogue' | cut -c1-138; echo rc=${PIPESTATUS[0]}; done
+== xtc2_check tstx00001-r0001-s001-c000.xtc2 --det fakecam --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam-seg2/data/tst/tstx00001/xtc/tstx0000
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2203; with fakecam data 2203; w3 == seed 2203 (seeds seen {0x1234: 2203}); payload pattern ok 2203; w0/w1 pulseId rising
+  seq (w2) 1..2203 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s001-c000.xtc2 --det fakecam --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-fakecam-seg2/data/tst/tstx00001/xtc/tstx0000
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2203; with fakecam data 2203; w3 == seed 2203 (seeds seen {0x1234: 2203}); payload pattern ok 0; w0/w1 pulseId rising an
+  seq (w2) 1..2203 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+  problem: event 5: payload pattern broken
+  FAIL
+rc=1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-fakecam-seg2 > $P/down-fakecam-seg2.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fakecam-seg2.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:48:18.376-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (d) a fault per config path. xpmdet_config: TDetSemi.Length_0 reads back wrong, so Connect (xpmdet_connect) must fail and name it
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ echo "evidence records before the fault runs: $(ls $DAQ_SIM_EVIDENCE | wc -l)"
+evidence records before the fault runs: 11
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=fakecam; PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 daq_sim up -w $P/wd-fault-xpmdet --det $T --detach > $P/up-fault-xpmdet.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/up-fault-xpmdet.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:48:47.188-08:00 daq_sim: preflight rc=0: 20:48:47 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:48:56.478-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-fault-xpmdet --events 1000 > $P/cycle-fault-xpmdet.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\[error\]|cycle (PASS|FAIL)' $P/cycle-fault-xpmdet.log | cut -c1-138
+CYCLE_EXIT=1
+2026-11-08T20:48:59.770-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:49:00.182-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:49:20.240-08:00 [error] fakecam_0 did not respond to connect
+2026-11-08T20:49:20.240-08:00 [error] 1 client did not respond to connect
+2026-11-08T20:49:20.241-08:00 [error] connect failed to change state
+2026-11-08T20:49:20.241-08:00 setState connected    -> allocated    FAIL
+2026-11-08T20:49:50.272-08:00 [error] fakecam_0 did not respond to dealloc
+2026-11-08T20:49:50.272-08:00 [error] 1 client did not respond to dealloc
+2026-11-08T20:49:50.273-08:00 [error] dealloc failed to change state
+2026-11-08T20:49:50.273-08:00 setState unallocated  -> allocated    FAIL
+2026-11-08T20:49:50.780-08:00 cycle FAIL
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\*\*\*\* python error|killed by signal [0-9]+' $P/wd-fault-xpmdet/pmlogs/*/*/*:${T}_0.log | sort | uniq -c | cut -c1-138
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 @AxiMemMap(sim://127.0.0.1:31052)+0xa00000 reads back 0x7fffff
+      4 Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 with address 0x00a00000. Byte: 0. Got: 0xff, Exp: 0x40, Mask:
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-fault-xpmdet > $P/down-fault-xpmdet.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault-xpmdet.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-08T20:50:00.791-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # hrencoder_config: its trigger delay register reads back wrong, so Configure (config_expert's write-verify) must fail and name it
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ T=hrencoder; PSDAQ_SIM_ROGUE_FAULT='Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay' daq_sim up -w $P/wd-fault-hrencoder --det $T --detach > $P/up-fault-hrencoder.log 2>&1; echo UP_EXIT=$?; grep -E 'PREFLIGHT|UP\.' $P/up-fault-hrencoder.log | cut -c1-138
+UP_EXIT=0
+2026-11-08T20:50:27.709-08:00 daq_sim: preflight rc=0: 20:50:27 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T20:50:40.897-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim cycle -w $P/wd-fault-hrencoder --events 1000 > $P/cycle-fault-hrencoder.log 2>&1; echo CYCLE_EXIT=$?; grep -E 'setState|\[error\]|cycle (PASS|FAIL)' $P/cycle-fault-hrencoder.log | cut -c1-138
+CYCLE_EXIT=1
+2026-11-08T20:50:44.317-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T20:50:44.463-08:00 setState allocated    -> allocated    OK
+2026-11-08T20:50:44.924-08:00 setState connected    -> connected    OK
+2026-11-08T20:51:44.962-08:00 setState configured   -> error        FAIL
+2026-11-08T20:51:44.996-08:00 [error] hrencoder_0 did not respond to configure
+2026-11-08T20:51:44.996-08:00 [error] 1 client did not respond to configure
+2026-11-08T20:51:44.996-08:00 [error] configure failed to change state
+2026-11-08T20:52:15.029-08:00 [error] hrencoder_0 did not respond to disconnect
+2026-11-08T20:52:15.029-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T20:52:15.029-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T20:52:15.029-08:00 [error] disconnect failed to change state
+2026-11-08T20:52:15.030-08:00 setState allocated    -> connected    FAIL
+2026-11-08T20:52:15.538-08:00 cycle FAIL
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -h -o -E 'rogue_dev: FAULT .*|Verify error for block .*|\*\*\*\* python error|killed by signal [0-9]+' $P/wd-fault-hrencoder/pmlogs/*/*/*:${T}_0.log | sort | uniq -c | cut -c1-138
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)
+      4 Verify error for block Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay with address 0x8014900c. Byte: 0. 
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim down -w $P/wd-fault-hrencoder > $P/down-fault-hrencoder.log 2>&1; echo DOWN_EXIT=$?; tail -1 $P/down-fault-hrencoder.log | cut -c1-138; echo "evidence records after the fault runs: $(ls $DAQ_SIM_EVIDENCE | wc -l)"
+DOWN_EXIT=0
+2026-11-08T20:52:26.128-08:00 daq_sim: down: clean
+evidence records after the fault runs: 11
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (e) daq_sim coverage at this head with this shell's 11 records: the det rows, then the summary
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim coverage > $P/cov.txt; echo COVERAGE_EXIT=$?; wc -l < $P/cov.txt; sed -n '/^row /,/^det:drp_gpu:jungfrau /p' $P/cov.txt | cut -c1-138
+COVERAGE_EXIT=1
+97
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261108T204757-cycle-1a0c27361-1523582 (+1 more)
+det:drp:cspad                  RUN       evidence 20261108T203325-cycle-1a0c27361-1495332
+det:drp:hsd                    UNPROVEN  no status entry
+det:drp:epixquad               UNPROVEN  no status entry
+det:drp:epixquad1kfps          UNPROVEN  no status entry
+det:drp:epixhr2x2              UNPROVEN  no status entry
+det:drp:epixhremu              RUN       evidence 20261108T203442-cycle-1a0c27361-1497917
+det:drp:epixm320               RUN       evidence 20261108T204216-cycle-1a0c27361-1512454
+det:drp:epixUHR                UNPROVEN  no status entry
+det:drp:epix100                RUN       evidence 20261108T204339-cycle-1a0c27361-1515365
+det:drp:jungfrau               UNPROVEN  no status entry
+det:drp:jungfrauemu            RUN       evidence 20261108T203644-cycle-1a0c27361-1500561
+det:drp:opal                   UNPROVEN  no status entry
+det:drp:tt                     UNPROVEN  no status entry
+det:drp:tb                     UNPROVEN  no status entry
+det:drp:ts                     RUN       evidence 20261108T203927-cycle-1a0c27361-1506959
+det:drp:wave8                  RUN       evidence 20261108T204509-cycle-1a0c27361-1517849
+det:drp:wave8he                RUN       evidence 20261108T204635-cycle-1a0c27361-1520761
+det:drp:hrencoder              RUN       evidence 20261108T204049-cycle-1a0c27361-1509684
+det:drp:piranha4               UNPROVEN  no status entry
+det:drp:epixuhr3x2             UNPROVEN  no status entry
+det:drp_gpu:fakecam            UNPROVEN  no status entry
+det:drp_gpu:epixuhremu         UNPROVEN  no status entry
+det:drp_gpu:epixuhrsim         UNPROVEN  no status entry
+det:drp_gpu:epixuhr3x2         UNPROVEN  no status entry
+det:drp_gpu:jungfrau           UNPROVEN  no status entry
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ grep -E '^evidence:|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138; echo "UNPROVEN rows: $(grep -c ' UNPROVEN ' $P/cov.txt)"
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/ev (11 records)
+prog:control                   RUN       evidence 20261108T204757-cycle-1a0c27361-1523582 (+10 more)
+prog:drp                       RUN       evidence 20261108T204757-cycle-1a0c27361-1523582 (+10 more)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:teb                       RUN       evidence 20261108T204757-cycle-1a0c27361-1523582 (+10 more)
+78 rows, 13 run, 1 stand-in, 3 N/A, 61 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 13 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 61 unproven row(s)
+UNPROVEN rows: 61
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # 61 rows UNPROVEN is expected at this PR (no run for them yet), so the check ends FAIL, exit 1
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (f) a RUN row whose record is gone: a copy of the evidence dir without the ts record
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ python3 $Q/mutate.py $DAQ_SIM_EVIDENCE $P/ev-removed det:drp:ts remove | cut -c1-138
+20261108T203927-cycle-1a0c27361-1506959.json: left out  (rows det:drp:ts prog:control prog:drp prog:pyxpm prog:teb)
+10 records copied to ev-removed; 1 record(s) for det:drp:ts changed (remove)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ daq_sim coverage --evidence $P/ev-removed > $P/cov-removed.txt; echo COVERAGE_EXIT=$?; grep -E '^evidence:|^det:drp:(fakecam|ts|hrencoder) |^[0-9]+ rows|^(PASS|FAIL)|^  det:' $P/cov-removed.txt | cut -c1-138
+COVERAGE_EXIT=1
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/ev-removed (10 records)
+det:drp:fakecam                RUN       evidence 20261108T204757-cycle-1a0c27361-1523582 (+1 more)
+det:drp:ts                     RUN       NO VALID EVIDENCE at HEAD 1a0c27361
+det:drp:hrencoder              RUN       evidence 20261108T204049-cycle-1a0c27361-1509684
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 61 unproven row(s)
+  det:drp:ts: RUN row without valid evidence at HEAD 1a0c27361
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ # (g) the hardware path, no sim:// device: the same commands from base wt-cov (2d9593bc5) and from this head, then diffed
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ git -C $R/wt-cov log -1 --format='base %H %s' | cut -c1-138; echo "base local changes: $(git -C $R/wt-cov status --short | wc -l); files under psdaq/drp and psdaq/psdaq/configdb that differ 2d9593bc5..HEAD: $(git diff --name-only 2d9593bc5 HEAD -- psdaq/drp psdaq/psdaq/configdb | wc -l)"
+base 2d9593bc59bf6abde81e3cc7c462a496628df179 Merge PR #31: config DB editor and full PyQt parity; e2e config read-back and truncate break
+base local changes: 0; files under psdaq/drp and psdaq/psdaq/configdb that differ 2d9593bc5..HEAD: 8
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ TYPES='fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he epixhr2x2'; for w in wt-cov wt-xpm; do bash $R/logs/xpm/hwpath.sh $w $TYPES > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done
+== wt-cov head=2d9593bc5 dirty=0
+== wt-xpm head=1a0c27361 dirty=0
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-xpm.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-xpm.log | head -2
+HWPATH_DIFF_EXIT=0
+  127 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/hw-wt-cov.log
+  127 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/hw-wt-xpm.log
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ sed -n '/^-- fakecam python/,/^-- cspad python/p' $P/hw-wt-xpm.log | cut -c1-138
+-- fakecam python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- fakecam drp -D fakecam -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- cspad python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ sed -n '/^-- hrencoder python/,/^-- epixm320 python/p' $P/hw-wt-xpm.log | cut -c1-138
+-- hrencoder python: psdaq.configdb.hrencoder_config.hrencoder_init('hrencoder', '/dev/datadev_0', 1, None, '186M', 0)
+hrencoder_init
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- hrencoder drp -D hrencoder -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixm320 python: psdaq.configdb.epixm320_config.epixm320_init('epixm320', '/dev/datadev_0', 1, None, '186M', 0)
+(daq_20250402_r9) cwang31@sdfmilan048:wt-xpm$ echo "checkout local changes: $(git status --short | wc -l)"; date '+%F %T %Z'; exit
+checkout local changes: 0
+2026-11-08 20:54:23 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

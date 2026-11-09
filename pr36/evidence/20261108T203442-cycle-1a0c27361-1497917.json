@@ -1,0 +1,49 @@
+{
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 503160364,
+  "TEB_EvtCt": 2274,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2274,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2274,
+  "psana2 seeds": {
+   "0x1234": 2274
+  },
+  "psana2 seq": "1..2274",
+  "psana2 with data": 2274,
+  "simxpm NumL0Acc": 2274,
+  "simxpm NumL0Inp": 2274,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (503160412 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-08T20:34:42-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/pmlogs/2026/11/08_20:34:18_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/pmlogs/2026/11/08_20:34:18_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/redo/p36/take1/wd-epixhremu/pmlogs/2026/11/08_20:34:18_sdfmilan048:epixhremu_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:epixhremu",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "1a0c273619a292247c30cb7a20e8365c34e0f56c",
+ "started": "2026-11-08T20:34:27.004-08:00"
+}
