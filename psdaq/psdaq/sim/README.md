@@ -14,8 +14,10 @@ DRP, local stand-ins for the config DB and the run DB, and isolation checks.
 | `preflight.sh` | Fail-closed check, run on the compute node: no DAQ devices present, HTTPS to pswww fails, production-looking PVs time out, and a loopback PV works. Exit 0 = isolated. |
 | `procmgrd.s3df.conf` | procServ rcfile for `procmgr -r` on S3DF Rocky 9 nodes, where procServ is not on PATH. |
 | `simxpm.py` (`simxpm`) | Simulated XPM: serves the pyxpm PVs control.py writes (p4p, loopback), the `control -X` ZMQ PULL receiver, and an ordered, credit-flow-controlled timing frame stream (ZMQ ROUTER) to each simulated DRP. |
-| `daq_sim.py` (`daq_sim`) | The one command: `up` starts the stand-ins, simxpm and, through procmgr, control (normal mode), the TEB and `drp -D fakecam -d sim://`; `cycle` drives one run to Running and back and checks the counts; `status`; `down`. |
+| `daq_sim.py` (`daq_sim`) | The one command: `up` starts the stand-ins, simxpm and, through procmgr, control (normal mode), the TEB and `drp -D fakecam -d sim://` (and with `--meb`, `--ami`, `--pva`, `--epics`, `--udp`, `--gui` the MEB, AMI, the system DRPs and PyQt GUIs, RUNBOOK §3g); `cycle` drives one run to Running and back and checks the counts; `status`; `down`. |
 | `xtc2_check.py` | psana2 read-back of a run's xtc2 file with a per-event payload check. |
+| `ami_check.py` | `daq_sim up --ami`: gives AMI a graph that keeps each event's timestamp, seq and one fakecam pixel, fetches it from AMI's manager and checks it against psana2 event by event. |
+| `sysdrp_check.py` | psana2 read-back of every stream of a run with drp_pva (`--pva`), epicsArch (`--epics`) or drp_udpencoder (`--udp`), each event checked against what its simulated source sent. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage`: enumerates every detector type a DRP factory registers and every program a procmgr config under `psdaq/psdaq/cnf` starts, and checks that each is RUN, STAND-IN or N/A, with evidence recorded at HEAD. `daq_sim matrix` runs it (RUNBOOK §3d). |
 
 The DRP side is `psdaq/drp/MemPoolSim.{hh,cc}`: started with `-d sim://<host>:<port>`, the DRP takes its DMA buffers from simxpm's frame stream instead of a PGP card. The fakecam payload of each L1Accept carries the pulse ID, simxpm's L1 sequence number and `sim_seed` read from the config DB at Configure, so a reader can check every event.

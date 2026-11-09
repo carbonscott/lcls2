@@ -512,6 +512,41 @@ simxpm's `LinkRxReady<n>` and `LinkTxReady<n>` read 1 while a DRP holds link n; 
 reads 0 (no XPM behind it, so `ts_connect` does not recurse), and the trigger and inhibit PVs only
 keep what is written: simxpm's L1Accepts stay at `SIM:L1Rate`.
 
+## 3g. MEB, AMI and the system DRPs: `up --meb --ami --pva --epics --udp --gui`
+
+Each option adds programs the procmgr configs start to the generated `.cnf`, on the same node and
+on loopback, in the partition's readout group; `daq_sim cycle` then checks what each recorded and
+its evidence record lists their logs.
+
+| option | adds (procmgr id: program) | simulated source | what `cycle` checks |
+|---|---|---|---|
+| `--meb` | `meb0`: `monReqServer -d -n 16 -q 2 -t tstsim<p>`; `shmc0`: `shmemClient -p tstsim<p> -i 1 -v -R` | the TEB's events | `MEB_EvtCt` (events the MEB served), shmemClient's L1Accept lines |
+| `--ami` (implies `--meb`) | `ami-manager`, `ami-global`, `ami-node_0`, `ami-worker_0` (`psana://shmem=tstsim<p>`), `ami-client` (offscreen) | the MEB | `psdaq.sim.ami_check`: a graph that keeps every event's timestamp, seq and one fakecam pixel, fetched from the manager and compared with psana2 event by event |
+| `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every event holds the image, the image is `camera_image(seed, seq)` and its seq is fakecam's seq in the same event |
+| `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIocPVA -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (PVA, 1234.5) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` never decreases |
+| `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port> -v` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: one frame per event, frame counts +1 per event and in step with fakecam's seq, the 100/200 test pattern |
+| `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>` and `groupca DAQ:SIM 0 <p>`, offscreen | control's status messages; simxpm's PVs | control_gui's log holds the run's `fileReport` (the xtc2 path); groupca's log names no run, so coverage does not count it |
+
+drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
+does (MemPoolSim); without it they open the PGP card as before.
+
+AMI is not part of the lcls2 tree. `--ami` runs the `ami-*` programs found on PATH, or, with
+`--ami-src DIR` (or `$DAQ_SIM_AMI_SRC`), writes their console scripts into `<workdir>/bin` for an
+AMI source tree such as a clone of github.com/slac-lcls/ami. The DAQ env must hold AMI's
+dependencies (networkfox, amitypes, qasync, pyqtgraph). On S3DF the release tree
+`/sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526` works with the `daq_20250402_r9` env.
+AMI takes 10 TCP ports from 31100 + 10 p (31150-31159 for platform 5) on 127.0.0.1 and starts
+Prometheus exporters from 31180 + 2 p. The UDP port is 31200 + p.
+
+```bash
+# step A (WD as in §2)
+daq_sim up -w $WD --ami --ami-src /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526 \
+    --pva --epics --udp --gui --detach
+# step B: a cycle; besides the fakecam counts it prints the MEB, AMI and system DRP counts
+daq_sim cycle -w $WD --events 1000
+daq_sim down -w $WD
+```
+
 ## 4. Read the file back with psana2
 ```bash
 F=$WD/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2      # run 1; see the fileReport line of cycle
@@ -600,6 +635,15 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
   the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and
   inhibit settings `ts_config` writes but does not act on them.
+- **MEB and AMI.** One MEB with 16 buffers and two queues: AMI's worker reads queue 0 and
+  shmemClient queue 1, and each sees the events the MEB had a free buffer for, not every event.
+  AMI's node and global collectors bind their upstream port on `*`, as they do in production;
+  every other AMI port is on 127.0.0.1. The AMI programs never see the run's file or BeginRun
+  time, so their logs cannot name the run and coverage does not count their rows (ami_check
+  shows they processed the run's events).
+- **System DRPs.** drp_pva records one camera PV that simxpm updates for every L1Accept; drp_bld
+  is not run. epicsArch archives two PVs of a softIocPVA on loopback. sim_udpencoder sends the
+  100/200 test pattern only (no `-f` playback in the run).
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
   each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector
