@@ -18,6 +18,7 @@ Everything in `psdaq/psdaq/sim/`:
 | `preflight.sh` | Fail-closed check that `daq_sim up` runs first. It must print `PREFLIGHT PASS`. |
 | `configdb_server.py`, `configdb_seed.py` | Config DB stand-in, seeded with `tst/BEAM/tmoteb_0` (persistValue 0xdeadbeef) and `tst/BEAM/fakecam_0` (`user.sim_seed`). |
 | `lgbk_server.py` | Run DB / eLog stand-in. Experiment `tstx00001`; runs are numbered from 1. |
+| `calibws_server.py` | Calibration constants stand-in (the `calib_ws` that `psalg.calibdb` reads), for `drp_gpu -D epixuhr3x2` (§3h). |
 | `simxpm.py` | Software XPM: the pyxpm PVs over PVA, timing frames to `sim://` DRPs, and the `control -X` PULL receiver. |
 | `xtc2_check.py` | psana2 read-back with a per-event payload check (every pixel or sample for BEB types, §3e). |
 | `rogue_dev.py`, `seeds/<type>.json` | The emulated device of a BEB type under `drp -d sim://` (§3e), and the emulated TDet timing receiver of every XpmDetector type (`seeds/xpmdet.json`, §3f). |
@@ -829,6 +830,7 @@ procServ resets `LD_LIBRARY_PATH`, so `--cuda-lib` (or `$DAQ_SIM_CUDA_LIB`) beco
 | epixuhremu | `epixuhremu_configTiming` (link down: `ConfigLclsTimingV2()`), then `xpmdet_config` | TDetSemi words, 96768 = one 336 x 576 uint16 panel, as the emulator firmware (a TDet block) sends | `epixuhremu_noOp_0_0_0.calib` (336, 576): bits 1-11 of each pixel (gain in bit 0; no calibSerNo: pedestals 0, gains 1) vs the words |
 | epixuhrsim | its `SimDetector` (no config script): 16 random frames and calibration constants on the GPU; simxpm's frames time them | frame n % 16 after the TimingHeader | `epixuhrsim_noOp_0_0_0.calib` vs frame (n - 1) % 16 calibrated with the constants it writes at BeginRun (`sim_ref` kwarg, `--ref`) |
 | jungfrau | `Drp::Jungfrau`, as `drp -D jungfrau` (§3j): `jungfrau_config.py` against `rogue_dev`, `sls::Detector` against simsls | the module's frame n, its 128 UDP packets as `MemPoolSim` batches them (§3j), 1055848 B (`dmaBufSize` 0x120000) | `jungfrau_noOp_0_0_0.calib` (512, 1024): each pixel's low 14 bits (range in bits 14-15, pedestals 0, gains 1) vs `pattern(seed, n, i, 16)` |
+| epixuhr3x2 | `Drp::EpixUHR3x2`, as `drp -D epixuhr3x2` (§3i): `epixuhr3x2_config.py` against `rogue_dev`; at BeginRun `psdaq.configdb.epixuhr_calib` against `calibws_server` | the panel n, 336 x 576 uint16 as `MemPoolSim` frames it (tdest 3, §3i), 387168 B (`dmaBufSize` 0x70000) | `epixuhr3x2_noOp_0_0_0.calib` (336, 576): (bits 1-11 - pedestal) x 1/gain of the plane bit 0 selects, 0 for a bad pixel, with the stand-in's constants, vs `pattern(seed, n, i, 12)` |
 
 The pulseId of each fakecam/epixuhremu event is the one, of the few ticks simxpm may add to its
 timestamp's, whose first words match; it must rise.
@@ -854,14 +856,37 @@ drp_gpu accepts jungfrau's `segNums` and `slsHosts` kwargs only with a `sim://` 
 hardware drp_gpu rejects them, as before, so `drp_gpu -D jungfrau` cannot be given the
 `slsHosts` that `Drp::Jungfrau` requires. That defect is not fixed here.
 
-**Not running yet:**
-- **epixuhr3x2:** not run under drp_gpu here. `Gpu::EpixUHR3x2` configures through
-  `Drp::EpixUHR3x2`, whose constructor builds its rogue root itself (`_init_data_path_or_emu()`)
-  instead of through `BEBDetector::_init()`, so until bdba77fec `rogue_dev` was never installed
-  and `epixuhr3x2_init` opened the device file: `rogue.GeneralError: AxiStreamDma::openShared:
-  General Error: Failed to open device file: sim://127.0.0.1:31099` (drp_gpu started by hand on
-  that device). bdba77fec makes that constructor install `rogue_dev` under a `sim://` device, as
-  `drp -D epixuhr3x2` needs (§3i); `drp_gpu -D epixuhr3x2` has not been run since.
+**epixuhr3x2** (`daq_sim up --drp drp_gpu --det epixuhr3x2`) runs as `drp -D epixuhr3x2` does
+(§3i): `Gpu::EpixUHR3x2` builds `Drp::EpixUHR3x2` on `MemPoolGpu`, whose `sim()` is the
+`MemPoolSim`, and `EpixUHR3x2`'s own init installs `rogue_dev` (`BEBDetector::_simInstall`), so
+the same seeds, config DB entry, store files, wait for its init (`ready_s`) and fault apply.
+The GPU class adds a calibration the CPU one does not have: at BeginRun (u16 data, any alias but
+CALIB) it fetches the panel's pedestals and gains for the serial number read at Connect through
+`psdaq.configdb.epixuhr_calib`, which asks the calibration DB (`psalg.calibdb`, the web service at
+`$LCLS_CALIB_HTTP/calib_ws`), and fails BeginRun without them. `up` starts
+`calibws_server` for it on port `+7` and points the DRP's `LCLS_CALIB_HTTP` there (the
+isolation's dead HTTP proxy would otherwise refuse the facility's service):
+- for any `epixuhr3x2_<serial>` (here `epixuhr3x2_0000000000-0000000000-0000000000`, from the
+  emulated board) it names the detector `epixuhr3x2_000001`;
+- an experiment's database is empty; the detector's holds `pedestals`, `pixel_gain` and
+  `pixel_status`, each (8, 1, 336, 576), valid for runs 0..end, functions of the seed, gain mode
+  and pixel (`calibws_server.constants`): pedestals 25 to 124.75, gains 0.125 to 2, one pixel in
+  1013 bad in gain mode 2;
+- every request is a line of `logs/calibws.jsonl`; the DRP log says `Gpu::EpixUHR: loaded
+  pedestals of <serial> for tstx00001 run <n>` (and `gain_factors`).
+
+`xtc2_check` recomputes what the GPU must have applied: psana gain modes 0 and 1 for gain bit 0
+and 1, 1/gain, and 0 for a pixel whose status is bad in any of modes 0-4 (as `epixuhr_calib` and
+psana's default mask). Every pixel of every event must match, so constants that did not reach
+the GPU, or a wrong plane, fail it. psana reads the recorded pixels as `epixuhr3x2_noOp_0_0_0`
+(`psana/psana/detector/drpgpu.py`), a class this adds: without it psana had no class for what
+`drp_gpu -D epixuhr3x2` records with the NoOpReducer (`'Container' object has no attribute
+'noOp'`). The framer sends tdests 0, 2 and 3, which is all either DRP reads; `Gpu::EpixUHR3x2`
+declares five sub-frames (tdest 1, the event, and 4, the ASICs' header, are not sent), so its
+Reader warns `found 4 AxiStream Batcher sub-frames in 387168 bytes, expected 5`, which it treats
+as not fatal (`Reader::checkBatcher`). Fault run:
+`PSDAQ_SIM_ROGUE_FAULT=Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`,
+as for drp (§3i).
 
 ## 3i. The digitizer, the ePixQuad 1 kfps and the ePixUHRs: hsd, epixquad1kfps, epixUHR, epixuhr3x2
 
