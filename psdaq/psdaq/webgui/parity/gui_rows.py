@@ -24,9 +24,10 @@ Rows (one per affordance of the running GUI).  Each instance is attributed to th
 of its construction stack in an own file, i.e. to a site.  A site with instances gives one row per
 instance, id `<scope>.<binding>` plus `[<PV>]`, `[<text>]` and `#<n>` qualifiers as needed to keep ids
 unique (QTableWidget: one row per column `.col[<header>]` and one `.cellClicked` row when connected;
-QTabWidget: one row per tab `.tab[<text>]`).  An instance that is a QLabel with no PV and no text
-written after construction is decoration and gives no row.  A site with no instance gives one row
-`<scope>.<binding>` (not built); a slot gives `<Class>.<slot>`.  Kinds: button, checkbox, combo,
+QTabWidget: one row per tab `.tab[<text>]`).  An instance that is a QLabel with no text written after
+construction is decoration and gives no row, unless the walk saw another label of the same site built by
+the same line (its construction chain's innermost frame) written: that one is a display not yet updated.
+A site with no instance gives one row `<scope>.<binding>` (not built); a slot gives `<Class>.<slot>`.  Kinds: button, checkbox, combo,
 text (editable), value (read-only or live display), column, click, tab, message, slot.
 
 Flags (enumerator side, from source), which check_parity uses for not-applicable rows:
@@ -424,7 +425,22 @@ QT_KIND = {'QPushButton': 'button', 'QToolButton': 'button', 'QRadioButton': 'ch
            'QLabel': 'value', 'QProgressBar': 'value', 'QMessageBox': 'message', 'QListWidget': 'combo'}
 
 
-def _instance_kind(x):
+def _built_at(x):
+    """(own-file site, the line that constructed it): the innermost frame of its construction chain, a library's line
+    for a widget a library builds (pvedit.PvIntRow's cell label), else the site itself."""
+    ch = x.get('chain') or []
+    return tuple((x.get('site') or [None, None])[:2]) + (tuple(ch[0][:2]) if ch else ())
+
+
+def written_lines(walk):
+    """The construction lines (_built_at) of every label the walk saw written: a label never written but built by
+    the same line as one that was is a display whose update had not run yet (dtica's PvIntRow cells, which pvedit
+    writes from a PV Access thread whose monitors the walk sees deliver to a few cells only), not decoration."""
+    return {_built_at(x) for x in (walk or {}).get('instances', [])
+            if x.get('base') == 'QLabel' and (x.get('writes') or len(set(t for _, t in x.get('texts', []))) >= 2)}
+
+
+def _instance_kind(x, written=()):
     """kind of a walked instance, or None for decoration."""
     base = x['base']
     if base in ('QTableWidget', 'QTableView', 'QTreeWidget', 'QTabWidget'):
@@ -434,8 +450,9 @@ def _instance_kind(x):
         return 'value'
     if k == 'text' and (x.get('readonly') or not x.get('enabled', True)):
         return 'value'
-    if base == 'QLabel' and not x.get('writes') and len(set(t for _, t in x.get('texts', []))) < 2:
-        return None                 # a label nothing writes after construction: decoration
+    if base == 'QLabel' and not x.get('writes') and len(set(t for _, t in x.get('texts', []))) < 2 and \
+            _built_at(x) not in written:
+        return None                 # a label nothing writes after construction (nor another of its line): decoration
     return k
 
 
@@ -465,6 +482,7 @@ def make_rows(srcinfo, walk):
         by_file.setdefault(s['file'], []).append(s)
     inst = {}
     walk_only = []
+    written = written_lines(walk)
     for x in (walk or {}).get('instances', []):
         site = x.get('site')
         if not site:
@@ -473,7 +491,7 @@ def make_rows(srcinfo, walk):
         if cands:
             s = min(cands, key=lambda s: (s['end_line'] - s['line'], -s['line']))
             inst.setdefault((s['file'], s['line']), []).append(x)
-        elif _instance_kind(x) is not None:
+        elif _instance_kind(x, written) is not None:
             walk_only.append(x)
     stems = {}
     for k, s in sorted(sites.items()):
@@ -526,7 +544,7 @@ def make_rows(srcinfo, walk):
             continue
         out = []
         for x in xs:
-            k = _instance_kind(x)
+            k = _instance_kind(x, written)
             if k is None:
                 continue
             if k == 'QTabWidget':
@@ -579,7 +597,7 @@ def make_rows(srcinfo, walk):
                      'evidence': ['connectSlotsByName slot for object %r' % sl['object']]})
     for x in walk_only:
         rows.append({'id': 'walk-only:%s:%s' % (x['site'][0], x['site'][1]) + ('[%s]' % _qual(x) if _qual(x) else ''),
-                     'kind': _instance_kind(x) or 'value', 'label': x['cls'], 'file': x['site'][0],
+                     'kind': _instance_kind(x, written) or 'value', 'label': x['cls'], 'file': x['site'][0],
                      'line': x['site'][1], 'loc': '%s:%s' % tuple(x['site'][:2]), 'widget': x['cls'],
                      'reachable': True, 'reach': '', 'hidden': False, 'inert': False, 'guard': None, 'site': x['site'],
                      'evidence': ['walk saw a %s built at %s:%s, a line the source scan has no site for' % (

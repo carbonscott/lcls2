@@ -2338,7 +2338,11 @@
    "web": "[data-parity~=\"PvArrayTable.b[DAQ:SIM:HSD:1_1B:B:PGPCONFIG]\"]",
    "test": "test_gui_hsdpva.py::test_apply_puts_each_box_whole[chromium]"
   },
-  "PvPLink.__display": {
+  "PvPLink.__display[DAQ:SIM:HSD:1_1B:A:PLINK]": {
+   "web": "[data-parity~=\"PvPLink.__display[DAQ:SIM:HSD:1_1B:A:PLINK]\"]",
+   "test": "test_gui_hsdpva.py::test_displays_show_the_structure_fields[chromium]"
+  },
+  "PvPLink.__display[DAQ:SIM:HSD:1_1B:B:PLINK]": {
    "web": "[data-parity~=\"PvPLink.__display[DAQ:SIM:HSD:1_1B:B:PLINK]\"]",
    "test": "test_gui_hsdpva.py::test_displays_show_the_structure_fields[chromium]"
   },

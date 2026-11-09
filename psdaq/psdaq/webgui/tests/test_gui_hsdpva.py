@@ -24,15 +24,11 @@ BY = C.by_type(PAGE)
 TEXTS = BY['text']
 EDITS = BY['fieldedit']
 APPLY = BY['button']
-# The walk of the PyQt hsdpva shows one PvPLink display: the last base's (the first one's update raises in the walk,
-# cas/hsdpva.py:162 'ntint' object has no attribute 'value', so it is never written and is decoration); its row id
-# has no qualifier.  The web copy shows PvPLink's text for every base; this row is the last base's.
-PLINK_ROW = 'PvPLink.__display'
-PLINK_NODE = 'PvPLink.__display[%s:PLINK]' % HSD[-1]
-WEB_SELECTOR = {PLINK_ROW: PLINK_NODE}           # row id -> the page node it is (when the ids differ)
+# In the walk of the PyQt hsdpva the first base's PvPLink update raises (cas/hsdpva.py:162, 'ntint' object has no
+# attribute 'value'), so that display keeps '-'; the web copy shows PvPLink's text ('Unknown' for PLINK 0) for every base.
 STATIC = ('MONTRIG', 'MONRAWDET', 'MONFEXDET', 'MONFLOW', 'MONENV', 'MONADC', 'MONJESD', 'FWBUILD', 'PADDR', 'PLINK')
 PARITY_ROWS = {
-    'test_displays_show_the_structure_fields': TEXTS + [PLINK_ROW],
+    'test_displays_show_the_structure_fields': TEXTS,
     'test_apply_puts_each_box_whole': EDITS + APPLY,
     'test_tabs': BY['tab'],
     'test_base_selector_switches_the_tab_stack': BY['localcombo'],
@@ -67,16 +63,18 @@ def test_displays_show_the_structure_fields(page, hs):
     w1 = C.check_texts(page, PAGE, TEXTS, timeout=40)
     assert w1[a]['trigcntsum'] > want[a]['trigcntsum'], (want[a], w1[a])       # simhsd counts triggers
     # the same text as the PyQt hsdpva showed in the walk, for every display of a structure simhsd never changes
+    # that the PyQt program wrote in the walk
     walk = C.walk_instances('hsdpva', 'cas/hsdpva.py')
-    static = [r for r in TEXTS if PAGE.nodes[r]['pv'].rsplit(':', 1)[1] in STATIC and not r.startswith('PvPLink')]
-    missing = [r for r in static + [PLINK_ROW] if walk.get(r) is None]
+    static = [r for r in TEXTS if PAGE.nodes[r]['pv'].rsplit(':', 1)[1] in STATIC]
+    missing = [r for r in static if walk.get(r) is None]
     assert not missing, 'rows with no instance in the PyQt walk: %s' % missing[:6]
-    shown = page.evaluate('(ids) => ids.map(i => document.querySelector(`[data-parity="${i}"]`).textContent)',
-                          static + [PLINK_NODE])
-    bad = [(r, s, walk[w]['text']) for r, w, s in zip(static + [PLINK_NODE], static + [PLINK_ROW], shown)
-           if s != walk[w]['text']]
+    written = [r for r in static if walk[r].get('writes')]
+    assert len(written) >= len(static) - len(HSD), (len(written), len(static))
+    shown = page.evaluate('(ids) => ids.map(i => document.querySelector(`[data-parity="${i}"]`).textContent)', written)
+    bad = [(r, s, walk[r]['text']) for r, s in zip(written, shown) if s != walk[r]['text']]
     assert not bad, '%d displays differ from the PyQt walk, e.g. %s' % (len(bad), bad[:6])
-    assert page.locator(C.sel(PLINK_NODE)).text_content() == 'Unknown'          # PLINK 0: no link type 0xfb
+    for h in HSD:                                                          # PLINK 0: no link type 0xfb
+        assert page.locator(C.sel('PvPLink.__display[%s:PLINK]' % h)).text_content() == 'Unknown'
     page.screenshot(path=str(H.SHOTS / 'hsdpva.png'), full_page=True)
 
 
