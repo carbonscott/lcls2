@@ -679,6 +679,16 @@ def log_program(text):
     return resolve(m.group(1)) if m else (None, [])
 
 
+def names_file(text, path):
+    """True if text holds path, or another spelling of it that resolves to the same file (a
+    work dir given once through a symlinked dir and once not)."""
+    if path in text:
+        return True
+    real = os.path.realpath(path)
+    return any(os.path.realpath(m.group(0)) == real for m in
+               re.finditer(r'[^\s\'"]*' + re.escape(os.path.basename(path)), text))
+
+
 def _cached(cache, key, make):
     if cache is None:
         return make()
@@ -754,7 +764,8 @@ def row_problem(rid, entry, rec, cache=None):
              if not f.endswith('.xtc2'))]
 
     def names_run(text, paths):
-        return any(p in text or (runs[p]['beginrun'] and runs[p]['beginrun'] in text) for p in paths)
+        return any(names_file(text, p) or (runs[p]['beginrun'] and runs[p]['beginrun'] in text)
+                   for p in paths)
 
     if rid.startswith('det:'):
         exe, typ = rid.split(':', 2)[1:]

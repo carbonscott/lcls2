@@ -651,6 +651,20 @@ def test_a_program_row_needs_its_log_naming_the_run(tmp_path):
     assert 'NO VALID' not in line_of(out, 'prog:control')
 
 
+def test_a_log_may_name_the_xtc2_file_through_a_symlinked_dir(tmp_path):
+    """up -w /sdf/data/... and cycle -w /sdf/scratch/... (one a symlink of the other): the DRP
+    log names the file under one spelling, the record lists the other."""
+    os.makedirs(tmp_path / 'real')
+    os.symlink(tmp_path / 'real', tmp_path / 'link')
+    xtc = write_run(tmp_path / 'link' / 'tstx00001-r0001-s000-c000.xtc2', [('wave8he', 'wave8he')])
+    log = write_log(tmp_path / 'drp.log', 'drp -D wave8he',
+                    f"Opening file '{tmp_path / 'real' / 'tstx00001-r0001-s000-c000.xtc2'}'")
+    assert coverage.names_file(open(log).read(), xtc)
+    assert not coverage.names_file(open(log).read(), str(tmp_path / 'link' / 'tstx00001-r0002-s000-c000.xtc2'))
+    code, line, _ = one_row_check(tmp_path, [xtc, log], row='det:drp:wave8he')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
 def test_a_stand_in_row_needs_the_stand_in_log(tmp_path):
     """prog:pyxpm is STAND-IN simxpm: a log that runs pyxpm itself does not prove it."""
     def pyxpm(files):
