@@ -380,6 +380,73 @@ static void epixquadData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     out.timingCopy(3);
 }
 
+// epixUHR (EpixUHR::_event): 4 ASIC subframes (tdest 2-5, ASICs 0-3 of user.asic_enable 0xf), each
+// 168 x 192 pixels of 12 bits packed into 48,384 B as the ASIC's 8 serial lanes send them; the DRP
+// records them as they come and psana's epixuhr raw() (_descramble_raw_frame, with gain_msb)
+// unpacks them.  The framer runs that unpacking backwards: pixel (y, x) of ASIC q, flat index
+// q * 32256 + 192 y + x, is pattern(seed, seq, index, 12); its 12-bit word is that value rotated
+// left by one (gain_msb moves the word's bit 0 to bit 11); the word goes to column c = x / 12 of
+// the lane map (psana's _lane_map_uhr35kHzv2) at entry n = 12 (167 - y) + x % 12, slot
+// s = map[n] of the column pair 2c, 2c+1: 12-bit word (s / 2) of lane (2c + s % 2) / 4, place
+// (2c + s % 2) % 4; each lane packs 4 words (in reverse) into 6 bytes (in reverse), and byte j of
+// lane L's group k is byte 8 (6 k + j) + L of the subframe.
+static const unsigned UhrRows = 168, UhrCols = 192, UhrAsicBytes = UhrRows * UhrCols * 12 / 8;
+
+static std::vector<uint32_t> epixUHRSlots()     // image pixel (y, x) of an ASIC -> 4 k + place, lane
+{
+    int cm[72];                                 // cluster map: 2 columns of 3, the second reversed
+    for (int r = 0; r < 12; ++r)
+        for (int j = 0; j < 3; ++j) {
+            cm[r * 6 + j]     = r * 3 + j;
+            cm[r * 6 + 3 + j] = 36 + r * 3 + (2 - j);
+        }
+    int column[1008];
+    for (int cl = 0; cl < 14; ++cl)
+        for (int i = 0; i < 72; ++i)  column[cl * 72 + i] = 14 * cm[i] + cl;
+    int map[2016];
+    for (int r = 0; r < 168; ++r)
+        for (int j = 0; j < 12; ++j)
+            map[r * 12 + j] = j < 6 ? 2 * column[r * 6 + j] : 2 * column[r * 6 + j - 6] + 1;
+    std::vector<uint32_t> slot(UhrRows * UhrCols);
+    for (unsigned c = 0; c < 16; ++c)
+        for (unsigned n = 0; n < 2016; ++n) {
+            unsigned y = 167 - n / 12, x = c * 12 + n % 12;
+            unsigned s = map[n], k = s / 2, col = 2 * c + s % 2;
+            slot[y * UhrCols + x] = ((4 * k + col % 4) << 3) | (col / 4);
+        }
+    return slot;
+}
+
+static void epixUHRData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint32_t> slot = epixUHRSlots();
+    static const std::vector<PixelMap> asics = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t q = 0; q < 4; ++q)
+            v.emplace_back(UhrRows * UhrCols, 12, [q](size_t j) { return uint32_t(q * UhrRows * UhrCols + j); });
+        return v;
+    }();
+    std::vector<uint16_t> pix(UhrRows * UhrCols), words(4 * 1008 * 8);
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    for (unsigned q = 0; q < 4; ++q) {
+        asics[q].fill(pix.data(), seed, f.seq);
+        for (unsigned i = 0; i < pix.size(); ++i) {
+            uint16_t v = uint16_t(((pix[i] << 1) & 0xfff) | (pix[i] >> 11));    // gain_msb, inverted
+            words[(slot[i] >> 3) * 8 + (slot[i] & 7)] = v;                  // [4 k + place][lane]
+        }
+        uint8_t* d = out.data();
+        for (unsigned k = 0; k < 1008; ++k)
+            for (unsigned L = 0; L < 8; ++L) {
+                const uint16_t* w = &words[(4 * k) * 8 + L];
+                uint16_t t0 = w[3 * 8], t1 = w[2 * 8], t2 = w[1 * 8], t3 = w[0];
+                uint8_t x[6] = { uint8_t(t0 >> 4), uint8_t(((t0 & 0xf) << 4) | (t1 >> 8)), uint8_t(t1),
+                                 uint8_t(t2 >> 4), uint8_t(((t2 & 0xf) << 4) | (t3 >> 8)), uint8_t(t3) };
+                for (unsigned j = 0; j < 6; ++j)  d[8 * (6 * k + 5 - j) + L] = x[j];
+            }
+        out.tail(UhrAsicBytes, 2 + q);
+    }
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
@@ -391,6 +458,8 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "piranha4", _padded(32) + _padded(2 * Piranha4Pixels), piranha4Data },
     { "tb",       _padded(TbEtmBytes), tbData },
     { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
+    { "epixquad1kfps", 2 * _padded(32) + _padded(EquadBytes), epixquadData },  // the same EpixQuad DRP
+    { "epixUHR",  _padded(32) + 4 * _padded(UhrAsicBytes), epixUHRData },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
@@ -440,8 +509,49 @@ static void timingMessage(uint8_t* out, const MemPoolSim::Frame& f, uint32_t see
     }
 }
 
+// hsd (Digitizer::event, psalg/digitizer/Stream.hh, psana/psana/hsd/HsdPython.hh): after the
+// TimingHeader, whose two opaque words are the hsd's event header (word 0: stream mask in bits
+// 20-23, here raw and fex; word 1: bit 31 the JESD link status, else the event is damaged), one
+// stream per bit of the mask, each a 16-byte StreamHeader {num_samples, stream_id << 24, 0, 0}
+// and its uint16 samples:
+//   raw (stream 0): HsdRawSamples samples, sample i = pattern(seed, seq, i, 12), the 12-bit ADC
+//     codes of the 1160 samples hsd_config.py's default gate (user.raw.gate_ns 200) asks for;
+//   fex (stream 1): HsdFexWords words of the sparsified stream: groups of 4 words with bit 15
+//     set are skips (their low 15 bits add up the samples skipped), the rest are kept samples.
+//     Skip A, peak 1 (4 baseline words, then 16 samples), skip B, peak 2 (12 samples), skip C.
+//     The k-th kept word is pattern(seed, seq, HsdRawSamples + k, 15) and word j of skip g is
+//     0x8000 | pattern(seed, seq, HsdRawSamples + 32 + 4 g + j, 6).  psana's hsd_raw_3_0_0
+//     peaks() then gives peak 1 at A + 4 (its baseline words dropped) and peak 2 at A + B + 20,
+//     A and B the skip groups' sums (psdaq/psdaq/sim/xtc2_check.py).
+static const unsigned HsdRawSamples = 1160, HsdFexWords = 44, HsdStreamHdr = 16;
+static const unsigned HsdMsgBytes   = 2 * HsdStreamHdr + 2 * (HsdRawSamples + HsdFexWords);
+
+static void hsdMessage(uint8_t* out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap raw(HsdRawSamples, 12, [](size_t j) { return uint32_t(j); });
+    uint32_t* h = reinterpret_cast<uint32_t*>(out);
+    h[0] = HsdRawSamples;  h[1] = 0u << 24;  h[2] = 0;  h[3] = 0;
+    raw.fill(reinterpret_cast<uint16_t*>(out + HsdStreamHdr), seed, f.seq);
+    out += HsdStreamHdr + 2 * HsdRawSamples;
+    h = reinterpret_cast<uint32_t*>(out);
+    h[0] = HsdFexWords;  h[1] = 1u << 24;  h[2] = 0;  h[3] = 0;
+    uint16_t* q = reinterpret_cast<uint16_t*>(out + HsdStreamHdr);
+    static const int layout[] = { -1, 20, -1, 12, -1 };     // -1: a skip group, else kept words
+    unsigned kept = 0, skips = 0;
+    for (int n : layout) {
+        if (n < 0) {
+            for (unsigned j = 0; j < 4; ++j, ++skips)
+                *q++ = uint16_t(0x8000 | MemPoolSim::pattern(seed, f.seq, HsdRawSamples + 32 + skips, 6));
+        } else {
+            for (int j = 0; j < n; ++j, ++kept)
+                *q++ = uint16_t(MemPoolSim::pattern(seed, f.seq, HsdRawSamples + kept, 15));
+        }
+    }
+}
+
 static const MemPoolSim::TDetMsg TDetMsgs[] = {
-    { "ts", TimingDataBytes, timingMessage },
+    { "ts",  TimingDataBytes, timingMessage, { 0, 0 } },
+    { "hsd", HsdMsgBytes,     hsdMessage,    { (1u << 24) | (0x3u << 20) | HsdRawSamples, 1u << 31 } },
 };
 
 const MemPoolSim::TDetMsg* MemPoolSim::tdetMsg(const std::string& detType)
@@ -697,6 +807,9 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
                                   tid == TransitionId::L1Accept, seed)
                     : fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, m_tdetMsg ? 0 : len, seed);
             if (m_tdetMsg && tid == TransitionId::L1Accept) {
+                auto th = reinterpret_cast<uint32_t*>(dmaBuffers[idx]);
+                th[6] = m_tdetMsg->opaque[0];
+                th[7] = m_tdetMsg->opaque[1];
                 m_tdetMsg->data((uint8_t*)dmaBuffers[idx] + sz, f, seed);
                 sz += m_tdetMsg->bytes;
             }

@@ -11,6 +11,7 @@
 
 namespace Drp {
     class PythonConfigScanner;
+    class MemPoolSim;
 
     class Digitizer : public Detector
     {
@@ -18,6 +19,7 @@ namespace Drp {
         Digitizer(Parameters* para, MemPool* pool);
         ~Digitizer();
         nlohmann::json connectionInfo(const nlohmann::json& msg) override;
+        void connectionShutdown() override;
         void connect(const nlohmann::json&, const std::string& collectionId) override;
         unsigned configure(const std::string& config_alias, XtcData::Xtc& xtc, const void* bufEnd) override;
         void event(XtcData::Dgram& dgram, const void* bufEnd, PGPEvent* event, uint64_t l1count) override;
@@ -41,6 +43,7 @@ namespace Drp {
         PyObject*            m_module;        // python module
         PythonConfigScanner* m_configScanner;
         unsigned             m_paddr;
+        MemPoolSim*          m_sim;           // simulated device (-d sim://), or nullptr with hardware
     };
 
 }

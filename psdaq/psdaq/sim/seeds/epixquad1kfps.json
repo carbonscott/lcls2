@@ -1,0 +1,15 @@
+{
+ "_comment": "The simulated ePixQuad 1 kfps for psdaq.sim.rogue_dev: the KCU (lcls2_pgp_pcie_apps.DevRoot on the PCIe map, root 'DevRoot') and the camera behind SRPv3 on its PGP lane (ePixQuad.Top of the epix-quad-1kfps package, root 'Top'), which psdaq/configdb/epixquad1kfps_config.py builds (its ePixQuad.Top also maps the PCIe card, Top.AxiPcieCore). Keys are pyrogue register paths; values are what the hardware reports.",
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked": 3,
+ "DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp": 1,
+ "_Locked": "what the timing receiver reports once its clocks and link are up: ConfigLclsTimingV2's LockProc waits for MmcmLocked == 3 and RxLinkUp == 1",
+ "DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id; the DRP takes the link id simxpm assigns, not this one",
+ "Top.SystemRegs.AdcTestDone": 1,
+ "_AdcTestDone": "the camera's Microblaze has finished its ADC startup test (AdcTestFailed reads 0): _checkADCs polls it at Configure",
+ "Top.AxiPcieCore.AxiVersion.BuildStamp": {"string": "Lcls2XilinxKcu1500Pgp4_10Gbps: Vivado v2023.1, rdsrv (Ubuntu 20.04), Built Mon Jan  1 00:00:00 PST 2024 by sim"},
+ "Top.AxiPcieCore.AxiVersion.FpgaVersion": "0x04020000",
+ "_AxiPcieCore": "ePixQuad.Top.start checks the PCIe card's image name (one of its supported Lcls2...Pgp4_10Gbps images) and FpgaVersion >= 0x04020000",
+ "Top.CypressS25Fl.CmdReg": {"response": 0, "bits": 8},
+ "_CmdReg": "the camera's SPI PROM (surf CypressS25Fl, behind AxiMicronN25Q's registers): a command written to CmdReg is answered in its low byte, which reads 0 here, the status of an idle flash (waitForFlashReady polls bit 0, active-low ready). Top.start then reads the ADC calibration's git hash (PROM 0x3000100) and the analog board ids (0x3000200) from DataReg; that reads 0, as do the camera's AxiVersion.GitHash and SystemRegs.CarrierIdLow/High it compares them with, so they match"
+}

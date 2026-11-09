@@ -1,6 +1,6 @@
 // drp_sim_frame <detType> <seq> [<seed>]: write one simulated L1Accept DMA buffer, as
 // MemPoolSim makes it for 'drp -D <detType> -d sim://', to stdout (for the framer's tests):
-// an EventBatcher buffer for a BEB type, or the TimingHeader and TDet message for 'ts'.
+// an EventBatcher buffer for a BEB type, or the TimingHeader and message for 'ts' and 'hsd'.
 #include "MemPoolSim.hh"
 #include "xtcdata/xtc/TransitionId.hh"
 
@@ -32,6 +32,8 @@ int main(int argc, char** argv)
     if (t) {                                    // TimingHeader + the TDet message
         std::vector<uint8_t> buffer(32 + t->bytes);
         size_t size = Drp::MemPoolSim::fill(buffer.data(), f, f.seq, 0, 0, seed);
+        reinterpret_cast<uint32_t*>(buffer.data())[6] = t->opaque[0];
+        reinterpret_cast<uint32_t*>(buffer.data())[7] = t->opaque[1];
         t->data(buffer.data() + size, f, seed);
         size += t->bytes;
         return fwrite(buffer.data(), 1, size, stdout) == size ? 0 : 1;

@@ -278,3 +278,69 @@ def test_tb_event_timing_message_layout():
     pid, rates, slot, beam = struct.unpack_from('<QHBB', etm, 0)
     assert (pid, rates, slot, beam) == (PID, p(2, 16), p(3, 3), p(4, 8))
     assert list(struct.unpack_from('<18H', etm, 12)) == [p(5 + i, 16) for i in range(18)]
+
+
+def test_hsd_message_layout():
+    """Digitizer::event takes the TimingHeader's opaque words as the hsd's event header (stream
+    mask in bits 20-23 of word 0, JESD status in bit 31 of word 1) and walks the streams after
+    it: a 16-byte StreamHeader {num_samples, stream_id << 24, 0, 0} and the samples.  The raw
+    stream is pattern(i, 12); the fex stream is skip groups and kept samples, and psana's peaks
+    are what xtc2_check.hsd_expected computes."""
+    from psdaq.sim.xtc2_check import HSD_RAW, hsd_expected
+    seq = 7
+    buf = frame('hsd', seq)
+    th = struct.unpack_from('<QIIIIII', buf, 0)
+    assert th[:5] == struct.unpack_from('<QIIIIII', timing_header(seq), 0)[:5]
+    assert (th[5] >> 20) & 0xf == 0x3 and th[5] & 0xfffff == HSD_RAW and th[6] >> 31 == 1
+    pos, streams = 32, {}
+    while pos < len(buf):
+        n, w1, w2, w3 = struct.unpack_from('<4I', buf, pos)
+        streams[w1 >> 24] = np.frombuffer(buf, np.uint16, n, pos + 16)
+        pos += 16 + 2 * n
+    assert pos == len(buf) and sorted(streams) == [0, 1]
+    raw, peaks = hsd_expected(SEED, seq)
+    assert np.array_equal(streams[0], raw)
+    q, starts, arrays, i, ns, tot = streams[1], [], [], 0, 0, 0     # HsdPython.hh next_peak
+    while i < len(q):
+        if q[i] & 0x8000:
+            ns += int((q[i:i + 4] & 0x7fff).sum())
+            i += 4
+            continue
+        j = i
+        while j < len(q) and not q[j] & 0x8000:
+            j += 4
+        starts.append(ns + tot)
+        arrays.append(q[i:j])
+        tot += j - i
+        i = j
+    starts[0], arrays[0] = starts[0] + 4, arrays[0][4:]              # hsd_raw_3_0_0
+    assert starts == [p[0] for p in peaks]
+    assert all(np.array_equal(a, p[1]) for a, p in zip(arrays, peaks))
+    assert hsd_expected(SEED, seq, offset=1)[0][0] != raw[0]           # the self-test differs
+
+
+def test_epixquad1kfps_frame_is_the_epixquad_layout():
+    """drp -D epixquad1kfps is the same EpixQuad DRP as epixquad: the same subframes."""
+    assert frame('epixquad1kfps', 3) == frame('epixquad', 3)
+
+
+def test_epixUHR_frame_descrambles_to_the_pattern():
+    """EpixUHR::_event records ASIC subframes 2-5 as they come; psana's epixuhr raw() unpacks each
+    (_descramble_raw_frame, gain_msb) into 168 x 192 pixels: pixel (q, y, x) must be
+    pattern(q * 32256 + 192 y + x, 12)."""
+    uhr = pytest.importorskip('psana.detector.epixuhr')
+    seq = 4
+    data, order = subframes(frame('epixUHR', seq))
+    assert order == [0, 1, 2, 3, 4, 5]
+    assert data[0] == timing_header(seq) and data[1] == timing_header(seq)
+    class Descrambler:                  # epixuhr_raw_0_0_0's unpacking methods, without a run
+        pass
+    for name in ('_descramble_3d_frames', '_descramble_raw_frame',
+                 '_pack_6_8bit_to_4_12bit_matrix', '_lane_map_uhr35kHzv2'):
+        setattr(Descrambler, name, getattr(uhr.epixuhr_raw_0_0_0, name))
+    det = Descrambler()
+    raw = np.stack([np.frombuffer(data[2 + q], np.uint8) for q in range(4)])
+    assert raw.shape == (4, 48384)
+    img = det._descramble_3d_frames(raw)
+    assert np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12))
+    assert not np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12, offset=1))

@@ -378,3 +378,20 @@ def test_the_camera_uart_answers_from_the_seed_file(tmp_path, monkeypatch):
             time.sleep(0.01)
         assert bytes(rx.got[0::4]) == want
         assert [w['cmd'] for w in sim.writes if w['store'] == 'uart'] == ['@ID?', '@MO1']
+
+
+def test_response_seed_answers_in_the_low_bits():
+    """{"response": v, "bits": n}: the low n bits read v whatever is written (a SPI PROM's
+    command register, whose low byte is the flash's answer), the rest what was written."""
+    sim = rogue_dev.install(DEV, seeds={'Top.Feb.Ctrl': {'response': 0, 'bits': 8}}, fault='')
+    with Top(DEV) as top:
+        top.Feb.Ctrl.set(0x80050001, verify=False)
+        assert top.Feb.Ctrl.get(read=True) == 0x80050000
+        assert sim.applied['Top.Feb.Ctrl'][2] == {'response': 0, 'bits': 8}
+
+
+def test_the_epixquad1kfps_prom_seed_loads():
+    seeds, path = rogue_dev.load_seeds('epixquad1kfps')
+    assert seeds['Top.CypressS25Fl.CmdReg'] == {'response': 0, 'bits': 8}
+    with pytest.raises(rogue_dev.SimDeviceError, match='bits'):
+        rogue_dev._seed_value('X.CmdReg', {'response': 0, 'bits': 40})

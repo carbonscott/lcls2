@@ -1,0 +1,12 @@
+{
+ "_comment": "The simulated ePixUHR for psdaq.sim.rogue_dev: the KCU (PgpMonitor over AxiMemMap, psdaq/cas/pgpmonitor.py, root 'PgpMonitor') and the driver's /proc text, and the camera behind SRPv3 (epix_uhr_gtreadout_dev Root, root 'Root'), which psdaq/configdb/epixUHR_config.py builds. Keys are pyrogue register paths; values are what the hardware reports.",
+ "_proc": [
+  "Build String     : XilinxKcu1500Pgp4_6Gbps: Vivado v2023.1 (sim)"
+ ],
+ "PgpMonitor.AxiPcieCore.AxiVersion.PCIE_HW_TYPE_G": "0x0D",
+ "PgpMonitor.AxiPcieCore.AxiVersion.DMA_SIZE_G": 1,
+ "PgpMonitor.Lane[0].RxStatus.LinkReady": 1,
+ "PgpMonitor.Lane[0].RxStatus.RemRxLinkReady": 1,
+ "Root.App.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id, which epixUHR_init waits for (anything but 0xffffffff); the DRP takes the link id simxpm assigns, not this one"
+}
