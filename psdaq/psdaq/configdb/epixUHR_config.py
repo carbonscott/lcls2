@@ -541,14 +541,14 @@ def config_expert(base, cfg, writeCalibRegs=True, second_pass=False):
                     np.savetxt(fn, db_gain_map, delimiter=',', newline='\n', comments='')
                     tmpfiles.append(fn)
                     
-                    gain_map[i-1,:,:] = db_gain_map
+                    gain_map[asic-1,:,:] = db_gain_map
                     eval(f"det_root.App.EpixUhrMatrixConfig.progPixelMatrixFromCsvAsic{asic}('{fn}')")
                     
             else:
                 #a value per each
                 logging.info("Use a value per ASIC")
                 for asic in asics: 
-                    gain_value=str(cfg['user']['App'][f'Asic{i}']['SetGainValue'])
+                    gain_value=str(cfg['user']['App'][f'Asic{asic}']['SetGainValue'])
                     print(f"ASIC{asic}")
                     gain_map[asic-1, :, :] = np.full((DET_SIZE[1],DET_SIZE[2]), gain_value)
                     getattr(det_root.App,f"Asic{asic}").progPixelMatrixConstantValue(gain_value)

@@ -15,7 +15,9 @@
      preflight (preflight.sh); 'up' stops if the preflight does not pass,
   2. the config DB stand-in (configdb_server), seeded by configdb_seed,
   3. the run DB / eLog stand-in (lgbk_server),
-  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
+  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver), and the
+     stand-ins of the --det type's own device, if it has any (hsd: simhsdioc, the hsd's PVs and
+     IOC),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
      with its config in the config DB, all in the partition's readout group; with --det TYPE
@@ -107,6 +109,15 @@ SIM_TYPES = {
     # the timing BEB: tb_config reads the card's image name, then programs simxpm's PVs as ts does
     'tb':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
     'epixquad':  {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}'},
+    # the same EpixQuad DRP; its camera's SPI PROM answers the commands Top.start sends (rogue_dev).
+    # Its package's ePixViewer constructs a QApplication when ePixQuad is imported, so whatever
+    # imports epixquad1kfps_config (configdb_seed, the DRP) needs a display: offscreen here
+    'epixquad1kfps': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}',
+                      'env': {'QT_QPA_PLATFORM': 'offscreen'}},
+    # its store's default reads PLL tables and pixel maps from EPIXUHR_CONFIG_DIR: 'up' writes them
+    # (psdaq.sim.epixuhr_files); 4 ASICs of 48,384 B packed pixels per event
+    'epixUHR':   {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
+                  'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR')},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -118,6 +129,12 @@ SIM_TYPES = {
                     'frame': 'epixhremu-frame.xtc2'},
     'jungfrauemu': {'kwargs': 'sim_length=262144,sim_dma_size=0x101000,sim_dma_count=256'},
     'ts':          {'kwargs': 'sim_seed={seed:#x}'},
+    # the digitizer: hsd_config.py configures the card (rogue_dev) and, over PVA, the hsd's IOC,
+    # whose PVs simhsdioc serves for channels A and B (hsd_config disables both); MemPoolSim sends
+    # the hsd's raw and fex streams
+    'hsd': {'kwargs': f'hsd_epics_prefix={PVBASE}:HSD:1_SIM:A,sim_seed={{seed:#x}}',
+            'services': {'simhsdioc': ['-m', 'psdaq.sim.simhsdioc',
+                                       '-P', f'{PVBASE}:HSD:1_SIM:A', f'{PVBASE}:HSD:1_SIM:B']}},
 }
 # drp_gpu -k settings per simulated detector type (up --drp drp_gpu --det).  drp_gpu -d sim://
 # (psdaq/drpGpu/MemPool.cc) copies what the drp's MemPoolSim makes of simxpm's frames into the
@@ -426,6 +443,16 @@ def cmd_up(args):
                            '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
         wait_listen(P['configdb'], 30, p, 'configdb_server')
         sim_type = (GPU_SIM_TYPES if DRP == 'drp_gpu' else SIM_TYPES)[DETECTOR]
+        env.update(sim_type.get('env', {}))     # what the type's own code needs to run here
+        os.environ.update(sim_type.get('env', {}))  # procmgr and the DRP inherit it
+        if sim_type.get('config_files'):    # files the type's store reads, at a path env names
+            mod, sub, var = sim_type['config_files']
+            r = subprocess.run([py, '-m', mod, work.path(sub)], env=env, capture_output=True,
+                               text=True, timeout=120)
+            if r.returncode != 0:
+                raise Fail(f'{mod} failed: {r.stderr.strip()[-400:]}')
+            env[var] = work.path(sub)
+            say(r.stdout.strip().splitlines()[-1] if r.stdout.strip() else f'{var}={env[var]}')
         det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
         if sim_type.get('det_yaml'):
             det_args += ['--det-yaml', sim_type['det_yaml'].format(**os.environ)]
@@ -454,6 +481,17 @@ def cmd_up(args):
                            '--pull', 'auto'], env)
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
+
+        for name, argv in sim_type.get('services', {}).items():     # the type's device stand-ins
+            p = start_service(work, state, name, [py] + argv, env)
+            state.setdefault('type_services', []).append(name)
+            work.save(state)
+            end = time.monotonic() + 30
+            while f'{name}: ready' not in open(state['services'][name]['log']).read():
+                if p.poll() is not None or time.monotonic() > end:
+                    raise Fail(f'{name} did not start (logs/{name}.log)')
+                time.sleep(0.2)
+            say(f'{name} ready (logs/{name}.log)')
 
         if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
             r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
@@ -658,7 +696,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('simxpm', 'lgbk', 'configdb'):
+    for name in ('simxpm', 'lgbk', 'configdb') + tuple(state.get('type_services', ())):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)

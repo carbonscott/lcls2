@@ -27,6 +27,14 @@ import os
 
 ALG_VERSION = [3, 2, 0]  # A CALIB entry must match its BEAM entry's version
 
+# beam_cdict() reads the PLL register tables (pll/) and the pixel bit maps (pixelBitMaps_prod/)
+# from this directory; the EPIXUHR_CONFIG_DIR environment variable names another one.
+EPIXUHR_CONFIG_DIR = "/cds/home/p/psrel/EpixUHR"
+
+
+def epixuhr_config_dir():
+    return os.environ.get("EPIXUHR_CONFIG_DIR", EPIXUHR_CONFIG_DIR)
+
 
 def beam_cdict():
 
@@ -86,7 +94,7 @@ def beam_cdict():
         top.set(f"expert.App.BatcherEventBuilder{n}.Timeout", 0, "UINT32")
 
     conv = functools.partial(int, base=16)
-    pathPll = "/cds/home/p/psrel/EpixUHR/pll/"
+    pathPll = epixuhr_config_dir() + "/pll/"
 
     base = "expert.Pll."
     conv = functools.partial(int, base=16)
@@ -142,7 +150,7 @@ def beam_cdict():
         ),
     )
 
-    pathpix = "/cds/home/p/psrel/EpixUHR/pixelBitMaps_prod/"
+    pathpix = epixuhr_config_dir() + "/pixelBitMaps_prod/"
     # pixelBitMapDic = {'_FL_FM_FH':0, '_FL_FM_FH_InjOff':1, '_allConfigs':2, '_allPx_52':3, '_allPx_AutoHGLG_InjOff':4, '_allPx_AutoHGLG_InjOn':5, '_allPx_AutoMGLG_InjOff':6, '_allPx_AutoMGLG_InjOn':7, '_allPx_FixedHG_InjOff':8, '_allPx_FixedHG_InjOn':9, '_allPx_FixedLG_InjOff':10, '_allPx_FixedLG_InjOn':11, '_allPx_FixedMG_InjOff':12, '_allPx_FixedMG_InjOn':13, '_crilin':14, '_crilin_epixuhr100k':15, '_defaults':16, '_injection_corners':17, '_injection_corners_px1':18, '_management':19, '_management_epixuhr100k':20, '_management_inj':21, '_maskedCSA':22, '_truck':23, '_truck_epixuhr100k':24, '_xtalk_hole':25}
     pixelBitMapDic = {
         "_0_default": 0,

@@ -48,7 +48,8 @@ import sys
 # BEB types: (raw image shape, pixel bit depth), as MemPoolSim's batcher table writes them
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
-               'epixquad': ((4, 352, 384), 14)}
+               'epixquad': ((4, 352, 384), 14), 'epixquad1kfps': ((4, 352, 384), 14),
+               'epixUHR': ((4, 168, 192), 12)}
 # GPU DRP types (drp_gpu -d sim://): {type: (image shape, calibration of a uint16 pixel)}, the
 # calibration as the type's GPU code applies it with no calibSerNo (pedestals 0, gains 1)
 GPU_TYPES = {
@@ -304,7 +305,61 @@ def _hrencoder_event(det, evt, seed, n, offset=0, state=None):
     return True, [f'{k} {got[k]} != {w}' for k, w in want.items() if got[k] != w]
 
 
+HSD_RAW, HSD_LAYOUT = 1160, (-1, 20, -1, 12, -1)       # MemPoolSim.cc hsdMessage
+
+
+def hsd_expected(seed, n, offset=0):
+    """(raw waveform, [(start, peak samples)]) the simulated hsd sends in its n-th L1Accept, as
+    psana's hsd_raw_3_0_0 returns them: peak 1 without its 4 baseline words, at A + 4; peak 2 at
+    A + B + 20 (A, B the sums of the skip groups before them; HsdPython.hh next_peak)."""
+    import numpy as np
+    from psdaq.sim import pattern
+    p = lambda i0, k, bits: pattern.pattern(seed, n, np.arange(i0 + offset, i0 + offset + k), bits)
+    raw = p(0, HSD_RAW, 12).astype(np.uint16)
+    peaks, kept, skips, ns, width = [], 0, 0, 0, 0
+    for w in HSD_LAYOUT:
+        if w < 0:
+            ns += int(p(HSD_RAW + 32 + skips, 4, 6).sum())
+            skips += 4
+        else:
+            peaks.append([ns + width, p(HSD_RAW + kept, w, 15).astype(np.uint16)])
+            kept += w
+            width += w
+    peaks[0] = [peaks[0][0] + 4, peaks[0][1][4:]]
+    return raw, peaks
+
+
+def _hsd_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one hsd event (MemPoolSim.cc hsdMessage, Digitizer.cc): the
+    raw waveform of channel 0 (waveforms()) sample by sample, and every fex peak (peaks()) with
+    its start, through psana's own hsd interface (psana/psana/hsd/hsd.pyx)."""
+    import numpy as np
+    wfs, pks = det.raw.waveforms(evt), det.raw.peaks(evt)
+    if wfs is None and pks is None:
+        return False, []
+    raw, peaks = hsd_expected(seed, n, offset)
+    problems = []
+    wf = None if wfs is None else wfs.get(0, {}).get(0)
+    if wf is None or wf.shape != raw.shape:
+        problems.append(f'waveform shape {None if wf is None else wf.shape} != {raw.shape}')
+    elif not np.array_equal(wf, raw):
+        problems.append(f'{int((wf != raw).sum())} raw samples differ (first at '
+                        f'{int(np.argmax(wf != raw))})')
+    got = None if pks is None else pks.get(0, {}).get(0)
+    if got is None:
+        problems.append('no fex peaks')
+    else:
+        starts, arrays = got
+        if list(starts) != [p[0] for p in peaks]:
+            problems.append(f'peak starts {list(starts)} != {[p[0] for p in peaks]}')
+        elif not all(np.array_equal(a, p[1]) for a, p in zip(arrays, peaks)):
+            problems.append('fex peak samples differ')
+    return True, problems
+
+
 EVENT_TYPES = {
+    'hsd': (_hsd_event, f'the raw waveform ({HSD_RAW} samples, waveforms()) and the 2 fex peaks '
+                        '(peaks(): starts and samples) of hsd_raw_3_0_0 vs pattern'),
     'hrencoder': (_hrencoder_event, 'value() (the position), error_cnt, missedTrig_cnt and '
                                     'latches (hrencoder_raw_0_1_0) vs pattern'),
     'ts': (_ts_event, 'every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, '

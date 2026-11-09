@@ -32,6 +32,7 @@ namespace Drp {
 // The seed comes from the configuration database at Configure (see XpmDetector).
 // The timing system's DRP (-D ts) gets the timing message its TDet firmware sends instead of
 // these words: TimingData (TimingDef.hh) with the frame's pulseId and time (MemPoolSim.cc).
+// The digitizer's DRP (-D hsd, Digitizer) gets the hsd's raw and fex streams (MemPoolSim.cc).
 //
 // Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
 // DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
@@ -75,13 +76,15 @@ public:
         void      (*data)(Out& out, const Frame& f, uint32_t seed);
     };
     static const Batcher* batcher(const std::string& detType);
-    // An XpmDetector type whose TDet firmware sends a formatted message instead of the
-    // TDetSemi words above: 'bytes' of it after each L1Accept's TimingHeader (MemPoolSim.cc)
+    // A type whose front-end sends a formatted message instead of the TDetSemi words above:
+    // 'bytes' of it after each L1Accept's TimingHeader (MemPoolSim.cc), and 'opaque' in the
+    // TimingHeader's two opaque words (the hsd's event header: stream mask, JESD status)
     struct TDetMsg
     {
         const char* detType;
         unsigned    bytes;
         void      (*data)(uint8_t* out, const Frame& f, uint32_t seed);
+        uint32_t    opaque[2];
     };
     static const TDetMsg* tdetMsg(const std::string& detType);
     // The simulated value of pixel 'index' in event 'seq' (see above)

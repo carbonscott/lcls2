@@ -14,7 +14,8 @@ hardware-free DAQ needs to Configure:
                                that type's own default config
                                (psdaq.configdb.<type>_config_store, or with --det-yaml
                                a firmware YAML through yaml_config_store_example, as a
-                               production config is made), for drp -D <type> -d sim://.
+                               production config is made; hsd_config_store is a script,
+                               run as its command line would), for drp -D <type> -d sim://.
 
 It writes through psdaq.configdb.configdb, the same HTTP client the DAQ
 uses, and is idempotent: a device whose stored config already matches is
@@ -28,7 +29,9 @@ import argparse
 import importlib
 import json
 import os
+import runpy
 import sys
+import types
 
 from psdaq.configdb.configdb import configdb
 from psdaq.configdb.typed_json import cdict
@@ -113,6 +116,37 @@ def _store_cdict(mod, det_type, name, segm):
     return _StoreCapture.top
 
 
+# Stores that are scripts: their module code writes the config to the config DB its command line
+# names (hsd_config_store), with no function to call.  Run as __main__ would, with that command
+# line, against _StoreCapture.
+SCRIPT_STORES = ('hsd',)
+
+
+def _script_store_cdict(store, det_type, name, segm):
+    """The config a script store writes, from its module code run against _StoreCapture."""
+    import psdaq.configdb as package
+    real = sys.modules['psdaq.configdb.configdb']
+    fake = types.ModuleType(real.__name__)
+    fake.createArgs = real.createArgs
+    fake.configdb = _StoreCapture.configdb
+    argv = sys.argv
+    sys.argv = ['%s_config_store' % store, '--inst', 'tst', '--alias', 'BEAM', '--name', name,
+                '--segm', str(segm), '--id', 'sim-%s' % det_type, '--user', 'sim',
+                '--password', 'sim']
+    sys.modules[real.__name__] = fake
+    package.configdb = fake
+    _StoreCapture.top = None
+    try:
+        runpy.run_module('psdaq.configdb.%s_config_store' % store, run_name='__sim_store__')
+    finally:
+        sys.modules[real.__name__] = real
+        package.configdb = real
+        sys.argv = argv
+    if _StoreCapture.top is None:
+        raise RuntimeError('%s_config_store wrote no config' % det_type)
+    return _StoreCapture.top
+
+
 # Types with no <type>_config_store in the tree: the store whose config they take, and the
 # keys their config script reads that it lacks.  wave8he shares wave8_common with wave8;
 # wave8he_config.user_to_expert derives the HLS counts and scales from these region bounds
@@ -137,6 +171,9 @@ BORROWED_STORES = {
 STORE_KEYS = {
     'epixquad': [('user.pixel_map', lambda: __import__('numpy').zeros((16, 178, 192), 'uint8'),
                   None)],
+    # the simulated hsd sends its fex stream as well as the raw one (MemPoolSim.cc hsdMessage), so
+    # its config enables it: hsd_config_store's default has user.fex.prescale 0 (raw only)
+    'hsd': [('user.fex.prescale', 1, 'UINT32')],
 }
 
 
@@ -154,7 +191,8 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         store, extra = BORROWED_STORES.get(det_type, (det_type, STORE_KEYS.get(det_type, [])))
         if store != det_type:
             importlib.import_module('psdaq.configdb.%s_config' % store)
-        mod = importlib.import_module('psdaq.configdb.%s_config_store' % store)
+        mod = (None if store in SCRIPT_STORES
+               else importlib.import_module('psdaq.configdb.%s_config_store' % store))
         if store in STORE_CDICT:
             if hasattr(mod, 'tsdef'):
                 mod.tsdef.set_instrument('tst')
@@ -162,6 +200,8 @@ def type_cdict(det_type, name, segm=0, yaml=None):
         elif store in STORE_DIR:
             top = getattr(mod, '%s_cdict' % store)(os.path.join(os.environ['SUBMODULEDIR'],
                                                                 STORE_DIR[store]))
+        elif store in SCRIPT_STORES:
+            top = _script_store_cdict(store, det_type, name, segm)
         elif hasattr(mod, '%s_cdict' % store):
             top = getattr(mod, '%s_cdict' % store)()
         else:

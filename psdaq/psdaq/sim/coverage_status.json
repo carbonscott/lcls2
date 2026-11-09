@@ -51,6 +51,18 @@
     "status": "RUN",
     "note": "daq_sim up --det jungfrauemu + cycle: xpmdet_config.py against rogue_dev; one 512 x 1024 panel of TDet words per event, every word checked"
   },
+  "det:drp:epixquad1kfps": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixquad1kfps + cycle: epixquad1kfps_config.py against rogue_dev (DevRoot, epix-quad-1kfps ePixQuad.Top with its SPI PROM answering), every pixel of the 4 elements checked through epix10ka_raw_3_0_1"
+  },
+  "det:drp:epixUHR": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixUHR + cycle: epixUHR_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 4 ASICs checked through epixuhr raw()'s descrambler"
+  },
+  "det:drp:hsd": {
+    "status": "RUN",
+    "note": "daq_sim up --det hsd + cycle: hsd_config.py against rogue_dev (l2si_drp DrpPgpIlvRoot) and, over PVA, simhsdioc (hsdpvs's PVs and what hsd134PVs does with them); every raw sample and fex peak checked through hsd_raw_3_0_0"
+  },
   "det:drp:ts": {
     "status": "RUN",
     "note": "daq_sim up --det ts + cycle: xpmdet_config.py against rogue_dev and ts_config.py/ts_connect.py against simxpm's PVs; every TimingData field checked through ts_raw_2_1_0"

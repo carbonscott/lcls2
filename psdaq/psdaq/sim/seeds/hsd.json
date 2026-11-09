@@ -1,0 +1,5 @@
+{
+  "_comment": "hsd (Digitizer): what hsd_config.py reads from the card's l2si_drp.DrpPgpIlvRoot at Connect. MonClkRate_3 is the 185.71 MHz timing clock hsd_connect checks (180-190 MHz, else it reprograms the Si570); PgpQPllLock the locked PGP QPLL (else it resets the links). DRIVER_TYPE_ID_G reads 0, a KCU1500 core card (args['core'], args['swclk']). The rest of the hsd's configuration goes over PVA to its IOC (psdaq.sim.simhsdioc).",
+  "DrpPgpIlv.PcieControl.DevPcie.MigIlvToPcieDma.MonClkRate_3": 185714285,
+  "DrpPgpIlv.PcieControl.DevPcie.PgpQPllLock": 1
+}
